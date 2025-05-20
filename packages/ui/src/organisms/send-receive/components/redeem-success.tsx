@@ -1,72 +1,33 @@
 import clsx from "clsx"
-import React, { useEffect, useMemo, useState } from "react"
+import { FC } from "react"
 
-import {
-  IconNftPlaceholder,
-  ImageWithFallback,
-  LottieAnimation,
-} from "@nfid-frontend/ui"
 import { Button, H5 } from "@nfid-frontend/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 
-import Success1 from "../assets/NFID_WS_1_1.json"
-import Success2 from "../assets/NFID_WS_3.json"
-import Successs3 from "../assets/NFID_WS_3_1.json"
-import Fail from "../assets/NFID_WS_3_2.json"
+import { StakeAnimation } from "./stake-animation"
 
 export interface RedeemSuccessProps {
   title: string
   subTitle?: string
   onClose?: () => void
-  assetImg: string
+  assetImg?: string
   duration?: number
   isOpen: boolean
   status: SendStatus
-  assetImageClassname: string
   error?: string
 }
 
-const allAnimations = [Success1, Success2, Successs3, Fail]
-
-export const RedeemSuccessUi: React.FC<RedeemSuccessProps> = ({
+export const RedeemSuccessUi: FC<RedeemSuccessProps> = ({
   title,
   subTitle = "0.00 USD",
   onClose,
   assetImg,
   duration = 5,
-  assetImageClassname,
   isOpen,
   status,
   error,
 }) => {
-  const [step, setStep] = useState(-1)
-
-  useEffect(() => {
-    if (!isOpen) return
-
-    const runAnimation = async () => {
-      if (status === SendStatus.PENDING) {
-        setStep(0)
-      }
-
-      // wait until uncontrollable part of animation finishes, then rely on send status
-      await new Promise((resolve) => setTimeout(resolve, 1060))
-      setStep(1)
-
-      if (status === SendStatus.COMPLETED) {
-        setStep(2)
-      }
-      if (status === SendStatus.FAILED) {
-        setStep(3)
-      }
-    }
-
-    runAnimation()
-  }, [status, isOpen])
-
-  const animation = useMemo(() => allAnimations[step], [step])
-
   return (
     <div
       id={"success_window_3"}
@@ -77,7 +38,7 @@ export const RedeemSuccessUi: React.FC<RedeemSuccessProps> = ({
         !isOpen && "hidden",
       )}
     >
-      <div className="text-center">
+      <div className={clsx("text-center", { "mb-[50px]": !!error })}>
         <H5 className="mt-5 text-xl !font-bold leading-6">
           {status === SendStatus.FAILED
             ? "Transaction failed"
@@ -94,19 +55,7 @@ export const RedeemSuccessUi: React.FC<RedeemSuccessProps> = ({
         </p>
       </div>
       <div className="relative flex items-center justify-center w-full">
-        <LottieAnimation
-          className="max-w-[370px] flex justify-center mt-[10px]"
-          animationData={animation}
-          loop={step === 1}
-          style={{ transform: "scale(1.1)" }}
-          viewBox="0 150 360 160"
-        />
-        <ImageWithFallback
-          alt="assetImg"
-          src={`${assetImg}`}
-          fallbackSrc={IconNftPlaceholder}
-          className={clsx("absolute rounded-full", assetImageClassname)}
-        />
+        <StakeAnimation assetImg={assetImg!} status={status} />
       </div>
       <div className="relative z-20">
         <p className="text-sm leading-[25px] font-inter" id="title">
@@ -115,7 +64,12 @@ export const RedeemSuccessUi: React.FC<RedeemSuccessProps> = ({
         <p className="text-xs text-gray-500 leading-[18px]" id="subTitle">
           {subTitle}
         </p>
-        {error && <div className="text-sm text-red-600 mt-[30px]">{error}</div>}
+        {error && (
+          <div className="text-sm text-red-600 mt-[20px]">
+            Something went wrong with redeeming stake. <br />
+            Please try again later.
+          </div>
+        )}
         <Button
           type="primary"
           block

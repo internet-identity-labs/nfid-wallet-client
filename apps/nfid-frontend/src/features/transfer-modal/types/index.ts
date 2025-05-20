@@ -54,6 +54,7 @@ export type TransferMachineContext = {
   error?: Error
   tokenStandard: string
   isOpenedFromVaults: boolean
+  stakeId?: string
 }
 
 export type Events =
@@ -63,6 +64,7 @@ export type Events =
   | { type: "CHANGE_DIRECTION"; data: ModalType | null }
   | { type: "ASSIGN_SOURCE_ACCOUNT"; data: Wallet }
   | { type: "ASSIGN_SOURCE_WALLET"; data: string }
+  | { type: "ASSIGN_STAKE_ID"; data: string }
   | { type: "ASSIGN_AMOUNT"; data: string }
   | { type: "ASSIGN_RECEIVER_WALLET"; data: string }
   | { type: "ASSIGN_SELECTED_FT"; data: string }

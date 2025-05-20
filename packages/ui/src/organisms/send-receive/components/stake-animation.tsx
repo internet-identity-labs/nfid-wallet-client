@@ -5,10 +5,17 @@ import React, { useEffect, useState } from "react"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 
+import FailedIcon from "../assets/stake-failed.svg"
 import "../assets/stake-gradient.css"
 import SuccessIcon from "../assets/stake-success.svg"
 
-const ANIMATION_DURATION = 1
+const HIDE_ANIMATION_DURATION = 0.3
+
+enum AnimationStage {
+  SPINNING = "spinning",
+  HIDING = "hiding",
+  SHOWING = "showing",
+}
 
 export interface StakeSuccessProps {
   assetImg: string
@@ -19,13 +26,50 @@ export const StakeAnimation: React.FC<StakeSuccessProps> = ({
   assetImg,
   status,
 }) => {
-  const [isAnimating, setIsAnimating] = useState(true)
+  const [animationStage, setAnimationStage] = useState<AnimationStage>(
+    status === SendStatus.PENDING
+      ? AnimationStage.SPINNING
+      : AnimationStage.SHOWING,
+  )
 
   useEffect(() => {
     if (status !== SendStatus.PENDING) {
-      setTimeout(() => setIsAnimating(false), ANIMATION_DURATION)
+      setAnimationStage(AnimationStage.HIDING)
+
+      const timeout = setTimeout(() => {
+        setAnimationStage(AnimationStage.SHOWING)
+      }, HIDE_ANIMATION_DURATION * 1000)
+
+      return () => clearTimeout(timeout)
     }
+
+    return
   }, [status])
+
+  const stageClassnames: Record<
+    AnimationStage,
+    {
+      before: string
+      line: string
+      imageWrapper: string
+    }
+  > = {
+    [AnimationStage.SPINNING]: {
+      before: "before:animate-animateCircle",
+      line: "animate-animate",
+      imageWrapper: "",
+    },
+    [AnimationStage.HIDING]: {
+      before: "before:animate-hideCircle",
+      line: "animate-hideCircle",
+      imageWrapper: "opacity-0 pointer-events-none",
+    },
+    [AnimationStage.SHOWING]: {
+      before: "before:hidden",
+      line: "invisible",
+      imageWrapper: "animate-showCircle",
+    },
+  }
 
   return (
     <div
@@ -36,9 +80,7 @@ export const StakeAnimation: React.FC<StakeSuccessProps> = ({
         "w-[148px] h-[148px] rounded-full",
         "relative before:content-[''] before:absolute before:top-0 before:left-0",
         "before:w-full before:h-full before:rounded-full",
-        isAnimating
-          ? `before:animate-[animateCircle_${ANIMATION_DURATION}s_linear_infinite]`
-          : "before:hidden",
+        stageClassnames[animationStage].before,
         "after:content-[''] after:bg-white after:rounded-full after:w-[calc(100%-6px)] after:h-[calc(100%-6px)] after:absolute",
         "after:top-[3px] after:left-[3px]",
       )}
@@ -46,10 +88,8 @@ export const StakeAnimation: React.FC<StakeSuccessProps> = ({
       <div
         className={clsx(
           "absolute top-[calc(50%-2px)] z-[1]",
-          "left-1/2 w-1/2 h-[4px] bg-transparent origin-left ",
-          isAnimating
-            ? `animate-[animate_${ANIMATION_DURATION}s_linear_infinite]`
-            : "invisible",
+          "left-1/2 w-1/2 h-[4px] bg-transparent origin-left",
+          stageClassnames[animationStage].line,
         )}
       >
         <div
@@ -58,21 +98,35 @@ export const StakeAnimation: React.FC<StakeSuccessProps> = ({
             "bg-[#8DD7FF] top-[-14px] right-[-14px]",
           )}
         >
-          <div className="bg-[#01B1FD] w-full h-full rounded-full"></div>
+          <div className="bg-[#01B1FD] w-full h-full rounded-full" />
         </div>
       </div>
-      {status === SendStatus.COMPLETED ? (
-        <div className="w-[96px] h-[96px] rounded-full bg-teal-600 flex items-center justify-center z-[2]">
-          <img src={SuccessIcon} alt="Success" />
-        </div>
-      ) : (
-        <ImageWithFallback
-          alt="assetImg"
-          src={assetImg}
-          fallbackSrc={IconNftPlaceholder}
-          className="rounded-full relative z-[2] w-[96px] h-[96px]"
-        />
-      )}
+
+      <div
+        className={clsx(
+          "rounded-full w-[96px] h-[96px] z-[2] flex items-center justify-center",
+          status !== SendStatus.PENDING &&
+            stageClassnames[animationStage].imageWrapper,
+          status === SendStatus.COMPLETED && "bg-teal-600",
+          status === SendStatus.FAILED && "bg-red-600",
+        )}
+      >
+        {status !== SendStatus.PENDING ? (
+          <img
+            src={status === SendStatus.COMPLETED ? SuccessIcon : FailedIcon}
+            alt={
+              status === SendStatus.COMPLETED ? "Stake success" : "Stake failed"
+            }
+          />
+        ) : (
+          <ImageWithFallback
+            alt="assetImg"
+            src={assetImg}
+            fallbackSrc={IconNftPlaceholder}
+            className="rounded-full w-[96px] h-[96px]"
+          />
+        )}
+      </div>
     </div>
   )
 }

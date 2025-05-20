@@ -24,6 +24,7 @@ export interface Typegen0 {
     assignSelectedTargetFT: "ASSIGN_SELECTED_TARGET_FT"
     assignSourceAccount: "ASSIGN_SOURCE_ACCOUNT"
     assignSourceWallet: "ASSIGN_SOURCE_WALLET"
+    assignStakeId: "ASSIGN_STAKE_ID"
     assignTokenStandard: "ASSIGN_TOKEN_STANDARD"
     assignTokenType: "CHANGE_TOKEN_TYPE"
     assignTransferObject: "ON_TRANSFER"

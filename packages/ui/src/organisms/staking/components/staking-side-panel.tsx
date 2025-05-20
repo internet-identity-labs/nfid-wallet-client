@@ -29,7 +29,7 @@ export interface StakingSidePanelProps {
   isOpen: boolean
   onClose: () => void
   sidePanelOption: SidePanelOption | null
-  onRedeemOpen: () => void
+  onRedeemOpen: (id: string) => void
   identity?: SignIdentity
   isLoading: boolean
   setIsLoading: (v: boolean) => void
@@ -50,7 +50,9 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   const symbol = sidePanelOption?.option.getToken().getTokenSymbol()
 
   const openRedeemModal = async () => {
-    onRedeemOpen()
+    if (!sidePanelOption) return
+
+    onRedeemOpen(sidePanelOption.option.getStakeIdFormatted())
     onClose()
   }
 
@@ -134,7 +136,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       <p className="text-gray-400">Governance</p>
                       <div>
                         <CopyAddress
-                          address={sidePanelOption.option.getStakeId()}
+                          address={sidePanelOption.option.getStakeIdFormatted()}
                           trailingChars={4}
                           leadingChars={6}
                         />
@@ -145,7 +147,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       <p className="text-gray-400">Participant management</p>
                       <div>
                         <CopyAddress
-                          address={sidePanelOption.option.getStakeId()}
+                          address={sidePanelOption.option.getStakeIdFormatted()}
                           trailingChars={4}
                           leadingChars={6}
                         />
@@ -156,7 +158,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       <p className="text-gray-400">SNS & Neurons’ fund</p>
                       <div>
                         <CopyAddress
-                          address={sidePanelOption.option.getStakeId()}
+                          address={sidePanelOption.option.getStakeIdFormatted()}
                           trailingChars={4}
                           leadingChars={6}
                         />
@@ -167,7 +169,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       <p className="text-gray-400">Transaction fee</p>
                       <div>
                         <CopyAddress
-                          address={sidePanelOption.option.getStakeId()}
+                          address={sidePanelOption.option.getStakeIdFormatted()}
                           trailingChars={4}
                           leadingChars={6}
                         />
@@ -178,7 +180,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       <p className="text-gray-400">Network economics</p>
                       <div>
                         <CopyAddress
-                          address={sidePanelOption.option.getStakeId()}
+                          address={sidePanelOption.option.getStakeIdFormatted()}
                           trailingChars={4}
                           leadingChars={6}
                         />
@@ -189,7 +191,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       <p className="text-gray-400">Node admin</p>
                       <div>
                         <CopyAddress
-                          address={sidePanelOption.option.getStakeId()}
+                          address={sidePanelOption.option.getStakeIdFormatted()}
                           trailingChars={4}
                           leadingChars={6}
                         />
@@ -230,7 +232,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       </div>
                       <div>
                         <CopyAddress
-                          address={sidePanelOption.option.getStakeId()}
+                          address={sidePanelOption.option.getStakeIdFormatted()}
                           trailingChars={4}
                           leadingChars={6}
                         />
@@ -376,12 +378,12 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       <div>
                         <p>
                           {sidePanelOption.option
-                            .getUnlockInFormatted()
+                            .getUnlockInFormatted()!
                             .getDate()}
                         </p>
                         <p className="text-xs text-gray-400">
                           {sidePanelOption.option
-                            .getUnlockInFormatted()
+                            .getUnlockInFormatted()!
                             .getTime()}
                         </p>
                       </div>

@@ -27,6 +27,9 @@ export const transferMachine = createMachine(
       ASSIGN_SOURCE_WALLET: {
         actions: "assignSourceWallet",
       },
+      ASSIGN_STAKE_ID: {
+        actions: "assignStakeId",
+      },
       ASSIGN_RECEIVER_WALLET: {
         actions: "assignReceiverWallet",
       },
@@ -184,6 +187,9 @@ export const transferMachine = createMachine(
       })),
       assignTokenStandard: assign((_, event) => ({
         tokenStandard: event?.data,
+      })),
+      assignStakeId: assign((_, event) => ({
+        stakeId: event?.data,
       })),
       assignIsVault: assign((_, event) => ({
         isOpenedFromVaults: event?.data,

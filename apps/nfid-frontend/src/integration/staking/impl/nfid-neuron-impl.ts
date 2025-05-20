@@ -1,6 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
-import { Neuron } from "@dfinity/sns/dist/candid/sns_governance"
+import { Neuron, NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
 import BigNumber from "bignumber.js"
 import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
 import { bytesToHexString } from "src/integration/staking/service/staking-service-impl"
@@ -22,6 +22,7 @@ import { FormattedDate, TokenValue } from "../types"
 
 const SECONDS_PER_MONTH = 30 * 24 * 60 * 60
 const MILISECONDS_PER_SECOND = 1000
+const PROTOCOL_FEE_MULTIPLIER = new BigNumber(875).dividedBy(100000)
 
 export class NfidNeuronImpl implements NFIDNeuron {
   private neuron: Neuron
@@ -32,7 +33,11 @@ export class NfidNeuronImpl implements NFIDNeuron {
     this.token = token
   }
 
-  getStakeId(): string {
+  getStakeId(): NeuronId {
+    return { id: this.neuron.id[0]!.id }
+  }
+
+  getStakeIdFormatted(): string {
     return bytesToHexString(this.neuron.id[0]!.id)
   }
 
@@ -75,7 +80,7 @@ export class NfidNeuronImpl implements NFIDNeuron {
   }
 
   getTotalValue(): bigint {
-    return this.getRewards() + this.getInitialStake()
+    return this.getRewards() + this.getInitialStake() - this.getProtocolFee()
   }
 
   getTotalValueFormatted(): TokenValue {
@@ -88,6 +93,26 @@ export class NfidNeuronImpl implements NFIDNeuron {
       getTokenValue: () => `${totalAmount} ${this.token.getTokenSymbol()}`,
       getUSDValue: () =>
         this.token.getTokenRateFormatted(totalAmount) || "Not listed",
+    }
+  }
+
+  getProtocolFee(): bigint {
+    const fee = new BigNumber(this.getRewards().toString()).multipliedBy(
+      PROTOCOL_FEE_MULTIPLIER,
+    )
+    return BigInt(fee.toString())
+  }
+
+  getProtocolFeeFormatted(): TokenValue {
+    const protocolFee = BigNumber(this.getProtocolFee().toString())
+      .div(10 ** this.token.getTokenDecimals())
+      .toFixed(this.token.getTokenDecimals())
+      .replace(TRIM_ZEROS, "")
+
+    return {
+      getTokenValue: () => `${protocolFee} ${this.token.getTokenSymbol()}`,
+      getUSDValue: () =>
+        this.token.getTokenRateFormatted(protocolFee) || "Not listed",
     }
   }
 
@@ -262,10 +287,8 @@ export class NfidNeuronImpl implements NFIDNeuron {
     const rootCanisterId = this.token.getRootSnsCanister()
     if (!rootCanisterId) return
 
-    let protocolFee = (this.getRewards() / BigInt(100000)) * BigInt(875)
-
     const transferArgs: TransferArg = {
-      amount: protocolFee,
+      amount: this.getProtocolFee(),
       created_at_time: [],
       fee: [],
       from_subaccount: [],

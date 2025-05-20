@@ -88,7 +88,9 @@ export class StakedTokenImpl implements StakedToken {
       return (
         lockTime !== undefined &&
         lockTime + neuron.getCreatedAt() <=
-          Math.floor(Date.now() / MILISECONDS_PER_SECOND)
+          Math.floor(Date.now() / MILISECONDS_PER_SECOND) &&
+        // TODO: research why the redeemed stakes are not deleted
+        Number(neuron.getInitialStake()) > 0
       )
     })
   }

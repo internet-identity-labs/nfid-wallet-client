@@ -3,32 +3,30 @@ import {
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 
-const NFIDW = {
-  ledger: NFIDW_CANISTER_ID,
-  name: "NFIDW",
-  symbol: "NFIDW",
-  logo: "Some NFIDW",
-  index: "mgfru-oqaaa-aaaaq-aaelq-cai",
-  state: "Active",
-  category: "Sns",
-  fee: BigInt(10000),
-  decimals: 8,
-  rootCanisterId: "m2blf-zqaaa-aaaaq-aaejq-cai",
-}
-
 export const mockFt = [
-  NFIDW,
   {
-    ledger: ICP_CANISTER_ID,
+    ledger: NFIDW_CANISTER_ID,
     name: "NFIDW",
     symbol: "NFIDW",
     logo: "Some NFIDW",
     index: "mgfru-oqaaa-aaaaq-aaelq-cai",
-    state: "Sns",
+    state: "Active",
     category: "Sns",
     fee: BigInt(10000),
     decimals: 8,
     rootCanisterId: "m2blf-zqaaa-aaaaq-aaejq-cai",
+  },
+  {
+    ledger: ICP_CANISTER_ID,
+    name: "Internet Computer",
+    symbol: "ICP",
+    logo: "Some ICP",
+    index: "qhbym-qaaaa-aaaaa-aaafq-cai",
+    state: "Active",
+    category: "Native",
+    fee: BigInt(10000),
+    decimals: 8,
+    rootCanisterId: "r7inp-6aaaa-aaaaa-aaabq-cai",
   },
 ]
 
@@ -110,7 +108,7 @@ export const mockStake = [
     voting_power_percentage_multiplier: BigInt(100),
     vesting_period_seconds: [],
     disburse_maturity_in_progress: [],
-    followees: [],
+    followees: [1, 2],
     neuron_fees_e8s: BigInt(0),
   },
   {
@@ -190,7 +188,7 @@ export const mockStake = [
     voting_power_percentage_multiplier: BigInt(100),
     vesting_period_seconds: [],
     disburse_maturity_in_progress: [],
-    followees: [],
+    followees: [1, 2, 3],
     neuron_fees_e8s: BigInt(0),
   },
   {
@@ -270,7 +268,7 @@ export const mockStake = [
     voting_power_percentage_multiplier: BigInt(100),
     vesting_period_seconds: [],
     disburse_maturity_in_progress: [],
-    followees: [],
+    followees: [1, 2, 3, 4],
     neuron_fees_e8s: BigInt(0),
   },
 ]

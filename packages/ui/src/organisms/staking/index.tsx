@@ -162,7 +162,7 @@ export const Staking: FC<StakingProps> = ({
               </>
             ) : (
               <ProfileContainer
-                className="md:h-[292px] md:flex md:items-center !p-0 !border-0"
+                className="md:h-[360px] md:flex md:items-center !p-0 !border-0 !mb-0"
                 titleClassName="!px-0"
               >
                 <img

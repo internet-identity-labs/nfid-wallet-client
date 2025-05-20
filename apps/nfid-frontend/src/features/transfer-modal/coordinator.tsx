@@ -157,7 +157,12 @@ export const TransferModalCoordinator = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
           >
-            <RedeemStake onClose={hideModal} />
+            <RedeemStake
+              stakeId={state.context.stakeId}
+              onClose={hideModal}
+              setErrorMessage={setErrorMessage}
+              setSuccessMessage={setSuccessMessage}
+            />
           </motion.div>
         )}
         {state.matches("StakeMachine") && (

@@ -22,8 +22,7 @@ import { FormattedDate, TokenValue } from "../types"
 
 const SECONDS_PER_MONTH = 30 * 24 * 60 * 60
 const MILISECONDS_PER_SECOND = 1000
-const PROTOCOL_FEE_DENOMINATOR = BigInt(100000)
-const PROTOCOL_FEE_NUMERATOR = BigInt(875)
+const PROTOCOL_FEE_MULTIPLIER = new BigNumber(875).dividedBy(100000)
 
 export class NfidNeuronImpl implements NFIDNeuron {
   private neuron: Neuron
@@ -98,9 +97,10 @@ export class NfidNeuronImpl implements NFIDNeuron {
   }
 
   getProtocolFee(): bigint {
-    return (
-      (this.getRewards() / PROTOCOL_FEE_DENOMINATOR) * PROTOCOL_FEE_NUMERATOR
+    const fee = new BigNumber(this.getRewards().toString()).multipliedBy(
+      PROTOCOL_FEE_MULTIPLIER,
     )
+    return BigInt(fee.toString())
   }
 
   getProtocolFeeFormatted(): TokenValue {

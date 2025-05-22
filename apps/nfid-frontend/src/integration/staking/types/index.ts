@@ -19,10 +19,3 @@ export interface TotalBalance {
   rewards: string
   total: string
 }
-
-export interface StakingParameters {
-  txFee: bigint | undefined
-  minAmount: bigint | undefined
-  minLockTime: bigint | undefined
-  maxLockTime: bigint | undefined
-}

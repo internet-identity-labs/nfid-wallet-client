@@ -17,12 +17,13 @@ import { stakingService } from "frontend/integration/staking/service/staking-ser
 import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
 
 import { FormValues, SendStatus } from "../types"
-import { getIdentity, getTokensWithUpdatedBalance } from "../utils"
+import {
+  getIdentity,
+  getAccurateDateForStakeInSeconds,
+  getTokensWithUpdatedBalance,
+} from "../utils"
 
 const DEFAULT_STAKE_ERROR = "Something went wrong"
-// TODO: Make months to seconds work properly
-// https://github.com/dfinity/nns-dapp/blob/ef53053366f8174f38a74c62340fa53cf529f9be/frontend/src/lib/constants/constants.ts#L16
-const MONTHS_TO_SECONDS = 30 * 24 * 60 * 60
 
 interface IStakeFT {
   onClose: () => void
@@ -119,7 +120,7 @@ export const StakeFT = ({
 
   const submit = useCallback(async () => {
     if (!identity) return
-    if (!token) return toaster.error(DEFAULT_STAKE_ERROR || "No selected token")
+    if (!token || !lockValue) return toaster.error(DEFAULT_STAKE_ERROR)
     setIsSuccessOpen(true)
     const rootCanisterId = token.getRootSnsCanister()
     if (!rootCanisterId) return
@@ -157,7 +158,7 @@ export const StakeFT = ({
           ? stakingParams?.getMaximumLockTime()
           : isMinLockTimeSelected
           ? stakingParams?.getMinimumLockTime()
-          : lockValue! * MONTHS_TO_SECONDS,
+          : getAccurateDateForStakeInSeconds(lockValue),
       )
       .then(() => {
         setSuccessMessage(

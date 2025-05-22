@@ -1,22 +1,28 @@
 import { FT } from "frontend/integration/ft/ft"
 import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
 
-import { StakingParameters, TokenValue } from "../types"
+import { TokenValue } from "../types"
 
 const SECONDS_IN_MONTH = (60 * 60 * 24 * 365.25) / 12
 
-export class StakeParamsCalculatorImpl implements StakeParamsCalculator {
-  token: FT
-  params: StakingParameters
+export abstract class StakeParamsCalculatorImpl<T>
+  implements StakeParamsCalculator
+{
+  protected token: FT
+  protected params: T
 
-  constructor(ft: FT, params: StakingParameters) {
+  constructor(ft: FT, params: T) {
     this.token = ft
     this.params = params
   }
 
-  getFee(): bigint | undefined {
-    return this.params.txFee
-  }
+  abstract getFee(): bigint | undefined
+
+  abstract getMinimumToStake(): number
+
+  abstract getMinimumLockTime(): number
+
+  abstract getMaximumLockTime(): number
 
   getFeeFormatted(): TokenValue {
     const fee = Number(this.getFee()) / 10 ** this.token.getTokenDecimals()
@@ -27,22 +33,10 @@ export class StakeParamsCalculatorImpl implements StakeParamsCalculator {
     }
   }
 
-  getMinimumToStake(): number {
-    return Number(this.params.minAmount) / 10 ** this.token.getTokenDecimals()
-  }
-
-  getMinimumLockTime(): number {
-    return Number(this.params.minLockTime)
-  }
-
   getMinimumLockTimeInMonths(): number {
     return Math.round(
       this.getMinimumLockTime() / ((60 * 60 * 24 * 365.25) / 12),
     )
-  }
-
-  getMaximumLockTime(): number {
-    return Number(this.params.maxLockTime)
   }
 
   getMaximumLockTimeInMonths(): number {

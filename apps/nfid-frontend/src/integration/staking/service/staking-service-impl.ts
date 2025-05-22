@@ -1,5 +1,5 @@
 import { SignIdentity } from "@dfinity/agent"
-import { NeuronId, NeuronInfo } from "@dfinity/nns"
+import { NeuronId as NeuronICPId, NeuronInfo, Topic } from "@dfinity/nns"
 import { Principal } from "@dfinity/principal"
 import { SnsNeuronId, SnsRootCanister } from "@dfinity/sns"
 import { Neuron } from "@dfinity/sns/dist/candid/sns_governance"
@@ -36,13 +36,14 @@ import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-
 import { FT } from "frontend/integration/ft/ft"
 import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
 
-import { StakeParamsCalculatorImpl } from "../calculator/stake-params-calculator-impl"
+import { StakeICPParamsCalculatorImpl } from "../calculator/stake-icp-params-calculator-impl"
+import { StakeSnsParamsCalculatorImpl } from "../calculator/stake-sns-params-calculator"
 import { NfidICPNeuronImpl } from "../impl/nfid-icp-neuron-impl"
 import { NfidSNSNeuronImpl } from "../impl/nfid-sns-neuron-impl"
 import { StakedICPTokenImpl } from "../impl/staked-icp-token-impl"
 import { StakedSnsTokenImpl } from "../impl/staked-sns-token-impl"
 import { StakedToken } from "../staked-token"
-import { StakingParameters, TotalBalance } from "../types"
+import { TotalBalance } from "../types"
 
 export class StakingServiceImpl implements StakingService {
   @Cache(integrationCache, { ttl: 300, calculateKey: () => "getStakedTokens" })
@@ -120,7 +121,7 @@ export class StakingServiceImpl implements StakingService {
   ): Promise<StakeParamsCalculator | undefined> {
     const rootCanisterId = token.getRootSnsCanister()
     if (!rootCanisterId) return
-    let params: StakingParameters
+
     if (rootCanisterId.toText() !== ICP_ROOT_CANISTER_ID) {
       const snsParams = await nervousSystemParameters({
         rootCanisterId,
@@ -128,29 +129,15 @@ export class StakingServiceImpl implements StakingService {
         certified: false,
       })
 
-      params = {
-        txFee: snsParams.transaction_fee_e8s[0],
-        minAmount: snsParams.neuron_minimum_stake_e8s[0],
-        minLockTime: snsParams.neuron_minimum_dissolve_delay_to_vote_seconds[0],
-        maxLockTime: snsParams.max_dissolve_delay_seconds[0],
-      }
+      return new StakeSnsParamsCalculatorImpl(token, snsParams)
     } else {
       const icpParams = await getNetworkEconomicsParameters({
         identity: delegation,
         certified: false,
       })
 
-      params = {
-        txFee: icpParams.transactionFee,
-        minAmount: icpParams.neuronMinimumStake,
-        minLockTime:
-          icpParams.votingPowerEconomics
-            ?.neuronMinimumDissolveDelayToVoteSeconds,
-        maxLockTime: BigInt(252460800),
-      }
+      return new StakeICPParamsCalculatorImpl(token, icpParams)
     }
-
-    return new StakeParamsCalculatorImpl(token, params)
   }
 
   async getTargets(rootCanisterId: Principal) {
@@ -158,7 +145,7 @@ export class StakingServiceImpl implements StakingService {
     if (rootCanisterId.toText() === ICP_ROOT_CANISTER_ID) {
       canisterId = ICP_GOV_CANISTER_ID
     } else {
-      let root = SnsRootCanister.create({ canisterId: rootCanisterId })
+      const root = SnsRootCanister.create({ canisterId: rootCanisterId })
       const canister_ids = await root.listSnsCanisters({ certified: false })
       canisterId = canister_ids.governance[0]?.toText()
     }
@@ -171,18 +158,16 @@ export class StakingServiceImpl implements StakingService {
     amount: string,
     delegation: SignIdentity,
     lockTime?: number,
-  ): Promise<{
-    id: Uint8Array | number[]
-  }> {
-    let root = token.getRootSnsCanister()
+  ): Promise<SnsNeuronId> {
+    const root = token.getRootSnsCanister()
     if (!root) {
       throw new Error("Root Canister not found")
     }
-    let amountInE8S = BigNumber(Number(amount)).multipliedBy(
+    const amountInE8S = BigNumber(Number(amount)).multipliedBy(
       10 ** token.getTokenDecimals(),
     )
 
-    let id = await stakeNeuron({
+    const id = await stakeNeuron({
       stake: BigInt(amountInE8S.toFixed()),
       identity: delegation,
       canisterId: root,
@@ -213,17 +198,17 @@ export class StakingServiceImpl implements StakingService {
     amount: string,
     identity: SignIdentity,
     fee: bigint,
-    lockTime?: number,
-  ): Promise<NeuronId> {
-    let root = token.getRootSnsCanister()
-    if (!root) {
-      throw new Error("Root Canister not found")
-    }
-    let amountInE8S = BigNumber(Number(amount)).multipliedBy(
+    //lockTime?: number,
+  ): Promise<NeuronICPId> {
+    // hadrcoded
+    const lockTime = 60
+    const amountInE8S = BigNumber(Number(amount)).multipliedBy(
       10 ** token.getTokenDecimals(),
     )
 
-    let id = await stakeICPNeuron({
+    //const id = BigInt(1)
+
+    const id = await stakeICPNeuron({
       stake: BigInt(amountInE8S.toFixed()),
       controller: identity.getPrincipal(),
       ledgerCanisterIdentity: identity,
@@ -237,13 +222,15 @@ export class StakingServiceImpl implements StakingService {
       identity: identity,
     })
 
-    // await increaseICPDissolveDelay({
-    //   neuronId: id,
-    //   dissolveDelayInSeconds: BigInt(123),
-    //   identity,
-    // })
+    if (lockTime) {
+      await increaseICPDissolveDelay({
+        neuronId: id,
+        dissolveDelayInSeconds: lockTime,
+        identity,
+      })
+    }
 
-    // await setICPFollowees()
+    await this.followICPNeurons(identity, id)
 
     return id
   }
@@ -253,8 +240,8 @@ export class StakingServiceImpl implements StakingService {
     principal: Principal,
   ): Promise<StakedToken | undefined> {
     try {
-      let neurons = await this.getNeurons(token, principal)
-      let nfidN = neurons
+      const neurons = await this.getNeurons(token, principal)
+      const nfidN = neurons
         .filter((neuron) => neuron.cached_neuron_stake_e8s > BigInt(0))
         .map((neuron) => new NfidSNSNeuronImpl(neuron, token))
       return nfidN.length ? new StakedSnsTokenImpl(token, nfidN) : undefined
@@ -269,8 +256,8 @@ export class StakingServiceImpl implements StakingService {
     identity: SignIdentity,
   ): Promise<StakedToken | undefined> {
     try {
-      let neurons = await this.getICPNeurons(identity)
-      let nfidN = neurons
+      const neurons = await this.getICPNeurons(identity)
+      const nfidN = neurons
         .filter((neuron) => neuron.fullNeuron!.cachedNeuronStake > BigInt(0))
         .map((neuron) => new NfidICPNeuronImpl(neuron, token))
       return nfidN.length ? new StakedICPTokenImpl(token, nfidN) : undefined
@@ -306,7 +293,7 @@ export class StakingServiceImpl implements StakingService {
     root: Principal,
     rootNeuron: SnsNeuronId,
   ) {
-    let neuronsToFollow = await icrc1OracleService.getAllNeurons()
+    const neuronsToFollow = await icrc1OracleService.getAllNeurons()
     neuronsToFollow.filter((n) => n.rootCanister === root.toText())
     const response = await listNNSFunctions({
       identity: delegation,
@@ -315,7 +302,7 @@ export class StakingServiceImpl implements StakingService {
 
     if (neuronsToFollow.length > 0) {
       for (const neuron of neuronsToFollow) {
-        let neurnonId: SnsNeuronId = {
+        const neurnonId: SnsNeuronId = {
           id: hexStringToUint8Array(neuron.neuron_id),
         }
         for (const f of response.functions) {
@@ -328,6 +315,54 @@ export class StakingServiceImpl implements StakingService {
           })
         }
       }
+    }
+  }
+
+  async followICPNeurons(delegation: SignIdentity, id: NeuronICPId) {
+    const neuronsToFollow = await icrc1OracleService.getAllNeurons()
+    const icpNeuron = neuronsToFollow.find(
+      (n) => n.rootCanister === ICP_ROOT_CANISTER_ID,
+    )
+
+    console.log(
+      "identity followICPNeurons",
+      delegation.getPrincipal().toText(),
+      id,
+    )
+
+    for (const t of Object.values(Topic).filter(
+      (value) => typeof value === "number",
+    ) as number[]) {
+      setICPFollowees({
+        identity: delegation,
+        neuronId: id,
+        topic: t,
+        followees: [BigInt(icpNeuron!.neuron_id)],
+      }).catch((e) => {
+        console.dir(e)
+      })
+    }
+  }
+
+  async reFollowNeurons(
+    neuronToFollow: SnsNeuronId,
+    delegation: SignIdentity,
+    root: Principal,
+    userNeuron: SnsNeuronId,
+  ) {
+    const response = await listNNSFunctions({
+      identity: delegation,
+      rootCanisterId: root,
+    })
+
+    for (const f of response.functions) {
+      setFollowees({
+        identity: delegation,
+        functionId: f.id,
+        rootCanisterId: root,
+        neuronId: userNeuron,
+        followees: [neuronToFollow],
+      })
     }
   }
 }

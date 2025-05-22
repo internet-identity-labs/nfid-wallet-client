@@ -35,25 +35,23 @@ export class NfidICPNeuronImpl extends NfidNeuronImpl<NeuronInfo> {
   }
 
   getLockTime(): number | undefined {
-    // const dissolveState = this.neuron.dissolveDelaySeconds
+    const dissolveState = this.neuron.fullNeuron!.dissolveState
 
-    // if (!dissolveState) return
+    if (!dissolveState) return
 
-    // if ("DissolveDelaySeconds" in dissolveState) {
-    //   return Number(dissolveState.DissolveDelaySeconds)
-    // }
-    return 0
+    if ("DissolveDelaySeconds" in dissolveState) {
+      return Number(dissolveState.DissolveDelaySeconds)
+    }
   }
 
   getUnlockIn(): number | undefined {
-    // const dissolveState = this.neuron.dissolve_state[0]
+    const dissolveState = this.neuron.fullNeuron!.dissolveState
 
-    // if (!dissolveState) return
+    if (!dissolveState) return
 
-    // if ("WhenDissolvedTimestampSeconds" in dissolveState) {
-    //   return Number(dissolveState.WhenDissolvedTimestampSeconds)
-    // }
-    return 0
+    if ("WhenDissolvedTimestampSeconds" in dissolveState) {
+      return Number(dissolveState.WhenDissolvedTimestampSeconds)
+    }
   }
 
   getCreatedAt(): number {

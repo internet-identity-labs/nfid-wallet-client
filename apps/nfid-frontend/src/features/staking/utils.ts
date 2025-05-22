@@ -1,4 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
+import { ListNervousSystemFunctionsResponse } from "@dfinity/sns/dist/candid/sns_governance"
 
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
 
@@ -19,4 +21,12 @@ export const fetchStakedToken = async (
 ) => {
   const tokens = await fetchStakedTokens(identity)
   return tokens.find((token) => token.getToken().getTokenSymbol() === symbol)
+}
+
+export const fetchDelegates = async (
+  identity?: SignIdentity,
+  root?: Principal,
+): Promise<ListNervousSystemFunctionsResponse | undefined> => {
+  if (!identity || !root) return
+  return stakingService.getDelegates(identity, root)
 }

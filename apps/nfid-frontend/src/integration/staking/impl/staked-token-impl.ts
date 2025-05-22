@@ -7,6 +7,8 @@ import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 import { FT } from "frontend/integration/ft/ft"
 import { TokenValue } from "frontend/integration/staking/types"
 
+const MILISECONDS_PER_SECOND = 1000
+
 export class StakedTokenImpl implements StakedToken {
   token: FT
   neurons: Array<NFIDNeuron>
@@ -85,7 +87,8 @@ export class StakedTokenImpl implements StakedToken {
 
       return (
         lockTime !== undefined &&
-        lockTime + neuron.getCreatedAt() <= Math.floor(Date.now() / 1000) &&
+        lockTime + neuron.getCreatedAt() <=
+          Math.floor(Date.now() / MILISECONDS_PER_SECOND) &&
         // TODO: research why the redeemed stakes are not deleted
         Number(neuron.getInitialStake()) > 0
       )
@@ -102,7 +105,8 @@ export class StakedTokenImpl implements StakedToken {
 
       return (
         lockTime !== undefined &&
-        lockTime + neuron.getCreatedAt() > Math.floor(Date.now() / 1000)
+        lockTime + neuron.getCreatedAt() >
+          Math.floor(Date.now() / MILISECONDS_PER_SECOND)
       )
     })
   }

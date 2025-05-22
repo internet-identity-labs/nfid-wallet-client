@@ -6,6 +6,7 @@ import {
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 
 import { bitcoinService } from "./bitcoin.service"
+import { patronService } from "./services/patron.service"
 
 const IDENTITY: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003008adc857dfcd0477a7aaa01a657ca6923ce76c07645704b1e872deb1253baa",
@@ -15,15 +16,42 @@ const IDENTITY: JsonnableEd25519KeyIdentity = [
 describe("Bitcoin Service", () => {
   jest.setTimeout(50000)
 
+  beforeAll(async () => {
+    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
+    patronService.askToPayFor(identity)
+  })
+
+  beforeEach(async () => {
+    await authStorage.clear()
+
+    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
+    const principal: string = identity.getPrincipal().toText()
+    await authStorage.set("patron", "true")
+    await authStorage.set(
+      `bitcoin-address-${principal}`,
+      "bc1q7yu8dnvmlntrqh05wvfar2tljrm73ng6ky8n4t",
+    )
+  })
+
+  afterAll(async () => {
+    await authStorage.clear()
+  })
+
   it("should return an address", async () => {
     // Given
+    await authStorage.clear()
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
+    const principal: string = identity.getPrincipal().toText()
 
     // When
     const address = await bitcoinService.getAddress(identity)
+    const idbPatronPays = await authStorage.get("patron")
+    const idbAddress = await authStorage.get(`bitcoin-address-${principal}`)
 
     // Then
     expect(address).toEqual("bc1q7yu8dnvmlntrqh05wvfar2tljrm73ng6ky8n4t")
+    expect(idbPatronPays).toEqual("v1")
+    expect(idbAddress).toEqual("bc1q7yu8dnvmlntrqh05wvfar2tljrm73ng6ky8n4t")
   })
 
   it("should return different address if it's saved into idb", async () => {
@@ -31,15 +59,23 @@ describe("Bitcoin Service", () => {
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
     const principal: string = identity.getPrincipal().toText()
     const key = `bitcoin-address-${principal}`
-    authStorage.set(key, "address")
+    await authStorage.set(key, "address")
 
     // When
     const address = await bitcoinService.getAddress(identity)
 
     // Then
     expect(address).toEqual("address")
+  })
 
-    // Clean
-    authStorage.remove(key)
+  it.skip("should return balance", async () => {
+    // Given
+    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
+
+    // When
+    const balance: bigint = await bitcoinService.getBalance(identity)
+
+    // Then
+    expect(balance).toEqual(BigInt(49429))
   })
 })

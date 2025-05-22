@@ -59,4 +59,9 @@ export class Storage<T> {
     const db = await this._db
     return await db.getAllKeys()
   }
+
+  public async clear(): Promise<void> {
+    const db = await this._db
+    await db.clear()
+  }
 }

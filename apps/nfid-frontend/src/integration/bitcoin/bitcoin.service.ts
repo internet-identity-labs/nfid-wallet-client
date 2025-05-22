@@ -1,7 +1,8 @@
 import { SignIdentity } from "@dfinity/agent"
+import { authStorage } from "packages/integration/src/lib/authentication/storage"
 
 import { chainFusionSignerService } from "./services/chain-fusion-signer.service"
-import { authStorage } from "packages/integration/src/lib/authentication/storage"
+import { patronService } from "./services/patron.service"
 
 export class BitcoinService {
   public async getAddress(identity: SignIdentity): Promise<String> {
@@ -13,9 +14,18 @@ export class BitcoinService {
       return cachedValue as string
     }
 
+    await patronService.askToPayFor(identity)
     const address: string = await chainFusionSignerService.getAddress(identity)
-    authStorage.set(key, address)
+    await authStorage.set(key, address)
     return address
+  }
+
+  public async getBalance(
+    identity: SignIdentity,
+    minConfirmations?: number,
+  ): Promise<bigint> {
+    await patronService.askToPayFor(identity)
+    return chainFusionSignerService.getBalance(identity, minConfirmations)
   }
 }
 

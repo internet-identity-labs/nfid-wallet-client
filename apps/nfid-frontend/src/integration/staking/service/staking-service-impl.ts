@@ -1,7 +1,7 @@
 import { SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 import { SnsNeuronId, SnsRootCanister } from "@dfinity/sns"
-import { Neuron } from "@dfinity/sns/dist/candid/sns_governance"
+import { Neuron, NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
 import { hexStringToUint8Array } from "@dfinity/utils"
 import { BigNumber } from "bignumber.js"
 import { Cache } from "node-ts-cache"
@@ -216,6 +216,27 @@ export class StakingServiceImpl implements StakingService {
         }
       }
     }
+  }
+
+  async reFollowNeurons(
+    neuronToFollow: NeuronId,
+    delegation: SignIdentity,
+    root: Principal,
+    userNeuron: NeuronId,
+  ) {
+    const response = await listNNSFunctions({
+      identity: delegation,
+      rootCanisterId: root,
+    })
+
+    for (const f of response.functions) {
+      setFollowees({
+        identity: delegation,
+        functionId: f.id,
+        rootCanisterId: root,
+        neuronId: userNeuron,
+        followees: [neuronToFollow],
+      })
   }
 }
 

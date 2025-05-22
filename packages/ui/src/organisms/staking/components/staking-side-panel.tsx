@@ -331,13 +331,17 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                         </p>
                       </div>
                     </div>
-                    <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
-                    <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
-                      <p className="text-gray-400">Unlock in</p>
-                      <div>
-                        <p>{sidePanelOption.option.getUnlockIn()}</p>
-                      </div>
-                    </div>
+                    {sidePanelOption.state === StakingState.Unlocking && (
+                      <>
+                        <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
+                        <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
+                          <p className="text-gray-400">Unlock in</p>
+                          <div>
+                            <p>{sidePanelOption.option.getUnlockInMonths()}</p>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
                 <div className="border border-gray-200 rounded-3xl px-[30px] pb-[30px] pt-[16px] mt-5">
@@ -360,35 +364,62 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                     </div>
                   </div>
                   <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
-                  <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
-                    <p className="text-gray-400">Lock time</p>
-                    <div>
-                      <p>
-                        {getFormattedPeriod(
-                          sidePanelOption?.option.getLockTimeInMonths(),
-                          true,
-                        )}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
-                  <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
-                    <p className="text-gray-400">Unlock date</p>
-                    {sidePanelOption.option.getUnlockIn() && (
-                      <div>
-                        <p>
-                          {sidePanelOption.option
-                            .getUnlockInFormatted()!
-                            .getDate()}
-                        </p>
-                        <p className="text-xs text-gray-400">
-                          {sidePanelOption.option
-                            .getUnlockInFormatted()!
-                            .getTime()}
-                        </p>
+                  {sidePanelOption.state !== StakingState.Unlocking && (
+                    <>
+                      <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
+                        <p className="text-gray-400">Lock time</p>
+                        <div>
+                          <p>
+                            {getFormattedPeriod(
+                              sidePanelOption?.option.getLockTimeInMonths(),
+                              true,
+                            )}
+                          </p>
+                        </div>
                       </div>
-                    )}
-                  </div>
+                    </>
+                  )}
+                  {sidePanelOption.state == StakingState.Available && (
+                    <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
+                  )}
+                  {sidePanelOption.state === StakingState.Unlocking && (
+                    <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
+                      <p className="text-gray-400">Unlock date</p>
+                      {sidePanelOption.option.getUnlockIn() && (
+                        <div>
+                          <p>
+                            {sidePanelOption.option
+                              .getUnlockInFormatted()!
+                              .getDate()}
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            {sidePanelOption.option
+                              .getUnlockInFormatted()!
+                              .getTime()}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {sidePanelOption.state === StakingState.Available && (
+                    <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
+                      <p className="text-gray-400">Unlock date</p>
+                      {sidePanelOption.option.getUnlockInPast() && (
+                        <div>
+                          <p>
+                            {sidePanelOption.option
+                              .getUnlockInPast()!
+                              .getDate()}
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            {sidePanelOption.option
+                              .getUnlockInPast()!
+                              .getTime()}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                   <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
                   <Button
                     icon={

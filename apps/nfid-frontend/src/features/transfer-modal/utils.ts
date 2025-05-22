@@ -283,3 +283,17 @@ export const getConversionTokenAddress = (source: string): string => {
   if (source === CKBTC_CANISTER_ID) return BTC_NATIVE_ID
   return CKBTC_CANISTER_ID
 }
+
+export const getAccurateDateForStakeInSeconds = (months: number): number => {
+  const now = new Date()
+  const future = new Date(now)
+
+  future.setMonth(future.getMonth() + months)
+
+  future.setHours(now.getHours())
+  future.setMinutes(now.getMinutes())
+  future.setSeconds(now.getSeconds())
+  future.setMilliseconds(now.getMilliseconds())
+
+  return Math.floor((future.getTime() - now.getTime()) / 1000)
+}

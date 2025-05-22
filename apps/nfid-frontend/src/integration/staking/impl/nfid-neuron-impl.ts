@@ -142,10 +142,41 @@ export class NfidNeuronImpl implements NFIDNeuron {
     }
   }
 
-  getUnlockInMonths(): number | undefined {
-    const unlockTime = this.getUnlockIn()
-    if (unlockTime === undefined) return
-    return Math.round(unlockTime / SECONDS_PER_MONTH / MILISECONDS_PER_SECOND)
+  getUnlockInMonths(): string | undefined {
+    const unlockTimestamp = this.getUnlockIn()
+    if (unlockTimestamp === undefined) return
+
+    const now = new Date()
+    const unlockDate = new Date(unlockTimestamp * MILISECONDS_PER_SECOND)
+
+    let months =
+      (unlockDate.getFullYear() - now.getFullYear()) * 12 +
+      (unlockDate.getMonth() - now.getMonth())
+
+    let days = unlockDate.getDate() - now.getDate()
+
+    if (days < 0) {
+      months -= 1
+
+      const prevMonthDate = new Date(
+        unlockDate.getFullYear(),
+        unlockDate.getMonth(),
+        0,
+      )
+      days += prevMonthDate.getDate()
+    }
+
+    const parts: string[] = []
+
+    if (months > 0) {
+      parts.push(`${months} month${months !== 1 ? "s" : ""}`)
+    }
+
+    if (days > 0) {
+      parts.push(`${days} day${days !== 1 ? "s" : ""}`)
+    }
+
+    return parts.length > 0 ? parts.join(", ") : "less than a day"
   }
 
   getUnlockInFormatted(): FormattedDate | undefined {
@@ -169,6 +200,33 @@ export class NfidNeuronImpl implements NFIDNeuron {
             hour12: true,
           },
         ),
+    }
+  }
+
+  getUnlockInPast(): FormattedDate | undefined {
+    const lockTime = this.getLockTime()
+    if (lockTime === undefined) return
+
+    if (
+      lockTime + this.getCreatedAt() <=
+      Math.floor(Date.now() / MILISECONDS_PER_SECOND)
+    ) {
+      return {
+        getDate: () =>
+          new Date(
+            (this.getCreatedAt() + lockTime) * MILISECONDS_PER_SECOND,
+          ).toLocaleDateString("en-US", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          }),
+        getTime: () =>
+          new Date(
+            (this.getCreatedAt() + lockTime) * MILISECONDS_PER_SECOND,
+          ).toLocaleTimeString("en-US", {
+            hour12: true,
+          }),
+      }
     }
   }
 

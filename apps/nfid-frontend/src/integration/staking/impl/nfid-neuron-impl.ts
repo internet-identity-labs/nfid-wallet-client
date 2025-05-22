@@ -1,20 +1,10 @@
 import { SignIdentity } from "@dfinity/agent"
-import { Principal } from "@dfinity/principal"
-import { Neuron, NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
+import { NeuronState } from "@dfinity/nns"
+import { NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
 import BigNumber from "bignumber.js"
 import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
-import { bytesToHexString } from "src/integration/staking/service/staking-service-impl"
 
-import {
-  disburse,
-  hasOwnProperty,
-  startDissolving,
-  stopDissolving,
-  TransferArg,
-} from "@nfid/integration"
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
-import { transferICRC1 } from "@nfid/integration/token/icrc1"
-import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 import { FT } from "frontend/integration/ft/ft"
 
@@ -24,26 +14,38 @@ const SECONDS_PER_MONTH = 30 * 24 * 60 * 60
 const MILISECONDS_PER_SECOND = 1000
 const PROTOCOL_FEE_MULTIPLIER = new BigNumber(875).dividedBy(100000)
 
-export class NfidNeuronImpl implements NFIDNeuron {
-  private neuron: Neuron
-  private token: FT
+export abstract class NfidNeuronImpl<T> implements NFIDNeuron {
+  protected neuron: T
+  protected token: FT
 
-  constructor(neuron: Neuron, token: FT) {
+  constructor(neuron: T, token: FT) {
     this.neuron = neuron
     this.token = token
   }
 
-  getStakeId(): NeuronId {
-    return { id: this.neuron.id[0]!.id }
-  }
+  abstract getState(): NeuronState
 
-  getStakeIdFormatted(): string {
-    return bytesToHexString(this.neuron.id[0]!.id)
-  }
+  abstract getStakeId(): NeuronId | bigint
 
-  getInitialStake(): bigint {
-    return this.neuron.cached_neuron_stake_e8s
-  }
+  abstract getStakeIdFormatted(): string
+
+  abstract getInitialStake(): bigint
+
+  abstract getLockTime(): number | undefined
+
+  abstract getUnlockIn(): number | undefined
+
+  abstract getRewards(): bigint
+
+  abstract getCreatedAt(): number
+
+  abstract startUnlocking(signIdentity: SignIdentity): Promise<void>
+
+  abstract stopUnlocking(signIdentity: SignIdentity): Promise<void>
+
+  abstract isDiamond(): boolean
+
+  abstract redeem(signIdentity: SignIdentity): Promise<void>
 
   getToken(): FT {
     return this.token
@@ -60,10 +62,6 @@ export class NfidNeuronImpl implements NFIDNeuron {
       getUSDValue: () =>
         this.token.getTokenRateFormatted(tokenAmount) || "Not listed",
     }
-  }
-
-  getRewards(): bigint {
-    return this.neuron.maturity_e8s_equivalent
   }
 
   getRewardsFormatted(): TokenValue {
@@ -116,30 +114,10 @@ export class NfidNeuronImpl implements NFIDNeuron {
     }
   }
 
-  getLockTime(): number | undefined {
-    const dissolveState = this.neuron.dissolve_state[0]
-
-    if (!dissolveState) return
-
-    if ("DissolveDelaySeconds" in dissolveState) {
-      return Number(dissolveState.DissolveDelaySeconds)
-    }
-  }
-
   getLockTimeInMonths(): number | undefined {
     const lockTime = this.getLockTime()
     if (lockTime === undefined) return
     return Math.round(lockTime / SECONDS_PER_MONTH)
-  }
-
-  getUnlockIn(): number | undefined {
-    const dissolveState = this.neuron.dissolve_state[0]
-
-    if (!dissolveState) return
-
-    if ("WhenDissolvedTimestampSeconds" in dissolveState) {
-      return Number(dissolveState.WhenDissolvedTimestampSeconds)
-    }
   }
 
   getUnlockInMonths(): number | undefined {
@@ -172,10 +150,6 @@ export class NfidNeuronImpl implements NFIDNeuron {
     }
   }
 
-  getCreatedAt(): number {
-    return Number(this.neuron.created_timestamp_seconds)
-  }
-
   getCreatedAtFormatted(): FormattedDate {
     const createdAt = this.getCreatedAt()
 
@@ -196,78 +170,6 @@ export class NfidNeuronImpl implements NFIDNeuron {
             hour12: true,
           },
         ),
-    }
-  }
-
-  async startUnlocking(signIdentity: SignIdentity): Promise<void> {
-    const rootCanisterId = this.token.getRootSnsCanister()
-    if (!rootCanisterId) return
-
-    await startDissolving({
-      identity: signIdentity,
-      rootCanisterId: rootCanisterId,
-      neuronId: this.neuron.id[0]!,
-    })
-  }
-
-  async stopUnlocking(signIdentity: SignIdentity): Promise<void> {
-    const rootCanisterId = this.token.getRootSnsCanister()
-    if (!rootCanisterId) return
-
-    await stopDissolving({
-      identity: signIdentity,
-      rootCanisterId: rootCanisterId,
-      neuronId: this.neuron.id[0]!,
-    })
-  }
-
-  isDiamond(): boolean {
-    return false
-  }
-
-  async redeem(signIdentity: SignIdentity): Promise<void> {
-    const rootCanisterId = this.token.getRootSnsCanister()
-    if (!rootCanisterId) return
-
-    const transferArgs: TransferArg = {
-      amount: this.getProtocolFee(),
-      created_at_time: [],
-      fee: [],
-      from_subaccount: [],
-      memo: [],
-      to: {
-        subaccount: [],
-        owner: Principal.fromText(NFID_WALLET_CANISTER_STAKING),
-      },
-    }
-
-    let ledgerCanisterId = await icrc1OracleService
-      .getICRC1Canisters()
-      .then((canisters) =>
-        canisters
-          .filter((canister) => canister.root_canister_id.length > 0)
-          .find(
-            (canister) =>
-              canister.root_canister_id[0] === rootCanisterId.toText(),
-          ),
-      )
-
-    await disburse({
-      identity: signIdentity,
-      rootCanisterId: rootCanisterId,
-      neuronId: this.neuron.id[0]!,
-    })
-
-    const result = await transferICRC1(
-      signIdentity,
-      ledgerCanisterId!.ledger,
-      transferArgs,
-    )
-
-    if (!hasOwnProperty(result, "Ok")) {
-      console.warn(
-        "Error transferring protocol fee: " + JSON.stringify(result.Err),
-      )
     }
   }
 }

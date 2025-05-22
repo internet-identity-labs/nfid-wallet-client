@@ -1,25 +1,25 @@
-import { NervousSystemParameters } from "@dfinity/sns/dist/candid/sns_governance"
-
 import { FT } from "frontend/integration/ft/ft"
 import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
 
-import { TokenValue } from "../types"
+import { StakingParameters, TokenValue } from "../types"
 
 const SECONDS_IN_MONTH = (60 * 60 * 24 * 365.25) / 12
 
 export class StakeParamsCalculatorImpl implements StakeParamsCalculator {
   token: FT
-  params: NervousSystemParameters
+  params: StakingParameters
 
-  constructor(ft: FT, params: NervousSystemParameters) {
+  constructor(ft: FT, params: StakingParameters) {
     this.token = ft
     this.params = params
   }
 
-  getFee(): TokenValue {
-    const fee =
-      Number(this.params.transaction_fee_e8s[0]) /
-      10 ** this.token.getTokenDecimals()
+  getFee(): bigint | undefined {
+    return this.params.txFee
+  }
+
+  getFeeFormatted(): TokenValue {
+    const fee = Number(this.getFee()) / 10 ** this.token.getTokenDecimals()
     return {
       getTokenValue: () => `${fee} ${this.token.getTokenSymbol()}`,
       getUSDValue: () =>
@@ -28,14 +28,11 @@ export class StakeParamsCalculatorImpl implements StakeParamsCalculator {
   }
 
   getMinimumToStake(): number {
-    return (
-      Number(this.params.neuron_minimum_stake_e8s[0]) /
-      10 ** this.token.getTokenDecimals()
-    )
+    return Number(this.params.minAmount) / 10 ** this.token.getTokenDecimals()
   }
 
   getMinimumLockTime(): number {
-    return Number(this.params.neuron_minimum_dissolve_delay_to_vote_seconds)
+    return Number(this.params.minLockTime)
   }
 
   getMinimumLockTimeInMonths(): number {
@@ -45,7 +42,7 @@ export class StakeParamsCalculatorImpl implements StakeParamsCalculator {
   }
 
   getMaximumLockTime(): number {
-    return Number(this.params.max_dissolve_delay_seconds)
+    return Number(this.params.maxLockTime)
   }
 
   getMaximumLockTimeInMonths(): number {

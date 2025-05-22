@@ -1,7 +1,8 @@
 import { TokenValue } from "./types"
 
 export interface StakeParamsCalculator {
-  getFee(): TokenValue
+  getFee(): bigint | undefined
+  getFeeFormatted(): TokenValue
   getMinimumToStake(): number
   getMinimumLockTime(): number
   getMinimumLockTimeInMonths(): number

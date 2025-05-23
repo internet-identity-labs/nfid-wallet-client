@@ -360,14 +360,13 @@ export type ApiStakeNeuronParams = ApiCallParams & {
 export const stakeNeuron = async ({
   stake,
   controller,
-  ledgerCanisterIdentity,
   identity,
   fee,
 }: ApiStakeNeuronParams): Promise<NeuronId> => {
   logWithTimestamp(`Staking Neuron call...`)
   const { canister } = await governanceCanister({ identity })
   let lc = await ledgerCanister({
-    identity: ledgerCanisterIdentity,
+    identity,
     canisterId: Principal.fromText(LEDGER_CANISTER_ID),
   })
 

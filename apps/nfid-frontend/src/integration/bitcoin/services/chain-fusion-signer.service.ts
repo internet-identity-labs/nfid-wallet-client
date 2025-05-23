@@ -15,7 +15,7 @@ import { patronService } from "./patron.service"
 
 export class ChainFusionSignerService {
   public async getAddress(identity: SignIdentity): Promise<string> {
-    const chaibFusionSignerActor = this.getcCaibFusionSignerActor(identity)
+    const chainFusionSignerActor = this.getcCaibFusionSignerActor(identity)
 
     const request: GetAddressRequest = {
       network: { mainnet: null },
@@ -24,7 +24,7 @@ export class ChainFusionSignerService {
 
     const paymentType: PaymentType = patronService.getPaymentType()
 
-    const response: Result = await chaibFusionSignerActor.btc_caller_address(
+    const response: Result = await chainFusionSignerActor.btc_caller_address(
       request,
       [paymentType],
     )
@@ -41,7 +41,7 @@ export class ChainFusionSignerService {
     identity: SignIdentity,
     minConfirmations?: number,
   ): Promise<bigint> {
-    const chaibFusionSignerActor = this.getcCaibFusionSignerActor(identity)
+    const chainFusionSignerActor = this.getcCaibFusionSignerActor(identity)
 
     const request: GetBalanceRequest = {
       network: { mainnet: null },
@@ -51,7 +51,7 @@ export class ChainFusionSignerService {
 
     const paymentType: PaymentType = patronService.getPaymentType()
 
-    const response = await chaibFusionSignerActor.btc_caller_balance(request, [
+    const response = await chainFusionSignerActor.btc_caller_balance(request, [
       paymentType,
     ])
 

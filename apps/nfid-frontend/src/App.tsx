@@ -1,5 +1,6 @@
+import { Principal } from "@dfinity/principal"
 import { AnimatePresence, motion } from "framer-motion"
-import React, { Suspense } from "react"
+import React, { Suspense, useEffect } from "react"
 import { Route, Routes, useLocation } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
@@ -7,11 +8,15 @@ import { Usergeek } from "usergeek-ic-js"
 import { BlurredLoader, Loader, ScreenResponsive } from "@nfid-frontend/ui"
 import { ROUTE_EMBED, ROUTE_RPC } from "@nfid/config"
 import { authState, exchangeRateService, ic } from "@nfid/integration"
+import { btcDepositService } from "@nfid/integration/token/btc/service"
 import { useSWR } from "@nfid/swr"
 
 import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
 import { VaultGuard } from "frontend/ui/pages/vault-guard"
 
+import { useBTCDepositsToMintCKBTCListener } from "./hooks/btc-to-ckbtc"
+
+import { useAuthentication } from "./apps/authentication/use-authentication"
 import { ProfileConstants } from "./apps/identity-manager/profile/routes"
 import ThirdPartyAuthCoordinator from "./features/authentication/3rd-party/coordinator"
 import { AuthEmailMagicLink } from "./features/authentication/auth-selection/email-flow/magic-link-flow"
@@ -78,6 +83,18 @@ export const App = () => {
   const isExcludedFromAnimation = location.pathname.startsWith(
     ProfileConstants.base,
   )
+
+  const { isAuthenticated } = useAuthentication()
+  const { watchBtcDeposits } = useBTCDepositsToMintCKBTCListener()
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const principal = Principal.from(authState.getUserIdData().publicKey)
+      btcDepositService.generateAddress(principal).then(() => {
+        watchBtcDeposits(principal)
+      })
+    }
+  }, [isAuthenticated, watchBtcDeposits])
 
   return (
     <React.Suspense fallback={<BlurredLoader isLoading />}>

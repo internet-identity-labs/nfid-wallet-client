@@ -127,7 +127,17 @@ export const StakeFT = ({
 
     if (rootCanisterId.toText() === ICP_ROOT_CANISTER_ID) {
       stakingService
-        .stakeICP(token, amount, identity, stakingParams?.getFee()!)
+        .stakeICP(
+          token,
+          amount,
+          identity,
+          stakingParams?.getFee()!,
+          isMaxLockTimeSelected
+            ? stakingParams?.getMaximumLockTime()
+            : isMinLockTimeSelected
+            ? stakingParams?.getMinimumLockTime()
+            : getAccurateDateForStakeInSeconds(lockValue),
+        )
         .then(() => {
           setSuccessMessage(`Stake ${amount} ICP successful`)
           setStatus(SendStatus.COMPLETED)

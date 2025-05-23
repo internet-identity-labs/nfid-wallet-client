@@ -198,15 +198,11 @@ export class StakingServiceImpl implements StakingService {
     amount: string,
     identity: SignIdentity,
     fee: bigint,
-    //lockTime?: number,
+    lockTime?: number,
   ): Promise<NeuronICPId> {
-    // hadrcoded
-    const lockTime = 60
     const amountInE8S = BigNumber(Number(amount)).multipliedBy(
       10 ** token.getTokenDecimals(),
     )
-
-    //const id = BigInt(1)
 
     const id = await stakeICPNeuron({
       stake: BigInt(amountInE8S.toFixed()),
@@ -230,7 +226,7 @@ export class StakingServiceImpl implements StakingService {
       })
     }
 
-    await this.followICPNeurons(identity, id)
+    await this.followICPNeurons(identity, id.toString())
 
     return id
   }
@@ -318,7 +314,7 @@ export class StakingServiceImpl implements StakingService {
     }
   }
 
-  async followICPNeurons(delegation: SignIdentity, id: NeuronICPId) {
+  async followICPNeurons(delegation: SignIdentity, id: string) {
     const neuronsToFollow = await icrc1OracleService.getAllNeurons()
     const icpNeuron = neuronsToFollow.find(
       (n) => n.rootCanister === ICP_ROOT_CANISTER_ID,
@@ -327,7 +323,7 @@ export class StakingServiceImpl implements StakingService {
     console.log(
       "identity followICPNeurons",
       delegation.getPrincipal().toText(),
-      id,
+      BigInt(id),
     )
 
     for (const t of Object.values(Topic).filter(
@@ -335,11 +331,11 @@ export class StakingServiceImpl implements StakingService {
     ) as number[]) {
       setICPFollowees({
         identity: delegation,
-        neuronId: id,
+        neuronId: BigInt(id),
         topic: t,
         followees: [BigInt(icpNeuron!.neuron_id)],
       }).catch((e) => {
-        console.dir(e)
+        console.error(e.detail.error_message)
       })
     }
   }

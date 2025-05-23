@@ -1,4 +1,5 @@
 import { SignIdentity } from "@dfinity/agent"
+import { ListNervousSystemFunctionsResponse } from "@dfinity/sns/dist/candid/sns_governance"
 import clsx from "clsx"
 import { FC, useCallback, useState } from "react"
 
@@ -23,6 +24,7 @@ export interface StakingDetailsProps {
   stakedToken?: StakedToken
   isLoading: boolean
   onRedeemOpen: (id: string) => void
+  delegates: ListNervousSystemFunctionsResponse | undefined
   identity?: SignIdentity
 }
 
@@ -30,6 +32,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
   stakedToken,
   isLoading,
   onRedeemOpen,
+  delegates,
   identity,
 }) => {
   const [sidePanelOption, setSidePanelOption] =
@@ -52,6 +55,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
         identity={identity}
         setIsLoading={setIsStateLoading}
         isLoading={isStateLoading}
+        delegates={delegates}
       />
       {isLoading || isStateLoading || !stakedToken ? (
         <>

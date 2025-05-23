@@ -9,7 +9,7 @@ import { useSWR } from "@nfid/swr"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
 import { ProfileContext } from "frontend/provider"
 
-import { fetchStakedToken } from "../staking/utils"
+import { fetchDelegates, fetchStakedToken } from "../staking/utils"
 import { ModalType } from "../transfer-modal/types"
 import { getIdentity } from "../transfer-modal/utils"
 
@@ -27,6 +27,13 @@ const StakingDetailsPage = () => {
   } = useSWR(
     tokenSymbol ? ["stakedToken", tokenSymbol] : null,
     () => fetchStakedToken(tokenSymbol!, identity!),
+    { revalidateOnFocus: false },
+  )
+
+  const { data: delegates, isLoading: isDelegatesLoading } = useSWR(
+    tokenSymbol && identity ? ["stakedTokenDelegates", tokenSymbol] : null,
+    () =>
+      fetchDelegates(identity, stakedToken?.getToken().getRootSnsCanister()),
     { revalidateOnFocus: false },
   )
 
@@ -59,8 +66,9 @@ const StakingDetailsPage = () => {
     <StakingDetails
       onRedeemOpen={onRedeemOpen}
       stakedToken={stakedToken}
-      isLoading={isLoading || isValidating}
+      isLoading={isLoading || isValidating || isDelegatesLoading}
       identity={identity}
+      delegates={delegates}
     />
   )
 }

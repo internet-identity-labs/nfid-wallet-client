@@ -1,4 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
+import { ListNervousSystemFunctionsResponse } from "@dfinity/sns/dist/candid/sns_governance"
+import { uint8ArrayToHexString } from "@dfinity/utils"
 import clsx from "clsx"
 import { motion } from "framer-motion"
 import { resetIntegrationCache } from "packages/integration/src/cache"
@@ -11,7 +13,7 @@ import { ArrowButton } from "packages/ui/src/molecules/button/arrow-button"
 import CopyAddress from "packages/ui/src/molecules/copy-address"
 import { useDisableScroll } from "packages/ui/src/molecules/modal/hooks/disable-scroll"
 import { Tooltip } from "packages/ui/src/molecules/tooltip"
-import { FC, useState } from "react"
+import { FC, useMemo, useState } from "react"
 
 import { mutate } from "@nfid/swr"
 
@@ -19,6 +21,7 @@ import { NFIDNeuron } from "frontend/integration/staking/nfid-neuron"
 import { StakingState } from "frontend/integration/staking/types"
 
 import { getFormattedPeriod } from "../../send-receive/utils"
+import { StakingDelegation } from "./staking-delegation"
 
 export interface SidePanelOption {
   option: NFIDNeuron
@@ -33,6 +36,7 @@ export interface StakingSidePanelProps {
   identity?: SignIdentity
   isLoading: boolean
   setIsLoading: (v: boolean) => void
+  delegates: ListNervousSystemFunctionsResponse | undefined
 }
 
 export const StakingSidePanel: FC<StakingSidePanelProps> = ({
@@ -43,9 +47,17 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   identity,
   isLoading,
   setIsLoading,
+  delegates,
 }) => {
   const [isVotingOpen, setIsVotingOpen] = useState(false)
   useDisableScroll(isOpen)
+
+  const followees = useMemo(() => {
+    return sidePanelOption?.option.getFollowees()?.map((followee) => ({
+      name: delegates?.functions.find((f) => f.id === followee[0])?.name,
+      id: uint8ArrayToHexString(followee[1].followees[0].id),
+    }))
+  }, [sidePanelOption?.option])
 
   const symbol = sidePanelOption?.option.getToken().getTokenSymbol()
 
@@ -122,84 +134,8 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                 change your delegates or vote manually.
               </div>
             )}
-            {isVotingOpen ? (
-              <motion.div
-                key="VotingPanel"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.25 }}
-              >
-                <div className="border border-gray-200 rounded-3xl px-[30px] py-[20px] relative">
-                  <div>
-                    <div className="flex justify-between text-sm items-center h-[54px]">
-                      <p className="text-gray-400">Governance</p>
-                      <div>
-                        <CopyAddress
-                          address={sidePanelOption.option.getStakeIdFormatted()}
-                          trailingChars={4}
-                          leadingChars={6}
-                        />
-                      </div>
-                    </div>
-                    <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
-                    <div className="flex justify-between text-sm items-center h-[54px]">
-                      <p className="text-gray-400">Participant management</p>
-                      <div>
-                        <CopyAddress
-                          address={sidePanelOption.option.getStakeIdFormatted()}
-                          trailingChars={4}
-                          leadingChars={6}
-                        />
-                      </div>
-                    </div>
-                    <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
-                    <div className="flex justify-between text-sm items-center h-[54px]">
-                      <p className="text-gray-400">SNS & Neurons’ fund</p>
-                      <div>
-                        <CopyAddress
-                          address={sidePanelOption.option.getStakeIdFormatted()}
-                          trailingChars={4}
-                          leadingChars={6}
-                        />
-                      </div>
-                    </div>
-                    <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
-                    <div className="flex justify-between text-sm items-center h-[54px]">
-                      <p className="text-gray-400">Transaction fee</p>
-                      <div>
-                        <CopyAddress
-                          address={sidePanelOption.option.getStakeIdFormatted()}
-                          trailingChars={4}
-                          leadingChars={6}
-                        />
-                      </div>
-                    </div>
-                    <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
-                    <div className="flex justify-between text-sm items-center h-[54px]">
-                      <p className="text-gray-400">Network economics</p>
-                      <div>
-                        <CopyAddress
-                          address={sidePanelOption.option.getStakeIdFormatted()}
-                          trailingChars={4}
-                          leadingChars={6}
-                        />
-                      </div>
-                    </div>
-                    <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
-                    <div className="flex justify-between text-sm items-center h-[54px]">
-                      <p className="text-gray-400">Node admin</p>
-                      <div>
-                        <CopyAddress
-                          address={sidePanelOption.option.getStakeIdFormatted()}
-                          trailingChars={4}
-                          leadingChars={6}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+            {isVotingOpen && followees ? (
+              <StakingDelegation followees={followees} />
             ) : (
               <motion.div
                 key="StakingPanel"
@@ -449,17 +385,19 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       : "Redeem stake"}
                   </Button>
                 </div>
-                <div className="border border-gray-200 rounded-3xl px-[30px] py-[20px] relative mt-[20px]">
-                  <div
-                    className="flex items-center justify-between transition-all cursor-pointer group"
-                    onClick={() => setIsVotingOpen(true)}
-                  >
-                    <p>Voting delegates</p>
-                    <div className="inline-flex items-center justify-between gap-1 cursor-pointer">
-                      <IconCaret />
+                {followees && followees.length > 0 && (
+                  <div className="border border-gray-200 rounded-3xl px-[30px] py-[20px] relative mt-[20px]">
+                    <div
+                      className="flex items-center justify-between transition-all cursor-pointer group"
+                      onClick={() => setIsVotingOpen(true)}
+                    >
+                      <p>Voting delegates</p>
+                      <div className="inline-flex items-center justify-between gap-1 cursor-pointer">
+                        <IconCaret />
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </motion.div>
             )}
           </>

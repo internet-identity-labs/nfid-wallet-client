@@ -10,12 +10,18 @@ import {
   GetBalanceRequest,
   PaymentType,
   Result,
+  SendBtcRequest,
+  Utxo,
 } from "../idl/chain-fusion-signer.d"
 import { patronService } from "./patron.service"
 
+export type TransactionId = string
+export type Balance = bigint
+export type Address = string
+
 export class ChainFusionSignerService {
-  public async getAddress(identity: SignIdentity): Promise<string> {
-    const chainFusionSignerActor = this.getcCaibFusionSignerActor(identity)
+  public async getAddress(identity: SignIdentity): Promise<Address> {
+    const chainFusionSignerActor = this.getChainFusionSignerActor(identity)
 
     const request: GetAddressRequest = {
       network: { mainnet: null },
@@ -40,8 +46,8 @@ export class ChainFusionSignerService {
   public async getBalance(
     identity: SignIdentity,
     minConfirmations?: number,
-  ): Promise<bigint> {
-    const chainFusionSignerActor = this.getcCaibFusionSignerActor(identity)
+  ): Promise<Balance> {
+    const chainFusionSignerActor = this.getChainFusionSignerActor(identity)
 
     const request: GetBalanceRequest = {
       network: { mainnet: null },
@@ -63,7 +69,42 @@ export class ChainFusionSignerService {
     return response.Ok.balance
   }
 
-  private getcCaibFusionSignerActor(
+  public async sendBtc(
+    identity: SignIdentity,
+    destinationAddress: string,
+    satoshisAmount: bigint,
+    satoshisFee: bigint,
+    utxosToSpend: Array<Utxo>,
+  ): Promise<TransactionId> {
+    const chainFusionSignerActor = this.getChainFusionSignerActor(identity)
+    const paymentType: PaymentType = patronService.getPaymentType()
+
+    const request: SendBtcRequest = {
+      network: { mainnet: null },
+      address_type: { P2WPKH: null },
+      fee_satoshis: [satoshisFee],
+      utxos_to_spend: utxosToSpend,
+      outputs: [
+        {
+          destination_address: destinationAddress,
+          sent_satoshis: satoshisAmount,
+        },
+      ],
+    }
+
+    const response = await chainFusionSignerActor.btc_caller_send(request, [
+      paymentType,
+    ])
+
+    if ("Err" in response) {
+      console.error(response)
+      throw Error("Unable to send BTC.")
+    }
+
+    return response.Ok.txid
+  }
+
+  private getChainFusionSignerActor(
     identity: SignIdentity,
   ): ActorSubclass<ChainFusionSigner> {
     return actor<ChainFusionSigner>(

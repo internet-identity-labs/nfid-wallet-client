@@ -6,6 +6,7 @@ import {
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 
 import { bitcoinService } from "./bitcoin.service"
+import { SelectedUtxosFeeResponse } from "./idl/patron.d"
 import { patronService } from "./services/patron.service"
 
 const IDENTITY: JsonnableEd25519KeyIdentity = [
@@ -68,7 +69,7 @@ describe("Bitcoin Service", () => {
     expect(address).toEqual("address")
   })
 
-  it.skip("should return balance", async () => {
+  it.skip("should return a balance", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
 
@@ -77,5 +78,41 @@ describe("Bitcoin Service", () => {
 
     // Then
     expect(balance).toEqual(BigInt(49429))
+  })
+
+  it("should return a fee", async () => {
+    // Given
+    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
+    const amount: string = "0.00001"
+
+    // When
+    const fee = await bitcoinService.getFee(identity, amount)
+
+    // Then
+    expect(fee.fee_satoshis).not.toBeNull()
+    expect(fee.utxos).not.toHaveLength(0)
+  })
+
+  it.skip("should return send a token", async () => {
+    // Given
+    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
+    const amount: string = "0.00001"
+    const fee: SelectedUtxosFeeResponse = await bitcoinService.getFee(
+      identity,
+      amount,
+    )
+    const destinationAddress: string =
+      "bc1q07dcanhfg3fqt9j2ssx4p8z8qdwlnh422unf4w"
+
+    // When
+    const txid = await bitcoinService.send(
+      identity,
+      destinationAddress,
+      amount,
+      fee,
+    )
+
+    // Then
+    expect(txid).not.toBeNull()
   })
 })

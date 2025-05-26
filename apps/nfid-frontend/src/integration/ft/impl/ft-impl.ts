@@ -34,7 +34,7 @@ export class FTImpl implements FT {
   private fee: bigint
   private inited: boolean
   private rootSnsCanister: string | undefined
-  private isNativeBtc: boolean
+  private isNativeBtc: boolean | undefined
 
   constructor(icrc1Token: ICRC1) {
     this.tokenAddress = icrc1Token.ledger
@@ -48,7 +48,7 @@ export class FTImpl implements FT {
     this.tokenState = icrc1Token.state
     this.inited = false
     this.rootSnsCanister = icrc1Token.rootCanisterId
-    this.isNativeBtc = icrc1Token.isNativeBtc
+    this.isNativeBtc = icrc1Token.isNativeBtc || false
   }
 
   async init(globalPrincipal: Principal): Promise<FT> {

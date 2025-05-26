@@ -32,7 +32,7 @@ export const TokenInfoModal: FC<TokenInfoModalProps> = ({ token, onClose }) => {
           <div className="text-sm text-gray-400 w-[150px]">Token icon</div>
           <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-50">
             <ImageWithFallback
-              className="w-[28px] h-[28px] rounded-full"
+              className="w-[40px] h-[40px] rounded-full"
               src={token?.getTokenLogo()}
               fallbackSrc={IconNftPlaceholder}
               alt={token?.getTokenSymbol()}
@@ -47,7 +47,7 @@ export const TokenInfoModal: FC<TokenInfoModalProps> = ({ token, onClose }) => {
           <div className="text-sm text-gray-400 w-[150px]">Token name</div>
           <div className="text-sm">{token?.getTokenName()}</div>
         </div>
-        {ledger && (
+        {ledger && ledger !== "btc-native" && (
           <div className="flex items-center border-b border-gray-100 h-[54px]">
             <div className="text-sm text-gray-400 w-[150px]">
               Ledger canister ID
@@ -85,15 +85,24 @@ export const TokenInfoModal: FC<TokenInfoModalProps> = ({ token, onClose }) => {
             </a>
           </div>
         )}
-        <div className="flex items-center border-b border-gray-100 h-[54px]">
-          <div className="text-sm text-gray-400 w-[150px]">Transaction fee</div>
-          <div>
-            <div className="text-sm">{token?.getTokenFeeFormatted()}</div>
-            <div className="text-xs text-gray-400">
-              {token?.getTokenFeeFormattedUsd()}
+        {ledger !== "btc-native" ? (
+          <div className="flex items-center border-b border-gray-100 h-[54px]">
+            <div className="text-sm text-gray-400 w-[150px]">
+              Transaction fee
+            </div>
+            <div>
+              <div className="text-sm">{token?.getTokenFeeFormatted()}</div>
+              <div className="text-xs text-gray-400">
+                {token?.getTokenFeeFormattedUsd()}
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex items-center border-b border-gray-100 h-[54px]">
+            <div className="text-sm text-gray-400 w-[150px]">Network</div>
+            <div className="text-sm">Bitcoin</div>
+          </div>
+        )}
       </ModalComponent>
     </>
   )

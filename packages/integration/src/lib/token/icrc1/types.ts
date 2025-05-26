@@ -18,6 +18,7 @@ export interface ICRC1 {
   fee: bigint
   decimals: number
   rootCanisterId: string | undefined
+  isNativeBtc: boolean
 }
 
 export class ICRC1Error extends Error {}

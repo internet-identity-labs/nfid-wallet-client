@@ -114,6 +114,7 @@ export class Icrc1Pair implements IIcrc1Pair {
         fee: metadata.fee,
         decimals: metadata.decimals,
         rootCanisterId: undefined,
+        isNativeBtc: false,
       }),
       icrc1RegistryService.storeICRC1Canister(this.ledger, State.Active),
     ])

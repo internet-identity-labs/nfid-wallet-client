@@ -2,12 +2,17 @@ import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { FT } from "src/integration/ft/ft"
 
-import { exchangeRateService } from "@nfid/integration"
-import { NFIDW_CANISTER_ID } from "@nfid/integration/token/constants"
+import { authState, exchangeRateService } from "@nfid/integration"
+import {
+  CKBTC_CANISTER_ID,
+  NFIDW_CANISTER_ID,
+} from "@nfid/integration/token/constants"
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { ICRC1 } from "@nfid/integration/token/icrc1/types"
+
+import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
 
 import { formatUsdAmount } from "../../../util/format-usd-amount"
 
@@ -29,6 +34,7 @@ export class FTImpl implements FT {
   private fee: bigint
   private inited: boolean
   private rootSnsCanister: string | undefined
+  private isNativeBtc: boolean
 
   constructor(icrc1Token: ICRC1) {
     this.tokenAddress = icrc1Token.ledger
@@ -42,9 +48,28 @@ export class FTImpl implements FT {
     this.tokenState = icrc1Token.state
     this.inited = false
     this.rootSnsCanister = icrc1Token.rootCanisterId
+    this.isNativeBtc = icrc1Token.isNativeBtc
   }
 
   async init(globalPrincipal: Principal): Promise<FT> {
+    if (this.isNativeBtc) {
+      const identity = authState.get().delegationIdentity
+      if (!identity) throw new Error("No identity")
+
+      try {
+        this.tokenBalance = await bitcoinService.getBalance(identity)
+      } catch (e) {
+        console.error("BitcoinService error: ", e)
+        return this
+      }
+
+      this.tokenRate = await exchangeRateService.usdPriceForICRC1(
+        CKBTC_CANISTER_ID,
+      )
+
+      return this
+    }
+
     const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
 
     try {
@@ -187,7 +212,8 @@ export class FTImpl implements FT {
   isHideable(): boolean {
     return !(
       this.tokenCategory === Category.Native ||
-      this.tokenAddress === NFIDW_CANISTER_ID
+      this.tokenAddress === NFIDW_CANISTER_ID ||
+      this.tokenAddress === CKBTC_CANISTER_ID
     )
   }
 

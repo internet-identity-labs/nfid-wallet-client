@@ -40,6 +40,7 @@ const QUOTE_REFETCH_TIMER = 30
 
 interface ISwapFT {
   preselectedSourceTokenAddress: string | undefined
+  preselectedTargetTokenAddress: string | undefined
   onClose: () => void
   onError: (value: boolean) => void
   setErrorMessage: (message: string) => void
@@ -49,6 +50,7 @@ interface ISwapFT {
 
 export const SwapFT = ({
   preselectedSourceTokenAddress,
+  preselectedTargetTokenAddress,
   onClose,
   onError,
   hideZeroBalance,
@@ -91,6 +93,14 @@ export const SwapFT = ({
       }
     }
   }, [preselectedSourceTokenAddress])
+
+  useEffect(() => {
+    if (!preselectedTargetTokenAddress) {
+      setToTokenAddress(NFIDW_CANISTER_ID)
+    } else {
+      setToTokenAddress(preselectedTargetTokenAddress)
+    }
+  }, [preselectedTargetTokenAddress])
 
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",

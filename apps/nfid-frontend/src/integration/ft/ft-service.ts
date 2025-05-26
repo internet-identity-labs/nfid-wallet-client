@@ -2,11 +2,13 @@ import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { Cache } from "node-ts-cache"
 import { integrationCache } from "packages/integration/src/cache"
+import BtcIcon from "packages/ui/src/organisms/tokens/assets/bitcoin.png"
 import { FT } from "src/integration/ft/ft"
 import { FTImpl } from "src/integration/ft/impl/ft-impl"
 import { nftService } from "src/integration/nft/nft-service"
 
 import {
+  CKBTC_CANISTER_ID,
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -35,6 +37,10 @@ export class FtService {
           (canister) => canister.ledger === NFIDW_CANISTER_ID,
         )
 
+        const ckBtc = canisters.find(
+          (canister) => canister.ledger === CKBTC_CANISTER_ID,
+        )
+
         const updatePromises = []
 
         if (!icp || icp.state === State.Inactive) {
@@ -55,6 +61,15 @@ export class FtService {
           )
         }
 
+        if (!ckBtc || ckBtc.state === State.Inactive) {
+          updatePromises.push(
+            icrc1RegistryService.storeICRC1Canister(
+              CKBTC_CANISTER_ID,
+              State.Active,
+            ),
+          )
+        }
+
         await Promise.all(updatePromises)
 
         if (updatePromises.length > 0) {
@@ -62,8 +77,27 @@ export class FtService {
         }
 
         const ft = canisters.map((canister) => new FTImpl(canister))
+
+        const nativeBTC = this.getNativeBtcToken()
+        ft.push(nativeBTC)
         return this.sortTokens(ft)
       })
+  }
+
+  private getNativeBtcToken(): FTImpl {
+    return new FTImpl({
+      ledger: "btc-native",
+      symbol: "BTC",
+      name: "Bitcoin",
+      decimals: 8,
+      category: Category.Native,
+      logo: BtcIcon,
+      state: State.Active,
+      fee: BigInt(0),
+      index: undefined,
+      rootCanisterId: undefined,
+      isNativeBtc: true,
+    })
   }
 
   @Cache(integrationCache, { ttl: 300 })
@@ -185,6 +219,19 @@ export class FtService {
     const nfidwToken =
       nfidwIndex !== -1 ? tokens.splice(nfidwIndex, 1)[0] : null
 
+    const ckBtcIndex = tokens.findIndex(
+      (t) => t.getTokenAddress().toLowerCase() === CKBTC_CANISTER_ID,
+    )
+
+    const ckBtcToken =
+      ckBtcIndex !== -1 ? tokens.splice(ckBtcIndex, 1)[0] : null
+
+    const nativeBtcIndex = tokens.findIndex(
+      (t) => t.getTokenAddress() === "btc-native",
+    )
+
+    const nativeBtcToken = tokens.splice(nativeBtcIndex, 1)[0]
+
     tokens.sort((a, b) => {
       const aCategory =
         categoryOrder[a.getTokenCategory()] || Number.MAX_SAFE_INTEGER
@@ -193,7 +240,9 @@ export class FtService {
       return aCategory - bCategory
     })
 
-    if (nfidwToken) tokens.splice(1, 0, nfidwToken)
+    if (nativeBtcToken) tokens.splice(1, 0, nativeBtcToken)
+    if (nfidwToken) tokens.splice(2, 0, nfidwToken)
+    if (ckBtcToken) tokens.splice(3, 0, ckBtcToken)
 
     return tokens
   }

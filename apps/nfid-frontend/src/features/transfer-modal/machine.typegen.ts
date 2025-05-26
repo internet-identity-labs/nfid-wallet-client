@@ -21,6 +21,7 @@ export interface Typegen0 {
     assignReceiverWallet: "ASSIGN_RECEIVER_WALLET"
     assignSelectedFT: "ASSIGN_SELECTED_FT"
     assignSelectedNFTId: "ASSIGN_SELECTED_NFT"
+    assignSelectedTargetFT: "ASSIGN_SELECTED_TARGET_FT"
     assignSourceAccount: "ASSIGN_SOURCE_ACCOUNT"
     assignSourceWallet: "ASSIGN_SOURCE_WALLET"
     assignTokenStandard: "ASSIGN_TOKEN_STANDARD"

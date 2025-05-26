@@ -33,6 +33,9 @@ export const transferMachine = createMachine(
       ASSIGN_SELECTED_FT: {
         actions: "assignSelectedFT",
       },
+      ASSIGN_SELECTED_TARGET_FT: {
+        actions: "assignSelectedTargetFT",
+      },
       ASSIGN_SELECTED_NFT: {
         actions: "assignSelectedNFTId",
       },
@@ -151,6 +154,9 @@ export const transferMachine = createMachine(
       })),
       assignSelectedFT: assign((_, event) => ({
         selectedFT: event?.data,
+      })),
+      assignSelectedTargetFT: assign((_, event) => ({
+        selectedTargetFT: event?.data,
       })),
       assignSelectedNFTId: assign((_, event) => ({
         selectedNFTId: event?.data,

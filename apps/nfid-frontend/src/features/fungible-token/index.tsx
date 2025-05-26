@@ -37,6 +37,7 @@ const TokensPage = () => {
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.SWAP })
     send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
+    send({ type: "ASSIGN_SELECTED_TARGET_FT", data: "" })
     send("SHOW")
   }
 
@@ -93,6 +94,10 @@ const TokensPage = () => {
       })
   }
 
+  //TODO: implement BTC convert functions
+  const onConvertToBtc = () => {}
+  const onConvertToCkBtc = () => {}
+
   return (
     <Tokens
       tokensIniting={!initedTokens}
@@ -104,6 +109,8 @@ const TokensPage = () => {
       profileConstants={ProfileConstants}
       onSendClick={onSendClick}
       onSwapClick={onSwapClick}
+      onConvertToBtc={onConvertToBtc}
+      onConvertToCkBtc={onConvertToCkBtc}
       hideZeroBalance={hideZeroBalance}
       onZeroBalanceToggle={onZeroBalanceToggle}
     />

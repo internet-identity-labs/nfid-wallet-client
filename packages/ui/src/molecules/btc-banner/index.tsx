@@ -21,7 +21,6 @@ export const BtcBanner: FC<BtcBanner> = ({ onBtcSwapClick, onBtcConvert }) => {
   }, [])
 
   const handleClose = () => {
-    console.log(111)
     setIsVisible(false)
     localStorage.setItem("showBtcBanner", "false")
   }

@@ -93,7 +93,7 @@ describe("Bitcoin Service", () => {
     expect(fee.utxos).not.toHaveLength(0)
   })
 
-  it.skip("should return send a token", async () => {
+  it.skip("should send a token and return transaction id", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
     const amount: string = "0.00001"

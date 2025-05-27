@@ -105,8 +105,13 @@ When(
         await browser.pause(2000)
         await Assets.waitUntilElementsLoadedProperly(
           Assets.tokensTab,
-          await Assets.ManageTokensDialog.manageTokensDialogButton
-            .waitForClickable(),
+          {
+            element: Assets.ManageTokensDialog.manageTokensDialogButton,
+            action: async (element) => {
+              await element.waitForDisplayed()
+              await element.waitForClickable()
+            },
+          },
         )
         await browser.pause(2000)
         expectedSourceTokenBalance =

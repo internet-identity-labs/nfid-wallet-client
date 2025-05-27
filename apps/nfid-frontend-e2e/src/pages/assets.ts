@@ -204,7 +204,6 @@ export class Assets {
 
           if ("action" in waitForElementOrAction) {
             const { element, action } = waitForElementOrAction
-            await element.waitForDisplayed()
             await action(element)
           } else {
             await waitForElementOrAction.waitForDisplayed()

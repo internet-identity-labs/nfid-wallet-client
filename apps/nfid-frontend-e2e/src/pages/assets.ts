@@ -75,6 +75,10 @@ export class Assets {
     return $("#swapButton")
   }
 
+  get tokenToSendBackButton() {
+    return $(`//*[@id="token-to-send-title"]/parent::div/preceding-sibling::div[1]`)
+  }
+
   public async tokenOptionsButton(tokenName: string) {
     return $(`#${tokenName}_options`)
   }

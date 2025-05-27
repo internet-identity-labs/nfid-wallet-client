@@ -12,7 +12,7 @@ When(/^Verifying that tokens are displayed on assets tab$/, async () => {
 })
 
 When(/^User clicks the (.*) option button$/, async (option: string) => {
-  await Assets.getTokenOption(option).click()
+  await (await Assets.getTokenOption(option)).click()
   await browser.pause(10000)
 })
 
@@ -39,7 +39,7 @@ When(/^User filters tokens by (.*)$/, async (token: string) => {
 When(
   /^User sets the token ([^"]+) to be displayed if needed$/,
   async (tokenName: string) => {
-    if (!(await Assets.tokenLabel(tokenName).isDisplayed())) {
+    if (!(await (await Assets.tokenLabel(tokenName)).isDisplayed())) {
       await Assets.ManageTokensDialog.manageTokensDialogButton.click()
       await Assets.ManageTokensDialog.filterField.setValue(tokenName)
       await Assets.ManageTokensDialog.tokenShowHideButton(tokenName).then(
@@ -50,7 +50,7 @@ When(
         },
       )
 
-      await Assets.tokenLabel(tokenName).waitForDisplayed({
+      await (await Assets.tokenLabel(tokenName)).waitForDisplayed({
         timeout: 50000,
         timeoutMsg: "Failed attempt to make the token visible",
       })
@@ -140,7 +140,7 @@ Then(
     let isDisplayed
     await browser.waitUntil(
       async () => {
-        isDisplayed = await Assets.tokenLabel(tokenName).isDisplayed()
+        isDisplayed = await (await Assets.tokenLabel(tokenName)).isDisplayed()
         return Boolean(presence) ? !isDisplayed : isDisplayed
       },
       {

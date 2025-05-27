@@ -3,16 +3,20 @@ export class Page {
     return $("#loader")
   }
 
-  public async openBaseUrl() {
+  get slider() {
+    return $("#slider")
+  }
+
+  async openBaseUrl() {
     await browser.url("/")
   }
 
-  public async openPage(page: string) {
+  async openPage(page: string) {
     await browser.url(browser.options.baseUrl + page)
   }
 
   // -1 retrieves the last window, or -2 gets the first one
-  public async switchToWindow(window?: string) {
+  async switchToWindow(window?: string) {
     const positionNumber: number = window === "last" ? -1 : -2
     if (window) {
       await browser.waitUntil(
@@ -27,7 +31,7 @@ export class Page {
     await browser.switchToWindow(windowHandles.slice(positionNumber)[0])
   }
 
-  public async waitForLoaderDisappear() {
+  async waitForLoaderDisappear() {
     let counter = 0
     try {
       await this.loader.waitForDisplayed({ timeout: 8000 })
@@ -45,7 +49,7 @@ export class Page {
     }
   }
 
-  public async waitForDataCacheLoading() {
+  async waitForDataCacheLoading() {
     await browser.waitUntil(
       async function () {
         return (await $("#root").getAttribute("data-cache-loaded")) === "true"
@@ -57,7 +61,7 @@ export class Page {
     )
   }
 
-  public async clickOnLeftUpperCorner() {
+  async clickOnLeftUpperCorner() {
     await browser.performActions([
       {
         type: "pointer",

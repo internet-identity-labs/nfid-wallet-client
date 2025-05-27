@@ -91,6 +91,12 @@ export const Staking: FC<StakingProps> = ({
                   return (
                     <tr
                       className="text-sm hover:bg-gray-50 h-[64px] transition-all group cursor-pointer"
+                      id={
+                        `stakedToken_${stakedToken
+                          .getToken()
+                          .getTokenName()
+                          .replace(/\s+/g, "")}`
+                      }
                       key={stakedToken.getToken().getTokenAddress()}
                       onClick={() =>
                         navigate(
@@ -124,17 +130,23 @@ export const Staking: FC<StakingProps> = ({
                             )}
                           </div>
                           <div>
-                            <p className="text-sm font-semibold leading-[25px]">
+                            <p
+                              id={"tokenSymbol"}
+                              className="text-sm font-semibold leading-[25px]"
+                            >
                               {stakedToken.getToken().getTokenSymbol()}
                             </p>
-                            <p className="text-secondary text-xs leading-[20px]">
+                            <p
+                              id={"tokenName"}
+                              className="text-secondary text-xs leading-[20px]"
+                            >
                               {stakedToken.getToken().getTokenName()}
                             </p>
                           </div>
                         </div>
                       </td>
                       <td className="flex flex-col ml-auto h-[64px] justify-center w-max md:table-cell text-right md:text-left">
-                        <p className="text-sm leading-6">
+                        <p id={"tokenStakedAmount"} className="text-sm leading-6">
                           {stakedToken.getStakedFormatted().getTokenValue()}{" "}
                           {stakedToken.getToken().getTokenSymbol()}
                         </p>
@@ -143,7 +155,7 @@ export const Staking: FC<StakingProps> = ({
                         </p>
                       </td>
                       <td className="px-0 md:px-[30px] hidden md:table-cell">
-                        <p className="text-sm leading-6">
+                        <p id={"tokenRewards"} className="text-sm leading-6">
                           {stakedToken.getRewardsFormatted().getTokenValue()}{" "}
                           {stakedToken.getToken().getTokenSymbol()}
                         </p>
@@ -152,7 +164,10 @@ export const Staking: FC<StakingProps> = ({
                         </p>
                       </td>
                       <td className="w-[34px] text-right md:w-[55px] md:text-left">
-                        <div className="inline-flex items-center justify-between gap-1">
+                        <div
+                          id={"tokenStakingDetailsButton"}
+                          className="inline-flex items-center justify-between gap-1"
+                        >
                           <IconCaret />
                         </div>
                       </td>

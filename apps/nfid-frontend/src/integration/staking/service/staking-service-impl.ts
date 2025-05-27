@@ -238,7 +238,7 @@ export class StakingServiceImpl implements StakingService {
         followees: [neuronToFollow],
       })
   }
-}
+}}
 
 export const bytesToHexString = (bytes: Uint8Array | number[]): string =>
   Array.from(bytes)

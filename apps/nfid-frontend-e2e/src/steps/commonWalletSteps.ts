@@ -12,7 +12,13 @@ When(/^User goes to (.*) tab$/, async (tab: string) => {
     nfts: [Assets.NFTtab, Nft.randomTokenOnNFTtab],
     tokens: [
       Assets.tokensTab,
-      Assets.ManageTokensDialog.manageTokensDialogButton,
+      {
+        element: Assets.ManageTokensDialog.manageTokensDialogButton,
+        action: async (element: ChainablePromiseElement) => {
+          await element.waitForDisplayed({ timeout: 20000 })
+          await element.waitForClickable()
+        },
+      },
     ],
   }
   await Assets.waitUntilElementsLoadedProperly(tabMap[tab][0], tabMap[tab][1])
@@ -28,7 +34,7 @@ Then(
   /^User opens (.+) dialog window(?: of (\S+))?$/,
   async (window: string, optionalArg: string) => {
     const clickWithWait = async (
-      element: WebdriverIO.Element
+      element: WebdriverIO.Element,
     ) => {
       await element.waitForClickable({ timeout: 20000 })
       await element.click()

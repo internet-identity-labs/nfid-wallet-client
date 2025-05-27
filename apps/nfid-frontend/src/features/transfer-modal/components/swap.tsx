@@ -135,13 +135,17 @@ export const SwapFT = ({
 
   const toToken = useMemo(() => {
     return tokens.find(
-      (token: FT) => token.getTokenAddress() === toTokenAddress,
+      (token: FT) =>
+        token.getTokenAddress() === toTokenAddress &&
+        token.getTokenAddress() !== "btc-native",
     )
   }, [toTokenAddress, tokens])
 
   const filteredAllTokens = useMemo(() => {
     return tokens.filter(
-      (token) => token.getTokenAddress() !== fromTokenAddress,
+      (token) =>
+        token.getTokenAddress() !== fromTokenAddress &&
+        token.getTokenAddress() !== "btc-native",
     )
   }, [fromTokenAddress, tokens])
 

@@ -24,6 +24,16 @@ export interface TokensAvailableToSwap {
   from: string[]
 }
 
+const TOKENS_TO_REORDER: {
+  canisterId: string
+  index: number
+  ft?: FT | null
+}[] = [
+  { canisterId: "btc-native", index: 1 },
+  { canisterId: NFIDW_CANISTER_ID, index: 2 },
+  { canisterId: CKBTC_CANISTER_ID, index: 3 },
+]
+
 export class FtService {
   async getTokens(userId: string): Promise<Array<FT>> {
     return icrc1StorageService
@@ -78,8 +88,7 @@ export class FtService {
 
         const ft = canisters.map((canister) => new FTImpl(canister))
 
-        const nativeBTC = this.getNativeBtcToken()
-        ft.push(nativeBTC)
+        ft.push(this.getNativeBtcToken())
         return this.sortTokens(ft)
       })
   }
@@ -96,7 +105,6 @@ export class FtService {
       fee: BigInt(0),
       index: undefined,
       rootCanisterId: undefined,
-      isNativeBtc: true,
     })
   }
 
@@ -213,24 +221,14 @@ export class FtService {
       [Category.ChainFusionTestnet]: 6,
     }
 
-    const nfidwIndex = tokens.findIndex(
-      (t) => t.getTokenAddress() === NFIDW_CANISTER_ID,
-    )
-    const nfidwToken =
-      nfidwIndex !== -1 ? tokens.splice(nfidwIndex, 1)[0] : null
-
-    const ckBtcIndex = tokens.findIndex(
-      (t) => t.getTokenAddress().toLowerCase() === CKBTC_CANISTER_ID,
-    )
-
-    const ckBtcToken =
-      ckBtcIndex !== -1 ? tokens.splice(ckBtcIndex, 1)[0] : null
-
-    const nativeBtcIndex = tokens.findIndex(
-      (t) => t.getTokenAddress() === "btc-native",
-    )
-
-    const nativeBtcToken = tokens.splice(nativeBtcIndex, 1)[0]
+    TOKENS_TO_REORDER.forEach((token) => {
+      const index = tokens.findIndex(
+        (t) => t.getTokenAddress() === token.canisterId,
+      )
+      if (index !== -1) {
+        token.ft = tokens.splice(index, 1)[0]
+      }
+    })
 
     tokens.sort((a, b) => {
       const aCategory =
@@ -240,9 +238,11 @@ export class FtService {
       return aCategory - bCategory
     })
 
-    if (nativeBtcToken) tokens.splice(1, 0, nativeBtcToken)
-    if (nfidwToken) tokens.splice(2, 0, nfidwToken)
-    if (ckBtcToken) tokens.splice(3, 0, ckBtcToken)
+    TOKENS_TO_REORDER.forEach((specific) => {
+      if (specific.ft) {
+        tokens.splice(specific.index, 0, specific.ft)
+      }
+    })
 
     return tokens
   }

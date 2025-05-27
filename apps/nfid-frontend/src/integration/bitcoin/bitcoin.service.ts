@@ -1,4 +1,5 @@
 import { SignIdentity } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 
 import { Balance } from "@nfid/integration"
@@ -34,6 +35,12 @@ export class BitcoinService {
   ): Promise<Balance> {
     await patronService.askToPayFor(identity)
     return chainFusionSignerService.getBalance(identity, minConfirmations)
+  }
+
+  public async getQuickBalance(globalPrincipal: Principal): Promise<Balance> {
+    //TODO: implement quick balance
+    globalPrincipal.toText()
+    return BigInt(0)
   }
 
   public async getFee(

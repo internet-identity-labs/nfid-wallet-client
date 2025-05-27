@@ -34,7 +34,6 @@ export class FTImpl implements FT {
   private fee: bigint
   private inited: boolean
   private rootSnsCanister: string | undefined
-  private isNativeBtc: boolean | undefined
 
   constructor(icrc1Token: ICRC1) {
     this.tokenAddress = icrc1Token.ledger
@@ -48,42 +47,51 @@ export class FTImpl implements FT {
     this.tokenState = icrc1Token.state
     this.inited = false
     this.rootSnsCanister = icrc1Token.rootCanisterId
-    this.isNativeBtc = icrc1Token.isNativeBtc || false
   }
 
-  async init(globalPrincipal: Principal): Promise<FT> {
-    if (this.isNativeBtc) {
-      const identity = authState.get().delegationIdentity
-      if (!identity) throw new Error("No identity")
+  private isNativeBtc(): boolean {
+    return this.tokenAddress === "btc-native"
+  }
 
-      try {
-        this.tokenBalance = await bitcoinService.getBalance(identity)
-      } catch (e) {
-        console.error("BitcoinService error: ", e)
-        return this
-      }
-
-      this.tokenRate = await exchangeRateService.usdPriceForICRC1(
-        CKBTC_CANISTER_ID,
-      )
-
-      return this
+  private async getNativeBtcBalance(globalPrincipal: Principal): Promise<void> {
+    try {
+      this.tokenBalance = await bitcoinService.getQuickBalance(globalPrincipal)
+    } catch (e) {
+      console.error("BitcoinService error: ", (e as Error).message)
+      return
     }
 
+    this.tokenRate = await exchangeRateService.usdPriceForICRC1(
+      CKBTC_CANISTER_ID,
+    )
+  }
+
+  private async getIcrc1Balance(globalPrincipal: Principal): Promise<void> {
     const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
 
     try {
       this.tokenBalance = await icrc1Pair.getBalance(globalPrincipal.toText())
-    } catch (error) {
-      console.error("Icrc1Pair error: ", error)
-      return this
+    } catch (e) {
+      console.error("Icrc1Pair error: " + (e as Error).message)
+      return
     }
 
     this.tokenRate = await exchangeRateService.usdPriceForICRC1(
       this.tokenAddress,
     )
+  }
 
+  private async getBalance(globalPrincipal: Principal): Promise<void> {
+    if (this.isNativeBtc()) {
+      await this.getNativeBtcBalance(globalPrincipal)
+    } else {
+      await this.getIcrc1Balance(globalPrincipal)
+    }
     this.inited = true
+  }
+
+  async init(globalPrincipal: Principal): Promise<FT> {
+    await this.getBalance(globalPrincipal)
     return this
   }
 
@@ -92,14 +100,7 @@ export class FTImpl implements FT {
   }
 
   async refreshBalance(globalPrincipal: Principal): Promise<FT> {
-    const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
-
-    try {
-      this.tokenBalance = await icrc1Pair.getBalance(globalPrincipal.toText())
-    } catch (e) {
-      console.error("Icrc1Pair error: " + (e as Error).message)
-    }
-
+    await this.getBalance(globalPrincipal)
     return this
   }
 

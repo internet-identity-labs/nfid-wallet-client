@@ -51,7 +51,6 @@ export class Icrc1StorageService {
         state:
           registry === undefined ? State.Inactive : mapState(registry.state),
         category: mapCategory(icrc1.category),
-        isNativeBtc: false,
       }
       return userData
     })

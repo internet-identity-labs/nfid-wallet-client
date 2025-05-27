@@ -1,11 +1,12 @@
 import clsx from "clsx"
 import React from "react"
+import colors from "tailwindcss/colors"
 
 type CloseIconProps = React.HTMLAttributes<HTMLDivElement>
 
 export const CloseIcon: React.FC<CloseIconProps> = ({
   className,
-  color = "#000",
+  color = colors.black,
 }) => {
   return (
     <svg

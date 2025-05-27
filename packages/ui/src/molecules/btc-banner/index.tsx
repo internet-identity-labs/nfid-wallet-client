@@ -1,5 +1,6 @@
 import clsx from "clsx"
 import { FC, useEffect, useState } from "react"
+import colors from "tailwindcss/colors"
 
 import { CloseIcon } from "../../atoms/icons/close-button"
 import { Button } from "../button"
@@ -45,7 +46,7 @@ export const BtcBanner: FC<BtcBanner> = ({ onBtcSwapClick, onBtcConvert }) => {
         className="w-6 h-6 absolute right-[10px] top-[10px]"
         onClick={handleClose}
       >
-        <CloseIcon color="#fff" className="w-full h-full" />
+        <CloseIcon color={colors.white} className="w-full h-full" />
       </div>
       <div
         className={clsx(

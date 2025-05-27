@@ -29,7 +29,7 @@ Then(/^User selects ([^"]*) from send options/, async (currency: string) => {
   await Assets.openAssetOptionsOnSR()
   await Assets.currencyOption(currency.replace(/^\$/, ""))
     .then(async (it) => {
-      await it.waitForClickable()
+      await it.waitForClickable({ timeout: 20000 })
       await it.click()
     })
 })

@@ -121,6 +121,7 @@ export class Assets {
     await this.getSourceTokenBalance.waitForExist({ timeout: 10000 })
     await this.getFee.waitForExist({ timeout: 35000 })
 
+    await this.sendDialogWindow.waitForClickable()
     await this.sendDialogWindow.click()
   }
 
@@ -184,9 +185,12 @@ export class Assets {
     return { firstAddressPart, secondAddressPart }
   }
 
-  public async waitUntilElementsLoadedProperly(
+  async waitUntilElementsLoadedProperly(
     clickElement: ChainablePromiseElement,
-    waitForElement: ChainablePromiseElement,
+    waitForElementOrAction: ChainablePromiseElement | {
+      element: ChainablePromiseElement,
+      action: (el: ChainablePromiseElement) => Promise<void>
+    },
   ) {
     await browser.waitUntil(
       async () => {
@@ -197,7 +201,14 @@ export class Assets {
           await clickElement.waitForClickable({ timeout: 15000 })
           await clickElement.click()
           await Page.loader.waitForDisplayed({ reverse: true, timeout: 30000 })
-          await waitForElement.waitForDisplayed()
+
+          if ("action" in waitForElementOrAction) {
+            const { element, action } = waitForElementOrAction
+            await action(element)
+          } else {
+            await waitForElementOrAction.waitForDisplayed()
+          }
+
           return true
         } catch (e) {
           await browser.refresh()
@@ -205,7 +216,11 @@ export class Assets {
       },
       {
         timeout: 80000,
-        timeoutMsg: `Element ${await waitForElement.selector} didn't load properly in 40sec`,
+        timeoutMsg: `Element ${
+          "element" in waitForElementOrAction
+            ? await waitForElementOrAction.element.selector
+            : await waitForElementOrAction.selector
+        } didn't load properly in 80 seconds`,
       },
     )
   }

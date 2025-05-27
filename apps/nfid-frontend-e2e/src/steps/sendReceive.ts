@@ -27,7 +27,11 @@ Then(
 
 Then(/^User selects ([^"]*) from send options/, async (currency: string) => {
   await Assets.openAssetOptionsOnSR()
-  await Assets.currencyOption(currency.replace(/^\$/, "")).click()
+  await Assets.currencyOption(currency.replace(/^\$/, ""))
+    .then(async (it) => {
+      await it.waitForClickable()
+      await it.click()
+    })
 })
 
 Then(

@@ -21,6 +21,6 @@ Feature: Tokens tab
     Then Verifying that the <token2> token is displayed
     Examples:
       | category     | currency | nfid number | token1            | stake       | token2 | token balance |
-      | Native       | ICP      | 28542       | Internet Computer | available   | ckBTC  | 0.01007 ICP   |
-      | Native       | ICP      | 100000830   | Internet Computer | available   | ckUSDT | 0.0497 ICP    |
+      | Native       | ICP      | 28542       | Internet Computer | unavailable | ckBTC  | 0.01007 ICP   |
+      | Native       | ICP      | 100000830   | Internet Computer | unavailable | ckUSDT | 0.0497 ICP    |
       | Chain Fusion | ckPEPE   | 200000276   | ckPEPE            | unavailable | ckETH  | 953 ckPEPE    |

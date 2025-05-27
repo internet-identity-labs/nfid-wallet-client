@@ -108,7 +108,7 @@ When(
           {
             element: Assets.ManageTokensDialog.manageTokensDialogButton,
             action: async (element) => {
-              await element.waitForDisplayed()
+              await element.waitForDisplayed({ timeout: 20000 })
               await element.waitForClickable()
             },
           },

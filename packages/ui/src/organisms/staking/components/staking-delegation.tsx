@@ -1,16 +1,19 @@
 import { motion } from "framer-motion"
+import { Button } from "packages/ui/src/molecules/button"
 import CopyAddress from "packages/ui/src/molecules/copy-address"
 import { FC } from "react"
 
-export interface StakingDelegationProps {
+export interface StakingDelegatesProps {
   followees: {
     name: string | undefined
     id: string
   }[]
+  setIsModalOpen: (value: boolean) => void
 }
 
-export const StakingDelegation: FC<StakingDelegationProps> = ({
+export const StakingDelegates: FC<StakingDelegatesProps> = ({
   followees,
+  setIsModalOpen,
 }) => {
   return (
     <motion.div
@@ -23,7 +26,7 @@ export const StakingDelegation: FC<StakingDelegationProps> = ({
       <div className="border border-gray-200 rounded-3xl px-[30px] py-[20px] relative">
         <div>
           {followees.map((followee, index) => (
-            <div key={followee.id}>
+            <div key={`${followee.id}_${index}`}>
               <div className="flex justify-between text-sm items-center h-[54px]">
                 <p className="text-gray-400">{followee.name}</p>
                 <div>
@@ -39,6 +42,14 @@ export const StakingDelegation: FC<StakingDelegationProps> = ({
               )}
             </div>
           ))}
+          <Button
+            block
+            type="stroke"
+            className="mt-[10px]"
+            onClick={() => setIsModalOpen(true)}
+          >
+            Update delegate
+          </Button>
         </div>
       </div>
     </motion.div>

@@ -207,7 +207,9 @@ export class StakingServiceImpl implements StakingService {
     rootNeuron: SnsNeuronId,
   ) {
     let neuronsToFollow = await icrc1OracleService.getAllNeurons()
-    neuronsToFollow.filter((n) => n.rootCanister === root.toText())
+    neuronsToFollow = neuronsToFollow.filter(
+      (n) => n.rootCanister === root.toText(),
+    )
     const delegates = await this.getDelegates(delegation, root)
 
     if (neuronsToFollow.length > 0) {

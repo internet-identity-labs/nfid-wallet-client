@@ -85,4 +85,5 @@ export interface FormValues {
   amount: string
   to: string
   lockTime: string
+  userNeuron: string
 }

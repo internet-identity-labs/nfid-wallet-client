@@ -1,5 +1,4 @@
 import { SignIdentity } from "@dfinity/agent"
-import { ListNervousSystemFunctionsResponse } from "@dfinity/sns/dist/candid/sns_governance"
 import { uint8ArrayToHexString } from "@dfinity/utils"
 import clsx from "clsx"
 import { motion } from "framer-motion"
@@ -18,10 +17,13 @@ import { FC, useMemo, useState } from "react"
 import { mutate } from "@nfid/swr"
 
 import { NFIDNeuron } from "frontend/integration/staking/nfid-neuron"
-import { StakingState } from "frontend/integration/staking/types"
+import {
+  IStakingDelegates,
+  StakingState,
+} from "frontend/integration/staking/types"
 
 import { getFormattedPeriod } from "../../send-receive/utils"
-import { StakingDelegation } from "./staking-delegation"
+import { StakingDelegates } from "./staking-delegation"
 
 export interface SidePanelOption {
   option: NFIDNeuron
@@ -36,7 +38,8 @@ export interface StakingSidePanelProps {
   identity?: SignIdentity
   isLoading: boolean
   setIsLoading: (v: boolean) => void
-  delegates: ListNervousSystemFunctionsResponse | undefined
+  delegates: IStakingDelegates | undefined
+  setIsModalOpen: (value: boolean) => void
 }
 
 export const StakingSidePanel: FC<StakingSidePanelProps> = ({
@@ -48,8 +51,9 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   isLoading,
   setIsLoading,
   delegates,
+  setIsModalOpen,
 }) => {
-  const [isVotingOpen, setIsVotingOpen] = useState(false)
+  const [isStakingDelegatesOpen, setIsStakingDelegatesOpen] = useState(false)
   useDisableScroll(isOpen)
 
   const followees = useMemo(() => {
@@ -93,9 +97,11 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   return (
     <div>
       <div
-        onClick={() => (isVotingOpen ? setIsVotingOpen(false) : onClose())}
+        onClick={() =>
+          isStakingDelegatesOpen ? setIsStakingDelegatesOpen(false) : onClose()
+        }
         className={clsx(
-          "fixed inset-0 z-50 left-0 top-0",
+          "fixed inset-0 z-48 left-0 top-0",
           "w-screen h-screen",
           !isOpen && "hidden",
         )}
@@ -103,7 +109,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
       <div
         className={clsx(
           "w-[90vw] md:w-[600px] h-screen fixed top-0 right-0 transition-all duration-500",
-          "bg-white shadow-[0px_4px_40px_rgba(0,0,0,0.2)] z-[52] transform p-[30px] overflow-auto",
+          "bg-white shadow-[0px_4px_40px_rgba(0,0,0,0.2)] z-[49] transform p-[30px] overflow-auto",
           !isOpen ? "translate-x-[800px]" : "translate-x-0",
         )}
       >
@@ -114,28 +120,35 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                 <ArrowButton
                   buttonClassName="py-[7px]"
                   onClick={() =>
-                    isVotingOpen ? setIsVotingOpen(false) : onClose()
+                    isStakingDelegatesOpen
+                      ? setIsStakingDelegatesOpen(false)
+                      : onClose()
                   }
                   iconClassName="text-black"
                 />
                 <p className="text-[28px]">
-                  {isVotingOpen ? "Voting delegates" : "Staking details"}
+                  {isStakingDelegatesOpen
+                    ? "Voting delegates"
+                    : "Staking details"}
                 </p>
               </div>
-              {!isVotingOpen && (
+              {!isStakingDelegatesOpen && (
                 <p className="text-sm text-right text-secondary">
                   {sidePanelOption.state}
                 </p>
               )}
             </div>
-            {isVotingOpen && (
+            {isStakingDelegatesOpen && (
               <div className="mb-[20px]">
                 The below delegates are voting on your behalf. Use Toolkit IC to
                 change your delegates or vote manually.
               </div>
             )}
-            {isVotingOpen && followees ? (
-              <StakingDelegation followees={followees} />
+            {isStakingDelegatesOpen && followees ? (
+              <StakingDelegates
+                followees={followees}
+                setIsModalOpen={setIsModalOpen}
+              />
             ) : (
               <motion.div
                 key="StakingPanel"
@@ -385,11 +398,11 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       : "Redeem stake"}
                   </Button>
                 </div>
-                {followees && followees.length > 0 && (
+                {followees && (
                   <div className="border border-gray-200 rounded-3xl px-[30px] py-[20px] relative mt-[20px]">
                     <div
                       className="flex items-center justify-between transition-all cursor-pointer group"
-                      onClick={() => setIsVotingOpen(true)}
+                      onClick={() => setIsStakingDelegatesOpen(true)}
                     >
                       <p>Voting delegates</p>
                       <div className="inline-flex items-center justify-between gap-1 cursor-pointer">

@@ -3,11 +3,11 @@ import {
   Ed25519KeyIdentity,
   JsonnableEd25519KeyIdentity,
 } from "@dfinity/identity/lib/cjs/identity/ed25519"
+import { Principal } from "@dfinity/principal"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 
-import { bitcoinService } from "./bitcoin.service"
+import { bitcoinService, BlockIndex } from "./bitcoin.service"
 import { SelectedUtxosFeeResponse } from "./idl/patron.d"
-import { Principal } from "@dfinity/principal"
 
 const IDENTITY: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003008adc857dfcd0477a7aaa01a657ca6923ce76c07645704b1e872deb1253baa",
@@ -61,7 +61,7 @@ describe("Bitcoin Service", () => {
     expect(address).toEqual("address")
   })
 
-  it.skip("should return a balance", async () => {
+  it("should return a balance", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
 
@@ -69,10 +69,10 @@ describe("Bitcoin Service", () => {
     const balance: bigint = await bitcoinService.getBalance(identity)
 
     // Then
-    expect(balance).toEqual(BigInt(2248))
+    expect(balance).toEqual(BigInt(1647))
   })
 
-  it.skip("should return a quick balance", async () => {
+  it("should return a quick balance", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
     const principal: Principal = identity.getPrincipal()
@@ -81,7 +81,7 @@ describe("Bitcoin Service", () => {
     const balance: bigint = await bitcoinService.getQuickBalance(principal)
 
     // Then
-    expect(balance).toEqual(BigInt(2248))
+    expect(balance).toEqual(BigInt(1647))
   })
 
   it("should return a fee", async () => {
@@ -114,6 +114,21 @@ describe("Bitcoin Service", () => {
       destinationAddress,
       amount,
       fee,
+    )
+
+    // Then
+    expect(txid).not.toBeNull()
+  })
+
+  it.skip("should convert ckBtc into Btc", async () => {
+    // Given
+    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
+    const amount: string = "0.0005"
+
+    // When
+    const txid: BlockIndex = await bitcoinService.convertFromCkBtc(
+      identity,
+      amount,
     )
 
     // Then

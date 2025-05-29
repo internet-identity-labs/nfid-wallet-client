@@ -11,8 +11,11 @@ import {
   chainFusionSignerService,
   TransactionId,
 } from "./services/chain-fusion-signer.service"
+import { ckBtcService } from "./services/ckbtc.service"
 import { patronService } from "./services/patron.service"
 import { satoshiService } from "./services/satoshi.service"
+
+export type BlockIndex = bigint
 
 export class BitcoinService {
   public async getAddress(identity: SignIdentity): Promise<Address> {
@@ -70,6 +73,19 @@ export class BitcoinService {
       fee.fee_satoshis,
       fee.utxos,
     )
+  }
+
+  public async convertFromCkBtc(
+    identity: SignIdentity,
+    amount: string,
+  ): Promise<BlockIndex> {
+    const address: string = await this.getAddress(identity)
+    const blockIndex: BlockIndex = await ckBtcService.convertCkBtcToBtc(
+      identity,
+      address,
+      amount,
+    )
+    return blockIndex
   }
 }
 

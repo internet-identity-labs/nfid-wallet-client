@@ -82,6 +82,7 @@ export const serviceConfig = {
   IC_SIGNER_CANISTER_ID: JSON.stringify(process.env.IC_SIGNER_CANISTER_ID),
   PATRON_CANISTER_ID: JSON.stringify(process.env.PATRON_CANISTER_ID),
   CHAIN_FUSION_SIGNER_CANISTER_ID: JSON.stringify(process.env.CHAIN_FUSION_SIGNER_CANISTER_ID),
+  BITCOIN_CANISTER_ID: JSON.stringify(process.env.BITCOIN_CANISTER_ID),
   CHAIN_NETWORK: JSON.stringify(process.env.CHAIN_NETWORK),
   AWS_ECDSA_SIGN: JSON.stringify(process.env.AWS_ECDSA_SIGN),
   AWS_PASSKEY: JSON.stringify(process.env.AWS_PASSKEY),

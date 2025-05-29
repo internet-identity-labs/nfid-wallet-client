@@ -1685,7 +1685,7 @@
   resolved "https://registry.npmjs.org/@dfinity/candid/-/candid-2.3.0.tgz"
   integrity sha512-Xzj3EWfwaVZy90jq6WBRP4Cyqo93r3g8tvBea8W8PN3I4W6KcN2/9ZJaBhT3Y4NP+p2w4ZO6aJ+qp9xH990aYw==
 
-"@dfinity/ckbtc@3.1.12":
+"@dfinity/ckbtc@^3.1.12":
   version "3.1.12"
   resolved "https://registry.yarnpkg.com/@dfinity/ckbtc/-/ckbtc-3.1.12.tgz#36fcdd00f375306d96eb8da2a7f720c87e6ea2f9"
   integrity sha512-YnVgPlwXD+bKcfVQEB6S/WN2b94qZh9yIW9dxNGVovLmcZYnu2wjFFE6ZDCVXVyIAa/i5IN7/PCiitpR/XOIYw==

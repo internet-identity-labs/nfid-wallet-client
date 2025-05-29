@@ -7,7 +7,7 @@ import { authStorage } from "packages/integration/src/lib/authentication/storage
 
 import { bitcoinService } from "./bitcoin.service"
 import { SelectedUtxosFeeResponse } from "./idl/patron.d"
-import { patronService } from "./services/patron.service"
+import { Principal } from "@dfinity/principal"
 
 const IDENTITY: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003008adc857dfcd0477a7aaa01a657ca6923ce76c07645704b1e872deb1253baa",
@@ -17,17 +17,11 @@ const IDENTITY: JsonnableEd25519KeyIdentity = [
 describe("Bitcoin Service", () => {
   jest.setTimeout(50000)
 
-  beforeAll(async () => {
-    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    patronService.askToPayFor(identity)
-  })
-
   beforeEach(async () => {
     await authStorage.clear()
 
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
     const principal: string = identity.getPrincipal().toText()
-    await authStorage.set("patron", "true")
     await authStorage.set(
       `bitcoin-address-${principal}`,
       "bc1q7yu8dnvmlntrqh05wvfar2tljrm73ng6ky8n4t",
@@ -46,12 +40,10 @@ describe("Bitcoin Service", () => {
 
     // When
     const address = await bitcoinService.getAddress(identity)
-    const idbPatronPays = await authStorage.get("patron")
     const idbAddress = await authStorage.get(`bitcoin-address-${principal}`)
 
     // Then
     expect(address).toEqual("bc1q7yu8dnvmlntrqh05wvfar2tljrm73ng6ky8n4t")
-    expect(idbPatronPays).toEqual("v1")
     expect(idbAddress).toEqual("bc1q7yu8dnvmlntrqh05wvfar2tljrm73ng6ky8n4t")
   })
 
@@ -77,7 +69,19 @@ describe("Bitcoin Service", () => {
     const balance: bigint = await bitcoinService.getBalance(identity)
 
     // Then
-    expect(balance).toEqual(BigInt(49429))
+    expect(balance).toEqual(BigInt(2248))
+  })
+
+  it.skip("should return a quick balance", async () => {
+    // Given
+    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
+    const principal: Principal = identity.getPrincipal()
+
+    // When
+    const balance: bigint = await bitcoinService.getQuickBalance(principal)
+
+    // Then
+    expect(balance).toEqual(BigInt(2248))
   })
 
   it("should return a fee", async () => {

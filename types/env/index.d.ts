@@ -43,3 +43,6 @@ declare const AWS_LINK_GOOGLE_ACCOUNT: string
 declare const AWS_CHECK_VERIFICATION: string
 declare const AWS_VERIFY_EMAIL: string
 declare const CANISTER_WITH_AT_LEAST_ONE_PASSKEY: string
+declare const PATRON_CANISTER_ID: string
+declare const CHAIN_FUSION_SIGNER_CANISTER_ID: string
+declare const BITCOIN_CANISTER_ID: string

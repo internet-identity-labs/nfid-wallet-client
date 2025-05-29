@@ -86,6 +86,15 @@
         "env": "ICRC1_ORACLE_CANISTER_ID"
       },
       {
+        "env": "PATRON_CANISTER_ID"
+      },
+      {
+        "env": "CHAIN_FUSION_SIGNER_CANISTER_ID"
+      },
+      {
+        "env": "BITCOIN_CANISTER_ID"
+      },
+      {
         "env": "DELEGATION_FACTORY"
       },
       {

@@ -1,3 +1,5 @@
+import { ListNervousSystemFunctionsResponse } from "@dfinity/sns/dist/candid/sns_governance"
+
 export interface TokenValue {
   getTokenValue(): string
   getUSDValue(): string
@@ -19,3 +21,5 @@ export interface TotalBalance {
   rewards: string
   total: string
 }
+
+export type IStakingDelegates = ListNervousSystemFunctionsResponse

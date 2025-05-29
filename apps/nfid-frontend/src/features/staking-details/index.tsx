@@ -1,4 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
+import { NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
+import { hexStringToUint8Array } from "@dfinity/utils"
 import { useActor } from "@xstate/react"
 import { StakingDetails } from "packages/ui/src/organisms/staking/staking-details"
 import { useContext, useEffect, useState } from "react"
@@ -9,7 +11,7 @@ import { useSWR } from "@nfid/swr"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
 import { ProfileContext } from "frontend/provider"
 
-import { fetchStakedToken } from "../staking/utils"
+import { fetchDelegates, fetchStakedToken } from "../staking/utils"
 import { ModalType } from "../transfer-modal/types"
 import { getIdentity } from "../transfer-modal/utils"
 
@@ -29,6 +31,26 @@ const StakingDetailsPage = () => {
     () => fetchStakedToken(tokenSymbol!, identity!),
     { revalidateOnFocus: false },
   )
+
+  const { data: delegates } = useSWR(
+    tokenSymbol && identity ? ["stakedTokenDelegates", tokenSymbol] : null,
+    () =>
+      fetchDelegates(identity, stakedToken?.getToken().getRootSnsCanister()),
+    { revalidateOnFocus: false },
+  )
+
+  const updateDelegates = async (value: string, userNeuron?: NeuronId) => {
+    const root = stakedToken?.getToken().getRootSnsCanister()
+
+    if (!identity || !root || !userNeuron) return
+
+    stakingService.reFollowNeurons(
+      { id: hexStringToUint8Array(value) },
+      identity,
+      root,
+      userNeuron,
+    )
+  }
 
   useEffect(() => {
     const getSignIdentity = async () => {
@@ -59,8 +81,10 @@ const StakingDetailsPage = () => {
     <StakingDetails
       onRedeemOpen={onRedeemOpen}
       stakedToken={stakedToken}
-      isLoading={isLoading || isValidating}
+      isLoading={isLoading || isValidating || !delegates}
       identity={identity}
+      delegates={delegates}
+      updateDelegates={updateDelegates}
     />
   )
 }

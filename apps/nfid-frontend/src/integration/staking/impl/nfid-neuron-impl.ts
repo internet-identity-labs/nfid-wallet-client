@@ -1,6 +1,10 @@
 import { SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
-import { Neuron, NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
+import {
+  Followees,
+  Neuron,
+  NeuronId,
+} from "@dfinity/sns/dist/candid/sns_governance"
 import BigNumber from "bignumber.js"
 import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
 import { bytesToHexString } from "src/integration/staking/service/staking-service-impl"
@@ -31,6 +35,10 @@ export class NfidNeuronImpl implements NFIDNeuron {
   constructor(neuron: Neuron, token: FT) {
     this.neuron = neuron
     this.token = token
+  }
+
+  getFollowees(): [bigint, Followees][] {
+    return this.neuron.followees
   }
 
   getStakeId(): NeuronId {

@@ -1,9 +1,15 @@
 import { SignIdentity } from "@dfinity/agent"
+import { NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
 import clsx from "clsx"
 import { FC, useCallback, useState } from "react"
+import { useForm } from "react-hook-form"
 
+import { FormValues } from "frontend/features/transfer-modal/types"
 import { StakedToken } from "frontend/integration/staking/staked-token"
-import { StakingState } from "frontend/integration/staking/types"
+import {
+  IStakingDelegates,
+  StakingState,
+} from "frontend/integration/staking/types"
 import { NotFound } from "frontend/ui/pages/404"
 
 import { IconNftPlaceholder } from "../../atoms/icons"
@@ -11,7 +17,10 @@ import ImageWithFallback from "../../atoms/image-with-fallback"
 import { Skeleton } from "../../atoms/skeleton"
 import { StakingHeaderSkeleton } from "../../atoms/skeleton/staking-header"
 import { TableStakingOptionSkeleton } from "../../atoms/skeleton/table-staking-option"
+import { Button } from "../../molecules/button"
 import { ArrowButton } from "../../molecules/button/arrow-button"
+import { Input } from "../../molecules/input"
+import { ModalComponent } from "../../molecules/modal/index-v0"
 import { StakingHeader } from "./components/staking-header"
 import { StakingOption } from "./components/staking-option"
 import {
@@ -23,6 +32,8 @@ export interface StakingDetailsProps {
   stakedToken?: StakedToken
   isLoading: boolean
   onRedeemOpen: (id: string) => void
+  delegates: IStakingDelegates | undefined
+  updateDelegates: (value: string, userNeuron?: NeuronId) => void
   identity?: SignIdentity
 }
 
@@ -30,11 +41,24 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
   stakedToken,
   isLoading,
   onRedeemOpen,
+  delegates,
+  updateDelegates,
   identity,
 }) => {
   const [sidePanelOption, setSidePanelOption] =
     useState<SidePanelOption | null>(null)
   const [isStateLoading, setIsStateLoading] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const formMethods = useForm<FormValues>({
+    mode: "all",
+    defaultValues: {
+      userNeuron: "",
+    },
+  })
+
+  const { watch } = formMethods
+  const userNeuron = watch("userNeuron")
 
   const handleNavigateBack = useCallback(() => {
     window.history.back()
@@ -44,6 +68,47 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
 
   return (
     <>
+      <ModalComponent
+        isVisible={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false)
+        }}
+        className="p-5 w-[95%] md:w-[540px] z-[100] !rounded-[24px]"
+      >
+        <div className={clsx("flex flex-col")}>
+          <div className="text-[20px] leading-[26px] mb-[18px] font-bold">
+            Update delegate
+          </div>
+          <p className="text-sm leading-[22px] mb-[20px]">
+            Input a neuron ID to vote on your behalf for this DAO.
+          </p>
+          <Input
+            {...formMethods.register("userNeuron")}
+            labelText="Neuron ID"
+            inputClassName="!border-black"
+          />
+          <div className="flex gap-[10px] justify-end mt-[20px]">
+            <Button
+              type="stroke"
+              onClick={() => setIsModalOpen(false)}
+              className="w-[115px]"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() =>
+                updateDelegates(
+                  userNeuron,
+                  sidePanelOption?.option.getStakeId(),
+                )
+              }
+              className="w-[115px]"
+            >
+              Update
+            </Button>
+          </div>
+        </div>
+      </ModalComponent>
       <StakingSidePanel
         isOpen={Boolean(sidePanelOption)}
         onClose={() => setSidePanelOption(null)}
@@ -52,6 +117,8 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
         identity={identity}
         setIsLoading={setIsStateLoading}
         isLoading={isStateLoading}
+        delegates={delegates}
+        setIsModalOpen={setIsModalOpen}
       />
       {isLoading || isStateLoading || !stakedToken ? (
         <>

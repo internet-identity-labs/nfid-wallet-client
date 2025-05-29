@@ -92,6 +92,9 @@
         "env": "CHAIN_FUSION_SIGNER_CANISTER_ID"
       },
       {
+        "env": "BITCOIN_CANISTER_ID"
+      },
+      {
         "env": "DELEGATION_FACTORY"
       },
       {

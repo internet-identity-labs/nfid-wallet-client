@@ -5,6 +5,7 @@ import { authStorage } from "packages/integration/src/lib/authentication/storage
 import { Balance } from "@nfid/integration"
 
 import { SelectedUtxosFeeResponse } from "./idl/patron.d"
+import { bitcoinCanisterService } from "./services/bitcoin-canister.service"
 import {
   Address,
   chainFusionSignerService,
@@ -33,14 +34,19 @@ export class BitcoinService {
     identity: SignIdentity,
     minConfirmations?: number,
   ): Promise<Balance> {
-    await patronService.askToPayFor(identity)
+    await this.getAddress(identity)
     return chainFusionSignerService.getBalance(identity, minConfirmations)
   }
 
-  public async getQuickBalance(globalPrincipal: Principal): Promise<Balance> {
-    //TODO: implement quick balance
-    globalPrincipal.toText()
-    return BigInt(0)
+  public async getQuickBalance(principal: Principal): Promise<bigint> {
+    const key = `bitcoin-address-${principal.toText()}`
+    const address = await authStorage.get(key)
+
+    if (!address) {
+      throw Error("No bitcoin address in a cache.")
+    }
+
+    return bitcoinCanisterService.getBalanceQuery(address as string)
   }
 
   public async getFee(

@@ -1,6 +1,5 @@
 import { ActorSubclass, HttpAgent, SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
-import { authStorage } from "packages/integration/src/lib/authentication/storage"
 
 import { actor, agentBaseConfig } from "@nfid/integration"
 
@@ -15,17 +14,8 @@ import { satoshiService } from "./satoshi.service"
 
 export class PatronService {
   public async askToPayFor(identity: SignIdentity): Promise<void> {
-    const key = `patron`
-    const cachedValue = await authStorage.get(key)
-
-    if (cachedValue != null) {
-      return
-    }
-
     const patronActor = this.getPatronActor(identity)
-
     await patronActor.allow_signing([])
-    await authStorage.set(key, "v1")
   }
 
   public getPaymentType(): PaymentType {

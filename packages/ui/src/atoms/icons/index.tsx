@@ -8,6 +8,7 @@ import IconSvgCmpArrow from "./arrow.svg"
 import IconSvgCancel from "./cancel.svg"
 import IconSvgChevron from "./chevron.svg"
 import IconClose from "./close.svg"
+import IconSvgConvertAction from "./convert-action.svg"
 import IconSvgCopy from "./copy.svg"
 import IconSvgDesktop from "./desktop.svg"
 import IconSvgDfinity from "./dfinity.svg"
@@ -63,6 +64,7 @@ export {
   IconSvgPasskey,
   IconSvgArrow,
   IconSvgSwapAction,
+  IconSvgConvertAction,
   IconSvgCancel,
   IconSvgChevron,
   IconSvgCopy,
@@ -121,6 +123,7 @@ export {
 }
 
 export { ReactComponent as IconCmpSwap } from "./swap.svg"
+export { ReactComponent as IconCmpConvert } from "./convert.svg"
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
 export { ReactComponent as IconCmpCalendar } from "./calendar.svg"
 export { ReactComponent as IconCmpCancel } from "./cancel.svg"

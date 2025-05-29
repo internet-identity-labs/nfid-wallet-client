@@ -7,8 +7,10 @@ import {
   IconNftPlaceholder,
   Skeleton,
   IDropdownPosition,
+  IconCmpConvert,
 } from "@nfid-frontend/ui"
 import { ArrowPercentChange } from "@nfid-frontend/ui"
+import { CKBTC_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { IProfileConstants } from ".."
 import { AssetDropdown } from "./asset-dropdown"
@@ -19,6 +21,8 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   profileConstants: IProfileConstants
   onSendClick: (value: string) => void
   onSwapClick: (value: string) => void
+  onConvertToBtc: () => any
+  onConvertToCkBtc: () => any
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   loadingToken: FT | null
@@ -32,6 +36,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   profileConstants,
   onSendClick,
   onSwapClick,
+  onConvertToBtc,
+  onConvertToCkBtc,
   setToken,
   dropdownPosition,
   loadingToken,
@@ -62,7 +68,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
       <td className="flex items-center py-[10px] sm:py-0 sm:h-16 pr-[10px] sm:pr-[30px] flex-grow min-w-0 sm:w-auto">
         <div className="w-[24px] h-[24px] sm:w-[40px] sm:h-[40px] mr-[12px] rounded-full bg-zinc-50">
           <ImageWithFallback
-            alt={`${token.getTokenSymbol}`}
+            alt={`${token.getTokenSymbol()}`}
             fallbackSrc={IconNftPlaceholder}
             src={`${token.getTokenLogo()}`}
             className={clsx(
@@ -73,10 +79,34 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         </div>
         <div className="sm:overflow-hidden sm:text-ellipsis sm:whitespace-nowrap">
           <p
-            className="text-sm font-semibold leading-[25px]"
+            className="text-sm font-semibold leading-[25px] flex items-center"
             id={`token_${token.getTokenName().replace(/\s/g, "")}_currency`}
           >
             {token.getTokenSymbol()}
+            {token.getTokenAddress() === "btc-native" && (
+              <>
+                <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+                <span
+                  className="flex items-center text-xs cursor-pointer text-primaryButtonColor"
+                  onClick={onConvertToCkBtc}
+                >
+                  <IconCmpConvert className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor" />
+                  Convert to ckBTC
+                </span>
+              </>
+            )}
+            {token.getTokenAddress() === CKBTC_CANISTER_ID && (
+              <>
+                <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+                <span
+                  className="flex items-center text-xs cursor-pointer text-primaryButtonColor"
+                  onClick={onConvertToBtc}
+                >
+                  <IconCmpConvert className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor" />
+                  Convert to BTC
+                </span>
+              </>
+            )}
           </p>
           <p className="text-secondary text-xs leading-[20px]">
             {token.getTokenName()}
@@ -167,6 +197,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           profileConstants={profileConstants}
           onSendClick={onSendClick}
           onSwapClick={onSwapClick}
+          onConvertToBtc={onConvertToBtc}
+          onConvertToCkBtc={onConvertToCkBtc}
           setToken={setToken}
           dropdownPosition={dropdownPosition}
           setIsTokenProcessed={setIsTokenProcessed}

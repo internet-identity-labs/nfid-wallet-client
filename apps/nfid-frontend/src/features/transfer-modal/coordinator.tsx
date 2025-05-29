@@ -124,6 +124,7 @@ export const TransferModalCoordinator = () => {
           >
             <SwapFT
               preselectedSourceTokenAddress={state.context.selectedFT}
+              preselectedTargetTokenAddress={state.context.selectedTargetFT}
               onClose={hideModal}
               onError={setHasSwapError}
               hideZeroBalance={hideZeroBalance}

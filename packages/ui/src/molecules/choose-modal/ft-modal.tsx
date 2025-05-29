@@ -7,6 +7,7 @@ import { ChooseFtItem } from "./choose-ft-item"
 import { ChooseTokenModal } from "./token-modal"
 
 export interface IChooseFtModal {
+  id: string,
   searchInputId: string
   tokens: FT[]
   onSelect: (value: string) => void
@@ -17,6 +18,7 @@ export interface IChooseFtModal {
 }
 
 export const ChooseFtModal = ({
+  id,
   searchInputId,
   tokens,
   onSelect,
@@ -62,6 +64,7 @@ export const ChooseFtModal = ({
   return (
     <>
       <ChooseTokenModal
+        id={id}
         searchInputId={searchInputId}
         tokens={sortedTokens}
         title={title}

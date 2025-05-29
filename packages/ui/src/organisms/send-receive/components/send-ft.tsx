@@ -96,6 +96,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
       />
       <p className="mb-1 text-xs">Amount to send</p>
       <ChooseFromToken
+        id={"token-to-send-title"}
         token={token}
         balance={vaultsBalance}
         setFromChosenToken={setChosenToken}

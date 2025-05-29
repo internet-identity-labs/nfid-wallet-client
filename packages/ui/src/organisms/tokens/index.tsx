@@ -43,6 +43,8 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   }>
   onSendClick: (value: string) => void
   onSwapClick: (value: string) => void
+  onConvertToBtc: () => any
+  onConvertToCkBtc: () => any
   hideZeroBalance: boolean
   onZeroBalanceToggle: () => void
   tokensIniting?: boolean
@@ -57,6 +59,8 @@ export const Tokens: FC<TokensProps> = ({
   onFetch,
   onSendClick,
   onSwapClick,
+  onConvertToBtc,
+  onConvertToCkBtc,
   hideZeroBalance,
   onZeroBalanceToggle,
   tokensIniting,
@@ -184,6 +188,8 @@ export const Tokens: FC<TokensProps> = ({
                     setToken={setToken}
                     dropdownPosition={index + 4 > arr.length ? "top" : "bottom"}
                     loadingToken={loadingToken}
+                    onConvertToBtc={onConvertToBtc}
+                    onConvertToCkBtc={onConvertToCkBtc}
                   />
                 ))
               )}

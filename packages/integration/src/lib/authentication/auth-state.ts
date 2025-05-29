@@ -10,6 +10,9 @@ import {
 import base64url from "base64url"
 import { BehaviorSubject, find, lastValueFrom, map } from "rxjs"
 
+import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
+import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
+
 import { PassKeyData } from "../_ic_api/passkey_storage.d"
 import { im, passkeyStorage, replaceActorIdentity } from "../actors"
 import { agent } from "../agent"
@@ -231,6 +234,11 @@ function makeAuthState() {
     })
     replaceIdentity(delegationIdentity, "authState.set")
     setupSessionManager({ onIdle: invalidateIdentity })
+    const globalIdentity = await getWalletDelegationAdapter("nfid.one", "-1", [
+      PATRON_CANISTER_ID,
+      CHAIN_FUSION_SIGNER_CANISTER_ID,
+    ])
+    await bitcoinService.getAddress(globalIdentity)
   }
 
   function get() {

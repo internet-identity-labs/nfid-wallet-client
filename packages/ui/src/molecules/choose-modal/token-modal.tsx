@@ -26,6 +26,7 @@ import { useIntersectionObserver } from "../../organisms/send-receive/hooks/inte
 const INITED_TOKENS_LIMIT = 6
 
 export interface IChooseTokenModal<T> {
+  id: string,
   searchInputId?: string
   tokens: T[]
   onSelect: (value: T) => void
@@ -42,6 +43,7 @@ export interface IChooseTokenModal<T> {
 }
 
 export const ChooseTokenModal = <T extends FT | NFT>({
+  id,
   searchInputId,
   tokens,
   onSelect,
@@ -157,7 +159,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
               <IconCmpArrow className="mr-2" />
             </div>
             <div className="flex items-center justify-between w-full">
-              <p className="text-xl font-bold leading-10">{title}</p>
+              <p id={id} className="text-xl font-bold leading-10">{title}</p>
               {tokensAvailableToSwap && (
                 <Tooltip
                   align="end"

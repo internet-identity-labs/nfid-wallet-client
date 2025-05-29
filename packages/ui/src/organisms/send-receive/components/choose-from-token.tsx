@@ -24,6 +24,7 @@ import { useTokenInit } from "../hooks/token-init"
 import { BALANCE_EDGE_LENGTH } from "./swap-form"
 
 interface ChooseFromTokenProps {
+  id: string,
   token: FT | undefined
   tokens: FT[]
   balance?: bigint | undefined
@@ -38,6 +39,7 @@ interface ChooseFromTokenProps {
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
+  id,
   token,
   tokens,
   balance,
@@ -143,6 +145,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           )}
         >
           <ChooseFtModal
+            id={id}
             searchInputId={"sourceTokenSearchInput"}
             tokens={tokens}
             title={title}

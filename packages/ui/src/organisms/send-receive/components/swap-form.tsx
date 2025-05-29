@@ -111,6 +111,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
         </div>
         <p className="mb-1 text-xs">From</p>
         <ChooseFromToken
+          id={"swap-from-title"}
           token={fromToken}
           setFromChosenToken={setFromChosenToken}
           usdRate={quote?.getSourceAmountUSD()}

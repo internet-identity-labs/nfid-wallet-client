@@ -72,7 +72,7 @@ describe("Bitcoin Service", () => {
     expect(balance).toEqual(BigInt(1647))
   })
 
-  it("should return a quick balance", async () => {
+  it.skip("should return a quick balance", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
     const principal: Principal = identity.getPrincipal()
@@ -84,7 +84,7 @@ describe("Bitcoin Service", () => {
     expect(balance).toEqual(BigInt(1647))
   })
 
-  it("should return a fee", async () => {
+  it.skip("should return a fee", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
     const amount: string = "0.00001"

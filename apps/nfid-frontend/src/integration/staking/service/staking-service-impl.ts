@@ -33,7 +33,7 @@ import { StakeParamsCalculator } from "frontend/integration/staking/stake-params
 
 import { StakeParamsCalculatorImpl } from "../calculator/stake-params-calculator-impl"
 import { StakedToken } from "../staked-token"
-import { TotalBalance } from "../types"
+import { IStakingDelegates, TotalBalance } from "../types"
 
 export class StakingServiceImpl implements StakingService {
   @Cache(integrationCache, { ttl: 300, calculateKey: () => "getStakedTokens" })
@@ -194,7 +194,7 @@ export class StakingServiceImpl implements StakingService {
   async getDelegates(
     identity: SignIdentity,
     root: Principal,
-  ): Promise<ListNervousSystemFunctionsResponse> {
+  ): Promise<IStakingDelegates> {
     return await listNNSFunctions({
       identity: identity,
       rootCanisterId: root,

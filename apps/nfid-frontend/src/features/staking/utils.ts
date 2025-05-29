@@ -26,7 +26,7 @@ export const fetchStakedToken = async (
 export const fetchDelegates = async (
   identity?: SignIdentity,
   root?: Principal,
-): Promise<IStakingDelegates | undefined> => {
+) => {
   if (!identity || !root) return
   return stakingService.getDelegates(identity, root)
 }

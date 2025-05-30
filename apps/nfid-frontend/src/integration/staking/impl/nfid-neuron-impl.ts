@@ -1,6 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
 import { NeuronState } from "@dfinity/nns"
-import { NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
+import { Followees, NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
 import BigNumber from "bignumber.js"
 import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
 
@@ -24,6 +24,8 @@ export abstract class NfidNeuronImpl<T> implements NFIDNeuron {
   }
 
   abstract getState(): NeuronState
+
+  abstract getFollowees(): [bigint, Followees][]
 
   abstract getStakeId(): NeuronId | bigint
 

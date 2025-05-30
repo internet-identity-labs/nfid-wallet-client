@@ -18,6 +18,10 @@ export class NfidICPNeuronImpl extends NfidNeuronImpl<NeuronInfo> {
     return this.neuron.state
   }
 
+  getFollowees(): any {
+    throw new Error("This method is not implemented yet")
+  }
+
   getStakeId(): bigint {
     return this.neuron.neuronId
   }

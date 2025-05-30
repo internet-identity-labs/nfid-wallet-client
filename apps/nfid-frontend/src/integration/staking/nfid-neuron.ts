@@ -1,11 +1,12 @@
 import { SignIdentity } from "@dfinity/agent"
 import { NeuronState } from "@dfinity/nns"
-import { NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
+import { Followees, NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
 
 import { FT } from "../ft/ft"
 import { FormattedDate, TokenValue } from "./types"
 
 export interface NFIDNeuron {
+  getFollowees(): [bigint, Followees][]
   getToken(): FT
   getState(): NeuronState
   getStakeId(): NeuronId | bigint

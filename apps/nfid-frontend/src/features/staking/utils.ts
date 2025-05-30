@@ -1,4 +1,5 @@
 import { SignIdentity } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
 
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
 
@@ -21,4 +22,13 @@ export const fetchStakedToken = async (
   const tokens = await fetchStakedTokens(identity)
   if (!tokens) return
   return tokens.find((token) => token.getToken().getTokenSymbol() === symbol)
+}
+
+export const fetchDelegates = async (
+  identity?: SignIdentity,
+  root?: Principal,
+) => {
+  console.log("ayayaya", identity, root)
+  if (!identity || !root) return
+  return stakingService.getDelegates(identity, root)
 }

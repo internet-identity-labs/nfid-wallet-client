@@ -43,7 +43,7 @@ import { NfidSNSNeuronImpl } from "../impl/nfid-sns-neuron-impl"
 import { StakedICPTokenImpl } from "../impl/staked-icp-token-impl"
 import { StakedSnsTokenImpl } from "../impl/staked-sns-token-impl"
 import { StakedToken } from "../staked-token"
-import { TotalBalance } from "../types"
+import { IStakingDelegates, TotalBalance } from "../types"
 
 export class StakingServiceImpl implements StakingService {
   @Cache(integrationCache, { ttl: 300, calculateKey: () => "getStakedTokens" })
@@ -284,27 +284,36 @@ export class StakingServiceImpl implements StakingService {
     })
   }
 
+  async getDelegates(
+    identity: SignIdentity,
+    root: Principal,
+  ): Promise<IStakingDelegates> {
+    return await listNNSFunctions({
+      identity: identity,
+      rootCanisterId: root,
+    })
+  }
+
   async followNeurons(
     delegation: SignIdentity,
     root: Principal,
     rootNeuron: SnsNeuronId,
   ) {
-    const neuronsToFollow = await icrc1OracleService.getAllNeurons()
-    neuronsToFollow.filter((n) => n.rootCanister === root.toText())
-    const response = await listNNSFunctions({
-      identity: delegation,
-      rootCanisterId: root,
-    })
+    let neuronsToFollow = await icrc1OracleService.getAllNeurons()
+    neuronsToFollow = neuronsToFollow.filter(
+      (n) => n.rootCanister === root.toText(),
+    )
+    const delegates = await this.getDelegates(delegation, root)
 
     if (neuronsToFollow.length > 0) {
       for (const neuron of neuronsToFollow) {
         const neurnonId: SnsNeuronId = {
           id: hexStringToUint8Array(neuron.neuron_id),
         }
-        for (const f of response.functions) {
+        for (const d of delegates.functions) {
           setFollowees({
             identity: delegation,
-            functionId: f.id,
+            functionId: d.id,
             rootCanisterId: root,
             neuronId: rootNeuron,
             followees: [neurnonId],
@@ -346,15 +355,12 @@ export class StakingServiceImpl implements StakingService {
     root: Principal,
     userNeuron: SnsNeuronId,
   ) {
-    const response = await listNNSFunctions({
-      identity: delegation,
-      rootCanisterId: root,
-    })
+    const delegates = await this.getDelegates(delegation, root)
 
-    for (const f of response.functions) {
+    for (const d of delegates.functions) {
       setFollowees({
         identity: delegation,
-        functionId: f.id,
+        functionId: d.id,
         rootCanisterId: root,
         neuronId: userNeuron,
         followees: [neuronToFollow],

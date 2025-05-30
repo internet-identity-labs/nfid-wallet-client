@@ -1,7 +1,11 @@
 import { SignIdentity } from "@dfinity/agent"
 import { NeuronState } from "@dfinity/nns"
 import { Principal } from "@dfinity/principal"
-import { Neuron, NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
+import {
+  Followees,
+  Neuron,
+  NeuronId,
+} from "@dfinity/sns/dist/candid/sns_governance"
 import { bytesToHexString } from "src/integration/staking/service/staking-service-impl"
 
 import {
@@ -23,6 +27,10 @@ export class NfidSNSNeuronImpl extends NfidNeuronImpl<Neuron> {
 
   getStakeId(): NeuronId {
     return { id: this.neuron.id[0]!.id }
+  }
+
+  getFollowees(): [bigint, Followees][] {
+    return this.neuron.followees
   }
 
   getStakeIdFormatted(): string {

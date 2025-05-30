@@ -37,7 +37,10 @@ export const StakeSuccessUi: FC<StakeSuccessProps> = ({
         !isOpen && "hidden",
       )}
     >
-      <div className={clsx("text-center", { "mb-[50px]": !!error })}>
+      <div
+        id={"stakingProcessTitle"}
+        className={clsx("text-center", { "mb-[50px]": !!error })}
+      >
         <H5 className="mt-5 text-xl !font-bold leading-6">
           {status === SendStatus.FAILED
             ? "Transaction failed"
@@ -70,6 +73,7 @@ export const StakeSuccessUi: FC<StakeSuccessProps> = ({
           </div>
         )}
         <Button
+          id={"stake-success-close-button"}
           type="primary"
           block
           className={clsx(error ? "mt-[20px]" : "mt-[30px]")}

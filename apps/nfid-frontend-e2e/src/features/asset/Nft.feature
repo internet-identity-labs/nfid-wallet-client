@@ -5,7 +5,7 @@ Feature: NFT tab
   Scenario Outline: User checks his NFTs and details of an NFT
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor
-    When User goes to nfts tab
+    When User goes to NFTs tab
     Then Verifying that 2 NFT are displayed on collectibles page
     And Verifying that the token with name <NFT name> and collection <collection_id> is displayed
     When User switches to table view

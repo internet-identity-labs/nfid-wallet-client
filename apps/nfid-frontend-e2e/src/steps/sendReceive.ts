@@ -4,7 +4,7 @@ import { softAssertAll } from "../helpers/assertions.js"
 import Assets from "../pages/assets.js"
 
 When(/^User selects the (.*) NFT$/, async (tokenName: string) => {
-  await Assets.getTokenByNameInSend(tokenName).click()
+  await (await Assets.getTokenByNameInSend(tokenName)).click()
 })
 
 When(/^User switches send type$/, async () => {
@@ -21,13 +21,13 @@ When(/^User clicks the back button in Send window$/, async () => {
 Then(
   /^Verifying that user sees option ([^"]*) in dropdown/,
   async (option: string) => {
-    await Assets.getTokenByNameInSend(option).waitForExist({ timeout: 15000 })
+    await (await Assets.getTokenByNameInSend(option)).waitForExist({ timeout: 15000 })
   },
 )
 
 Then(/^User selects ([^"]*) from send options/, async (currency: string) => {
   await Assets.openAssetOptionsOnSR()
-  await Assets.currencyOption(currency.replace(/^\$/, "")).click()
+  await (await Assets.currencyOption(currency.replace(/^\$/, ""))).click()
 })
 
 Then(

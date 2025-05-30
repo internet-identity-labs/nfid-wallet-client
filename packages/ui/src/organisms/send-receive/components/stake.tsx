@@ -176,6 +176,7 @@ export const StakeUi: FC<StakeUiProps> = ({
       ) : (
         <div>
           <Input
+            id={"lock-time-period"}
             className="mb-[-11px]"
             inputClassName="h-[60px] !border-black border-b-0 rounded-b-none !bg-white !text-black"
             value={getFormattedPeriod(lockValue, true)}
@@ -247,7 +248,7 @@ export const StakeUi: FC<StakeUiProps> = ({
       <Button
         disabled={Boolean(errors["amount"]?.message) || !amount}
         type="primary"
-        id="stakeButton"
+        id="stakeTokensButton"
         block
         onClick={submit}
         icon={<IconCmpStake className="!w-[18px] !h-[18px] text-white" />}

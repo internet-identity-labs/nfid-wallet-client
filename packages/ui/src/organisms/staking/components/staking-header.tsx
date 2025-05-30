@@ -26,7 +26,10 @@ export const StakingHeader: FC<StakingInfoProps> = ({
           <p className="leading-5 text-secondary text-sm font-bold mb-[10px]">
             Staking balance
           </p>
-          <p className="leading-[32px] text-[22px] md:text-[26px] font-semibold whitespace-nowrap">
+          <p
+            id={"stakingBalance"}
+            className="leading-[32px] text-[22px] md:text-[26px] font-semibold whitespace-nowrap"
+          >
             {total !== undefined && (
               <>
                 <p>
@@ -45,7 +48,10 @@ export const StakingHeader: FC<StakingInfoProps> = ({
           <p className="leading-5 text-secondary text-sm font-bold mb-[10px]">
             Staked
           </p>
-          <p className="leading-[32px] text-[22px] md:text-[26px] font-semibold whitespace-nowrap">
+          <p
+            id={"stakedAmount"}
+            className="leading-[32px] text-[22px] md:text-[26px] font-semibold whitespace-nowrap"
+          >
             {staked !== undefined && (
               <>
                 <p>
@@ -63,7 +69,10 @@ export const StakingHeader: FC<StakingInfoProps> = ({
           <p className="leading-5 text-secondary text-sm font-bold mb-[10px]">
             Rewards
           </p>
-          <p className="leading-[32px] text-[22px] md:text-[26px] font-semibold whitespace-nowrap">
+          <p
+            id={"stakingRewards"}
+            className="leading-[32px] text-[22px] md:text-[26px] font-semibold whitespace-nowrap"
+          >
             {rewards !== undefined && (
               <>
                 <p>

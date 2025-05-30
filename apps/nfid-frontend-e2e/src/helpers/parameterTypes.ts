@@ -25,3 +25,10 @@ defineParameterType({
       .map(token => map[token] || token)
   },
 })
+
+defineParameterType({
+  name: "lockTime",
+  regexp: /1 month|(?:[2-9]|1[0-1]) months|1 year/,
+  transformer: (value: string) => value,
+})
+

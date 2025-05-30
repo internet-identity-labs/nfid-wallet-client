@@ -1,4 +1,6 @@
-export class Nft {
+import { Page } from "./page.js"
+
+export class Nft extends Page {
   get randomTokenOnNFTtab() {
     return $("*[id^='nft_token']")
   }
@@ -11,7 +13,7 @@ export class Nft {
     return $("#items-amount")
   }
 
-  public async getValueFromColumnAtFirstRow(columnName: string) {
+  async getValueFromColumnAtFirstRow(columnName: string) {
     const locator =
       $(`//*[@id='nft-table']//thead//th[text()='${columnName}']/ancestor::table//tbody//tr[1]//td[count(//*[@id='nft-table']//thead//th[text()='${columnName}']/preceding-sibling::th) + 1]
 `)
@@ -19,31 +21,31 @@ export class Nft {
     return await locator.getText()
   }
 
-  public getNftName(token: string, collection: string) {
+  async getNftName(token: string, collection: string) {
     return $(`//*[contains(@id, 'nft_token_${token}_${collection}')]`)
   }
 
-  public get getNftStandard() {
+  get getNftStandard() {
     return $(`#token-standard`)
   }
 
-  public get getAbout() {
+  get getAbout() {
     return $(`#token-about`)
   }
 
-  public get getCollectionId() {
+  get getCollectionId() {
     return $(`#collection-id`)
   }
 
-  public getNftCollection(collection: string) {
+  async getNftCollection(collection: string) {
     return $(`#nft_collection_${collection.replace(/\s/g, "")}`)
   }
 
-  public getNftId(id: string) {
+  async getNftId(id: string) {
     return $(`#nft_id_${id.replace(/\s/g, "")}`)
   }
 
-  public async switchToTable() {
+  async switchToTable() {
     const table = await $("#to-table")
     await table.waitForDisplayed({
       timeout: 5000,
@@ -51,14 +53,14 @@ export class Nft {
     await table.click()
   }
 
-  public async nftDetails(token: string, collection: string) {
-    await this.getNftName(token, collection).waitForDisplayed({
+  async nftDetails(token: string, collection: string) {
+    await (await this.getNftName(token, collection)).waitForDisplayed({
       timeout: 30000,
     })
-    await this.getNftName(token, collection).click()
+    await (await this.getNftName(token, collection)).click()
   }
 
-  public async getNftCollectiblesAmount(expectedItemsAmount: number) {
+  async getNftCollectiblesAmount(expectedItemsAmount: number) {
     let currentItemsAmount: string
     await browser.waitUntil(
       async () => {

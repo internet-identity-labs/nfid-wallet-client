@@ -6,17 +6,17 @@ import Nft from "../pages/nft.js"
 Then(
   /^Verifying that the token with name (.+) and collection (.+?)(?: and ID (.+))? is displayed$/,
   async (token: string, collection: string, id?: string) => {
-    await Nft.getNftName(token, collection).waitForDisplayed({
+    await (await Nft.getNftName(token, collection)).waitForDisplayed({
       timeout: 5000,
       timeoutMsg: `Not found NFT with name ${token} and collection ${collection}`,
     })
-    await Nft.getNftCollection(collection).waitForDisplayed({
+    await (await Nft.getNftCollection(collection)).waitForDisplayed({
       timeout: 5000,
       timeoutMsg: `Not found collection with name ${collection}`,
     })
 
     if (id)
-      await Nft.getNftId(id).waitForDisplayed({
+      await (await Nft.getNftId(id)).waitForDisplayed({
         timeout: 5000,
         timeoutMsg: `Token ID ${id} is wrong or still not displayed in 5sec`,
       })

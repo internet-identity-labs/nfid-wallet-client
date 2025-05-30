@@ -8,12 +8,12 @@ Feature: Swap functionality
     Then Verifying that tokens are displayed on assets tab
     When User opens Swap dialog window
     And User sets the target token to $NFIDW
-    And User sets amount to swap to 0.001
+    And User sets amount to Swap to 0.001
     And User clicks the Swap tokens button
-    Then Verifying that the swap transaction is success
-    When User goes to activity tab
+    Then Verifying that the Swap transaction is success
+    When User goes to Activity tab
     Then Verifying that swap transactions are stored in activity table
-    When User goes to tokens tab
+    When User goes to Tokens tab
     And Verifying the balance of $NFIDW token and $ICP token has changed correctly
 
   @swap @mobile
@@ -23,10 +23,10 @@ Feature: Swap functionality
     Then Verifying that tokens are displayed on assets tab
     When User opens Swap dialog window
     And User sets the target token to $NFIDW
-    And User sets amount to swap to 0.001
+    And User sets amount to Swap to 0.001
     And User clicks the Swap tokens button
-    Then Verifying that the swap transaction is success
-    When User goes to activity tab
+    Then Verifying that the Swap transaction is success
+    When User goes to Activity tab
     Then Verifying that swap transactions are stored in activity table
-    When User goes to tokens tab
+    When User goes to Tokens tab
     And Verifying the balance of $NFIDW token and $ICP token has changed correctly

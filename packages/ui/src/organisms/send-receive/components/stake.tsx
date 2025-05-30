@@ -216,10 +216,10 @@ export const StakeUi: FC<StakeUiProps> = ({
             ) : (
               <>
                 <p className="leading-[22px]">
-                  {stakingParams?.getFee().getTokenValue()}
+                  {stakingParams?.getFeeFormatted().getTokenValue()}
                 </p>
                 <p className="text-xs leading-[20px] text-secondary">
-                  {stakingParams?.getFee().getUSDValue()}
+                  {stakingParams?.getFeeFormatted().getUSDValue()}
                 </p>
               </>
             )}

@@ -28,7 +28,6 @@ export const fetchDelegates = async (
   identity?: SignIdentity,
   root?: Principal,
 ) => {
-  console.log("ayayaya", identity, root)
   if (!identity || !root) return
   return stakingService.getDelegates(identity, root)
 }

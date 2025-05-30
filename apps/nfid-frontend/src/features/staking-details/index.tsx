@@ -45,9 +45,7 @@ const StakingDetailsPage = () => {
   )
 
   const { data: delegates } = useSWR(
-    stakedToken && tokenSymbol && identity
-      ? ["stakedTokenDelegates", tokenSymbol]
-      : null,
+    tokenSymbol && identity ? ["stakedTokenDelegates", tokenSymbol] : null,
     () =>
       fetchDelegates(identity, stakedToken?.getToken().getRootSnsCanister()),
     { revalidateOnFocus: false },

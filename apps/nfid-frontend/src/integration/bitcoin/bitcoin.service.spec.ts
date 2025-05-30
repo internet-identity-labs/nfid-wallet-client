@@ -8,6 +8,7 @@ import { authStorage } from "packages/integration/src/lib/authentication/storage
 
 import { bitcoinService, BlockIndex } from "./bitcoin.service"
 import { SelectedUtxosFeeResponse } from "./idl/patron.d"
+import { TransactionId } from "./services/chain-fusion-signer.service"
 
 const IDENTITY: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003008adc857dfcd0477a7aaa01a657ca6923ce76c07645704b1e872deb1253baa",
@@ -129,6 +130,26 @@ describe("Bitcoin Service", () => {
     const txid: BlockIndex = await bitcoinService.convertFromCkBtc(
       identity,
       amount,
+    )
+
+    // Then
+    expect(txid).not.toBeNull()
+  })
+
+  it.skip("should send Btc into ckBtc minter", async () => {
+    // Given
+    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
+    const amount: string = "0.00001"
+    const fee: SelectedUtxosFeeResponse = await bitcoinService.getFee(
+      identity,
+      amount,
+    )
+
+    // When
+    const txid: TransactionId = await bitcoinService.convertToCkBtc(
+      identity,
+      amount,
+      fee
     )
 
     // Then

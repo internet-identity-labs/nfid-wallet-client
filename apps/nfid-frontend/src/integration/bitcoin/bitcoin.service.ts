@@ -87,6 +87,16 @@ export class BitcoinService {
     )
     return blockIndex
   }
+
+  public async convertToCkBtc(
+    identity: SignIdentity,
+    amount: string,
+    fee: SelectedUtxosFeeResponse,
+  ): Promise<TransactionId> {
+    const address: Address = await ckBtcService.getBtcAddressToMintCkBtc(identity)
+    const txId: TransactionId = await this.send(identity, address, amount, fee)
+    return txId
+  }
 }
 
 export const bitcoinService = new BitcoinService()

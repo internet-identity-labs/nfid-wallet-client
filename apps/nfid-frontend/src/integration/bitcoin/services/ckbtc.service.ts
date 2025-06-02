@@ -20,7 +20,7 @@ class CkBtcService {
   ): Promise<BlockIndex> {
     const amountInSatoshis = satoshiService.getInSatoshis(amount)
     await this.approve(identity, amountInSatoshis)
-    const blockIndex = this.retrieveBtc(identity, address, amountInSatoshis)
+    const blockIndex = await this.retrieveBtc(identity, address, amountInSatoshis)
 
     const fee = this.getFee(amountInSatoshis)
     await this.approve(identity, fee)
@@ -39,6 +39,11 @@ class CkBtcService {
       to: { owner: Principal.fromText(address), subaccount: [] },
       amount,
     })
+  }
+
+  public async getBtcAddressToMintCkBtc(identity: SignIdentity) {
+    const minter = await this.getMinter(identity)
+    return minter.getBtcAddress({ owner: identity.getPrincipal() })
   }
 
   private async approve(identity: SignIdentity, amount: bigint): Promise<void> {
@@ -66,10 +71,7 @@ class CkBtcService {
       host: IC_HOST,
     })
 
-    const minter = CkBTCMinterCanister.create({
-      agent,
-      canisterId: Principal.fromText(CK_BTC_MINTER_CANISTER_ID),
-    })
+    const minter = await this.getMinter(identity)
 
     const { block_index }: RetrieveBtcOk = await minter.retrieveBtcWithApproval(
       { address, amount },
@@ -89,6 +91,19 @@ class CkBtcService {
     })
     const ledger = IcrcLedgerCanister.create({
       canisterId: Principal.fromText(CK_BTC_LEDGER_CANISTER_ID),
+      agent,
+    })
+
+    return ledger
+  }
+
+  private async getMinter(identity: SignIdentity) {
+    const agent = await createAgent({
+      identity,
+      host: IC_HOST,
+    })
+    const ledger = CkBTCMinterCanister.create({
+      canisterId: Principal.fromText(CK_BTC_MINTER_CANISTER_ID),
       agent,
     })
 

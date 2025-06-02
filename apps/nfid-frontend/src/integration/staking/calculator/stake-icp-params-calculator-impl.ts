@@ -2,7 +2,7 @@ import { NetworkEconomics } from "@dfinity/nns"
 
 import { StakeParamsCalculatorImpl } from "./stake-params-calculator-impl"
 
-const EIGHT_YEARS_IN_SECONDS = 6 * 365 * 24 * 60 * 60 + 2 * 366 * 24 * 60 * 60
+const EIGHT_YEARS_IN_SECONDS = 252460800
 
 export class StakeICPParamsCalculatorImpl extends StakeParamsCalculatorImpl<NetworkEconomics> {
   getFee(): bigint | undefined {

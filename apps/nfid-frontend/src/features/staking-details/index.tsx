@@ -21,15 +21,14 @@ const StakingDetailsPage = () => {
   const [identity, setIdentity] = useState<SignIdentity>()
   const [identityLoading, setIdentityLoading] = useState(false)
 
-  const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
-    "tokens",
-    fetchTokens,
-    { revalidateOnFocus: false, revalidateOnMount: false },
-  )
+  const { data: tokens = [] } = useSWRWithTimestamp("tokens", fetchTokens, {
+    revalidateOnFocus: false,
+    revalidateOnMount: false,
+  })
 
   const token = useMemo(() => {
     return tokens.find((t) => t.getTokenSymbol() === tokenSymbol)
-  }, [tokens])
+  }, [tokens, tokenSymbol])
 
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)

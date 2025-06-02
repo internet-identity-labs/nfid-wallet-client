@@ -127,7 +127,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
           </div>
           <div className="flex flex-col">
             <Button
-              id="stakeButton"
+              id="profileStakeButton"
               className="flex-1 !px-0 sm:!px-[15px]"
               innerClassName="!space-x-1 !h-[40px] !md:h-full w-[72px] md:w-auto"
               icon={
@@ -136,7 +136,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
               onClick={onStakeClick}
               isSmall
             >
-              <span className="hidden md:flex">Stake</span>
+              <span id={"stakeButton"} className="hidden md:flex">Stake</span>
             </Button>
             <p className="text-primaryButtonColor md:hidden mb-0 text-xs leading-[20px] mt-[4px] text-center">
               Stake

@@ -145,7 +145,9 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
         ) : tokenPrice ? (
           <div>
-            <div>{tokenPrice}</div>
+            <div id={`token_${token.getTokenName().replace(/\s/g, "")}_price`}>
+              {tokenPrice}
+            </div>
             {tokenRateDayChange && (
               <ArrowPercentChange
                 value={tokenRateDayChange?.value || "0"}

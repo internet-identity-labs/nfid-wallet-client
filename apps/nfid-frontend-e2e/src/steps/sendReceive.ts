@@ -4,7 +4,7 @@ import { softAssertAll } from "../helpers/assertions.js"
 import Assets from "../pages/assets.js"
 
 When(/^User selects the (.*) NFT$/, async (tokenName: string) => {
-  await Assets.getTokenByNameInSend(tokenName).click()
+  await (await Assets.getTokenByNameInSend(tokenName)).click()
 })
 
 When(/^User switches send type$/, async () => {
@@ -21,24 +21,30 @@ When(/^User clicks the back button in Send window$/, async () => {
 Then(
   /^Verifying that user sees option ([^"]*) in dropdown/,
   async (option: string) => {
-    await Assets.getTokenByNameInSend(option).waitForExist({ timeout: 15000 })
+    await (
+      await Assets.getTokenByNameInSend(option)
+    ).waitForExist({ timeout: 15000 })
   },
 )
 
 Then(/^User selects ([^"]*) from send options/, async (currency: string) => {
-  await browser.waitUntil(async () => {
-    await Assets.openAssetOptionsOnSR()
-    try {
-      await Assets.currencyOption(currency.replace(/^\$/, ""))
-        .then(async (it) => {
-          await it.waitForClickable()
-          await it.click()
-        })
-    } catch (e) {
-      await Assets.tokenToSendBackButton.click()
-    }
-    return await Assets.chooseModalButton.isDisplayed()
-  }, { timeout: 30000, timeoutMsg: "List of tokens is not loaded in 30 sec" })
+  await browser.waitUntil(
+    async () => {
+      await Assets.openAssetOptionsOnSR()
+      try {
+        await Assets.currencyOption(currency.replace(/^\$/, "")).then(
+          async (it) => {
+            await it.waitForClickable()
+            await it.click()
+          },
+        )
+      } catch (e) {
+        await Assets.tokenToSendBackButton.click()
+      }
+      return await Assets.chooseModalButton.isDisplayed()
+    },
+    { timeout: 30000, timeoutMsg: "List of tokens is not loaded in 30 sec" },
+  )
 })
 
 Then(
@@ -74,7 +80,7 @@ Then(/^Verifying that the transaction is success$/, async () => {
 
 Then(
   /^Verifying that the Account ID is ([^"]*) and the Principal is ([^"]*)/,
-  async function(account: string, principal: string) {
+  async function (account: string, principal: string) {
     const currentAddress = await Assets.getAccountId(true)
     let currentPrincipal = await Assets.getAccountId(false)
 
@@ -82,14 +88,14 @@ Then(
       async () =>
         await expect(
           (await currentAddress.firstAddressPart.getText()) +
-          "..." +
-          (await currentAddress.secondAddressPart.getText()),
+            "..." +
+            (await currentAddress.secondAddressPart.getText()),
         ).toEqual(account),
       async () =>
         await expect(
           (await currentPrincipal.firstAddressPart.getText()) +
-          "..." +
-          (await currentPrincipal.secondAddressPart.getText()),
+            "..." +
+            (await currentPrincipal.secondAddressPart.getText()),
         ).toEqual(principal),
     )
   },

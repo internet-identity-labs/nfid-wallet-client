@@ -46,3 +46,7 @@ declare const CANISTER_WITH_AT_LEAST_ONE_PASSKEY: string
 declare const PATRON_CANISTER_ID: string
 declare const CHAIN_FUSION_SIGNER_CANISTER_ID: string
 declare const BITCOIN_CANISTER_ID: string
+declare const CK_BTC_LEDGER_CANISTER_ID: string
+declare const CK_BTC_MINTER_CANISTER_ID: string
+declare const FEE_PERCENT: string
+declare const FEE_ADDRESS: string

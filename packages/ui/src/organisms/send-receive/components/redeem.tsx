@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { FC } from "react"
 
-import { Button } from "@nfid-frontend/ui"
+import { BlurredLoader, Button } from "@nfid-frontend/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 import { NFIDNeuron } from "frontend/integration/staking/nfid-neuron"
@@ -27,7 +27,14 @@ export const Redeem: FC<ReceiveProps> = ({
   stakeToRedeem,
   isLoading,
 }) => {
-  if (!stakeToRedeem) return null
+  if (!stakeToRedeem || isLoading)
+    return (
+      <BlurredLoader
+        isLoading
+        overlayClassnames="rounded-xl"
+        className="text-xs"
+      />
+    )
   return (
     <>
       <RedeemSuccessUi
@@ -127,13 +134,7 @@ export const Redeem: FC<ReceiveProps> = ({
           </div>
         </div>
       </div>
-      <Button
-        type="primary"
-        id="redeemButton"
-        block
-        onClick={redeem}
-        disabled={isLoading}
-      >
+      <Button type="primary" id="redeemButton" block onClick={redeem}>
         Redeem
       </Button>
     </>

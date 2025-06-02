@@ -95,6 +95,18 @@
         "env": "BITCOIN_CANISTER_ID"
       },
       {
+        "env": "CK_BTC_LEDGER_CANISTER_ID"
+      },
+      {
+        "env": "CK_BTC_MINTER_CANISTER_ID"
+      },
+      {
+        "env": "FEE_PERCENT"
+      },
+      {
+        "env": "FEE_ADDRESS"
+      },
+      {
         "env": "DELEGATION_FACTORY"
       },
       {

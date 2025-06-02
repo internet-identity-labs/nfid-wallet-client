@@ -41,7 +41,7 @@ export class BitcoinService {
     return chainFusionSignerService.getBalance(identity, minConfirmations)
   }
 
-  public async getAddressFromCache(principal: string) {
+  private async getAddressFromCache(principal: string) {
     const key = `bitcoin-address-${principal}`
     const cachedValue = await authStorage.get(key)
 

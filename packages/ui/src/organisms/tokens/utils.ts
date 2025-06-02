@@ -1,6 +1,7 @@
 import { Principal } from "@dfinity/principal"
 
 import { authState } from "@nfid/integration"
+import { BTC_NATIVE_ID } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
@@ -26,7 +27,7 @@ export const initTokens = async (
   return await Promise.all(
     tokens.map((token) => {
       if (token.isInited()) return token
-      if (token.getTokenAddress() === "btc-native" && isBtcAddressLoading) {
+      if (token.getTokenAddress() === BTC_NATIVE_ID && isBtcAddressLoading) {
         return token
       }
       return token.init(Principal.fromText(publicKey))

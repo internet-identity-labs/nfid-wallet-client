@@ -13,7 +13,10 @@ import {
   IDropdownPosition,
   IconSvgConvertAction,
 } from "@nfid-frontend/ui"
-import { CKBTC_CANISTER_ID } from "@nfid/integration/token/constants"
+import {
+  BTC_NATIVE_ID,
+  CKBTC_CANISTER_ID,
+} from "@nfid/integration/token/constants"
 import { mutateWithTimestamp } from "@nfid/swr"
 
 import { FT } from "frontend/integration/ft/ft"
@@ -77,7 +80,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
           iconClassName="rotate-[135deg]"
           handler={() => onSendClick(token.getTokenAddress())}
         />
-        {token.getTokenAddress() !== "btc-native" ? (
+        {token.getTokenAddress() !== BTC_NATIVE_ID ? (
           <DropdownOption
             label="Swap"
             icon={IconSvgSwapAction}

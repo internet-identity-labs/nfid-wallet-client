@@ -10,7 +10,10 @@ import {
   IconCmpConvert,
 } from "@nfid-frontend/ui"
 import { ArrowPercentChange } from "@nfid-frontend/ui"
-import { CKBTC_CANISTER_ID } from "@nfid/integration/token/constants"
+import {
+  BTC_NATIVE_ID,
+  CKBTC_CANISTER_ID,
+} from "@nfid/integration/token/constants"
 
 import { IProfileConstants } from ".."
 import { AssetDropdown } from "./asset-dropdown"
@@ -83,7 +86,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
             id={`token_${token.getTokenName().replace(/\s/g, "")}_currency`}
           >
             {token.getTokenSymbol()}
-            {token.getTokenAddress() === "btc-native" && (
+            {token.getTokenAddress() === BTC_NATIVE_ID && (
               <>
                 <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
                 <span

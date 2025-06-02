@@ -8,6 +8,8 @@ import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import { FC } from "react"
 import { FT } from "src/integration/ft/ft"
 
+import { BTC_NATIVE_ID } from "@nfid/integration/token/constants"
+
 export interface TokenInfoModalProps {
   token: FT | undefined
   onClose: () => void
@@ -47,7 +49,7 @@ export const TokenInfoModal: FC<TokenInfoModalProps> = ({ token, onClose }) => {
           <div className="text-sm text-gray-400 w-[150px]">Token name</div>
           <div className="text-sm">{token?.getTokenName()}</div>
         </div>
-        {ledger && ledger !== "btc-native" && (
+        {ledger && ledger !== BTC_NATIVE_ID && (
           <div className="flex items-center border-b border-gray-100 h-[54px]">
             <div className="text-sm text-gray-400 w-[150px]">
               Ledger canister ID
@@ -85,7 +87,7 @@ export const TokenInfoModal: FC<TokenInfoModalProps> = ({ token, onClose }) => {
             </a>
           </div>
         )}
-        {ledger !== "btc-native" ? (
+        {ledger !== BTC_NATIVE_ID ? (
           <div className="flex items-center border-b border-gray-100 h-[54px]">
             <div className="text-sm text-gray-400 w-[150px]">
               Transaction fee

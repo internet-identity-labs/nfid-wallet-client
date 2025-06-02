@@ -3,6 +3,8 @@ import clsx from "clsx"
 import { HTMLAttributes, FC, useState, useMemo } from "react"
 import { FT } from "src/integration/ft/ft"
 
+import { BTC_NATIVE_ID } from "@nfid/integration/token/constants"
+
 import SortAscendingIcon from "./assets/sort-ascending.svg"
 import SortDefaultIcon from "./assets/sort-default.svg"
 import SortDescendingIcon from "./assets/sort-descending.svg"
@@ -181,7 +183,7 @@ export const Tokens: FC<TokensProps> = ({
                   <ActiveToken
                     isIniting={
                       tokensIniting ||
-                      (token.getTokenAddress() === "btc-native" &&
+                      (token.getTokenAddress() === BTC_NATIVE_ID &&
                         isBtcAddressLoading)
                     }
                     hideZeroBalance={hideZeroBalance}

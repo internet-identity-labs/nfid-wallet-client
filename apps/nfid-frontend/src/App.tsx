@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import { AnimatePresence, motion } from "framer-motion"
-import React, { Suspense, useEffect, useState } from "react"
+import React, { Suspense, useEffect } from "react"
 import { Route, Routes, useLocation } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
@@ -14,6 +14,7 @@ import { useSWR } from "@nfid/swr"
 import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
 import { VaultGuard } from "frontend/ui/pages/vault-guard"
 
+import { useBtcAddress } from "./hooks/btc-address"
 import { useBTCDepositsToMintCKBTCListener } from "./hooks/btc-to-ckbtc"
 
 import { useAuthentication } from "./apps/authentication/use-authentication"
@@ -21,9 +22,7 @@ import { ProfileConstants } from "./apps/identity-manager/profile/routes"
 import ThirdPartyAuthCoordinator from "./features/authentication/3rd-party/coordinator"
 import { AuthEmailMagicLink } from "./features/authentication/auth-selection/email-flow/magic-link-flow"
 import IdentityKitRPCCoordinator from "./features/identitykit/coordinator"
-import { getIdentity } from "./features/transfer-modal/utils"
 import { WalletRouter } from "./features/wallet"
-import { bitcoinService } from "./integration/bitcoin/bitcoin.service"
 import { NotFound } from "./ui/pages/404"
 import ProfileTemplate from "./ui/templates/profile-template/Template"
 
@@ -62,7 +61,6 @@ if (USERGEEK_API_KEY) {
 }
 
 export const App = () => {
-  const [isBtcAddressLoading, setIsBtcAddressLoading] = useState(true)
   React.useEffect(() => {
     const sub = authState.subscribe(({ cacheLoaded }) => {
       const root = document.getElementById("root")
@@ -77,7 +75,7 @@ export const App = () => {
     dedupingInterval: 60_000,
     focusThrottleInterval: 60_000,
     refreshInterval: 60_000,
-    onSuccess: (data) => {
+    onSuccess: () => {
       console.debug("cacheUsdIcpRate", exchangeRateService.getICP2USD())
     },
   })
@@ -89,6 +87,7 @@ export const App = () => {
 
   const { isAuthenticated } = useAuthentication()
   const { watchBtcDeposits } = useBTCDepositsToMintCKBTCListener()
+  const { setBtcAddress, isBtcAddressLoading } = useBtcAddress()
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -96,17 +95,11 @@ export const App = () => {
 
       btcDepositService.generateAddress(principal).then(() => {
         watchBtcDeposits(principal)
-
-        getIdentity([PATRON_CANISTER_ID, CHAIN_FUSION_SIGNER_CANISTER_ID]).then(
-          (identity) => {
-            bitcoinService.getAddress(identity).then(() => {
-              setIsBtcAddressLoading(false)
-            })
-          },
-        )
       })
+
+      setBtcAddress()
     }
-  }, [isAuthenticated, watchBtcDeposits])
+  }, [isAuthenticated, watchBtcDeposits, setBtcAddress])
 
   return (
     <React.Suspense fallback={<BlurredLoader isLoading />}>

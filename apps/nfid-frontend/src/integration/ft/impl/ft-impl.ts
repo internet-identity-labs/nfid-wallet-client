@@ -2,8 +2,9 @@ import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { FT } from "src/integration/ft/ft"
 
-import { authState, exchangeRateService } from "@nfid/integration"
+import { exchangeRateService } from "@nfid/integration"
 import {
+  BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -50,7 +51,7 @@ export class FTImpl implements FT {
   }
 
   private isNativeBtc(): boolean {
-    return this.tokenAddress === "btc-native"
+    return this.tokenAddress === BTC_NATIVE_ID
   }
 
   private async getNativeBtcBalance(globalPrincipal: Principal): Promise<void> {

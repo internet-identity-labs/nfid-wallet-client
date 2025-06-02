@@ -8,6 +8,7 @@ import { FTImpl } from "src/integration/ft/impl/ft-impl"
 import { nftService } from "src/integration/nft/nft-service"
 
 import {
+  BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
@@ -29,7 +30,7 @@ const TOKENS_TO_REORDER: {
   index: number
   ft?: FT | null
 }[] = [
-  { canisterId: "btc-native", index: 1 },
+  { canisterId: BTC_NATIVE_ID, index: 1 },
   { canisterId: NFIDW_CANISTER_ID, index: 2 },
   { canisterId: CKBTC_CANISTER_ID, index: 3 },
 ]
@@ -95,7 +96,7 @@ export class FtService {
 
   private getNativeBtcToken(): FTImpl {
     return new FTImpl({
-      ledger: "btc-native",
+      ledger: BTC_NATIVE_ID,
       symbol: "BTC",
       name: "Bitcoin",
       decimals: 8,

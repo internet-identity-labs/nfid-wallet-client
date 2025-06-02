@@ -15,6 +15,7 @@ import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 import {
+  BTC_NATIVE_ID,
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -137,7 +138,7 @@ export const SwapFT = ({
     return tokens.find(
       (token: FT) =>
         token.getTokenAddress() === toTokenAddress &&
-        token.getTokenAddress() !== "btc-native",
+        token.getTokenAddress() !== BTC_NATIVE_ID,
     )
   }, [toTokenAddress, tokens])
 
@@ -145,7 +146,7 @@ export const SwapFT = ({
     return tokens.filter(
       (token) =>
         token.getTokenAddress() !== fromTokenAddress &&
-        token.getTokenAddress() !== "btc-native",
+        token.getTokenAddress() !== BTC_NATIVE_ID,
     )
   }, [fromTokenAddress, tokens])
 

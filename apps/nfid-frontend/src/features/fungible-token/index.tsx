@@ -16,8 +16,9 @@ import { FT } from "frontend/integration/ft/ft"
 import { ProfileContext } from "frontend/provider"
 
 import { ModalType } from "../transfer-modal/types"
+import { TokensPageProps } from "../wallet"
 
-const TokensPage = () => {
+const TokensPage = ({ isBtcAddressLoading }: TokensPageProps) => {
   const [hideZeroBalance, setHideZeroBalance] = useState(false)
   const userRootPrincipalId = authState.getUserIdData().userId
   const globalServices = useContext(ProfileContext)
@@ -53,9 +54,9 @@ const TokensPage = () => {
 
   useEffect(() => {
     if (activeTokens) {
-      initTokens(activeTokens).then(setInitedTokens)
+      initTokens(activeTokens, isBtcAddressLoading).then(setInitedTokens)
     }
-  }, [activeTokens])
+  }, [activeTokens, isBtcAddressLoading])
 
   useEffect(() => {
     userPrefService.getUserPreferences().then((userPref) => {
@@ -113,6 +114,7 @@ const TokensPage = () => {
       onConvertToCkBtc={onConvertToCkBtc}
       hideZeroBalance={hideZeroBalance}
       onZeroBalanceToggle={onZeroBalanceToggle}
+      isBtcAddressLoading={isBtcAddressLoading}
     />
   )
 }

@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import { AnimatePresence, motion } from "framer-motion"
-import React, { Suspense, useEffect } from "react"
+import React, { Suspense, useEffect, useState } from "react"
 import { Route, Routes, useLocation } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
@@ -21,7 +21,9 @@ import { ProfileConstants } from "./apps/identity-manager/profile/routes"
 import ThirdPartyAuthCoordinator from "./features/authentication/3rd-party/coordinator"
 import { AuthEmailMagicLink } from "./features/authentication/auth-selection/email-flow/magic-link-flow"
 import IdentityKitRPCCoordinator from "./features/identitykit/coordinator"
+import { getIdentity } from "./features/transfer-modal/utils"
 import { WalletRouter } from "./features/wallet"
+import { bitcoinService } from "./integration/bitcoin/bitcoin.service"
 import { NotFound } from "./ui/pages/404"
 import ProfileTemplate from "./ui/templates/profile-template/Template"
 
@@ -60,6 +62,7 @@ if (USERGEEK_API_KEY) {
 }
 
 export const App = () => {
+  const [isBtcAddressLoading, setIsBtcAddressLoading] = useState(true)
   React.useEffect(() => {
     const sub = authState.subscribe(({ cacheLoaded }) => {
       const root = document.getElementById("root")
@@ -90,8 +93,17 @@ export const App = () => {
   useEffect(() => {
     if (isAuthenticated) {
       const principal = Principal.from(authState.getUserIdData().publicKey)
+
       btcDepositService.generateAddress(principal).then(() => {
         watchBtcDeposits(principal)
+
+        getIdentity([PATRON_CANISTER_ID, CHAIN_FUSION_SIGNER_CANISTER_ID]).then(
+          (identity) => {
+            bitcoinService.getAddress(identity).then(() => {
+              setIsBtcAddressLoading(false)
+            })
+          },
+        )
       })
     }
   }, [isAuthenticated, watchBtcDeposits])
@@ -105,11 +117,19 @@ export const App = () => {
               path={`${ProfileConstants.base}/*`}
               element={
                 <AuthWrapper>
-                  <ProfileTemplate isWallet />
+                  <ProfileTemplate
+                    isBtcAddressLoading={isBtcAddressLoading}
+                    isWallet
+                  />
                 </AuthWrapper>
               }
             >
-              <Route path="*" element={<WalletRouter />} />
+              <Route
+                path="*"
+                element={
+                  <WalletRouter isBtcAddressLoading={isBtcAddressLoading} />
+                }
+              />
             </Route>
             <Route
               path={`${ProfileConstants.base}/${ProfileConstants.nfts}/${ProfileConstants.nftDetails}`}

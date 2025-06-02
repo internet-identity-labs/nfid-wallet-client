@@ -17,12 +17,18 @@ export const getUserPrincipalId = async (): Promise<{
   }
 }
 
-export const initTokens = async (tokens: FT[]) => {
+export const initTokens = async (
+  tokens: FT[],
+  isBtcAddressLoading: boolean,
+) => {
   const { publicKey } = await getUserPrincipalId()
 
   return await Promise.all(
     tokens.map((token) => {
       if (token.isInited()) return token
+      if (token.getTokenAddress() === "btc-native" && isBtcAddressLoading) {
+        return token
+      }
       return token.init(Principal.fromText(publicKey))
     }),
   )

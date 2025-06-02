@@ -48,6 +48,7 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   hideZeroBalance: boolean
   onZeroBalanceToggle: () => void
   tokensIniting?: boolean
+  isBtcAddressLoading: boolean
 }
 
 export const Tokens: FC<TokensProps> = ({
@@ -64,6 +65,7 @@ export const Tokens: FC<TokensProps> = ({
   hideZeroBalance,
   onZeroBalanceToggle,
   tokensIniting,
+  isBtcAddressLoading,
 }) => {
   const [token, setToken] = useState<FT | undefined>()
   const [sorting, setSorting] = useState<Sorting>(Sorting.DEFAULT)
@@ -177,7 +179,11 @@ export const Tokens: FC<TokensProps> = ({
               ) : (
                 sortedTokens.map((token, index, arr) => (
                   <ActiveToken
-                    isIniting={tokensIniting}
+                    isIniting={
+                      tokensIniting ||
+                      (token.getTokenAddress() === "btc-native" &&
+                        isBtcAddressLoading)
+                    }
                     hideZeroBalance={hideZeroBalance}
                     key={`token_${token.getTokenAddress()}_${token.getTokenState()}`}
                     token={token}

@@ -54,6 +54,7 @@ interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   iconId?: string
   className?: string
   isWallet?: boolean
+  isBtcAddressLoading?: boolean
   withPortfolio?: boolean
   titleClassNames?: string
 }
@@ -72,6 +73,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   iconTooltip,
   iconId,
   isWallet,
+  isBtcAddressLoading,
   titleClassNames,
 }) => {
   const handleNavigateBack = useCallback(() => {
@@ -135,7 +137,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   const { data: initedTokens = [], mutate: reinitTokens } = useSWR(
     activeTokens.length > 0 && isWallet ? "initedTokens" : null,
-    () => initTokens(activeTokens),
+    () => initTokens(activeTokens, !!isBtcAddressLoading),
     { revalidateOnFocus: false },
   )
 

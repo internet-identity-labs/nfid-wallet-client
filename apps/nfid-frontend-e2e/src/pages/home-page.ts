@@ -5,15 +5,15 @@ export class HomePage extends Page {
     return $("#authentication-button")
   }
 
-  private get authSelection() {
+  get authSelection() {
     return $("#auth-selection")
   }
 
-  private get googleAuthButton() {
+  get googleAuthButton() {
     return $("#google-sign-button")
   }
 
-  private get accountPicker() {
+  get accountPicker() {
     return $("#credentials-picker > div:first-child") //picks first account from the list
   }
 
@@ -37,7 +37,7 @@ export class HomePage extends Page {
     return $("#skip-secure-wallet")
   }
 
-  public async openAuthModal() {
+  async openAuthModal() {
     await this.authenticationButton.waitForDisplayed()
     await this.authenticationButton.click()
     await this.authSelection.waitForDisplayed({
@@ -45,7 +45,7 @@ export class HomePage extends Page {
     })
   }
 
-  public async authenticateWithGoogle() {
+  async authenticateWithGoogle() {
     await this.googleAuthButton.waitForDisplayed({
       timeoutMsg: "Google auth button is missing!",
     })
@@ -53,7 +53,7 @@ export class HomePage extends Page {
     await this.googleAuthButton.click()
   }
 
-  public async pickGoogleAccount() {
+  async pickGoogleAccount() {
     await this.accountPicker.waitForDisplayed({
       timeoutMsg: "Google Account is missing!",
     })
@@ -61,7 +61,7 @@ export class HomePage extends Page {
     await this.accountPicker.click()
   }
 
-  public override async loginUsingIframe() {
+  override async loginUsingIframe() {
     await this.openAuthModal()
     await this.authenticateWithGoogle()
     await this.switchToWindow("last")

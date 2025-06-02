@@ -2,15 +2,17 @@ import { Then, When } from "@cucumber/cucumber"
 
 import Activity from "../pages/activity.js"
 import Assets from "../pages/assets.js"
+import Staking from "../pages/staking.js"
 import HomePage from "../pages/home-page.js"
 import Nft from "../pages/nft.js"
 import Profile from "../pages/profile.js"
 
 When(/^User goes to (.*) tab$/, async (tab: string) => {
   const tabMap: { [key: string]: any } = {
-    activity: [Assets.activityTab, Activity.filterButton],
-    nfts: [Assets.NFTtab, Nft.randomTokenOnNFTtab],
-    tokens: [
+    Activity: [Assets.activityTab, Activity.filterButton],
+    NFTs: [Assets.NFTtab, Nft.randomTokenOnNFTtab],
+    Staking: [Assets.stakingTab, Staking.stakedToken("NFIDWallet").detailsButton],
+    Tokens: [
       Assets.tokensTab,
       Assets.ManageTokensDialog.manageTokensDialogButton,
     ],
@@ -37,6 +39,8 @@ Then(
       "Token options": async () =>
         await (await Assets.tokenOptionsButton(optionalArg)).click(),
       Swap: async () => await Assets.swapButton.click(),
+      Stake: async () => await Staking.stakeButton.click(),
+
     }
     await (windows[window]?.() ||
       Promise.reject(new Error(`Unknown dialog window: ${window}`)))

@@ -5,7 +5,7 @@ Feature: Activity tab
   Scenario Outline: User checks his activity history
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor
-    When User goes to activity tab
+    When User goes to Activity tab
     Then Verifying that there are <txs> activities in the table
     And Verifying that there is the transaction with action type <action>, currency <currency>, type <type>, amount <amount>, timestamp <timestamp>, "From" field <from> and "To" field <to>
     When User sets filter to <filter>

@@ -27,7 +27,6 @@ describe("Staking", () => {
   jest.setTimeout(90000)
   it.skip("should stake neuron", async () => {
     let edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
-    console.log(edId.getPrincipal().toText())
     jest
       .spyOn(icrc1StorageService as any, "getICRC1Canisters")
       .mockResolvedValueOnce(mockFt)
@@ -46,7 +45,7 @@ describe("Staking", () => {
         neuronId: a!.id[0]!,
       })
     } catch (e: any) {
-      console.log(e.message)
+      console.error(e.message)
     }
     let token = await ftService
       .getTokens(pairPrincipal)
@@ -187,7 +186,8 @@ describe("Staking", () => {
 
     expect(params).toBeDefined()
     expect(params?.getMinimumToStake()).toBe(5)
-    expect(params?.getFee().getTokenValue()).toBe("0.0001 NFIDW")
+    expect(params?.getFee()).toEqual(BigInt(10000))
+    expect(params?.getFeeFormatted().getTokenValue()).toBe("0.0001 NFIDW")
     expect(params?.getMaximumLockTimeInMonths()).toBe(12)
     expect(params?.getMinimumLockTimeInMonths()).toBe(1)
   })

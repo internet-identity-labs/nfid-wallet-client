@@ -3,8 +3,9 @@ import { Redeem } from "packages/ui/src/organisms/send-receive/components/redeem
 import { useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 
-import { useSWR } from "@nfid/swr"
+import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
+import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { fetchStakedToken } from "frontend/features/staking/utils"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
 
@@ -28,33 +29,43 @@ export const RedeemStake = ({
   const [status, setStatus] = useState(SendStatus.PENDING)
   const [error, setError] = useState<string | undefined>()
   const [identity, setIdentity] = useState<SignIdentity>()
+  const [identityLoading, setIdentityLoading] = useState(false)
   const location = useLocation()
   const tokenSymbol = location.pathname.split("/")[3]
 
-  const { data: stakedToken } = useSWR(
-    tokenSymbol ? ["stakedToken", tokenSymbol] : null,
+  const { data: tokens = [] } = useSWRWithTimestamp("tokens", fetchTokens, {
+    revalidateOnFocus: false,
+    revalidateOnMount: false,
+  })
+
+  const token = useMemo(() => {
+    return tokens.find((token) => token.getTokenSymbol() === tokenSymbol)
+  }, [tokenSymbol, tokens])
+
+  const { data: stakedToken, isLoading } = useSWR(
+    tokenSymbol && identity ? ["stakedToken", tokenSymbol] : null,
     () => fetchStakedToken(tokenSymbol!, identity!),
     { revalidateOnFocus: false },
   )
 
   useEffect(() => {
     const getSignIdentity = async () => {
-      if (!stakedToken) return
-      const token = stakedToken.getToken()
+      if (!token) return
       const rootCanisterId = token.getRootSnsCanister()
       if (!rootCanisterId) return
       const canister_ids = await stakingService.getTargets(rootCanisterId)
       if (!canister_ids) return
-
+      setIdentityLoading(true)
       const identity = await getIdentity([
         canister_ids,
         token.getTokenAddress(),
       ])
       setIdentity(identity)
+      setIdentityLoading(false)
     }
 
     getSignIdentity()
-  }, [stakedToken])
+  }, [token])
 
   const stakeToRedeem = useMemo(() => {
     return stakedToken
@@ -87,7 +98,7 @@ export const RedeemStake = ({
       isSuccessOpen={isSuccessOpen}
       status={status}
       error={error}
-      isLoading={!identity || !stakeToRedeem}
+      isLoading={isLoading || identityLoading}
     />
   )
 }

@@ -4,7 +4,11 @@ import { StakeUi } from "packages/ui/src/organisms/send-receive/components/stake
 import { useCallback, useMemo, useState, useEffect } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
-import { NFIDW_CANISTER_ID } from "@nfid/integration/token/constants"
+import {
+  ICP_CANISTER_ID,
+  ICP_ROOT_CANISTER_ID,
+  NFIDW_CANISTER_ID,
+} from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
@@ -118,6 +122,42 @@ export const StakeFT = ({
     if (!identity) return
     if (!token || !lockValue) return toaster.error(DEFAULT_STAKE_ERROR)
     setIsSuccessOpen(true)
+    const rootCanisterId = token.getRootSnsCanister()
+    if (!rootCanisterId) return
+
+    if (rootCanisterId.toText() === ICP_ROOT_CANISTER_ID) {
+      stakingService
+        .stakeICP(
+          token,
+          amount,
+          identity,
+          stakingParams?.getFee()!,
+          isMaxLockTimeSelected
+            ? stakingParams?.getMaximumLockTime()
+            : isMinLockTimeSelected
+            ? stakingParams?.getMinimumLockTime()
+            : getAccurateDateForStakeInSeconds(lockValue),
+        )
+        .then(() => {
+          setSuccessMessage(`Stake ${amount} ICP successful`)
+          setStatus(SendStatus.COMPLETED)
+        })
+        .catch((e) => {
+          console.error("Stake error: ", e)
+          setError((e as Error).message)
+          setStatus(SendStatus.FAILED)
+          setErrorMessage("Something went wrong")
+        })
+        .finally(() => {
+          getTokensWithUpdatedBalance([ICP_CANISTER_ID], tokens).then(
+            (updatedTokens) => {
+              mutateWithTimestamp("tokens", updatedTokens, false)
+            },
+          )
+        })
+
+      return
+    }
 
     stakingService
       .stake(

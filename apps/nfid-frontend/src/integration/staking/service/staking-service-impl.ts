@@ -249,7 +249,7 @@ export class StakingServiceImpl implements StakingService {
       })
     }
   }
-}}
+}
 
 export const bytesToHexString = (bytes: Uint8Array | number[]): string =>
   Array.from(bytes)

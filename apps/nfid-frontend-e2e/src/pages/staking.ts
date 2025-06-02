@@ -24,8 +24,18 @@ export class Staking extends Page {
   async stakingBalances(
     category: "stakingBalance" | "stakedAmount" | "stakingRewards",
   ) {
-    const fullText = await $(`//p[@id='${category}']/p[1]`).getText()
-    return fullText.split(" ")[0]
+    const text = await $(`//p[@id='${category}']/p[1]`).getText()
+    return {
+      number: async () => {
+        return text.split(" ")[0]
+      },
+      currency: async () => {
+        return text.split(" ")[1]
+      },
+      full: async () => {
+        return text.trim()
+      },
+    }
   }
 
   stakedToken = (tokenName: string) => ({

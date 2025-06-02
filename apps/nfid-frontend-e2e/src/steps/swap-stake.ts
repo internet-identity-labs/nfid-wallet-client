@@ -240,15 +240,28 @@ When("User verifies total staking balances and staked {token} token balances are
       //   StakedTokenBalances.currentStakingRewards + (StakingBalances.amountToStake * tokenUSDPrice)
 
       return [
-        [StakingBalances.expectedStakingUSDBalance, Number(await Staking.stakingBalances("stakingBalance"))],
-        [StakingBalances.expectedStakedUSDAmount, Number(await Staking.stakingBalances("stakedAmount"))],
-        // [StakingBalances.expectedStakingRewards, Number(await Staking.stakingBalances("stakingRewards"))],
-        [StakedTokenBalances.expectedStakedAmount, Number((await Staking.stakedToken(tokenName).stakedAmount.getText())
-          .replace(/[^\d.]/g, ""),
-        )],
-        // [StakedTokenBalances.expectedStakingRewards, Number((await Staking.stakedToken(tokenName).rewards.getText())
-        //   .replace(/[^\d.]/g, ""),
-        // )],
+        [
+          StakingBalances.expectedStakingUSDBalance,
+          Number((await Staking.stakingBalances("stakingBalance")).number()),
+        ],
+        [
+          StakingBalances.expectedStakedUSDAmount,
+          Number((await Staking.stakingBalances("stakedAmount")).number()),
+        ],
+        // [
+        //   StakingBalances.expectedStakingUSDRewards,
+        //   Number((await Staking.stakingBalances("stakingRewards")).split(" ")[0]),
+        // ],
+        [
+          StakedTokenBalances.expectedStakedAmount,
+          Number((await Staking.stakedToken(tokenName).stakedAmount.getText())
+            .replace(/[^\d.]/g, "")),
+        ],
+        // [
+        //   StakedTokenBalances.expectedStakingRewards,
+        //   Number((await Staking.stakedToken(tokenName).rewards.getText())
+        //     .replace(/[^\d.]/g, "")),
+        // ],
       ].every(([expected, current]) => {
         const result = Math.floor((expected - current) * 100) / 100
         return result < 0.001 && result >= 0
@@ -258,15 +271,15 @@ When("User verifies total staking balances and staked {token} token balances are
       timeout: 50000,
       timeoutMsg: `Incorrect staking values after staking
       Expected:
-      StakingBalance - ${StakingBalances.currentStakingUSDBalance + (StakingBalances.amountToStake * tokenUSDPrice)},
-      StakedAmount - ${StakingBalances.currentStakedUSDAmount + (StakingBalances.amountToStake * tokenUSDPrice)},
-      //StakingRewards - ${StakingBalances.currentStakingUSDRewards + (StakingBalances.amountToStake * tokenUSDPrice)},
+      StakingBalance - ${StakingBalances.currentStakingUSDBalance + (StakingBalances.amountToStake * tokenUSDPrice)} USD,
+      StakedAmount - ${StakingBalances.currentStakedUSDAmount + (StakingBalances.amountToStake * tokenUSDPrice)} USD,
+      //StakingRewards - ${StakingBalances.currentStakingUSDRewards + (StakingBalances.amountToStake * tokenUSDPrice)} USD,
       StakedTokenBalance - ${StakedTokenBalances.currentStakedAmount + StakingBalances.amountToStake},
       //StakedTokenRewards - ${StakedTokenBalances.currentStakingRewards + (StakingBalances.amountToStake * tokenUSDPrice)},
       but was:
-      StakingBalance - ${Number(await Staking.stakingBalances("stakingBalance"))},
-      StakedAmount - ${Number(await Staking.stakingBalances("stakedAmount"))},
-      //StakingRewards - ${Number(await Staking.stakingBalances("stakingRewards"))},
+      StakingBalance - ${Number((await Staking.stakingBalances("stakingBalance")).number())},
+      StakedAmount - ${Number((await Staking.stakingBalances("stakedAmount")).number())},
+      //StakingRewards - ${Number((await Staking.stakingBalances("stakingRewards")).number())},
       StakedTokenBalance - ${Number(
         (await Staking.stakedToken(tokenName).stakedAmount.getText())
           .replace(/[^\d.]/g, ""),
@@ -282,13 +295,13 @@ When("User verifies total staking balances and staked {token} token balances are
 When("System saves current user's total staking values and staked {token} token values",
   async (tokenName: string) => {
     StakingBalances.currentStakingUSDBalance = Number(
-      await Staking.stakingBalances("stakingBalance"),
+      (await Staking.stakingBalances("stakingBalance")).number(),
     )
     StakingBalances.currentStakedUSDAmount = Number(
-      await Staking.stakingBalances("stakedAmount"),
+      (await Staking.stakingBalances("stakedAmount")).number(),
     )
     StakingBalances.currentStakingUSDRewards = Number(
-      await Staking.stakingBalances("stakingRewards"),
+      (await Staking.stakingBalances("stakingRewards")).number(),
     )
     StakedTokenBalances.currentStakedAmount = Number(
       (await Staking.stakedToken(tokenName).stakedAmount.getText())

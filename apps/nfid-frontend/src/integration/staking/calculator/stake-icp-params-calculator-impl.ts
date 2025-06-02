@@ -2,7 +2,7 @@ import { NetworkEconomics } from "@dfinity/nns"
 
 import { StakeParamsCalculatorImpl } from "./stake-params-calculator-impl"
 
-const EIGHT_YEARS_IN_SECONDS = 6 * 365 * 24 * 60 * 60 + 2 * 366 * 24 * 60 * 60
+const NNS_NEURON_MAX_DISSOLVE_DELAY_SECONDS = 252460800
 
 export class StakeICPParamsCalculatorImpl extends StakeParamsCalculatorImpl<NetworkEconomics> {
   getFee(): bigint | undefined {
@@ -23,6 +23,6 @@ export class StakeICPParamsCalculatorImpl extends StakeParamsCalculatorImpl<Netw
   }
 
   getMaximumLockTime(): number {
-    return Number(BigInt(EIGHT_YEARS_IN_SECONDS))
+    return Number(BigInt(NNS_NEURON_MAX_DISSOLVE_DELAY_SECONDS))
   }
 }

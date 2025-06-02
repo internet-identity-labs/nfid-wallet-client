@@ -18,6 +18,7 @@ export class NfidICPNeuronImpl extends NfidNeuronImpl<NeuronInfo> {
     return this.neuron.state
   }
 
+  //TODO: implement this method for ICP neuron
   getFollowees(): any {
     throw new Error("This method is not implemented yet")
   }

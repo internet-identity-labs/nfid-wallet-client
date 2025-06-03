@@ -150,6 +150,7 @@ export class StakingServiceImpl implements StakingService {
         const canister_ids = await root.listSnsCanisters({ certified: false })
         canisterId = canister_ids.governance[0]?.toText()
       } catch (e) {
+        console.error("getTargets error: ", e)
         return
       }
     }

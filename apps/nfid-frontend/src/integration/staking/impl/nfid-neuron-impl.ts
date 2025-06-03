@@ -48,7 +48,7 @@ export abstract class NfidNeuronImpl<T> implements NFIDNeuron {
 
   abstract stopUnlocking(signIdentity: SignIdentity): Promise<void>
 
-  abstract isDiamond(maxLockTime?: number): boolean
+  abstract isDiamond(): boolean
 
   abstract redeem(signIdentity: SignIdentity): Promise<void>
 

@@ -38,6 +38,7 @@ import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-s
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { ModalType } from "frontend/features/transfer-modal/types"
 import { getAllVaults } from "frontend/features/vaults/services"
+import { useBtcAddress } from "frontend/hooks/btc-address"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
 
@@ -54,7 +55,6 @@ interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   iconId?: string
   className?: string
   isWallet?: boolean
-  isBtcAddressLoading?: boolean
   withPortfolio?: boolean
   titleClassNames?: string
 }
@@ -73,7 +73,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   iconTooltip,
   iconId,
   isWallet,
-  isBtcAddressLoading,
   titleClassNames,
 }) => {
   const handleNavigateBack = useCallback(() => {
@@ -124,6 +123,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const [isSyncEmailLoading, setIsSyncEmailLoading] = useState(false)
   const { profile } = useProfile()
   const { logout } = useAuthentication()
+  const { isBtcAddressLoading } = useBtcAddress()
 
   const hasVaults = useMemo(() => !!vaults?.length, [vaults])
 

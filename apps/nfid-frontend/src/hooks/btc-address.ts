@@ -1,25 +1,15 @@
-import { useState } from "react"
+import { useSWR } from "@nfid/swr"
 
-import { getIdentity } from "frontend/features/transfer-modal/utils"
-import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
+import { fetchBtcAddress } from "frontend/util/fetch-btc-address"
 
 export const useBtcAddress = () => {
-  const [isBtcAddressLoading, setIsBtcAddressLoading] = useState(true)
+  const { isLoading, mutate } = useSWR("btcAddress", fetchBtcAddress, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    shouldRetryOnError: false,
+  })
 
-  const setBtcAddress = async () => {
-    try {
-      const identity = await getIdentity([
-        PATRON_CANISTER_ID,
-        CHAIN_FUSION_SIGNER_CANISTER_ID,
-      ])
+  const setBtcAddress = () => mutate()
 
-      await bitcoinService.getAddress(identity)
-    } catch (error) {
-      console.error("Error in bitcoinService.getAddress: ", error)
-    } finally {
-      setIsBtcAddressLoading(false)
-    }
-  }
-
-  return { setBtcAddress, isBtcAddressLoading }
+  return { setBtcAddress, isBtcAddressLoading: isLoading }
 }

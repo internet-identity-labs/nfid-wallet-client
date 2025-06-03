@@ -12,18 +12,19 @@ import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc
 import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { useBtcAddress } from "frontend/hooks/btc-address"
 import { FT } from "frontend/integration/ft/ft"
 import { ProfileContext } from "frontend/provider"
 
 import { ModalType } from "../transfer-modal/types"
-import { TokensPageProps } from "../wallet"
 
-const TokensPage = ({ isBtcAddressLoading }: TokensPageProps) => {
+const TokensPage = () => {
   const [hideZeroBalance, setHideZeroBalance] = useState(false)
   const userRootPrincipalId = authState.getUserIdData().userId
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
   const [initedTokens, setInitedTokens] = useState<Array<FT> | undefined>()
+  const { isBtcAddressLoading } = useBtcAddress()
 
   const onSendClick = (selectedToken: string) => {
     send({ type: "ASSIGN_VAULTS", data: false })

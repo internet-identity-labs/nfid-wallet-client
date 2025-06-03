@@ -5,11 +5,7 @@ import ActivityPage from "../activity"
 import NFTsPage from "../collectibles"
 import TokensPage from "../fungible-token"
 
-export interface TokensPageProps {
-  isBtcAddressLoading: boolean
-}
-
-export const WalletRouter = ({ isBtcAddressLoading }: TokensPageProps) => {
+export const WalletRouter = () => {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="tokens" replace />} />
@@ -17,7 +13,7 @@ export const WalletRouter = ({ isBtcAddressLoading }: TokensPageProps) => {
         path="tokens"
         element={
           <ProfileContainer>
-            <TokensPage isBtcAddressLoading={isBtcAddressLoading} />
+            <TokensPage />
           </ProfileContainer>
         }
       />

@@ -87,7 +87,7 @@ export const App = () => {
 
   const { isAuthenticated } = useAuthentication()
   const { watchBtcDeposits } = useBTCDepositsToMintCKBTCListener()
-  const { setBtcAddress, isBtcAddressLoading } = useBtcAddress()
+  const { setBtcAddress } = useBtcAddress()
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -110,19 +110,11 @@ export const App = () => {
               path={`${ProfileConstants.base}/*`}
               element={
                 <AuthWrapper>
-                  <ProfileTemplate
-                    isBtcAddressLoading={isBtcAddressLoading}
-                    isWallet
-                  />
+                  <ProfileTemplate isWallet />
                 </AuthWrapper>
               }
             >
-              <Route
-                path="*"
-                element={
-                  <WalletRouter isBtcAddressLoading={isBtcAddressLoading} />
-                }
-              />
+              <Route path="*" element={<WalletRouter />} />
             </Route>
             <Route
               path={`${ProfileConstants.base}/${ProfileConstants.nfts}/${ProfileConstants.nftDetails}`}

@@ -20,6 +20,7 @@ import { FT } from "frontend/integration/ft/ft"
 import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
 
 import DiamondIcon from "../../staking/assets/diamond.svg"
+import { DiamondAnimation } from "../../staking/components/diamond-animation"
 import { getFormattedPeriod } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { StakeSuccessUi } from "./stake-success"
@@ -118,7 +119,7 @@ export const StakeUi: FC<StakeUiProps> = ({
               align="start"
               alignOffset={-20}
               tip={
-                <span className="block max-w-[330px] mb-4">
+                <span className="block max-w-[330px]">
                   You've chosen the maximum lock time—diamond hands unlocked!
                   Enjoy the highest reward rate and extra perks from the
                   developer community.
@@ -174,7 +175,7 @@ export const StakeUi: FC<StakeUiProps> = ({
       {isParamsLoading || !stakingParams ? (
         <Skeleton className="w-full h-[99px]" />
       ) : (
-        <div>
+        <div className="relative">
           <Input
             id={"lock-time-period"}
             className="mb-[-11px]"
@@ -189,6 +190,10 @@ export const StakeUi: FC<StakeUiProps> = ({
             min={stakingParams?.getMinimumLockTimeInMonths()}
             max={stakingParams?.getMaximumLockTimeInMonths()}
             step={1}
+          />
+          <DiamondAnimation
+            classname="bottom-0 right-0"
+            isActive={stakingParams?.getMaximumLockTimeInMonths() === lockValue}
           />
         </div>
       )}

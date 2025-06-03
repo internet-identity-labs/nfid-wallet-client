@@ -1,8 +1,11 @@
 import { storageWithTtl } from "@nfid/client-db"
 
-import { ICRC1, ICRC1Request } from "../../../_ic_api/icrc1_oracle.d"
-import { iCRC1OracleActor } from "../../../actors"
+import { ICRC1, ICRC1Request, _SERVICE } from "../../../_ic_api/icrc1_oracle.d"
+import { idlFactory } from "../../../_ic_api/icrc1_oracle"
+
+import { actorBuilder, agentBaseConfig, iCRC1OracleActor } from "../../../actors"
 import { ICRC1 as ICRC1Data } from "../types"
+import { HttpAgent, SignIdentity } from "@dfinity/agent"
 
 export const icrc1OracleCacheName = "ICRC1OracleService.getICRC1Canisters"
 
@@ -52,6 +55,13 @@ export class ICRC1OracleService {
         ),
       ).then((res) => res.flat())
     })
+  }
+
+async allowSigning(identity: SignIdentity) {
+    const actor =  actorBuilder<_SERVICE>(ICRC1_ORACLE_CANISTER_ID, idlFactory, {
+      agent: HttpAgent.createSync({ ...agentBaseConfig, identity }),
+    });
+    await actor.allow_signing()
   }
 
   serializeCanisters(canister: Array<ICRC1>): string {

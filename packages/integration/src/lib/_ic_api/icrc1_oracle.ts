@@ -33,6 +33,7 @@ export const idlFactory = ({ IDL }: any) => {
     symbol: IDL.Text,
   })
   return IDL.Service({
+    allow_signing : IDL.Func([], [], []),
     count_icrc1_canisters: IDL.Func([], [IDL.Nat64], ["query"]),
     get_all_icrc1_canisters: IDL.Func([], [IDL.Vec(ICRC1)], ["query"]),
     get_icrc1_paginated: IDL.Func(

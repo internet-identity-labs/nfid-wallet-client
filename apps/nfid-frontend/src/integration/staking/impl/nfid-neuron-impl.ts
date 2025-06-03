@@ -8,6 +8,7 @@ import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
 
+import { StakeParamsCalculator } from "../stake-params-calculator"
 import { FormattedDate, TokenValue } from "../types"
 
 const SECONDS_PER_MONTH = 30 * 24 * 60 * 60
@@ -17,10 +18,12 @@ const PROTOCOL_FEE_MULTIPLIER = new BigNumber(875).dividedBy(100000)
 export abstract class NfidNeuronImpl<T> implements NFIDNeuron {
   protected neuron: T
   protected token: FT
+  protected params?: StakeParamsCalculator
 
-  constructor(neuron: T, token: FT) {
+  constructor(neuron: T, token: FT, params?: StakeParamsCalculator) {
     this.neuron = neuron
     this.token = token
+    this.params = params
   }
 
   abstract getState(): NeuronState
@@ -45,7 +48,7 @@ export abstract class NfidNeuronImpl<T> implements NFIDNeuron {
 
   abstract stopUnlocking(signIdentity: SignIdentity): Promise<void>
 
-  abstract isDiamond(): boolean
+  abstract isDiamond(maxLockTime?: number): boolean
 
   abstract redeem(signIdentity: SignIdentity): Promise<void>
 

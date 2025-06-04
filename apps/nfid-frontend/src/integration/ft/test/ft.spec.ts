@@ -6,13 +6,12 @@ import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
 import { mockGeekResponse } from "src/integration/nft/mock/mock"
 
 import { exchangeRateService } from "@nfid/integration"
-import { NFIDW_CANISTER_ID } from "@nfid/integration/token/constants"
+import {
+  CKBTC_CANISTER_ID,
+  NFIDW_CANISTER_ID,
+} from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
-
-import { swapService } from "frontend/integration/swap/service/swap-service"
-import { Shroff } from "frontend/integration/swap/shroff"
-import { SwapName } from "frontend/integration/swap/types/enums"
 
 const userId = "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae"
 const principal = Principal.fromText(userId)
@@ -66,10 +65,21 @@ describe("ft test suite", () => {
             fee: BigInt(1000),
             decimals: 8,
           },
+          {
+            ledger: CKBTC_CANISTER_ID,
+            name: "ckBTC",
+            symbol: "ckBTC",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
         ])
 
       const result: FT[] = await ftService.getTokens(userId)
-      expect(result.length).toEqual(4)
+
+      expect(result.length).toEqual(6)
       const icpResult = result.find(
         (r) => r.getTokenName() === "Internet Computer",
       )
@@ -91,9 +101,11 @@ describe("ft test suite", () => {
       expect(filteredResult.length).toEqual(1)
 
       expect(result[0].getTokenName()).toEqual("Internet Computer")
-      expect(result[1].getTokenName()).toEqual("NFID Wallet")
-      expect(result[2].getTokenName()).toEqual("A first letter")
-      expect(result[3].getTokenName()).toEqual("Chat")
+      expect(result[1].getTokenName()).toEqual("Bitcoin")
+      expect(result[2].getTokenName()).toEqual("NFID Wallet")
+      expect(result[3].getTokenName()).toEqual("ckBTC")
+      expect(result[4].getTokenName()).toEqual("A first letter")
+      expect(result[5].getTokenName()).toEqual("Chat")
     })
 
     it("should calculate no usd balance change", async () => {
@@ -117,6 +129,16 @@ describe("ft test suite", () => {
             index: "",
             state: "Active",
             category: "SNS",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
+          {
+            ledger: CKBTC_CANISTER_ID,
+            name: "ckBTC",
+            symbol: "ckBTC",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
             fee: BigInt(1000),
             decimals: 8,
           },
@@ -161,6 +183,16 @@ describe("ft test suite", () => {
             index: "",
             state: "Active",
             category: "SNS",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
+          {
+            ledger: CKBTC_CANISTER_ID,
+            name: "ckBTC",
+            symbol: "ckBTC",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
             fee: BigInt(1000),
             decimals: 8,
           },
@@ -210,6 +242,16 @@ describe("ft test suite", () => {
             fee: BigInt(1000),
             decimals: 8,
           },
+          {
+            ledger: CKBTC_CANISTER_ID,
+            name: "ckBTC",
+            symbol: "ckBTC",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
         ])
       const [result]: FT[] = await ftService.getTokens(userId)
       jest
@@ -240,6 +282,16 @@ describe("ft test suite", () => {
             index: "",
             state: "Active",
             category: "SNS",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
+          {
+            ledger: CKBTC_CANISTER_ID,
+            name: "ckBTC",
+            symbol: "ckBTC",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
             fee: BigInt(1000),
             decimals: 8,
           },
@@ -310,15 +362,27 @@ describe("ft test suite", () => {
             fee: BigInt(1000),
             decimals: 8,
           },
+          {
+            ledger: CKBTC_CANISTER_ID,
+            name: "ckBTC",
+            symbol: "ckBTC",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
         ])
 
       const result: FT[] = await ftService.getTokens(userId)
 
-      expect(result.length).toEqual(4)
+      expect(result.length).toEqual(6)
       expect(result[0].getTokenCategory()).toEqual(Category.Native)
-      expect(result[1].getTokenCategory()).toEqual(Category.Community)
-      expect(result[2].getTokenCategory()).toEqual(Category.Sns)
-      expect(result[3].getTokenCategory()).toEqual(Category.Spam)
+      expect(result[1].getTokenCategory()).toEqual(Category.Native)
+      expect(result[2].getTokenCategory()).toEqual(Category.Community)
+      expect(result[3].getTokenCategory()).toEqual(Category.ChainFusion)
+      expect(result[4].getTokenCategory()).toEqual(Category.Sns)
+      expect(result[5].getTokenCategory()).toEqual(Category.Spam)
     })
 
     it("should calculate USD balance", async function () {
@@ -369,6 +433,16 @@ describe("ft test suite", () => {
             state: "Active",
             category: "SNS",
           },
+          {
+            ledger: CKBTC_CANISTER_ID,
+            name: "ckBTC",
+            symbol: "ckBTC",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
         ])
       const result: FT[] = await ftService.getTokens(userId)
       const balance = await ftService.getTotalUSDBalance(principal, result)
@@ -418,6 +492,16 @@ describe("ft test suite", () => {
             index: "",
             state: "Active",
             category: "SNS",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
+          {
+            ledger: CKBTC_CANISTER_ID,
+            name: "ckBTC",
+            symbol: "ckBTC",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
             fee: BigInt(1000),
             decimals: 8,
           },
@@ -476,6 +560,16 @@ describe("ft test suite", () => {
             fee: BigInt(1000),
             decimals: 8,
           },
+          {
+            ledger: CKBTC_CANISTER_ID,
+            name: "ckBTC",
+            symbol: "ckBTC",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
         ])
 
       const result: FT[] = await ftService.getTokens(userId)
@@ -528,6 +622,16 @@ describe("ft test suite", () => {
             index: "",
             state: "Active",
             category: "SNS",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
+          {
+            ledger: CKBTC_CANISTER_ID,
+            name: "ckBTC",
+            symbol: "ckBTC",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
             fee: BigInt(1000),
             decimals: 8,
           },
@@ -587,6 +691,16 @@ describe("ft test suite", () => {
             fee: BigInt(1000),
             decimals: 8,
           },
+          {
+            ledger: CKBTC_CANISTER_ID,
+            name: "ckBTC",
+            symbol: "ckBTC",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
         ])
 
       const tokens: FT[] = await ftService.getTokens(userId)
@@ -603,6 +717,7 @@ describe("ft test suite", () => {
       const expectedResult = {
         to: [
           "2ouva-viaaa-aaaaq-aaamq-cai",
+          CKBTC_CANISTER_ID,
           "ryjl3-tyaaa-aaaaa-aaaba-cai",
           NFIDW_CANISTER_ID,
         ],

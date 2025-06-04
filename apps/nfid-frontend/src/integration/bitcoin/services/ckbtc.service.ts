@@ -20,7 +20,11 @@ class CkBtcService {
   ): Promise<BlockIndex> {
     const amountInSatoshis = satoshiService.getInSatoshis(amount)
     await this.approve(identity, amountInSatoshis)
-    const blockIndex = await this.retrieveBtc(identity, address, amountInSatoshis)
+    const blockIndex = await this.retrieveBtc(
+      identity,
+      address,
+      amountInSatoshis,
+    )
 
     const fee = this.getFee(amountInSatoshis)
     await this.approve(identity, fee)
@@ -66,11 +70,6 @@ class CkBtcService {
     address: string,
     amount: bigint,
   ): Promise<BlockIndex> {
-    const agent = await createAgent({
-      identity,
-      host: IC_HOST,
-    })
-
     const minter = await this.getMinter(identity)
 
     const { block_index }: RetrieveBtcOk = await minter.retrieveBtcWithApproval(

@@ -19,9 +19,9 @@ export type BlockIndex = bigint
 
 export class BitcoinService {
   public async getAddress(identity: SignIdentity): Promise<Address> {
-    const principal: string = identity.getPrincipal().toText()
-    const key = `bitcoin-address-${principal}`
-    const cachedValue = await authStorage.get(key)
+    const { cachedValue, key } = await this.getAddressFromCache(
+      identity.getPrincipal().toText(),
+    )
 
     if (cachedValue != null) {
       return cachedValue as string
@@ -41,15 +41,24 @@ export class BitcoinService {
     return chainFusionSignerService.getBalance(identity, minConfirmations)
   }
 
-  public async getQuickBalance(principal: Principal): Promise<bigint> {
-    const key = `bitcoin-address-${principal.toText()}`
-    const address = await authStorage.get(key)
+  private async getAddressFromCache(principal: string) {
+    const key = `bitcoin-address-${principal}`
+    const cachedValue = await authStorage.get(key)
 
-    if (!address) {
+    return {
+      cachedValue,
+      key,
+    }
+  }
+
+  public async getQuickBalance(principal: Principal): Promise<bigint> {
+    const { cachedValue } = await this.getAddressFromCache(principal.toText())
+
+    if (!cachedValue) {
       throw Error("No bitcoin address in a cache.")
     }
 
-    return bitcoinCanisterService.getBalanceQuery(address as string)
+    return bitcoinCanisterService.getBalanceQuery(cachedValue as string)
   }
 
   public async getFee(

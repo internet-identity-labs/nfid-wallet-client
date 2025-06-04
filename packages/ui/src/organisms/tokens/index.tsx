@@ -3,6 +3,8 @@ import clsx from "clsx"
 import { HTMLAttributes, FC, useState, useMemo } from "react"
 import { FT } from "src/integration/ft/ft"
 
+import { BTC_NATIVE_ID } from "@nfid/integration/token/constants"
+
 import SortAscendingIcon from "./assets/sort-ascending.svg"
 import SortDefaultIcon from "./assets/sort-default.svg"
 import SortDescendingIcon from "./assets/sort-descending.svg"
@@ -43,9 +45,12 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   }>
   onSendClick: (value: string) => void
   onSwapClick: (value: string) => void
+  onConvertToBtc: () => any
+  onConvertToCkBtc: () => any
   hideZeroBalance: boolean
   onZeroBalanceToggle: () => void
   tokensIniting?: boolean
+  isBtcAddressLoading: boolean
 }
 
 export const Tokens: FC<TokensProps> = ({
@@ -57,9 +62,12 @@ export const Tokens: FC<TokensProps> = ({
   onFetch,
   onSendClick,
   onSwapClick,
+  onConvertToBtc,
+  onConvertToCkBtc,
   hideZeroBalance,
   onZeroBalanceToggle,
   tokensIniting,
+  isBtcAddressLoading,
 }) => {
   const [token, setToken] = useState<FT | undefined>()
   const [sorting, setSorting] = useState<Sorting>(Sorting.DEFAULT)
@@ -173,7 +181,11 @@ export const Tokens: FC<TokensProps> = ({
               ) : (
                 sortedTokens.map((token, index, arr) => (
                   <ActiveToken
-                    isIniting={tokensIniting}
+                    isIniting={
+                      tokensIniting ||
+                      (token.getTokenAddress() === BTC_NATIVE_ID &&
+                        isBtcAddressLoading)
+                    }
                     hideZeroBalance={hideZeroBalance}
                     key={`token_${token.getTokenAddress()}_${token.getTokenState()}`}
                     token={token}
@@ -184,6 +196,8 @@ export const Tokens: FC<TokensProps> = ({
                     setToken={setToken}
                     dropdownPosition={index + 4 > arr.length ? "top" : "bottom"}
                     loadingToken={loadingToken}
+                    onConvertToBtc={onConvertToBtc}
+                    onConvertToCkBtc={onConvertToCkBtc}
                   />
                 ))
               )}

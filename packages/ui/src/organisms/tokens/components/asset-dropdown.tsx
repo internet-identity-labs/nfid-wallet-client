@@ -11,7 +11,12 @@ import {
   IconSvgHistoryIcon,
   IconSvgTokenInfo,
   IDropdownPosition,
+  IconSvgConvertAction,
 } from "@nfid-frontend/ui"
+import {
+  BTC_NATIVE_ID,
+  CKBTC_CANISTER_ID,
+} from "@nfid/integration/token/constants"
 import { mutateWithTimestamp } from "@nfid/swr"
 
 import { FT } from "frontend/integration/ft/ft"
@@ -24,6 +29,8 @@ type AssetDropdownProps = {
   profileConstants: IProfileConstants
   onSendClick: (value: string) => void
   onSwapClick: (value: string) => void
+  onConvertToBtc: () => any
+  onConvertToCkBtc: () => any
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   setIsTokenProcessed: (value: boolean) => void
@@ -36,6 +43,8 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
   profileConstants,
   onSendClick,
   onSwapClick,
+  onConvertToBtc,
+  onConvertToCkBtc,
   setToken,
   dropdownPosition,
   setIsTokenProcessed,
@@ -71,11 +80,26 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
           iconClassName="rotate-[135deg]"
           handler={() => onSendClick(token.getTokenAddress())}
         />
-        <DropdownOption
-          label="Swap"
-          icon={IconSvgSwapAction}
-          handler={() => onSwapClick(token.getTokenAddress())}
-        />
+        {token.getTokenAddress() !== BTC_NATIVE_ID ? (
+          <DropdownOption
+            label="Swap"
+            icon={IconSvgSwapAction}
+            handler={() => onSwapClick(token.getTokenAddress())}
+          />
+        ) : (
+          <DropdownOption
+            label="Convert"
+            icon={IconSvgConvertAction}
+            handler={onConvertToCkBtc}
+          />
+        )}
+        {token.getTokenAddress() === CKBTC_CANISTER_ID && (
+          <DropdownOption
+            label="Convert"
+            icon={IconSvgConvertAction}
+            handler={onConvertToBtc}
+          />
+        )}
         <DropdownOption
           label="Token information"
           icon={IconSvgTokenInfo}
@@ -86,7 +110,6 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
           icon={IconSvgHistoryIcon}
           handler={navigateToTransactions(token.getTokenAddress())}
         />
-
         {token.isHideable() && (
           <DropdownOption
             label="Hide token"

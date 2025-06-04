@@ -1,9 +1,13 @@
 import clsx from "clsx"
 import React from "react"
+import colors from "tailwindcss/colors"
 
 type CloseIconProps = React.HTMLAttributes<HTMLDivElement>
 
-export const CloseIcon: React.FC<CloseIconProps> = ({ className }) => {
+export const CloseIcon: React.FC<CloseIconProps> = ({
+  className,
+  color = colors.black,
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -14,7 +18,7 @@ export const CloseIcon: React.FC<CloseIconProps> = ({ className }) => {
       className={clsx("hover:cursor-pointer", className)}
     >
       <path
-        stroke="#000"
+        stroke={color}
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M3.162 3.167L17.83 17.833M17.828 3.167L3.161 17.833"

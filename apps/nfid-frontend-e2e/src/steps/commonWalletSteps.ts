@@ -12,7 +12,13 @@ When(/^User goes to (.*) tab$/, async (tab: string) => {
     nfts: [Assets.NFTtab, Nft.randomTokenOnNFTtab],
     tokens: [
       Assets.tokensTab,
-      Assets.ManageTokensDialog.manageTokensDialogButton,
+      {
+        element: Assets.ManageTokensDialog.manageTokensDialogButton,
+        action: async (element: ChainablePromiseElement) => {
+          await element.waitForDisplayed({ timeout: 20000 })
+          await element.waitForClickable()
+        },
+      },
     ],
   }
   await Assets.waitUntilElementsLoadedProperly(tabMap[tab][0], tabMap[tab][1])
@@ -27,16 +33,23 @@ When(/^User refreshes the page$/, async () => {
 Then(
   /^User opens (.+) dialog window(?: of (\S+))?$/,
   async (window: string, optionalArg: string) => {
+    const clickWithWait = async (
+      element: WebdriverIO.Element,
+    ) => {
+      await element.waitForClickable({ timeout: 20000 })
+      await element.click()
+    }
+
     const windows: { [key: string]: () => Promise<void> } = {
       Receive: async () => await Assets.receiveDialog(),
       Send: async () => await Assets.sendDialog(),
       "Send nft": async () => await Assets.sendNFTDialog(),
-      "Choose nft": async () => await Assets.chooseNFTinSend.click(),
+      "Choose nft": async () => await clickWithWait(await Assets.chooseNFTinSend),
       "Manage tokens": async () =>
-        await Assets.ManageTokensDialog.manageTokensDialogButton.click(),
+        await clickWithWait(await Assets.ManageTokensDialog.manageTokensDialogButton),
       "Token options": async () =>
-        await (await Assets.tokenOptionsButton(optionalArg)).click(),
-      Swap: async () => await Assets.swapButton.click(),
+        await clickWithWait(await Assets.tokenOptionsButton(optionalArg)),
+      Swap: async () => await clickWithWait(await Assets.swapButton),
     }
     await (windows[window]?.() ||
       Promise.reject(new Error(`Unknown dialog window: ${window}`)))

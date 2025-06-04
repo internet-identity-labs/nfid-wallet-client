@@ -17,6 +17,21 @@ import { satoshiService } from "./services/satoshi.service"
 
 export type BlockIndex = bigint
 
+export type BitcointNetworkFeeAndUtxos = SelectedUtxosFeeResponse
+
+export type BtcToCkBtcFee = {
+  conversionFee: bigint
+  interNetwokFee: bigint
+  bitcointNetworkFee: BitcointNetworkFeeAndUtxos
+}
+
+export type CkBtcToBtcFee = {
+  conversionFee: bigint
+  interNetwokFee: bigint
+  bitcointNetworkFee: BitcointNetworkFeeAndUtxos
+  identityLabsFee: bigint
+}
+
 export class BitcoinService {
   public async getAddress(identity: SignIdentity): Promise<Address> {
     const { cachedValue, key } = await this.getAddressFromCache(
@@ -64,15 +79,46 @@ export class BitcoinService {
   public async getFee(
     identity: SignIdentity,
     amount: string,
-  ): Promise<SelectedUtxosFeeResponse> {
-    return patronService.askToCalcUtxosAndFee(identity, amount)
+  ): Promise<BitcointNetworkFeeAndUtxos> {
+    const amountInSatoshis = satoshiService.getInSatoshis(amount)
+    return patronService.askToCalcUtxosAndFee(identity, amountInSatoshis)
+  }
+
+  public async getBtcToCkBtcFee(
+    identity: SignIdentity,
+    amount: string,
+  ): Promise<BtcToCkBtcFee> {
+    const amountInSatoshis = satoshiService.getInSatoshis(amount)
+    const bitcointNetworkFee: BitcointNetworkFeeAndUtxos =
+      await patronService.askToCalcUtxosAndFee(identity, amountInSatoshis)
+    return {
+      bitcointNetworkFee,
+      conversionFee: BigInt(0),
+      interNetwokFee: satoshiService.getInSatoshis("0.000001"),
+    }
+  }
+
+  public async getCkBtcToBtcFee(
+    identity: SignIdentity,
+    amount: string,
+  ): Promise<CkBtcToBtcFee> {
+    const amountInSatoshis: bigint = satoshiService.getInSatoshis(amount)
+    const bitcointNetworkFee: BitcointNetworkFeeAndUtxos =
+      await patronService.askToCalcUtxosAndFee(identity, amountInSatoshis)
+    const identityLabsFee: bigint = ckBtcService.getFee(amountInSatoshis)
+    return {
+      bitcointNetworkFee,
+      conversionFee: satoshiService.getInSatoshis("0.0000001"),
+      interNetwokFee: satoshiService.getInSatoshis("0.000001"),
+      identityLabsFee,
+    }
   }
 
   public async send(
     identity: SignIdentity,
     destinationAddress: string,
     amount: string,
-    fee: SelectedUtxosFeeResponse,
+    fee: BitcointNetworkFeeAndUtxos,
   ): Promise<TransactionId> {
     const amountInSatoshis = satoshiService.getInSatoshis(amount)
     return chainFusionSignerService.sendBtc(
@@ -87,12 +133,14 @@ export class BitcoinService {
   public async convertFromCkBtc(
     identity: SignIdentity,
     amount: string,
+    fee: CkBtcToBtcFee,
   ): Promise<BlockIndex> {
     const address: string = await this.getAddress(identity)
     const blockIndex: BlockIndex = await ckBtcService.convertCkBtcToBtc(
       identity,
       address,
       amount,
+      fee,
     )
     return blockIndex
   }
@@ -100,10 +148,17 @@ export class BitcoinService {
   public async convertToCkBtc(
     identity: SignIdentity,
     amount: string,
-    fee: SelectedUtxosFeeResponse,
+    fee: BtcToCkBtcFee,
   ): Promise<TransactionId> {
-    const address: Address = await ckBtcService.getBtcAddressToMintCkBtc(identity)
-    const txId: TransactionId = await this.send(identity, address, amount, fee)
+    const address: Address = await ckBtcService.getBtcAddressToMintCkBtc(
+      identity,
+    )
+    const txId: TransactionId = await this.send(
+      identity,
+      address,
+      amount,
+      fee.bitcointNetworkFee,
+    )
     return txId
   }
 }

@@ -30,10 +30,9 @@ export class PatronService {
 
   public async askToCalcUtxosAndFee(
     identity: SignIdentity,
-    amount: string,
+    amountInSatoshis: bigint,
   ): Promise<SelectedUtxosFeeResponse> {
     const patronActor = this.getPatronActor(identity)
-    const amountInSatoshis = satoshiService.getInSatoshis(amount)
 
     const request: SelectedUtxosFeeRequest = {
       network: { mainnet: null },

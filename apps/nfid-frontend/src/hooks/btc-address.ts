@@ -9,7 +9,5 @@ export const useBtcAddress = () => {
     shouldRetryOnError: false,
   })
 
-  const setBtcAddress = () => mutate()
-
-  return { setBtcAddress, isBtcAddressLoading: isLoading }
+  return { fetchBtcAddress: () => mutate(), isBtcAddressLoading: isLoading }
 }

@@ -87,7 +87,7 @@ export const App = () => {
 
   const { isAuthenticated } = useAuthentication()
   const { watchBtcDeposits } = useBTCDepositsToMintCKBTCListener()
-  const { setBtcAddress } = useBtcAddress()
+  const { fetchBtcAddress } = useBtcAddress()
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -97,9 +97,9 @@ export const App = () => {
         watchBtcDeposits(principal)
       })
 
-      setBtcAddress()
+      fetchBtcAddress()
     }
-  }, [isAuthenticated, watchBtcDeposits, setBtcAddress])
+  }, [isAuthenticated, watchBtcDeposits, fetchBtcAddress])
 
   return (
     <React.Suspense fallback={<BlurredLoader isLoading />}>

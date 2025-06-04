@@ -68,13 +68,15 @@ Then(
 )
 
 Then(
-  /^Verifying that there is ([^"]*) token with currency ([^"]*) on category ([^"]*), token balance ([^"]*) and USD balance is not 0$/,
+  /^Verifying that there is ([^"]*) token with ([^"]*) stake, currency ([^"]*) on category ([^"]*), token balance ([^"]*) and USD balance is not 0$/,
   async (
     tokenName: string,
+    stake: string,
     currency: string,
     category: string,
     balance: string,
   ) => {
+    currency = stake == "available" ? currency + " Stake" : currency
     await softAssertAll(
       async () => {
         if (!isMobile()) {
@@ -103,9 +105,17 @@ Then(
       ],
       [
         async () =>
-          await expect(await (await Assets.getCurrency(tokenName)).getText()).toBe(
-            currency,
-          ), `Incorrect token currency`,
+          await expect(
+            (await (await Assets.getCurrency(tokenName))
+                .getText()
+            )
+              .split("\n")
+              .map((s) => s.trim())
+              .join(" "),
+          )
+            .toBe(
+              currency,
+            ), `Incorrect token currency`,
       ],
       [
         async () => {

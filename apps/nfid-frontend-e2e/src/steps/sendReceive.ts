@@ -26,8 +26,19 @@ Then(
 )
 
 Then(/^User selects ([^"]*) from send options/, async (currency: string) => {
-  await Assets.openAssetOptionsOnSR()
-  await Assets.currencyOption(currency.replace(/^\$/, "")).click()
+  await browser.waitUntil(async () => {
+    await Assets.openAssetOptionsOnSR()
+    try {
+      await Assets.currencyOption(currency.replace(/^\$/, ""))
+        .then(async (it) => {
+          await it.waitForClickable()
+          await it.click()
+        })
+    } catch (e) {
+      await Assets.tokenToSendBackButton.click()
+    }
+    return await Assets.chooseModalButton.isDisplayed()
+  }, { timeout: 30000, timeoutMsg: "List of tokens is not loaded in 30 sec" })
 })
 
 Then(

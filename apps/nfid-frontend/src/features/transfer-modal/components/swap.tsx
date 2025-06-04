@@ -15,6 +15,7 @@ import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 import {
+  BTC_NATIVE_ID,
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -40,6 +41,7 @@ const QUOTE_REFETCH_TIMER = 30
 
 interface ISwapFT {
   preselectedSourceTokenAddress: string | undefined
+  preselectedTargetTokenAddress: string | undefined
   onClose: () => void
   onError: (value: boolean) => void
   setErrorMessage: (message: string) => void
@@ -49,6 +51,7 @@ interface ISwapFT {
 
 export const SwapFT = ({
   preselectedSourceTokenAddress,
+  preselectedTargetTokenAddress,
   onClose,
   onError,
   hideZeroBalance,
@@ -92,6 +95,14 @@ export const SwapFT = ({
     }
   }, [preselectedSourceTokenAddress])
 
+  useEffect(() => {
+    if (!preselectedTargetTokenAddress) {
+      setToTokenAddress(NFIDW_CANISTER_ID)
+    } else {
+      setToTokenAddress(preselectedTargetTokenAddress)
+    }
+  }, [preselectedTargetTokenAddress])
+
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",
     fetchTokens,
@@ -125,13 +136,17 @@ export const SwapFT = ({
 
   const toToken = useMemo(() => {
     return tokens.find(
-      (token: FT) => token.getTokenAddress() === toTokenAddress,
+      (token: FT) =>
+        token.getTokenAddress() === toTokenAddress &&
+        token.getTokenAddress() !== BTC_NATIVE_ID,
     )
   }, [toTokenAddress, tokens])
 
   const filteredAllTokens = useMemo(() => {
     return tokens.filter(
-      (token) => token.getTokenAddress() !== fromTokenAddress,
+      (token) =>
+        token.getTokenAddress() !== fromTokenAddress &&
+        token.getTokenAddress() !== BTC_NATIVE_ID,
     )
   }, [fromTokenAddress, tokens])
 

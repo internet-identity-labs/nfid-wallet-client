@@ -43,6 +43,7 @@ export type TransferMachineContext = {
   sourceWalletAddress: string
   sourceAccount?: Wallet
   selectedFT?: string
+  selectedTargetFT?: string
   selectedNFTId?: string
   receiverWallet: string
   amount: string
@@ -62,6 +63,7 @@ export type Events =
   | { type: "ASSIGN_AMOUNT"; data: string }
   | { type: "ASSIGN_RECEIVER_WALLET"; data: string }
   | { type: "ASSIGN_SELECTED_FT"; data: string }
+  | { type: "ASSIGN_SELECTED_TARGET_FT"; data: string }
   | { type: "ASSIGN_SELECTED_NFT"; data: string }
   | { type: "ASSIGN_ERROR"; data: string }
   | { type: "ASSIGN_TOKEN_STANDARD"; data: string }

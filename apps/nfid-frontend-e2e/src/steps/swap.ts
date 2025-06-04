@@ -105,23 +105,37 @@ When(
         await browser.pause(2000)
         await Assets.waitUntilElementsLoadedProperly(
           Assets.tokensTab,
-          Assets.ManageTokensDialog.manageTokensDialogButton,
+          {
+            element: Assets.ManageTokensDialog.manageTokensDialogButton,
+            action: async (element) => {
+              await element.waitForDisplayed({ timeout: 20000 })
+              await element.waitForClickable()
+            },
+          },
         )
         await browser.pause(2000)
+
         expectedSourceTokenBalance =
           Math.floor(
             (currentSourceTokenBalance - sourceTokenAmountToSwap) * 1e8,
           ) / 1e8
+
         expectedTargetTokenBalance =
           Math.floor(
             (currentTargetTokenBalance + expectedTargetTokenAmount) * 1e8,
           ) / 1e8
+
+        await (await Assets.tokenBalance(sourceToken))
+          .waitForDisplayed({ timeout: 20000 })
         actualSourceTokenBalance = parseFloat(
           (await (await Assets.tokenBalance(sourceToken)).getText()).replace(
             /[^\d.]/g,
             "",
           ),
         )
+
+        await (await Assets.tokenBalance(targetToken))
+          .waitForDisplayed({ timeout: 20000 })
         actualTargetTokenBalance = parseFloat(
           (await (await Assets.tokenBalance(targetToken)).getText()).replace(
             /[^\d.]/g,

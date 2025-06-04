@@ -43,7 +43,7 @@ import { NfidSNSNeuronImpl } from "../impl/nfid-sns-neuron-impl"
 import { StakedICPTokenImpl } from "../impl/staked-icp-token-impl"
 import { StakedSnsTokenImpl } from "../impl/staked-sns-token-impl"
 import { StakedToken } from "../staked-token"
-import { IStakingDelegates, TotalBalance } from "../types"
+import { IStakingDelegates, IStakingICPDelegates, TotalBalance } from "../types"
 
 export class StakingServiceImpl implements StakingService {
   @Cache(integrationCache, { ttl: 300, calculateKey: () => "getStakedTokens" })
@@ -294,6 +294,31 @@ export class StakingServiceImpl implements StakingService {
     })
   }
 
+  getICPDelegates(): IStakingICPDelegates {
+    return {
+      [Topic.Unspecified]: "All Except Governance, and SNS & Neurons' Fund",
+      [Topic.NeuronManagement]: "Neuron Management",
+      [Topic.ExchangeRate]: "Exchange Rate",
+      [Topic.NetworkEconomics]: "Network Economics",
+      [Topic.Governance]: "Governance",
+      [Topic.NodeAdmin]: "Node Admin",
+      [Topic.ParticipantManagement]: "Participant Management",
+      [Topic.SubnetManagement]: "Subnet Management",
+      [Topic.NetworkCanisterManagement]: "Application Canister Management",
+      [Topic.Kyc]: "KYC",
+      [Topic.NodeProviderRewards]: "Node Provider Rewards",
+      [Topic.SnsDecentralizationSale]: "SNS Decentralization Swap",
+      [Topic.IcOsVersionDeployment]: "IC OS Version Deployment",
+      [Topic.IcOsVersionElection]: "IC OS Version Election",
+      [Topic.SnsAndCommunityFund]: "SNS & Neurons' Fund",
+      [Topic.ApiBoundaryNodeManagement]: "API Boundary Node Management",
+      [Topic.SubnetRental]: "Subnet Rental",
+      [Topic.ProtocolCanisterManagement]: "Protocol Canister Management",
+      [Topic.ServiceNervousSystemManagement]:
+        "Service Nervous System Management",
+    }
+  }
+
   async followNeurons(
     delegation: SignIdentity,
     root: Principal,
@@ -329,12 +354,6 @@ export class StakingServiceImpl implements StakingService {
       (n) => n.rootCanister === ICP_ROOT_CANISTER_ID,
     )
 
-    console.log(
-      "identity followICPNeurons",
-      delegation.getPrincipal().toText(),
-      BigInt(id),
-    )
-
     for (const t of Object.values(Topic).filter(
       (value) => typeof value === "number",
     ) as number[]) {
@@ -364,6 +383,25 @@ export class StakingServiceImpl implements StakingService {
         rootCanisterId: root,
         neuronId: userNeuron,
         followees: [neuronToFollow],
+      })
+    }
+  }
+
+  async reFollowICPNeurons(
+    neuronToFollow: bigint,
+    delegation: SignIdentity,
+    userNeuron: bigint,
+  ) {
+    for (const t of Object.values(Topic).filter(
+      (value) => typeof value === "number",
+    ) as number[]) {
+      setICPFollowees({
+        identity: delegation,
+        neuronId: userNeuron,
+        topic: t,
+        followees: [neuronToFollow],
+      }).catch((e) => {
+        console.error(e.detail.error_message)
       })
     }
   }

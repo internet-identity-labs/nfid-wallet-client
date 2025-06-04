@@ -44,7 +44,9 @@ const StakingDetailsPage = () => {
   )
 
   const { data: delegates } = useSWR(
-    tokenSymbol && identity ? ["stakedTokenDelegates", tokenSymbol] : null,
+    stakedToken && tokenSymbol && identity
+      ? ["stakedTokenDelegates", tokenSymbol]
+      : null,
     () =>
       fetchDelegates(identity, stakedToken?.getToken().getRootSnsCanister()),
     { revalidateOnFocus: false },
@@ -55,12 +57,18 @@ const StakingDetailsPage = () => {
 
     if (!identity || !root || !userNeuron) return
 
-    stakingService.reFollowNeurons(
+    await stakingService.reFollowNeurons(
       { id: hexStringToUint8Array(value) },
       identity,
       root,
       userNeuron,
     )
+  }
+
+  const updateICPDelegates = async (value: string, userNeuron?: bigint) => {
+    if (!identity || !userNeuron) return
+
+    await stakingService.reFollowICPNeurons(BigInt(value), identity, userNeuron)
   }
 
   useEffect(() => {
@@ -97,6 +105,7 @@ const StakingDetailsPage = () => {
       identity={identity}
       delegates={delegates}
       updateDelegates={updateDelegates}
+      updateICPDelegates={updateICPDelegates}
     />
   )
 }

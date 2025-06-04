@@ -3,6 +3,8 @@ import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
 import { useLocation } from "react-router-dom"
 
+import { IconCmpWarning } from "@nfid-frontend/ui"
+
 import Animation1 from "../../assets/animations/1_4.json"
 import Animation2 from "../../assets/animations/2_4.json"
 import Animation3 from "../../assets/animations/3_4.json"
@@ -45,6 +47,7 @@ import AnimationWrapper from "../../ui/visible-animation"
 import { Wrapper } from "../wrapper"
 import { InfoCopy } from "./info-copy"
 import { LinkIcon } from "./link-icon"
+import { EmailAuthDisabledBanner } from "frontend/ui/molecules/email-auth-disabled-banner"
 
 const asset =
   "my-5 sm:my-0 relative w-full sm:w-[40%] min-w-[330px] min-h-[330px] shrink-0 mx-auto sm:mx-0"
@@ -152,6 +155,7 @@ const HomeContent = ({
     <>
       <div className="relative">
         <Container className="relative overflow-visible">
+          <EmailAuthDisabledBanner />
           <div className="gradient-radial"></div>
           <div className="relative z-10 pt-[30px] md:pt-[60px] lg:pt-[90px] text-center flex flex-col items-center">
             <div className="text-[30px] md:text-[34px] lg:text-[44px] xl:text-[50px] tracking-[-2.16px] font-bold lg:max-w-[1012px]">
@@ -186,7 +190,12 @@ const HomeContent = ({
               </Button>
             </div>
             <div className="relative mt-[-30px] sm:mt-[-70px] md:mt-[-100px] xl:mt-[-180px]">
-              <img className="max-w-full" loading="lazy" src="/main.png" alt="main" />
+              <img
+                className="max-w-full"
+                loading="lazy"
+                src="/main.png"
+                alt="main"
+              />
               <div className="absolute right-[20px] md:right-[75px] top-[120px] md:top-[240px] lg:top-[320px] xl:top-[430px]">
                 <ScrollMoveElement
                   className="w-[77px] sm:w-[126px] md:w-[174px] lg:w-[290px]"
@@ -395,11 +404,7 @@ const HomeContent = ({
       </Container>
       <Container className="mt-10 md:mt-20">
         <div className="grid grid-cols-1 sm:grid-cols-2">
-          <img
-            src={Audit}
-            className="sm:pr-[15px]"
-            alt="ICP safest wallet"
-          />
+          <img src={Audit} className="sm:pr-[15px]" alt="ICP safest wallet" />
           <div className="ms-0 sm:ms-[15px] flex flex-col justify-center">
             <div>
               <h2 className="font-bold text-[18px] lg:text-[32px] leading-[140%] text-white mb-[25px]">

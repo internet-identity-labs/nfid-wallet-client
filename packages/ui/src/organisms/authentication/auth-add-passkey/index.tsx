@@ -14,7 +14,6 @@ export interface AuthAddPasskeyProps {
 }
 
 export const AuthAddPasskey: FC<AuthAddPasskeyProps> = ({
-  onSkip,
   onAdd,
   name,
   isLoading,
@@ -37,8 +36,9 @@ export const AuthAddPasskey: FC<AuthAddPasskeyProps> = ({
         </h5>
         <p className="mt-2.5 mb-[30px]">NFID Wallet name: {name}</p>
         <p className="text-center">
-          Adding biometric security will enable faster sign in and ensure you
-          are the only one that can access your wallet.
+          Starting <strong>July 1, 2025</strong>, signing in with Gmail or email
+          based authentication will no longer be supported. Set up a passkey to
+          ensure uninterrapted access.
         </p>
         <img
           className="flex-1 mt-5 max-h-[245px] object-contain"
@@ -48,15 +48,6 @@ export const AuthAddPasskey: FC<AuthAddPasskeyProps> = ({
 
         <Button className="mt-auto" block onClick={onAdd} type="primary">
           Continue
-        </Button>
-        <Button
-          id={"skip-secure-wallet"}
-          className="mt-2.5"
-          block
-          onClick={onSkip}
-          type="ghost"
-        >
-          Skip for now
         </Button>
       </div>
     </BlurredLoader>

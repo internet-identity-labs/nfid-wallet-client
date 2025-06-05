@@ -105,15 +105,16 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
                 if (stakeId === undefined) return
                 setIsDelegateLoading(true)
                 setIsModalOpen(false)
-                if (typeof stakeId === "bigint") {
-                  updateICPDelegates(userNeuron, stakeId).then(() =>
-                    setIsDelegateLoading(false),
-                  )
-                } else if (stakeId) {
-                  updateDelegates(userNeuron, stakeId).then(() =>
-                    setIsDelegateLoading(false),
-                  )
+
+                const update = (neuron: string, id: NeuronId | bigint) => {
+                  return typeof id === "bigint"
+                    ? updateICPDelegates(neuron, id)
+                    : updateDelegates(neuron, id)
                 }
+
+                update(userNeuron, stakeId).then(() =>
+                  setIsDelegateLoading(false),
+                )
               }}
               className="w-[115px]"
             >

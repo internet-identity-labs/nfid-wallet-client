@@ -46,6 +46,28 @@ import { StakedToken } from "../staked-token"
 import { IStakingDelegates, IStakingICPDelegates, TotalBalance } from "../types"
 
 export class StakingServiceImpl implements StakingService {
+  static readonly ICP_DELEGATES: IStakingICPDelegates = {
+    [Topic.Unspecified]: "All Except Governance, and SNS & Neurons' Fund",
+    [Topic.NeuronManagement]: "Neuron Management",
+    [Topic.ExchangeRate]: "Exchange Rate",
+    [Topic.NetworkEconomics]: "Network Economics",
+    [Topic.Governance]: "Governance",
+    [Topic.NodeAdmin]: "Node Admin",
+    [Topic.ParticipantManagement]: "Participant Management",
+    [Topic.SubnetManagement]: "Subnet Management",
+    [Topic.NetworkCanisterManagement]: "Application Canister Management",
+    [Topic.Kyc]: "KYC",
+    [Topic.NodeProviderRewards]: "Node Provider Rewards",
+    [Topic.SnsDecentralizationSale]: "SNS Decentralization Swap",
+    [Topic.IcOsVersionDeployment]: "IC OS Version Deployment",
+    [Topic.IcOsVersionElection]: "IC OS Version Election",
+    [Topic.SnsAndCommunityFund]: "SNS & Neurons' Fund",
+    [Topic.ApiBoundaryNodeManagement]: "API Boundary Node Management",
+    [Topic.SubnetRental]: "Subnet Rental",
+    [Topic.ProtocolCanisterManagement]: "Protocol Canister Management",
+    [Topic.ServiceNervousSystemManagement]: "Service Nervous System Management",
+  }
+
   @Cache(integrationCache, { ttl: 300, calculateKey: () => "getStakedTokens" })
   async getStakedTokens(
     userId: string,
@@ -306,28 +328,7 @@ export class StakingServiceImpl implements StakingService {
   }
 
   getICPDelegates(): IStakingICPDelegates {
-    return {
-      [Topic.Unspecified]: "All Except Governance, and SNS & Neurons' Fund",
-      [Topic.NeuronManagement]: "Neuron Management",
-      [Topic.ExchangeRate]: "Exchange Rate",
-      [Topic.NetworkEconomics]: "Network Economics",
-      [Topic.Governance]: "Governance",
-      [Topic.NodeAdmin]: "Node Admin",
-      [Topic.ParticipantManagement]: "Participant Management",
-      [Topic.SubnetManagement]: "Subnet Management",
-      [Topic.NetworkCanisterManagement]: "Application Canister Management",
-      [Topic.Kyc]: "KYC",
-      [Topic.NodeProviderRewards]: "Node Provider Rewards",
-      [Topic.SnsDecentralizationSale]: "SNS Decentralization Swap",
-      [Topic.IcOsVersionDeployment]: "IC OS Version Deployment",
-      [Topic.IcOsVersionElection]: "IC OS Version Election",
-      [Topic.SnsAndCommunityFund]: "SNS & Neurons' Fund",
-      [Topic.ApiBoundaryNodeManagement]: "API Boundary Node Management",
-      [Topic.SubnetRental]: "Subnet Rental",
-      [Topic.ProtocolCanisterManagement]: "Protocol Canister Management",
-      [Topic.ServiceNervousSystemManagement]:
-        "Service Nervous System Management",
-    }
+    return StakingServiceImpl.ICP_DELEGATES
   }
 
   async followNeurons(

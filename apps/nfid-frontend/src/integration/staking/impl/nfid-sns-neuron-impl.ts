@@ -20,6 +20,7 @@ import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-
 
 import { NfidNeuronImpl } from "./nfid-neuron-impl"
 
+const MILISECONDS_PER_SECOND = 1000
 export class NfidSNSNeuronImpl extends NfidNeuronImpl<Neuron> {
   getState(): NeuronState {
     throw new Error("getState method is not supported for SNS neurons.")
@@ -92,7 +93,15 @@ export class NfidSNSNeuronImpl extends NfidNeuronImpl<Neuron> {
   }
 
   isDiamond(): boolean {
-    return false
+    const lockTime = this.getLockTime()
+    if (
+      !lockTime ||
+      lockTime + this.getCreatedAt() <=
+        Math.floor(Date.now() / MILISECONDS_PER_SECOND)
+    )
+      return false
+
+    return this.params?.getMaximumLockTime() === lockTime
   }
 
   async redeem(signIdentity: SignIdentity): Promise<void> {

@@ -5,7 +5,7 @@ import { Principal } from "@dfinity/principal"
 import { createAgent } from "@dfinity/utils"
 import BigNumber from "bignumber.js"
 
-import { BlockIndex } from "../bitcoin.service"
+import { BlockIndex, CkBtcToBtcFee } from "../bitcoin.service"
 import { satoshiService } from "./satoshi.service"
 
 const NANO_SECONDS_IN_MILLISECOND = BigInt(1_000_000)
@@ -17,16 +17,27 @@ class CkBtcService {
     identity: SignIdentity,
     address: string,
     amount: string,
+    fee: CkBtcToBtcFee,
   ): Promise<BlockIndex> {
     const amountInSatoshis = satoshiService.getInSatoshis(amount)
     await this.approve(identity, amountInSatoshis)
-    const blockIndex = await this.retrieveBtc(identity, address, amountInSatoshis)
+    const blockIndex = await this.retrieveBtc(
+      identity,
+      address,
+      amountInSatoshis,
+    )
 
-    const fee = this.getFee(amountInSatoshis)
-    await this.approve(identity, fee)
-    await ckBtcService.send(identity, FEE_ADDRESS, fee)
+    await this.approve(identity, fee.identityLabsFee)
+    await ckBtcService.send(identity, FEE_ADDRESS, fee.identityLabsFee)
 
     return blockIndex
+  }
+
+  public getFee(amountInSatoshis: bigint): bigint {
+    const feePercentBigNumber = new BigNumber(FEE_PERCENT)
+    const amountBigNumber = new BigNumber(amountInSatoshis.toString())
+    const feeBigNmber = amountBigNumber.multipliedBy(feePercentBigNumber)
+    return BigInt(feeBigNmber.toFixed(0))
   }
 
   public async send(
@@ -66,11 +77,6 @@ class CkBtcService {
     address: string,
     amount: bigint,
   ): Promise<BlockIndex> {
-    const agent = await createAgent({
-      identity,
-      host: IC_HOST,
-    })
-
     const minter = await this.getMinter(identity)
 
     const { block_index }: RetrieveBtcOk = await minter.retrieveBtcWithApproval(
@@ -108,13 +114,6 @@ class CkBtcService {
     })
 
     return ledger
-  }
-
-  private getFee(amountInSatoshis: bigint): bigint {
-    const feePercentBigNumber = new BigNumber(FEE_PERCENT)
-    const amountBigNumber = new BigNumber(amountInSatoshis.toString())
-    const feeBigNmber = amountBigNumber.multipliedBy(feePercentBigNumber)
-    return BigInt(feeBigNmber.toFixed(0))
   }
 }
 

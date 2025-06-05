@@ -14,6 +14,7 @@ import { useSWR } from "@nfid/swr"
 import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
 import { VaultGuard } from "frontend/ui/pages/vault-guard"
 
+import { useBtcAddress } from "./hooks/btc-address"
 import { useBTCDepositsToMintCKBTCListener } from "./hooks/btc-to-ckbtc"
 
 import { useAuthentication } from "./apps/authentication/use-authentication"
@@ -74,7 +75,7 @@ export const App = () => {
     dedupingInterval: 60_000,
     focusThrottleInterval: 60_000,
     refreshInterval: 60_000,
-    onSuccess: (data) => {
+    onSuccess: () => {
       console.debug("cacheUsdIcpRate", exchangeRateService.getICP2USD())
     },
   })
@@ -86,15 +87,19 @@ export const App = () => {
 
   const { isAuthenticated } = useAuthentication()
   const { watchBtcDeposits } = useBTCDepositsToMintCKBTCListener()
+  const { fetchBtcAddress } = useBtcAddress()
 
   useEffect(() => {
     if (isAuthenticated) {
       const principal = Principal.from(authState.getUserIdData().publicKey)
+
       btcDepositService.generateAddress(principal).then(() => {
         watchBtcDeposits(principal)
       })
+
+      fetchBtcAddress()
     }
-  }, [isAuthenticated, watchBtcDeposits])
+  }, [isAuthenticated, watchBtcDeposits, fetchBtcAddress])
 
   return (
     <React.Suspense fallback={<BlurredLoader isLoading />}>

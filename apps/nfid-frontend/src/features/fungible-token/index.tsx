@@ -12,6 +12,7 @@ import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc
 import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { useBtcAddress } from "frontend/hooks/btc-address"
 import { FT } from "frontend/integration/ft/ft"
 import { ProfileContext } from "frontend/provider"
 
@@ -23,6 +24,7 @@ const TokensPage = () => {
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
   const [initedTokens, setInitedTokens] = useState<Array<FT> | undefined>()
+  const { isBtcAddressLoading } = useBtcAddress()
 
   const onSendClick = (selectedToken: string) => {
     send({ type: "ASSIGN_VAULTS", data: false })
@@ -37,6 +39,7 @@ const TokensPage = () => {
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.SWAP })
     send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
+    send({ type: "ASSIGN_SELECTED_TARGET_FT", data: "" })
     send("SHOW")
   }
 
@@ -52,9 +55,9 @@ const TokensPage = () => {
 
   useEffect(() => {
     if (activeTokens) {
-      initTokens(activeTokens).then(setInitedTokens)
+      initTokens(activeTokens, isBtcAddressLoading).then(setInitedTokens)
     }
-  }, [activeTokens])
+  }, [activeTokens, isBtcAddressLoading])
 
   useEffect(() => {
     userPrefService.getUserPreferences().then((userPref) => {
@@ -93,6 +96,10 @@ const TokensPage = () => {
       })
   }
 
+  //TODO: implement BTC convert functions
+  const onConvertToBtc = () => {}
+  const onConvertToCkBtc = () => {}
+
   return (
     <Tokens
       tokensIniting={!initedTokens}
@@ -104,8 +111,11 @@ const TokensPage = () => {
       profileConstants={ProfileConstants}
       onSendClick={onSendClick}
       onSwapClick={onSwapClick}
+      onConvertToBtc={onConvertToBtc}
+      onConvertToCkBtc={onConvertToCkBtc}
       hideZeroBalance={hideZeroBalance}
       onZeroBalanceToggle={onZeroBalanceToggle}
+      isBtcAddressLoading={isBtcAddressLoading}
     />
   )
 }

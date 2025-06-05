@@ -1,5 +1,6 @@
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
+import { BtcBanner } from "packages/ui/src/molecules/btc-banner"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import {
@@ -24,6 +25,7 @@ import useSWRImmutable from "swr/immutable"
 
 import { ArrowButton, Loader, TabsSwitcher, Tooltip } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
+import { CKBTC_CANISTER_ID } from "@nfid/integration/token/constants"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
@@ -36,6 +38,7 @@ import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-s
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { ModalType } from "frontend/features/transfer-modal/types"
 import { getAllVaults } from "frontend/features/vaults/services"
+import { useBtcAddress } from "frontend/hooks/btc-address"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
 
@@ -120,6 +123,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const [isSyncEmailLoading, setIsSyncEmailLoading] = useState(false)
   const { profile } = useProfile()
   const { logout } = useAuthentication()
+  const { isBtcAddressLoading } = useBtcAddress()
 
   const hasVaults = useMemo(() => !!vaults?.length, [vaults])
 
@@ -133,7 +137,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   const { data: initedTokens = [], mutate: reinitTokens } = useSWR(
     activeTokens.length > 0 && isWallet ? "initedTokens" : null,
-    () => initTokens(activeTokens),
+    () => initTokens(activeTokens, !!isBtcAddressLoading),
     { revalidateOnFocus: false },
   )
 
@@ -194,8 +198,20 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.SWAP })
+    send({ type: "ASSIGN_SELECTED_TARGET_FT", data: "" })
     send("SHOW")
   }
+
+  const onBtcSwapClick = () => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.SWAP })
+    send({ type: "ASSIGN_SELECTED_TARGET_FT", data: CKBTC_CANISTER_ID })
+    send("SHOW")
+  }
+
+  //TODO: implement BTC convert function
+  const onBtcConvert = () => {}
 
   return (
     <div className={clsx("relative min-h-screen overflow-hidden", className)}>
@@ -260,6 +276,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
                 onReceiveClick={onReceiveClick}
                 onSwapClick={onSwapClick}
                 address={authState.getUserIdData().publicKey}
+              />
+              <BtcBanner
+                onBtcSwapClick={onBtcSwapClick}
+                onBtcConvert={onBtcConvert}
               />
               <TabsSwitcher
                 className="my-[30px]"

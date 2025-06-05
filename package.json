@@ -15,7 +15,6 @@
     "reportMobile": "node_modules/.bin/allure generate apps/nfid-frontend-e2e/src/reporter/mobile/allure-results --clean -o apps/nfid-frontend-e2e/src/reporter/mobile/allure-report && node_modules/.bin/allure open apps/nfid-frontend-e2e/src/reporter/mobile/allure-report"
   },
   "dependencies": {
-    "@dfinity/ckbtc": "3.1.12",
     "@dfinity/agent": "2.3.0",
     "@dfinity/auth-client": "2.3.0",
     "@dfinity/candid": "2.3.0",

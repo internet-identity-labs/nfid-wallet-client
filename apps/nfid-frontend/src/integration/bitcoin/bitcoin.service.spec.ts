@@ -6,7 +6,12 @@ import {
 import { Principal } from "@dfinity/principal"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 
-import { bitcoinService, BlockIndex } from "./bitcoin.service"
+import {
+  bitcoinService,
+  BlockIndex,
+  BtcToCkBtcFee,
+  CkBtcToBtcFee,
+} from "./bitcoin.service"
 import { SelectedUtxosFeeResponse } from "./idl/patron.d"
 import { TransactionId } from "./services/chain-fusion-signer.service"
 
@@ -62,7 +67,7 @@ describe("Bitcoin Service", () => {
     expect(address).toEqual("address")
   })
 
-  it.skip("should return a balance", async () => {
+  it("should return a balance", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
 
@@ -70,10 +75,10 @@ describe("Bitcoin Service", () => {
     const balance: bigint = await bitcoinService.getBalance(identity)
 
     // Then
-    expect(balance).toEqual(BigInt(1647))
+    expect(balance).toEqual(BigInt(1618))
   })
 
-  it.skip("should return a quick balance", async () => {
+  it("should return a quick balance", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
     const principal: Principal = identity.getPrincipal()
@@ -82,7 +87,7 @@ describe("Bitcoin Service", () => {
     const balance: bigint = await bitcoinService.getQuickBalance(principal)
 
     // Then
-    expect(balance).toEqual(BigInt(1647))
+    expect(balance).toEqual(BigInt(1618))
   })
 
   it("should return a fee", async () => {
@@ -96,6 +101,37 @@ describe("Bitcoin Service", () => {
     // Then
     expect(fee.fee_satoshis).not.toBeNull()
     expect(fee.utxos).not.toHaveLength(0)
+  })
+
+  it("should return a BtcToCkBtc fee", async () => {
+    // Given
+    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
+    const amount: string = "0.00001"
+
+    // When
+    const fee = await bitcoinService.getBtcToCkBtcFee(identity, amount)
+
+    // Then
+    expect(fee.conversionFee).toBe(BigInt(0))
+    expect(fee.interNetwokFee).toBe(BigInt(100))
+    expect(fee.bitcointNetworkFee.fee_satoshis).not.toBeNull()
+    expect(fee.bitcointNetworkFee.utxos).not.toHaveLength(0)
+  })
+
+  it("should return a CkBtcToBtc fee", async () => {
+    // Given
+    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
+    const amount: string = "0.00001"
+
+    // When
+    const fee = await bitcoinService.getCkBtcToBtcFee(identity, amount)
+
+    // Then
+    expect(fee.conversionFee).toBe(BigInt(10))
+    expect(fee.interNetwokFee).toBe(BigInt(100))
+    expect(fee.identityLabsFee).toBe(BigInt(9))
+    expect(fee.bitcointNetworkFee.fee_satoshis).not.toBeNull()
+    expect(fee.bitcointNetworkFee.utxos).not.toHaveLength(0)
   })
 
   it.skip("should send a token and return transaction id", async () => {
@@ -125,11 +161,16 @@ describe("Bitcoin Service", () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
     const amount: string = "0.0005"
+    const fee: CkBtcToBtcFee = await bitcoinService.getCkBtcToBtcFee(
+      identity,
+      amount,
+    )
 
     // When
     const txid: BlockIndex = await bitcoinService.convertFromCkBtc(
       identity,
       amount,
+      fee,
     )
 
     // Then
@@ -140,7 +181,7 @@ describe("Bitcoin Service", () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
     const amount: string = "0.00001"
-    const fee: SelectedUtxosFeeResponse = await bitcoinService.getFee(
+    const fee: BtcToCkBtcFee = await bitcoinService.getBtcToCkBtcFee(
       identity,
       amount,
     )
@@ -149,7 +190,7 @@ describe("Bitcoin Service", () => {
     const txid: TransactionId = await bitcoinService.convertToCkBtc(
       identity,
       amount,
-      fee
+      fee,
     )
 
     // Then

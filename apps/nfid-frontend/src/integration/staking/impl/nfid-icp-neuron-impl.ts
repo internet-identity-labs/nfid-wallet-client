@@ -1,6 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
 import { AccountIdentifier } from "@dfinity/ledger-icp"
-import { NeuronInfo, NeuronState } from "@dfinity/nns"
+import { Followees, NeuronInfo, NeuronState } from "@dfinity/nns"
 
 import {
   disburseICP,
@@ -18,9 +18,8 @@ export class NfidICPNeuronImpl extends NfidNeuronImpl<NeuronInfo> {
     return this.neuron.state
   }
 
-  //TODO: implement this method for ICP neuron
-  getFollowees(): any {
-    throw new Error("This method is not implemented yet")
+  getFollowees(): Followees[] {
+    return this.neuron.fullNeuron!.followees
   }
 
   getStakeId(): bigint {

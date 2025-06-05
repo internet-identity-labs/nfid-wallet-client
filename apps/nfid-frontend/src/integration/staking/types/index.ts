@@ -1,3 +1,4 @@
+import { Topic } from "@dfinity/nns"
 import { ListNervousSystemFunctionsResponse } from "@dfinity/sns/dist/candid/sns_governance"
 
 export interface TokenValue {
@@ -23,3 +24,10 @@ export interface TotalBalance {
 }
 
 export type IStakingDelegates = ListNervousSystemFunctionsResponse
+
+export type IStakingICPDelegates = Partial<Record<Topic, string>>
+
+export type IFollowees = {
+  name: string | undefined
+  id: string
+}[]

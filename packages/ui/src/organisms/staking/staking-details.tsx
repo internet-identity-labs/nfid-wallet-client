@@ -8,6 +8,7 @@ import { FormValues } from "frontend/features/transfer-modal/types"
 import { StakedToken } from "frontend/integration/staking/staked-token"
 import {
   IStakingDelegates,
+  IStakingICPDelegates,
   StakingState,
 } from "frontend/integration/staking/types"
 import { NotFound } from "frontend/ui/pages/404"
@@ -32,8 +33,9 @@ export interface StakingDetailsProps {
   stakedToken?: StakedToken
   isLoading: boolean
   onRedeemOpen: (id: string) => void
-  delegates: IStakingDelegates | undefined
-  updateDelegates: (value: string, userNeuron?: NeuronId) => void
+  delegates: IStakingDelegates | IStakingICPDelegates | undefined
+  updateDelegates: (value: string, userNeuron?: NeuronId) => Promise<void>
+  updateICPDelegates: (value: string, userNeuron?: bigint) => Promise<void>
   identity?: SignIdentity
 }
 
@@ -43,11 +45,13 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
   onRedeemOpen,
   delegates,
   updateDelegates,
+  updateICPDelegates,
   identity,
 }) => {
   const [sidePanelOption, setSidePanelOption] =
     useState<SidePanelOption | null>(null)
   const [isStateLoading, setIsStateLoading] = useState(false)
+  const [isDelegateLoading, setIsDelegateLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const formMethods = useForm<FormValues>({
@@ -96,12 +100,22 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
               Cancel
             </Button>
             <Button
-              onClick={() =>
-                updateDelegates(
-                  userNeuron,
-                  sidePanelOption?.option.getStakeId(),
+              onClick={async () => {
+                const stakeId = sidePanelOption?.option.getStakeId()
+                if (stakeId === undefined) return
+                setIsDelegateLoading(true)
+                setIsModalOpen(false)
+
+                const update = (neuron: string, id: NeuronId | bigint) => {
+                  return typeof id === "bigint"
+                    ? updateICPDelegates(neuron, id)
+                    : updateDelegates(neuron, id)
+                }
+
+                update(userNeuron, stakeId).then(() =>
+                  setIsDelegateLoading(false),
                 )
-              }
+              }}
               className="w-[115px]"
             >
               Update
@@ -119,6 +133,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
         isLoading={isStateLoading}
         delegates={delegates}
         setIsModalOpen={setIsModalOpen}
+        isDelegateLoading={isDelegateLoading}
       />
       {isLoading || isStateLoading || !stakedToken ? (
         <>

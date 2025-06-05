@@ -4,7 +4,7 @@ import clsx from "clsx"
 import { FC, useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
 
-import { FormValues } from "frontend/features/transfer-modal/types"
+import { NeuronFormValues } from "frontend/features/transfer-modal/types"
 import { StakedToken } from "frontend/integration/staking/staked-token"
 import {
   IStakingDelegates,
@@ -37,6 +37,7 @@ export interface StakingDetailsProps {
   updateDelegates: (value: string, userNeuron?: NeuronId) => Promise<void>
   updateICPDelegates: (value: string, userNeuron?: bigint) => Promise<void>
   identity?: SignIdentity
+  validateNeuron: (neuronId: string) => Promise<true | string>
 }
 
 export const StakingDetails: FC<StakingDetailsProps> = ({
@@ -47,6 +48,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
   updateDelegates,
   updateICPDelegates,
   identity,
+  validateNeuron,
 }) => {
   const [sidePanelOption, setSidePanelOption] =
     useState<SidePanelOption | null>(null)
@@ -54,19 +56,51 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
   const [isDelegateLoading, setIsDelegateLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const formMethods = useForm<FormValues>({
+  const {
+    register,
+    watch,
+    setError,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
     mode: "all",
     defaultValues: {
       userNeuron: "",
     },
   })
 
-  const { watch } = formMethods
   const userNeuron = watch("userNeuron")
 
   const handleNavigateBack = useCallback(() => {
     window.history.back()
   }, [])
+
+  const submit = async (data: NeuronFormValues) => {
+    const { userNeuron } = data
+
+    const isCorrectNeuron = await validateNeuron(userNeuron)
+
+    if (isCorrectNeuron !== true) {
+      setError("userNeuron", {
+        type: "manual",
+        message: isCorrectNeuron,
+      })
+      return
+    }
+
+    const stakeId = sidePanelOption?.option.getStakeId()
+    if (stakeId === undefined) return
+    setIsDelegateLoading(true)
+    setIsModalOpen(false)
+
+    const update = (neuron: string, id: NeuronId | bigint) => {
+      return typeof id === "bigint"
+        ? updateICPDelegates(neuron, id)
+        : updateDelegates(neuron, id)
+    }
+
+    update(userNeuron, stakeId).then(() => setIsDelegateLoading(false))
+  }
 
   if (!stakedToken && !isLoading) return <NotFound />
 
@@ -87,7 +121,10 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
             Input a neuron ID to vote on your behalf for this DAO.
           </p>
           <Input
-            {...formMethods.register("userNeuron")}
+            {...register("userNeuron", {
+              required: "This field is required",
+            })}
+            errorText={errors.userNeuron?.message}
             labelText="Neuron ID"
             inputClassName="!border-black"
           />
@@ -100,23 +137,9 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
               Cancel
             </Button>
             <Button
-              onClick={async () => {
-                const stakeId = sidePanelOption?.option.getStakeId()
-                if (stakeId === undefined) return
-                setIsDelegateLoading(true)
-                setIsModalOpen(false)
-
-                const update = (neuron: string, id: NeuronId | bigint) => {
-                  return typeof id === "bigint"
-                    ? updateICPDelegates(neuron, id)
-                    : updateDelegates(neuron, id)
-                }
-
-                update(userNeuron, stakeId).then(() =>
-                  setIsDelegateLoading(false),
-                )
-              }}
+              onClick={handleSubmit(submit)}
               className="w-[115px]"
+              disabled={Boolean(errors["userNeuron"]?.message) || !userNeuron}
             >
               Update
             </Button>

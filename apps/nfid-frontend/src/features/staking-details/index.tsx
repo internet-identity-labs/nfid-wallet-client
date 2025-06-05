@@ -6,6 +6,7 @@ import { StakingDetails } from "packages/ui/src/organisms/staking/staking-detail
 import { useContext, useEffect, useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
 
+import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
@@ -71,6 +72,17 @@ const StakingDetailsPage = () => {
     await stakingService.reFollowICPNeurons(BigInt(value), identity, userNeuron)
   }
 
+  const validateNeuron = (neuronId: string): Promise<true | string> => {
+    const root = stakedToken?.getToken().getRootSnsCanister()
+    return stakingService.validateNeuron(identity, root, {
+      id: hexStringToUint8Array(neuronId),
+    })
+  }
+
+  const validateICPNeuron = (neuronId: string): Promise<true | string> => {
+    return stakingService.validateICPNeuron(identity, BigInt(neuronId))
+  }
+
   useEffect(() => {
     const getSignIdentity = async () => {
       setIdentityLoading(true)
@@ -106,6 +118,11 @@ const StakingDetailsPage = () => {
       delegates={delegates}
       updateDelegates={updateDelegates}
       updateICPDelegates={updateICPDelegates}
+      validateNeuron={
+        token?.getTokenAddress() === ICP_CANISTER_ID
+          ? validateICPNeuron
+          : validateNeuron
+      }
     />
   )
 }

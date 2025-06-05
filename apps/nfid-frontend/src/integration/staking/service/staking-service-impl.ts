@@ -7,7 +7,10 @@ import { hexStringToUint8Array } from "@dfinity/utils"
 import { BigNumber } from "bignumber.js"
 import { Cache } from "node-ts-cache"
 import { integrationCache } from "packages/integration/src/cache"
-import { getNetworkEconomicsParameters } from "packages/integration/src/lib/staking/governance.api"
+import {
+  getNetworkEconomicsParameters,
+  queryNeuron as queryICPNeuron,
+} from "packages/integration/src/lib/staking/governance.api"
 import { ftService } from "src/integration/ft/ft-service"
 import { StakingService } from "src/integration/staking/staking-service"
 
@@ -24,6 +27,7 @@ import {
   autoICPStakeMaturity,
   increaseICPDissolveDelay,
   setICPFollowees,
+  querySnsNeuron,
 } from "@nfid/integration"
 import {
   ICP_CANISTER_ID,
@@ -44,6 +48,8 @@ import { StakedICPTokenImpl } from "../impl/staked-icp-token-impl"
 import { StakedSnsTokenImpl } from "../impl/staked-sns-token-impl"
 import { StakedToken } from "../staked-token"
 import { IStakingDelegates, IStakingICPDelegates, TotalBalance } from "../types"
+
+const NEURON_ERROR_TEXT = "No neuron for given NeuronId."
 
 export class StakingServiceImpl implements StakingService {
   static readonly ICP_DELEGATES: IStakingICPDelegates = {
@@ -110,6 +116,54 @@ export class StakingServiceImpl implements StakingService {
     ) as StakedToken[]
 
     return allStakedTokens
+  }
+
+  async validateNeuron(
+    identity: SignIdentity | undefined,
+    rootCanisterId: Principal | undefined,
+    neuronId: SnsNeuronId,
+  ) {
+    if (!identity || !rootCanisterId) return NEURON_ERROR_TEXT
+
+    try {
+      const neuron = await querySnsNeuron({
+        identity,
+        rootCanisterId,
+        certified: false,
+        neuronId,
+      })
+
+      if (!neuron) {
+        return NEURON_ERROR_TEXT
+      }
+      return true
+    } catch (e) {
+      console.error("getNeuron error: ", e)
+      return NEURON_ERROR_TEXT
+    }
+  }
+
+  async validateICPNeuron(
+    identity: SignIdentity | undefined,
+    neuronId: bigint,
+  ) {
+    if (!identity) return NEURON_ERROR_TEXT
+
+    try {
+      const neuron = await queryICPNeuron({
+        neuronId: BigInt(neuronId),
+        identity,
+        certified: true,
+      })
+
+      if (!neuron) {
+        return NEURON_ERROR_TEXT
+      }
+      return true
+    } catch (e) {
+      console.error("getNeuron error: ", e)
+      return NEURON_ERROR_TEXT
+    }
   }
 
   getTotalBalances(stakedTokens: StakedToken[]): TotalBalance | undefined {

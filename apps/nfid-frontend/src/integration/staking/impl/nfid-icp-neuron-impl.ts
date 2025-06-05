@@ -78,7 +78,10 @@ export class NfidICPNeuronImpl extends NfidNeuronImpl<NeuronInfo> {
   }
 
   isDiamond(): boolean {
-    return false
+    const lockTime = this.getLockTime()
+    if (!lockTime || this.getState() !== NeuronState.Locked) return false
+
+    return this.params?.getMaximumLockTime() === lockTime
   }
 
   async redeem(signIdentity: SignIdentity): Promise<void> {

@@ -72,7 +72,7 @@ export class StakingServiceImpl implements StakingService {
         }
         const root = token.getRootSnsCanister()
         if (!root) return undefined
-        return this.getStakedNeurons(token, principal)
+        return this.getStakedNeurons(token, identity)
       })
       .filter((neurons) => neurons !== undefined)
 
@@ -145,9 +145,14 @@ export class StakingServiceImpl implements StakingService {
     if (rootCanisterId.toText() === ICP_ROOT_CANISTER_ID) {
       canisterId = ICP_GOV_CANISTER_ID
     } else {
-      const root = SnsRootCanister.create({ canisterId: rootCanisterId })
-      const canister_ids = await root.listSnsCanisters({ certified: false })
-      canisterId = canister_ids.governance[0]?.toText()
+      try {
+        const root = SnsRootCanister.create({ canisterId: rootCanisterId })
+        const canister_ids = await root.listSnsCanisters({ certified: false })
+        canisterId = canister_ids.governance[0]?.toText()
+      } catch (e) {
+        console.error("getTargets error: ", e)
+        return
+      }
     }
 
     return canisterId
@@ -233,13 +238,16 @@ export class StakingServiceImpl implements StakingService {
 
   private async getStakedNeurons(
     token: FT,
-    principal: Principal,
+    identity: SignIdentity,
   ): Promise<StakedToken | undefined> {
     try {
-      const neurons = await this.getNeurons(token, principal)
+      const [neurons, params] = await Promise.all([
+        this.getNeurons(token, identity.getPrincipal()),
+        this.getStakeCalculator(token, identity),
+      ])
       const nfidN = neurons
         .filter((neuron) => neuron.cached_neuron_stake_e8s > BigInt(0))
-        .map((neuron) => new NfidSNSNeuronImpl(neuron, token))
+        .map((neuron) => new NfidSNSNeuronImpl(neuron, token, params))
       return nfidN.length ? new StakedSnsTokenImpl(token, nfidN) : undefined
     } catch (e) {
       console.error("getStakedSNSNeurons error: ", e)
@@ -252,10 +260,13 @@ export class StakingServiceImpl implements StakingService {
     identity: SignIdentity,
   ): Promise<StakedToken | undefined> {
     try {
-      const neurons = await this.getICPNeurons(identity)
+      const [neurons, params] = await Promise.all([
+        this.getICPNeurons(identity),
+        this.getStakeCalculator(token, identity),
+      ])
       const nfidN = neurons
         .filter((neuron) => neuron.fullNeuron!.cachedNeuronStake > BigInt(0))
-        .map((neuron) => new NfidICPNeuronImpl(neuron, token))
+        .map((neuron) => new NfidICPNeuronImpl(neuron, token, params))
       return nfidN.length ? new StakedICPTokenImpl(token, nfidN) : undefined
     } catch (e) {
       console.error("getStakedICPNeurons error: ", e)
@@ -327,12 +338,6 @@ export class StakingServiceImpl implements StakingService {
     const neuronsToFollow = await icrc1OracleService.getAllNeurons()
     const icpNeuron = neuronsToFollow.find(
       (n) => n.rootCanister === ICP_ROOT_CANISTER_ID,
-    )
-
-    console.log(
-      "identity followICPNeurons",
-      delegation.getPrincipal().toText(),
-      BigInt(id),
     )
 
     for (const t of Object.values(Topic).filter(

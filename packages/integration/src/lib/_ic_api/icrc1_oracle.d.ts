@@ -35,6 +35,7 @@ export interface ICRC1Request {
   symbol: string
 }
 export interface _SERVICE {
+  allow_signing : ActorMethod<[], undefined>,
   count_icrc1_canisters: ActorMethod<[], bigint>
   get_all_icrc1_canisters: ActorMethod<[], Array<ICRC1>>
   get_icrc1_paginated: ActorMethod<[number, number], Array<ICRC1>>

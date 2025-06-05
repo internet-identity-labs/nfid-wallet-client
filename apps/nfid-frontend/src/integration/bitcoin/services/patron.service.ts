@@ -11,11 +11,11 @@ import {
   SelectedUtxosFeeResponse,
 } from "../idl/patron.d"
 import { satoshiService } from "./satoshi.service"
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 export class PatronService {
   public async askToPayFor(identity: SignIdentity): Promise<void> {
-    const patronActor = this.getPatronActor(identity)
-    await patronActor.allow_signing([])
+    await icrc1OracleService.allowSigning(identity)
   }
 
   public getPaymentType(): PaymentType {

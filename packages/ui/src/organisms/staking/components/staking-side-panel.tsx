@@ -1,4 +1,5 @@
 import { SignIdentity } from "@dfinity/agent"
+import { Followees as IcpFollowees, Topic } from "@dfinity/nns"
 import { uint8ArrayToHexString } from "@dfinity/utils"
 import clsx from "clsx"
 import { motion } from "framer-motion"
@@ -16,9 +17,11 @@ import { FC, useMemo, useState } from "react"
 
 import { mutate } from "@nfid/swr"
 
+import { isSNSFollowees } from "frontend/features/staking/utils"
 import { NFIDNeuron } from "frontend/integration/staking/nfid-neuron"
 import {
   IStakingDelegates,
+  IStakingICPDelegates,
   StakingState,
 } from "frontend/integration/staking/types"
 
@@ -37,8 +40,9 @@ export interface StakingSidePanelProps {
   onRedeemOpen: (id: string) => void
   identity?: SignIdentity
   isLoading: boolean
+  isDelegateLoading: boolean
   setIsLoading: (v: boolean) => void
-  delegates: IStakingDelegates | undefined
+  delegates: IStakingDelegates | IStakingICPDelegates | undefined
   setIsModalOpen: (value: boolean) => void
 }
 
@@ -49,6 +53,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   onRedeemOpen,
   identity,
   isLoading,
+  isDelegateLoading,
   setIsLoading,
   delegates,
   setIsModalOpen,
@@ -57,9 +62,22 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   useDisableScroll(isOpen)
 
   const followees = useMemo(() => {
-    return sidePanelOption?.option.getFollowees()?.map((followee) => ({
-      name: delegates?.functions.find((f) => f.id === followee[0])?.name,
-      id: uint8ArrayToHexString(followee[1].followees[0].id),
+    const followees = sidePanelOption?.option.getFollowees()
+
+    if (!followees) return
+
+    if (isSNSFollowees(followees, delegates)) {
+      return followees.map(([topicId, followee]) => ({
+        name: (delegates as IStakingDelegates)?.functions.find(
+          (f) => f.id === topicId,
+        )?.name,
+        id: uint8ArrayToHexString(followee.followees[0].id),
+      }))
+    }
+
+    return (followees as IcpFollowees[]).map((followee) => ({
+      name: (delegates as Partial<Record<Topic, string>>)?.[followee.topic],
+      id: followee.followees[0]?.toString(),
     }))
   }, [sidePanelOption?.option])
 
@@ -148,6 +166,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
               <StakingDelegates
                 followees={followees}
                 setIsModalOpen={setIsModalOpen}
+                isDelegateLoading={isDelegateLoading}
               />
             ) : (
               <motion.div

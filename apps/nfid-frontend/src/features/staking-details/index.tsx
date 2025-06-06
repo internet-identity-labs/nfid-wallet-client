@@ -3,14 +3,15 @@ import { NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
 import { hexStringToUint8Array } from "@dfinity/utils"
 import { useActor } from "@xstate/react"
 import { StakingDetails } from "packages/ui/src/organisms/staking/staking-details"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
 
-import { useSWR } from "@nfid/swr"
+import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
 import { ProfileContext } from "frontend/provider"
 
+import { fetchTokens } from "../fungible-token/utils"
 import { fetchDelegates, fetchStakedToken } from "../staking/utils"
 import { ModalType } from "../transfer-modal/types"
 import { getIdentity } from "../transfer-modal/utils"
@@ -18,6 +19,16 @@ import { getIdentity } from "../transfer-modal/utils"
 const StakingDetailsPage = () => {
   const { tokenSymbol } = useParams()
   const [identity, setIdentity] = useState<SignIdentity>()
+  const [identityLoading, setIdentityLoading] = useState(false)
+
+  const { data: tokens = [] } = useSWRWithTimestamp("tokens", fetchTokens, {
+    revalidateOnFocus: false,
+    revalidateOnMount: false,
+  })
+
+  const token = useMemo(() => {
+    return tokens.find((t) => t.getTokenSymbol() === tokenSymbol)
+  }, [tokens, tokenSymbol])
 
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
@@ -27,13 +38,15 @@ const StakingDetailsPage = () => {
     isLoading,
     isValidating,
   } = useSWR(
-    tokenSymbol ? ["stakedToken", tokenSymbol] : null,
-    () => fetchStakedToken(tokenSymbol!, identity!),
+    tokenSymbol && identity ? ["stakedToken", tokenSymbol] : null,
+    () => fetchStakedToken(tokenSymbol!, identity),
     { revalidateOnFocus: false },
   )
 
   const { data: delegates } = useSWR(
-    tokenSymbol && identity ? ["stakedTokenDelegates", tokenSymbol] : null,
+    stakedToken && tokenSymbol && identity
+      ? ["stakedTokenDelegates", tokenSymbol]
+      : null,
     () =>
       fetchDelegates(identity, stakedToken?.getToken().getRootSnsCanister()),
     { revalidateOnFocus: false },
@@ -44,7 +57,7 @@ const StakingDetailsPage = () => {
 
     if (!identity || !root || !userNeuron) return
 
-    stakingService.reFollowNeurons(
+    await stakingService.reFollowNeurons(
       { id: hexStringToUint8Array(value) },
       identity,
       root,
@@ -52,10 +65,16 @@ const StakingDetailsPage = () => {
     )
   }
 
+  const updateICPDelegates = async (value: string, userNeuron?: bigint) => {
+    if (!identity || !userNeuron) return
+
+    await stakingService.reFollowICPNeurons(BigInt(value), identity, userNeuron)
+  }
+
   useEffect(() => {
     const getSignIdentity = async () => {
-      if (!stakedToken) return
-      const token = stakedToken.getToken()
+      setIdentityLoading(true)
+      if (!token) return
       const rootCanisterId = token.getRootSnsCanister()
       if (!rootCanisterId) return
       const canister_ids = await stakingService.getTargets(rootCanisterId)
@@ -66,10 +85,11 @@ const StakingDetailsPage = () => {
         token.getTokenAddress(),
       ])
       setIdentity(identity)
+      setIdentityLoading(false)
     }
 
     getSignIdentity()
-  }, [stakedToken])
+  }, [token])
 
   const onRedeemOpen = (id: string) => {
     send({ type: "CHANGE_DIRECTION", data: ModalType.REDEEM })
@@ -81,10 +101,11 @@ const StakingDetailsPage = () => {
     <StakingDetails
       onRedeemOpen={onRedeemOpen}
       stakedToken={stakedToken}
-      isLoading={isLoading || isValidating || !delegates}
+      isLoading={isLoading || isValidating || identityLoading || !delegates}
       identity={identity}
       delegates={delegates}
       updateDelegates={updateDelegates}
+      updateICPDelegates={updateICPDelegates}
     />
   )
 }

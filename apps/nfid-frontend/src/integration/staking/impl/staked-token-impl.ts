@@ -7,16 +7,18 @@ import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 import { FT } from "frontend/integration/ft/ft"
 import { TokenValue } from "frontend/integration/staking/types"
 
-const MILISECONDS_PER_SECOND = 1000
+export abstract class StakedTokenImpl implements StakedToken {
+  protected token: FT
+  protected neurons: NFIDNeuron[]
 
-export class StakedTokenImpl implements StakedToken {
-  token: FT
-  neurons: Array<NFIDNeuron>
-
-  constructor(token: FT, neurons: Array<NFIDNeuron>) {
+  constructor(token: FT, neurons: NFIDNeuron[]) {
     this.token = token
     this.neurons = neurons
   }
+
+  abstract getAvailable(): NFIDNeuron[]
+  abstract getUnlocking(): NFIDNeuron[]
+  abstract getLocked(): NFIDNeuron[]
 
   getStaked(): bigint {
     return this.neurons.reduce((sum, neuron) => {
@@ -79,35 +81,5 @@ export class StakedTokenImpl implements StakedToken {
 
   isDiamond(): boolean {
     return this.neurons.some((neuron) => neuron.isDiamond())
-  }
-
-  getAvailable(): Array<NFIDNeuron> {
-    return this.neurons.filter((neuron) => {
-      const lockTime = neuron.getLockTime()
-
-      return (
-        lockTime !== undefined &&
-        lockTime + neuron.getCreatedAt() <=
-          Math.floor(Date.now() / MILISECONDS_PER_SECOND) &&
-        // TODO: research why the redeemed stakes are not deleted
-        Number(neuron.getInitialStake()) > 0
-      )
-    })
-  }
-
-  getUnlocking(): Array<NFIDNeuron> {
-    return this.neurons.filter((neuron) => neuron.getUnlockIn())
-  }
-
-  getLocked(): Array<NFIDNeuron> {
-    return this.neurons.filter((neuron) => {
-      const lockTime = neuron.getLockTime()
-
-      return (
-        lockTime !== undefined &&
-        lockTime + neuron.getCreatedAt() >
-          Math.floor(Date.now() / MILISECONDS_PER_SECOND)
-      )
-    })
   }
 }

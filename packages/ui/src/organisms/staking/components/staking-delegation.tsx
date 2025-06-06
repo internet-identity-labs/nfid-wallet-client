@@ -1,18 +1,20 @@
 import { motion } from "framer-motion"
+import { Spinner } from "packages/ui/src/atoms/spinner"
 import { Button } from "packages/ui/src/molecules/button"
 import CopyAddress from "packages/ui/src/molecules/copy-address"
 import { FC } from "react"
 
+import { IFollowees } from "frontend/integration/staking/types"
+
 export interface StakingDelegatesProps {
-  followees: {
-    name: string | undefined
-    id: string
-  }[]
+  followees: IFollowees
+  isDelegateLoading: boolean
   setIsModalOpen: (value: boolean) => void
 }
 
 export const StakingDelegates: FC<StakingDelegatesProps> = ({
   followees,
+  isDelegateLoading,
   setIsModalOpen,
 }) => {
   return (
@@ -43,6 +45,12 @@ export const StakingDelegates: FC<StakingDelegatesProps> = ({
             </div>
           ))}
           <Button
+            icon={
+              isDelegateLoading ? (
+                <Spinner className="w-5 h-5 text-gray-300" />
+              ) : null
+            }
+            disabled={isDelegateLoading}
             block
             type="stroke"
             className="mt-[10px]"

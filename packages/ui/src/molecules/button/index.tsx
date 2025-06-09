@@ -36,7 +36,6 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <Component
-      id={id}
       disabled={disabled}
       className={clsx(
         "transition duration-300",
@@ -91,6 +90,7 @@ export const Button: React.FC<ButtonProps> = ({
       {...buttonProps}
     >
       <div
+        id={id}
         className={clsx(
           "flex items-center justify-center space-x-2 h-full",
           innerClassName,

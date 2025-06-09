@@ -6,6 +6,8 @@ import Staking from "../pages/staking.js"
 import Page from "../pages/page.js"
 
 import { moveSlider } from "../helpers/performActions.js"
+import { softAssertAll } from "../helpers/assertions.js"
+import { formatDate } from "../helpers/dateCalculation.js"
 
 let tokenUSDPrice: number
 
@@ -16,7 +18,7 @@ let SwapBalances = {
   sourceTokenAmountToSwap: 0,
 }
 
-let StakingBalances = {
+let StakingTotalBalances = {
   currentStakingUSDBalance: 0,
   currentStakedUSDAmount: 0,
   currentStakingUSDRewards: 0,
@@ -33,6 +35,22 @@ let StakedTokenBalances = {
   expectedStakingRewards: 0,
 }
 
+let StakedTokenDetailsBalances = {
+  currentStakingBalance: 0,
+  currentStakedAmount: 0,
+  currentStakingRewards: 0,
+  expectedStakingBalance: 0,
+  expectedStakedAmount: 0,
+  expectedStakingRewards: 0,
+}
+
+let StakingTransactionDetails = {
+  transactionID: "",
+  lockTime: "",
+  createdDate: "",
+  unlockTime: "",
+}
+
 When(/^Verifying that the (Swap|Stake) transaction is success$/, async (action: string) => {
   if (action == "Swap") {
     await Assets.SwapDialog.successTitle.waitForDisplayed()
@@ -41,6 +59,8 @@ When(/^Verifying that the (Swap|Stake) transaction is success$/, async (action: 
     await Staking.successTitle.waitForDisplayed()
     await Staking.closeButton.click()
   }
+
+  StakingTransactionDetails.createdDate = formatDate(Date.now())
 })
 
 When(/^User clicks the (Swap|Stake) tokens button$/, async (action: string) => {
@@ -125,7 +145,7 @@ When(/^User sets amount to (Swap|Stake) to (.*)$/, async (action: string, amount
       await Assets.getTargetAmountField.getAttribute("value"),
     )
   } else {
-    StakingBalances.amountToStake = Number(amount)
+    StakingTotalBalances.amountToStake = Number(amount)
   }
 })
 
@@ -214,53 +234,81 @@ When(
 )
 
 When("User sets the Lock Time to {lockTime}", async (time: string) => {
+  StakingTransactionDetails.lockTime = time
   await browser.waitUntil(async () => {
-    await moveSlider(await Page.slider, 45, 0)
     return (await Staking.lockTimePeriod
-      .getAttribute("value")).trim() == time
-  }, { timeout: 20000, timeoutMsg: "Failed to set lock time" })
+      .getAttribute("value")).trim() == "1 month"
+  })
+  if ((await Staking.lockTimePeriod.getAttribute("value")).trim() != time) {
+    await browser.waitUntil(async () => {
+      await moveSlider(await Page.slider, 45, 0)
+      return (await Staking.lockTimePeriod
+        .getAttribute("value")).trim() == time
+    }, { timeout: 20000, timeoutMsg: "Failed to set lock time" })
+  }
 })
 
-When("User verifies total staking balances and staked {token} token balances are changed correctly",
+When("User verifies total staking balances and staked {token} token balances were changed correctly",
   async (tokenName: string) => {
+    await Assets.waitUntilElementsLoadedProperly(
+      Assets.stakingTab, Staking.stakedToken(tokenName).detailsButton,
+    )
+
+    StakingTotalBalances.expectedStakingUSDBalance =
+      StakingTotalBalances.currentStakingUSDBalance + (StakingTotalBalances.amountToStake * tokenUSDPrice)
+
+    StakingTotalBalances.expectedStakedUSDAmount =
+      StakingTotalBalances.currentStakedUSDAmount + (StakingTotalBalances.amountToStake * tokenUSDPrice)
+
+    // StakingBalances.expectedStakingUSDRewards =
+    //   StakingBalances.currentStakingUSDRewards + (StakingBalances.amountToStake * tokenUSDPrice)
+
+    StakedTokenBalances.expectedStakedAmount = StakedTokenBalances.currentStakedAmount + StakingTotalBalances.amountToStake
+
+    // StakedTokenBalances.expectedStakingRewards =
+    //   StakedTokenBalances.currentStakingRewards + (StakingBalances.amountToStake * tokenUSDPrice)
+
     await browser.waitUntil(async () => {
       await browser.refresh()
-      await Staking.stakedToken("NFIDWallet").detailsButton.waitForClickable()
-
-      StakingBalances.expectedStakingUSDBalance =
-        StakingBalances.currentStakingUSDBalance + (StakingBalances.amountToStake * tokenUSDPrice)
-
-      StakingBalances.expectedStakedUSDAmount =
-        StakingBalances.currentStakedUSDAmount + (StakingBalances.amountToStake * tokenUSDPrice)
-      // StakingBalances.expectedStakingUSDRewards =
-      //   StakingBalances.currentStakingUSDRewards + (StakingBalances.amountToStake * tokenUSDPrice)
-
-      StakedTokenBalances.expectedStakedAmount = StakedTokenBalances.currentStakedAmount + StakingBalances.amountToStake
-      // StakedTokenBalances.expectedStakingRewards =
-      //   StakedTokenBalances.currentStakingRewards + (StakingBalances.amountToStake * tokenUSDPrice)
+      await (await Staking.stakedToken(tokenName).detailsButton).waitForDisplayed(
+        {
+          timeout: 30000,
+          timeoutMsg: "Transactions weren't loaded in 30 sec or list is empty",
+        },
+      )
+      await browser.pause(3000)
 
       return [
         [
-          StakingBalances.expectedStakingUSDBalance,
-          Number((await Staking.stakingBalances("stakingBalance")).number()),
+          StakingTotalBalances.expectedStakingUSDBalance,
+          Number(
+            await (await Staking.stakingBalances("stakingBalance")).number(),
+          ),
         ],
         [
-          StakingBalances.expectedStakedUSDAmount,
-          Number((await Staking.stakingBalances("stakedAmount")).number()),
+          StakingTotalBalances.expectedStakedUSDAmount,
+          Number(
+            await (await Staking.stakingBalances("stakedAmount")).number(),
+          ),
         ],
         // [
-        //   StakingBalances.expectedStakingUSDRewards,
-        //   Number((await Staking.stakingBalances("stakingRewards")).split(" ")[0]),
+        //   StakingTotalBalances.expectedStakingUSDRewards,
+        //   Number(
+        //     await (await Staking.stakingBalances("stakingRewards")).number(),
+        //   ),
         // ],
         [
           StakedTokenBalances.expectedStakedAmount,
-          Number((await Staking.stakedToken(tokenName).stakedAmount.getText())
-            .replace(/[^\d.]/g, "")),
+          Number(
+            (await (await Staking.stakedToken(tokenName).stakedAmount).getText())
+              .replace(/[^\d.]/g, ""),
+          ),
         ],
         // [
         //   StakedTokenBalances.expectedStakingRewards,
-        //   Number((await Staking.stakedToken(tokenName).rewards.getText())
-        //     .replace(/[^\d.]/g, "")),
+        //   Number(
+        //     (await (await Staking.stakedToken(tokenName).rewards).getText()
+        //     ).replace(/[^\d.]/g, "")),
         // ],
       ].every(([expected, current]) => {
         const result = Math.floor((expected - current) * 100) / 100
@@ -271,37 +319,92 @@ When("User verifies total staking balances and staked {token} token balances are
       timeout: 50000,
       timeoutMsg: `Incorrect staking values after staking
       Expected:
-      StakingBalance - ${StakingBalances.currentStakingUSDBalance + (StakingBalances.amountToStake * tokenUSDPrice)} USD,
-      StakedAmount - ${StakingBalances.currentStakedUSDAmount + (StakingBalances.amountToStake * tokenUSDPrice)} USD,
-      //StakingRewards - ${StakingBalances.currentStakingUSDRewards + (StakingBalances.amountToStake * tokenUSDPrice)} USD,
-      StakedTokenBalance - ${StakedTokenBalances.currentStakedAmount + StakingBalances.amountToStake},
-      //StakedTokenRewards - ${StakedTokenBalances.currentStakingRewards + (StakingBalances.amountToStake * tokenUSDPrice)},
+      StakingBalance - ${StakingTotalBalances.currentStakingUSDBalance + (StakingTotalBalances.amountToStake * tokenUSDPrice)} USD,
+      StakedAmount - ${StakingTotalBalances.currentStakedUSDAmount + (StakingTotalBalances.amountToStake * tokenUSDPrice)} USD,
+      //StakingRewards - ${StakingTotalBalances.currentStakingUSDRewards + (StakingTotalBalances.amountToStake * tokenUSDPrice)} USD,
+      StakedTokenBalance - ${StakedTokenBalances.currentStakedAmount + StakingTotalBalances.amountToStake},
+      //StakedTokenRewards - ${StakedTokenBalances.currentStakingRewards + (StakingTotalBalances.amountToStake * tokenUSDPrice)},
       but was:
-      StakingBalance - ${Number((await Staking.stakingBalances("stakingBalance")).number())},
-      StakedAmount - ${Number((await Staking.stakingBalances("stakedAmount")).number())},
-      //StakingRewards - ${Number((await Staking.stakingBalances("stakingRewards")).number())},
+      StakingBalance - ${Number(
+        await (await Staking.stakingBalances("stakingBalance")).number(),
+      )},
+      StakedAmount - ${Number(
+        await (await Staking.stakingBalances("stakedAmount")).number(),
+      )},
+      //StakingRewards - ${Number(
+        await (await Staking.stakingBalances("stakingRewards")).number(),
+      )},
       StakedTokenBalance - ${Number(
-        (await Staking.stakedToken(tokenName).stakedAmount.getText())
+        (await (await Staking.stakedToken(tokenName).stakedAmount).getText())
           .replace(/[^\d.]/g, ""),
       )},
       //StakedTokenRewards - ${Number(
-        (await Staking.stakedToken(tokenName).rewards.getText())
+        (await (await Staking.stakedToken(tokenName).rewards).getText())
           .replace(/[^\d.]/g, ""),
       )}`,
     })
   },
 )
 
+When("User verifies user's staking values of the {token} token were changed correctly on details page",
+  async (tokenName: string) => {
+    await browser.waitUntil(async () => {
+      await browser.refresh()
+      await Staking.StakedTokenTransaction("Locked")
+        .getFirstRowInTable.waitForClickable()
+
+      StakedTokenDetailsBalances.expectedStakingBalance =
+        StakedTokenDetailsBalances.currentStakingBalance + StakingTotalBalances.amountToStake
+
+      StakedTokenDetailsBalances.expectedStakedAmount =
+        StakedTokenDetailsBalances.currentStakedAmount + StakingTotalBalances.amountToStake
+
+      // StakedTokenDetailsBalances.expectedStakingUSDRewards =
+      //   StakedTokenDetailsBalances.currentStakingUSDRewards + StakingBalances.amountToStake
+
+      return [
+        [
+          StakedTokenDetailsBalances.expectedStakingBalance,
+          Number(await (await Staking.stakingBalances("stakingBalance")).number()),
+        ],
+        [
+          StakedTokenDetailsBalances.expectedStakedAmount,
+          Number(await (await Staking.stakingBalances("stakedAmount")).number()),
+        ],
+        // [
+        //   StakedTokenDetailsBalances.expectedStakingRewards,
+        //   Number(await (await Staking.stakingBalances("stakingRewards")).number()),
+        // ],
+      ].every(([expected, current]) => {
+        const result = Math.floor((expected - current) * 100) / 100
+        return result < 0.001 && result >= 0
+      })
+
+    }, {
+      timeout: 50000,
+      timeoutMsg: `Incorrect staked token balances in details after staking
+      Expected:
+      StakingBalance - ${StakedTokenDetailsBalances.currentStakingBalance + StakingTotalBalances.amountToStake},
+      StakedAmount - ${StakedTokenDetailsBalances.currentStakedAmount + StakingTotalBalances.amountToStake},
+      //StakingRewards - ${StakedTokenDetailsBalances.currentStakingRewards + StakingTotalBalances.amountToStake},
+      but was:
+      StakingBalance - ${Number((await Staking.stakingBalances("stakingBalance")).number())},
+      StakedAmount - ${Number((await Staking.stakingBalances("stakedAmount")).number())},
+      //StakingRewards - ${Number((await Staking.stakingBalances("stakingRewards")).number())},`,
+    })
+  },
+)
+
 When("System saves current user's total staking values and staked {token} token values",
   async (tokenName: string) => {
-    StakingBalances.currentStakingUSDBalance = Number(
-      (await Staking.stakingBalances("stakingBalance")).number(),
+    StakingTotalBalances.currentStakingUSDBalance = Number(
+      await (await Staking.stakingBalances("stakingBalance")).number(),
     )
-    StakingBalances.currentStakedUSDAmount = Number(
-      (await Staking.stakingBalances("stakedAmount")).number(),
+    StakingTotalBalances.currentStakedUSDAmount = Number(
+      await (await Staking.stakingBalances("stakedAmount")).number(),
     )
-    StakingBalances.currentStakingUSDRewards = Number(
-      (await Staking.stakingBalances("stakingRewards")).number(),
+    StakingTotalBalances.currentStakingUSDRewards = Number(
+      await (await Staking.stakingBalances("stakingRewards")).number(),
     )
     StakedTokenBalances.currentStakedAmount = Number(
       (await Staking.stakedToken(tokenName).stakedAmount.getText())
@@ -314,11 +417,235 @@ When("System saves current user's total staking values and staked {token} token 
   },
 )
 
+When("System saves current user's staking values of the {token} token",
+  async (tokenName: string) => {
+    StakedTokenDetailsBalances.currentStakingBalance = Number(
+      await (await Staking.stakingBalances("stakingBalance")).number(),
+    )
+    StakedTokenDetailsBalances.currentStakedAmount = Number(
+      await (await Staking.stakingBalances("stakedAmount")).number(),
+    )
+    StakedTokenDetailsBalances.currentStakingRewards = Number(
+      await (await Staking.stakingBalances("stakingRewards")).number(),
+    )
+  },
+)
+
 When("System saves current USD price of {token} token",
   async (tokenName: string) => {
     tokenUSDPrice = Number((await (await Assets.tokenUSDPrice(tokenName))
       .getText())
       .replace(/[^\d.]/g, ""),
     )
+  },
+)
+
+When("User goes to details of the staked token with name {token}",
+  async (tokenName: string) => {
+    await Assets.waitUntilElementsLoadedProperly(
+      Staking.stakedToken(tokenName).detailsButton,
+      Staking.StakedTokenTransaction("Locked", tokenName).firstTransactionTokenID,
+    )
+  },
+)
+
+When("User verifies values are correct in the first transaction of {token} in {word} table",
+  async (
+    tokenName: string,
+    tableType: "Locked" | "Unlocking",
+  ) => {
+    let actionType: "lockTime" | "unlockTime" = tableType == "Locked"
+      ? "lockTime"
+      : "unlockTime"
+
+    StakingTransactionDetails.transactionID =
+      await Staking.StakedTokenTransaction(tableType, tokenName)
+        .firstTransactionTokenID
+        .getText()
+
+    await softAssertAll(
+      [
+        async () => {
+          expect(
+            (await Staking.StakedTokenTransaction(
+              tableType,
+              tokenName,
+              StakingTransactionDetails.transactionID,
+            ).initialStake
+              .getText())
+              .replace(/[^\d.,]/g, ""),
+          ).toEqual(StakingTotalBalances.amountToStake.toString())
+        }, `Incorrect initial stake in the first transaction of the ${tableType} table.
+        Expected:
+        ${
+        (await Staking.StakedTokenTransaction(
+          tableType,
+          tokenName,
+          StakingTransactionDetails.transactionID,
+        ).initialStake
+          .getText())
+          .replace(/[^\d.,]/g, "")
+      }
+        but was:
+        ${StakingTotalBalances.amountToStake.toString()}`,
+      ],
+      // [
+      //   async () => {
+      //     expect(
+      //       await Staking.StakedTokenTransaction(
+      //         tableType,
+      //         tokenName,
+      //         StakingTransactionDetails.transactionID,
+      //       )
+      //         .rewards
+      //         .getText(),
+      //     ).toEqual(StakedTokenDetailsBalances.expectedStakingRewards.toString())
+      //   },
+      // ],
+      [
+        async () => {
+          expect(
+            await Staking.StakedTokenTransaction(
+              tableType,
+              tokenName,
+              StakingTransactionDetails.transactionID,
+            )[actionType]
+              .getText(),
+          ).toEqual(StakingTransactionDetails[actionType])
+        }, `Incorrect ${actionType} in the first transaction in the ${tableType} table
+        Expected:
+        ${
+        await Staking.StakedTokenTransaction(
+          tableType,
+          tokenName,
+          StakingTransactionDetails.transactionID,
+        )[actionType]
+          .getText()
+      }
+        but was:
+        ${StakingTransactionDetails[actionType]}`,
+      ],
+    )
+  },
+)
+
+When("User click on the first row of the {word} table",
+  async (tableType: "Locked" | "Unlocking") => {
+    await (await Staking.StakedTokenTransaction(tableType)
+      .getFirstRowInTable).click()
+  },
+)
+
+When("User finds by ID and clicks on the transaction in {word} table",
+  async (tableType: "Locked" | "Unlocking") => {
+    await (await Staking.StakedTokenTransaction(
+      tableType, StakingTransactionDetails.transactionID,
+    ).findTransactionByID).click()
+  },
+)
+
+When(/^User verifies details of the (Locked|Unlocking) staking transaction are correct on the side bar$/,
+  async (tableType: string) => {
+    let actionType: "lockTime" | "unlockTime" = tableType == "Locked"
+      ? "lockTime"
+      : "unlockTime"
+
+    await softAssertAll(
+      [
+        async () => {
+          expect(StakingTransactionDetails.transactionID)
+            .toEqual(await (await Staking.sidePanel().stakeID).getText())
+        }, `Incorrect transaction ID in the side panel.
+        Expected:
+        ${StakingTransactionDetails.transactionID}
+        but was:
+        ${await (await Staking.sidePanel().stakeID).getText()}`,
+      ],
+      [
+        async () => {
+          expect(StakingTotalBalances.amountToStake)
+            .toEqual(Number(
+                (await (await Staking.sidePanel().initialStake)
+                  .getText())
+                  .replace(/[^\d.,]/g, ""),
+              ),
+            )
+        }, `Incorrect initial stake in the side panel.
+        Expected:
+        ${StakingTotalBalances.amountToStake}
+        but was:
+        ${Number((await (await Staking.sidePanel().initialStake)
+        .getText())
+        .replace(/[^\d.,]/g, ""))}`,
+      ],
+      // [
+      //   async () => {
+      //     expect(StakedTokenDetailsBalances.expectedStakingRewards)
+      //       .toEqual(await (await Staking.sidePanel().rewards).getText())
+      //   },
+      // ],
+      [
+        async () => {
+          expect(StakingTotalBalances.amountToStake)
+            .toEqual(Number(
+                (await (await Staking.sidePanel().totalValue)
+                  .getText())
+                  .replace(/[^\d.,]/g, ""),
+              ),
+            )
+        }, `Incorrect total value in the side panel.
+        Expected:,
+        ${StakedTokenDetailsBalances.expectedStakingBalance}
+        but was:
+        ${Number((await (await Staking.sidePanel().totalValue)
+        .getText())
+        .replace(/[^\d.,]/g, ""))}`,
+      ],
+      [
+        async () => {
+          expect(`${StakingTransactionDetails
+            .lockTime}${actionType === "unlockTime" ? ", 1 day" : ""}`,
+          ).toEqual(await (await Staking.sidePanel()[actionType]).getText())
+        }, `Incorrect ${actionType} in the side panel.
+        Expected:
+        ${StakingTransactionDetails.lockTime}
+        but was:
+        ${await (await Staking.sidePanel()[actionType]).getText()}`,
+      ],
+      [
+        async () => {
+          expect(StakingTransactionDetails.createdDate)
+            .toEqual(formatDate(Date.now()))
+        }, `Incorrect created date in the side panel.
+        Expected:
+        ${StakingTransactionDetails.createdDate}
+        but was:
+        ${formatDate(Date.now())}`,
+      ],
+    )
+  },
+)
+
+When(/^User click the (?:Start|Stop) unlocking button$/,
+  async () => {
+    await (await Staking.sidePanel().startActionButton).click()
+  },
+)
+
+When(/^User verifies that the staking transaction is moved to the (Locked|Unlocking) table$/,
+  async (tableType: "Locked" | "Unlocking") => {
+    await browser.waitUntil(async () => {
+      let transaction: WebdriverIO.Element
+        = await Staking.StakedTokenTransaction(tableType).getAllTableTransactionsIDs
+        .find(async (el) => {
+          return await el.getText() == StakingTransactionDetails.transactionID
+        })
+      return transaction.isDisplayed()
+    }, {
+      timeout: 30000,
+      timeoutMsg:
+        `Transaction with ID '${StakingTransactionDetails.transactionID}'
+        wasn't moved to the '${tableType}' table'`,
+    })
   },
 )

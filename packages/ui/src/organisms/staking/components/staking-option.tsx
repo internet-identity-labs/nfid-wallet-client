@@ -31,6 +31,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
 }) => {
   return (
     <ProfileContainer
+      id={`stakingDetails-${stakingState}-table`}
       title={stakingState}
       className="!py-[20px] md:!py-[30px] !mb-[20px] md:!mb-[30px]"
       titleClassName="!px-0 md:!px-[30px] mb-[10px] md:!mb-[30px]"
@@ -122,6 +123,12 @@ export const StakingOption: FC<StakingOptionProps> = ({
         {stakes.map((stake) => {
           return (
             <tr
+              id={
+                `stakedTokenTransaction_${stake
+                  .getToken()
+                  .getTokenName()
+                  .replace(/\s+/g, "")}`
+              }
               className="text-sm md:hover:bg-gray-50 h-[64px] transition-all group cursor-pointer"
               key={stake.getStakeIdFormatted()}
               onClick={() =>
@@ -153,6 +160,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
                   </div>
                   <div>
                     <p
+                      id={"token"}
                       className="text-sm leading-[20px]"
                       onClick={(e) => e.stopPropagation()}
                     >
@@ -166,7 +174,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
                 </div>
               </td>
               <td className="flex flex-col ml-auto h-[64px] justify-center w-max md:table-cell text-right md:text-left">
-                <p className="text-sm leading-6">
+                <p id={"tokenInitialStake"} className="text-sm leading-6">
                   {stake.getInitialStakeFormatted().getTokenValue()}
                 </p>
                 <p className="text-xs leading-5 text-secondary">
@@ -174,7 +182,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
                 </p>
               </td>
               <td className="px-0 md:px-[10px] hidden md:table-cell">
-                <p className="text-sm leading-6">
+                <p id={"tokenRewards"} className="text-sm leading-6">
                   {stake.getRewardsFormatted().getTokenValue()}
                 </p>
                 <p className="text-xs leading-5 text-secondary">
@@ -182,7 +190,13 @@ export const StakingOption: FC<StakingOptionProps> = ({
                 </p>
               </td>
               <td className="px-0 md:px-[10px] hidden md:table-cell">
-                <p className="text-sm leading-5 opacity-80">
+                <p
+                  className="text-sm leading-5 opacity-80"
+                  id={stakingState === StakingState.Unlocking
+                    ? "tokenUnlockTime"
+                    : "tokenLockTime"
+                  }
+                >
                   {stakingState === StakingState.Unlocking
                     ? stake.getUnlockInMonths()
                     : getFormattedPeriod(stake.getLockTimeInMonths(), true)}
@@ -193,7 +207,10 @@ export const StakingOption: FC<StakingOptionProps> = ({
                   "w-[34px] md:w-[55px] text-right pr-0 md:pr-[30px]",
                 )}
               >
-                <div className="inline-flex items-center justify-between gap-1 cursor-pointer">
+                <div
+                  id={"tokenTransactionDetailsButton"}
+                  className="inline-flex items-center justify-between gap-1 cursor-pointer"
+                >
                   <IconCaret />
                 </div>
               </td>

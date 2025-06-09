@@ -1,3 +1,4 @@
+import { SignIdentity } from "@dfinity/agent"
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
@@ -10,7 +11,11 @@ import { useCallback, useMemo, useState, useEffect } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
 import { RootWallet, registerTransaction } from "@nfid/integration"
-import { E8S, ICP_CANISTER_ID } from "@nfid/integration/token/constants"
+import {
+  BTC_NATIVE_ID,
+  E8S,
+  ICP_CANISTER_ID,
+} from "@nfid/integration/token/constants"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
@@ -18,6 +23,10 @@ import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
+import {
+  bitcoinService,
+  BitcointNetworkFeeAndUtxos,
+} from "frontend/integration/bitcoin/bitcoin.service"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
@@ -27,6 +36,7 @@ import {
   getIdentity,
   getTokensWithUpdatedBalance,
   getVaultsAccountsOptions,
+  validateBTCAddress,
   validateICPAddress,
   validateICRC1Address,
 } from "../utils"
@@ -55,6 +65,11 @@ export const TransferFT = ({
   const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
   const [status, setStatus] = useState(SendStatus.PENDING)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
+  const [identity, setIdentity] = useState<SignIdentity>()
+  const [isIdentityLoading, setIsIdentityLoading] = useState(false)
+
+  const [btcBalance, setBtcBalance] = useState<bigint>()
+  const [btcFee, setBtcFee] = useState<BitcointNetworkFeeAndUtxos>()
   const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
     useState(preselectedAccountAddress)
   const [error, setError] = useState<string | undefined>()
@@ -115,8 +130,86 @@ export const TransferFT = ({
     )
   }, [selectedVaultsAccountAddress, balances])
 
+  useEffect(() => {
+    if (!token) return
+
+    const targets =
+      token.getTokenAddress() !== BTC_NATIVE_ID
+        ? [token.getTokenAddress()]
+        : [PATRON_CANISTER_ID, CHAIN_FUSION_SIGNER_CANISTER_ID]
+
+    const getSignIdentity = async () => {
+      setIsIdentityLoading(true)
+      const identity = await getIdentity(targets)
+      setIdentity(identity)
+      setIsIdentityLoading(false)
+    }
+
+    getSignIdentity()
+  }, [token])
+
+  useEffect(() => {
+    if (
+      !identity ||
+      token?.getTokenAddress() !== BTC_NATIVE_ID ||
+      !amount ||
+      !btcBalance ||
+      !!formMethods.formState.errors.amount
+    )
+      return
+
+    setBtcFee(undefined)
+    const getFee = async () => {
+      const fee = await token.getBTCFee(identity, amount)
+      setBtcFee(fee)
+    }
+
+    getFee()
+  }, [identity, amount, token, btcBalance, formMethods.formState.errors.amount])
+
+  useEffect(() => {
+    if (
+      isIdentityLoading ||
+      !identity ||
+      token?.getTokenAddress() !== BTC_NATIVE_ID
+    )
+      return
+
+    const getBtcBalance = async () => {
+      const balance = await bitcoinService.getBalance(identity)
+      setBtcBalance(balance)
+    }
+
+    getBtcBalance()
+  }, [identity, token, isIdentityLoading])
+
   const submit = useCallback(async () => {
     if (!token) return toaster.error("No selected token")
+
+    if (token.getTokenAddress() === BTC_NATIVE_ID) {
+      if (!identity || !btcFee) return
+
+      bitcoinService
+        .send(identity, to, amount, btcFee)
+        .then(() => {
+          setSuccessMessage(
+            `Transaction ${amount} ${token.getTokenSymbol()} successful`,
+          )
+          setStatus(SendStatus.COMPLETED)
+        })
+        .catch((e) => {
+          console.error(
+            `Transfer error: ${
+              (e as Error).message ? (e as Error).message : e
+            }`,
+          )
+          setErrorMessage(DEFAULT_TRANSFER_ERROR)
+          setError(DEFAULT_TRANSFER_ERROR)
+          setStatus(SendStatus.FAILED)
+        })
+
+      return
+    }
 
     setIsSuccessOpen(true)
 
@@ -155,7 +248,8 @@ export const TransferFT = ({
       return
     }
 
-    const identity = await getIdentity([token.getTokenAddress()])
+    if (!identity) return
+
     let transferResult
 
     if (token.getTokenAddress() === ICP_CANISTER_ID) {
@@ -231,6 +325,8 @@ export const TransferFT = ({
     tokens,
     setErrorMessage,
     setSuccessMessage,
+    btcFee,
+    identity,
   ])
 
   return (
@@ -242,6 +338,8 @@ export const TransferFT = ({
         validateAddress={
           token?.getTokenAddress() === ICP_CANISTER_ID
             ? validateICPAddress
+            : token?.getTokenAddress() === BTC_NATIVE_ID
+            ? validateBTCAddress
             : validateICRC1Address
         }
         isLoading={isTokensLoading}
@@ -259,6 +357,8 @@ export const TransferFT = ({
         isSuccessOpen={isSuccessOpen}
         onClose={onClose}
         error={error}
+        btcFee={btcFee?.fee_satoshis || undefined}
+        btcBalance={btcBalance}
       />
     </FormProvider>
   )

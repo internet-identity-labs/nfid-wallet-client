@@ -6,6 +6,8 @@ import { useEffect, useState } from "react"
 
 import { btcDepositService } from "@nfid/integration/token/btc/service"
 
+import { useBtcAddress } from "frontend/hooks/btc-address"
+
 export interface ITransferReceive {
   preselectedAccountAddress: string
   publicKey: string
@@ -19,7 +21,9 @@ export const TransferReceive = ({
     preselectedAccountAddress,
   )
   const [accountId, setAccountId] = useState("")
-  const [btcAddress, setBtcAddress] = useState<string>("")
+  const [autoConversionBtcAddress, setAutoConversionBtcAddress] =
+    useState<string>("")
+  const { btcAddress } = useBtcAddress()
 
   useEffect(() => {
     setSelectedAccountAddress(publicKey)
@@ -41,12 +45,12 @@ export const TransferReceive = ({
           principalFromPublicKey,
         )
         if (!cancelled) {
-          setBtcAddress(address)
+          setAutoConversionBtcAddress(address)
         }
       } catch (error) {
         if (!cancelled) {
           toaster.error("Failed to retrieve BTC address")
-          setBtcAddress("")
+          setAutoConversionBtcAddress("")
         }
       }
     }
@@ -61,6 +65,7 @@ export const TransferReceive = ({
       <Receive
         selectedAccountAddress={selectedAccountAddress}
         address={accountId}
+        autoConversionBtcAddress={autoConversionBtcAddress}
         btcAddress={btcAddress}
       />
     </div>

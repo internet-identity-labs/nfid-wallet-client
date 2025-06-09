@@ -55,7 +55,7 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
     return (
       <>
         {isLoading ? (
-          <Skeleton />
+          <Skeleton className="!w-[124px] rounded-[6px]" />
         ) : (
           <NumericFormat
             placeholder="0.00"

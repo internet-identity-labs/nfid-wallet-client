@@ -15,7 +15,7 @@ import {
   Skeleton,
 } from "@nfid-frontend/ui"
 import { validateTransferAmountField } from "@nfid-frontend/utils"
-import { E8S } from "@nfid/integration/token/constants"
+import { BTC_NATIVE_ID, E8S } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
@@ -24,7 +24,7 @@ import { useTokenInit } from "../hooks/token-init"
 import { BALANCE_EDGE_LENGTH } from "./swap-form"
 
 interface ChooseFromTokenProps {
-  id: string,
+  id: string
   token: FT | undefined
   tokens: FT[]
   balance?: bigint | undefined
@@ -36,6 +36,8 @@ interface ChooseFromTokenProps {
   isResponsive?: boolean
   setIsResponsive?: (v: boolean) => void
   tokensAvailableToSwap?: TokensAvailableToSwap
+  btcBalance?: bigint
+  btcFee?: bigint
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -51,8 +53,12 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   isResponsive,
   setIsResponsive,
   tokensAvailableToSwap,
+  btcBalance,
+  btcFee,
 }) => {
   const [inputAmountValue, setInputAmountValue] = useState(value || "")
+  const [isMaxClicked, setIsMaxClicked] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const initedToken = useTokenInit(token)
 
@@ -61,36 +67,91 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     register,
     formState: { errors },
   } = useFormContext()
-  const userBalance = balance !== undefined ? balance : token!.getTokenBalance()
+  const userBalance =
+    balance !== undefined
+      ? balance
+      : token?.getTokenAddress() === BTC_NATIVE_ID
+      ? btcBalance
+      : token!.getTokenBalance()
   const decimals = token!.getTokenDecimals()
 
   const fee = useMemo(() => {
     if (!token || userBalance === undefined) return
     return isSwap
       ? getMaxAmountFee(userBalance, token.getTokenFee())
-      : token.getTokenFee()
-  }, [token, userBalance, isSwap])
+      : token.getTokenAddress() !== BTC_NATIVE_ID
+      ? token.getTokenFee()
+      : btcFee
+  }, [token, userBalance, isSwap, btcFee])
 
   const isMaxAvailable = useMemo(() => {
-    if (userBalance === undefined || fee === undefined) return false
+    if (
+      userBalance === undefined ||
+      (token?.getTokenAddress() !== BTC_NATIVE_ID && fee === undefined) ||
+      (token?.getTokenAddress() === BTC_NATIVE_ID && userBalance === BigInt(0))
+    )
+      return false
+
+    if (token?.getTokenAddress() === BTC_NATIVE_ID) {
+      return true
+    }
 
     const balanceNum = new BigNumber(userBalance.toString())
-    const feeNum = new BigNumber(fee.toString())
+    const feeNum = new BigNumber(fee!.toString())
     return balanceNum.minus(feeNum).isGreaterThanOrEqualTo(0)
   }, [userBalance, fee, token])
 
   const maxHandler = useCallback(() => {
-    if (!token || fee === undefined || userBalance === undefined) return
+    if (!token || userBalance === undefined || !isMaxAvailable) return
+
     const decimals = token.getTokenDecimals()
-    if (!decimals || !isMaxAvailable) return
+    if (!decimals) return
+
+    const balanceNum = new BigNumber(userBalance.toString())
+
+    if (token.getTokenAddress() === BTC_NATIVE_ID) {
+      const formattedValue = formatAssetAmountRaw(balanceNum, decimals)
+      setValue("amount", formattedValue, { shouldValidate: true })
+
+      setIsLoading(true)
+      setIsMaxClicked(true)
+      return
+    }
+
+    if (fee === undefined) return
+
+    const feeNum = new BigNumber(fee.toString())
+    const maxAmount = isSwap ? balanceNum : balanceNum.minus(feeNum)
+    const formattedValue = formatAssetAmountRaw(maxAmount, decimals)
+
+    setInputAmountValue(formattedValue)
+    setValue("amount", formattedValue, { shouldValidate: true })
+  }, [token, fee, userBalance, isMaxAvailable, setValue])
+
+  useEffect(() => {
+    if (
+      !isMaxClicked ||
+      !token ||
+      token.getTokenAddress() !== BTC_NATIVE_ID ||
+      fee === undefined ||
+      userBalance === undefined
+    )
+      return
+
+    const decimals = token.getTokenDecimals()
+    if (!decimals) return
+
     const balanceNum = new BigNumber(userBalance.toString())
     const feeNum = new BigNumber(fee.toString())
     const maxAmount = isSwap ? balanceNum : balanceNum.minus(feeNum)
     const formattedValue = formatAssetAmountRaw(maxAmount, decimals)
-    setInputAmountValue(formattedValue)
 
+    setInputAmountValue(formattedValue)
     setValue("amount", formattedValue, { shouldValidate: true })
-  }, [token, fee, userBalance, isMaxAvailable, setValue])
+
+    setIsLoading(false)
+    setIsMaxClicked(false)
+  }, [fee, isMaxClicked, token, userBalance])
 
   useEffect(() => {
     if (!initedToken || !setIsResponsive) return
@@ -121,7 +182,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           )}
           id={"choose-from-token-amount"}
           disabled={!Boolean(initedToken)}
-          isLoading={false}
+          isLoading={isLoading}
           decimals={decimals}
           value={inputAmountValue}
           {...register("amount", {
@@ -171,9 +232,13 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           />
         </div>
         <div className="flex-[0_0_100%]"></div>
-        <p className={clsx("text-xs mt-2 text-gray-500 leading-5 text-left")}>
-          {usdRate || "0.00 USD"}
-        </p>
+        {isLoading ? (
+          <Skeleton className="w-[124px] h-1 rounded-[6px] mt-[15px]" />
+        ) : (
+          <p className={clsx("text-xs mt-2 text-gray-500 leading-5 text-left")}>
+            {usdRate || "0.00 USD"}
+          </p>
+        )}
         <div
           className={clsx(
             "mt-2 text-xs leading-5 text-gray-500",
@@ -191,8 +256,22 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
               <span id="choose-from-token-balance">
                 {initedToken ? (
                   <>
-                    {initedToken.getTokenBalanceFormatted() || "0"}&nbsp;
-                    {initedToken.getTokenSymbol()}
+                    {token.getTokenAddress() !== BTC_NATIVE_ID ? (
+                      <>
+                        {initedToken.getTokenBalanceFormatted() || "0"}&nbsp;
+                        {initedToken.getTokenSymbol()}
+                      </>
+                    ) : btcBalance === undefined || isLoading ? (
+                      <Skeleton className="inline-block h-3 w-[80px]" />
+                    ) : (
+                      <>
+                        {BigNumber(btcBalance.toString())
+                          .div(10 ** initedToken.getTokenDecimals())
+                          .toString()}
+                        &nbsp;
+                        {initedToken.getTokenSymbol()}
+                      </>
+                    )}
                   </>
                 ) : (
                   <Skeleton className="inline-block h-3 w-[80px]"></Skeleton>

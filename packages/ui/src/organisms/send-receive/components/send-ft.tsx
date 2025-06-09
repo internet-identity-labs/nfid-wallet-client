@@ -8,10 +8,15 @@ import {
   BlurredLoader,
   IGroupedOptions,
   ChooseAccountModal,
+  Skeleton,
 } from "@nfid-frontend/ui"
-import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
+import {
+  BTC_NATIVE_ID,
+  ICP_CANISTER_ID,
+} from "@nfid/integration/token/constants"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
+import { BitcointNetworkFeeAndUtxos } from "frontend/integration/bitcoin/bitcoin.service"
 import { FT } from "frontend/integration/ft/ft"
 
 import { ChooseFromToken } from "./choose-from-token"
@@ -35,6 +40,8 @@ export interface TransferFTUiProps {
   isSuccessOpen: boolean
   onClose: () => void
   error: string | undefined
+  btcFee?: bigint
+  btcBalance?: bigint
 }
 
 export const TransferFTUi: FC<TransferFTUiProps> = ({
@@ -55,6 +62,8 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   isSuccessOpen,
   onClose,
   error,
+  btcFee,
+  btcBalance,
 }) => {
   const {
     resetField,
@@ -99,6 +108,8 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         id={"token-to-send-title"}
         token={token}
         balance={vaultsBalance}
+        btcBalance={btcBalance}
+        btcFee={btcFee}
         setFromChosenToken={setChosenToken}
         usdRate={token.getTokenRateFormatted(amount || 0)}
         tokens={tokens}
@@ -152,10 +163,30 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         <div>
           <div className="text-right">
             <p className="text-xs leading-5 text-gray-600" id="fee">
-              {token.getTokenFeeFormatted()}
-              <span className="block mt-1 text-xs">
-                {token.getTokenFeeFormattedUsd()}
-              </span>
+              {token.getTokenAddress() === BTC_NATIVE_ID ? (
+                btcFee ? (
+                  <>
+                    {token.getBTCFeeFormatted(btcFee)}
+                    <span className="block mt-1 text-xs">
+                      {token.getBTCFeeFormattedUsd(btcFee)}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <Skeleton className="w-[80px] h-[20px]" />
+                    <span className="block mt-1 text-xs">
+                      <Skeleton className="w-[60px] h-[16px] ml-auto" />
+                    </span>
+                  </>
+                )
+              ) : (
+                <>
+                  {token.getTokenFeeFormatted()}
+                  <span className="block mt-1 text-xs">
+                    {token.getTokenFeeFormattedUsd()}
+                  </span>
+                </>
+              )}
             </p>
           </div>
         </div>
@@ -166,7 +197,9 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           Boolean(errors["amount"]?.message) ||
           Boolean(errors["to"]?.message) ||
           !amount ||
-          !to
+          !to ||
+          !btcBalance ||
+          !btcFee
         }
         type="primary"
         id="sendButton"

@@ -7,6 +7,7 @@ import {
 } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
+import validate, { Network } from "bitcoin-address-validation"
 import { PRINCIPAL_LENGTH } from "packages/constants"
 import { Shroff } from "src/integration/swap/shroff"
 
@@ -154,6 +155,12 @@ export const validateICRC1Address = (address: string): boolean | string => {
   } catch (e) {
     return "Incorrect wallet address"
   }
+}
+
+export const validateBTCAddress = (address: string): boolean | string => {
+  const result = validate(address, Network.mainnet)
+
+  return result || "Incorrect wallet address"
 }
 
 export const getAccountIdentifier = (address: string): string => {

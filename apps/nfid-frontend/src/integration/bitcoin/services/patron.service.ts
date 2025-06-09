@@ -2,6 +2,7 @@ import { ActorSubclass, HttpAgent, SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 
 import { actor, agentBaseConfig } from "@nfid/integration"
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 import { Account, PaymentType } from "../idl/chain-fusion-signer.d"
 import { idlFactory as patronIDL } from "../idl/patron"
@@ -10,8 +11,6 @@ import {
   SelectedUtxosFeeRequest,
   SelectedUtxosFeeResponse,
 } from "../idl/patron.d"
-import { satoshiService } from "./satoshi.service"
-import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 export class PatronService {
   public async askToPayFor(identity: SignIdentity): Promise<void> {

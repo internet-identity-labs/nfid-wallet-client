@@ -23,10 +23,7 @@ import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
-import {
-  bitcoinService,
-  BitcointNetworkFeeAndUtxos,
-} from "frontend/integration/bitcoin/bitcoin.service"
+import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
@@ -67,9 +64,6 @@ export const TransferFT = ({
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [identity, setIdentity] = useState<SignIdentity>()
   const [isIdentityLoading, setIsIdentityLoading] = useState(false)
-
-  const [btcBalance, setBtcBalance] = useState<bigint>()
-  const [btcFee, setBtcFee] = useState<BitcointNetworkFeeAndUtxos>()
   const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
     useState(preselectedAccountAddress)
   const [error, setError] = useState<string | undefined>()
@@ -133,13 +127,15 @@ export const TransferFT = ({
   useEffect(() => {
     if (!token) return
 
+    setIdentity(undefined)
+    setIsIdentityLoading(true)
+
     const targets =
       token.getTokenAddress() !== BTC_NATIVE_ID
         ? [token.getTokenAddress()]
         : [PATRON_CANISTER_ID, CHAIN_FUSION_SIGNER_CANISTER_ID]
 
     const getSignIdentity = async () => {
-      setIsIdentityLoading(true)
       const identity = await getIdentity(targets)
       setIdentity(identity)
       setIsIdentityLoading(false)
@@ -148,40 +144,31 @@ export const TransferFT = ({
     getSignIdentity()
   }, [token])
 
-  useEffect(() => {
-    if (
-      !identity ||
-      token?.getTokenAddress() !== BTC_NATIVE_ID ||
-      !amount ||
-      !btcBalance ||
-      !!formMethods.formState.errors.amount
-    )
-      return
+  const isIdentityReady = !!identity && !isIdentityLoading
 
-    setBtcFee(undefined)
-    const getFee = async () => {
-      const fee = await token.getBTCFee(identity, amount)
-      setBtcFee(fee)
-    }
+  const shouldFetchBalance =
+    isIdentityReady && token?.getTokenAddress() === BTC_NATIVE_ID
 
-    getFee()
-  }, [identity, amount, token, btcBalance, formMethods.formState.errors.amount])
+  const { data: btcBalance } = useSWR(
+    shouldFetchBalance
+      ? ["btcBalance", identity?.getPrincipal().toString()]
+      : null,
+    () => bitcoinService.getBalance(identity!),
+  )
 
-  useEffect(() => {
-    if (
-      isIdentityLoading ||
-      !identity ||
-      token?.getTokenAddress() !== BTC_NATIVE_ID
-    )
-      return
+  const shouldFetchBtcFee =
+    token?.getTokenAddress() === BTC_NATIVE_ID &&
+    amount &&
+    btcBalance &&
+    !formMethods.formState.errors.amount &&
+    isIdentityReady
 
-    const getBtcBalance = async () => {
-      const balance = await bitcoinService.getBalance(identity)
-      setBtcBalance(balance)
-    }
-
-    getBtcBalance()
-  }, [identity, token, isIdentityLoading])
+  const { data: btcFee } = useSWR(
+    shouldFetchBtcFee
+      ? ["btcFee", amount.toString(), btcBalance?.toString()]
+      : null,
+    () => token?.getBTCFee(identity!, amount),
+  )
 
   const submit = useCallback(async () => {
     if (!token) return toaster.error("No selected token")
@@ -196,6 +183,11 @@ export const TransferFT = ({
             `Transaction ${amount} ${token.getTokenSymbol()} successful`,
           )
           setStatus(SendStatus.COMPLETED)
+          getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
+            (updatedTokens) => {
+              mutateWithTimestamp("tokens", updatedTokens, false)
+            },
+          )
         })
         .catch((e) => {
           console.error(

@@ -1,4 +1,4 @@
-export const idlFactory = ({ IDL }) => {
+export const idlFactory = ({ IDL }: { IDL: any }) => {
   const Conf = IDL.Record({
     operator: IDL.Opt(IDL.Principal),
     im_canister: IDL.Opt(IDL.Principal),
@@ -91,11 +91,4 @@ export const idlFactory = ({ IDL }) => {
     store_icrc1_canister: IDL.Func([ICRC1Request], [], []),
     store_new_icrc1_canisters: IDL.Func([IDL.Vec(ICRC1)], [], []),
   })
-}
-export const init = ({ IDL }) => {
-  const Conf = IDL.Record({
-    operator: IDL.Opt(IDL.Principal),
-    im_canister: IDL.Opt(IDL.Principal),
-  })
-  return [IDL.Opt(Conf)]
 }

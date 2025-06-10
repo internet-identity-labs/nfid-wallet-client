@@ -1,7 +1,10 @@
+import { SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
+
+import { BitcointNetworkFeeAndUtxos } from "../bitcoin/bitcoin.service"
 
 export interface FT {
   init(principal: Principal): Promise<FT>
@@ -60,6 +63,15 @@ export interface FT {
   getTokenFee(): bigint
 
   getTokenFeeFormatted(): string
+
+  getBTCFee(
+    identity: SignIdentity,
+    amount: string,
+  ): Promise<BitcointNetworkFeeAndUtxos>
+
+  getBTCFeeFormatted(fee: bigint): string
+
+  getBTCFeeFormattedUsd(fee: bigint): string | undefined
 
   getTokenFeeFormattedUsd(): string | undefined
 

@@ -7612,6 +7612,11 @@ base58-js@^1.0.5:
   resolved "https://registry.yarnpkg.com/base58-js/-/base58-js-1.0.5.tgz#00697bff954aa85007fa45ce76b699b7960768cd"
   integrity sha512-LkkAPP8Zu+c0SVNRTRVDyMfKVORThX+rCViget00xdgLRrKkClCTz1T7cIrpr69ShwV5XJuuoZvMvJ43yURwkA==
 
+base58-js@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/base58-js/-/base58-js-3.0.2.tgz#182885b221ba15763403deda0d93dc1ea82abcdd"
+  integrity sha512-9WL6C9Ai3J+Me1PAOTZGvaH2xua6dGyZddGWhWXrV7O4i29cNUunAb42Zd87Jm0A6EW31gu47fKnYmAVJAx27Q==
+
 base64-arraybuffer-es6@^0.7.0:
   version "0.7.0"
   resolved "https://registry.npmjs.org/base64-arraybuffer-es6/-/base64-arraybuffer-es6-0.7.0.tgz"
@@ -7725,6 +7730,15 @@ bip39@3.1.0:
   integrity sha512-c9kiwdk45Do5GL0vJMe7tS95VjCii65mYAH7DfWl3uW8AVzXKQVUm64i3hzVybBDMp9r7j9iNxR85+ul8MdN/A==
   dependencies:
     "@noble/hashes" "^1.2.0"
+
+bitcoin-address-validation@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/bitcoin-address-validation/-/bitcoin-address-validation-3.0.0.tgz#a94ce7c73f9122d6849db992a180dba54227019a"
+  integrity sha512-R1X1c9EdgjgjTpjshjk5e16TbgF7HYasxBcu7l5ScWMxVs53845vMUg5PvnQ/R/3h8Grly6Y52DgH6/77gazLQ==
+  dependencies:
+    base58-js "^3.0.2"
+    bech32 "^2.0.0"
+    sha256-uint8array "^0.10.3"
 
 bl@^4.0.3, bl@^4.1.0:
   version "4.1.0"
@@ -18773,6 +18787,11 @@ sha.js@^2.4.0, sha.js@^2.4.8:
   dependencies:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
+
+sha256-uint8array@^0.10.3:
+  version "0.10.7"
+  resolved "https://registry.yarnpkg.com/sha256-uint8array/-/sha256-uint8array-0.10.7.tgz#c751fc914f4227b26d996980562065fa4eadcf99"
+  integrity sha512-1Q6JQU4tX9NqsDGodej6pkrUVQVNapLZnvkwIhddH/JqzBZF1fSaxSWNY6sziXBE8aEa2twtGkXUrwzGeZCMpQ==
 
 sha256@^0.2.0:
   version "0.2.0"

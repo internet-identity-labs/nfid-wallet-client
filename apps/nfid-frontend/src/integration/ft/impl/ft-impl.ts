@@ -1,3 +1,4 @@
+import { SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { FT } from "src/integration/ft/ft"
@@ -13,7 +14,11 @@ import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-p
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { ICRC1 } from "@nfid/integration/token/icrc1/types"
 
-import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
+import {
+  bitcoinService,
+  BitcointNetworkFeeAndUtxos,
+} from "frontend/integration/bitcoin/bitcoin.service"
+import { satoshiService } from "frontend/integration/bitcoin/services/satoshi.service"
 
 import { formatUsdAmount } from "../../../util/format-usd-amount"
 
@@ -268,6 +273,23 @@ export class FTImpl implements FT {
 
   getTokenFee(): bigint {
     return this.fee
+  }
+
+  async getBTCFee(
+    identity: SignIdentity,
+    amount: string,
+  ): Promise<BitcointNetworkFeeAndUtxos> {
+    return await bitcoinService.getFee(identity, amount)
+  }
+
+  getBTCFeeFormatted(fee: bigint): string {
+    return `${satoshiService.getFromSatoshis(fee)} ${this.symbol}`
+  }
+
+  getBTCFeeFormattedUsd(fee: bigint): string | undefined {
+    return this.getTokenRateFormatted(
+      Number(satoshiService.getFromSatoshis(fee)).toString(),
+    )
   }
 
   getTokenFeeFormatted(): string {

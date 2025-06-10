@@ -1,10 +1,11 @@
-import {  SignIdentity } from "@dfinity/agent"
+import { SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
-
-import { Account, PaymentType } from "../idl/chain-fusion-signer.d"
-import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
 import { SelectedUtxosFeeRequest } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
+
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+
+import { Account, PaymentType } from "../idl/chain-fusion-signer.d"
 
 export class PatronService {
   public async askToPayFor(identity: SignIdentity): Promise<void> {
@@ -31,7 +32,10 @@ export class PatronService {
       min_confirmations: [6],
     }
 
-    const response = await icrc1OracleService.btcSelectUserUtxosFee(request, identity)
+    const response = await icrc1OracleService.btcSelectUserUtxosFee(
+      request,
+      identity,
+    )
 
     if ("Err" in response) {
       console.error(response)

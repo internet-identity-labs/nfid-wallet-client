@@ -13,7 +13,7 @@ import {
   CkBtcToBtcFee,
 } from "./bitcoin.service"
 import { TransactionId } from "./services/chain-fusion-signer.service"
-import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle"
+import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
 
 const IDENTITY: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003008adc857dfcd0477a7aaa01a657ca6923ce76c07645704b1e872deb1253baa",

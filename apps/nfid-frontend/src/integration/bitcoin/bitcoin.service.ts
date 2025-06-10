@@ -4,7 +4,6 @@ import { authStorage } from "packages/integration/src/lib/authentication/storage
 
 import { Balance } from "@nfid/integration"
 
-import { SelectedUtxosFeeResponse } from "./idl/patron.d"
 import { bitcoinCanisterService } from "./services/bitcoin-canister.service"
 import {
   Address,
@@ -14,6 +13,7 @@ import {
 import { ckBtcService } from "./services/ckbtc.service"
 import { patronService } from "./services/patron.service"
 import { satoshiService } from "./services/satoshi.service"
+import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
 
 export type BlockIndex = bigint
 

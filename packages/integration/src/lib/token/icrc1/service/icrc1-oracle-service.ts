@@ -1,11 +1,21 @@
+import { HttpAgent, SignIdentity } from "@dfinity/agent"
+
 import { storageWithTtl } from "@nfid/client-db"
 
-import { ICRC1, ICRC1Request, _SERVICE } from "../../../_ic_api/icrc1_oracle.d"
 import { idlFactory } from "../../../_ic_api/icrc1_oracle"
-
-import { actorBuilder, agentBaseConfig, iCRC1OracleActor } from "../../../actors"
+import {
+  BtcSelectUserUtxosFeeResult,
+  ICRC1,
+  ICRC1Request,
+  SelectedUtxosFeeRequest,
+  _SERVICE,
+} from "../../../_ic_api/icrc1_oracle.d"
+import {
+  actorBuilder,
+  agentBaseConfig,
+  iCRC1OracleActor,
+} from "../../../actors"
 import { ICRC1 as ICRC1Data } from "../types"
-import { HttpAgent, SignIdentity } from "@dfinity/agent"
 
 export const icrc1OracleCacheName = "ICRC1OracleService.getICRC1Canisters"
 
@@ -51,16 +61,31 @@ export class ICRC1OracleService {
     return await iCRC1OracleActor.count_icrc1_canisters().then((canisters) => {
       return Promise.all(
         Array.from({ length: Math.ceil(Number(canisters) / 25) }, (_, i) =>
-          iCRC1OracleActor.get_icrc1_paginated(i * 25, 25),
+          iCRC1OracleActor.get_icrc1_paginated(BigInt(i * 25), BigInt(25)),
         ),
       ).then((res) => res.flat())
     })
   }
 
-async allowSigning(identity: SignIdentity) {
-    const actor =  actorBuilder<_SERVICE>(ICRC1_ORACLE_CANISTER_ID, idlFactory, {
+  async btcSelectUserUtxosFee(
+    request: SelectedUtxosFeeRequest,
+    identity: SignIdentity,
+  ): Promise<BtcSelectUserUtxosFeeResult> {
+    const actor = actorBuilder<_SERVICE>(ICRC1_ORACLE_CANISTER_ID, idlFactory, {
       agent: HttpAgent.createSync({ ...agentBaseConfig, identity }),
-    });
+    })
+    let response = await actor.btc_select_user_utxos_fee({
+      amount_satoshis: request.amount_satoshis,
+      min_confirmations: request.min_confirmations,
+      network: request.network,
+    })
+    return response
+  }
+
+  async allowSigning(identity: SignIdentity) {
+    const actor = actorBuilder<_SERVICE>(ICRC1_ORACLE_CANISTER_ID, idlFactory, {
+      agent: HttpAgent.createSync({ ...agentBaseConfig, identity }),
+    })
     await actor.allow_signing()
   }
 
@@ -94,6 +119,7 @@ async allowSigning(identity: SignIdentity) {
         fee: BigInt(c.fee),
         decimals: c.decimals,
         root_canister_id: c.root_canister_id,
+        date_added: c.date_added,
       }
     })
   }

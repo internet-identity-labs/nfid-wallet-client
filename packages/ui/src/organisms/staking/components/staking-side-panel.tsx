@@ -198,7 +198,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                           />
                         </Tooltip>
                       </div>
-                      <div>
+                      <div id={"sidePanel-stakeID"}>
                         <CopyAddress
                           address={sidePanelOption.option.getStakeIdFormatted()}
                           trailingChars={4}
@@ -210,7 +210,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                     <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
                       <p className="text-gray-400">Initial stake</p>
                       <div>
-                        <p>
+                        <p id={"sidePanel-initialStake"}>
                           {sidePanelOption.option
                             .getInitialStakeFormatted()
                             .getTokenValue()}
@@ -253,7 +253,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                         </Tooltip>
                       </div>
                       <div>
-                        <p>
+                        <p id={"sidePanel-rewards"}>
                           {sidePanelOption.option
                             .getRewardsFormatted()
                             .getTokenValue()}
@@ -287,7 +287,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                         </Tooltip>
                       </div>
                       <div>
-                        <p className="font-bold">
+                        <p id={"sidePanel-totalValue"} className="font-bold">
                           {sidePanelOption.option
                             .getTotalValueFormatted()
                             .getTokenValue()}
@@ -305,7 +305,9 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                         <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
                           <p className="text-gray-400">Unlock in</p>
                           <div>
-                            <p>{sidePanelOption.option.getUnlockInMonths()}</p>
+                            <p id={"sidePanel-unlockTime"}>
+                              {sidePanelOption.option.getUnlockInMonths()}
+                            </p>
                           </div>
                         </div>
                       </>
@@ -319,7 +321,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                   <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
                     <p className="text-gray-400">Date created</p>
                     <div>
-                      <p>
+                      <p id={"sidePanel-dateCreated"}>
                         {sidePanelOption.option
                           .getCreatedAtFormatted()
                           .getDate()}
@@ -337,7 +339,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
                         <p className="text-gray-400">Lock time</p>
                         <div>
-                          <p>
+                          <p id={"sidePanel-lockTime"}>
                             {getFormattedPeriod(
                               sidePanelOption?.option.getLockTimeInMonths(),
                               true,
@@ -390,6 +392,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                   )}
                   <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
                   <Button
+                    id={"sidePanel-lock_unlock_Button"}
                     icon={
                       isLoading ? (
                         <Spinner className="w-5 h-5 text-gray-300" />

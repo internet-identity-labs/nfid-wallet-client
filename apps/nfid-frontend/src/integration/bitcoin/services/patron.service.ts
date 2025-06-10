@@ -1,17 +1,10 @@
-import { ActorSubclass, HttpAgent, SignIdentity } from "@dfinity/agent"
+import {  SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 
-import { actor, agentBaseConfig } from "@nfid/integration"
-
 import { Account, PaymentType } from "../idl/chain-fusion-signer.d"
-import { idlFactory as patronIDL } from "../idl/patron"
-import {
-  _SERVICE as Patron,
-  SelectedUtxosFeeRequest,
-  SelectedUtxosFeeResponse,
-} from "../idl/patron.d"
-import { satoshiService } from "./satoshi.service"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
+import { SelectedUtxosFeeRequest } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
 
 export class PatronService {
   public async askToPayFor(identity: SignIdentity): Promise<void> {
@@ -20,7 +13,7 @@ export class PatronService {
 
   public getPaymentType(): PaymentType {
     const patronAccount: Account = {
-      owner: Principal.fromText(PATRON_CANISTER_ID),
+      owner: Principal.fromText(ICRC1_ORACLE_CANISTER_ID),
       subaccount: [],
     }
 
@@ -32,15 +25,13 @@ export class PatronService {
     identity: SignIdentity,
     amountInSatoshis: bigint,
   ): Promise<SelectedUtxosFeeResponse> {
-    const patronActor = this.getPatronActor(identity)
-
     const request: SelectedUtxosFeeRequest = {
       network: { mainnet: null },
       amount_satoshis: amountInSatoshis,
       min_confirmations: [6],
     }
 
-    const response = await patronActor.btc_select_user_utxos_fee(request)
+    const response = await icrc1OracleService.btcSelectUserUtxosFee(request, identity)
 
     if ("Err" in response) {
       console.error(response)
@@ -48,12 +39,6 @@ export class PatronService {
     }
 
     return response.Ok
-  }
-
-  private getPatronActor(identity: SignIdentity): ActorSubclass<Patron> {
-    return actor<Patron>(PATRON_CANISTER_ID, patronIDL, {
-      agent: HttpAgent.createSync({ ...agentBaseConfig, identity }),
-    })
   }
 }
 

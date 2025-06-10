@@ -90,3 +90,7 @@ export interface FormValues {
   lockTime: string
   userNeuron: string
 }
+
+export interface NeuronFormValues {
+  userNeuron: string
+}

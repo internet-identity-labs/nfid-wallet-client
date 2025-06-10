@@ -61,7 +61,7 @@ export class ICRC1OracleService {
     return await iCRC1OracleActor.count_icrc1_canisters().then((canisters) => {
       return Promise.all(
         Array.from({ length: Math.ceil(Number(canisters) / 25) }, (_, i) =>
-          iCRC1OracleActor.get_icrc1_paginated(i * 25, 25),
+          iCRC1OracleActor.get_icrc1_paginated(BigInt(i * 25), BigInt(25)),
         ),
       ).then((res) => res.flat())
     })
@@ -119,6 +119,7 @@ export class ICRC1OracleService {
         fee: BigInt(c.fee),
         decimals: c.decimals,
         root_canister_id: c.root_canister_id,
+        date_added: c.date_added,
       }
     })
   }

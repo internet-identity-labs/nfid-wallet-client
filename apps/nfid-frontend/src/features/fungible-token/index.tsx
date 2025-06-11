@@ -6,6 +6,7 @@ import { userPrefService } from "src/integration/user-preferences/user-pref-serv
 
 import { storageWithTtl } from "@nfid/client-db"
 import { authState } from "@nfid/integration"
+import { CKBTC_CANISTER_ID } from "@nfid/integration/token/constants"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
@@ -40,6 +41,21 @@ const TokensPage = () => {
     send({ type: "CHANGE_DIRECTION", data: ModalType.SWAP })
     send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
     send({ type: "ASSIGN_SELECTED_TARGET_FT", data: "" })
+    send("SHOW")
+  }
+
+  const onConvertToCkBtc = () => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
+    send("SHOW")
+  }
+
+  const onConvertToBtc = () => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
+    send({ type: "ASSIGN_SELECTED_FT", data: CKBTC_CANISTER_ID })
     send("SHOW")
   }
 
@@ -95,10 +111,6 @@ const TokensPage = () => {
         throw e
       })
   }
-
-  //TODO: implement BTC convert functions
-  const onConvertToBtc = () => {}
-  const onConvertToCkBtc = () => {}
 
   return (
     <Tokens

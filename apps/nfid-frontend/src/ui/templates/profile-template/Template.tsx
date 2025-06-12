@@ -210,8 +210,12 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     send("SHOW")
   }
 
-  //TODO: implement BTC convert function
-  const onBtcConvert = () => {}
+  const onConvertClick = () => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
+    send("SHOW")
+  }
 
   return (
     <div className={clsx("relative min-h-screen overflow-hidden", className)}>
@@ -275,11 +279,12 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
                 onSendClick={onSendClick}
                 onReceiveClick={onReceiveClick}
                 onSwapClick={onSwapClick}
+                onConvertClick={onConvertClick}
                 address={authState.getUserIdData().publicKey}
               />
               <BtcBanner
                 onBtcSwapClick={onBtcSwapClick}
-                onBtcConvert={onBtcConvert}
+                onConvertClick={onConvertClick}
               />
               <TabsSwitcher
                 className="my-[30px]"

@@ -1,5 +1,7 @@
 import BigNumber from "bignumber.js"
 
+const MIN_CK_BTC_AMOUNT_TO_CONVERT = 0.0005
+
 interface Validation {
   min?: number
   max?: number
@@ -25,7 +27,12 @@ export const isHex = (h: string) => {
 }
 
 export const validateTransferAmountField =
-  (balance: bigint | undefined, fee: bigint, decimals: number | undefined) =>
+  (
+    balance: bigint | undefined,
+    fee: bigint,
+    decimals: number | undefined,
+    isConvertFromCkBtc: boolean,
+  ) =>
   (value: string) => {
     if (!decimals || !balance) return "Insufficient funds"
     const balanceNum = BigNumber(balance.toString()).div(10 ** decimals)
@@ -40,5 +47,12 @@ export const validateTransferAmountField =
 
     if (balanceNum.minus(feeNum).isLessThan(valueNum))
       return "Insufficient funds"
+
+    if (
+      isConvertFromCkBtc &&
+      valueNum.isLessThan(MIN_CK_BTC_AMOUNT_TO_CONVERT)
+    ) {
+      return `Amount can't be less than ${MIN_CK_BTC_AMOUNT_TO_CONVERT} BTC.`
+    }
     return true
   }

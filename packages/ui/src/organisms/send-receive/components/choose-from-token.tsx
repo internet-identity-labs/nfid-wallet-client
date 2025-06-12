@@ -26,10 +26,10 @@ import { BALANCE_EDGE_LENGTH } from "./swap-form"
 interface ChooseFromTokenProps {
   id: string
   token: FT | undefined
-  tokens: FT[]
+  tokens?: FT[]
   balance?: bigint | undefined
   value?: string
-  setFromChosenToken: (value: string) => void
+  setFromChosenToken?: (value: string) => void
   usdRate?: string
   title: string
   isSwap?: boolean
@@ -38,6 +38,7 @@ interface ChooseFromTokenProps {
   tokensAvailableToSwap?: TokensAvailableToSwap
   btcBalance?: bigint
   btcFee?: bigint
+  isConvertFromCkBtc?: boolean
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -55,6 +56,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   tokensAvailableToSwap,
   btcBalance,
   btcFee,
+  isConvertFromCkBtc,
 }) => {
   const [inputAmountValue, setInputAmountValue] = useState(value || "")
   const [isMaxClicked, setIsMaxClicked] = useState(false)
@@ -193,6 +195,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
                 balance || token.getTokenBalance(),
                 isSwap ? BigInt(0) : token.getTokenFee(),
                 decimals,
+                !!isConvertFromCkBtc,
               )(value)
 
               return amountValidationError ?? true
@@ -205,31 +208,43 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             isResponsive && "w-full flex-[0_0_100%] order-1 mt-2",
           )}
         >
-          <ChooseFtModal
-            id={id}
-            searchInputId={"sourceTokenSearchInput"}
-            tokens={tokens}
-            title={title}
-            onSelect={setFromChosenToken}
-            trigger={
-              <div
-                id={`sourceToken_${token.getTokenName()}_${token.getTokenAddress()}`}
-                className="flex items-center w-full cursor-pointer gap-1.5"
-              >
-                <ImageWithFallback
-                  alt={token.getTokenName()}
-                  fallbackSrc={IconNftPlaceholder}
-                  src={`${token.getTokenLogo()}`}
-                  className="w-[28px] rounded-full"
-                />
-                <p className="text-lg font-semibold">
-                  {token.getTokenSymbol()}
-                </p>
-                <IconCmpArrowRight className="ml-auto" />
-              </div>
-            }
-            tokensAvailableToSwap={tokensAvailableToSwap}
-          />
+          {tokens !== undefined && setFromChosenToken ? (
+            <ChooseFtModal
+              id={id}
+              searchInputId={"sourceTokenSearchInput"}
+              tokens={tokens}
+              title={title}
+              onSelect={setFromChosenToken}
+              trigger={
+                <div
+                  id={`sourceToken_${token.getTokenName()}_${token.getTokenAddress()}`}
+                  className="flex items-center w-full cursor-pointer gap-1.5"
+                >
+                  <ImageWithFallback
+                    alt={token.getTokenName()}
+                    fallbackSrc={IconNftPlaceholder}
+                    src={`${token.getTokenLogo()}`}
+                    className="w-[28px] rounded-full"
+                  />
+                  <p className="text-lg font-semibold">
+                    {token.getTokenSymbol()}
+                  </p>
+                  <IconCmpArrowRight className="ml-auto" />
+                </div>
+              }
+              tokensAvailableToSwap={tokensAvailableToSwap}
+            />
+          ) : (
+            <div className="flex items-center w-full gap-1.5">
+              <ImageWithFallback
+                alt={token.getTokenName()}
+                fallbackSrc={IconNftPlaceholder}
+                src={`${token.getTokenLogo()}`}
+                className="w-[28px] rounded-full"
+              />
+              <p className="text-lg font-semibold">{token.getTokenSymbol()}</p>
+            </div>
+          )}
         </div>
         <div className="flex-[0_0_100%]"></div>
         {isLoading ? (

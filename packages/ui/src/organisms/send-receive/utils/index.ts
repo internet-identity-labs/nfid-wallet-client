@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js"
 import {
   DepositError,
   SlippageSwapError,
@@ -6,7 +7,19 @@ import {
 } from "src/integration/swap/errors/types"
 import { SwapStage } from "src/integration/swap/types/enums"
 
+import {
+  BtcToCkBtcFee,
+  CkBtcToBtcFee,
+} from "frontend/integration/bitcoin/bitcoin.service"
+import { e8s } from "frontend/integration/nft/constants/constants"
 import { ContactSupportError } from "frontend/integration/swap/errors/types/contact-support-error"
+
+export interface IConversionFee {
+  total: string
+  btcNetworkFee: string
+  icpNetworkFee: string
+  widgetFee: string
+}
 
 export const getTitleAndButtonText = (
   error:
@@ -51,3 +64,28 @@ const textStatusByStep: { [key in SwapStage]: string } = {
 
 export const getTextStatusByStep = (step: SwapStage) =>
   textStatusByStep[step] || ""
+
+export const getConversionFee = (fee?: BtcToCkBtcFee | CkBtcToBtcFee) => {
+  if (!fee || fee.bitcointNetworkFee.fee_satoshis === BigInt(0)) return
+
+  const {
+    bitcointNetworkFee: { fee_satoshis },
+    interNetwokFee,
+    conversionFee,
+  } = fee
+
+  const identityLabsFee =
+    "identityLabsFee" in fee ? fee.identityLabsFee : BigInt(0)
+
+  const totalFee =
+    fee_satoshis + interNetwokFee + conversionFee + identityLabsFee
+
+  return {
+    total: BigNumber(totalFee.toString()).div(e8s).toString(),
+    btcNetworkFee: BigNumber(fee_satoshis.toString()).div(e8s).toString(),
+    icpNetworkFee: BigNumber((interNetwokFee + conversionFee).toString())
+      .div(e8s)
+      .toString(),
+    widgetFee: BigNumber(identityLabsFee.toString()).div(e8s).toString(),
+  }
+}

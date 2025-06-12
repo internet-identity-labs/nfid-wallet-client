@@ -21,15 +21,16 @@ import { BALANCE_EDGE_LENGTH } from "./swap-form"
 
 interface ChooseToTokenProps {
   token: FT | undefined
-  tokens: FT[]
+  tokens?: FT[]
   setToChosenToken: (value: string) => void
   usdRate: string | undefined
-  isQuoteLoading: boolean
+  isLoading: boolean
   value?: string
   priceImpact?: PriceImpact
   isResponsive?: boolean
   setIsResponsive?: (v: boolean) => void
-  tokensAvailableToSwap: TokensAvailableToSwap
+  tokensAvailableToSwap?: TokensAvailableToSwap
+  color?: string
 }
 
 export const ChooseToToken: FC<ChooseToTokenProps> = ({
@@ -37,24 +38,20 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   tokens,
   setToChosenToken,
   usdRate,
-  isQuoteLoading,
+  isLoading,
   value,
   priceImpact,
   isResponsive,
   setIsResponsive,
   tokensAvailableToSwap,
+  color = "bg-gray-100",
 }) => {
   const { setValue, register } = useFormContext()
+  const initedToken = useTokenInit(token)
 
   useEffect(() => {
     setValue("to", value)
   }, [value])
-
-  const initedToken = useTokenInit(token)
-
-  if (!token) return null
-
-  const decimals = token.getTokenDecimals()
 
   useEffect(() => {
     if (!initedToken || !setIsResponsive) return
@@ -67,14 +64,19 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
     }
   }, [initedToken])
 
+  if (!token) return null
+
+  const decimals = token.getTokenDecimals()
+
   if (!decimals) return null
   return (
     <>
       <div
         id={"targetSection"}
         className={clsx(
-          "rounded-[12px] p-4 bg-gray-100",
+          "rounded-[12px] p-4",
           isResponsive ? "h-[168px]" : "h-[102px]",
+          color,
         )}
       >
         <div className="flex flex-wrap justify-between">
@@ -86,7 +88,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
             id={"choose-to-token-amount"}
             decimals={decimals}
             disabled
-            isLoading={isQuoteLoading}
+            isLoading={isLoading}
             {...register("to")}
             value={value || ""}
           />
@@ -96,35 +98,50 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
               isResponsive && "w-full flex-[0_0_100%] order-1 mt-2",
             )}
           >
-            <ChooseFtModal
-              searchInputId={"targetTokenSearchInput"}
-              tokens={tokens}
-              title="Swap to"
-              onSelect={setToChosenToken}
-              isSwapTo={true}
-              trigger={
-                <div
-                  id={`targetToken_${token.getTokenName()}_${token.getTokenAddress()}`}
-                  className="flex items-center w-full cursor-pointer gap-1.5"
-                >
-                  <ImageWithFallback
-                    alt={token.getTokenName()}
-                    fallbackSrc={IconNftPlaceholder}
-                    src={`${token.getTokenLogo()}`}
-                    className="w-[28px] rounded-full"
-                  />
-                  <p className="text-lg font-semibold">
-                    {token.getTokenSymbol()}
-                  </p>
-                  <IconCmpArrowRight className="ml-auto" />
-                </div>
-              }
-              tokensAvailableToSwap={tokensAvailableToSwap}
-            />
+            {tokens !== undefined && setToChosenToken ? (
+              <ChooseFtModal
+                id="ft-modal"
+                searchInputId={"targetTokenSearchInput"}
+                tokens={tokens}
+                title="Swap to"
+                onSelect={setToChosenToken}
+                isSwapTo={true}
+                trigger={
+                  <div
+                    id={`targetToken_${token.getTokenName()}_${token.getTokenAddress()}`}
+                    className="flex items-center w-full cursor-pointer gap-1.5"
+                  >
+                    <ImageWithFallback
+                      alt={token.getTokenName()}
+                      fallbackSrc={IconNftPlaceholder}
+                      src={`${token.getTokenLogo()}`}
+                      className="w-[28px] rounded-full"
+                    />
+                    <p className="text-lg font-semibold">
+                      {token.getTokenSymbol()}
+                    </p>
+                    <IconCmpArrowRight className="ml-auto" />
+                  </div>
+                }
+                tokensAvailableToSwap={tokensAvailableToSwap}
+              />
+            ) : (
+              <div className="flex items-center w-full cursor-pointer gap-1.5">
+                <ImageWithFallback
+                  alt={token.getTokenName()}
+                  fallbackSrc={IconNftPlaceholder}
+                  src={`${token.getTokenLogo()}`}
+                  className="w-[28px] rounded-full"
+                />
+                <p className="text-lg font-semibold">
+                  {token.getTokenSymbol()}
+                </p>
+              </div>
+            )}
           </div>
           <div className="flex-[0_0_100%]"></div>
           <p className={clsx("text-xs mt-2 text-gray-500 leading-5 text-left")}>
-            {!isQuoteLoading ? (
+            {!isLoading ? (
               <>
                 {usdRate || "0.00 USD"}&nbsp;
                 <Tooltip

@@ -173,9 +173,9 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
                   </>
                 ) : (
                   <>
-                    <Skeleton className="w-[80px] h-[20px]" />
+                    <Skeleton className="w-[80px] h-5" />
                     <span className="block mt-1 text-xs">
-                      <Skeleton className="w-[60px] h-[16px] ml-auto" />
+                      <Skeleton className="w-[60px] h-4 ml-auto" />
                     </span>
                   </>
                 )
@@ -198,8 +198,8 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           Boolean(errors["to"]?.message) ||
           !amount ||
           !to ||
-          !btcBalance ||
-          !btcFee
+          (token?.getTokenAddress() === BTC_NATIVE_ID &&
+            (!btcBalance || !btcFee))
         }
         type="primary"
         id="sendButton"

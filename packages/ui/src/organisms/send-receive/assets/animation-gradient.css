@@ -1,0 +1,10 @@
+.circle-gradient:before {
+  background: conic-gradient(
+    #f3f4f6 43%,
+    #bfcce1 49%,
+    #415d76 64%,
+    #1285d6 80%,
+    #0bb6ff 88%,
+    #43edff 100%
+  );
+}

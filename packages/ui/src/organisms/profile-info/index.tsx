@@ -10,6 +10,7 @@ import {
   Button,
   CopyAddress,
   ArrowPercentChange,
+  IconCmpConvertWhite,
 } from "@nfid-frontend/ui"
 
 export interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
@@ -26,6 +27,7 @@ export interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   onSendClick: () => void
   onReceiveClick: () => void
   onSwapClick: () => void
+  onConvertClick: () => void
   address?: string
 }
 
@@ -36,6 +38,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
   onSendClick,
   onReceiveClick,
   onSwapClick,
+  onConvertClick,
   address,
 }) => {
   return (
@@ -76,7 +79,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
           {isUsdLoading ? (
             <Skeleton className="w-[50%] h-[24px]" />
           ) : (
-            <div className="flex items-baseline flex-wrap">
+            <div className="flex flex-wrap items-baseline">
               <div className="font-semibold">
                 {usdBalance?.value}{" "}
                 <span className="text-[16px] font-bold uppercase self-end mr-3">
@@ -167,6 +170,18 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
               isSmall
             >
               Swap
+            </Button>
+            <Button
+              id="convertButton"
+              className="flex-1 !px-0 sm:!px-[15px]"
+              innerClassName="!space-x-1"
+              icon={
+                <IconCmpConvertWhite className="!text-gray-400 !w-[18px] !h-[18px] text-white" />
+              }
+              onClick={onConvertClick}
+              isSmall
+            >
+              Convert
             </Button>
           </div>
         </div>

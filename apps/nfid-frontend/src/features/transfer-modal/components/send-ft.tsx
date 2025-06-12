@@ -176,6 +176,7 @@ export const TransferFT = ({
     if (token.getTokenAddress() === BTC_NATIVE_ID) {
       if (!identity || !btcFee) return
 
+      setIsSuccessOpen(true)
       bitcoinService
         .send(identity, to, amount, btcFee)
         .then(() => {

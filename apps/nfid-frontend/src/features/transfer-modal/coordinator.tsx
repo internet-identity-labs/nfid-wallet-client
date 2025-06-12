@@ -13,6 +13,7 @@ import { authState } from "@nfid/integration"
 import { userPrefService } from "frontend/integration/user-preferences/user-pref-service"
 import { ProfileContext } from "frontend/provider"
 
+import { ConvertBTC } from "./components/convert"
 import { TransferReceive } from "./components/receive"
 import { TransferFT } from "./components/send-ft"
 import { TransferNFT } from "./components/send-nft"
@@ -25,13 +26,16 @@ export const TransferModalCoordinator = () => {
   const globalServices = useContext(ProfileContext)
   const [state, send] = useActor(globalServices.transferService)
   const [hasSwapError, setHasSwapError] = useState(false)
+  const [isConvertSuccess, setIsConvertSuccess] = useState(false)
 
   const hideModal = useCallback(() => {
     send({ type: "ASSIGN_SELECTED_FT", data: "" })
+    send({ type: "ASSIGN_SELECTED_TARGET_FT", data: "" })
     send({ type: "ASSIGN_SELECTED_NFT", data: "" })
     send({ type: "CHANGE_TOKEN_TYPE", data: "ft" })
     send({ type: "CHANGE_DIRECTION", data: null })
     send({ type: "HIDE" })
+    setIsConvertSuccess(false)
   }, [send])
   useEffect(() => {
     userPrefService.getUserPreferences().then((userPref) => {
@@ -133,6 +137,23 @@ export const TransferModalCoordinator = () => {
             />
           </motion.div>
         )}
+        {state.matches("ConvertMachine") && (
+          <motion.div
+            key="convert-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          >
+            <ConvertBTC
+              preselectedSourceTokenAddress={state.context.selectedFT}
+              onClose={hideModal}
+              setErrorMessage={setErrorMessage}
+              setSuccessMessage={setSuccessMessage}
+              setIsConvertSuccess={setIsConvertSuccess}
+            />
+          </motion.div>
+        )}
         {state.matches("ReceiveMachine") && (
           <motion.div
             key="receive-modal"
@@ -180,6 +201,7 @@ export const TransferModalCoordinator = () => {
           component={Components}
           isOpen={!state.matches("Hidden")}
           hasSwapError={hasSwapError}
+          isConvertSuccess={isConvertSuccess}
         />
       )}
     </>

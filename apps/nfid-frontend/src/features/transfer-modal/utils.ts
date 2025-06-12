@@ -21,6 +21,10 @@ import {
   replaceActorIdentity,
   vault,
 } from "@nfid/integration"
+import {
+  BTC_NATIVE_ID,
+  CKBTC_CANISTER_ID,
+} from "@nfid/integration/token/constants"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 import { mutate } from "@nfid/swr"
 
@@ -272,4 +276,10 @@ export const getTokensWithUpdatedBalance = async (
   }
 
   return updatedTokens
+}
+
+export const getConversionTokenAddress = (source: string): string => {
+  if (source === BTC_NATIVE_ID) return CKBTC_CANISTER_ID
+  if (source === CKBTC_CANISTER_ID) return BTC_NATIVE_ID
+  return CKBTC_CANISTER_ID
 }

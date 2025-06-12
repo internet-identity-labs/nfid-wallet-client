@@ -1,3 +1,5 @@
+// This file was automatically generated. Edits will be overwritten
+
 export interface Typegen0 {
   "@@xstate/typegen": true
   internalEvents: {
@@ -28,6 +30,7 @@ export interface Typegen0 {
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
+    isConvertMachine: ""
     isReceiveMachine: ""
     isSendFungible: ""
     isSendMachine: ""
@@ -35,6 +38,7 @@ export interface Typegen0 {
   }
   eventsCausingServices: {}
   matchesStates:
+    | "ConvertMachine"
     | "Hidden"
     | "ReceiveMachine"
     | "SendMachine"

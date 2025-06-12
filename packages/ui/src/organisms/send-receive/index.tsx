@@ -18,6 +18,7 @@ export interface TransferModalProps {
   component: JSX.Element
   isOpen: boolean
   hasSwapError: boolean
+  isConvertSuccess: boolean
 }
 
 export interface TransferVaultModalProps {
@@ -38,27 +39,34 @@ export const TransferModal: FC<TransferModalProps> = ({
   component,
   isOpen,
   hasSwapError,
+  isConvertSuccess,
 }) => {
   return (
     <TransferTemplate
       onClickOutside={onClickOutside}
       className={clsx(
         direction === ModalType.SEND && "!pb-5",
-        hasSwapError ? "min-h-[540px]" : "min-h-[480px]",
+        hasSwapError
+          ? "min-h-[540px]"
+          : isConvertSuccess
+          ? "min-h-[580px]"
+          : "min-h-[480px]",
       )}
       overlayClassName={!isOpen ? "hidden" : ""}
       isOpen={isOpen}
     >
-      {!isSuccess && direction !== ModalType.SWAP && (
-        <div
-          className={clsx(
-            "leading-10 text-[20px] font-bold mb-[18px]",
-            "flex justify-between items-center",
-          )}
-        >
-          <span className="first-letter:capitalize">{direction}</span>
-        </div>
-      )}
+      {!isSuccess &&
+        direction !== ModalType.SWAP &&
+        direction !== ModalType.CONVERT && (
+          <div
+            className={clsx(
+              "leading-10 text-[20px] font-bold mb-[18px]",
+              "flex justify-between items-center",
+            )}
+          >
+            <span className="first-letter:capitalize">{direction}</span>
+          </div>
+        )}
       {direction === "send" && !isSuccess && (
         <ToggleButton
           firstValue="Token"

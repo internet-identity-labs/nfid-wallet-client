@@ -124,7 +124,9 @@ export {
 
 export { ReactComponent as IconCmpSwap } from "./swap.svg"
 export { ReactComponent as IconCmpConvert } from "./convert.svg"
+export { ReactComponent as IconCmpConvertWhite } from "./convert-white.svg"
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
+export { ReactComponent as IconCmpArrowConvert } from "./arrow-convert.svg"
 export { ReactComponent as IconCmpCalendar } from "./calendar.svg"
 export { ReactComponent as IconCmpCancel } from "./cancel.svg"
 export { ReactComponent as IconCmpChevron } from "./chevron.svg"

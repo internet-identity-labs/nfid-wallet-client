@@ -8,10 +8,13 @@ import BannerBg from "./banner-bg.png"
 
 interface BtcBanner {
   onBtcSwapClick: () => void
-  onBtcConvert: () => void
+  onConvertClick: () => void
 }
 
-export const BtcBanner: FC<BtcBanner> = ({ onBtcSwapClick, onBtcConvert }) => {
+export const BtcBanner: FC<BtcBanner> = ({
+  onBtcSwapClick,
+  onConvertClick,
+}) => {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
@@ -78,7 +81,7 @@ export const BtcBanner: FC<BtcBanner> = ({ onBtcSwapClick, onBtcConvert }) => {
             type="stroke"
             className="bg-white border-0 w-[120px]"
             isSmall
-            onClick={onBtcConvert}
+            onClick={onConvertClick}
           >
             Convert BTC
           </Button>

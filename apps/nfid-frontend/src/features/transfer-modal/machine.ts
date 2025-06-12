@@ -77,10 +77,15 @@ export const transferMachine = createMachine(
             target: "SwapMachine",
             cond: "isSwapMachine",
           },
+          {
+            target: "ConvertMachine",
+            cond: "isConvertMachine",
+          },
         ],
       },
       ReceiveMachine: {},
       SwapMachine: {},
+      ConvertMachine: {},
       SendMachine: {
         id: "SendMachine",
         initial: "CheckSendType",
@@ -132,6 +137,7 @@ export const transferMachine = createMachine(
       isSendFungible: (context) => context.tokenType === "ft",
       isReceiveMachine: (context) => context.direction === "receive",
       isSwapMachine: (context) => context.direction === "swap",
+      isConvertMachine: (context) => context.direction === "convert",
     },
     actions: {
       assignTokenType: assign((_, event) => ({

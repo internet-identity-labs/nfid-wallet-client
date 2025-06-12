@@ -36,7 +36,6 @@ interface ChooseFromTokenProps {
   isResponsive?: boolean
   setIsResponsive?: (v: boolean) => void
   tokensAvailableToSwap?: TokensAvailableToSwap
-  btcBalance?: bigint
   btcFee?: bigint
   isConvertFromCkBtc?: boolean
 }
@@ -54,7 +53,6 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   isResponsive,
   setIsResponsive,
   tokensAvailableToSwap,
-  btcBalance,
   btcFee,
   isConvertFromCkBtc,
 }) => {
@@ -69,12 +67,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     register,
     formState: { errors },
   } = useFormContext()
-  const userBalance =
-    balance !== undefined
-      ? balance
-      : token?.getTokenAddress() === BTC_NATIVE_ID
-      ? btcBalance
-      : token!.getTokenBalance()
+  const userBalance = balance !== undefined ? balance : token!.getTokenBalance()
   const decimals = token!.getTokenDecimals()
 
   const fee = useMemo(() => {
@@ -271,22 +264,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
               <span id="choose-from-token-balance">
                 {initedToken ? (
                   <>
-                    {token.getTokenAddress() !== BTC_NATIVE_ID ? (
-                      <>
-                        {initedToken.getTokenBalanceFormatted() || "0"}&nbsp;
-                        {initedToken.getTokenSymbol()}
-                      </>
-                    ) : btcBalance === undefined || isLoading ? (
-                      <Skeleton className="inline-block h-3 w-[80px]" />
-                    ) : (
-                      <>
-                        {BigNumber(btcBalance.toString())
-                          .div(10 ** initedToken.getTokenDecimals())
-                          .toString()}
-                        &nbsp;
-                        {initedToken.getTokenSymbol()}
-                      </>
-                    )}
+                    {initedToken.getTokenBalanceFormatted() || "0"}&nbsp;
+                    {initedToken.getTokenSymbol()}
                   </>
                 ) : (
                   <Skeleton className="inline-block h-3 w-[80px]"></Skeleton>

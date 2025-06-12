@@ -34,7 +34,6 @@ export interface ConvertUiProps {
   isSuccessOpen: boolean
   onClose: () => void
   handleReverse: () => void
-  btcBalance?: bigint
   btcFee?: BtcToCkBtcFee | CkBtcToBtcFee
 }
 
@@ -51,7 +50,6 @@ export const ConvertUi: FC<ConvertUiProps> = ({
   isSuccessOpen,
   onClose,
   handleReverse,
-  btcBalance,
   btcFee,
 }) => {
   const [convertModal, setConvertModal] = useState(ConvertModal.CONVERT)
@@ -71,7 +69,7 @@ export const ConvertUi: FC<ConvertUiProps> = ({
     )
   }, [amount, fee])
 
-  if (isTokenLoading || !fromToken || !toToken || btcBalance === undefined)
+  if (isTokenLoading || !fromToken || !toToken)
     return (
       <BlurredLoader
         isLoading
@@ -143,7 +141,6 @@ export const ConvertUi: FC<ConvertUiProps> = ({
             amount={amount}
             errors={errors}
             handleReverse={handleReverse}
-            btcBalance={btcBalance}
             fee={fee}
             targetAmount={targetAmount}
           />

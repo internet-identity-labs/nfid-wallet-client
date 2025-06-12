@@ -37,7 +37,6 @@ export interface ConvertFormProps {
   amount: string
   errors: FieldErrors<FieldValues>
   handleReverse: () => void
-  btcBalance?: bigint
   fee?: IConversionFee
   targetAmount: string
 }
@@ -54,7 +53,6 @@ export const ConvertForm: FC<ConvertFormProps> = ({
   amount,
   errors,
   handleReverse,
-  btcBalance,
   fee,
   targetAmount,
 }) => {
@@ -93,7 +91,6 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           usdRate={toToken!.getTokenRateFormatted(amount || "0")}
           value={amount}
           title="Swap from"
-          btcBalance={btcBalance}
           isConvertFromCkBtc={
             fromToken?.getTokenAddress() === CKBTC_CANISTER_ID &&
             toToken?.getTokenAddress() === BTC_NATIVE_ID
@@ -157,7 +154,6 @@ export const ConvertForm: FC<ConvertFormProps> = ({
             isFeeLoading ||
             !amount ||
             Boolean(errors["amount"]?.message) ||
-            !btcBalance ||
             !fee
           }
           onClick={submit}

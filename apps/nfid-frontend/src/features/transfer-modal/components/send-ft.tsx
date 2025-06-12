@@ -146,27 +146,14 @@ export const TransferFT = ({
 
   const isIdentityReady = !!identity && !isIdentityLoading
 
-  const shouldFetchBalance =
-    isIdentityReady && token?.getTokenAddress() === BTC_NATIVE_ID
-
-  const { data: btcBalance } = useSWR(
-    shouldFetchBalance
-      ? ["btcBalance", identity?.getPrincipal().toString()]
-      : null,
-    () => bitcoinService.getBalance(identity!),
-  )
-
   const shouldFetchBtcFee =
     token?.getTokenAddress() === BTC_NATIVE_ID &&
     amount &&
-    btcBalance &&
     !formMethods.formState.errors.amount &&
     isIdentityReady
 
   const { data: btcFee } = useSWR(
-    shouldFetchBtcFee
-      ? ["btcFee", amount.toString(), btcBalance?.toString()]
-      : null,
+    shouldFetchBtcFee ? ["btcFee", amount.toString()] : null,
     () => token?.getBTCFee(identity!, amount),
   )
 
@@ -351,7 +338,6 @@ export const TransferFT = ({
         onClose={onClose}
         error={error}
         btcFee={btcFee?.fee_satoshis || undefined}
-        btcBalance={btcBalance}
       />
     </FormProvider>
   )

@@ -15,6 +15,9 @@ import Success2 from "../assets/NFID_WS_3.json"
 import Successs3 from "../assets/NFID_WS_3_1.json"
 import Fail from "../assets/NFID_WS_3_2.json"
 
+const BTC_NATIVE_DESCRIPTION =
+  "BTC will be on the recipient address after 6 Bitcoin network confirmations. This usually takes about 90 minutes."
+
 export interface SuccessProps {
   title: string
   subTitle?: string
@@ -25,6 +28,7 @@ export interface SuccessProps {
   status: SendStatus
   assetImageClassname: string
   error?: string
+  isNativeBtc?: boolean
 }
 
 const allAnimations = [Success1, Success2, Successs3, Fail]
@@ -39,6 +43,7 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
   isOpen,
   status,
   error,
+  isNativeBtc,
 }) => {
   const [step, setStep] = useState(-1)
 
@@ -89,7 +94,11 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
           {status === SendStatus.FAILED
             ? "Your assets are still in your wallet."
             : status === SendStatus.COMPLETED
-            ? ""
+            ? isNativeBtc
+              ? BTC_NATIVE_DESCRIPTION
+              : ""
+            : isNativeBtc
+            ? BTC_NATIVE_DESCRIPTION
             : `This usually takes less than ${duration} seconds.`}
         </p>
         <div className="flex items-center justify-center w-full">

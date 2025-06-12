@@ -16,7 +16,6 @@ import {
 } from "@nfid/integration/token/constants"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
-import { BitcointNetworkFeeAndUtxos } from "frontend/integration/bitcoin/bitcoin.service"
 import { FT } from "frontend/integration/ft/ft"
 
 import { ChooseFromToken } from "./choose-from-token"
@@ -41,7 +40,6 @@ export interface TransferFTUiProps {
   onClose: () => void
   error: string | undefined
   btcFee?: bigint
-  btcBalance?: bigint
 }
 
 export const TransferFTUi: FC<TransferFTUiProps> = ({
@@ -63,7 +61,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   onClose,
   error,
   btcFee,
-  btcBalance,
 }) => {
   const {
     resetField,
@@ -102,13 +99,13 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         status={status}
         assetImageClassname="w-[74px] h-[74px] top-[151px]"
         error={error}
+        isNativeBtc={token.getTokenAddress() === BTC_NATIVE_ID}
       />
       <p className="mb-1 text-xs">Amount to send</p>
       <ChooseFromToken
         id={"token-to-send-title"}
         token={token}
         balance={vaultsBalance}
-        btcBalance={btcBalance}
         btcFee={btcFee}
         setFromChosenToken={setChosenToken}
         usdRate={token.getTokenRateFormatted(amount || 0)}
@@ -198,8 +195,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           Boolean(errors["to"]?.message) ||
           !amount ||
           !to ||
-          (token?.getTokenAddress() === BTC_NATIVE_ID &&
-            (!btcBalance || !btcFee))
+          (token?.getTokenAddress() === BTC_NATIVE_ID && !btcFee)
         }
         type="primary"
         id="sendButton"

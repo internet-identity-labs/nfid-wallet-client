@@ -62,9 +62,7 @@ export const Receive: FC<ReceiveProps> = ({
       </div>
       <div>
         <p className="mb-1 text-xs text-gray-500">
-          BTC wallet address for auto-conversion to ckBTC (your wallet will{" "}
-          <br className="hidden sm:block" />
-          receive ckBTC in 6 Bitcoin network confirmations / ~90 min)
+          BTC wallet address for auto-conversion to ckBTC
         </p>
         <div className="rounded-[12px] bg-gray-100 text-gray-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
           <CenterEllipsis
@@ -75,6 +73,11 @@ export const Receive: FC<ReceiveProps> = ({
           />
           <Copy value={autoConversionBtcAddress ?? ""} />
         </div>
+        <p className="text-xs tracking-[0.16px] text-gray-400 mt-1">
+          ckBTC will be received by your wallet after 6 Bitcoin network{" "}
+          <br className="hidden sm:block" />
+          confirmations. This usually takes about 90 minutes.
+        </p>
       </div>
     </>
   )

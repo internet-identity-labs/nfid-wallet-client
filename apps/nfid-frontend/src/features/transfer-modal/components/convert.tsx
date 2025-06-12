@@ -8,7 +8,7 @@ import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
 } from "@nfid/integration/token/constants"
-import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
 import {
   bitcoinService,
@@ -76,11 +76,6 @@ export const ConvertBTC = ({
       (token: FT) => token.getTokenAddress() === toTokenAddress,
     )
   }, [toTokenAddress, tokens])
-
-  const { data: btcBalance } = useSWR(
-    identity ? ["btcBalance", identity?.getPrincipal().toString()] : null,
-    () => bitcoinService.getBalance(identity!),
-  )
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -195,7 +190,6 @@ export const ConvertBTC = ({
         isSuccessOpen={isSuccessOpen}
         onClose={onClose}
         handleReverse={handleReverse}
-        btcBalance={btcBalance}
         btcFee={btcFee}
         status={status}
         error={error}

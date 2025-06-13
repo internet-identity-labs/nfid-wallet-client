@@ -1,4 +1,5 @@
 import { SignIdentity } from "@dfinity/agent"
+import debounce from "lodash/debounce"
 import { ConvertUi } from "packages/ui/src/organisms/send-receive/components/convert"
 import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useEffect, useMemo, useState } from "react"
@@ -102,24 +103,41 @@ export const ConvertBTC = ({
   const { watch } = formMethods
   const amount = watch("amount")
 
+  const parsedAmount = Number(amount)
+  const isAmountValid = !isNaN(parsedAmount) && parsedAmount > 0
+  const hasAmountError = !!formMethods.formState.errors.amount
+
+  const debouncedFetchFee = useMemo(
+    () =>
+      debounce(async (identity, tokenAddress, amount) => {
+        setBtcFee(undefined)
+
+        const fee =
+          tokenAddress === BTC_NATIVE_ID
+            ? await bitcoinService.getBtcToCkBtcFee(identity, amount)
+            : await bitcoinService.getCkBtcToBtcFee(identity, amount)
+
+        setBtcFee(fee)
+      }, 500),
+    [],
+  )
+
   useEffect(() => {
-    if (!identity || !amount) return
+    if (!identity || !isAmountValid || !fromToken || hasAmountError) return
 
-    const getFee = async () => {
-      setBtcFee(undefined)
-      let fee: BtcToCkBtcFee | CkBtcToBtcFee
+    debouncedFetchFee(identity, fromToken.getTokenAddress(), parsedAmount)
 
-      if (fromToken?.getTokenAddress() === BTC_NATIVE_ID) {
-        fee = await bitcoinService.getBtcToCkBtcFee(identity, amount)
-      } else {
-        fee = await bitcoinService.getCkBtcToBtcFee(identity, amount)
-      }
-
-      setBtcFee(fee)
+    return () => {
+      debouncedFetchFee.cancel()
     }
-
-    getFee()
-  }, [identity, amount, fromToken])
+  }, [
+    identity,
+    parsedAmount,
+    isAmountValid,
+    hasAmountError,
+    fromToken,
+    debouncedFetchFee,
+  ])
 
   const submit = useCallback(() => {
     if (!identity || !fromToken || !btcFee) return

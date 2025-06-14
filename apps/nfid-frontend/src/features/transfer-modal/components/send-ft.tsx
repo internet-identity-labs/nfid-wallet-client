@@ -3,6 +3,7 @@ import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
+import debounce from "lodash/debounce"
 import { PRINCIPAL_LENGTH } from "packages/constants"
 import toaster from "packages/ui/src/atoms/toast"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
@@ -70,6 +71,37 @@ export const TransferFT = ({
   const { profile } = useProfile()
   const { balances } = useAllVaultsWallets()
 
+  const formMethods = useForm<FormValues>({
+    mode: "all",
+    defaultValues: {
+      amount: "",
+      to: "",
+    },
+  })
+
+  const { watch } = formMethods
+  const amount = watch("amount")
+  const to = watch("to")
+
+  const isIdentityReady = !!identity && !isIdentityLoading
+  const parsedAmount = Number(amount)
+  const isAmountValid = !isNaN(parsedAmount) && parsedAmount > 0
+  const [debouncedAmount, setDebouncedAmount] = useState(parsedAmount)
+
+  const debouncedUpdate = useMemo(
+    () =>
+      debounce((val: number) => {
+        setDebouncedAmount(val)
+      }, 500),
+    [setDebouncedAmount],
+  )
+
+  useEffect(() => {
+    if (isAmountValid) {
+      debouncedUpdate(parsedAmount)
+    }
+  }, [parsedAmount, isAmountValid, debouncedUpdate])
+
   const { data: vaultsAccountsOptions = [] } = useSWR(
     "vaultsAccountsOptions",
     getVaultsAccountsOptions,
@@ -106,18 +138,6 @@ export const TransferFT = ({
     return tokens.find((token) => token.getTokenAddress() === tokenAddress)
   }, [tokenAddress, tokens])
 
-  const formMethods = useForm<FormValues>({
-    mode: "all",
-    defaultValues: {
-      amount: "",
-      to: "",
-    },
-  })
-
-  const { watch } = formMethods
-  const amount = watch("amount")
-  const to = watch("to")
-
   const balance = useMemo(() => {
     return balances?.find(
       (balance) => balance.address === selectedVaultsAccountAddress,
@@ -144,17 +164,30 @@ export const TransferFT = ({
     getSignIdentity()
   }, [token])
 
-  const isIdentityReady = !!identity && !isIdentityLoading
+  useEffect(() => {
+    if (isAmountValid) {
+      debouncedUpdate(parsedAmount)
+    }
+
+    return () => {
+      debouncedUpdate.cancel()
+    }
+  }, [parsedAmount, isAmountValid, debouncedUpdate])
 
   const shouldFetchBtcFee =
     token?.getTokenAddress() === BTC_NATIVE_ID &&
-    amount &&
+    isAmountValid &&
     !formMethods.formState.errors.amount &&
     isIdentityReady
 
-  const { data: btcFee } = useSWR(
-    shouldFetchBtcFee ? ["btcFee", amount.toString()] : null,
-    () => token?.getBTCFee(identity!, amount),
+  const { data: btcFee, isValidating } = useSWR(
+    shouldFetchBtcFee ? ["btcFee", debouncedAmount.toString()] : null,
+    () => token!.getBTCFee(identity!, debouncedAmount.toString()),
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
   )
 
   const submit = useCallback(async () => {
@@ -338,6 +371,7 @@ export const TransferFT = ({
         onClose={onClose}
         error={error}
         btcFee={btcFee?.fee_satoshis || undefined}
+        isFeeLoading={isValidating}
       />
     </FormProvider>
   )

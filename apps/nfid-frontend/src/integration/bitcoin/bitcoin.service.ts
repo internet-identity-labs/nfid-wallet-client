@@ -1,5 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
+import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 
 import { Balance } from "@nfid/integration"
@@ -13,7 +14,6 @@ import {
 import { ckBtcService } from "./services/ckbtc.service"
 import { patronService } from "./services/patron.service"
 import { satoshiService } from "./services/satoshi.service"
-import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
 
 export type BlockIndex = bigint
 

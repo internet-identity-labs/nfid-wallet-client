@@ -40,6 +40,7 @@ export interface TransferFTUiProps {
   onClose: () => void
   error: string | undefined
   btcFee?: bigint
+  isFeeLoading: boolean
 }
 
 export const TransferFTUi: FC<TransferFTUiProps> = ({
@@ -61,6 +62,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   onClose,
   error,
   btcFee,
+  isFeeLoading,
 }) => {
   const {
     resetField,
@@ -161,18 +163,18 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           <div className="text-right">
             <p className="text-xs leading-5 text-gray-600" id="fee">
               {token.getTokenAddress() === BTC_NATIVE_ID ? (
-                btcFee ? (
-                  <>
-                    {token.getBTCFeeFormatted(btcFee)}
-                    <span className="block mt-1 text-xs">
-                      {token.getBTCFeeFormattedUsd(btcFee)}
-                    </span>
-                  </>
-                ) : (
+                !btcFee || isFeeLoading ? (
                   <>
                     <Skeleton className="w-[80px] h-5" />
                     <span className="block mt-1 text-xs">
                       <Skeleton className="w-[60px] h-4 ml-auto" />
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    {token.getBTCFeeFormatted(btcFee)}
+                    <span className="block mt-1 text-xs">
+                      {token.getBTCFeeFormattedUsd(btcFee)}
                     </span>
                   </>
                 )

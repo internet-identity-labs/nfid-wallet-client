@@ -414,34 +414,43 @@ export class StakingServiceImpl implements StakingService {
     }
   }
 
-  private async getStakedNeurons(
-    token: FT,
-    identity: SignIdentity,
-    principal: Principal,
-  ): Promise<StakedToken | undefined> {
-    let neurons = await this.getNeurons(token, userId)
-    let nfidN = neurons.map(
-      (neuron) =>
-        new NfidNeuronImpl(neuron as any, token.getRootSnsCanister()!),
+  async followICPNeurons(delegation: SignIdentity, id: string) {
+    const neuronsToFollow = await icrc1OracleService.getAllNeurons()
+    const icpNeuron = neuronsToFollow.find(
+      (n) => n.rootCanister === ICP_ROOT_CANISTER_ID,
     )
-    return nfidN.length ? new StakedTokenImpl(token, nfidN) : undefined
+
+    for (const t of Object.values(Topic).filter(
+      (value) => typeof value === "number",
+    ) as number[]) {
+      setICPFollowees({
+        identity: delegation,
+        neuronId: BigInt(id),
+        topic: t,
+        followees: [BigInt(icpNeuron!.neuron_id)],
+      }).catch((e) => {
+        console.error(e.detail.error_message)
+      })
+    }
   }
 
-  private async getNeurons(
-    token: FT,
-    identity: SignIdentity,
-  ): Promise<Neuron[]> {
-    return token.getTokenCategory() === Category.ChainFusion
-      ? queryICPNeurons({
-          identity,
-          includeEmptyNeurons: false,
-          certified: false,
-        })
-      : (queryICPNeurons({
-          identity,
-          includeEmptyNeurons: false,
-          certified: false,
-        }) as any)
+  async reFollowNeurons(
+    neuronToFollow: SnsNeuronId,
+    delegation: SignIdentity,
+    root: Principal,
+    userNeuron: SnsNeuronId,
+  ) {
+    const delegates = await this.getDelegates(delegation, root)
+
+    for (const d of delegates.functions) {
+      setFollowees({
+        identity: delegation,
+        functionId: d.id,
+        rootCanisterId: root,
+        neuronId: userNeuron,
+        followees: [neuronToFollow],
+      })
+    }
   }
 
   async reFollowICPNeurons(

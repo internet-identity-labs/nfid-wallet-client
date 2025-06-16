@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import { FC } from "react"
 
 import { Copy, CenterEllipsis } from "@nfid-frontend/ui"

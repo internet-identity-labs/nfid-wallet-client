@@ -12,17 +12,16 @@ import { swapTransactionService } from "src/integration/swap/transaction/transac
 import { userPrefService } from "src/integration/user-preferences/user-pref-service"
 
 import {
-  actorBuilder,
   exchangeRateService,
   hasOwnProperty,
   ICRC1TypeOracle,
-  TransferArg
+  TransferArg,
 } from "@nfid/integration"
+import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 
-import { SwapName } from "../types/enums"
-import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 import { ContactSupportError } from "../errors/types/contact-support-error"
+import { SwapName } from "../types/enums"
 
 export abstract class ShroffAbstract implements Shroff {
   protected readonly source: ICRC1TypeOracle
@@ -168,12 +167,12 @@ export abstract class ShroffAbstract implements Shroff {
 
   protected async icrc2approve(rootCanister: string): Promise<bigint> {
     try {
-      const actorICRC2 = this.getICRCActor();
+      const actorICRC2 = this.getICRCActor()
 
       const spender: Account = {
         owner: Principal.fromText(rootCanister),
         subaccount: [],
-      };
+      }
 
       const icrc2_approve_args: ApproveArgs = {
         from_subaccount: [],
@@ -184,7 +183,7 @@ export abstract class ShroffAbstract implements Shroff {
           this.requestedQuote!.getSourceSwapAmount()
             .plus(Number(this.source.fee))
             .toFixed(this.source.decimals)
-            .replace(TRIM_ZEROS, "")
+            .replace(TRIM_ZEROS, ""),
         ),
         created_at_time: [],
         expected_allowance: [],
@@ -193,28 +192,28 @@ export abstract class ShroffAbstract implements Shroff {
             timestamp_nanos: BigInt(Date.now() * 1_000_000 + 60_000_000_000),
           },
         ],
-      };
-
-      const icrc2approve = await actorICRC2.icrc2_approve(icrc2_approve_args);
-
-      if (hasOwnProperty(icrc2approve, "Err")) {
-        throw new ContactSupportError(JSON.stringify(icrc2approve.Err));
       }
 
-      return BigInt(icrc2approve.Ok);
+      const icrc2approve = await actorICRC2.icrc2_approve(icrc2_approve_args)
+
+      if (hasOwnProperty(icrc2approve, "Err")) {
+        throw new ContactSupportError(JSON.stringify(icrc2approve.Err))
+      }
+
+      return BigInt(icrc2approve.Ok)
     } catch (e) {
-      console.error("Deposit error: " + e);
-      throw new ContactSupportError("Deposit error: " + e);
+      console.error("Deposit error: " + e)
+      throw new ContactSupportError("Deposit error: " + e)
     }
   }
 
   protected async icrc2supported(): Promise<boolean> {
-    const actorICRC2 = this.getICRCActor();
+    const actorICRC2 = this.getICRCActor()
 
     return actorICRC2.icrc1_supported_standards().then((res) => {
       return res
         .map((standard) => standard.name)
-        .some((name) => name === "ICRC-2");
-    });
+        .some((name) => name === "ICRC-2")
+    })
   }
 }

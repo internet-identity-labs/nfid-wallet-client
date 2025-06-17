@@ -86,20 +86,21 @@ export const App = () => {
   )
 
   const { isAuthenticated } = useAuthentication()
-  const { watchBtcDeposits } = useBTCDepositsToMintCKBTCListener()
   const { fetchBtcAddress } = useBtcAddress()
 
   useEffect(() => {
     if (isAuthenticated) {
       const principal = Principal.from(authState.getUserIdData().publicKey)
-
-      btcDepositService.generateAddress(principal).then(() => {
-        watchBtcDeposits(principal)
-      })
-
+      btcDepositService.generateAddress(principal)
       fetchBtcAddress()
     }
-  }, [isAuthenticated, watchBtcDeposits, fetchBtcAddress])
+  }, [isAuthenticated, fetchBtcAddress])
+
+  useBTCDepositsToMintCKBTCListener(
+    isAuthenticated
+      ? Principal.from(authState.getUserIdData().publicKey)
+      : null,
+  )
 
   return (
     <React.Suspense fallback={<BlurredLoader isLoading />}>

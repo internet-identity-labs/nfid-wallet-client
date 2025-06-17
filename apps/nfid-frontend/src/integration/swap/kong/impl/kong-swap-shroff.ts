@@ -12,7 +12,6 @@ import { idlFactory as icrc1IDL } from "src/integration/swap/kong/idl/icrc1"
 import {
   _SERVICE as ICRC1ServiceIDL,
   Account,
-  ApproveArgs,
 } from "src/integration/swap/kong/idl/icrc1.d"
 import { idlFactory as KongIDL } from "src/integration/swap/kong/idl/kong_backend"
 import {
@@ -126,7 +125,7 @@ export class KongSwapShroffImpl extends ShroffAbstract {
       let icrcTransferId
 
       if (icrc2supported) {
-        icrcTransferId = await this.icrc2approve()
+        icrcTransferId = await this.icrc2approve(ROOT_CANISTER)
         console.log("ICRC2 approve response", JSON.stringify(icrcTransferId))
         this.swapTransaction.setTransferId(icrcTransferId)
       } else {
@@ -255,59 +254,7 @@ export class KongSwapShroffImpl extends ShroffAbstract {
     }
   }
 
-  protected async icrc2approve(): Promise<bigint> {
-    try {
-      const actorICRC2 = this.getICRCActor()
-
-      const spender: Account = {
-        owner: Principal.fromText(ROOT_CANISTER),
-        subaccount: [],
-      }
-
-      const icrc2_approve_args: ApproveArgs = {
-        from_subaccount: [],
-        spender,
-        fee: [],
-        memo: [],
-        amount: BigInt(
-          this.requestedQuote!.getSourceSwapAmount()
-            .plus(Number(this.source.fee))
-            .toFixed(this.source.decimals)
-            .replace(TRIM_ZEROS, ""),
-        ),
-        created_at_time: [],
-        expected_allowance: [],
-        expires_at: [
-          {
-            timestamp_nanos: BigInt(Date.now() * 1_000_000 + 60_000_000_000),
-          },
-        ],
-      }
-
-      const icrc2approve = await actorICRC2.icrc2_approve(icrc2_approve_args)
-
-      if (hasOwnProperty(icrc2approve, "Err")) {
-        throw new ContactSupportError(JSON.stringify(icrc2approve.Err))
-      }
-
-      return BigInt(icrc2approve.Ok)
-    } catch (e) {
-      console.error("Deposit error: " + e)
-      throw new ContactSupportError("Deposit error: " + e)
-    }
-  }
-
-  protected async icrc2supported(): Promise<boolean> {
-    const actorICRC2 = this.getICRCActor()
-
-    return actorICRC2.icrc1_supported_standards().then((res) => {
-      return res
-        .map((standard) => standard.name)
-        .some((name) => name === "ICRC-2")
-    })
-  }
-
-  private getICRCActor() {
+  protected getICRCActor() {
     return actorBuilder<ICRC1ServiceIDL>(this.source.ledger, icrc1IDL, {
       agent: new HttpAgent({
         ...agentBaseConfig,

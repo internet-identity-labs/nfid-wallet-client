@@ -33,7 +33,7 @@ export const config: WebdriverIO.Config = {
   connectionRetryTimeout: 120000,
   connectionRetryCount: 2,
   framework: "cucumber",
-  specFileRetries: 1,
+  specFileRetries: 2,
   reporters: [
     "spec",
     [

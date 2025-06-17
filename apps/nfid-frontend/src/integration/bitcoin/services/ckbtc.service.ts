@@ -19,7 +19,12 @@ class CkBtcService {
     amount: string,
     fee: CkBtcToBtcFee,
   ): Promise<BlockIndex> {
-    const amountInSatoshis = satoshiService.getInSatoshis(amount)
+    const amountInSatoshis =
+      satoshiService.getInSatoshis(amount) -
+      fee.conversionFee -
+      fee.interNetwokFee -
+      fee.identityLabsFee -
+      fee.conversionFee
     await this.approve(identity, amountInSatoshis)
     const blockIndex = await this.retrieveBtc(
       identity,

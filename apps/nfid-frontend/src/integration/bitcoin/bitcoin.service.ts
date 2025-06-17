@@ -88,13 +88,14 @@ export class BitcoinService {
     identity: SignIdentity,
     amount: string,
   ): Promise<BtcToCkBtcFee> {
+    const interNetwokFee = satoshiService.getInSatoshis("0.000001")
     const amountInSatoshis = satoshiService.getInSatoshis(amount)
     const bitcointNetworkFee: BitcointNetworkFeeAndUtxos =
       await patronService.askToCalcUtxosAndFee(identity, amountInSatoshis)
     return {
       bitcointNetworkFee,
       conversionFee: BigInt(0),
-      interNetwokFee: satoshiService.getInSatoshis("0.000001"),
+      interNetwokFee,
     }
   }
 
@@ -102,14 +103,23 @@ export class BitcoinService {
     identity: SignIdentity,
     amount: string,
   ): Promise<CkBtcToBtcFee> {
-    const amountInSatoshis: bigint = satoshiService.getInSatoshis(amount)
+    const interNetwokFee = satoshiService.getInSatoshis("0.000001")
+    const conversionFee = satoshiService.getInSatoshis("0.0000001")
+    const initialAmountInSatoshi = satoshiService.getInSatoshis(amount)
+    const identityLabsFee: bigint = ckBtcService.getFee(initialAmountInSatoshi)
+    const amountInSatoshis: bigint =
+      satoshiService.getInSatoshis(amount) -
+      interNetwokFee -
+      conversionFee -
+      identityLabsFee -
+      conversionFee
     const bitcointNetworkFee: BitcointNetworkFeeAndUtxos =
       await patronService.askToCalcUtxosAndFee(identity, amountInSatoshis)
-    const identityLabsFee: bigint = ckBtcService.getFee(amountInSatoshis)
+
     return {
       bitcointNetworkFee,
-      conversionFee: satoshiService.getInSatoshis("0.0000001"),
-      interNetwokFee: satoshiService.getInSatoshis("0.000001"),
+      conversionFee,
+      interNetwokFee,
       identityLabsFee,
     }
   }

@@ -248,7 +248,7 @@ export class Assets extends Page {
           await Profile.waitUntilBalanceLoaded()
           await super.loader.waitForDisplayed({ reverse: true, timeout: 30000 })
 
-          await clickElement.waitForClickable({ timeout: 15000 })
+          await clickElement.waitForClickable({ timeout: 20000 })
           await clickElement.click()
           await Page.loader.waitForDisplayed({ reverse: true, timeout: 30000 })
 

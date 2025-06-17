@@ -74,7 +74,7 @@ export class Staking extends Page {
     totalValue: $("#sidePanel-totalValue"),
     dateCreated: $("#sidePanel-dateCreated"),
     lockTime: $("#sidePanel-lockTime"),
-    unlockTime: $("#sidePanel-unlockDate"),
+    unlockTime: $("#sidePanel-unlockTime"),
     startActionButton: $("#sidePanel-lock_unlock_Button"),
   })
 }

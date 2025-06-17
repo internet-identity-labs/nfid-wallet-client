@@ -30,7 +30,9 @@ export async function getDelegationChainSignedByCanister(
     sessionKey: sessionPublicKey,
     maxTimeToLive: [BigInt(maxTimeToLive * 1000000)], //to nanoseconds
     targets:
-      targets !== undefined ? [targets.map((t) => Principal.fromText(t))] : [],
+      targets !== undefined
+        ? [targets.filter((t) => !!t).map((t) => Principal.fromText(t))]
+        : [],
   }
 
   const prepareDelegationResponse = await prepareDelegation(args)
@@ -41,7 +43,9 @@ export async function getDelegationChainSignedByCanister(
     sessionKey: sessionPublicKey,
     expiration: prepareDelegationResponse[1],
     targets:
-      targets !== undefined ? [targets.map((t) => Principal.fromText(t))] : [],
+      targets !== undefined
+        ? [targets.filter((t) => !!t).map((t) => Principal.fromText(t))]
+        : [],
   }).then((r) => {
     if ("signed_delegation" in r) {
       return DelegationChain.fromDelegations(

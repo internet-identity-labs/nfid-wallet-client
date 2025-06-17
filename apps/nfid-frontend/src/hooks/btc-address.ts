@@ -1,21 +1,25 @@
-import { useSWR } from "@nfid/swr"
+import { useCallback, useState } from "react"
 
 import { fetchBtcAddress } from "frontend/util/fetch-btc-address"
 
 export const useBtcAddress = () => {
-  const {
-    data: btcAddress,
-    isLoading,
-    mutate,
-  } = useSWR("btcAddress", fetchBtcAddress, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    shouldRetryOnError: false,
-  })
+  const [btcAddress, setBtcAddress] = useState("")
+  const [isBtcAddressLoading, setIsBtcAddressLoading] = useState(false)
+
+  const refetchBtcAddress = useCallback(() => {
+    if (!btcAddress && !isBtcAddressLoading) {
+      setIsBtcAddressLoading(true)
+      fetchBtcAddress()
+        .then(setBtcAddress)
+        .finally(() => {
+          setIsBtcAddressLoading(false)
+        })
+    }
+  }, [fetchBtcAddress, btcAddress, isBtcAddressLoading])
 
   return {
     btcAddress,
-    fetchBtcAddress: () => mutate(),
-    isBtcAddressLoading: isLoading,
+    isBtcAddressLoading,
+    fetchBtcAddress: refetchBtcAddress,
   }
 }

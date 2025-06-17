@@ -1,5 +1,5 @@
 import * as Agent from "@dfinity/agent"
-import { SignIdentity } from "@dfinity/agent"
+import { HttpAgent, SignIdentity } from "@dfinity/agent"
 import { Account, SubAccount } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
@@ -11,6 +11,8 @@ import {
   icpSwapService,
   SWAP_FACTORY_CANISTER,
 } from "src/integration/swap/icpswap/service/icpswap-service"
+import { idlFactory as icrc1IDL } from "src/integration/swap/kong/idl/icrc1"
+import { _SERVICE as ICRC1ServiceIDL } from "src/integration/swap/kong/idl/icrc1.d"
 import { Quote } from "src/integration/swap/quote"
 import { Shroff } from "src/integration/swap/shroff"
 import { ShroffAbstract } from "src/integration/swap/shroff/shroff-abstract"
@@ -19,6 +21,7 @@ import { swapTransactionService } from "src/integration/swap/transaction/transac
 
 import {
   actorBuilder,
+  agentBaseConfig,
   exchangeRateService,
   hasOwnProperty,
   ICRC1TypeOracle,
@@ -37,6 +40,7 @@ import {
   SwapError,
   WithdrawError,
 } from "../../errors/types"
+import { ContactSupportError } from "../../errors/types/contact-support-error"
 import { SwapName } from "../../types/enums"
 import { PoolData } from "../idl/SwapFactory.d"
 import {
@@ -46,6 +50,8 @@ import {
   SwapArgs,
   WithdrawArgs,
 } from "../idl/SwapPool.d"
+
+const POOL_CANISTER = "dwahc-eyaaa-aaaag-qcgnq-cai"
 
 export class ShroffIcpSwapImpl extends ShroffAbstract {
   private readonly zeroForOne: boolean
@@ -169,6 +175,15 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
     throw new LiquidityError()
   }
 
+  protected getICRCActor() {
+    return actorBuilder<ICRC1ServiceIDL>(this.source.ledger, icrc1IDL, {
+      agent: new HttpAgent({
+        ...agentBaseConfig,
+        identity: this.delegationIdentity,
+      }),
+    })
+  }
+
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
     if (!this.requestedQuote) {
       throw new Error("Request quote first")
@@ -182,7 +197,25 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
     )
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
-      await this.transferToSwap()
+
+      const icrc2supported = await this.icrc2supported()
+
+      let icrcTransferId
+
+      if (icrc2supported) {
+        await this.icrc2approve(POOL_CANISTER)
+        console.log("ICRC2 approve response", JSON.stringify(icrcTransferId))
+      } else {
+        try {
+          await this.transferToSwap()
+          console.log(
+            "ICRC21 transfer response",
+            JSON.stringify(icrcTransferId),
+          )
+        } catch (e) {
+          throw new ContactSupportError("Deposit error: " + e)
+        }
+      }
       this.restoreTransaction()
       console.debug("Transfer to swap done")
       await this.deposit()

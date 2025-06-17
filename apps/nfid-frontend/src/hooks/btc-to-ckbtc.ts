@@ -1,18 +1,22 @@
 import { Principal } from "@dfinity/principal"
 
 import { btcDepositService } from "@nfid/integration/token/btc/service"
+import { useEffect, useRef } from "react"
 
-export function useBTCDepositsToMintCKBTCListener() {
-  const watchBtcDeposits = (principal: Principal) => {
+export function useBTCDepositsToMintCKBTCListener(principal: Principal | null) {
+  const watcherRef = useRef<{ clearInterval: () => void } | null>(null)
+
+  useEffect(() => {
     if (!principal) return
 
     let cancelled = false
-    let watcher: { clearInterval: () => void } | null = null
 
     const startWatcher = async () => {
-      console.log("[BTCDepositsToMintCKBTCListener] Starting watcher")
+      console.log("[BTCDepositsToMintCKBTCListener] Starting watcher for", principal.toText())
       const result = await btcDepositService.monitorDeposit(principal)
-      if (!cancelled) watcher = result
+      if (!cancelled) {
+        watcherRef.current = result
+      }
     }
 
     startWatcher()
@@ -20,11 +24,8 @@ export function useBTCDepositsToMintCKBTCListener() {
     return () => {
       console.log("[BTCDepositsToMintCKBTCListener] Stopping watcher")
       cancelled = true
-      watcher?.clearInterval()
+      watcherRef.current?.clearInterval()
+      watcherRef.current = null
     }
-  }
-
-  return {
-    watchBtcDeposits,
-  }
+  }, [principal])
 }

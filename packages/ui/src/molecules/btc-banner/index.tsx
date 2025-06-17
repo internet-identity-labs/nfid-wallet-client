@@ -57,7 +57,7 @@ export const BtcBanner: FC<BtcBanner> = ({
           "lg:w-[50%] lg:max-w-[510px] lg:p-0",
         )}
       >
-        <div className="text-[24px] tracking-[0.01em] mb-5">
+        <div className="text-[24px] leading-[24px] tracking-[0.01em] mb-5">
           Convert BTC to ckBTC in NFID Wallet
         </div>
         <div className="text-sm leading-[18px] mb-4 lg:pr-[20px]">

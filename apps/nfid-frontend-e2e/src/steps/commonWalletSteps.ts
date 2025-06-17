@@ -56,6 +56,7 @@ Then(
       "Token options": async () =>
         await clickWithWait(await Assets.tokenOptionsButton(optionalArg)),
       Swap: async () => await clickWithWait(await Assets.swapButton),
+      Stake: async () => await Staking.stakeButton.click(),
     }
     await (windows[window]?.() ||
       Promise.reject(new Error(`Unknown dialog window: ${window}`)))

@@ -85,7 +85,6 @@ export interface _SERVICE {
   store_icrc1_canister: ActorMethod<[ICRC1Request], undefined>
   store_new_icrc1_canisters: ActorMethod<[Array<ICRC1>], undefined>
   sync_controllers: ActorMethod<[], Array<string>>
-  get_all_neurons: ActorMethod<[], Array<NeuronData>>
 }
 export declare const idlFactory: IDL.InterfaceFactory
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[]

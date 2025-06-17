@@ -78,7 +78,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
             <Button
               id="sendButton"
               className="flex-1 !px-0 sm:!px-[15px]"
-              innerClassName="!space-x-1 !h-[40px] !md:h-full w-[72px] md:w-auto"
+              innerClassName="!space-x-1 !h-[40px] !md:h-full w-[56px] sm:w-[72px] md:w-auto"
               icon={
                 <IconCmpArrow className="text-gray-400 rotate-[135deg] w-[18px] h-[18px] text-white" />
               }
@@ -95,7 +95,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
             <Button
               id="receiveButton"
               className="flex-1 !px-0 sm:!px-[15px]"
-              innerClassName="!space-x-1 !h-[40px] !md:h-full w-[72px] md:w-auto"
+              innerClassName="!space-x-1 !h-[40px] !md:h-full w-[56px] sm:w-[72px] md:w-auto"
               icon={
                 <IconCmpArrow className="text-gray-400 rotate-[-45deg] w-[18px] h-[18px] text-white" />
               }
@@ -112,7 +112,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
             <Button
               id="swapButton"
               className="flex-1 !px-0 sm:!px-[15px]"
-              innerClassName="!space-x-1 !h-[40px] !md:h-full w-[72px] md:w-auto"
+              innerClassName="!space-x-1 !h-[40px] !md:h-full w-[56px] sm:w-[72px] md:w-auto"
               icon={
                 <IconCmpSwap className="text-gray-400 !w-[18px] !h-[18px] text-white" />
               }
@@ -129,7 +129,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
             <Button
               id="profileStakeButton"
               className="flex-1 !px-0 sm:!px-[15px]"
-              innerClassName="!space-x-1 !h-[40px] !md:h-full w-[72px] md:w-auto"
+              innerClassName="!space-x-1 !h-[40px] !md:h-full w-[56px] sm:w-[72px] md:w-auto"
               icon={
                 <IconCmpStake className="text-gray-400 !w-[18px] !h-[18px] text-white" />
               }
@@ -148,7 +148,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
             <Button
               id="profileConvertButton"
               className="flex-1 !px-0 sm:!px-[15px]"
-              innerClassName="!space-x-1 !h-[40px] !md:h-full w-[72px] md:w-auto"
+              innerClassName="!space-x-1 !h-[40px] !md:h-full w-[56px] sm:w-[72px] md:w-auto"
               icon={
                 <IconCmpConvertWhite className="!text-gray-400 !w-[18px] !h-[18px] text-white" />
               }

@@ -9,7 +9,6 @@ import {
 } from "../../../../../../packages/integration/src/lib/asset/types"
 
 const mainnet = "https://mempool.space/api/address/"
-const testnet = "https://mempool.space/testnet/api/address/"
 const BTC_ICON =
   "https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1696501628"
 
@@ -45,7 +44,7 @@ async function getFungibleActivityByTokenAndUser(
   address: string,
 ): Promise<FungibleActivityRecords> {
   const activities: FungibleActivityRecord[] = []
-  let url = "mainnet" === CHAIN_NETWORK ? mainnet : testnet
+  let url = mainnet
   url += `${address}/txs`
 
   const response = await fetch(url)

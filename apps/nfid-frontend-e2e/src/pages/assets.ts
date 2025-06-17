@@ -250,7 +250,7 @@ export class Assets extends Page {
 
           await clickElement.waitForClickable({ timeout: 20000 })
           await clickElement.click()
-          await Page.loader.waitForDisplayed({ reverse: true, timeout: 30000 })
+          await super.loader.waitForDisplayed({ reverse: true, timeout: 30000 })
 
           if ("action" in waitForElementOrAction) {
             const { element, action } = waitForElementOrAction

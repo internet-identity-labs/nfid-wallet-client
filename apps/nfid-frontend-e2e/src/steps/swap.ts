@@ -13,8 +13,8 @@ When(/^Verifying that the swap transaction is success$/, async () => {
 })
 
 When(/^User clicks the Swap tokens button$/, async () => {
-  if (await Assets.SwapDialog.priceImpactCheckBox.isDisplayed()) {
-    await Assets.SwapDialog.priceImpactCheckBox.click()
+  if (await Assets.priceImpactCheckBox.isDisplayed()) {
+    await Assets.priceImpactCheckBox.click()
   }
   await Assets.SwapDialog.swapTokensButton.then(async (it) => {
     await it.waitForClickable()
@@ -34,19 +34,19 @@ When(/^User clicks the Swap tokens button$/, async () => {
 When(
   /^User sets the (.*) token to (.*)$/,
   async (tokenRole: string, token: string) => {
-    await Assets.SwapDialog.getChooseTokenModalButton(tokenRole).then(
+    await Assets.getChooseTokenModalButton(tokenRole).then(
       async (it) => {
         await it.waitForClickable()
         await it.click()
       },
     )
-    await Assets.SwapDialog.getSearchTokenInputField(tokenRole).then(
+    await Assets.getSearchTokenInputField(tokenRole).then(
       async (it) => {
         await it.waitForClickable()
         await it.setValue(token.replace(/^\$/, ""))
       },
     )
-    await Assets.SwapDialog.getTokenByNameFromList(tokenRole, token.replace(/^\$/, "")).then(
+    await Assets.getTokenByNameFromList(tokenRole, token.replace(/^\$/, "")).then(
       async (it) => {
         await it.waitForDisplayed({ timeout: 70000 })
         await it.click()
@@ -56,14 +56,14 @@ When(
 )
 
 When(/^User sets amount to swap to (.*)$/, async (amount: string) => {
-  await Assets.SwapDialog.getSourceAmountField.setValue(amount)
+  await Assets.getSourceAmountField.setValue(amount)
   await browser.waitUntil(
     async () => {
       return (
-        (await Assets.SwapDialog.getTargetAmountField.isDisplayed()) &&
+        (await Assets.getTargetAmountField.isDisplayed()) &&
         parseFloat(
           await (
-            await Assets.SwapDialog.getTargetAmountField
+            await Assets.getTargetAmountField
           ).getAttribute("value"),
         ) > 0
       )
@@ -78,13 +78,13 @@ When(/^User sets amount to swap to (.*)$/, async (amount: string) => {
     (await Assets.getSourceTokenBalance.getText()).replace(/[^\d.]/g, ""),
   )
   currentTargetTokenBalance = parseFloat(
-    (await Assets.SwapDialog.getTargetTokenBalance.getText()).replace(
+    (await Assets.getTargetTokenBalance.getText()).replace(
       /[^\d.]/g,
       "",
     ),
   )
   expectedTargetTokenAmount = parseFloat(
-    await Assets.SwapDialog.getTargetAmountField.getAttribute("value"),
+    await Assets.getTargetAmountField.getAttribute("value"),
   )
 })
 

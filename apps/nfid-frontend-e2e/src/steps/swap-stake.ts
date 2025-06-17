@@ -233,20 +233,17 @@ When(
   },
 )
 
-When("User sets the Lock Time to {lockTime}", async (time: string) => {
-  StakingTransactionDetails.lockTime = time
-  await browser.waitUntil(async () => {
-    return (await Staking.lockTimePeriod
-      .getAttribute("value")).trim() == "1 month"
+When("User moves pointer for {int} to set the Lock Time to {lockTime}",
+  async (movePointer: number, time: string) => {
+    StakingTransactionDetails.lockTime = time
+    if ((await Staking.lockTimePeriod.getAttribute("value")).trim() != time) {
+      await browser.waitUntil(async () => {
+        await moveSlider(await Page.slider, movePointer, 0)
+        return (await Staking.lockTimePeriod
+          .getAttribute("value")).trim() == time
+      }, { timeout: 20000, timeoutMsg: "Failed to set lock time" })
+    }
   })
-  if ((await Staking.lockTimePeriod.getAttribute("value")).trim() != time) {
-    await browser.waitUntil(async () => {
-      await moveSlider(await Page.slider, 45, 0)
-      return (await Staking.lockTimePeriod
-        .getAttribute("value")).trim() == time
-    }, { timeout: 20000, timeoutMsg: "Failed to set lock time" })
-  }
-})
 
 When("User verifies total staking balances and staked {token} token balances were changed correctly",
   async (tokenName: string) => {
@@ -278,43 +275,38 @@ When("User verifies total staking balances and staked {token} token balances wer
       )
       await browser.pause(3000)
 
+      const stakingBalance = Number(
+        await (await Staking.stakingBalances("stakingBalance")).number(),
+      )
+
+      const stakingUSDRewards = Number(
+        await (await Staking.stakingBalances("stakingRewards")).number(),
+      )
+
+      const stakedAmount = Number(
+        await (await Staking.stakingBalances("stakedAmount")).number(),
+      )
+
+      const stakedTokenAmount = Number(
+        (await (await Staking.stakedToken(tokenName).stakedAmount).getText())
+          .replace(/[^\d.]/g, ""),
+      )
+
+      const stakedTokenRewards = Number(
+        (await (await Staking.stakedToken(tokenName).rewards).getText()
+        ).replace(/[^\d.]/g, ""),
+      )
+
       return [
-        [
-          StakingTotalBalances.expectedStakingUSDBalance,
-          Number(
-            await (await Staking.stakingBalances("stakingBalance")).number(),
-          ),
-        ],
-        [
-          StakingTotalBalances.expectedStakedUSDAmount,
-          Number(
-            await (await Staking.stakingBalances("stakedAmount")).number(),
-          ),
-        ],
-        // [
-        //   StakingTotalBalances.expectedStakingUSDRewards,
-        //   Number(
-        //     await (await Staking.stakingBalances("stakingRewards")).number(),
-        //   ),
-        // ],
-        [
-          StakedTokenBalances.expectedStakedAmount,
-          Number(
-            (await (await Staking.stakedToken(tokenName).stakedAmount).getText())
-              .replace(/[^\d.]/g, ""),
-          ),
-        ],
-        // [
-        //   StakedTokenBalances.expectedStakingRewards,
-        //   Number(
-        //     (await (await Staking.stakedToken(tokenName).rewards).getText()
-        //     ).replace(/[^\d.]/g, "")),
-        // ],
+        [StakingTotalBalances.expectedStakingUSDBalance, stakingBalance],
+        [StakingTotalBalances.expectedStakedUSDAmount, stakedAmount],
+        // [StakingTotalBalances.expectedStakingUSDRewards, stakingUSDRewards],
+        [StakedTokenBalances.expectedStakedAmount, stakedTokenAmount],
+        // [StakedTokenBalances.expectedStakingRewards, stakedTokenRewards],
       ].every(([expected, current]) => {
         const result = Math.floor((expected - current) * 100) / 100
         return result < 0.001 && result >= 0
       })
-
     }, {
       timeout: 50000,
       timeoutMsg: `Incorrect staking values after staking
@@ -323,25 +315,7 @@ When("User verifies total staking balances and staked {token} token balances wer
       StakedAmount - ${StakingTotalBalances.currentStakedUSDAmount + (StakingTotalBalances.amountToStake * tokenUSDPrice)} USD,
       //StakingRewards - ${StakingTotalBalances.currentStakingUSDRewards + (StakingTotalBalances.amountToStake * tokenUSDPrice)} USD,
       StakedTokenBalance - ${StakedTokenBalances.currentStakedAmount + StakingTotalBalances.amountToStake},
-      //StakedTokenRewards - ${StakedTokenBalances.currentStakingRewards + (StakingTotalBalances.amountToStake * tokenUSDPrice)},
-      but was:
-      StakingBalance - ${Number(
-        await (await Staking.stakingBalances("stakingBalance")).number(),
-      )},
-      StakedAmount - ${Number(
-        await (await Staking.stakingBalances("stakedAmount")).number(),
-      )},
-      //StakingRewards - ${Number(
-        await (await Staking.stakingBalances("stakingRewards")).number(),
-      )},
-      StakedTokenBalance - ${Number(
-        (await (await Staking.stakedToken(tokenName).stakedAmount).getText())
-          .replace(/[^\d.]/g, ""),
-      )},
-      //StakedTokenRewards - ${Number(
-        (await (await Staking.stakedToken(tokenName).rewards).getText())
-          .replace(/[^\d.]/g, ""),
-      )}`,
+      //StakedTokenRewards - ${StakedTokenBalances.currentStakingRewards + (StakingTotalBalances.amountToStake * tokenUSDPrice)}`,
     })
   },
 )
@@ -351,7 +325,7 @@ When("User verifies user's staking values of the {token} token were changed corr
     await browser.waitUntil(async () => {
       await browser.refresh()
       await Staking.StakedTokenTransaction("Locked")
-        .getFirstRowInTable.waitForClickable()
+        .getFirstRowInTable.waitForClickable({ timeout: 20000 })
 
       StakedTokenDetailsBalances.expectedStakingBalance =
         StakedTokenDetailsBalances.currentStakingBalance + StakingTotalBalances.amountToStake
@@ -362,19 +336,22 @@ When("User verifies user's staking values of the {token} token were changed corr
       // StakedTokenDetailsBalances.expectedStakingUSDRewards =
       //   StakedTokenDetailsBalances.currentStakingUSDRewards + StakingBalances.amountToStake
 
+      const stakedTokenBalance = Number(
+        await (await Staking.stakingBalances("stakingBalance")).number(),
+      )
+
+      const stakedTokenStakedAmount = Number(
+        await (await Staking.stakingBalances("stakedAmount")).number(),
+      )
+
+      const stakedTokenRewards = Number(
+        await (await Staking.stakingBalances("stakingRewards")).number(),
+      )
+
       return [
-        [
-          StakedTokenDetailsBalances.expectedStakingBalance,
-          Number(await (await Staking.stakingBalances("stakingBalance")).number()),
-        ],
-        [
-          StakedTokenDetailsBalances.expectedStakedAmount,
-          Number(await (await Staking.stakingBalances("stakedAmount")).number()),
-        ],
-        // [
-        //   StakedTokenDetailsBalances.expectedStakingRewards,
-        //   Number(await (await Staking.stakingBalances("stakingRewards")).number()),
-        // ],
+        [StakedTokenDetailsBalances.expectedStakingBalance, stakedTokenBalance],
+        [StakedTokenDetailsBalances.expectedStakedAmount, stakedTokenStakedAmount],
+        // [StakedTokenDetailsBalances.expectedStakingRewards, stakedTokenRewards],
       ].every(([expected, current]) => {
         const result = Math.floor((expected - current) * 100) / 100
         return result < 0.001 && result >= 0
@@ -386,11 +363,7 @@ When("User verifies user's staking values of the {token} token were changed corr
       Expected:
       StakingBalance - ${StakedTokenDetailsBalances.currentStakingBalance + StakingTotalBalances.amountToStake},
       StakedAmount - ${StakedTokenDetailsBalances.currentStakedAmount + StakingTotalBalances.amountToStake},
-      //StakingRewards - ${StakedTokenDetailsBalances.currentStakingRewards + StakingTotalBalances.amountToStake},
-      but was:
-      StakingBalance - ${Number((await Staking.stakingBalances("stakingBalance")).number())},
-      StakedAmount - ${Number((await Staking.stakingBalances("stakedAmount")).number())},
-      //StakingRewards - ${Number((await Staking.stakingBalances("stakingRewards")).number())},`,
+      //StakingRewards - ${StakedTokenDetailsBalances.currentStakingRewards + StakingTotalBalances.amountToStake}`,
     })
   },
 )

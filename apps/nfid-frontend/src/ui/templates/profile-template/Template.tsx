@@ -4,11 +4,6 @@ import { BtcBanner } from "packages/ui/src/molecules/btc-banner"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import {
-  fetchTokens,
-  getFullUsdValue,
-  initTokens,
-} from "packages/ui/src/organisms/tokens/utils"
-import {
   HTMLAttributes,
   useCallback,
   useState,
@@ -34,6 +29,12 @@ import {
   ProfileConstants,
   navigationPopupLinks,
 } from "frontend/apps/identity-manager/profile/routes"
+import { fetchNFTs } from "frontend/features/collectibles/utils/util"
+import {
+  fetchTokens,
+  getFullUsdValue,
+  initTokens,
+} from "frontend/features/fungible-token/utils"
 import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { ModalType } from "frontend/features/transfer-modal/types"
@@ -93,6 +94,11 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         path: `${ProfileConstants.base}/${ProfileConstants.nfts}`,
       },
       {
+        name: "Staking",
+        title: <>Staking</>,
+        path: `${ProfileConstants.base}/${ProfileConstants.staking}`,
+      },
+      {
         name: "Activity",
         title: <>Activity</>,
         path: `${ProfileConstants.base}/${ProfileConstants.activity}`,
@@ -117,7 +123,9 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }, [])
 
   const activeTab = useMemo(() => {
-    return tabs.find((tab) => tab.path === location.pathname) ?? { name: "" }
+    return (
+      tabs.find((tab) => location.pathname.startsWith(tab.path)) ?? { name: "" }
+    )
   }, [location.pathname, tabs])
   const { data: vaults } = useSWR(["vaults"], getAllVaults)
   const [isSyncEmailLoading, setIsSyncEmailLoading] = useState(false)
@@ -141,6 +149,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     { revalidateOnFocus: false },
   )
 
+  const { data: nfts } = useSWR("nftList", () => fetchNFTs(), {
+    revalidateOnFocus: false,
+  })
+
   useEffect(() => {
     reinitTokens()
   }, [activeTokens, reinitTokens])
@@ -150,8 +162,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     isLoading: isUsdLoading,
     mutate: refetchFullUsdBalance,
   } = useSWR(
-    initedTokens.length > 0 && isWallet ? "fullUsdValue" : null,
-    async () => getFullUsdValue(initedTokens),
+    nfts?.items && nfts.items.length > 0 && initedTokens.length > 0 && isWallet
+      ? "fullUsdValue"
+      : null,
+    async () => getFullUsdValue(nfts?.items, initedTokens),
     { revalidateOnFocus: false },
   )
 
@@ -214,6 +228,13 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
+    send("SHOW")
+  }
+
+  const onStakeClick = () => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.STAKE })
     send("SHOW")
   }
 
@@ -280,6 +301,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
                 onReceiveClick={onReceiveClick}
                 onSwapClick={onSwapClick}
                 onConvertClick={onConvertClick}
+                onStakeClick={onStakeClick}
                 address={authState.getUserIdData().publicKey}
               />
               <BtcBanner

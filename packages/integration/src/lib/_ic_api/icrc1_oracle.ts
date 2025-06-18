@@ -54,12 +54,6 @@ export const idlFactory = ({ IDL }: { IDL: any }) => {
     index: IDL.Opt(IDL.Text),
     symbol: IDL.Text,
   })
-  const NeuronData = IDL.Record({
-    name: IDL.Text,
-    date_added: IDL.Nat64,
-    ledger: IDL.Text,
-    neuron_id: IDL.Text,
-  })
   const ICRC1Request = IDL.Record({
     fee: IDL.Nat,
     decimals: IDL.Nat8,
@@ -68,6 +62,12 @@ export const idlFactory = ({ IDL }: { IDL: any }) => {
     ledger: IDL.Text,
     index: IDL.Opt(IDL.Text),
     symbol: IDL.Text,
+  })
+  const NeuronData = IDL.Record({
+    name: IDL.Text,
+    date_added: IDL.Nat64,
+    ledger: IDL.Text,
+    neuron_id: IDL.Text,
   })
   return IDL.Service({
     allow_signing: IDL.Func([], [], []),

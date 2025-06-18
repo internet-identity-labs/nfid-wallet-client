@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import { FC } from "react"
 
 import { Copy, CenterEllipsis } from "@nfid-frontend/ui"
@@ -17,6 +18,14 @@ export const Receive: FC<ReceiveProps> = ({
 }) => {
   return (
     <>
+      <div
+        className={clsx(
+          "leading-10 text-[20px] font-bold mb-[18px]",
+          "flex justify-between items-center",
+        )}
+      >
+        Receive
+      </div>
       <p className="text-sm mb-[18px]">
         NFID Wallet currently supports ICP, ICRC-1 EXT NFTs, and{" "}
         <br className="hidden sm:block" />

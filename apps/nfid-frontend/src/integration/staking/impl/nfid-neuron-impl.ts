@@ -1,54 +1,238 @@
 import { SignIdentity } from "@dfinity/agent"
-import { Principal } from "@dfinity/principal"
-import { Neuron } from "@dfinity/sns/dist/candid/sns_governance"
+import { NeuronState, Followees as IcpFollowees } from "@dfinity/nns"
+import { Followees, NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
+import BigNumber from "bignumber.js"
 import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
-import { bytesToHexString } from "src/integration/staking/service/staking-service-impl"
 
-import { disburse } from "@nfid/integration"
+import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 
-import { TokenValue } from "../types/token-value"
+import { FT } from "frontend/integration/ft/ft"
 
-export class NfidNeuronImpl implements NFIDNeuron {
-  private neuron: Neuron
-  private rootCanisterId: Principal
+import { StakeParamsCalculator } from "../stake-params-calculator"
+import { FormattedDate, TokenValue } from "../types"
 
-  constructor(neuron: Neuron, rootCanisterId: Principal) {
+const SECONDS_PER_MONTH = 30 * 24 * 60 * 60
+const MILISECONDS_PER_SECOND = 1000
+const PROTOCOL_FEE_MULTIPLIER = new BigNumber(875).dividedBy(100000)
+
+export abstract class NfidNeuronImpl<T> implements NFIDNeuron {
+  protected neuron: T
+  protected token: FT
+  protected params?: StakeParamsCalculator
+
+  constructor(neuron: T, token: FT, params?: StakeParamsCalculator) {
     this.neuron = neuron
-    this.rootCanisterId = rootCanisterId
+    this.token = token
+    this.params = params
   }
 
-  getStakeId(): string {
-    return bytesToHexString(this.neuron.id[0]!.id)
+  abstract getState(): NeuronState
+
+  abstract getFollowees(): [bigint, Followees][] | IcpFollowees[]
+
+  abstract getStakeId(): NeuronId | bigint
+
+  abstract getStakeIdFormatted(): string
+
+  abstract getInitialStake(): bigint
+
+  abstract getLockTime(): number | undefined
+
+  abstract getUnlockIn(): number | undefined
+
+  abstract getRewards(): bigint
+
+  abstract getCreatedAt(): number
+
+  abstract startUnlocking(signIdentity: SignIdentity): Promise<void>
+
+  abstract stopUnlocking(signIdentity: SignIdentity): Promise<void>
+
+  abstract isDiamond(): boolean
+
+  abstract redeem(signIdentity: SignIdentity): Promise<void>
+
+  getToken(): FT {
+    return this.token
   }
-  getInitialStake(): TokenValue {
-    throw new Error("Method not implemented.")
+
+  getInitialStakeFormatted(): TokenValue {
+    const tokenAmount = BigNumber(this.getInitialStake().toString())
+      .div(10 ** this.token.getTokenDecimals())
+      .toFixed(this.token.getTokenDecimals())
+      .replace(TRIM_ZEROS, "")
+
+    return {
+      getTokenValue: () => `${tokenAmount} ${this.token.getTokenSymbol()}`,
+      getUSDValue: () =>
+        this.token.getTokenRateFormatted(tokenAmount) || "Not listed",
+    }
   }
-  getRewards(): TokenValue {
-    throw new Error("Method not implemented.")
+
+  getRewardsFormatted(): TokenValue {
+    const rewardsAmount = BigNumber(this.getRewards().toString())
+      .div(10 ** this.token.getTokenDecimals())
+      .toFixed(this.token.getTokenDecimals())
+      .replace(TRIM_ZEROS, "")
+
+    return {
+      getTokenValue: () => `${rewardsAmount} ${this.token.getTokenSymbol()}`,
+      getUSDValue: () =>
+        this.token.getTokenRateFormatted(rewardsAmount) || "Not listed",
+    }
   }
-  getTotalValue(): string {
-    throw new Error("Method not implemented.")
+
+  getTotalValue(): bigint {
+    return this.getRewards() + this.getInitialStake() - this.getProtocolFee()
   }
-  getLockTime(): number {
-    throw new Error("Method not implemented.")
+
+  getTotalValueFormatted(): TokenValue {
+    const totalAmount = BigNumber(this.getTotalValue().toString())
+      .div(10 ** this.token.getTokenDecimals())
+      .toFixed(this.token.getTokenDecimals())
+      .replace(TRIM_ZEROS, "")
+
+    return {
+      getTokenValue: () => `${totalAmount} ${this.token.getTokenSymbol()}`,
+      getUSDValue: () =>
+        this.token.getTokenRateFormatted(totalAmount) || "Not listed",
+    }
   }
-  getUnlockIn(): number {
-    throw new Error("Method not implemented.")
+
+  getProtocolFee(): bigint {
+    const fee = new BigNumber(this.getRewards().toString()).multipliedBy(
+      PROTOCOL_FEE_MULTIPLIER,
+    )
+    return BigInt(fee.toString())
   }
-  getCreatedAt(): number {
-    throw new Error("Method not implemented.")
+
+  getProtocolFeeFormatted(): TokenValue {
+    const protocolFee = BigNumber(this.getProtocolFee().toString())
+      .div(10 ** this.token.getTokenDecimals())
+      .toFixed(this.token.getTokenDecimals())
+      .replace(TRIM_ZEROS, "")
+
+    return {
+      getTokenValue: () => `${protocolFee} ${this.token.getTokenSymbol()}`,
+      getUSDValue: () =>
+        this.token.getTokenRateFormatted(protocolFee) || "Not listed",
+    }
   }
-  startUnlocking(): Promise<void> {
-    throw new Error("Method not implemented.")
+
+  getLockTimeInMonths(): number | undefined {
+    const lockTime = this.getLockTime()
+    if (lockTime === undefined) return
+    return Math.round(lockTime / SECONDS_PER_MONTH)
   }
-  stopUnlocking(): Promise<void> {
-    throw new Error("Method not implemented.")
+
+  getUnlockInMonths(): string | undefined {
+    const unlockTimestamp = this.getUnlockIn()
+    if (unlockTimestamp === undefined) return
+
+    const now = new Date()
+    const unlockDate = new Date(unlockTimestamp * MILISECONDS_PER_SECOND)
+
+    let months =
+      (unlockDate.getFullYear() - now.getFullYear()) * 12 +
+      (unlockDate.getMonth() - now.getMonth())
+
+    let days = unlockDate.getDate() - now.getDate()
+
+    if (days < 0) {
+      months -= 1
+
+      const prevMonthDate = new Date(
+        unlockDate.getFullYear(),
+        unlockDate.getMonth(),
+        0,
+      )
+      days += prevMonthDate.getDate()
+    }
+
+    const parts: string[] = []
+
+    if (months > 0) {
+      parts.push(`${months} month${months !== 1 ? "s" : ""}`)
+    }
+
+    if (days > 0) {
+      parts.push(`${days} day${days !== 1 ? "s" : ""}`)
+    }
+
+    return parts.length > 0 ? parts.join(", ") : "less than a day"
   }
-  async redeem(signIdentity: SignIdentity): Promise<void> {
-    await disburse({
-      identity: signIdentity,
-      rootCanisterId: this.rootCanisterId,
-      neuronId: this.neuron.id[0]!,
-    })
+
+  getUnlockInFormatted(): FormattedDate | undefined {
+    const unlocking = this.getUnlockIn()
+    if (unlocking === undefined) return
+
+    return {
+      getDate: () =>
+        new Date(unlocking * MILISECONDS_PER_SECOND).toLocaleDateString(
+          "en-US",
+          {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          },
+        ),
+      getTime: () =>
+        new Date(unlocking * MILISECONDS_PER_SECOND).toLocaleTimeString(
+          "en-US",
+          {
+            hour12: true,
+          },
+        ),
+    }
+  }
+
+  getUnlockInPast(): FormattedDate | undefined {
+    const lockTime = this.getLockTime()
+    if (lockTime === undefined) return
+
+    if (
+      lockTime + this.getCreatedAt() <=
+      Math.floor(Date.now() / MILISECONDS_PER_SECOND)
+    ) {
+      return {
+        getDate: () =>
+          new Date(
+            (this.getCreatedAt() + lockTime) * MILISECONDS_PER_SECOND,
+          ).toLocaleDateString("en-US", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          }),
+        getTime: () =>
+          new Date(
+            (this.getCreatedAt() + lockTime) * MILISECONDS_PER_SECOND,
+          ).toLocaleTimeString("en-US", {
+            hour12: true,
+          }),
+      }
+    }
+  }
+
+  getCreatedAtFormatted(): FormattedDate {
+    const createdAt = this.getCreatedAt()
+
+    return {
+      getDate: () =>
+        new Date(createdAt * MILISECONDS_PER_SECOND).toLocaleDateString(
+          "en-US",
+          {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          },
+        ),
+      getTime: () =>
+        new Date(createdAt * MILISECONDS_PER_SECOND).toLocaleTimeString(
+          "en-US",
+          {
+            hour12: true,
+          },
+        ),
+    }
   }
 }

@@ -28,3 +28,13 @@ export * from "./lib/_ic_api"
 export * from "./lib/lambda/lambda-delegation"
 export * from "./lib/delegation-factory/delegation-factory"
 export * from "./lib/staking/sns-governance.api"
+export {
+  queryICPNeurons,
+  stakeNeuron as stakeICPNeuron,
+  autoStakeMaturity as autoICPStakeMaturity,
+  increaseDissolveDelay as increaseICPDissolveDelay,
+  setFollowees as setICPFollowees,
+  stopDissolving as stopICPDissolving,
+  startDissolving as startICPDissolving,
+  disburse as disburseICP,
+} from "./lib/staking/governance.api"

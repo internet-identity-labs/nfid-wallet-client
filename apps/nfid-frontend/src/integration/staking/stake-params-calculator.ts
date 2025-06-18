@@ -1,10 +1,13 @@
-import { FT } from "src/integration/ft/ft"
+import { TokenValue } from "./types"
 
-export interface StakeAprCalculator {
-  setFt(token: FT): Promise<void>
+export interface StakeParamsCalculator {
+  getFee(): bigint | undefined
+  getFeeFormatted(): TokenValue
   getMinimumToStake(): number
   getMinimumLockTime(): number
+  getMinimumLockTimeInMonths(): number
   getMaximumLockTime(): number
+  getMaximumLockTimeInMonths(): number
   calculateProjectRewards(amount: string, lockTime: number): Promise<string>
   calculateEstAPR(amount: string, lockTime: number): Promise<string>
 }

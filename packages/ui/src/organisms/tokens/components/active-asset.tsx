@@ -8,12 +8,15 @@ import {
   Skeleton,
   IDropdownPosition,
   IconCmpConvert,
+  IconCmpStakeAction,
 } from "@nfid-frontend/ui"
 import { ArrowPercentChange } from "@nfid-frontend/ui"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
+  ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
+import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { IProfileConstants } from ".."
 import { AssetDropdown } from "./asset-dropdown"
@@ -26,6 +29,7 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   onSwapClick: (value: string) => void
   onConvertToBtc: () => any
   onConvertToCkBtc: () => any
+  onStakeClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   loadingToken: FT | null
@@ -41,6 +45,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   onSwapClick,
   onConvertToBtc,
   onConvertToCkBtc,
+  onStakeClick,
   setToken,
   dropdownPosition,
   loadingToken,
@@ -84,6 +89,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           <p
             className="text-sm font-semibold leading-[25px] flex items-center"
             id={`token_${token.getTokenName().replace(/\s/g, "")}_currency`}
+            onClick={() => onStakeClick(token.getTokenAddress())}
           >
             {token.getTokenSymbol()}
             {token.getTokenAddress() === BTC_NATIVE_ID && (
@@ -110,6 +116,16 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
                 </span>
               </>
             )}
+            {(token.getTokenCategory() === Category.Sns ||
+              token.getTokenAddress() === ICP_CANISTER_ID) && (
+              <>
+                <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+                <span className="flex items-center text-xs cursor-pointer text-primaryButtonColor">
+                  <IconCmpStakeAction className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor" />
+                  Stake
+                </span>
+              </>
+            )}
           </p>
           <p className="text-secondary text-xs leading-[20px]">
             {token.getTokenName()}
@@ -129,7 +145,9 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
         ) : tokenPrice ? (
           <div>
-            <div>{tokenPrice}</div>
+            <div id={`token_${token.getTokenName().replace(/\s/g, "")}_price`}>
+              {tokenPrice}
+            </div>
             {tokenRateDayChange && (
               <ArrowPercentChange
                 value={tokenRateDayChange?.value || "0"}
@@ -202,6 +220,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           onSwapClick={onSwapClick}
           onConvertToBtc={onConvertToBtc}
           onConvertToCkBtc={onConvertToCkBtc}
+          onStakeClick={onStakeClick}
           setToken={setToken}
           dropdownPosition={dropdownPosition}
           setIsTokenProcessed={setIsTokenProcessed}

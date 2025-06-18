@@ -1,8 +1,8 @@
 import Nft from "./nft.js"
-import Page from "./page.js"
+import { Page } from "./page.js"
 import Profile from "./profile.js"
 
-export class Assets {
+export class Assets extends Page {
   get amountField() {
     return $("#choose-from-token-amount")
   }
@@ -11,7 +11,7 @@ export class Assets {
     return $("#sendButton")
   }
 
-  private get assetLabel() {
+  get assetLabel() {
     return "[id*='token_"
   }
 
@@ -19,17 +19,17 @@ export class Assets {
     return $("#choose-from-token-balance")
   }
 
-  public get switchSendType() {
+  get switchSendType() {
     return $("#send_type_toggle")
   }
 
-  public async getCurrency(label: string) {
+  async getCurrency(label: string) {
     let locator = $(this.assetLabel + `${label.replace(/\s/g, "")}_currency`)
     await locator.waitForDisplayed({ timeout: 10000 })
     return locator
   }
 
-  public async getBlockchain(label: string) {
+  async getBlockchain(label: string) {
     let locator = $(this.assetLabel + `${label.replace(/\s/g, "")}_category`)
     await locator.waitForDisplayed({ timeout: 10000 })
     return locator
@@ -55,6 +55,10 @@ export class Assets {
     return $("#tab_NFTs")
   }
 
+  get stakingTab() {
+    return $("#tab_Staking")
+  }
+
   get chooseModalButton() {
     return $("#choose_modal")
   }
@@ -76,16 +80,26 @@ export class Assets {
   }
 
   get tokenToSendBackButton() {
-    return $(`//*[@id="token-to-send-title"]/parent::div/preceding-sibling::div[1]`)
+    return $(
+      `//*[@id="token-to-send-title"]/parent::div/preceding-sibling::div[1]`,
+    )
   }
 
-  public async tokenOptionsButton(tokenName: string) {
+  async tokenOptionsButton(tokenName: string) {
     return $(`#${tokenName}_options`)
   }
 
-  public async tokenBalance(tokenName: string) {
-    let locator = $(`(//*[@id="token_${tokenName.replace(/\s/g, "")}_balance"]/p)[1]`)
-    await locator.waitForDisplayed({ timeout: 10000 })
+  async tokenUSDPrice(tokenName: string) {
+    let locator = $(`#token_${tokenName.replace(/\s/g, "")}_price`)
+    await locator.waitForDisplayed()
+    return locator
+  }
+
+  async tokenBalance(tokenName: string) {
+    let locator = $(
+      `(//*[@id="token_${tokenName.replace(/\s/g, "")}_balance"]/p)[1]`,
+    )
+    await locator.waitForDisplayed()
     await browser.waitUntil(
       async () => {
         return (await locator.getText()) != ""
@@ -95,30 +109,60 @@ export class Assets {
     return locator
   }
 
-  public async tokenUSDBalance(tokenName: string) {
+  async tokenUSDBalance(tokenName: string) {
     let locator = $(`#token_${tokenName.replace(/\s/g, "")}_usd`)
-    await locator.waitForDisplayed({ timeout: 10000 })
+    await locator.waitForDisplayed()
     return locator
   }
 
-  public tokenLabel(label: string) {
+  async tokenLabel(label: string) {
     return $(`#token_${label.replace(/\s/g, "")}`)
   }
 
-  public currencyOption(currency: string) {
+  async currencyOption(currency: string) {
     return $(`#choose_option_${currency}`)
   }
 
-  public getTokenByNameInSend(token: string) {
+  async getTokenByNameInSend(token: string) {
     return $(`#choose_option_${token}`)
   }
 
-  public async openAssetOptionsOnSR() {
+  async getChooseTokenModalButton(tokenRole: string) {
+    return $(`#${tokenRole}Section #choose_modal`)
+  }
+
+  async getSearchTokenInputField(tokenRole: string) {
+    return $(`#${tokenRole}TokenSearchInput`)
+  }
+
+  async getTokenByNameFromList(tokenRole: string, token: string) {
+    return $(
+      `//input[@id='${tokenRole}TokenSearchInput']/../../..//div[@id='choose_option_${token}']`,
+    )
+  }
+
+  get getTargetAmountField() {
+    return $("#targetSection #choose-to-token-amount")
+  }
+
+  get getSourceAmountField() {
+    return $("#choose-from-token-amount")
+  }
+
+  get getTargetTokenBalance() {
+    return $("#choose-to-token-balance")
+  }
+
+  get priceImpactCheckBox() {
+    return $("#price-impact")
+  }
+
+  async openAssetOptionsOnSR() {
     await this.chooseModalButton.waitForClickable({ timeout: 45000 })
     await this.chooseModalButton.click()
   }
 
-  public async sendFTto(address: string, amount: string) {
+  async sendFTto(address: string, amount: string) {
     await Nft.addressField.setValue(address)
     await this.amountField.setValue(amount)
 
@@ -129,39 +173,39 @@ export class Assets {
     await this.sendDialogWindow.click()
   }
 
-  public async sendNFTto(address: string) {
+  async sendNFTto(address: string) {
     await Nft.addressField.setValue(address)
     await this.sendDialogWindow.click()
   }
 
-  public get getFee() {
+  get getFee() {
     return $("#fee")
   }
 
-  public async sendDialog() {
+  async sendDialog() {
     await this.waitUntilElementsLoadedProperly(
       Profile.sendButton,
       this.switchSendType,
     )
   }
 
-  public async sendNFTDialog() {
+  async sendNFTDialog() {
     await this.waitUntilElementsLoadedProperly(
       Profile.sendButton,
       this.switchSendType,
     )
     await this.switchSendType.click()
-    await Page.loader.waitForExist({ reverse: true, timeout: 15000 })
+    await super.loader.waitForExist({ reverse: true, timeout: 15000 })
   }
 
-  public async receiveDialog() {
+  async receiveDialog() {
     await this.waitUntilElementsLoadedProperly(
       Profile.receiveButton,
       $("#first_part"),
     )
   }
 
-  public async getAccountId(isAddress?: boolean) {
+  async getAccountId(isAddress?: boolean) {
     let parent
     await this.address.waitForDisplayed({ timeout: 10000 })
     if (isAddress) {
@@ -191,20 +235,22 @@ export class Assets {
 
   async waitUntilElementsLoadedProperly(
     clickElement: ChainablePromiseElement,
-    waitForElementOrAction: ChainablePromiseElement | {
-      element: ChainablePromiseElement,
-      action: (el: ChainablePromiseElement) => Promise<void>
-    },
+    waitForElementOrAction:
+      | ChainablePromiseElement
+      | {
+          element: ChainablePromiseElement
+          action: (el: ChainablePromiseElement) => Promise<void>
+        },
   ) {
     await browser.waitUntil(
       async () => {
         try {
           await Profile.waitUntilBalanceLoaded()
-          await Page.loader.waitForDisplayed({ reverse: true, timeout: 30000 })
+          await super.loader.waitForDisplayed({ reverse: true, timeout: 30000 })
 
-          await clickElement.waitForClickable({ timeout: 15000 })
+          await clickElement.waitForClickable({ timeout: 20000 })
           await clickElement.click()
-          await Page.loader.waitForDisplayed({ reverse: true, timeout: 30000 })
+          await super.loader.waitForDisplayed({ reverse: true, timeout: 30000 })
 
           if ("action" in waitForElementOrAction) {
             const { element, action } = waitForElementOrAction
@@ -229,11 +275,11 @@ export class Assets {
     )
   }
 
-  public getTokenOption(option: string) {
+  async getTokenOption(option: string) {
     return $(`#option_${option.replace(" ", "\\ ")}`)
   }
 
-  public ManageTokensDialog = {
+  ManageTokensDialog = {
     get manageTokensDialogButton() {
       return $("#importToken")
     },
@@ -245,11 +291,7 @@ export class Assets {
     },
   }
 
-  public SwapDialog = {
-    get priceImpactCheckBox() {
-      return $("#price-impact")
-    },
-
+  SwapDialog = {
     get swapTokensButton() {
       return $("#swapTokensButton")
     },
@@ -260,32 +302,6 @@ export class Assets {
 
     get closeButton() {
       return $("#swap-success-close-button")
-    },
-
-    getChooseTokenModalButton(tokenRole: string) {
-      return $(`#${tokenRole}Section #choose_modal`)
-    },
-
-    getSearchTokenInputField(tokenRole: string) {
-      return $(`#${tokenRole}TokenSearchInput`)
-    },
-
-    getTokenByNameFromList(tokenRole: string, token: string) {
-      return $(
-        `//input[@id='${tokenRole}TokenSearchInput']/../../..//div[@id='choose_option_${token}']`,
-      )
-    },
-
-    get getTargetAmountField() {
-      return $("#targetSection #choose-to-token-amount")
-    },
-
-    get getSourceAmountField() {
-      return $("#choose-from-token-amount")
-    },
-
-    get getTargetTokenBalance() {
-      return $("#choose-to-token-balance")
     },
   }
 }

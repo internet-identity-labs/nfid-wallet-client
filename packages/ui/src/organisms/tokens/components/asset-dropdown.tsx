@@ -12,11 +12,14 @@ import {
   IconSvgTokenInfo,
   IDropdownPosition,
   IconSvgConvertAction,
+  IconSvgStakeAction,
 } from "@nfid-frontend/ui"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
+  ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
+import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp } from "@nfid/swr"
 
 import { FT } from "frontend/integration/ft/ft"
@@ -31,6 +34,7 @@ type AssetDropdownProps = {
   onSwapClick: (value: string) => void
   onConvertToBtc: () => any
   onConvertToCkBtc: () => any
+  onStakeClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   setIsTokenProcessed: (value: boolean) => void
@@ -45,6 +49,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
   onSwapClick,
   onConvertToBtc,
   onConvertToCkBtc,
+  onStakeClick,
   setToken,
   dropdownPosition,
   setIsTokenProcessed,
@@ -98,6 +103,14 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             label="Convert"
             icon={IconSvgConvertAction}
             handler={onConvertToBtc}
+          />
+        )}
+        {(token.getTokenCategory() === Category.Sns ||
+          token.getTokenAddress() === ICP_CANISTER_ID) && (
+          <DropdownOption
+            label="Stake"
+            icon={IconSvgStakeAction}
+            handler={() => onStakeClick(token.getTokenAddress())}
           />
         )}
         <DropdownOption

@@ -1,15 +1,34 @@
 import { SignIdentity } from "@dfinity/agent"
-import { TokenValue } from "src/integration/staking/types/token-value"
+import { NeuronState, Followees as IcpFollowees } from "@dfinity/nns"
+import { Followees, NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
+
+import { FT } from "../ft/ft"
+import { FormattedDate, TokenValue } from "./types"
 
 export interface NFIDNeuron {
-  getStakeId(): string
-  getInitialStake(): TokenValue
-  getRewards(): TokenValue
-  getTotalValue(): string
-  getLockTime(): number
-  getUnlockIn(): number
+  getFollowees(): [bigint, Followees][] | IcpFollowees[]
+  getToken(): FT
+  getState(): NeuronState
+  getStakeId(): NeuronId | bigint
+  getStakeIdFormatted(): string
+  getInitialStake(): bigint
+  getInitialStakeFormatted(): TokenValue
+  getRewards(): bigint
+  getRewardsFormatted(): TokenValue
+  getTotalValue(): bigint
+  getTotalValueFormatted(): TokenValue
+  getProtocolFee(): bigint
+  getProtocolFeeFormatted(): TokenValue
+  getLockTime(): number | undefined
+  getLockTimeInMonths(): number | undefined
+  getUnlockIn(): number | undefined
+  getUnlockInPast(): FormattedDate | undefined
+  getUnlockInMonths(): string | undefined
+  getUnlockInFormatted(): FormattedDate | undefined
   getCreatedAt(): number
-  startUnlocking(): Promise<void>
-  stopUnlocking(): Promise<void>
+  getCreatedAtFormatted(): FormattedDate
+  startUnlocking(signIdentity: SignIdentity): Promise<void>
+  stopUnlocking(signIdentity: SignIdentity): Promise<void>
+  isDiamond(): boolean
   redeem(signIdentity: SignIdentity): Promise<void>
 }

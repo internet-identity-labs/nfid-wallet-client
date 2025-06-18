@@ -32,6 +32,8 @@ export const validateTransferAmountField =
     fee: bigint,
     decimals: number | undefined,
     isConvertFromCkBtc: boolean,
+    minAmount?: number,
+    symbol?: string,
   ) =>
   (value: string) => {
     if (!decimals || !balance) return "Insufficient funds"
@@ -53,6 +55,10 @@ export const validateTransferAmountField =
       valueNum.isLessThan(MIN_CK_BTC_AMOUNT_TO_CONVERT)
     ) {
       return `Amount can't be less than ${MIN_CK_BTC_AMOUNT_TO_CONVERT} BTC.`
+    }
+
+    if (minAmount !== undefined && valueNum.isLessThan(minAmount)) {
+      return `Minimum amount to stake ${symbol} is ${minAmount}`
     }
     return true
   }

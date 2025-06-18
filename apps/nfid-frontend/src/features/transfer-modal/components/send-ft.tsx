@@ -7,7 +7,6 @@ import debounce from "lodash/debounce"
 import { PRINCIPAL_LENGTH } from "packages/constants"
 import toaster from "packages/ui/src/atoms/toast"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
-import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useMemo, useState, useEffect } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
@@ -17,11 +16,15 @@ import {
   E8S,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
-import { transfer as transferICP } from "@nfid/integration/token/icp"
+import {
+  getAccountIdentifier,
+  transfer as transferICP,
+} from "@nfid/integration/token/icp"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
+import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
@@ -30,7 +33,6 @@ import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
 import { FormValues, SendStatus } from "../types"
 import {
-  getAccountIdentifier,
   getIdentity,
   getTokensWithUpdatedBalance,
   getVaultsAccountsOptions,

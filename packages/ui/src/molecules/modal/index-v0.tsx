@@ -23,7 +23,7 @@ export const ModalComponent: FC<ModalProps> = ({
       {isVisible && (
         <motion.div
           key={isVisible ? "visible" : "hidden"}
-          className="fixed top-0 left-0 z-50 flex items-center justify-center w-full h-screen bg-opacity-50 bg-zinc-900/80"
+          className="fixed top-0 left-0 z-50 flex items-center justify-center w-full h-screen bg-opacity-80 bg-[#18181B]"
           onClick={onClose}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

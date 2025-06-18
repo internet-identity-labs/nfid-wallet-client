@@ -1,7 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
 import debounce from "lodash/debounce"
 import { ConvertUi } from "packages/ui/src/organisms/send-receive/components/convert"
-import { fetchTokens } from "packages/ui/src/organisms/tokens/utils"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 
@@ -11,6 +10,7 @@ import {
 } from "@nfid/integration/token/constants"
 import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
+import { fetchTokens } from "frontend/features/fungible-token/utils"
 import {
   bitcoinService,
   BtcToCkBtcFee,

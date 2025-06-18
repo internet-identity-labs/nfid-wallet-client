@@ -3,7 +3,6 @@ import {
   AccountIdentifier,
   checkAccountId,
   Icrc1BlockIndex,
-  SubAccount,
 } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
@@ -167,29 +166,6 @@ export const validateBTCAddress = (address: string): boolean | string => {
   return result || "Incorrect wallet address"
 }
 
-export const getAccountIdentifier = (address: string): string => {
-  if (addressValidationService.isValidAccountIdentifier(address)) return address
-
-  try {
-    // Try if it's default principal or `${principal}-${checksum}-${subaccount}`
-    const principal = Principal.fromText(address)
-    const accountIdentifier = AccountIdentifier.fromPrincipal({ principal })
-    return accountIdentifier.toHex()
-  } catch (e) {
-    // Handle `${principal}-${checksum}-${subaccount}`
-    const { owner: principalTo, subaccount } = decodeIcrcAccount(address)
-    const subAccountObject = subaccount
-      ? SubAccount.fromBytes(subaccount as Uint8Array)
-      : null
-    if (subAccountObject instanceof Error) throw subAccountObject
-
-    return AccountIdentifier.fromPrincipal({
-      principal: principalTo,
-      subAccount: subAccountObject ?? undefined,
-    }).toHex()
-  }
-}
-
 export const getUserBalance = async (address: string): Promise<bigint> => {
   const addressVerified =
     address.length === PRINCIPAL_LENGTH
@@ -282,4 +258,18 @@ export const getConversionTokenAddress = (source: string): string => {
   if (source === BTC_NATIVE_ID) return CKBTC_CANISTER_ID
   if (source === CKBTC_CANISTER_ID) return BTC_NATIVE_ID
   return CKBTC_CANISTER_ID
+}
+
+export const getAccurateDateForStakeInSeconds = (months: number): number => {
+  const now = new Date()
+  const future = new Date(now)
+
+  future.setMonth(future.getMonth() + months)
+
+  future.setHours(now.getHours())
+  future.setMinutes(now.getMinutes())
+  future.setSeconds(now.getSeconds())
+  future.setMilliseconds(now.getMilliseconds())
+
+  return Math.floor((future.getTime() - now.getTime()) / 1000)
 }

@@ -5,11 +5,11 @@ export class Profile extends Page {
     return $("#profile")
   }
 
-  private get tokens() {
+  get tokens() {
     return $$("table tbody tr")
   }
 
-  public get totalBalance() {
+  get totalBalance() {
     return $("#totalBalance")
   }
 
@@ -25,7 +25,7 @@ export class Profile extends Page {
     return $("#nav-logout")
   }
 
-  public async waitForTokensAppear(amount?: number) {
+  async waitForTokensAppear(amount?: number) {
     await browser.waitUntil(
       async () => {
         return amount
@@ -39,19 +39,19 @@ export class Profile extends Page {
     )
   }
 
-  public async waitForTokens(amount: number) {
+  async waitForTokens(amount: number) {
     await browser.waitUntil(async () => (await this.tokens.length) === amount, {
       timeout: 50000,
       timeoutMsg: "Not all tokens displayed on user profile!",
     })
   }
 
-  public async waitUntilBalanceLoaded() {
+  async waitUntilBalanceLoaded() {
     await browser.waitUntil(
       async () => {
         return (await this.totalBalance.getText()) != ""
       },
-      { timeout: 70000, timeoutMsg: "Balance wasn't loaded in 35sec" },
+      { timeout: 70000, timeoutMsg: "Balance wasn't loaded in 70sec" },
     )
   }
 }

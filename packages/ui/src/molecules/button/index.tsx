@@ -36,10 +36,9 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <Component
-      id={id}
       disabled={disabled}
       className={clsx(
-        "transition duration-75",
+        "transition duration-300",
         "text-center text-sm first-letter:capitalize hover:no-underline",
         "font-bold",
         "border rounded-xl outline-none p-[15px] leading-4",
@@ -91,6 +90,7 @@ export const Button: React.FC<ButtonProps> = ({
       {...buttonProps}
     >
       <div
+        id={id}
         className={clsx(
           "flex items-center justify-center space-x-2 h-full",
           innerClassName,

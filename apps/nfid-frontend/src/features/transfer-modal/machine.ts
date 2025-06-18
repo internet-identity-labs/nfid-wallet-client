@@ -27,6 +27,9 @@ export const transferMachine = createMachine(
       ASSIGN_SOURCE_WALLET: {
         actions: "assignSourceWallet",
       },
+      ASSIGN_STAKE_ID: {
+        actions: "assignStakeId",
+      },
       ASSIGN_RECEIVER_WALLET: {
         actions: "assignReceiverWallet",
       },
@@ -81,11 +84,21 @@ export const transferMachine = createMachine(
             target: "ConvertMachine",
             cond: "isConvertMachine",
           },
+          {
+            target: "StakeMachine",
+            cond: "isStakeMachine",
+          },
+          {
+            target: "RedeemMachine",
+            cond: "isRedeemMachine",
+          },
         ],
       },
       ReceiveMachine: {},
       SwapMachine: {},
       ConvertMachine: {},
+      StakeMachine: {},
+      RedeemMachine: {},
       SendMachine: {
         id: "SendMachine",
         initial: "CheckSendType",
@@ -138,6 +151,8 @@ export const transferMachine = createMachine(
       isReceiveMachine: (context) => context.direction === "receive",
       isSwapMachine: (context) => context.direction === "swap",
       isConvertMachine: (context) => context.direction === "convert",
+      isStakeMachine: (context) => context.direction === "stake",
+      isRedeemMachine: (context) => context.direction === "redeem",
     },
     actions: {
       assignTokenType: assign((_, event) => ({
@@ -172,6 +187,9 @@ export const transferMachine = createMachine(
       })),
       assignTokenStandard: assign((_, event) => ({
         tokenStandard: event?.data,
+      })),
+      assignStakeId: assign((_, event) => ({
+        stakeId: event?.data,
       })),
       assignIsVault: assign((_, event) => ({
         isOpenedFromVaults: event?.data,

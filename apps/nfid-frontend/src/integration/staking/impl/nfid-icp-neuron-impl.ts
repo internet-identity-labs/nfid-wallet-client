@@ -7,10 +7,12 @@ import {
   startICPDissolving,
   stopICPDissolving,
 } from "@nfid/integration"
-import { transfer as transferICP } from "@nfid/integration/token/icp"
+import {
+  getAccountIdentifier,
+  transfer as transferICP,
+} from "@nfid/integration/token/icp"
 
-import { getAccountIdentifier } from "frontend/features/transfer-modal/utils"
-
+//import { getAccountIdentifier } from "frontend/features/transfer-modal/utils"
 import { NfidNeuronImpl } from "./nfid-neuron-impl"
 
 export class NfidICPNeuronImpl extends NfidNeuronImpl<NeuronInfo> {

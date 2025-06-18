@@ -9,6 +9,7 @@ import { nftService } from "src/integration/nft/nft-service"
 
 import { exchangeRateService } from "@nfid/integration"
 import {
+  CKBTC_CANISTER_ID,
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -224,17 +225,6 @@ describe("nft test suite", () => {
         .spyOn(icrc1StorageService as any, "getICRC1Canisters")
         .mockResolvedValueOnce([
           {
-            ledger: "2ouva-viaaa-aaaaq-aaamq-cai",
-            name: "Chat",
-            symbol: "CHAT",
-            logo: "Some logo",
-            index: "2awyi-oyaaa-aaaaq-aaanq-cai",
-            state: "Active",
-            category: "Unknown",
-            fee: BigInt(10000),
-            decimals: 8,
-          },
-          {
             ledger: "ryjl3-tyaaa-aaaaa-aaaba-cai",
             name: "Internet Computer",
             symbol: "ICP",
@@ -261,6 +251,16 @@ describe("nft test suite", () => {
             index: "",
             state: "Active",
             category: "SNS",
+            fee: BigInt(1000),
+            decimals: 8,
+          },
+          {
+            ledger: CKBTC_CANISTER_ID,
+            name: "ckBTC",
+            symbol: "ckBTC",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
             fee: BigInt(1000),
             decimals: 8,
           },

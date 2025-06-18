@@ -16,7 +16,10 @@ import {
   E8S,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
-import { transfer as transferICP } from "@nfid/integration/token/icp"
+import {
+  getAccountIdentifier,
+  transfer as transferICP,
+} from "@nfid/integration/token/icp"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
@@ -30,7 +33,6 @@ import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
 import { FormValues, SendStatus } from "../types"
 import {
-  getAccountIdentifier,
   getIdentity,
   getTokensWithUpdatedBalance,
   getVaultsAccountsOptions,

@@ -15,7 +15,7 @@ export const useBtcAddress = () => {
           setIsBtcAddressLoading(false)
         })
     }
-  }, [fetchBtcAddress, btcAddress, isBtcAddressLoading])
+  }, [btcAddress, isBtcAddressLoading])
 
   return {
     btcAddress,

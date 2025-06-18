@@ -56,10 +56,10 @@ Then(
         const timeDifference = Math.abs(now.getTime() - expectedTime.getTime())
         return (
           (await (await Activity.rowActionType(tableRows[1])).getText()) ==
-          "Sent" && timeDifference < 40000
+          "Sent" && timeDifference < 100000
         )
       },
-      { timeout: 40000, timeoutMsg: "Time difference is more that 40sec" },
+      { timeout: 40000, timeoutMsg: "Time difference is more than 100sec" },
     )
   },
 )

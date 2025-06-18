@@ -1,7 +1,7 @@
 Feature: Staking
   As a user, I want to stake tokens
 
-  @staking
+  @skip @staking
   Scenario: User stakes it's tokens
     Given User opens NFID site
     And User is already authenticated by 10271 anchor

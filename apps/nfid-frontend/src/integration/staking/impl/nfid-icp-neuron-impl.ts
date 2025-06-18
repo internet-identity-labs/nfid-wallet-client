@@ -12,7 +12,6 @@ import {
   transfer as transferICP,
 } from "@nfid/integration/token/icp"
 
-//import { getAccountIdentifier } from "frontend/features/transfer-modal/utils"
 import { NfidNeuronImpl } from "./nfid-neuron-impl"
 
 export class NfidICPNeuronImpl extends NfidNeuronImpl<NeuronInfo> {

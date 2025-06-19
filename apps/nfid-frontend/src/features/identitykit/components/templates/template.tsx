@@ -52,7 +52,7 @@ export const RPCTemplate: React.FC<RPCTemplateProps> = ({
           </p>
         </div>
         <a
-          href="https://docs.nfid.one/"
+          href="https://nfid.one/"
           target="_blank"
           rel="noreferrer"
           className={clsx(

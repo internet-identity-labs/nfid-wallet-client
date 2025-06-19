@@ -2,6 +2,8 @@ import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 
 import { exchangeRateService } from "@nfid/integration"
 
+import { getBtcActivitiesRows } from "frontend/integration/bitcoin/services/btc-transaction-service"
+
 import { PAGINATION_ITEMS } from "../constants"
 import {
   GetAllActivityParams,
@@ -12,24 +14,24 @@ import {
 import { getIcrc1ActivitiesRows } from "./icrc1-activity"
 import { groupActivityRowsByDate } from "./row"
 import { getSwapActivitiesRows } from "./swap-activity"
-import { getBtcActivitiesRows } from "frontend/integration/bitcoin/services/btc-transaction-service"
-import { fetchBtcAddress } from "frontend/util/fetch-btc-address"
 
-
-export const getAllActivity = async (
-  params: GetAllActivityParams,
-): Promise<GetAllActivityResult> => {
+export const getAllActivity = async ({
+  btcAddress,
+  ...params
+}: GetAllActivityParams): Promise<GetAllActivityResult> => {
   const { filteredContracts, offset = 0, limit = PAGINATION_ITEMS } = params
 
-  //TODO: get btc address from authState (!!!!!!)
-  const btcAddress = await fetchBtcAddress()
   const [icrc1Activities, swapActivities, btcActivities] = await Promise.all([
     getIcrc1ActivitiesRows(filteredContracts, limit),
     getSwapActivitiesRows(filteredContracts),
     getBtcActivitiesRows(btcAddress),
   ])
 
-  const activitiesArray = [...icrc1Activities, ...swapActivities, ...btcActivities]
+  const activitiesArray = [
+    ...icrc1Activities,
+    ...swapActivities,
+    ...btcActivities,
+  ]
 
   const groupedRowsByDate = groupActivityRowsByDate(
     activitiesArray.flat() as IActivityRow[],

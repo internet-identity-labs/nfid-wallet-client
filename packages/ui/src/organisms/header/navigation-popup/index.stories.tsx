@@ -1,5 +1,4 @@
 import { Meta, StoryFn } from "@storybook/react"
-import KnowledgeIcon from "packages/ui/src/atoms/icons/nav-knowledge.svg"
 import SecurityIcon from "packages/ui/src/atoms/icons/nav-security.svg"
 import VaultsIcon from "packages/ui/src/atoms/icons/nav-vaults.svg"
 import { BrowserRouter as Router } from "react-router-dom"
@@ -42,13 +41,6 @@ Default.args = {
       title: "Security",
       link: "https://example.com",
       id: "link2",
-    },
-    {
-      icon: KnowledgeIcon,
-      title: "Knowledge base",
-      link: "https://example.com",
-      id: "link3",
-      separator: true,
     },
   ],
 }

@@ -31,7 +31,6 @@ import IconSvgLogout from "./logout.svg"
 import IconSvgMapPin from "./map-pin.svg"
 import MenuIcon from "./menu.svg"
 import IconSvgMobile from "./mobile.svg"
-import KnowledgeIcon from "./nav-knowledge.svg"
 import IconDisconnect from "./nav-logout.svg"
 import SecurityIcon from "./nav-security.svg"
 import VaultsIcon from "./nav-vaults.svg"
@@ -105,7 +104,6 @@ export {
   IconSvgArrowGreen,
   IconSvgShare,
   IconNftPlaceholder,
-  KnowledgeIcon,
   SecurityIcon,
   VaultsIcon,
   WalletIcon,

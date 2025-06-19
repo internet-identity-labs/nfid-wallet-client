@@ -80,19 +80,6 @@ export const AddPasskey = ({
           <Button type="primary" block onClick={handleCreatePasskey}>
             Continue
           </Button>
-          <Button
-            type="ghost"
-            block
-            className="mt-[10px]"
-            onClick={() =>
-              window.open(
-                "https://learn.nfid.one/managing-my-security/managing-my-passkeys",
-                "_blank",
-              )
-            }
-          >
-            Learn about Passkeys
-          </Button>
         </div>
       </ModalComponent>
     </div>

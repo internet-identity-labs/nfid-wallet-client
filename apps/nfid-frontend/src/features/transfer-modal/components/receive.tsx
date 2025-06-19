@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 
 import { btcDepositService } from "@nfid/integration/token/btc/service"
 
-import { useBtcAddress } from "frontend/hooks/btc-address"
+import { useBtcAddress } from "frontend/hooks"
 
 export interface ITransferReceive {
   preselectedAccountAddress: string

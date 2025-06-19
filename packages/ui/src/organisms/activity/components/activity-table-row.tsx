@@ -152,20 +152,7 @@ export const ActivityTableRow = ({
       await errorHandler.completeTransaction(identity)
     } catch (e) {
       if (e instanceof ContactSupportError) {
-        const email = "support@identitylabs.ooo"
-        const subject = encodeURIComponent(`Swap via ${providerName} is failed`)
-        const body = encodeURIComponent(
-          `Hello NFID Wallet support team,\n\n` +
-            `I cannot finalize my swap and would appreciate your immediate help with it!\n\n` +
-            `**Swap details:**\n` +
-            `- From: ${transaction.getSourceLedger()}\n` +
-            `- To: ${transaction.getTargetLedger()}\n` +
-            `- My NFID Wallet number: ${profile?.anchor}\n` +
-            `- My wallet address: ${identity.getPrincipal().toText()}\n\n` +
-            `Thanks,\n${profile?.name || ""}`,
-        )
-
-        window.location.href = `mailto:${email}?subject=${subject}&body=${body}`
+        window.open("https://discord.com/invite/a9BFNrYJ99", "_blank")
       }
     } finally {
       setIsLoading(false)

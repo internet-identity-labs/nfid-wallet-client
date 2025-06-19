@@ -8,5 +8,6 @@ export const fetchBtcAddress = async () => {
   ])
 
   const address = await bitcoinService.getAddress(identity)
+
   return address
 }

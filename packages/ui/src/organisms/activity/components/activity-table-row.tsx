@@ -152,7 +152,7 @@ export const ActivityTableRow = ({
       await errorHandler.completeTransaction(identity)
     } catch (e) {
       if (e instanceof ContactSupportError) {
-        window.open("https://discord.com/invite/keWt2BPa", "_blank")
+        window.open("https://discord.com/invite/a9BFNrYJ99", "_blank")
       }
     } finally {
       setIsLoading(false)

@@ -3,6 +3,8 @@ import { motion } from "framer-motion"
 import React, { useEffect, useRef, useState } from "react"
 import { useLocation } from "react-router-dom"
 
+import { IconCmpWarning } from "@nfid-frontend/ui"
+
 import Animation1 from "../../assets/animations/1_4.json"
 import Animation2 from "../../assets/animations/2_4.json"
 import Animation3 from "../../assets/animations/3_4.json"
@@ -140,6 +142,8 @@ const HomeContent = ({
   openAuthModal: () => unknown
   signIn: () => unknown
 }) => {
+  const [isSupportReminderVisible, setIsSupportReminderVisible] =
+    useState(false)
   const location = useLocation()
 
   React.useEffect(() => {
@@ -148,9 +152,50 @@ const HomeContent = ({
     }
   }, [location.search, openAuthModal])
 
+  useEffect(() => {
+    const shouldShow = localStorage.getItem("supportReminder")
+    if (shouldShow === null || shouldShow === "true") {
+      setIsSupportReminderVisible(true)
+    }
+  }, [])
+
+  const handleClose = () => {
+    setIsSupportReminderVisible(false)
+    localStorage.setItem("supportReminder", "false")
+  }
+
   return (
     <>
       <div className="relative">
+        {isSupportReminderVisible && (
+          <div
+            className={clsx(
+              "p-5 bg-[#F9731633] rounded-[12px] gap-[10px]",
+              "mt-[10px] max-w-[1012px] w-[calc(100%-60px)] mx-auto",
+              "flex flex-wrap items-start lg:items-center",
+            )}
+          >
+            <IconCmpWarning className="block text-amber-600 min-w-[34px] w-[34px] h-[24px] mr-1" />
+            <p className="text-sm text-amber-600 max-w-[750px] [flex:0_0_calc(100%-48px)]">
+              Starting <b>July 1, 2025,</b> signing in with Gmail or email-based
+              authentication will no longer be supported. To ensure
+              uninterrupted access, please set up a passkey and optionally a
+              recovery phrase via your account settings.
+            </p>
+            {/* <div className="flex-none w-full lg:flex-auto lg:w-auto"> */}
+            <div
+              className={clsx(
+                "text-sm cursor-pointer text-amber-600 leading-[22px]",
+                "border-b border-dotted border-amber-600 border-b-2",
+                "min-w-[124px] ml-[48px] lg:ml-auto",
+              )}
+              onClick={handleClose}
+            >
+              Don’t remind again
+            </div>
+            {/* </div> */}
+          </div>
+        )}
         <Container className="relative overflow-visible">
           <div className="gradient-radial"></div>
           <div className="relative z-10 pt-[30px] md:pt-[60px] lg:pt-[90px] text-center flex flex-col items-center">

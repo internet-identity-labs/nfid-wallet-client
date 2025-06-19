@@ -17,7 +17,7 @@ import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc
 import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { useBtcAddress } from "frontend/hooks/btc-address"
+import { useBtcAddress } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
 import { ProfileContext } from "frontend/provider"

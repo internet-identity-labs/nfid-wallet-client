@@ -39,9 +39,9 @@ import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-s
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { ModalType } from "frontend/features/transfer-modal/types"
 import { getAllVaults } from "frontend/features/vaults/services"
-import { useBtcAddress } from "frontend/hooks/btc-address"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
+import { useBtcAddress } from "frontend/hooks"
 
 interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   pageTitle?: string

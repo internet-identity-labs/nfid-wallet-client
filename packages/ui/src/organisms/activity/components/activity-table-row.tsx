@@ -234,57 +234,70 @@ export const ActivityTableRow = ({
             </p>
           </div>
         </td>
-        <td
-          className={clsx(
-            "transition-opacity w-[20%] text-center hidden sm:table-cell",
-            action !== IActivityAction.SWAP && "pl-[28px]",
-          )}
-        >
-          {action === IActivityAction.SWAP && asset?.type === "ft" ? (
-            <div className="flex items-center justify-center gap-[8px]">
-              <ImageWithFallback
-                alt="NFID token"
-                fallbackSrc={IconNftPlaceholder}
-                src={asset.icon!}
-                className="rounded-full w-[28px] h-[28px]"
-              />
-              <TickerAmount
-                value={asset.amount}
-                decimals={asset.decimals}
-                symbol={asset.currency}
-              />
-            </div>
-          ) : (
-            <CopyAddress address={from} leadingChars={6} trailingChars={4} />
-          )}
-        </td>
-        <td className="w-[34px] h-[24px] m-auto hidden sm:table-cell">
-          <img src={IconSvgArrowRight} alt="" />
-        </td>
-        <td
-          className={clsx(
-            "transition-opacity w-[20%] text-center hidden sm:table-cell",
-            action !== IActivityAction.SWAP && "pl-[28px]",
-          )}
-        >
-          {action === IActivityAction.SWAP && asset?.type === "ft" ? (
-            <div className="flex items-center justify-center gap-[8px]">
-              <ImageWithFallback
-                alt="NFID token"
-                fallbackSrc={IconNftPlaceholder}
-                src={asset.iconTo!}
-                className="rounded-full w-[28px] h-[28px]"
-              />
-              <TickerAmount
-                value={asset.amountTo!}
-                decimals={asset.decimalsTo}
-                symbol={asset.currencyTo!}
-              />
-            </div>
-          ) : (
-            <CopyAddress address={to} leadingChars={6} trailingChars={4} />
-          )}
-        </td>
+
+        {![IActivityAction.APPROVE, IActivityAction.MINT, IActivityAction.BURN].includes(action) ? (
+          <>
+            <td
+              className={clsx(
+                "transition-opacity w-[20%] text-center hidden sm:table-cell",
+                action !== IActivityAction.SWAP && "pl-[28px]",
+              )}
+            >
+              {action === IActivityAction.SWAP && asset?.type === "ft" ? (
+                <div className="flex items-center justify-center gap-[8px]">
+                  <ImageWithFallback
+                    alt="NFID token"
+                    fallbackSrc={IconNftPlaceholder}
+                    src={asset.icon!}
+                    className="rounded-full w-[28px] h-[28px]"
+                  />
+                  <TickerAmount
+                    value={asset.amount}
+                    decimals={asset.decimals}
+                    symbol={asset.currency}
+                  />
+                </div>
+              ) : (
+                <CopyAddress address={from} leadingChars={6} trailingChars={4} />
+              )}
+            </td>
+            <td className="w-[34px] h-[24px] m-auto hidden sm:table-cell">
+              <img src={IconSvgArrowRight} alt="" />
+            </td>
+            <td
+              className={clsx(
+                "transition-opacity w-[20%] text-center hidden sm:table-cell",
+                action !== IActivityAction.SWAP && "pl-[28px]",
+              )}
+            >
+              {action === IActivityAction.SWAP && asset?.type === "ft" ? (
+                <div className="flex items-center justify-center gap-[8px]">
+                  <ImageWithFallback
+                    alt="NFID token"
+                    fallbackSrc={IconNftPlaceholder}
+                    src={asset.iconTo!}
+                    className="rounded-full w-[28px] h-[28px]"
+                  />
+                  <TickerAmount
+                    value={asset.amountTo!}
+                    decimals={asset.decimalsTo}
+                    symbol={asset.currencyTo!}
+                  />
+                </div>
+              ) : (
+                <CopyAddress address={to} leadingChars={6} trailingChars={4} />
+              )}
+            </td>
+          </>
+        ) : (
+          <td
+            colSpan={3}
+            className={clsx(
+              "transition-opacity w-[20%] text-center hidden sm:table-cell pl-[28px]",
+            )}
+          />
+        )}
+
         {asset?.type === "ft" ? (
           <td className="leading-5 pr-5 sm:pr-[30px] min-w-[60%] sm:min-w-auto sm:w-[30%] text-left sm:text-center">
             <div className="flex items-center">

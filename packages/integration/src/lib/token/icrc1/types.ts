@@ -6,6 +6,9 @@ export enum IActivityAction {
   SENT = "Sent",
   RECEIVED = "Received",
   SWAP = "Swap",
+  MINT = "Mint",
+  BURN = "Burn",
+  APPROVE = "Approve",
 }
 export interface ICRC1 {
   logo: string | undefined
@@ -56,8 +59,8 @@ export interface TransactionData {
   symbolTo?: string
   amount: bigint
   amountTo?: bigint
-  from: string
-  to: string
+  from?: string
+  to?: string
   decimals: number
   decimalsTo?: number
   icon?: string

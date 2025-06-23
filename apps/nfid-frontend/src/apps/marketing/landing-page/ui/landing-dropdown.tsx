@@ -22,12 +22,6 @@ export const LandingDropdown: React.FC<ILandingDropdown> = ({
         setIsOpen={(v) => setIsOpen(v)}
         minWidth={160}
       >
-        <DropdownOption
-          className="hover:!bg-zinc-800 rounded-[12px] !gap-0"
-          textClassName="!text-white"
-          label="Knowledge base"
-          link="https://learn.nfid.one/"
-        />
         {isAuthenticated ? (
           <>
             <DropdownOption

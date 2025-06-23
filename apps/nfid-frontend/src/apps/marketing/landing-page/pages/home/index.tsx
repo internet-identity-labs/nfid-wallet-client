@@ -177,13 +177,6 @@ const HomeContent = ({
               >
                 Go to wallet
               </Button>
-              <Button
-                onClick={() => window.open("https://learn.nfid.one/", "_blank")}
-                className="mt-[30px] w-[146px] sm:w-[178px]"
-                type="outline"
-              >
-                Knowledge base
-              </Button>
             </div>
             <div className="relative mt-[-30px] sm:mt-[-70px] md:mt-[-100px] xl:mt-[-180px]">
               <img

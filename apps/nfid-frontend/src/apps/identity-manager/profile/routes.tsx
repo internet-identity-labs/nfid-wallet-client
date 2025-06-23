@@ -1,9 +1,4 @@
-import {
-  KnowledgeIcon,
-  SecurityIcon,
-  VaultsIcon,
-  WalletIcon,
-} from "@nfid-frontend/ui"
+import { SecurityIcon, VaultsIcon, WalletIcon } from "@nfid-frontend/ui"
 
 export const ProfileConstants = {
   base: "/wallet",
@@ -40,12 +35,5 @@ export const navigationPopupLinks = [
     title: "Security",
     link: ProfileConstants.security,
     id: "nav-security",
-  },
-  {
-    icon: KnowledgeIcon,
-    title: "Knowledge base",
-    link: `https://learn.nfid.one/`,
-    id: "nav-knowledge-base",
-    separator: true,
   },
 ]

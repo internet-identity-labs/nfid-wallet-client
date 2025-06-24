@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { Spinner } from "packages/ui/src/atoms/spinner"
 import { FC } from "react"
 
 import { Copy, CenterEllipsis } from "@nfid-frontend/ui"
@@ -60,13 +61,19 @@ export const Receive: FC<ReceiveProps> = ({
       <div className="mb-2.5">
         <p className="mb-1 text-xs text-gray-500">BTC wallet address</p>
         <div className="rounded-[12px] bg-gray-100 text-gray-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
-          <CenterEllipsis
-            value={btcAddress ?? ""}
-            leadingChars={29}
-            trailingChars={5}
-            id={"btcAddress"}
-          />
-          <Copy value={btcAddress ?? ""} />
+          {btcAddress ? (
+            <>
+              <CenterEllipsis
+                value={btcAddress ?? ""}
+                leadingChars={29}
+                trailingChars={5}
+                id={"btcAddress"}
+              />
+              <Copy value={btcAddress ?? ""} />
+            </>
+          ) : (
+            <Spinner className="w-5 h-5 mx-auto text-black" />
+          )}
         </div>
       </div>
       <div>
@@ -74,13 +81,19 @@ export const Receive: FC<ReceiveProps> = ({
           BTC wallet address for auto-conversion to ckBTC
         </p>
         <div className="rounded-[12px] bg-gray-100 text-gray-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
-          <CenterEllipsis
-            value={autoConversionBtcAddress ?? ""}
-            leadingChars={29}
-            trailingChars={5}
-            id={"autoConversionBtcAddress"}
-          />
-          <Copy value={autoConversionBtcAddress ?? ""} />
+          {autoConversionBtcAddress ? (
+            <>
+              <CenterEllipsis
+                value={autoConversionBtcAddress ?? ""}
+                leadingChars={29}
+                trailingChars={5}
+                id={"autoConversionBtcAddress"}
+              />
+              <Copy value={autoConversionBtcAddress ?? ""} />
+            </>
+          ) : (
+            <Spinner className="w-5 h-5 mx-auto text-black" />
+          )}
         </div>
         <p className="text-xs tracking-[0.16px] text-gray-400 mt-1">
           ckBTC will be received by your wallet after 6 Bitcoin network{" "}

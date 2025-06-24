@@ -45,8 +45,8 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   }>
   onSendClick: (value: string) => void
   onSwapClick: (value: string) => void
-  onConvertToBtc: () => any
-  onConvertToCkBtc: () => any
+  onConvertToBtc: () => void
+  onConvertToCkBtc: () => void
   onStakeClick: (value: string) => void
   hideZeroBalance: boolean
   onZeroBalanceToggle: () => void

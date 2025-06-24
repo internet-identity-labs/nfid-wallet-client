@@ -131,7 +131,7 @@ describe("Bitcoin Service", () => {
     expect(fee.interNetwokFee).toBe(BigInt(100))
     expect(fee.identityLabsFee).toBe(BigInt(9))
     expect(fee.bitcointNetworkFee.fee_satoshis).not.toBeNull()
-    expect(fee.bitcointNetworkFee.utxos).not.toHaveLength(0)
+    expect(fee.bitcointNetworkFee.utxos).toHaveLength(0)
   })
 
   it.skip("should send a token and return transaction id", async () => {

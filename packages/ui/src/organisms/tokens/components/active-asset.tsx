@@ -27,8 +27,8 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   profileConstants: IProfileConstants
   onSendClick: (value: string) => void
   onSwapClick: (value: string) => void
-  onConvertToBtc: () => any
-  onConvertToCkBtc: () => any
+  onConvertToBtc: () => void
+  onConvertToCkBtc: () => void
   onStakeClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
@@ -89,7 +89,6 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           <p
             className="text-sm font-semibold leading-[25px] flex items-center"
             id={`token_${token.getTokenName().replace(/\s/g, "")}_currency`}
-            onClick={() => onStakeClick(token.getTokenAddress())}
           >
             {token.getTokenSymbol()}
             {token.getTokenAddress() === BTC_NATIVE_ID && (
@@ -120,7 +119,10 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
               token.getTokenAddress() === ICP_CANISTER_ID) && (
               <>
                 <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
-                <span className="flex items-center text-xs cursor-pointer text-primaryButtonColor">
+                <span
+                  className="flex items-center text-xs cursor-pointer text-primaryButtonColor"
+                  onClick={() => onStakeClick(token.getTokenAddress())}
+                >
                   <IconCmpStakeAction className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor" />
                   Stake
                 </span>

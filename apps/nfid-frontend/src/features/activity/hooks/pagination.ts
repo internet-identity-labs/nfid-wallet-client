@@ -5,6 +5,7 @@ import { useSWR } from "@nfid/swr"
 import { PAGINATION_ITEMS } from "../constants"
 import { IActivityRowGroup } from "../types"
 import { getAllActivity } from "../utils/activity"
+import { useBtcAddress } from "frontend/hooks"
 
 // TODO: make the pagination reusable
 export const useActivityPagination = (initialFilter: string[] = []) => {
@@ -13,7 +14,7 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
   const [activities, setActivities] = useState<IActivityRowGroup[]>([])
   const [isButtonLoading, setIsButtonLoading] = useState(false)
   const [hasMoreData, setHasMoreData] = useState(true)
-
+  const { btcAddress } = useBtcAddress()
   const { data, isValidating, mutate } = useSWR(
     ["activity", filter, offset],
     () =>
@@ -21,6 +22,7 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
         filteredContracts: filter,
         offset,
         limit: PAGINATION_ITEMS,
+        btcAddress,
       }),
     {
       revalidateOnMount: true,

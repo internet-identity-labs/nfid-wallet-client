@@ -25,6 +25,7 @@ export interface GetAllActivityParams {
   filteredContracts: string[]
   offset?: number
   limit?: number
+  btcAddress: string
 }
 
 export interface GetAllActivityResult {

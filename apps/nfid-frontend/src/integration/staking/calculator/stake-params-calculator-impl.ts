@@ -42,17 +42,4 @@ export abstract class StakeParamsCalculatorImpl<T>
   getMaximumLockTimeInMonths(): number {
     return Math.round(this.getMaximumLockTime() / SECONDS_IN_MONTH)
   }
-
-  async calculateProjectRewards(
-    amount: string,
-    lockTime: number,
-  ): Promise<string> {
-    // This method is not implemented yet
-    return (Number(amount) + lockTime).toString()
-  }
-
-  async calculateEstAPR(amount: string, lockTime: number): Promise<string> {
-    // This method is not implemented yet
-    return (Number(amount) + lockTime).toString()
-  }
 }

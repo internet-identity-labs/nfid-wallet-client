@@ -76,7 +76,6 @@ export async function oldFlowGlobalKeysFromLambda(
   identity: DelegationIdentity,
   targets: string[],
   sessionPublicKey: Uint8Array,
-  origin: string,
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ) {
   const chain = Chain.IC

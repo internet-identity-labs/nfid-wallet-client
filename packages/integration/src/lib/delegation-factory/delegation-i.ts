@@ -64,7 +64,6 @@ export async function getGlobalDelegationChain(
       identity,
       targets,
       sessionPublicKey,
-      origin,
       maxTimeToLive,
     )
   }
@@ -107,47 +106,52 @@ export async function getGlobalDelegation(
   targets: string[],
   origin = GLOBAL_ORIGIN,
 ): Promise<DelegationIdentity> {
-  const cachedValue = await integrationCache.getItem(
+  return requestManager.executeRequest(
     JSON.stringify({ identity, targets }),
+    async () => {
+      const cachedValue = await integrationCache.getItem(
+        JSON.stringify({ identity, targets }),
+      )
+
+      if (cachedValue) return cachedValue as any
+
+      const sessionKey = Ed25519KeyIdentity.generate()
+
+      const userData = authState.getUserIdData()
+
+      let delegationChain
+
+      if (isCanisterDelegation(userData.anchor)) {
+        const pk = new Uint8Array(sessionKey.getPublicKey().toDer())
+        delegationChain = await getDelegationChainSignedByCanister(
+          identity,
+          targets,
+          pk,
+          userData.anchor,
+          origin,
+        )
+      } else {
+        //deprecated flow
+        delegationChain = await oldFlowDelegationChainLambda(
+          identity,
+          sessionKey,
+          targets,
+        )
+      }
+      const response = DelegationIdentity.fromDelegation(
+        sessionKey,
+        delegationChain,
+      )
+
+      await integrationCache.setItem(
+        JSON.stringify({ identity, targets }),
+        response,
+        { ttl: 600 },
+      )
+
+      return response
+    },
   )
-
-  if (cachedValue) return cachedValue as any
-
-  const sessionKey = Ed25519KeyIdentity.generate()
-
-  const userData = authState.getUserIdData()
-
-  let delegationChain
-
-  if (isCanisterDelegation(userData.anchor)) {
-    const pk = new Uint8Array(sessionKey.getPublicKey().toDer())
-    delegationChain = await getDelegationChainSignedByCanister(
-      identity,
-      targets,
-      pk,
-      userData.anchor,
-      origin,
-    )
-  } else {
-    //deprecated flow
-    delegationChain = await oldFlowDelegationChainLambda(
-      identity,
-      sessionKey,
-      targets,
-    )
-  }
-  const response = DelegationIdentity.fromDelegation(
-    sessionKey,
-    delegationChain,
-  )
-
-  await integrationCache.setItem(
-    JSON.stringify({ identity, targets }),
-    response,
-    { ttl: 600 },
-  )
-
-  return response
 }
 
 /**
@@ -246,3 +250,36 @@ export function toHexString(bytes: ArrayBuffer): string {
 function isCanisterDelegation(anchor: bigint) {
   return anchor >= ANCHOR_TO_GET_DELEGATION_FROM_DF
 }
+
+class RequestManager {
+  private static instance: RequestManager
+  private pendingRequests: Map<string, Promise<any>> = new Map()
+
+  static getInstance(): RequestManager {
+    if (!RequestManager.instance) {
+      RequestManager.instance = new RequestManager()
+    }
+    return RequestManager.instance
+  }
+
+  async executeRequest<T>(
+    key: string,
+    requestFn: () => Promise<T>,
+  ): Promise<T> {
+    // Если запрос уже выполняется, возвращаем существующий Promise
+    if (this.pendingRequests.has(key)) {
+      return this.pendingRequests.get(key)!
+    }
+
+    // Создаем новый запрос
+    const promise = requestFn().finally(() => {
+      // Удаляем из pending после завершения
+      this.pendingRequests.delete(key)
+    })
+
+    this.pendingRequests.set(key, promise)
+    return promise
+  }
+}
+
+const requestManager = RequestManager.getInstance()

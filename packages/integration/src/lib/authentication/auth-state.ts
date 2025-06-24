@@ -25,6 +25,7 @@ import {
   serializeUserIdData,
   UserIdData,
 } from "./user-id-data"
+import { getGlobalDelegation } from "../delegation-factory/delegation-i"
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -150,6 +151,9 @@ function makeAuthState() {
 
     replaceIdentity(delegationIdentity, "_loadAuthSessionFromCache")
     setupSessionManager({ onIdle: invalidateIdentity })
+
+    //TODO: this is a temporary solution to get the global delegation. Have to be stored under ecncrypted field in index db
+    getGlobalDelegation(delegationIdentity, [])
 
     observableAuthState$.next({
       cacheLoaded: true,

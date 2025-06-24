@@ -32,8 +32,8 @@ type AssetDropdownProps = {
   profileConstants: IProfileConstants
   onSendClick: (value: string) => void
   onSwapClick: (value: string) => void
-  onConvertToBtc: () => any
-  onConvertToCkBtc: () => any
+  onConvertToBtc: () => void
+  onConvertToCkBtc: () => void
   onStakeClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition

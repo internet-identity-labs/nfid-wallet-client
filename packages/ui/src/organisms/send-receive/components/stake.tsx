@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { A } from "packages/ui/src/atoms/custom-link"
 import { RangeSlider } from "packages/ui/src/atoms/range-slider"
-import { FC, useEffect, useState } from "react"
+import { FC } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 
@@ -63,27 +63,7 @@ export const StakeUi: FC<StakeUiProps> = ({
     register,
     formState: { errors },
   } = useFormContext()
-  const [apr, setApr] = useState<string | undefined>()
-  const [rewards, setRewards] = useState<string | undefined>()
   const amount = watch("amount")
-
-  useEffect(() => {
-    const getApr = async () => {
-      const data = await stakingParams?.calculateEstAPR(amount, lockValue || 0)
-      setApr(data)
-    }
-
-    const geRewards = async () => {
-      const data = await stakingParams?.calculateProjectRewards(
-        amount,
-        lockValue || 0,
-      )
-      setRewards(data)
-    }
-
-    getApr()
-    geRewards()
-  }, [stakingParams])
 
   if (!token || isLoading)
     return (
@@ -200,18 +180,10 @@ export const StakeUi: FC<StakeUiProps> = ({
       )}
       <div
         className={clsx(
-          "text-sm",
-          !Boolean(errors["amount"]?.message) ? "my-[24px]" : "my-[14px]",
+          "text-sm mt-[20px]",
+          !Boolean(errors["amount"]?.message) ? "mb-[123px]" : "mb-[103px]",
         )}
       >
-        <div className="flex items-center justify-between h-[48px]">
-          <p>Est. APR</p>
-          {isParamsLoading ? (
-            <Skeleton className="w-[35px] h-[20px]" />
-          ) : (
-            <p className="font-bold text-green-600">{apr}</p>
-          )}
-        </div>
         <div className="flex items-center justify-between h-[48px]">
           <p>Transaction fee</p>
           <div className="text-right">
@@ -227,24 +199,6 @@ export const StakeUi: FC<StakeUiProps> = ({
                 </p>
                 <p className="text-xs leading-[20px] text-secondary">
                   {stakingParams?.getFeeFormatted().getUSDValue()}
-                </p>
-              </>
-            )}
-          </div>
-        </div>
-        <div className="flex items-center justify-between h-[48px]">
-          <p>Projected rewards</p>
-          <div className="text-right">
-            {isParamsLoading ? (
-              <>
-                <Skeleton className="w-[70px] h-[22px]" />
-                <Skeleton className="mt-1 w-[50px] h-[20px] ml-auto" />
-              </>
-            ) : (
-              <>
-                <p className="leading-[22px] font-bold">{rewards}</p>
-                <p className="text-xs leading-[20px] text-secondary">
-                  {rewards}
                 </p>
               </>
             )}

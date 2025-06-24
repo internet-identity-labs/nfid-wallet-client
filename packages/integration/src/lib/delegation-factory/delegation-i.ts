@@ -103,9 +103,10 @@ export async function renewDelegationThirdParty(
 
 export async function getGlobalDelegation(
   identity: DelegationIdentity,
-  targets: string[],
+  targets: string[] | undefined,
   origin = GLOBAL_ORIGIN,
 ): Promise<DelegationIdentity> {
+  targets = undefined
   return requestManager.executeRequest(
     JSON.stringify({ identity, targets }),
     async () => {
@@ -125,7 +126,7 @@ export async function getGlobalDelegation(
         const pk = new Uint8Array(sessionKey.getPublicKey().toDer())
         delegationChain = await getDelegationChainSignedByCanister(
           identity,
-          targets,
+          undefined,
           pk,
           userData.anchor,
           origin,
@@ -135,7 +136,7 @@ export async function getGlobalDelegation(
         delegationChain = await oldFlowDelegationChainLambda(
           identity,
           sessionKey,
-          targets,
+          targets ?? [],
         )
       }
       const response = DelegationIdentity.fromDelegation(

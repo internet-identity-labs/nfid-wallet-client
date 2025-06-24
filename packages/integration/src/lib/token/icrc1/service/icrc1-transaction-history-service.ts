@@ -14,7 +14,7 @@ import {
   Mint,
   Burn,
   Approve,
-  Transaction
+  Transaction,
 } from "../../../_ic_api/index-icrc1.d"
 import { idlFactory as icrc1IndexIDLICP } from "../../../_ic_api/ledger-index-icrc1"
 import {
@@ -87,11 +87,12 @@ export class Icrc1TransactionHistoryService {
 
           return this.getDefaultICRC1IndexData()
         } catch (error) {
-          console.error(error)
           console.error(
             "Error getting account transactions for canister: ",
             ledgerData.symbol,
             pair.icrc1,
+            "Error: ",
+            error,
           )
           return this.getDefaultICRC1IndexData()
         }
@@ -142,50 +143,56 @@ export class Icrc1TransactionHistoryService {
     decimals: number,
     canisterId: string,
   ): Array<TransactionData> {
-    return (
-      rawTrss
-        .map((rawTrs) => {
-          if (rawTrs.transaction.transfer.length !== 0) {
-            const trs: Transfer = rawTrs.transaction.transfer[0]!
-            const type =
-              ownerPrincipal === trs.from.owner.toText()
-                ? ("Sent" as IActivityAction)
-                : ("Received" as IActivityAction)
+    return rawTrss.map((rawTrs) => {
+      if (rawTrs.transaction.transfer.length !== 0) {
+        const trs: Transfer = rawTrs.transaction.transfer[0]!
+        const type =
+          ownerPrincipal === trs.from.owner.toText()
+            ? ("Sent" as IActivityAction)
+            : ("Received" as IActivityAction)
 
-            return {
-              type,
-              timestamp: rawTrs.transaction.timestamp,
-              symbol,
-              amount: trs.amount,
-              from: trs.from.owner.toText(),
-              to: trs.to.owner.toText(),
-              transactionId: rawTrs.id,
-              decimals,
-              canister: canisterId,
-            }
-          }
+        return {
+          type,
+          timestamp: rawTrs.transaction.timestamp,
+          symbol,
+          amount: trs.amount,
+          from: trs.from.owner.toText(),
+          to: trs.to.owner.toText(),
+          transactionId: rawTrs.id,
+          decimals,
+          canister: canisterId,
+        }
+      }
 
-          if (["mint", "burn", "approve"].includes(rawTrs.transaction.kind)) {
-            const kind = rawTrs.transaction.kind as keyof Transaction
-            const trs = (rawTrs.transaction[kind] as [Mint | Burn | Approve])[0]
-            const type = kind.charAt(0).toUpperCase() + kind.slice(1) as IActivityAction
+      if (["mint", "burn", "approve"].includes(rawTrs.transaction.kind)) {
+        const kind = rawTrs.transaction.kind as keyof Transaction
+        const trs = (rawTrs.transaction[kind] as [Mint | Burn | Approve])[0]
+        const type = (kind.charAt(0).toUpperCase() +
+          kind.slice(1)) as IActivityAction
 
-            return {
-              type,
-              timestamp: rawTrs.transaction.timestamp,
-              symbol,
-              amount: trs.amount,
-              transactionId: rawTrs.id,
-              decimals,
-              canister: canisterId,
-            }
-          }
+        return {
+          type,
+          timestamp: rawTrs.transaction.timestamp,
+          symbol,
+          amount: trs.amount,
+          transactionId: rawTrs.id,
+          decimals,
+          canister: canisterId,
+          from:
+            rawTrs.transaction.kind === "approve"
+              ? (trs as Approve).from.owner.toText()
+              : undefined,
+          to:
+            rawTrs.transaction.kind === "approve"
+              ? (trs as Approve).spender.owner.toText()
+              : undefined,
+        }
+      }
 
-          throw new Error(
-            `Unsupported transaction kind: ${rawTrs.transaction.kind}`
-          )
-        })
-    )
+      throw new Error(
+        `Unsupported transaction kind: ${rawTrs.transaction.kind}`,
+      )
+    })
   }
 
   private mapRawTrsToTransactionICP(

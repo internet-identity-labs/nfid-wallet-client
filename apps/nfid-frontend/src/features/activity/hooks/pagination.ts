@@ -2,10 +2,11 @@ import { useEffect, useState } from "react"
 
 import { useSWR } from "@nfid/swr"
 
+import { useBtcAddress } from "frontend/hooks"
+
 import { PAGINATION_ITEMS } from "../constants"
 import { IActivityRowGroup } from "../types"
 import { getAllActivity } from "../utils/activity"
-import { useBtcAddress } from "frontend/hooks"
 
 // TODO: make the pagination reusable
 export const useActivityPagination = (initialFilter: string[] = []) => {
@@ -15,7 +16,7 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
   const [isButtonLoading, setIsButtonLoading] = useState(false)
   const [hasMoreData, setHasMoreData] = useState(true)
   const { btcAddress } = useBtcAddress()
-  const { data, isValidating, mutate } = useSWR(
+  const { data, isValidating, isLoading, mutate } = useSWR(
     ["activity", filter, offset],
     () =>
       getAllActivity({
@@ -79,14 +80,17 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
     mutate()
   }
 
+  const isFirstLoading = !data && !isLoading && !isValidating
+
   return {
     activities,
     filter,
     setFilter,
-    isValidating,
+    isValidating: isLoading || isValidating,
     hasMoreData,
     loadMore,
     isButtonLoading,
     resetHandler,
+    isFirstLoading,
   }
 }

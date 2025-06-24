@@ -17,6 +17,9 @@ import {
   IconCmpArrow,
   IconCmpStatusSuccess,
   IconCmpSwapActivity,
+  IconCmpBurnActivity,
+  IconCmpMintActivity,
+  IconCmpApproveActivity,
   IconNftPlaceholder,
   IconSvgArrowRight,
   ImageWithFallback,
@@ -25,7 +28,7 @@ import {
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
-import { useProfile } from "frontend/integration/identity-manager/queries"
+import { FT } from "frontend/integration/ft/ft"
 import { APPROXIMATE_SWAP_DURATION } from "frontend/integration/swap/transaction/transaction-service"
 
 interface ErrorStage {
@@ -99,8 +102,65 @@ export const getTooltipAndButtonText = (
   throw new Error("Unexpected Stage")
 }
 
+export const getActionMarkup = (
+  action: IActivityAction,
+  transaction: SwapTransaction | undefined,
+) => {
+  switch (action) {
+    case IActivityAction.SENT:
+      return {
+        bg: "bg-red-50",
+        icon: <IconCmpArrow className="rotate-[135deg] text-red-600" />,
+      }
+
+    case IActivityAction.RECEIVED:
+      return {
+        bg: "bg-emerald-50",
+        icon: <IconCmpArrow className="rotate-[-45deg] text-emerald-600" />,
+      }
+
+    case IActivityAction.SWAP:
+      return {
+        bg: "bg-violet-50",
+        icon: (
+          <>
+            <IconCmpSwapActivity />
+            {getTooltipAndButtonText(transaction) && (
+              <div className="absolute bottom-0 right-0 w-3 h-3 bg-red-600 border-2 border-white rounded-full" />
+            )}
+          </>
+        ),
+      }
+
+    case IActivityAction.MINT:
+      return {
+        bg: "bg-emerald-50",
+        icon: <IconCmpMintActivity className="text-emerald-600" />,
+      }
+
+    case IActivityAction.BURN:
+      return {
+        bg: "bg-red-50",
+        icon: <IconCmpBurnActivity className="text-emerald-600" />,
+      }
+
+    case IActivityAction.APPROVE:
+      return {
+        bg: "bg-emerald-50",
+        icon: <IconCmpApproveActivity className="text-emerald-600" />,
+      }
+
+    default:
+      return {
+        bg: "bg-gray-100",
+        icon: null,
+      }
+  }
+}
+
 interface IActivityTableRow extends IActivityRow {
   id: string
+  token?: FT
 }
 
 export const StatusIcons = {
@@ -115,9 +175,9 @@ export const ActivityTableRow = ({
   to,
   id,
   transaction,
+  token,
 }: IActivityTableRow) => {
   const [isLoading, setIsLoading] = useState(false)
-  const { profile } = useProfile()
 
   const providerName =
     transaction?.getSwapName() && SwapName[transaction?.getSwapName()]
@@ -193,31 +253,10 @@ export const ActivityTableRow = ({
           <div
             className={clsx(
               "w-10 min-w-10 h-10 rounded-[9px] flex items-center justify-center relative",
-              action === IActivityAction.SENT
-                ? "bg-red-50"
-                : action === IActivityAction.RECEIVED
-                ? "bg-emerald-50"
-                : "bg-violet-50",
+              getActionMarkup(action, transaction).bg,
             )}
           >
-            {action === IActivityAction.SENT ? (
-              <IconCmpArrow className="text-gray-400 rotate-[135deg] text-red-600" />
-            ) : action === IActivityAction.RECEIVED ? (
-              <IconCmpArrow className="text-gray-400 rotate-[-45deg] !text-emerald-600" />
-            ) : (
-              <>
-                <IconCmpSwapActivity />
-                {getTooltipAndButtonText(transaction) && (
-                  <div
-                    className={clsx(
-                      "absolute right-0 bottom-0",
-                      "w-3 h-3 rounded-full",
-                      "border-2 border-white bg-red-600",
-                    )}
-                  ></div>
-                )}
-              </>
-            )}
+            {getActionMarkup(action, transaction).icon}
           </div>
           <div className="ml-2.5 mb-[11px] mt-[11px] shrink-0">
             <p
@@ -235,16 +274,19 @@ export const ActivityTableRow = ({
           </div>
         </td>
 
-        {![IActivityAction.APPROVE, IActivityAction.MINT, IActivityAction.BURN].includes(action) ? (
+        {![
+          IActivityAction.APPROVE,
+          IActivityAction.MINT,
+          IActivityAction.BURN,
+        ].includes(action) ? (
           <>
             <td
               className={clsx(
-                "transition-opacity w-[20%] text-center hidden sm:table-cell",
-                action !== IActivityAction.SWAP && "pl-[28px]",
+                "transition-opacity w-[20%] hidden sm:table-cell pl-[28px]",
               )}
             >
               {action === IActivityAction.SWAP && asset?.type === "ft" ? (
-                <div className="flex items-center justify-center gap-[8px]">
+                <div className="flex items-center gap-[8px]">
                   <ImageWithFallback
                     alt="NFID token"
                     fallbackSrc={IconNftPlaceholder}
@@ -258,7 +300,11 @@ export const ActivityTableRow = ({
                   />
                 </div>
               ) : (
-                <CopyAddress address={from} leadingChars={6} trailingChars={4} />
+                <CopyAddress
+                  address={from}
+                  leadingChars={6}
+                  trailingChars={4}
+                />
               )}
             </td>
             <td className="w-[34px] h-[24px] m-auto hidden sm:table-cell">
@@ -266,12 +312,11 @@ export const ActivityTableRow = ({
             </td>
             <td
               className={clsx(
-                "transition-opacity w-[20%] text-center hidden sm:table-cell",
-                action !== IActivityAction.SWAP && "pl-[28px]",
+                "transition-opacity w-[20%] hidden sm:table-cell pl-[28px]",
               )}
             >
               {action === IActivityAction.SWAP && asset?.type === "ft" ? (
-                <div className="flex items-center justify-center gap-[8px]">
+                <div className="flex items-center gap-[8px]">
                   <ImageWithFallback
                     alt="NFID token"
                     fallbackSrc={IconNftPlaceholder}
@@ -290,17 +335,62 @@ export const ActivityTableRow = ({
             </td>
           </>
         ) : (
-          <td
-            colSpan={3}
-            className={clsx(
-              "transition-opacity w-[20%] text-center hidden sm:table-cell pl-[28px]",
+          <>
+            {action === IActivityAction.APPROVE ? (
+              <>
+                <td
+                  className={clsx(
+                    "transition-opacity w-[20%] hidden sm:table-cell pl-[28px]",
+                  )}
+                >
+                  <CopyAddress
+                    address={from}
+                    leadingChars={6}
+                    trailingChars={4}
+                  />
+                </td>
+                <td className="w-[34px] h-[24px] m-auto hidden sm:table-cell">
+                  <img src={IconSvgArrowRight} alt="" />
+                </td>
+                <td
+                  className={clsx(
+                    "transition-opacity w-[20%] hidden sm:table-cell pl-[28px]",
+                  )}
+                >
+                  <CopyAddress
+                    address={to}
+                    leadingChars={6}
+                    trailingChars={4}
+                  />
+                </td>
+              </>
+            ) : (
+              <td
+                colSpan={3}
+                className={clsx(
+                  "transition-opacity w-[20%] hidden sm:table-cell pl-[28px]",
+                )}
+              >
+                <div className="flex items-center gap-2">
+                  <ImageWithFallback
+                    alt={`${token?.getTokenSymbol()} token`}
+                    fallbackSrc={IconNftPlaceholder}
+                    src={token?.getTokenLogo()}
+                    className="rounded-full w-[28px] h-[28px]"
+                  />
+                  <TickerAmount
+                    value={asset.amount!}
+                    decimals={token?.getTokenDecimals()}
+                    symbol={token?.getTokenSymbol()!}
+                  />
+                </div>
+              </td>
             )}
-          />
+          </>
         )}
-
         {asset?.type === "ft" ? (
           <td className="leading-5 pr-5 sm:pr-[30px] min-w-[60%] sm:min-w-auto sm:w-[30%] text-left sm:text-center">
-            <div className="flex items-center">
+            <div className="flex items-center text-left">
               {action === IActivityAction.SWAP && (
                 <div className="mr-[24px] flex sm:hidden w-[28px]">
                   <ImageWithFallback

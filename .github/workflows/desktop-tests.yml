@@ -292,7 +292,7 @@ jobs:
           docker pull ${IMAGE_ID}:${VERSION}
 
           # Save VARS for next steps
-          TEST_ADD_PARAMS="--cucumberOpts.tagExpression='not @only_deploy_to_main and not @pending and not @mobile'"
+          TEST_ADD_PARAMS="--cucumberOpts.tagExpression='@swap and not @only_deploy_to_main and not @pending and not @mobile'"
 
           # If branch main, run full cycle
           if [ "${{ github.ref_name }}" == 'main' ]; then
@@ -419,7 +419,7 @@ jobs:
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo ${VERSION} | sed -e 's/^v//')
           [ "${VERSION}" == "main" ] && VERSION=latest
 
-          TEST_ADD_PARAMS="--cucumberOpts.tagExpression='not @only_deploy_to_main and not @pending and not @desktop'"
+          TEST_ADD_PARAMS="--cucumberOpts.tagExpression=' '"
           if [ "${{ github.ref_name }}" == 'main' ]; then
             TEST_ADD_PARAMS=""
           fi

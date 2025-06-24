@@ -1,3 +1,4 @@
+import { Spinner } from "packages/ui/src/atoms/spinner"
 import { Dispatch, FC, SetStateAction, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
@@ -203,9 +204,17 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         id="sendButton"
         block
         onClick={submit}
-        icon={<IconCmpArrow className="rotate-[135deg] !max-w-5 !max-h-5" />}
+        icon={
+          isFeeLoading && token.getTokenAddress() ? (
+            <Spinner className="w-5 h-5 text-white" />
+          ) : (
+            <IconCmpArrow className="rotate-[135deg] !max-w-5 !max-h-5" />
+          )
+        }
       >
-        Send
+        {isFeeLoading && token.getTokenAddress() === BTC_NATIVE_ID
+          ? "BTC fee loading"
+          : "Send"}
       </Button>
     </>
   )

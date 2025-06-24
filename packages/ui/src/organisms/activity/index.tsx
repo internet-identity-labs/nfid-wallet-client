@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { FC } from "react"
+import { FC, useMemo } from "react"
 
 import {
   Button,
@@ -8,6 +8,7 @@ import {
   IconCmpFilters,
   Table,
 } from "@nfid-frontend/ui"
+import { CKBTC_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { IActivityRowGroup } from "frontend/features/activity/types"
 import { FT } from "frontend/integration/ft/ft"
@@ -26,6 +27,7 @@ export interface ActivityProps {
     loadMore: () => Promise<void>
     isButtonLoading: boolean
     resetHandler: () => void
+    isFirstLoading: boolean
   }
   tokens: FT[]
 }
@@ -40,7 +42,12 @@ export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
     loadMore,
     isButtonLoading,
     resetHandler,
+    isFirstLoading,
   } = activityData
+  const ckBTC = useMemo(
+    () => tokens.find((token) => token.getTokenAddress() === CKBTC_CANISTER_ID),
+    [tokens],
+  )
 
   return (
     <>
@@ -73,7 +80,7 @@ export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
           />
         </FilterPopover>
       </div>
-      {!Boolean(activities.length) && !isValidating ? (
+      {!isFirstLoading && activities.length === 0 && !isValidating ? (
         <ActivityEmpty />
       ) : (
         <>
@@ -84,7 +91,7 @@ export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
             )}
           >
             <Table className="!min-w-0 !sm:min-w-[720px] " id="activity-table">
-              {isValidating && !activities.length ? (
+              {(isValidating && !activities.length) || isFirstLoading ? (
                 <>
                   <TableActivitySkeleton
                     tableRowsAmount={10}
@@ -98,6 +105,7 @@ export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
                     date={group.date}
                     rows={group.rows}
                     key={`group_${group.date}`}
+                    token={ckBTC}
                   />
                 ))
               )}

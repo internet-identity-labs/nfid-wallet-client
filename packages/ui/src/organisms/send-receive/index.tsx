@@ -64,7 +64,7 @@ export const TransferModal: FC<TransferModalProps> = ({
           </div>
           <ToggleButton
             firstValue="Token"
-            secondValue="Collectible"
+            secondValue="NFT"
             className="mb-5"
             onChange={onTokenTypeChange}
             defaultValue={tokenType === "nft"}

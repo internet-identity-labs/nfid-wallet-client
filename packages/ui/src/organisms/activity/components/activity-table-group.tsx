@@ -5,17 +5,20 @@ import {
   IActivityRow,
   IActivityRowGroup,
 } from "frontend/features/activity/types"
+import { FT } from "frontend/integration/ft/ft"
 
 import { ActivityTableRow } from "./activity-table-row"
 
 interface IActivityTableGroup extends IActivityRowGroup {
   groupIndex: number
+  token?: FT
 }
 
 export const ActivityTableGroup = ({
   date,
   rows,
   groupIndex,
+  token,
 }: IActivityTableGroup) => {
   const getRowId = useCallback((row: IActivityRow) => {
     if (row.asset.type === "ft")
@@ -48,6 +51,7 @@ export const ActivityTableGroup = ({
           {...row}
           id={getRowId(row)}
           key={`group_${groupIndex}_activity_${i}`}
+          token={token}
         />
       ))}
     </>

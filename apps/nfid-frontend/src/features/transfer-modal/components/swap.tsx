@@ -97,10 +97,10 @@ export const SwapFT = ({
 
   useEffect(() => {
     if (!preselectedTargetTokenAddress) {
-      const hasNfidw = tokensAvailableToSwap.to.find(
+      const nfidwToken = tokensAvailableToSwap.to.find(
         (item) => NFIDW_CANISTER_ID === item,
       )
-      setToTokenAddress(hasNfidw || ICP_CANISTER_ID)
+      setToTokenAddress(nfidwToken || ICP_CANISTER_ID)
     } else {
       setToTokenAddress(preselectedTargetTokenAddress)
     }

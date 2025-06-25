@@ -198,7 +198,8 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
 
-      const icrc2supported = await this.icrc2supported()
+      // const icrc2supported = await this.icrc2supported()
+      const icrc2supported = false
 
       let icrcTransferId
 

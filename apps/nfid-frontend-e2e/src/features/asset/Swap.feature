@@ -1,7 +1,7 @@
 Feature: Swap functionality
   As a user, I want to swap tokens
 
-  @swap @desktop @skip
+  @swap @desktop
   Scenario: User swaps his token
     Given User opens NFID site
     And User is already authenticated by 28567 anchor
@@ -16,7 +16,7 @@ Feature: Swap functionality
     When User goes to Tokens tab
     And Verifying the balance of $NFIDW token and $ICP token has changed correctly
 
-  @swap @mobile @skip
+  @swap @mobile
   Scenario: User swaps his token
     Given User opens NFID site
     And User is already authenticated by 31870 anchor

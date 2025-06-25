@@ -100,10 +100,14 @@ const NFTsPage = () => {
   const totalPages = data?.totalPages || 0
 
   const tokensWithoutPrice = useMemo(() => {
-    return data?.items.filter(
-      (nft) => nft.getTokenFloorPriceUSD() === undefined,
-    ).length
-  }, [data?.items])
+    if (!nfts) return
+
+    return nfts
+      .filter((nft): nft is NFT => nft !== null)
+      .filter(
+        (nft) => nft.getTokenFloorPriceUSD() === undefined || nft.getError(),
+      ).length
+  }, [nfts])
 
   return (
     <>

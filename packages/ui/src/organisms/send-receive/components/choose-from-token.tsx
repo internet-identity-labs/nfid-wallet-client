@@ -83,8 +83,6 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       : btcFee
   }, [token, userBalance, btcFee])
 
-  console.log("feeees", btcFee, fee)
-
   const isMaxAvailable = useMemo(() => {
     if (
       modalType === IModalType.CONVERT_TO_CKBTC ||

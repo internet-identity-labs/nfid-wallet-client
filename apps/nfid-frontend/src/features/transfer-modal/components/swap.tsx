@@ -97,11 +97,14 @@ export const SwapFT = ({
 
   useEffect(() => {
     if (!preselectedTargetTokenAddress) {
-      setToTokenAddress(NFIDW_CANISTER_ID)
+      const nfidwToken = tokensAvailableToSwap.to.find(
+        (item) => NFIDW_CANISTER_ID === item,
+      )
+      setToTokenAddress(nfidwToken || ICP_CANISTER_ID)
     } else {
       setToTokenAddress(preselectedTargetTokenAddress)
     }
-  }, [preselectedTargetTokenAddress])
+  }, [preselectedTargetTokenAddress, tokensAvailableToSwap.to])
 
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",
@@ -111,7 +114,9 @@ export const SwapFT = ({
 
   const activeTokens = useMemo(() => {
     const activeTokens = tokens.filter(
-      (token: FT) => token.getTokenState() === State.Active,
+      (token: FT) =>
+        token.getTokenState() === State.Active &&
+        token.getTokenAddress() !== BTC_NATIVE_ID,
     )
 
     if (!hideZeroBalance) return activeTokens
@@ -181,17 +186,17 @@ export const SwapFT = ({
   }, [fromTokenAddress, isEqual])
 
   const getProviders = useCallback(async () => {
+    const allFromTokens = activeTokens.map((token) => token.getTokenAddress())
+
     try {
-      const [tokensAvailableToSwapTo, tokensAvailableToSwapFrom, providers] =
-        await Promise.all([
-          ftService.getTokensAvailableToSwap(fromTokenAddress),
-          ftService.getTokensAvailableToSwap(toTokenAddress),
-          swapService.getSwapProviders(fromTokenAddress, toTokenAddress),
-        ])
+      const [tokensAvailableToSwapTo, providers] = await Promise.all([
+        ftService.getTokensAvailableToSwap(fromTokenAddress),
+        swapService.getSwapProviders(fromTokenAddress, toTokenAddress),
+      ])
 
       setTokensAvailableToSwap({
         to: tokensAvailableToSwapTo,
-        from: tokensAvailableToSwapFrom,
+        from: allFromTokens,
       })
       setSwapProviders(providers)
       setLiquidityError(undefined)
@@ -200,12 +205,16 @@ export const SwapFT = ({
       if (error instanceof LiquidityError) {
         setSwapProviders(new Map())
         setLiquidityError(error)
+        setTokensAvailableToSwap({
+          to: await ftService.getTokensAvailableToSwap(fromTokenAddress),
+          from: allFromTokens,
+        })
       }
       if (error instanceof ServiceUnavailableError) {
         setProviderError(error)
       }
     }
-  }, [fromTokenAddress, toTokenAddress])
+  }, [fromTokenAddress, toTokenAddress, activeTokens])
 
   useEffect(() => {
     getProviders()

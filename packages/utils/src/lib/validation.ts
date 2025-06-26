@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js"
 
-const MIN_CK_BTC_AMOUNT_TO_CONVERT = 0.0005
+const MIN_CK_BTC_AMOUNT_TO_CONVERT = 0.00051
 
 interface Validation {
   min?: number

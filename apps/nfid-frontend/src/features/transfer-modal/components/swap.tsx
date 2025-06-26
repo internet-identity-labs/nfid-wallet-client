@@ -97,11 +97,14 @@ export const SwapFT = ({
 
   useEffect(() => {
     if (!preselectedTargetTokenAddress) {
-      setToTokenAddress(NFIDW_CANISTER_ID)
+      const nfidwToken = tokensAvailableToSwap.to.find(
+        (item) => NFIDW_CANISTER_ID === item,
+      )
+      setToTokenAddress(nfidwToken || ICP_CANISTER_ID)
     } else {
       setToTokenAddress(preselectedTargetTokenAddress)
     }
-  }, [preselectedTargetTokenAddress])
+  }, [preselectedTargetTokenAddress, tokensAvailableToSwap.to])
 
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",

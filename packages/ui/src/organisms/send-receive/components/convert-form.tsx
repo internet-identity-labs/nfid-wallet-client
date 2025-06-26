@@ -1,4 +1,5 @@
 import clsx from "clsx"
+import { Spinner } from "packages/ui/src/atoms/spinner"
 import { FC } from "react"
 import { FieldErrors, FieldValues } from "react-hook-form"
 
@@ -18,7 +19,7 @@ import { FT } from "frontend/integration/ft/ft"
 
 import ConvertArrowBox from "../assets/convert-arrow-box.png"
 import ConvertIcon from "../assets/convert.svg"
-import { IConversionFee } from "../utils"
+import { IConversionFee, IModalType } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { ChooseToToken } from "./choose-to-token"
 import { ConvertModal } from "./convert"
@@ -85,16 +86,18 @@ export const ConvertForm: FC<ConvertFormProps> = ({
         </div>
         <p className="mb-1 text-xs select-none">From</p>
         <ChooseFromToken
+          modalType={
+            fromToken?.getTokenAddress() === BTC_NATIVE_ID &&
+            toToken?.getTokenAddress() === CKBTC_CANISTER_ID
+              ? IModalType.CONVERT_TO_CKBTC
+              : IModalType.CONVERT_TO_BTC
+          }
           id={"convert-from-title"}
           token={fromToken}
           setFromChosenToken={setFromChosenToken}
           usdRate={toToken!.getTokenRateFormatted(amount || "0")}
           value={amount}
           title="Swap from"
-          isConvertFromCkBtc={
-            fromToken?.getTokenAddress() === CKBTC_CANISTER_ID &&
-            toToken?.getTokenAddress() === BTC_NATIVE_ID
-          }
         />
         {errors["amount"] && (
           <div className="h-4 mt-1 text-xs leading-4 text-red-600">
@@ -122,7 +125,9 @@ export const ConvertForm: FC<ConvertFormProps> = ({
         <ChooseToToken
           token={toToken}
           setToChosenToken={setToChosenToken}
-          usdRate={toToken!.getTokenRateFormatted(amount || "0")}
+          usdRate={toToken!.getTokenRateFormatted(
+            fee && fee.total ? (+amount - +fee?.total).toString() || "0" : "0",
+          )}
           isLoading={isFeeLoading}
           value={targetAmount}
           color="bg-gray-50"
@@ -146,7 +151,9 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           id="swapTokensButton"
           block
           icon={
-            !amount ? null : (
+            !amount ? null : fee === undefined ? (
+              <Spinner className="w-5 h-5 text-white" />
+            ) : (
               <IconCmpConvertWhite className="text-gray-400 !w-[18px] !h-[18px] text-white" />
             )
           }
@@ -158,7 +165,11 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           }
           onClick={submit}
         >
-          {!amount ? "Enter an amount" : "Convert"}
+          {!amount
+            ? "Enter an amount"
+            : fee === undefined
+            ? "BTC fee is loading"
+            : "Convert"}
         </Button>
       </div>
     </div>

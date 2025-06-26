@@ -19,6 +19,7 @@ import {
 import { SendStatus } from "frontend/features/transfer-modal/types"
 import { FT } from "frontend/integration/ft/ft"
 
+import { IModalType } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { SendSuccessUi } from "./send-success"
 
@@ -106,6 +107,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
       />
       <p className="mb-1 text-xs">Amount to send</p>
       <ChooseFromToken
+        modalType={IModalType.SEND}
         id={"token-to-send-title"}
         token={token}
         balance={vaultsBalance}
@@ -205,7 +207,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         block
         onClick={submit}
         icon={
-          isFeeLoading && token.getTokenAddress() ? (
+          isFeeLoading && token.getTokenAddress() === BTC_NATIVE_ID ? (
             <Spinner className="w-5 h-5 text-white" />
           ) : (
             <IconCmpArrow className="rotate-[135deg] !max-w-5 !max-h-5" />
@@ -213,7 +215,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         }
       >
         {isFeeLoading && token.getTokenAddress() === BTC_NATIVE_ID
-          ? "BTC fee loading"
+          ? "BTC fee is loading"
           : "Send"}
       </Button>
     </>

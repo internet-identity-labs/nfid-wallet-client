@@ -18,6 +18,7 @@ import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
 import SwapArrowBox from "../assets/swap-arrow-box.png"
 import SettingsIcon from "../assets/swap-settings.svg"
+import { IModalType } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { ChooseToToken } from "./choose-to-token"
 import { SwapModal } from "./swap"
@@ -111,6 +112,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
         </div>
         <p className="mb-1 text-xs">From</p>
         <ChooseFromToken
+          modalType={IModalType.SWAP}
           id={"swap-from-title"}
           token={fromToken}
           setFromChosenToken={setFromChosenToken}
@@ -118,7 +120,6 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           tokens={tokens}
           value={amount}
           title="Swap from"
-          isSwap={true}
           isResponsive={isResponsive}
           setIsResponsive={setIsFromResponsive}
           tokensAvailableToSwap={tokensAvailableToSwap}

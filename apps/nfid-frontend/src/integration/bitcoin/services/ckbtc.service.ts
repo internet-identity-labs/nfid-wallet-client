@@ -38,11 +38,28 @@ class CkBtcService {
     return blockIndex
   }
 
-  public getFee(amountInSatoshis: bigint): bigint {
-    const feePercentBigNumber = new BigNumber(FEE_PERCENT)
-    const amountBigNumber = new BigNumber(amountInSatoshis.toString())
-    const feeBigNmber = amountBigNumber.multipliedBy(feePercentBigNumber)
-    return BigInt(feeBigNmber.toFixed(0))
+  public async getCkBtcToBtcFee(
+    identity: SignIdentity,
+    amount: string,
+  ): Promise<CkBtcToBtcFee> {
+    const interNetwokFee = satoshiService.getInSatoshis("0.000001")
+    const conversionFee = satoshiService.getInSatoshis("0.0000001")
+    const initialAmountInSatoshi = satoshiService.getInSatoshis(amount)
+    const identityLabsFee: bigint = this.getIdentityLabsFee(initialAmountInSatoshi)
+    const amountInSatoshis: bigint =
+      satoshiService.getInSatoshis(amount) -
+      identityLabsFee -
+      conversionFee
+
+    const minter = await this.getMinter(identity)
+    const fee = await minter.estimateWithdrawalFee({ amount: amountInSatoshis })
+
+    return {
+      bitcointNetworkFee: { fee_satoshis: fee.bitcoin_fee + fee.minter_fee, utxos: [] },
+      conversionFee,
+      interNetwokFee,
+      identityLabsFee,
+    }
   }
 
   public async send(
@@ -75,6 +92,13 @@ class CkBtcService {
         this.nowInBigIntNanoSeconds() + BigInt(5) * NANO_SECONDS_IN_MINUTE,
       created_at_time: this.nowInBigIntNanoSeconds(),
     })
+  }
+
+  private getIdentityLabsFee(amountInSatoshis: bigint): bigint {
+    const feePercentBigNumber = new BigNumber(FEE_PERCENT)
+    const amountBigNumber = new BigNumber(amountInSatoshis.toString())
+    const feeBigNmber = amountBigNumber.multipliedBy(feePercentBigNumber)
+    return BigInt(feeBigNmber.toFixed(0))
   }
 
   private async retrieveBtc(

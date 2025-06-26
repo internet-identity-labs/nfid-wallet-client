@@ -163,11 +163,18 @@ function makeAuthState() {
   async function _setAuthSession(authState: {
     delegation: string
     identity: string
+    bitcoin: {
+      key: string
+      value: string
+    }
   }) {
     console.debug("_setAuthSession", { authState })
     await Promise.all([
       authStorage.set(KEY_STORAGE_KEY, authState.identity),
       authStorage.set(KEY_STORAGE_DELEGATION, authState.delegation),
+      ...(authState.bitcoin
+        ? [authStorage.set(authState.bitcoin.key, authState.bitcoin.value)]
+        : []),
     ])
     await _loadAuthSessionFromCache()
     return true

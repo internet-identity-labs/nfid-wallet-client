@@ -4,29 +4,32 @@ import { StakedTokenImpl } from "./staked-token-impl"
 
 export class StakedSnsTokenImpl extends StakedTokenImpl {
   getAvailable(): NFIDNeuron[] {
-    return this.neurons.filter((neuron) => {
-      const lockTime = neuron.getLockTime()
+    const now = Math.floor(Date.now() / 1000)
 
+    return this.neurons.filter((neuron) => {
+      const unlockTimestamp = neuron.getUnlockIn()
       return (
-        lockTime !== undefined &&
-        lockTime + neuron.getCreatedAt() <= Math.floor(Date.now() / 1000) &&
-        // TODO: research why the redeemed stakes are not deleted
+        typeof unlockTimestamp === "number" &&
+        unlockTimestamp <= now &&
         Number(neuron.getInitialStake()) > 0
       )
     })
   }
 
   getUnlocking(): NFIDNeuron[] {
-    return this.neurons.filter((neuron) => neuron.getUnlockIn())
+    const now = Math.floor(Date.now() / 1000)
+
+    return this.neurons.filter((neuron) => {
+      const unlockTimestamp = neuron.getUnlockIn()
+      return typeof unlockTimestamp === "number" && unlockTimestamp > now
+    })
   }
 
   getLocked(): NFIDNeuron[] {
     return this.neurons.filter((neuron) => {
-      const lockTime = neuron.getLockTime()
-
+      const unlockTimestamp = neuron.getUnlockIn()
       return (
-        lockTime !== undefined &&
-        lockTime + neuron.getCreatedAt() > Math.floor(Date.now() / 1000)
+        unlockTimestamp === undefined && Number(neuron.getInitialStake()) > 0
       )
     })
   }

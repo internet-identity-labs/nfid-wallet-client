@@ -1,3 +1,5 @@
+import { SignIdentity } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import { BtcBanner } from "packages/ui/src/molecules/btc-banner"
@@ -20,8 +22,11 @@ import useSWRImmutable from "swr/immutable"
 
 import { ArrowButton, Loader, TabsSwitcher, Tooltip } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
-import { CKBTC_CANISTER_ID } from "@nfid/integration/token/constants"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
+import {
+  CKBTC_CANISTER_ID,
+  ICP_ROOT_CANISTER_ID,
+} from "@nfid/integration/token/constants"
+import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
@@ -33,15 +38,20 @@ import { fetchNFTs } from "frontend/features/collectibles/utils/util"
 import {
   fetchTokens,
   getFullUsdValue,
+  getUserPrincipalId,
   initTokens,
 } from "frontend/features/fungible-token/utils"
 import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
+import { fetchStakedTokens } from "frontend/features/staking/utils"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { ModalType } from "frontend/features/transfer-modal/types"
+import { getIdentity } from "frontend/features/transfer-modal/utils"
 import { getAllVaults } from "frontend/features/vaults/services"
-import { useProfile } from "frontend/integration/identity-manager/queries"
-import { ProfileContext } from "frontend/provider"
 import { useBtcAddress } from "frontend/hooks"
+import { ftService } from "frontend/integration/ft/ft-service"
+import { useProfile } from "frontend/integration/identity-manager/queries"
+import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
+import { ProfileContext } from "frontend/provider"
 
 interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   pageTitle?: string
@@ -80,6 +90,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     window.history.back()
   }, [])
   const [hasUncompletedSwap, setHasUncompletedSwap] = useState(false)
+  const [identity, setIdentity] = useState<SignIdentity>()
+  const [isIdentityLoading, setIsIdentityLoading] = useState(false)
 
   const tabs = useMemo(() => {
     return [
@@ -157,15 +169,63 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     reinitTokens()
   }, [activeTokens, reinitTokens])
 
+  useEffect(() => {
+    const getSignIdentity = async () => {
+      setIsIdentityLoading(true)
+      const rootCanisterId = Principal.fromText(ICP_ROOT_CANISTER_ID)
+
+      const { userPrincipal } = await getUserPrincipalId()
+
+      const allTokens = await ftService.getTokens(userPrincipal)
+
+      const tokens = allTokens.filter(
+        (token) => token.getTokenCategory() === Category.Sns,
+      )
+
+      const targetPromises: Promise<string | undefined>[] = tokens.map(
+        (token) => stakingService.getTargets(token.getRootSnsCanister()!),
+      )
+
+      const resolvedTargets = (await Promise.all(targetPromises)).filter(
+        (target): target is string => target !== undefined,
+      )
+
+      if (!rootCanisterId) return
+      const canister_ids = await stakingService.getTargets(rootCanisterId)
+      if (!canister_ids) return
+
+      const identity = await getIdentity([canister_ids, ...resolvedTargets])
+      setIdentity(identity)
+      setIsIdentityLoading(false)
+    }
+
+    getSignIdentity()
+  }, [])
+
+  const { data: stakedTokens = [], isLoading: isStakingLoading } =
+    useSWRWithTimestamp(
+      identity ? "stakedTokens" : null,
+      () => fetchStakedTokens(identity),
+      { revalidateOnFocus: false },
+    )
+
+  const isReady = useMemo(() => {
+    return (
+      Array.isArray(nfts?.items) &&
+      initedTokens.length > 0 &&
+      stakedTokens.length > 0 &&
+      !!isWallet
+    )
+  }, [nfts?.items?.length, initedTokens.length, stakedTokens.length, isWallet])
+
   const {
     data: tokensUsdBalance,
     isLoading: isUsdLoading,
+    isValidating,
     mutate: refetchFullUsdBalance,
   } = useSWR(
-    nfts?.items && nfts.items.length > 0 && initedTokens.length > 0 && isWallet
-      ? "fullUsdValue"
-      : null,
-    async () => getFullUsdValue(nfts?.items, initedTokens),
+    isReady ? "fullUsdValue" : null,
+    async () => getFullUsdValue(nfts?.items, initedTokens, stakedTokens),
     { revalidateOnFocus: false },
   )
 
@@ -238,6 +298,13 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     send("SHOW")
   }
 
+  const isUsdBalanceLoading =
+    isUsdLoading ||
+    !initedTokens.length ||
+    isStakingLoading ||
+    isValidating ||
+    isIdentityLoading
+
   return (
     <div className={clsx("relative min-h-screen overflow-hidden", className)}>
       <ProfileHeader
@@ -295,8 +362,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
           {isWallet && (
             <>
               <ProfileInfo
-                usdBalance={tokensUsdBalance}
-                isUsdLoading={isUsdLoading || !initedTokens.length}
+                usdBalance={isUsdBalanceLoading ? undefined : tokensUsdBalance}
+                isUsdLoading={isUsdBalanceLoading}
                 onSendClick={onSendClick}
                 onReceiveClick={onReceiveClick}
                 onSwapClick={onSwapClick}

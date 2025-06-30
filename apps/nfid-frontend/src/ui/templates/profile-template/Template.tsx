@@ -213,10 +213,17 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     return (
       Array.isArray(nfts?.items) &&
       initedTokens.length > 0 &&
-      stakedTokens.length > 0 &&
+      Array.isArray(stakedTokens) &&
+      !isStakingLoading &&
       !!isWallet
     )
-  }, [nfts?.items?.length, initedTokens.length, stakedTokens.length, isWallet])
+  }, [
+    nfts?.items,
+    initedTokens.length,
+    stakedTokens,
+    isStakingLoading,
+    isWallet,
+  ])
 
   const {
     data: tokensUsdBalance,

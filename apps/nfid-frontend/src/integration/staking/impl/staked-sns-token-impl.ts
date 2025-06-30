@@ -6,31 +6,39 @@ export class StakedSnsTokenImpl extends StakedTokenImpl {
   getAvailable(): NFIDNeuron[] {
     const now = Math.floor(Date.now() / 1000)
 
-    return this.neurons.filter((neuron) => {
-      const unlockTimestamp = neuron.getUnlockIn()
+    const aa = this.neurons.filter((neuron) => {
       return (
-        typeof unlockTimestamp === "number" &&
-        unlockTimestamp <= now &&
+        neuron.getIsDissolving() &&
+        neuron.getUnlockIn() !== undefined &&
+        neuron.getUnlockIn()! <= now &&
         Number(neuron.getInitialStake()) > 0
       )
     })
+    console.log("wowowo getAvailable", aa)
+    return aa
   }
 
   getUnlocking(): NFIDNeuron[] {
     const now = Math.floor(Date.now() / 1000)
 
-    return this.neurons.filter((neuron) => {
-      const unlockTimestamp = neuron.getUnlockIn()
-      return typeof unlockTimestamp === "number" && unlockTimestamp > now
+    const aa = this.neurons.filter((neuron) => {
+      return (
+        neuron.getIsDissolving() &&
+        neuron.getUnlockIn() !== undefined &&
+        neuron.getUnlockIn()! > now
+      )
     })
+    console.log("wowowo getUnlocking", aa)
+    return aa
   }
 
   getLocked(): NFIDNeuron[] {
-    return this.neurons.filter((neuron) => {
-      const unlockTimestamp = neuron.getUnlockIn()
-      return (
-        unlockTimestamp === undefined && Number(neuron.getInitialStake()) > 0
-      )
-    })
+    const aa = this.neurons.filter(
+      (neuron) =>
+        !neuron.getIsDissolving() && Number(neuron.getInitialStake()) > 0,
+    )
+
+    console.log("wowowo getLocked", aa)
+    return aa
   }
 }

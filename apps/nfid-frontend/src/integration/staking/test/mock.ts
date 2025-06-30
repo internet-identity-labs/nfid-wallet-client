@@ -193,7 +193,9 @@ export const mockStake = [
     aging_since_timestamp_seconds: BigInt(1742298125),
     dissolve_state: [
       {
-        WhenDissolvedTimestampSeconds: BigInt(1750357341),
+        WhenDissolvedTimestampSeconds: BigInt(
+          Math.floor(Date.now() / 1000) + 3600,
+        ),
       },
     ],
     voting_power_percentage_multiplier: BigInt(100),
@@ -241,7 +243,7 @@ export const mockStake = [
         },
       },
     ],
-    staked_maturity_e8s_equivalent: [],
+    staked_maturity_e8s_equivalent: [BigInt(100000000)],
     permissions: [
       {
         principal: [
@@ -265,7 +267,7 @@ export const mockStake = [
         },
       },
     ],
-    maturity_e8s_equivalent: BigInt(100000000),
+    maturity_e8s_equivalent: BigInt(0),
     cached_neuron_stake_e8s: BigInt(700000000),
     created_timestamp_seconds: BigInt(1722298123),
     source_nns_neuron_id: [],
@@ -273,7 +275,9 @@ export const mockStake = [
     aging_since_timestamp_seconds: BigInt(1742298125),
     dissolve_state: [
       {
-        DissolveDelaySeconds: BigInt(0),
+        WhenDissolvedTimestampSeconds: BigInt(
+          Math.floor(Date.now() / 1000) - 10,
+        ),
       },
     ],
     voting_power_percentage_multiplier: BigInt(100),

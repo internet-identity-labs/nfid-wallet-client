@@ -52,6 +52,8 @@ export abstract class NfidNeuronImpl<T> implements NFIDNeuron {
 
   abstract redeem(signIdentity: SignIdentity): Promise<void>
 
+  abstract getIsDissolving(): boolean
+
   getToken(): FT {
     return this.token
   }

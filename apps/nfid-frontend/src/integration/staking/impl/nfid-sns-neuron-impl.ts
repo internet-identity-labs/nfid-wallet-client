@@ -26,6 +26,13 @@ export class NfidSNSNeuronImpl extends NfidNeuronImpl<Neuron> {
     throw new Error("getState method is not supported for SNS neurons.")
   }
 
+  getIsDissolving(): boolean {
+    const dissolveState = this.neuron.dissolve_state[0]
+    if (!dissolveState) return false
+
+    return "WhenDissolvedTimestampSeconds" in dissolveState
+  }
+
   getStakeId(): NeuronId {
     return { id: this.neuron.id[0]!.id }
   }

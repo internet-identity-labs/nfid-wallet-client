@@ -102,6 +102,10 @@ describe("Staking", () => {
 
     expect(nfidwStake.isDiamond()).toBe(false)
 
+    console.log("wowwo available: ", available)
+    console.log("wowwo locked: ", locked)
+    console.log("wowwo unlocking: ", unlocking)
+
     expect(available.length).toEqual(1)
     expect(locked.length).toEqual(1)
     expect(unlocking.length).toEqual(1)
@@ -128,7 +132,9 @@ describe("Staking", () => {
 
     expect(available[0].getLockTime()).toEqual(0)
     expect(available[0].getLockTimeInMonths()).toEqual(0)
-    expect(available[0].getUnlockIn()).toBeUndefined()
+    expect(available[0].getUnlockIn()).toBeLessThanOrEqual(
+      Math.floor(Date.now() / 1000),
+    )
     expect(available[0].getUnlockInMonths()).toBeUndefined()
     expect(available[0].getUnlockInFormatted()).toBeUndefined()
     expect(available[0].getCreatedAt()).toEqual(1722298123)

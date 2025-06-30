@@ -7,6 +7,7 @@ import { FormattedDate, TokenValue } from "./types"
 
 export interface NFIDNeuron {
   getFollowees(): [bigint, Followees][] | IcpFollowees[]
+  getIsDissolving(): boolean
   getToken(): FT
   getState(): NeuronState
   getStakeId(): NeuronId | bigint

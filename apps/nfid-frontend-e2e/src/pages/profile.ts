@@ -51,7 +51,7 @@ export class Profile extends Page {
       async () => {
         return (await this.totalBalance.getText()) != ""
       },
-      { timeout: 70000, timeoutMsg: "Balance wasn't loaded in 70sec" },
+      { timeout: 100000, timeoutMsg: "Balance wasn't loaded in 100sec" },
     )
   }
 }

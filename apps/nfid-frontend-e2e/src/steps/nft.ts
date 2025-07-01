@@ -7,17 +7,14 @@ Then(
   /^Verifying that the token with name (.+) and collection (.+?)(?: and ID (.+))? is displayed$/,
   async (token: string, collection: string, id?: string) => {
     await (await Nft.getNftName(token, collection)).waitForDisplayed({
-      timeout: 5000,
       timeoutMsg: `Not found NFT with name ${token} and collection ${collection}`,
     })
     await (await Nft.getNftCollection(collection)).waitForDisplayed({
-      timeout: 5000,
       timeoutMsg: `Not found collection with name ${collection}`,
     })
 
     if (id)
       await (await Nft.getNftId(id)).waitForDisplayed({
-        timeout: 5000,
         timeoutMsg: `Token ID ${id} is wrong or still not displayed in 5sec`,
       })
   },

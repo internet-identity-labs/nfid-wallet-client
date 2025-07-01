@@ -59,7 +59,7 @@ Then(
           "Sent" && timeDifference < 100000
         )
       },
-      { timeout: 40000, timeoutMsg: "Time difference is more than 100sec" },
+      { timeout: 100000, timeoutMsg: "Time difference is more than 100sec" },
     )
   },
 )

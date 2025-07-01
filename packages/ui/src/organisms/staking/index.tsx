@@ -43,12 +43,14 @@ export const Staking: FC<StakingProps> = ({
       {isLoading ? (
         <StakingHeaderSkeleton />
       ) : (
-        <StakingHeader
-          total={totalBalances?.total}
-          staked={totalBalances?.staked}
-          rewards={totalBalances?.rewards}
-          symbol="USD"
-        />
+        stakedTokens.length > 0 && (
+          <StakingHeader
+            total={totalBalances?.total}
+            staked={totalBalances?.staked}
+            rewards={totalBalances?.rewards}
+            symbol="USD"
+          />
+        )
       )}
 
       <ProfileContainer innerClassName="!px-0">
@@ -91,12 +93,10 @@ export const Staking: FC<StakingProps> = ({
                   return (
                     <tr
                       className="text-sm hover:bg-gray-50 h-[64px] transition-all group cursor-pointer"
-                      id={
-                        `stakedToken_${stakedToken
-                          .getToken()
-                          .getTokenName()
-                          .replace(/\s+/g, "")}`
-                      }
+                      id={`stakedToken_${stakedToken
+                        .getToken()
+                        .getTokenName()
+                        .replace(/\s+/g, "")}`}
                       key={stakedToken.getToken().getTokenAddress()}
                       onClick={() =>
                         navigate(
@@ -146,7 +146,10 @@ export const Staking: FC<StakingProps> = ({
                         </div>
                       </td>
                       <td className="flex flex-col ml-auto h-[64px] justify-center w-max md:table-cell text-right md:text-left">
-                        <p id={"tokenStakedAmount"} className="text-sm leading-6">
+                        <p
+                          id={"tokenStakedAmount"}
+                          className="text-sm leading-6"
+                        >
                           {stakedToken.getStakedFormatted().getTokenValue()}{" "}
                           {stakedToken.getToken().getTokenSymbol()}
                         </p>

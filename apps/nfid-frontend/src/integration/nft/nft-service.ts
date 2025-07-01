@@ -56,7 +56,7 @@ export class NftService {
       }
     | undefined
   > {
-    if (!nfts) return
+    if (!nfts || nfts.length === 0) return
     await Promise.all([
       Promise.all(
         nfts.map((nft) => {
@@ -77,6 +77,8 @@ export class NftService {
     if (!icp) return
 
     const usdBalanceDayChange = icp.getUSDBalanceDayChange()
+
+    if (!usdBalanceDayChange) return
 
     return {
       value: total.toFixed(2),

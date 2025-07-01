@@ -48,20 +48,22 @@ export const NFTs: FC<INFTs> = ({
 
   return (
     <>
-      <div className="flex items-center justify-between gap-6">
-        <Input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.currentTarget.value)}
-          icon={<IoIosSearch size="20" className="text-black" />}
-          placeholder="Search"
-          inputClassName="bg-white !border-black"
-          className="w-full"
-        />
-        <div className={clsx("flex items-center space-x-6 shrink-0")}>
-          <NFTDisplaySwitch state={display} setState={setDisplay} />
+      {nfts.length > 0 && (
+        <div className="flex items-center justify-between gap-6">
+          <Input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.currentTarget.value)}
+            icon={<IoIosSearch size="20" className="text-black" />}
+            placeholder="Search"
+            inputClassName="bg-white !border-black"
+            className="w-full"
+          />
+          <div className={clsx("flex items-center space-x-6 shrink-0")}>
+            <NFTDisplaySwitch state={display} setState={setDisplay} />
+          </div>
         </div>
-      </div>
+      )}
       <p
         id={"items-amount"}
         className={clsx(
@@ -82,7 +84,7 @@ export const NFTs: FC<INFTs> = ({
         </div>
       ) : !nftsFiltered.length ? (
         <div className="flex justify-between">
-          <span className="w-full my-16 text-sm text-center text-gray-400 md:text-left">
+          <span className="w-full my-20 text-sm text-center text-gray-400 md:text-left">
             You don’t own any collectibles yet
           </span>
           <img

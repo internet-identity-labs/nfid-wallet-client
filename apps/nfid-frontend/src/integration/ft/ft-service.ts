@@ -18,6 +18,8 @@ import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
 import { NFT } from "../nft/nft"
+import { stakingService } from "../staking/service/staking-service-impl"
+import { StakedToken } from "../staking/staked-token"
 import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
 import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 
@@ -152,6 +154,7 @@ export class FtService {
     userPublicKey: Principal,
     nfts: NFT[] | undefined,
     ft: FT[],
+    stakedTokens: StakedToken[],
   ): Promise<
     | {
         value: string
@@ -168,12 +171,19 @@ export class FtService {
       nftService.getNFTsTotalPrice(nfts, icp),
     ])
 
-    return this.getUSDBalance(ft, !nftPrice ? 0 : Number(nftPrice.value))
+    const stakingValue = stakingService.getTotalBalances(stakedTokens)
+
+    return this.getUSDBalance(
+      ft,
+      Number(nftPrice?.value ?? 0),
+      Number(stakingValue?.total ?? 0),
+    )
   }
 
   async getUSDBalance(
     ft: FT[],
     nftPrice?: number,
+    stakingPrice?: number,
   ): Promise<
     | {
         value: string
@@ -209,7 +219,10 @@ export class FtService {
       )
 
     return {
-      value: price.usdBalance!.plus(nftPrice || 0).toFixed(2),
+      value: price
+        .usdBalance!.plus(nftPrice || 0)
+        .plus(stakingPrice || 0)
+        .toFixed(2),
       dayChangePercent: price.usdBalance.eq(0)
         ? "0.00"
         : BigNumber(price.usdBalanceDayChange!)

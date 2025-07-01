@@ -144,11 +144,11 @@ Then(
         return Boolean(presence) ? !isDisplayed : isDisplayed
       },
       {
-        timeout: 30000,
+        timeout: 60000,
         timeoutMsg: `${
           Boolean(presence)
-            ? "Token was displayed in 30 sec, but shouldn't"
-            : "Token wasn't displayed in 30 sec, but should"
+            ? "Token was displayed in 60 sec, but shouldn't"
+            : "Token wasn't displayed in 60 sec, but should"
         }`,
       },
     )

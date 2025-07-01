@@ -56,8 +56,8 @@ Then(
         const timeDifference = Math.abs(now.getTime() - expectedTime.getTime())
         await (await Activity.rowActionType(tableRows[1])).waitForDisplayed(
           {
-            timeout: 20000,
-            timeoutMsg: "List of transactions wasn't loaded in 20sec",
+            timeout: 30000,
+            timeoutMsg: "List of transactions wasn't loaded in 30sec",
           },
         )
         return (

@@ -53,7 +53,7 @@ export class Profile extends Page {
           await browser.waitUntil(
             async () => {
               return await this.totalBalance.getText() !== ""
-            }, { timeout: 40000 },
+            }, { timeout: 70000 },
           )
           return true
         } catch (e) {

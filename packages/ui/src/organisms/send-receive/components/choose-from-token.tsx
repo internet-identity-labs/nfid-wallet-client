@@ -4,7 +4,6 @@ import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { formatAssetAmountRaw } from "packages/ui/src/molecules/ticker-amount"
 import { FC, useCallback, useEffect, useMemo, useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { getMaxAmountFee } from "src/integration/swap/icpswap/util/util"
 
 import {
   IconCmpArrowRight,
@@ -21,9 +20,11 @@ import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
 import { useTokenInit } from "../hooks/token-init"
+import { getMaxAmountFee, IModalType } from "../utils"
 import { BALANCE_EDGE_LENGTH } from "./swap-form"
 
 interface ChooseFromTokenProps {
+  modalType: IModalType
   id: string
   token: FT | undefined
   tokens?: FT[]
@@ -32,17 +33,16 @@ interface ChooseFromTokenProps {
   setFromChosenToken?: (value: string) => void
   usdRate?: string
   title: string
-  isSwap?: boolean
   isResponsive?: boolean
   setIsResponsive?: (v: boolean) => void
   tokensAvailableToSwap?: TokensAvailableToSwap
   btcFee?: bigint
-  isConvertFromCkBtc?: boolean
   minAmount?: number
   isLoading?: boolean
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
+  modalType,
   id,
   token,
   tokens,
@@ -51,12 +51,10 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   setFromChosenToken,
   usdRate = "0.00 USD",
   title,
-  isSwap = false,
   isResponsive,
   setIsResponsive,
   tokensAvailableToSwap,
   btcFee,
-  isConvertFromCkBtc,
   minAmount,
   isLoading,
 }) => {
@@ -76,14 +74,24 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
   const fee = useMemo(() => {
     if (!token || userBalance === undefined) return
-    return isSwap
+    return modalType === IModalType.SWAP
       ? getMaxAmountFee(userBalance, token.getTokenFee())
-      : token.getTokenAddress() !== BTC_NATIVE_ID
+      : modalType === IModalType.STAKE ||
+        (modalType === IModalType.SEND &&
+          token.getTokenAddress() !== BTC_NATIVE_ID)
       ? token.getTokenFee()
       : btcFee
-  }, [token, userBalance, isSwap, btcFee])
+  }, [token, userBalance, btcFee])
 
   const isMaxAvailable = useMemo(() => {
+    if (
+      modalType === IModalType.CONVERT_TO_CKBTC ||
+      modalType === IModalType.CONVERT_TO_BTC ||
+      (modalType === IModalType.SEND &&
+        token?.getTokenAddress() === BTC_NATIVE_ID)
+    )
+      return false
+
     if (
       userBalance === undefined ||
       (token?.getTokenAddress() !== BTC_NATIVE_ID && fee === undefined) ||
@@ -120,7 +128,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     if (fee === undefined) return
 
     const feeNum = new BigNumber(fee.toString())
-    const maxAmount = isSwap ? balanceNum : balanceNum.minus(feeNum)
+    const maxAmount =
+      modalType === IModalType.SWAP ? balanceNum : balanceNum.minus(feeNum)
     const formattedValue = formatAssetAmountRaw(maxAmount, decimals)
 
     setInputAmountValue(formattedValue)
@@ -142,7 +151,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
     const balanceNum = new BigNumber(userBalance.toString())
     const feeNum = new BigNumber(fee.toString())
-    const maxAmount = isSwap ? balanceNum : balanceNum.minus(feeNum)
+    const maxAmount =
+      modalType === IModalType.SWAP ? balanceNum : balanceNum.minus(feeNum)
     const formattedValue = formatAssetAmountRaw(maxAmount, decimals)
 
     setInputAmountValue(formattedValue)
@@ -192,9 +202,11 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
               validate: (value) => {
                 const amountValidationError = validateTransferAmountField(
                   balance || token.getTokenBalance(),
-                  isSwap ? BigInt(0) : token.getTokenFee(),
+                  modalType === IModalType.SWAP
+                    ? BigInt(0)
+                    : token.getTokenFee(),
                   decimals,
-                  !!isConvertFromCkBtc,
+                  modalType === IModalType.CONVERT_TO_BTC,
                   minAmount,
                   token.getTokenSymbol(),
                 )(value)

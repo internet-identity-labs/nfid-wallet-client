@@ -3,6 +3,8 @@ import { IconCmpArrow } from "packages/ui/src/atoms/icons"
 import { Skeleton } from "packages/ui/src/atoms/skeleton"
 import { FC } from "react"
 
+import { BTC_NATIVE_ID } from "@nfid/integration/token/constants"
+
 import { FT } from "frontend/integration/ft/ft"
 
 import { IConversionFee } from "../utils"
@@ -50,7 +52,7 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
                   <Skeleton className="w-[70px] h-4 rounded-lg" />
                 ) : (
                   <>
-                    {fee?.btcNetworkFee}
+                    {fee?.btcNetworkFee} {token.getTokenSymbol()}
                     <span className="block text-xs text-gray-400">
                       {token?.getTokenRateFormatted(fee?.btcNetworkFee || "0")}
                     </span>
@@ -65,7 +67,7 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
                   <Skeleton className="w-[70px] h-4 rounded-lg" />
                 ) : (
                   <>
-                    {fee?.icpNetworkFee}{" "}
+                    {fee?.icpNetworkFee} {token.getTokenSymbol()}
                     <span className="block text-xs text-gray-400">
                       {token?.getTokenRateFormatted(fee?.icpNetworkFee || "0")}
                     </span>
@@ -73,25 +75,27 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
                 )}
               </p>
             </div>
-            <div className="flex flex-wrap justify-between py-3 leading-5">
-              <p>Widget fee</p>
-              <p className="leading-5 text-right font-inter">
-                {!fee ? (
-                  <Skeleton className="w-[70px] h-4 rounded-lg" />
-                ) : (
-                  <>
-                    {fee?.widgetFee}{" "}
-                    <span className="block text-xs text-gray-400">
-                      {token?.getTokenRateFormatted(fee?.widgetFee || "0")}
-                    </span>
-                  </>
-                )}
-              </p>
-              <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
-                The fee of 0.875% is automatically factored into this <br />
-                conversion to support the NFID Wallet Community.
-              </p>
-            </div>
+            {token.getTokenAddress() !== BTC_NATIVE_ID && (
+              <div className="flex flex-wrap justify-between py-3 leading-5">
+                <p>Widget fee</p>
+                <p className="leading-5 text-right font-inter">
+                  {!fee ? (
+                    <Skeleton className="w-[70px] h-4 rounded-lg" />
+                  ) : (
+                    <>
+                      {fee?.widgetFee} {token.getTokenSymbol()}
+                      <span className="block text-xs text-gray-400">
+                        {token?.getTokenRateFormatted(fee?.widgetFee || "0")}
+                      </span>
+                    </>
+                  )}
+                </p>
+                <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
+                  The fee of 0.875% is automatically factored into this <br />
+                  conversion to support the NFID Wallet Community.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

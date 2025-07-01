@@ -21,7 +21,7 @@ import { StakeParamsCalculator } from "frontend/integration/staking/stake-params
 
 import DiamondIcon from "../../staking/assets/diamond.svg"
 import { DiamondAnimation } from "../../staking/components/diamond-animation"
-import { getFormattedPeriod } from "../utils"
+import { getFormattedPeriod, IModalType } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { StakeSuccessUi } from "./stake-success"
 
@@ -138,6 +138,7 @@ export const StakeUi: FC<StakeUiProps> = ({
       </div>
       <p className="mb-1 text-xs">Amount to stake</p>
       <ChooseFromToken
+        modalType={IModalType.STAKE}
         id="convert-from"
         token={token}
         setFromChosenToken={setChosenToken}

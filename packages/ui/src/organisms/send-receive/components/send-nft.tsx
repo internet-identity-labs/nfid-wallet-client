@@ -67,7 +67,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
         assetImg={`${selectedNFT?.getAssetPreview()?.url}`}
         isOpen={isSuccessOpen}
         status={status}
-        assetImageClassname="w-[102px] h-[102px] top-[136px] sm:w-[116px] sm:h-[116px] sm:top-[129px]"
+        assetImageClassname="w-[102px] h-[102px] top-[161px] sm:w-[116px] sm:h-[116px] sm:top-[154px]"
       />
       <div className="text-xs">
         <Label className="inline-block mb-1 text-xs">NFT to transfer</Label>

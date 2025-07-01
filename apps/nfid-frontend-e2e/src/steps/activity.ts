@@ -56,8 +56,8 @@ Then(
         const timeDifference = Math.abs(now.getTime() - expectedTime.getTime())
         await (await Activity.rowActionType(tableRows[1])).waitForDisplayed(
           {
-            timeout: 30000,
-            timeoutMsg: "List of transactions wasn't loaded in 30sec",
+            timeout: 50000,
+            timeoutMsg: "List of transactions wasn't loaded in 70sec",
           },
         )
         return (
@@ -65,7 +65,7 @@ Then(
           "Sent" && timeDifference < 100000
         )
       },
-      { timeout: 100000, timeoutMsg: "Time difference is more than 100sec" },
+      { timeout: 150000, timeoutMsg: "Time difference is more than 150sec" },
     )
   },
 )

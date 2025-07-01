@@ -49,9 +49,22 @@ export class Profile extends Page {
   async waitUntilBalanceLoaded() {
     await browser.waitUntil(
       async () => {
-        return (await this.totalBalance.getText()) != ""
+        try {
+          await browser.waitUntil(
+            async () => {
+              return await this.totalBalance.getText() !== ""
+            }, { timeout: 25000 },
+          )
+          return true
+        } catch (e) {
+          await browser.refresh()
+          return false
+        }
       },
-      { timeout: 100000, timeoutMsg: "Balance wasn't loaded in 100sec" },
+      {
+        timeout: 100000,
+        timeoutMsg: "Balance wasn't loaded in 100sec",
+      },
     )
   }
 }

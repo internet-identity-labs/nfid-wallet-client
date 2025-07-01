@@ -54,7 +54,7 @@ export function ScanTokens({
           })
       })
     }
-  }, [allTokens, scannedTokens])
+  }, [allTokens, scannedTokens, isModalOpen])
 
   return (
     <>

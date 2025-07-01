@@ -101,7 +101,7 @@ export const getConversionFee = (fee?: BtcToCkBtcFee | CkBtcToBtcFee) => {
 
 export const getFormattedPeriod = (value?: number, fullName?: boolean) => {
   if (value === undefined) return ""
-  if (value === 0) return "0"
+  if (value === 0) return "Less than a month"
 
   const years = Math.floor(value / 12)
   const months = value % 12

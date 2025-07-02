@@ -46,14 +46,14 @@ export const StakeSuccessUi: FC<StakeSuccessProps> = ({
             ? "Transaction failed"
             : status === SendStatus.COMPLETED
             ? "Staked successfully"
-            : "Staking..."}
+            : "Staking"}
         </H5>
         <p className="h-5 mt-3 text-sm leading-5">
           {status === SendStatus.FAILED
             ? "Your assets are still in your wallet."
             : status === SendStatus.COMPLETED
             ? ""
-            : `This usually takes about ${duration} seconds. `}
+            : `This usually takes about ${duration} seconds.`}
         </p>
       </div>
       <div className="relative flex items-center justify-center w-full">

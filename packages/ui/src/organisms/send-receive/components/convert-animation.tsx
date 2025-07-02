@@ -7,7 +7,7 @@ import { SendStatus } from "frontend/features/transfer-modal/types"
 
 import FailedIcon from "../assets/animation-failed.svg"
 import "../assets/animation-gradient.css"
-import SuccessIcon from "../assets/animation-success.svg"
+import BtcWaitIcon from "../assets/bitcoin-wait.svg"
 
 const HIDE_ANIMATION_DURATION = 0.3
 
@@ -23,7 +23,7 @@ export interface CustomAnimationProps {
   status: SendStatus
 }
 
-export const CustomAnimation: React.FC<CustomAnimationProps> = ({
+export const ConvertAnimation: React.FC<CustomAnimationProps> = ({
   assetImg,
   assetImgTo,
   status,
@@ -106,16 +106,15 @@ export const CustomAnimation: React.FC<CustomAnimationProps> = ({
 
       <div
         className={clsx(
-          "rounded-full w-[96px] h-[96px] z-[2] flex items-center justify-center",
+          "rounded-full w-[120px] h-[120px] z-[2] flex items-center justify-center",
           status !== SendStatus.PENDING &&
             stageClassnames[animationStage].imageWrapper,
-          status === SendStatus.COMPLETED && "bg-teal-600",
           status === SendStatus.FAILED && "bg-red-600",
         )}
       >
         {status !== SendStatus.PENDING ? (
           <img
-            src={status === SendStatus.COMPLETED ? SuccessIcon : FailedIcon}
+            src={status === SendStatus.COMPLETED ? BtcWaitIcon : FailedIcon}
             alt={
               status === SendStatus.COMPLETED ? "Stake success" : "Stake failed"
             }

@@ -7,7 +7,7 @@ import { Button, H5 } from "@nfid-frontend/ui"
 import { SendStatus } from "frontend/features/transfer-modal/types"
 
 import SwapArrowBox from "../assets/swap-success-arrow-box.png"
-import { CustomAnimation } from "./custom-animation"
+import { ConvertAnimation } from "./convert-animation"
 
 export interface ConvertSuccessUiProps {
   titleFrom: string
@@ -33,7 +33,7 @@ export const ConvertSuccessUi: FC<ConvertSuccessUiProps> = ({
   assetImgTo,
   isOpen,
   status,
-  duration = 2,
+  duration = 90,
   error,
 }) => {
   return (
@@ -47,19 +47,19 @@ export const ConvertSuccessUi: FC<ConvertSuccessUiProps> = ({
       )}
     >
       <div id={"convert-success-title"}>
-        <H5 className="mt-5 text-xl font-bold leading-6">
+        <H5 className="mt-5 text-xl !font-bold leading-6">
           {status === SendStatus.FAILED
             ? "Transaction failed"
             : status === SendStatus.COMPLETED
-            ? "Converted successfully"
-            : "Converting..."}
+            ? "Your transaction is on the way"
+            : "Converting"}
         </H5>
         <p className="h-5 mt-3 text-sm leading-5">
           {status === SendStatus.FAILED
             ? "Your assets are still in your wallet."
             : status === SendStatus.COMPLETED
-            ? ""
-            : `Conversion usually takes around ${duration} hours.`}
+            ? `${titleFrom} will be on your address after 6 Bitcoin network confirmations. This usually takes about 90 minutes.`
+            : `Conversion usually takes around ${duration} minutes.`}
         </p>
       </div>
       <div
@@ -69,7 +69,7 @@ export const ConvertSuccessUi: FC<ConvertSuccessUiProps> = ({
         )}
       >
         <div className="relative flex items-center justify-center w-full">
-          <CustomAnimation
+          <ConvertAnimation
             assetImg={assetImgFrom}
             assetImgTo={assetImgTo}
             status={status}

@@ -120,7 +120,8 @@ export const StakeFT = ({
 
   const submit = useCallback(async () => {
     if (!identity) return
-    if (!token || !lockValue) return toaster.error(DEFAULT_STAKE_ERROR)
+    if (!token || lockValue === undefined)
+      return toaster.error(DEFAULT_STAKE_ERROR)
     setIsSuccessOpen(true)
     const rootCanisterId = token.getRootSnsCanister()
     if (!rootCanisterId) return
@@ -146,7 +147,7 @@ export const StakeFT = ({
           console.error("Stake error: ", e)
           setError((e as Error).message)
           setStatus(SendStatus.FAILED)
-          setErrorMessage("Something went wrong")
+          setErrorMessage(DEFAULT_STAKE_ERROR)
         })
         .finally(() => {
           getTokensWithUpdatedBalance([ICP_CANISTER_ID], tokens).then(
@@ -180,7 +181,7 @@ export const StakeFT = ({
         console.error("Stake error: ", e)
         setError((e as Error).message)
         setStatus(SendStatus.FAILED)
-        setErrorMessage("Something went wrong")
+        setErrorMessage(DEFAULT_STAKE_ERROR)
       })
       .finally(() => {
         getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(

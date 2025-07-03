@@ -12,6 +12,7 @@ import {
   TransactionId,
 } from "./services/chain-fusion-signer.service"
 import { ckBtcService } from "./services/ckbtc.service"
+import { mempoolService } from "./services/mempool.service"
 import { patronService } from "./services/patron.service"
 import { satoshiService } from "./services/satoshi.service"
 
@@ -113,13 +114,25 @@ export class BitcoinService {
     fee: BitcointNetworkFeeAndUtxos,
   ): Promise<TransactionId> {
     const amountInSatoshis = satoshiService.getInSatoshis(amount)
-    return chainFusionSignerService.sendBtc(
+    const transactionId = await chainFusionSignerService.sendBtc(
       identity,
       destinationAddress,
       amountInSatoshis,
       fee.fee_satoshis,
       fee.utxos,
     )
+
+    const isOnMempool = await mempoolService.checkTransactionAppeared(
+      transactionId,
+    )
+
+    if (!isOnMempool) {
+      throw new Error(
+        `Transaction ${transactionId} is not found in mempool. It has not sent successfully.`,
+      )
+    }
+
+    return transactionId
   }
 
   public async convertFromCkBtc(

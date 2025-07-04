@@ -107,7 +107,10 @@ export class ChainFusionSignerService {
   private getChainFusionSignerActor(
     identity: SignIdentity,
   ): ActorSubclass<ChainFusionSigner> {
-    console.log("CHAIN_FUSION_SIGNER_CANISTER_ID", CHAIN_FUSION_SIGNER_CANISTER_ID)
+    console.log(
+      "CHAIN_FUSION_SIGNER_CANISTER_ID",
+      CHAIN_FUSION_SIGNER_CANISTER_ID,
+    )
     return actor<ChainFusionSigner>(
       CHAIN_FUSION_SIGNER_CANISTER_ID,
       chainFusionSignerIDL,

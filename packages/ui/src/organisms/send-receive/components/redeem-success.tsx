@@ -44,7 +44,7 @@ export const RedeemSuccessUi: FC<RedeemSuccessProps> = ({
             ? "Transaction failed"
             : status === SendStatus.COMPLETED
             ? "Redeemed successfully"
-            : "Redeeming stake..."}
+            : "Redeeming stake"}
         </H5>
         <p className="h-5 mt-3 text-sm leading-5">
           {status === SendStatus.FAILED

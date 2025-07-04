@@ -74,7 +74,7 @@ export const StakeAnimation: React.FC<StakeSuccessProps> = ({
   return (
     <div
       className={clsx(
-        status === SendStatus.FAILED && "border-[3px] border-gray-200",
+        status === SendStatus.FAILED && "border-[3px] border-red-600",
         status === SendStatus.COMPLETED && "border-[3px] border-teal-600",
         "circle-gradient flex justify-center items-center",
         "w-[148px] h-[148px] rounded-full",

@@ -6,6 +6,7 @@ import { BTC_NATIVE_ID } from "@nfid/integration/token/constants"
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
 import { NFT } from "frontend/integration/nft/nft"
+import { StakedToken } from "frontend/integration/staking/staked-token"
 
 //TODO move to authState
 export const getUserPrincipalId = async (): Promise<{
@@ -51,11 +52,16 @@ export const filterNotActiveNotZeroBalancesTokens = async (
   )
 }
 
-export const getFullUsdValue = async (nfts: NFT[] | undefined, ft: FT[]) => {
+export const getFullUsdValue = async (
+  nfts: NFT[] | undefined,
+  ft: FT[],
+  stakedTokens: StakedToken[],
+) => {
   const { publicKey } = authState.getUserIdData()
   return await ftService.getTotalUSDBalance(
     Principal.fromText(publicKey),
     nfts,
     ft,
+    stakedTokens,
   )
 }

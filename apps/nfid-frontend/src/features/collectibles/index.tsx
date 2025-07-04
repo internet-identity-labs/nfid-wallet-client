@@ -27,6 +27,12 @@ const NFTsPage = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [, send] = useActor(globalServices.transferService)
 
+  const { data: allNfts, isLoading: isAllNFTsLoading } = useSWR(
+    "nftList",
+    () => fetchNFTs(),
+    { revalidateOnFocus: false, revalidateIfStale: false },
+  )
+
   const { data, isLoading, isValidating } = useSWR(
     ["nftList", currentPage],
     () => fetchNFTs(currentPage, DEFAULT_LIMIT_PER_PAGE),
@@ -48,7 +54,7 @@ const NFTsPage = () => {
     mutate,
   } = useSWR(
     "nftTotalPrice",
-    () => nftService.getNFTsTotalPrice(data?.items, icp),
+    () => nftService.getNFTsTotalPrice(allNfts?.items, icp),
     {
       revalidateOnFocus: false,
       revalidateIfStale: false,
@@ -96,18 +102,8 @@ const NFTsPage = () => {
     })
   }, [data])
 
-  const totalItems = data?.totalItems || 0
-  const totalPages = data?.totalPages || 0
-
-  const tokensWithoutPrice = useMemo(() => {
-    if (!nfts) return
-
-    return nfts
-      .filter((nft): nft is NFT => nft !== null)
-      .filter(
-        (nft) => nft.getTokenFloorPriceUSD() === undefined || nft.getError(),
-      ).length
-  }, [nfts])
+  const totalItems = useMemo(() => data?.totalItems || 0, [data])
+  const totalPages = useMemo(() => data?.totalPages || 0, [data])
 
   return (
     <>
@@ -119,7 +115,7 @@ const NFTsPage = () => {
             </p>
             <Balance
               id={"totalBalance"}
-              isLoading={nftTotalPriceLoading}
+              isLoading={nftTotalPriceLoading || isAllNFTsLoading}
               className="text-[26px]"
               usdBalance={nftTotalPrice}
             />
@@ -142,10 +138,10 @@ const NFTsPage = () => {
                 NFTs w/o price
               </p>
               <p className="mb-0 text-[26px] font-bold">
-                {tokensWithoutPrice === undefined ? (
+                {data === undefined ? (
                   <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
                 ) : (
-                  tokensWithoutPrice
+                  data?.nftsWithoutPrice ?? 0
                 )}
               </p>
             </div>

@@ -15,6 +15,7 @@ export interface PaginatedResponse<T> {
   currentPage: number
   totalPages: number
   totalItems: number
+  nftsWithoutPrice: number
 }
 
 export interface MappedValue {

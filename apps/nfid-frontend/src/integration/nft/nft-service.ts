@@ -7,6 +7,9 @@ import { nftMapper } from "src/integration/nft/impl/nft-mapper"
 import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
 import { NFT } from "src/integration/nft/nft"
 
+import { exchangeRateService } from "@nfid/integration"
+import { ICP_DECIMALS } from "@nfid/integration/token/constants"
+
 import { FT } from "../ft/ft"
 
 export class NftService {
@@ -20,6 +23,12 @@ export class NftService {
     const rawData = data
       .map(nftMapper.toNFT)
       .filter((nft): nft is NFT => nft !== null)
+
+    await Promise.all(rawData.map((nft) => nft.init()))
+
+    const nftsWithoutPrice = rawData.filter(
+      (nft) => nft.getTokenFloorPriceUSD() === undefined || nft.getError(),
+    ).length
 
     const totalItems = rawData.length
     const totalPages = Math.ceil(totalItems / limitPerPage)
@@ -40,7 +49,18 @@ export class NftService {
       currentPage: page,
       totalPages,
       totalItems,
+      nftsWithoutPrice,
     }
+  }
+
+  async getNFTsTotalICPPrice(nfts: NFT[] | undefined) {
+    if (!nfts || nfts.length === 0) return
+
+    return nfts
+      .filter((nft) => !nft.getError())
+      .map((nft) => nft.getTokenFloorPriceIcp())
+      .filter((price): price is number => price !== undefined)
+      .reduce((sum, price) => sum.plus(price), new BigNumber(0))
   }
 
   @Cache(integrationCache, { ttl: 300 })
@@ -53,44 +73,44 @@ export class NftService {
         dayChangePercent?: string
         dayChange?: string
         dayChangePositive?: boolean
+        value24h?: string
       }
     | undefined
   > {
     if (!nfts || nfts.length === 0) return
-    await Promise.all([
-      Promise.all(
-        nfts.map((nft) => {
-          if (nft.isInited()) {
-            return nft
-          } else {
-            return nft.init()
-          }
-        }),
-      ),
-    ])
 
-    const total = nfts
-      .map((nft) => nft.getTokenFloorPriceUSD())
-      .filter((price) => price !== undefined)
-      .reduce((price: number, foolPrice: number) => price + foolPrice, 0)
+    await Promise.all(
+      nfts.map((nft) => (nft.isInited() ? Promise.resolve(nft) : nft.init())),
+    )
+
+    const totalICP = await this.getNFTsTotalICPPrice(nfts)
 
     if (!icp) return
 
-    const usdBalanceDayChange = icp.getUSDBalanceDayChange()
+    const tokenRate = await exchangeRateService.usdPriceForICRC1(
+      icp?.getTokenAddress(),
+    )
+
+    if (!tokenRate) return
+
+    const tokenAmount = exchangeRateService.parseTokenAmount(
+      Number(totalICP),
+      ICP_DECIMALS,
+    )
+
+    const usdBalance = tokenAmount.multipliedBy(tokenRate.value)
+
+    const usdBalanceDayChange = icp.getUSDBalanceDayChange(usdBalance)
+    const tokenRateDayChange = icp.getTokenRateDayChangePercent()
 
     if (!usdBalanceDayChange) return
 
     return {
-      value: total.toFixed(2),
-      dayChangePercent: !total
-        ? "0.00"
-        : BigNumber(usdBalanceDayChange!)
-            .div(total)
-            .multipliedBy(100)
-            .abs()
-            .toFixed(2),
+      value: usdBalance.toFixed(2),
+      dayChangePercent: !tokenRateDayChange ? "0.00" : tokenRateDayChange.value,
       dayChange: BigNumber(usdBalanceDayChange!).toFixed(2),
       dayChangePositive: usdBalanceDayChange!.gte(0),
+      value24h: usdBalance.minus(usdBalanceDayChange).toFixed(2),
     }
   }
 

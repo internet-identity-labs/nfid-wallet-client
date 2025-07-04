@@ -102,10 +102,6 @@ describe("Staking", () => {
 
     expect(nfidwStake.isDiamond()).toBe(false)
 
-    console.log("wowwo available: ", available)
-    console.log("wowwo locked: ", locked)
-    console.log("wowwo unlocking: ", unlocking)
-
     expect(available.length).toEqual(1)
     expect(locked.length).toEqual(1)
     expect(unlocking.length).toEqual(1)

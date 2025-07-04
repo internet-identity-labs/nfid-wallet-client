@@ -54,9 +54,7 @@ export const Staking: FC<StakingProps> = ({
       )}
 
       <ProfileContainer innerClassName="!px-0">
-        <div
-          className={clsx("overflow-auto", isLoading && "pl-5 sm:pl-[30px]")}
-        >
+        <div className={clsx(isLoading && "pl-5 sm:pl-[30px]")}>
           <Table className="!min-w-0" id="staking-table">
             {isLoading ? (
               <TableActivitySkeleton tableRowsAmount={3} tableCellAmount={3} />
@@ -185,9 +183,8 @@ export const Staking: FC<StakingProps> = ({
               >
                 <img
                   className={clsx(
-                    "w-full mb-[20px]",
-                    "md:absolute md:w-[375px] md:right-[30px] md:top-[30px] md:mb-0",
-                    "lg:right-[70px]",
+                    "w-[100vw] absolute right-[-1rem] mt-[120px] ",
+                    "sm:right-[-30px] md:mt-0 md:w-[40vw] top-0",
                   )}
                   src={EmptyStaking}
                 />

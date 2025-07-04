@@ -22,6 +22,7 @@ export interface NFT {
   getCollectionId(): string
   getCollectionName(): string
   getTokenName(): string
+  getTokenFloorPriceIcp(): number | undefined
   getTokenFloorPriceIcpFormatted(): string | undefined
   getTokenFloorPriceUSDFormatted(): string | undefined
   getTokenFloorPriceUSD(): number | undefined

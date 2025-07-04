@@ -25,7 +25,7 @@ export interface FT {
 
   getUSDBalance(): BigNumber | undefined
 
-  getUSDBalanceDayChange(): BigNumber | undefined
+  getUSDBalanceDayChange(usdAmount?: BigNumber): BigNumber | undefined
 
   getTokenRate(amount: string): BigNumber | undefined
 

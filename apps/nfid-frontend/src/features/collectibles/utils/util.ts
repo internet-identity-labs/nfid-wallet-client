@@ -15,6 +15,13 @@ export const searchTokens = (tokens: NFT[], search: string) => {
   return result
 }
 
+export const fetchAllNFTs = async () => {
+  const { publicKey } = authState.getUserIdData()
+  const data = await nftService.getNFTs(Principal.fromText(publicKey))
+  const { totalItems, totalPages, items, nftsWithoutPrice } = data
+  return { totalItems, totalPages, items, nftsWithoutPrice }
+}
+
 export const fetchNFTs = async (page?: number, limit?: number) => {
   const { publicKey } = authState.getUserIdData()
   const data = await nftService.getNFTs(
@@ -22,8 +29,8 @@ export const fetchNFTs = async (page?: number, limit?: number) => {
     page,
     limit,
   )
-  const { totalItems, totalPages, items } = data
-  return { totalItems, totalPages, items }
+  const { totalItems, totalPages, items, nftsWithoutPrice } = data
+  return { totalItems, totalPages, items, nftsWithoutPrice }
 }
 
 export const fetchNFT = async (

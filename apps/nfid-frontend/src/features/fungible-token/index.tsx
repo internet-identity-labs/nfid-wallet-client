@@ -10,7 +10,10 @@ import useSWR from "swr"
 import { Skeleton } from "@nfid-frontend/ui"
 import { storageWithTtl } from "@nfid/client-db"
 import { authState } from "@nfid/integration"
-import { CKBTC_CANISTER_ID } from "@nfid/integration/token/constants"
+import {
+  BTC_NATIVE_ID,
+  CKBTC_CANISTER_ID,
+} from "@nfid/integration/token/constants"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
@@ -96,13 +99,23 @@ const TokensPage = () => {
       .length
   }, [initedTokens])
 
+  const btc = useMemo(
+    () => activeTokens?.find((t) => t.getTokenAddress() === BTC_NATIVE_ID),
+    [activeTokens],
+  )
+
   const {
     data: tokensUsdBalance,
     isLoading: tokensUsdBalanceLoading,
     mutate: refetchFtUsdBalance,
   } = useSWR(
-    initedTokens && initedTokens.length > 0 ? "ftUsdValue" : null,
-    async () => ftService.getUSDBalance(initedTokens!),
+    btc?.isInited() &&
+      btc.getTokenBalance() !== undefined &&
+      initedTokens &&
+      initedTokens.length > 0
+      ? "ftUsdValue"
+      : null,
+    async () => ftService.getFTUSDBalance(initedTokens!),
     { revalidateOnFocus: false },
   )
 
@@ -167,7 +180,9 @@ const TokensPage = () => {
             isLoading={
               tokensUsdBalanceLoading ||
               tokensOwnedQuantity === undefined ||
-              tokensWithoutPrice === undefined
+              tokensWithoutPrice === undefined ||
+              isBtcAddressLoading ||
+              (!btc?.isInited() && btc?.getTokenBalance() === undefined)
             }
           />
         </div>

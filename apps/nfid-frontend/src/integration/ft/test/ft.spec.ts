@@ -16,6 +16,7 @@ import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
 import { nftService } from "frontend/integration/nft/nft-service"
+import { portfolioService } from "frontend/integration/portfolio-balance/portfolio-service"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
 
 const userId = "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae"
@@ -466,11 +467,10 @@ describe("ft test suite", () => {
         edId,
       )
 
-      const balance = await ftService.getTotalUSDBalance(
+      const balance = await portfolioService.getPortfolioUSDBalance(
         principal,
         nfts.items,
         result,
-        stakedTokens,
       )
       expect(balance).not.toEqual("0.00 USD")
     })

@@ -14,6 +14,7 @@ import {
 import { NFT, NFTDetails } from "src/integration/nft/nft"
 
 import { exchangeRateService } from "@nfid/integration"
+import { E8S } from "@nfid/integration/token/constants"
 
 const idlFactory = ({ IDL }: any) =>
   IDL.Service({
@@ -62,10 +63,10 @@ export abstract class NftImpl implements NFT {
         this.getCanisterStatus(this.collectionId),
       ])
       this.assetPreview = assetPreview
-      this.inited = true
     } catch (e) {
       this.setError(e as NftError)
     } finally {
+      this.inited = true
       return this
     }
   }
@@ -114,14 +115,17 @@ export abstract class NftImpl implements NFT {
     return this.tokenName
   }
 
-  getTokenFloorPriceIcpFormatted(): string | undefined {
+  getTokenFloorPriceIcp(): number | undefined {
     return this.tokenFloorPriceICP
-      ? new BigNumber(this.tokenFloorPriceICP)
-          .dividedBy(e8s)
-          .toFormat(2, BigNumber.ROUND_DOWN, {
-            groupSeparator: "",
-            decimalSeparator: ".",
-          }) + " ICP"
+  }
+
+  getTokenFloorPriceIcpFormatted(): string | undefined {
+    const icpPrice = this.getTokenFloorPriceIcp()
+    return icpPrice
+      ? BigNumber(icpPrice.toString()).div(E8S).toFormat({
+          groupSeparator: "",
+          decimalSeparator: ".",
+        }) + " ICP"
       : undefined
   }
 

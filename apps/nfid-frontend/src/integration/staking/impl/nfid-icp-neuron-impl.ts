@@ -36,7 +36,7 @@ export class NfidICPNeuronImpl extends NfidNeuronImpl<NeuronInfo> {
   }
 
   getRewards(): bigint {
-    return this.neuron.fullNeuron!.maturityE8sEquivalent
+    return this.neuron.fullNeuron!.stakedMaturityE8sEquivalent || BigInt(0)
   }
 
   getLockTime(): number | undefined {

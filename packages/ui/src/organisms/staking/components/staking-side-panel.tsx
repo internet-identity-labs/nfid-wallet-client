@@ -333,8 +333,10 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       </p>
                     </div>
                   </div>
-                  <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
-                  {sidePanelOption.state !== StakingState.Unlocking && (
+                  {sidePanelOption.state !== StakingState.Available && (
+                    <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
+                  )}
+                  {sidePanelOption.state == StakingState.Locked && (
                     <>
                       <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
                         <p className="text-gray-400">Lock time</p>
@@ -348,9 +350,6 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                         </div>
                       </div>
                     </>
-                  )}
-                  {sidePanelOption.state == StakingState.Available && (
-                    <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
                   )}
                   {sidePanelOption.state === StakingState.Unlocking && (
                     <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
@@ -371,25 +370,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       )}
                     </div>
                   )}
-                  {sidePanelOption.state === StakingState.Available && (
-                    <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
-                      <p className="text-gray-400">Unlock date</p>
-                      {sidePanelOption.option.getUnlockInPast() && (
-                        <div>
-                          <p>
-                            {sidePanelOption.option
-                              .getUnlockInPast()!
-                              .getDate()}
-                          </p>
-                          <p className="text-xs text-gray-400">
-                            {sidePanelOption.option
-                              .getUnlockInPast()!
-                              .getTime()}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                  {}
                   <div className="w-full h-[1px] w-full h-[1px] bg-gray-200" />
                   <Button
                     id={"sidePanel-lock_unlock_Button"}

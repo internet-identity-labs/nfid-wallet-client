@@ -44,8 +44,7 @@ import { StakeICPParamsCalculatorImpl } from "../calculator/stake-icp-params-cal
 import { StakeSnsParamsCalculatorImpl } from "../calculator/stake-sns-params-calculator"
 import { NfidICPNeuronImpl } from "../impl/nfid-icp-neuron-impl"
 import { NfidSNSNeuronImpl } from "../impl/nfid-sns-neuron-impl"
-import { StakedICPTokenImpl } from "../impl/staked-icp-token-impl"
-import { StakedSnsTokenImpl } from "../impl/staked-sns-token-impl"
+import { StakedTokenImpl } from "../impl/staked-token-impl"
 import { StakedToken } from "../staked-token"
 import { IStakingDelegates, IStakingICPDelegates, TotalBalance } from "../types"
 
@@ -324,7 +323,7 @@ export class StakingServiceImpl implements StakingService {
       const nfidN = neurons
         .filter((neuron) => neuron.cached_neuron_stake_e8s > BigInt(0))
         .map((neuron) => new NfidSNSNeuronImpl(neuron, token, params))
-      return nfidN.length ? new StakedSnsTokenImpl(token, nfidN) : undefined
+      return nfidN.length ? new StakedTokenImpl(token, nfidN) : undefined
     } catch (e) {
       console.error("getStakedSNSNeurons error: ", e)
       return
@@ -343,7 +342,7 @@ export class StakingServiceImpl implements StakingService {
       const nfidN = neurons
         .filter((neuron) => neuron.fullNeuron!.cachedNeuronStake > BigInt(0))
         .map((neuron) => new NfidICPNeuronImpl(neuron, token, params))
-      return nfidN.length ? new StakedICPTokenImpl(token, nfidN) : undefined
+      return nfidN.length ? new StakedTokenImpl(token, nfidN) : undefined
     } catch (e) {
       console.error("getStakedICPNeurons error: ", e)
       return

@@ -112,6 +112,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
             className={clsx(
               "pb-[10px] text-sm font-bold text-gray-400",
               "px-0 md:px-[10px] w-[15%]",
+              stakingState === StakingState.Available && "hidden",
             )}
           >
             {stakingState === StakingState.Unlocking
@@ -123,12 +124,10 @@ export const StakingOption: FC<StakingOptionProps> = ({
         {stakes.map((stake) => {
           return (
             <tr
-              id={
-                `stakedTokenTransaction_${stake
-                  .getToken()
-                  .getTokenName()
-                  .replace(/\s+/g, "")}`
-              }
+              id={`stakedTokenTransaction_${stake
+                .getToken()
+                .getTokenName()
+                .replace(/\s+/g, "")}`}
               className="text-sm md:hover:bg-gray-50 h-[64px] transition-all group cursor-pointer"
               key={stake.getStakeIdFormatted()}
               onClick={() =>
@@ -192,9 +191,10 @@ export const StakingOption: FC<StakingOptionProps> = ({
               <td className="px-0 md:px-[10px] hidden md:table-cell">
                 <p
                   className="text-sm leading-5 opacity-80"
-                  id={stakingState === StakingState.Unlocking
-                    ? "tokenUnlockTime"
-                    : "tokenLockTime"
+                  id={
+                    stakingState === StakingState.Unlocking
+                      ? "tokenUnlockTime"
+                      : "tokenLockTime"
                   }
                 >
                   {stakingState === StakingState.Unlocking

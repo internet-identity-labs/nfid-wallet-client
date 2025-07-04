@@ -23,7 +23,25 @@ import { NfidNeuronImpl } from "./nfid-neuron-impl"
 const MILISECONDS_PER_SECOND = 1000
 export class NfidSNSNeuronImpl extends NfidNeuronImpl<Neuron> {
   getState(): NeuronState {
-    throw new Error("getState method is not supported for SNS neurons.")
+    const now = Math.floor(Date.now() / 1000)
+    const dissolveState = this.neuron.dissolve_state[0]
+    if (!dissolveState) return NeuronState.Unspecified
+
+    if ("DissolveDelaySeconds" in dissolveState) return NeuronState.Locked
+
+    if (
+      "WhenDissolvedTimestampSeconds" in dissolveState &&
+      dissolveState.WhenDissolvedTimestampSeconds <= now
+    )
+      return NeuronState.Dissolved
+
+    if (
+      "WhenDissolvedTimestampSeconds" in dissolveState &&
+      dissolveState.WhenDissolvedTimestampSeconds > now
+    )
+      return NeuronState.Dissolving
+
+    return NeuronState.Unspecified
   }
 
   getStakeId(): NeuronId {
@@ -43,7 +61,7 @@ export class NfidSNSNeuronImpl extends NfidNeuronImpl<Neuron> {
   }
 
   getRewards(): bigint {
-    return this.neuron.maturity_e8s_equivalent
+    return this.neuron.staked_maturity_e8s_equivalent[0] || BigInt(0)
   }
 
   getLockTime(): number | undefined {

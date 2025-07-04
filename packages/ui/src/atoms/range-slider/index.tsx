@@ -51,18 +51,18 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
           )}
         >
           {Array.from({ length: Math.max(1, (max - min) / step) }).map(
-            (_, i) => (
-              <div
-                key={`range_slider_section_${i}`}
-                className={clsx(
-                  "block w-full h-2 bg-gray-200",
-                  (i < Math.round((safeValue - min) / step) ||
-                    max === min + step) &&
-                    "!bg-teal-600",
-                  safeValue === max && "!bg-transparent",
-                )}
-              />
-            ),
+            (_, i) => {
+              const isFilled = i < Math.round((safeValue - min) / step)
+              return (
+                <div
+                  key={`range_slider_section_${i}`}
+                  className={clsx(
+                    "block w-full h-2 bg-gray-200",
+                    isFilled && "!bg-teal-600",
+                  )}
+                />
+              )
+            },
           )}
         </div>
         {!disabled && (

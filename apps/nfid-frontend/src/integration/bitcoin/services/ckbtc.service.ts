@@ -45,17 +45,20 @@ class CkBtcService {
     const interNetwokFee = satoshiService.getInSatoshis("0.000001")
     const conversionFee = satoshiService.getInSatoshis("0.0000001")
     const initialAmountInSatoshi = satoshiService.getInSatoshis(amount)
-    const identityLabsFee: bigint = this.getIdentityLabsFee(initialAmountInSatoshi)
+    const identityLabsFee: bigint = this.getIdentityLabsFee(
+      initialAmountInSatoshi,
+    )
     const amountInSatoshis: bigint =
-      satoshiService.getInSatoshis(amount) -
-      identityLabsFee -
-      conversionFee
+      satoshiService.getInSatoshis(amount) - identityLabsFee - conversionFee
 
     const minter = await this.getMinter(identity)
     const fee = await minter.estimateWithdrawalFee({ amount: amountInSatoshis })
 
     return {
-      bitcointNetworkFee: { fee_satoshis: fee.bitcoin_fee + fee.minter_fee, utxos: [] },
+      bitcointNetworkFee: {
+        fee_satoshis: fee.bitcoin_fee + fee.minter_fee,
+        utxos: [],
+      },
       conversionFee,
       interNetwokFee,
       identityLabsFee,

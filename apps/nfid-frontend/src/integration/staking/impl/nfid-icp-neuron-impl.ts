@@ -19,10 +19,6 @@ export class NfidICPNeuronImpl extends NfidNeuronImpl<NeuronInfo> {
     return this.neuron.state
   }
 
-  getIsDissolving(): boolean {
-    return this.getState() === NeuronState.Dissolving
-  }
-
   getFollowees(): Followees[] {
     return this.neuron.fullNeuron!.followees
   }

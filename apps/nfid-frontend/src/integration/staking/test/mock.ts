@@ -193,9 +193,7 @@ export const mockStake = [
     aging_since_timestamp_seconds: BigInt(1742298125),
     dissolve_state: [
       {
-        WhenDissolvedTimestampSeconds: BigInt(
-          Math.floor(Date.now() / 1000) + 3600,
-        ),
+        WhenDissolvedTimestampSeconds: BigInt(1755675741),
       },
     ],
     voting_power_percentage_multiplier: BigInt(100),

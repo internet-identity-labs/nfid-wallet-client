@@ -52,8 +52,6 @@ export abstract class NfidNeuronImpl<T> implements NFIDNeuron {
 
   abstract redeem(signIdentity: SignIdentity): Promise<void>
 
-  abstract getIsDissolving(): boolean
-
   getToken(): FT {
     return this.token
   }
@@ -128,6 +126,7 @@ export abstract class NfidNeuronImpl<T> implements NFIDNeuron {
   }
 
   getUnlockInMonths(): string | undefined {
+    if (this.getState() === NeuronState.Dissolved) return
     const unlockTimestamp = this.getUnlockIn()
     if (unlockTimestamp === undefined) return
 
@@ -165,6 +164,7 @@ export abstract class NfidNeuronImpl<T> implements NFIDNeuron {
   }
 
   getUnlockInFormatted(): FormattedDate | undefined {
+    if (this.getState() === NeuronState.Dissolved) return
     const unlocking = this.getUnlockIn()
     if (unlocking === undefined) return
 
@@ -185,33 +185,6 @@ export abstract class NfidNeuronImpl<T> implements NFIDNeuron {
             hour12: true,
           },
         ),
-    }
-  }
-
-  getUnlockInPast(): FormattedDate | undefined {
-    const lockTime = this.getLockTime()
-    if (lockTime === undefined) return
-
-    if (
-      lockTime + this.getCreatedAt() <=
-      Math.floor(Date.now() / MILISECONDS_PER_SECOND)
-    ) {
-      return {
-        getDate: () =>
-          new Date(
-            (this.getCreatedAt() + lockTime) * MILISECONDS_PER_SECOND,
-          ).toLocaleDateString("en-US", {
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-          }),
-        getTime: () =>
-          new Date(
-            (this.getCreatedAt() + lockTime) * MILISECONDS_PER_SECOND,
-          ).toLocaleTimeString("en-US", {
-            hour12: true,
-          }),
-      }
     }
   }
 

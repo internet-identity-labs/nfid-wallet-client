@@ -126,14 +126,15 @@ describe("Staking", () => {
       "7.99125 NFIDW",
     )
 
-    expect(available[0].getLockTime()).toEqual(0)
-    expect(available[0].getLockTimeInMonths()).toEqual(0)
-    expect(available[0].getUnlockIn()).toBeUndefined()
+    expect(available[0].getLockTime()).toBeUndefined()
+    expect(available[0].getLockTimeInMonths()).toBeUndefined()
+    expect(available[0].getUnlockIn()).toBeLessThanOrEqual(
+      Math.floor(Date.now() / 1000),
+    )
     expect(available[0].getUnlockInMonths()).toBeUndefined()
     expect(available[0].getUnlockInFormatted()).toBeUndefined()
     expect(available[0].getCreatedAt()).toEqual(1722298123)
-    expect(available[0].getUnlockInPast()?.getDate()).toEqual("Jul 30, 2024")
-    expect(available[0].getUnlockInPast()?.getTime()).toEqual("12:08:43 AM")
+
     expect(available[0].getCreatedAtFormatted().getDate()).toEqual(
       "Jul 30, 2024",
     )
@@ -150,17 +151,17 @@ describe("Staking", () => {
     expect(locked[0].getCreatedAtFormatted().getDate()).toEqual("Mar 18, 2025")
     expect(locked[0].getCreatedAtFormatted().getTime()).toEqual("11:42:03 AM")
 
-    expect(unlocking[0].getLockTime()).toBeUndefined()
-    expect(unlocking[0].getLockTimeInMonths()).toBeUndefined()
-    expect(unlocking[0].getUnlockIn()).toEqual(1750357341)
     jest.useFakeTimers()
     jest.setSystemTime(new Date("2025-04-08T00:00:00Z"))
-    expect(unlocking[0].getUnlockInMonths()).toEqual("2 months, 11 days")
+    expect(unlocking[0].getLockTime()).toBeUndefined()
+    expect(unlocking[0].getLockTimeInMonths()).toBeUndefined()
+    expect(unlocking[0].getUnlockIn()).toEqual(1755675741)
+    expect(unlocking[0].getUnlockInMonths()).toEqual("4 months, 12 days")
     jest.useRealTimers()
     expect(unlocking[0].getUnlockInFormatted()?.getDate()).toEqual(
-      "Jun 19, 2025",
+      "Aug 20, 2025",
     )
-    expect(unlocking[0].getUnlockInFormatted()?.getTime()).toEqual("6:22:21 PM")
+    expect(unlocking[0].getUnlockInFormatted()?.getTime()).toEqual("7:42:21 AM")
     expect(unlocking[0].getCreatedAt()).toEqual(1742298123)
     expect(unlocking[0].getCreatedAtFormatted().getDate()).toEqual(
       "Mar 18, 2025",

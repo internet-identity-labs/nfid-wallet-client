@@ -22,7 +22,6 @@ export interface NFIDNeuron {
   getLockTime(): number | undefined
   getLockTimeInMonths(): number | undefined
   getUnlockIn(): number | undefined
-  getUnlockInPast(): FormattedDate | undefined
   getUnlockInMonths(): string | undefined
   getUnlockInFormatted(): FormattedDate | undefined
   getCreatedAt(): number

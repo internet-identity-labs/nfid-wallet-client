@@ -27,6 +27,7 @@ import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
+import { useBtcAddress } from "frontend/hooks"
 import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
@@ -72,6 +73,7 @@ export const TransferFT = ({
   const [error, setError] = useState<string | undefined>()
   const { profile } = useProfile()
   const { balances } = useAllVaultsWallets()
+  const { isBtcAddressLoading } = useBtcAddress()
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -149,6 +151,7 @@ export const TransferFT = ({
   useEffect(() => {
     if (!token) return
 
+    let isMounted = true
     setIdentity(undefined)
     setIsIdentityLoading(true)
 
@@ -158,12 +161,26 @@ export const TransferFT = ({
         : [PATRON_CANISTER_ID, CHAIN_FUSION_SIGNER_CANISTER_ID]
 
     const getSignIdentity = async () => {
-      const identity = await getIdentity(targets)
-      setIdentity(identity)
-      setIsIdentityLoading(false)
+      try {
+        const identity = await getIdentity(targets)
+        if (isMounted) {
+          setIdentity(identity)
+          setIsIdentityLoading(false)
+        }
+      } catch (e) {
+        if (isMounted) {
+          setIsIdentityLoading(false)
+          setIdentity(undefined)
+        }
+        console.error("Failed to get identity", e)
+      }
     }
 
     getSignIdentity()
+
+    return () => {
+      isMounted = false
+    }
   }, [token])
 
   useEffect(() => {
@@ -357,7 +374,7 @@ export const TransferFT = ({
             ? validateBTCAddress
             : validateICRC1Address
         }
-        isLoading={isTokensLoading}
+        isLoading={isTokensLoading || isBtcAddressLoading}
         isVault={isVault}
         selectedVaultsAccountAddress={selectedVaultsAccountAddress}
         submit={submit}
@@ -373,7 +390,7 @@ export const TransferFT = ({
         onClose={onClose}
         error={error}
         btcFee={btcFee?.fee_satoshis || undefined}
-        isFeeLoading={isValidating}
+        isFeeLoading={isValidating || isIdentityLoading || !identity}
       />
     </FormProvider>
   )

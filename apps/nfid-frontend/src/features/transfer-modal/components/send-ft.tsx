@@ -151,6 +151,7 @@ export const TransferFT = ({
   useEffect(() => {
     if (!token) return
 
+    let isMounted = true
     setIdentity(undefined)
     setIsIdentityLoading(true)
 
@@ -160,12 +161,26 @@ export const TransferFT = ({
         : [PATRON_CANISTER_ID, CHAIN_FUSION_SIGNER_CANISTER_ID]
 
     const getSignIdentity = async () => {
-      const identity = await getIdentity(targets)
-      setIdentity(identity)
-      setIsIdentityLoading(false)
+      try {
+        const identity = await getIdentity(targets)
+        if (isMounted) {
+          setIdentity(identity)
+          setIsIdentityLoading(false)
+        }
+      } catch (e) {
+        if (isMounted) {
+          setIsIdentityLoading(false)
+          setIdentity(undefined)
+        }
+        console.error("Failed to get identity", e)
+      }
     }
 
     getSignIdentity()
+
+    return () => {
+      isMounted = false
+    }
   }, [token])
 
   useEffect(() => {
@@ -375,7 +390,7 @@ export const TransferFT = ({
         onClose={onClose}
         error={error}
         btcFee={btcFee?.fee_satoshis || undefined}
-        isFeeLoading={isValidating}
+        isFeeLoading={isValidating || isIdentityLoading || !identity}
       />
     </FormProvider>
   )

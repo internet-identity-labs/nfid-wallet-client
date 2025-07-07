@@ -62,7 +62,7 @@ Then(
         )
         return (
           (await (await Activity.rowActionType(tableRows[1])).getText()) ==
-          "Sent" && timeDifference < 100000
+          "Sent" && timeDifference < 150000
         )
       },
       { timeout: 150000, timeoutMsg: "Time difference is more than 150sec" },

@@ -36,13 +36,13 @@ Then(
 Then(
   /^Verifying that swap transactions are stored in activity table$/,
   async () => {
-    const tableRows = await Activity.allActivityTable()
-    const actualDate = (
-      await (await Activity.rowDate(tableRows[1])).getText()
-    ).replace(/\s?[ap]m$/, "")
     await browser.waitUntil(
       async () => {
         await browser.refresh()
+        const tableRows = await Activity.allActivityTable()
+        const actualDate = (
+          await (await Activity.rowDate(tableRows[1])).getText()
+        ).replace(/\s?[ap]m$/, "")
         const [hours, minutes, seconds] = actualDate.split(":").map(Number)
         const now = new Date()
         const expectedTime = new Date(
@@ -62,10 +62,10 @@ Then(
         )
         return (
           (await (await Activity.rowActionType(tableRows[1])).getText()) ==
-          "Sent" && timeDifference < 150000
+          "Sent" && timeDifference < 100000
         )
       },
-      { timeout: 150000, timeoutMsg: "Time difference is more than 150sec" },
+      { timeout: 100000, timeoutMsg: "Time difference is more than 100sec" },
     )
   },
 )

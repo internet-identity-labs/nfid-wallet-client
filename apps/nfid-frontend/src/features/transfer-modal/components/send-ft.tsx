@@ -27,6 +27,7 @@ import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
+import { useBtcAddress } from "frontend/hooks"
 import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
@@ -72,6 +73,7 @@ export const TransferFT = ({
   const [error, setError] = useState<string | undefined>()
   const { profile } = useProfile()
   const { balances } = useAllVaultsWallets()
+  const { isBtcAddressLoading } = useBtcAddress()
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -372,7 +374,7 @@ export const TransferFT = ({
             ? validateBTCAddress
             : validateICRC1Address
         }
-        isLoading={isTokensLoading}
+        isLoading={isTokensLoading || isBtcAddressLoading}
         isVault={isVault}
         selectedVaultsAccountAddress={selectedVaultsAccountAddress}
         submit={submit}

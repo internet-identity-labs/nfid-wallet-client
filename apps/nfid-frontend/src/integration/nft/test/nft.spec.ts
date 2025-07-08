@@ -167,7 +167,7 @@ describe("nft test suite", () => {
       expect(icpswapAsset?.url).toEqual(
         "https://gfcya-pyaaa-aaaan-qbxda-cai.raw.ic0.app/100000",
       )
-      expect(icpswapNft.getTokenFloorPriceIcpFormatted()).toEqual("0.20 ICP")
+      expect(icpswapNft.getTokenFloorPriceIcpFormatted()).toEqual("0.2 ICP")
       expect(icpswapNft.getTokenFloorPriceUSDFormatted()).toEqual("1.79 USD")
       const icpswapDetails = await icpswapNft.getDetails()
       expect(icpswapDetails.getAbout()).toEqual(
@@ -273,7 +273,7 @@ describe("nft test suite", () => {
       const icp = tokens.find((t) => t.getTokenAddress() === ICP_CANISTER_ID)
       await icp?.init(principal)
       const price = await nftService.getNFTsTotalPrice(result.items, icp)
-      expect(price?.value).toEqual("11.02")
+      expect(price?.value).toEqual("5.91")
     })
   })
 

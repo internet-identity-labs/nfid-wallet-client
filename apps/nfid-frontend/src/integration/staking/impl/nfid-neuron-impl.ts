@@ -103,7 +103,7 @@ export abstract class NfidNeuronImpl<T> implements NFIDNeuron {
     const fee = new BigNumber(this.getRewards().toString()).multipliedBy(
       PROTOCOL_FEE_MULTIPLIER,
     )
-    return BigInt(fee.toString())
+    return BigInt(fee.integerValue(BigNumber.ROUND_UP).toString())
   }
 
   getProtocolFeeFormatted(): TokenValue {

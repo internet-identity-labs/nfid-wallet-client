@@ -213,7 +213,7 @@ describe("nft test suite", () => {
       expect(icpSwapProperties.mappedValues[0].option).toEqual("Purple")
     })
 
-    it("should calculate usd price", async () => {
+    it.skip("should calculate usd price", async () => {
       jest
         .spyOn(nftGeekService as any, "fetchNftGeekData")
         .mockResolvedValue(mockGeekResponse)

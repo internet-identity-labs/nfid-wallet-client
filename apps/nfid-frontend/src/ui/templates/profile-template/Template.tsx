@@ -174,7 +174,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
       btc.getTokenBalance() !== undefined &&
       !isBtcAddressLoading
     )
-  }, [nfts?.items, initedTokens.length, isWallet])
+  }, [nfts?.items, initedTokens.length, isWallet, btc, isBtcAddressLoading])
 
   const {
     data: tokensUsdBalance,

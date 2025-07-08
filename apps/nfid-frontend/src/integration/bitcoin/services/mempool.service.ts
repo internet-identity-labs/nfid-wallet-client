@@ -10,7 +10,7 @@ import {
 
 import { TransactionId } from "./chain-fusion-signer.service"
 
-const MAX_ATTEMPTS = 5
+const MAX_ATTEMPTS = 10
 const DELAY_MS = 1000
 const REQUIRED_CONFIRMATIONS = 6
 

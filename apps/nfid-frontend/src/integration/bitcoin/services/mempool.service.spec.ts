@@ -18,4 +18,18 @@ describe("MempoolService", () => {
     expect(typeof result).toBe("boolean")
     expect(result).toBe(false)
   })
+
+  it("should return true if address has a transaction with enough confirmations", async () => {
+    const address = "1PnMfRF2enSZnR6JSexxBHuQnxG8Vo5FVK"
+    const result = await mempoolService.checkWalletConfirmations(address)
+    expect(typeof result).toBe("boolean")
+    expect(result).toBe(true)
+  })
+
+  it.skip("should return false if address has no transactions or not enough confirmations", async () => {
+    const address = "bc1qw9fpg8nu0qq74yqn88j5tr7yzk0jfkx6v8mh4l"
+    const result = await mempoolService.checkWalletConfirmations(address)
+    expect(typeof result).toBe("boolean")
+    expect(result).toBe(false)
+  })
 })

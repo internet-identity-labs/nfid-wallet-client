@@ -57,16 +57,6 @@ export class BitcoinService {
     return chainFusionSignerService.getBalance(identity, minConfirmations)
   }
 
-  private async getAddressFromCache(principal: string) {
-    const key = `bitcoin-address-${principal}`
-    const cachedValue = await authStorage.get(key)
-
-    return {
-      cachedValue,
-      key,
-    }
-  }
-
   public async getQuickBalance(principal: Principal): Promise<bigint> {
     const { cachedValue } = await this.getAddressFromCache(principal.toText())
 
@@ -81,6 +71,10 @@ export class BitcoinService {
     identity: SignIdentity,
     amount: string,
   ): Promise<BitcointNetworkFeeAndUtxos> {
+    const confirmationResult = await this.ensureWalletConfirmations(identity)
+    if (!confirmationResult.ok) {
+      throw new Error(confirmationResult.error)
+    }
     const amountInSatoshis = satoshiService.getInSatoshis(amount)
     return patronService.askToCalcUtxosAndFee(identity, amountInSatoshis)
   }
@@ -89,6 +83,11 @@ export class BitcoinService {
     identity: SignIdentity,
     amount: string,
   ): Promise<BtcToCkBtcFee> {
+    const confirmationResult = await this.ensureWalletConfirmations(identity)
+    if (!confirmationResult.ok) {
+      throw new Error(confirmationResult.error)
+    }
+
     const interNetwokFee = satoshiService.getInSatoshis("0.000001")
     const amountInSatoshis = satoshiService.getInSatoshis(amount)
     const bitcointNetworkFee: BitcointNetworkFeeAndUtxos =
@@ -165,6 +164,37 @@ export class BitcoinService {
       fee.bitcointNetworkFee,
     )
     return txId
+  }
+
+  private async getAddressFromCache(principal: string) {
+    const key = `bitcoin-address-${principal}`
+    const cachedValue = await authStorage.get(key)
+
+    return {
+      cachedValue,
+      key,
+    }
+  }
+
+  private async ensureWalletConfirmations(
+    identity: SignIdentity,
+  ): Promise<{ ok: boolean; error?: string }> {
+    const { cachedValue } = await this.getAddressFromCache(
+      identity.getPrincipal().toText(),
+    )
+    if (!cachedValue) {
+      return {
+        ok: false,
+        error: "No bitcoin address in cache for fee calculation.",
+      }
+    }
+    const hasConfirmations = await mempoolService.checkWalletConfirmations(
+      cachedValue as string,
+    )
+    if (!hasConfirmations) {
+      return { ok: false, error: "Wallet has unconfirmed transactions." }
+    }
+    return { ok: true }
   }
 }
 

@@ -14,6 +14,7 @@ import {
   CkBtcToBtcFee,
 } from "./bitcoin.service"
 import { TransactionId } from "./services/chain-fusion-signer.service"
+import { mempoolService } from "./services/mempool.service"
 
 const IDENTITY: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003008adc857dfcd0477a7aaa01a657ca6923ce76c07645704b1e872deb1253baa",
@@ -195,5 +196,49 @@ describe("Bitcoin Service", () => {
 
     // Then
     expect(txid).not.toBeNull()
+  })
+
+  it("should throw an error when ensureWalletConfirmations returns false for getFee", async () => {
+    // Given
+    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
+    const principal: string = identity.getPrincipal().toText()
+    const key = `bitcoin-address-${principal}`
+    await authStorage.set(key, "bc1qw9fpg8nu0qq74yqn88j5tr7yzk0jfkx6v8mh4l")
+
+    const checkWalletConfirmationsSpy = jest
+      .spyOn(mempoolService, "checkWalletConfirmations")
+      .mockResolvedValue(false)
+
+    const amount: string = "0.00001"
+
+    // When/Then
+    await expect(bitcoinService.getFee(identity, amount)).rejects.toThrow(
+      "Wallet has unconfirmed transactions.",
+    )
+
+    // Restore original implementation
+    checkWalletConfirmationsSpy.mockRestore()
+  })
+
+  it("should throw an error when ensureWalletConfirmations returns false for getBtcToCkBtcFee", async () => {
+    // Given
+    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
+    const principal: string = identity.getPrincipal().toText()
+    const key = `bitcoin-address-${principal}`
+    await authStorage.set(key, "bc1qw9fpg8nu0qq74yqn88j5tr7yzk0jfkx6v8mh4l")
+
+    const checkWalletConfirmationsSpy = jest
+      .spyOn(mempoolService, "checkWalletConfirmations")
+      .mockResolvedValue(false)
+
+    const amount: string = "0.00001"
+
+    // When/Then
+    await expect(
+      bitcoinService.getBtcToCkBtcFee(identity, amount),
+    ).rejects.toThrow("Wallet has unconfirmed transactions.")
+
+    // Restore original implementation
+    checkWalletConfirmationsSpy.mockRestore()
   })
 })

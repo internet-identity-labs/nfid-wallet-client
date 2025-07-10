@@ -55,7 +55,7 @@ export const Receive: FC<ReceiveProps> = ({
             trailingChars={5}
             id={"address"}
           />
-          <Copy value={selectedAccountAddress} />
+          <Copy value={address} />
         </div>
       </div>
       <div className="mb-2.5">

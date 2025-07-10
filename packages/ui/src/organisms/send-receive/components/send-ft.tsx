@@ -41,6 +41,7 @@ export interface TransferFTUiProps {
   isSuccessOpen: boolean
   onClose: () => void
   error: string | undefined
+  btcError: string | undefined
   btcFee?: bigint
   isFeeLoading: boolean
 }
@@ -63,6 +64,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   isSuccessOpen,
   onClose,
   error,
+  btcError,
   btcFee,
   isFeeLoading,
 }) => {
@@ -193,6 +195,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           </div>
         </div>
       </div>
+      {btcError && <div className="mt-2 text-xs text-red-600">{btcError}</div>}
       <Button
         className="absolute bottom-5 left-5 right-5 !w-auto"
         disabled={

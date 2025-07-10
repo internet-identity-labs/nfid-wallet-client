@@ -37,6 +37,7 @@ export interface ConvertFormProps {
   setConvertModal: (v: ConvertModal) => void
   amount: string
   errors: FieldErrors<FieldValues>
+  btcError: string | undefined
   handleReverse: () => void
   fee?: IConversionFee
   targetAmount: string
@@ -53,6 +54,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
   setConvertModal,
   amount,
   errors,
+  btcError,
   handleReverse,
   fee,
   targetAmount,
@@ -145,13 +147,16 @@ export const ConvertForm: FC<ConvertFormProps> = ({
             <span>{fromToken?.getTokenRateFormatted(fee.total)}</span>
           )}
         </div>
+        {btcError && (
+          <div className="mt-2 text-xs text-red-600">{btcError}</div>
+        )}
         <Button
           className="absolute bottom-5 left-5 right-5 !w-auto"
           type="primary"
           id="swapTokensButton"
           block
           icon={
-            !amount ? null : fee === undefined ? (
+            !amount ? null : fee === undefined && !btcError ? (
               <Spinner className="w-5 h-5 text-white" />
             ) : (
               <IconCmpConvertWhite className="text-gray-400 !w-[18px] !h-[18px] text-white" />
@@ -161,13 +166,14 @@ export const ConvertForm: FC<ConvertFormProps> = ({
             isFeeLoading ||
             !amount ||
             Boolean(errors["amount"]?.message) ||
-            !fee
+            !fee ||
+            Boolean(btcError)
           }
           onClick={submit}
         >
           {!amount
             ? "Enter an amount"
-            : fee === undefined
+            : fee === undefined && !btcError
             ? "Calculating fee"
             : "Convert"}
         </Button>

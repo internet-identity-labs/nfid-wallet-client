@@ -55,6 +55,7 @@ interface ITransferFT {
   hideZeroBalance: boolean
   setErrorMessage: (message: string) => void
   setSuccessMessage: (message: string) => void
+  onError: (value: boolean) => void
 }
 
 export const TransferFT = ({
@@ -65,6 +66,7 @@ export const TransferFT = ({
   hideZeroBalance,
   setErrorMessage,
   setSuccessMessage,
+  onError,
 }: ITransferFT) => {
   const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
   const [status, setStatus] = useState(SendStatus.PENDING)
@@ -74,6 +76,7 @@ export const TransferFT = ({
   const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
     useState(preselectedAccountAddress)
   const [error, setError] = useState<string | undefined>()
+  const [btcError, setBtcError] = useState<string | undefined>()
   const { profile } = useProfile()
   const { balances } = useAllVaultsWallets()
   const { isBtcAddressLoading } = useBtcAddress()
@@ -191,6 +194,10 @@ export const TransferFT = ({
   }, [token])
 
   useEffect(() => {
+    onError(Boolean(btcError))
+  }, [btcError, onError])
+
+  useEffect(() => {
     if (isAmountValid) {
       debouncedUpdate(parsedAmount)
     }
@@ -218,6 +225,8 @@ export const TransferFT = ({
           )
           if (!isCancelled) setBtcFee(fee)
         } catch (e) {
+          console.error(`BTC error: ${e}`)
+          setBtcError((e as Error).message)
           if (!isCancelled) setBtcFee(undefined)
         } finally {
           if (!isCancelled) setIsValidating(false)
@@ -240,6 +249,10 @@ export const TransferFT = ({
     formMethods.formState.errors.amount,
     isIdentityReady,
   ])
+
+  useEffect(() => {
+    setBtcError(undefined)
+  }, [token])
 
   const submit = useCallback(async () => {
     if (!token) return toaster.error("No selected token")
@@ -421,6 +434,7 @@ export const TransferFT = ({
         isSuccessOpen={isSuccessOpen}
         onClose={onClose}
         error={error}
+        btcError={btcError}
         btcFee={btcFee?.fee_satoshis || undefined}
         isFeeLoading={isValidating || isIdentityLoading || !identity}
       />

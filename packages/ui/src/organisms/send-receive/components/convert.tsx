@@ -31,6 +31,7 @@ export interface ConvertUiProps {
   isFeeLoading: boolean
   status: SendStatus
   error: string | undefined
+  btcError: string | undefined
   isSuccessOpen: boolean
   onClose: () => void
   handleReverse: () => void
@@ -47,6 +48,7 @@ export const ConvertUi: FC<ConvertUiProps> = ({
   isFeeLoading,
   status,
   error,
+  btcError,
   isSuccessOpen,
   onClose,
   handleReverse,
@@ -140,6 +142,7 @@ export const ConvertUi: FC<ConvertUiProps> = ({
             setConvertModal={setConvertModal}
             amount={amount}
             errors={errors}
+            btcError={btcError}
             handleReverse={handleReverse}
             fee={fee}
             targetAmount={targetAmount}

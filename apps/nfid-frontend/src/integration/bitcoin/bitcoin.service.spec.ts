@@ -213,7 +213,7 @@ describe("Bitcoin Service", () => {
 
     // When/Then
     await expect(bitcoinService.getFee(identity, amount)).rejects.toThrow(
-      "Wallet has unconfirmed transactions.",
+      "Your last BTC transaction is still going through confirmations. Once it hits all six, you will be able to send again.",
     )
 
     // Restore original implementation
@@ -236,7 +236,9 @@ describe("Bitcoin Service", () => {
     // When/Then
     await expect(
       bitcoinService.getBtcToCkBtcFee(identity, amount),
-    ).rejects.toThrow("Wallet has unconfirmed transactions.")
+    ).rejects.toThrow(
+      "Your last BTC transaction is still going through confirmations. Once it hits all six, you will be able to send again.",
+    )
 
     // Restore original implementation
     checkWalletConfirmationsSpy.mockRestore()

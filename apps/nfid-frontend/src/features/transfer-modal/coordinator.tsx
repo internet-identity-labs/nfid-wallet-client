@@ -28,6 +28,7 @@ export const TransferModalCoordinator = () => {
   const globalServices = useContext(ProfileContext)
   const [state, send] = useActor(globalServices.transferService)
   const [hasSwapError, setHasSwapError] = useState(false)
+  const [hasBtcError, setHasBtcError] = useState(false)
   const [isConvertSuccess, setIsConvertSuccess] = useState(false)
 
   const hideModal = useCallback(() => {
@@ -102,6 +103,7 @@ export const TransferModalCoordinator = () => {
               hideZeroBalance={hideZeroBalance}
               setErrorMessage={setErrorMessage}
               setSuccessMessage={setSuccessMessage}
+              onError={setHasBtcError}
             />
           </motion.div>
         )}
@@ -154,6 +156,7 @@ export const TransferModalCoordinator = () => {
               setErrorMessage={setErrorMessage}
               setSuccessMessage={setSuccessMessage}
               setIsConvertSuccess={setIsConvertSuccess}
+              onError={setHasBtcError}
             />
           </motion.div>
         )}
@@ -236,6 +239,7 @@ export const TransferModalCoordinator = () => {
           component={Components}
           isOpen={!state.matches("Hidden")}
           hasSwapError={hasSwapError}
+          hasBtcError={hasBtcError}
           isConvertSuccess={isConvertSuccess}
         />
       )}

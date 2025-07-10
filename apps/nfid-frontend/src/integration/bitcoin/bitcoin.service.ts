@@ -192,7 +192,11 @@ export class BitcoinService {
       cachedValue as string,
     )
     if (!hasConfirmations) {
-      return { ok: false, error: "Wallet has unconfirmed transactions." }
+      return {
+        ok: false,
+        error:
+          "Your last BTC transaction is still going through confirmations. Once it hits all six, you will be able to send again.",
+      }
     }
     return { ok: true }
   }

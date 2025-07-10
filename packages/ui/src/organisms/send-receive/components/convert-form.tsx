@@ -168,7 +168,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           {!amount
             ? "Enter an amount"
             : fee === undefined
-            ? "BTC fee is loading"
+            ? "Calculating fee"
             : "Convert"}
         </Button>
       </div>

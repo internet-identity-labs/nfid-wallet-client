@@ -28,7 +28,10 @@ import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useBtcAddress } from "frontend/hooks"
-import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
+import {
+  bitcoinService,
+  BitcointNetworkFeeAndUtxos,
+} from "frontend/integration/bitcoin/bitcoin.service"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
@@ -74,6 +77,10 @@ export const TransferFT = ({
   const { profile } = useProfile()
   const { balances } = useAllVaultsWallets()
   const { isBtcAddressLoading } = useBtcAddress()
+  const [btcFee, setBtcFee] = useState<BitcointNetworkFeeAndUtxos | undefined>(
+    undefined,
+  )
+  const [isValidating, setIsValidating] = useState(false)
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -193,21 +200,46 @@ export const TransferFT = ({
     }
   }, [parsedAmount, isAmountValid, debouncedUpdate])
 
-  const shouldFetchBtcFee =
-    token?.getTokenAddress() === BTC_NATIVE_ID &&
-    isAmountValid &&
-    !formMethods.formState.errors.amount &&
-    isIdentityReady
+  useEffect(() => {
+    let isCancelled = false
 
-  const { data: btcFee, isValidating } = useSWR(
-    shouldFetchBtcFee ? ["btcFee", debouncedAmount.toString()] : null,
-    () => token!.getBTCFee(identity!, debouncedAmount.toString()),
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    },
-  )
+    const fetchFee = async () => {
+      if (
+        token?.getTokenAddress() === BTC_NATIVE_ID &&
+        isAmountValid &&
+        !formMethods.formState.errors.amount &&
+        isIdentityReady
+      ) {
+        setIsValidating(true)
+        try {
+          const fee = await token.getBTCFee(
+            identity!,
+            debouncedAmount.toString(),
+          )
+          if (!isCancelled) setBtcFee(fee)
+        } catch (e) {
+          if (!isCancelled) setBtcFee(undefined)
+        } finally {
+          if (!isCancelled) setIsValidating(false)
+        }
+      } else {
+        setBtcFee(undefined)
+      }
+    }
+
+    fetchFee()
+
+    return () => {
+      isCancelled = true
+    }
+  }, [
+    token,
+    identity,
+    debouncedAmount,
+    isAmountValid,
+    formMethods.formState.errors.amount,
+    isIdentityReady,
+  ])
 
   const submit = useCallback(async () => {
     if (!token) return toaster.error("No selected token")

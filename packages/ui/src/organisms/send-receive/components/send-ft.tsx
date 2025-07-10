@@ -215,7 +215,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         }
       >
         {isFeeLoading && token.getTokenAddress() === BTC_NATIVE_ID
-          ? "BTC fee is loading"
+          ? "Calculating fee"
           : "Send"}
       </Button>
     </>

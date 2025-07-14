@@ -27,12 +27,12 @@ export class PortfolioService {
 
     const FTUSDBalance = await ftService.getFTUSDBalance(ft)
 
-    const FTValue = FTUSDBalance?.value
-    const FTValue24h = FTUSDBalance?.value24h
+    const FTValue = FTUSDBalance?.value || "0"
+    const FTValue24h = FTUSDBalance?.value24h || "0"
 
     const NFTUSDBalance = await nftService.getNFTsTotalPrice(nfts, icp)
-    const NFTValue = NFTUSDBalance?.value
-    const NFTValue24h = NFTUSDBalance?.value24h
+    const NFTValue = NFTUSDBalance?.value || "0"
+    const NFTValue24h = NFTUSDBalance?.value24h || "0"
 
     const valueSum = BigNumber(Number(FTValue) + Number(NFTValue))
     const valueSum24h = BigNumber(Number(FTValue24h) + Number(NFTValue24h))

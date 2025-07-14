@@ -1,3 +1,4 @@
+import { Principal } from "@dfinity/principal"
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import { BtcBanner } from "packages/ui/src/molecules/btc-banner"
@@ -43,6 +44,7 @@ import { TransferModalCoordinator } from "frontend/features/transfer-modal/coord
 import { ModalType } from "frontend/features/transfer-modal/types"
 import { getAllVaults } from "frontend/features/vaults/services"
 import { useBtcAddress } from "frontend/hooks"
+import { FT } from "frontend/integration/ft/ft"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
 
@@ -83,6 +85,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     window.history.back()
   }, [])
   const [hasUncompletedSwap, setHasUncompletedSwap] = useState(false)
+  const [btc, setBtc] = useState<FT>()
 
   const tabs = useMemo(() => {
     return [
@@ -160,21 +163,41 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     },
   )
 
-  const btc = useMemo(
-    () => activeTokens.find((t) => t.getTokenAddress() === BTC_NATIVE_ID),
-    [activeTokens],
-  )
+  const balance = btc?.getTokenBalance()
+  const isBtcInited = btc?.isInited()
+
+  useEffect(() => {
+    const btcToken = tokens.find((t) => t.getTokenAddress() === BTC_NATIVE_ID)
+    if (!btcToken) return
+
+    if (!btcToken.isInited() && !isBtcAddressLoading) {
+      btcToken
+        .init(Principal.fromText(authState.getUserIdData().publicKey))
+        .then(() => {
+          setBtc(btcToken)
+        })
+    }
+  }, [tokens, isBtcAddressLoading])
 
   const isReady = useMemo(() => {
     return (
       Array.isArray(nfts?.items) &&
       initedTokens.length > 0 &&
       !!isWallet &&
-      btc?.isInited() &&
-      btc.getTokenBalance() !== undefined &&
+      btc &&
+      isBtcInited &&
+      balance !== undefined &&
       !isBtcAddressLoading
     )
-  }, [nfts?.items, initedTokens.length, isWallet, btc, isBtcAddressLoading])
+  }, [
+    nfts?.items,
+    initedTokens.length,
+    isWallet,
+    btc,
+    isBtcAddressLoading,
+    balance,
+    isBtcInited,
+  ])
 
   const {
     data: tokensUsdBalance,

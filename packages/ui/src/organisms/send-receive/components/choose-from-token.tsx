@@ -68,9 +68,16 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     setValue,
     register,
     formState: { errors },
+    trigger,
   } = useFormContext()
   const userBalance = balance !== undefined ? balance : token!.getTokenBalance()
   const decimals = token!.getTokenDecimals()
+
+  useEffect(() => {
+    if (token) {
+      trigger("amount")
+    }
+  }, [token])
 
   const fee = useMemo(() => {
     if (!token || userBalance === undefined) return

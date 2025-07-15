@@ -217,6 +217,7 @@ export const TransferFT = ({
         !formMethods.formState.errors.amount &&
         isIdentityReady
       ) {
+        setBtcFee(undefined)
         setIsValidating(true)
         try {
           const fee = await token.getBTCFee(

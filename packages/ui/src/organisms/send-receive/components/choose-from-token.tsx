@@ -74,10 +74,10 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   const decimals = token!.getTokenDecimals()
 
   useEffect(() => {
-    if (token) {
+    if (token && inputAmountValue.trim()) {
       trigger("amount")
     }
-  }, [token])
+  }, [token, inputAmountValue])
 
   const fee = useMemo(() => {
     if (!token || userBalance === undefined) return

@@ -14,14 +14,12 @@ on:
         default: 'dev'
         type: choice
         options:
-        options:
           - dev
           - stage
       force_deploy:
         description: 'Force deploy'
         default: 'false'
         type: choice
-        options:
         options:
           - false
           - true
@@ -53,23 +51,23 @@ jobs:
           ref: main
           path: ci_libs
 
-      - name: INPUT => Checks branch and network_name
-        if: ${{ env.NETWORK_NAME == 'ic' }}
-        run: |
-          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+      # - name: INPUT => Checks branch and network_name
+      #   if: ${{ env.NETWORK_NAME == 'ic' }}
+      #   run: |
+      #     source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
-          if [ "${GITHUB_REF_TYPE}" != 'tag' ]; then
-            ci_echo_error "Releasing to IC not from tag not allowed." >&2
-            exit 1
-          fi
+      #     if [ "${GITHUB_REF_TYPE}" != 'tag' ]; then
+      #       ci_echo_error "Releasing to IC not from tag not allowed." >&2
+      #       exit 1
+      #     fi
 
-          # https://semver.org/
-          if ! [[ "${GITHUB_REF_NAME}" =~ ${RELEASE_TAG_REGEX} ]]; then
-            ci_echo_error "${GITHUB_REF_TYPE} : '${GITHUB_REF_NAME}' - is not SemVer correct (https://semver.org/)" >&2
-            exit 1
-          fi
+      #     # https://semver.org/
+      #     if ! [[ "${GITHUB_REF_NAME}" =~ ${RELEASE_TAG_REGEX} ]]; then
+      #       ci_echo_error "${GITHUB_REF_TYPE} : '${GITHUB_REF_NAME}' - is not SemVer correct (https://semver.org/)" >&2
+      #       exit 1
+      #     fi
 
-          ci_echo_success "${GITHUB_REF_TYPE} : ${GITHUB_REF_NAME}"
+      #     ci_echo_success "${GITHUB_REF_TYPE} : ${GITHUB_REF_NAME}"
 
       - name: Check secrets
         run: |
@@ -492,17 +490,6 @@ jobs:
           echo "[ERROR] You have try to force release without or with wrong confirmation phrase" >&2
           exit 1
 
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Checkout CI repo
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PAT }}
-          repository: internet-identity-labs/ci_libs
-          ref: main
-          path: ci_libs
-
       - name: INPUT => Checks branch and network_name
         if: ${{ env.NETWORK_NAME == 'ic' }}
         run: |
@@ -591,12 +578,6 @@ jobs:
           ci_echo_debug "Command output was '${result}'" >&2
 
           ci_echo_success "Canister '${CANISTER_NAME}' was installed to the network '${NETWORK_NAME}'" >&2
-
-      - name: POST-DEPLOY => Cleaning.
-        uses: geekyeggo/delete-artifact@f275313e70c08f6120db482d7a6b98377786765b # v5.1.0
-        with:
-          name: nfid-wallet-client
-          failOnError: false
 
       - name: POST-DEPLOY => Save artifact.
         uses: actions/upload-artifact@v4

@@ -80,22 +80,29 @@ export const StakeFT = ({
   })
 
   const { watch } = formMethods
-
-  useEffect(() => {
-    setLockValue(stakingParams?.getMinimumLockTimeInMonths())
-  }, [tokenAddress, stakingParams])
-
   const amount = watch("amount")
 
   useEffect(() => {
+    setLockValue(stakingParams?.getMinimumLockTimeInMonths())
+    if (amount.trim()) formMethods.trigger("amount")
+  }, [tokenAddress, stakingParams, amount, formMethods])
+
+  useEffect(() => {
     const getParams = async () => {
+      setStakingParams(undefined)
+      setIsStakingParamsLoading(true)
       if (!token) return
       const rootCanisterId = token.getRootSnsCanister()
-      if (!rootCanisterId) return
+      if (!rootCanisterId) {
+        console.error(
+          `Root canister ID for ${token.getTokenSymbol()} token not found`,
+        )
+        return
+      }
+
       const canister_ids = await stakingService.getTargets(rootCanisterId)
       if (!canister_ids) return
 
-      setIsStakingParamsLoading(true)
       const identity = await getIdentity([
         canister_ids,
         token.getTokenAddress(),

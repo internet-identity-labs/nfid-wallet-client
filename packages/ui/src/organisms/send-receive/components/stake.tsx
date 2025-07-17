@@ -207,7 +207,9 @@ export const StakeUi: FC<StakeUiProps> = ({
         </div>
       </div>
       <Button
-        disabled={Boolean(errors["amount"]?.message) || !amount}
+        disabled={
+          Boolean(errors["amount"]?.message) || !amount || !stakingParams
+        }
         type="primary"
         id="stakeTokensButton"
         block

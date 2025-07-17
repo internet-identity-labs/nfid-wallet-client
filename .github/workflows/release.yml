@@ -100,21 +100,21 @@ jobs:
   #         ref: main
   #         path: ci_libs
 
-      - name: INPUT => Checks branch and network_name
-        if: ${{ env.NETWORK_NAME == 'ic' }}
-        run: |
-          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+      # - name: INPUT => Checks branch and network_name
+      #   if: ${{ env.NETWORK_NAME == 'ic' }}
+      #   run: |
+      #     source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
-          if [ "${GITHUB_REF_TYPE}" != 'tag' ]; then
-            ci_echo_error "Releasing to IC not from tag not allowed." >&2
-            exit 1
-          fi
+      #     if [ "${GITHUB_REF_TYPE}" != 'tag' ]; then
+      #       ci_echo_error "Releasing to IC not from tag not allowed." >&2
+      #       exit 1
+      #     fi
 
-          # https://semver.org/
-          if ! [[ "${GITHUB_REF_NAME}" =~ ${RELEASE_TAG_REGEX} ]]; then
-            ci_echo_error "${GITHUB_REF_TYPE} : '${GITHUB_REF_NAME}' - is not SemVer correct (https://semver.org/)" >&2
-            exit 1
-          fi
+      #     # https://semver.org/
+      #     if ! [[ "${GITHUB_REF_NAME}" =~ ${RELEASE_TAG_REGEX} ]]; then
+      #       ci_echo_error "${GITHUB_REF_TYPE} : '${GITHUB_REF_NAME}' - is not SemVer correct (https://semver.org/)" >&2
+      #       exit 1
+      #     fi
 
   #         ci_echo_success "${GITHUB_REF_TYPE} : ${GITHUB_REF_NAME}"
 

@@ -27,7 +27,17 @@ export class NfidSNSNeuronImpl extends NfidNeuronImpl<Neuron> {
     const dissolveState = this.neuron.dissolve_state[0]
     if (!dissolveState) return NeuronState.Unspecified
 
-    if ("DissolveDelaySeconds" in dissolveState) return NeuronState.Locked
+    if (
+      "DissolveDelaySeconds" in dissolveState &&
+      dissolveState.DissolveDelaySeconds > BigInt(0)
+    )
+      return NeuronState.Locked
+
+    if (
+      "DissolveDelaySeconds" in dissolveState &&
+      dissolveState.DissolveDelaySeconds === BigInt(0)
+    )
+      return NeuronState.Dissolved
 
     if (
       "WhenDissolvedTimestampSeconds" in dissolveState &&
@@ -69,7 +79,10 @@ export class NfidSNSNeuronImpl extends NfidNeuronImpl<Neuron> {
 
     if (!dissolveState) return
 
-    if ("DissolveDelaySeconds" in dissolveState) {
+    if (
+      "DissolveDelaySeconds" in dissolveState &&
+      dissolveState.DissolveDelaySeconds > BigInt(0)
+    ) {
       return Number(dissolveState.DissolveDelaySeconds)
     }
   }

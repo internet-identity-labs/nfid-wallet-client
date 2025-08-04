@@ -185,7 +185,7 @@ export async function oldFlowDelegationChainLambda(
   const delegationChainForLambda = await createDelegationChain(
     identity,
     lambdaPublicKey,
-    new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
+    new Date(Date.now() + ONE_HOUR_IN_MS * 2),
     { previous: identity.getDelegation() },
   )
   const request = {

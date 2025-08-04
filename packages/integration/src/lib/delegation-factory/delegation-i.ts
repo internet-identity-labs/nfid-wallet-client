@@ -110,8 +110,8 @@ export async function getGlobalDelegation(
 ): Promise<DelegationIdentity> {
   let identityKey = JSON.stringify(identity.getPrincipal().toText() + targets + origin + "_session")
   const chainKey = JSON.stringify(identity.getPrincipal().toText() + targets + origin + "_chain")
-  const identityKeyFromStorage = await storageWithTtl.get(identityKey) as string | null
-  const chainFromStorage = await storageWithTtl.get(chainKey) as string | null
+  const identityKeyFromStorage = await integrationCache.getItem(identityKey) as string | null
+  const chainFromStorage = await integrationCache.getItem(chainKey) as string | null
   if (identityKeyFromStorage && chainFromStorage) {
     const sessionKey = Ed25519KeyIdentity.fromJSON(identityKeyFromStorage)
     const delegationChain = DelegationChain.fromJSON(chainFromStorage)
@@ -141,15 +141,15 @@ export async function getGlobalDelegation(
       targets,
     )
   }
-  await storageWithTtl.set(
+  await integrationCache.setItem(
     identityKey,
     JSON.stringify(sessionKey.toJSON()),
-    ONE_HOUR_IN_MS,
+    { ttl: ONE_HOUR_IN_MS * 2 },
   )
-  await storageWithTtl.set(
+  await integrationCache.setItem(
     chainKey,
     delegationChain.toJSON(),
-    ONE_HOUR_IN_MS,
+    { ttl: ONE_HOUR_IN_MS * 2 },
   )
   const response = DelegationIdentity.fromDelegation(
     sessionKey,

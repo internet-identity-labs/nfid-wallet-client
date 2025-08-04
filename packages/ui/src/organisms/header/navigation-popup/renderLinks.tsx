@@ -2,7 +2,7 @@ import clsx from "clsx"
 import { Fragment } from "react"
 import { useNavigate, Location } from "react-router-dom"
 
-import { INavigationPopupLinks } from "../profile-header"
+import { INavigationPopupLinks, NFIDTheme } from "../profile-header"
 
 export const shouldRenderLink = (
   linkItem: INavigationPopupLinks,
@@ -35,6 +35,7 @@ export const renderLink = (
   linkItem: INavigationPopupLinks,
   navigate: ReturnType<typeof useNavigate>,
   location: Location,
+  walletTheme: NFIDTheme,
   profileConstants?: {
     security: string
   },
@@ -63,18 +64,18 @@ export const renderLink = (
         {...linkProps}
         className={clsx(
           "flex items-center gap-[10px] h-[40px] px-[10px] rounded-[12px]",
-          "hover:bg-gray-50 cursor-pointer text-sm block text-black font-semibold",
+          "hover:bg-gray-50 dark:hover:bg-darkGrayHover/60 cursor-pointer text-sm block text-black dark:text-white font-semibold",
         )}
       >
-        <img
-          className="w-[20px] h-[20px]"
-          src={linkItem.icon}
-          alt={`${linkItem.title} icon`}
-        />
+        {linkItem.icon && (
+          <linkItem.icon
+            strokeColor={walletTheme === NFIDTheme.DARK ? "white" : "black"}
+          />
+        )}
         {linkItem.title}
       </LinkComponent>
       {linkItem.separator && (
-        <div className="my-[8px] bg-gray-100 h-[1px]"></div>
+        <div className="my-[8px] bg-gray-100 dark:bg-zinc-700 h-[1px]"></div>
       )}
     </Fragment>
   )

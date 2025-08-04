@@ -32,7 +32,7 @@ export const ModalComponent: FC<ModalProps> = ({
         >
           <div
             className={clsx(
-              "rounded-[24px] min-w-min min-h-min h-min bg-white",
+              "rounded-[24px] min-w-min min-h-min h-min bg-white dark:bg-darkGray",
               className,
             )}
             onClick={(e) => e.stopPropagation()}

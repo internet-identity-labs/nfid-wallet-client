@@ -113,7 +113,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
         }}
         className="p-5 w-[95%] md:w-[540px] z-[100] !rounded-[24px]"
       >
-        <div className={clsx("flex flex-col")}>
+        <div className={clsx("flex flex-col dark:text-white")}>
           <div className="text-[20px] leading-[26px] mb-[18px] font-bold">
             Update delegate
           </div>
@@ -126,7 +126,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
             })}
             errorText={errors.userNeuron?.message}
             labelText="Neuron ID"
-            inputClassName="!border-black"
+            inputClassName="!border-black dark:!border-zinc-500"
           />
           <div className="flex gap-[10px] justify-end mt-[20px]">
             <Button
@@ -178,9 +178,9 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
         <>
           <div className="flex gap-[10px] items-center mb-[30px]">
             <ArrowButton
-              buttonClassName="py-[7px]"
+              buttonClassName="py-[7px] dark:hover:bg-zinc-700"
               onClick={handleNavigateBack}
-              iconClassName="text-black"
+              iconClassName="text-black dark:text-white"
             />
             <ImageWithFallback
               alt={stakedToken.getToken().getTokenSymbol()}
@@ -189,10 +189,10 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
               className={clsx("w-[62px] h-[62px]", "rounded-full object-cover")}
             />
             <div>
-              <p className="text-[28px] leading-[36px]">
+              <p className="text-[28px] leading-[36px] dark:text-white">
                 {stakedToken.getToken().getTokenSymbol()}
               </p>
-              <p className="text-xs leading-5 text-secondary">
+              <p className="text-xs leading-5 text-secondary dark:text-zinc-500">
                 {stakedToken.getToken().getTokenName()}
               </p>
             </div>

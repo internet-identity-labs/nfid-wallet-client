@@ -28,14 +28,14 @@ export const Security: FC<SecurityProps> = ({
       <ProfileContainer
         title="Login info"
         subTitle="Primary method of signing in"
-        className="my-[20px] sm:my-[30px] p-[20px] sm:p-[30px]"
+        className="my-[20px] sm:my-[30px] p-[20px] sm:p-[30px] dark:text-white"
         innerClassName="!px-0"
         titleClassName="!px-0"
       >
         {primarySignInElement}
       </ProfileContainer>
       <ProfileContainer
-        className="p-[20px] sm:p-[30px]"
+        className="p-[20px] sm:p-[30px] dark:text-white"
         innerClassName="!px-0"
         titleClassName="!px-0"
         title={
@@ -59,7 +59,7 @@ export const Security: FC<SecurityProps> = ({
           className="w-full !min-w-full"
           theadClassName="h-[40px]"
           tableHeader={
-            <tr className="text-sm text-gray-400 text-bold">
+            <tr className="text-sm text-gray-400 dark:text-zinc-500 text-bold">
               <th>Passkeys</th>
               <th className="hidden sm:table-cell">Created</th>
               <th className="hidden sm:table-cell">Last activity</th>
@@ -73,12 +73,12 @@ export const Security: FC<SecurityProps> = ({
         {showCreatePasskeyOnCanister && (
           <div
             className={clsx(
-              "px-4 sm:px-[30px] h-[64px] bg-warningBgColor rounded-[12px]",
+              "px-4 sm:px-[30px] h-[64px] bg-warningBgColor dark:bg-[#F973161A] rounded-[12px]",
               "flex items-center my-[20px]",
             )}
           >
-            <IconCmpWarning className="text-orange-900 w-[24px] h-[24px] mr-[10px]" />
-            <p className="text-sm text-orange-900">
+            <IconCmpWarning className="text-orange-900 dark:text-amber-600 w-[24px] h-[24px] mr-[10px]" />
+            <p className="text-sm text-orange-900 dark:text-amber-600">
               Please create a passkey on{" "}
               {showCreatePasskeyOnCanister && (
                 <A href={showCreatePasskeyOnCanister} target="_blank">
@@ -92,7 +92,7 @@ export const Security: FC<SecurityProps> = ({
         {addPasskeyElement}
       </ProfileContainer>
       <ProfileContainer
-        className="mt-[20px] mb-[120px] sm:my-[30px] p-[20px] sm:p-[30px]"
+        className="mt-[20px] mb-[120px] sm:my-[30px] p-[20px] sm:p-[30px] dark:text-white"
         innerClassName="!px-0"
         titleClassName="!px-0"
         title="Recovery options"

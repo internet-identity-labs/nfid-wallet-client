@@ -11,8 +11,10 @@ import {
   ImageWithFallback,
 } from "@nfid-frontend/ui"
 
+import { useDarkTheme } from "frontend/hooks"
 import { NFT } from "frontend/integration/nft/nft"
 
+import EmptyNFTDark from "./assets/empty-dark.png"
 import EmptyNFT from "./assets/empty.webp"
 
 import { GalleryNftSkeleton, TableNftSkeleton } from "../../atoms/skeleton"
@@ -40,6 +42,7 @@ export const NFTs: FC<INFTs> = ({
   currentPage,
   onTransferNFT,
 }) => {
+  const isDarkTheme = useDarkTheme()
   const [search, setSearch] = useState("")
   const [display, setDisplay] = useState<"grid" | "table">("grid")
   const navigate = useNavigate()
@@ -54,9 +57,14 @@ export const NFTs: FC<INFTs> = ({
             type="text"
             value={search}
             onChange={(e) => setSearch(e.currentTarget.value)}
-            icon={<IoIosSearch size="20" className="text-black" />}
+            icon={
+              <IoIosSearch
+                size="20"
+                className="text-black dark:text-zinc-500"
+              />
+            }
             placeholder="Search"
-            inputClassName="bg-white !border-black"
+            inputClassName="bg-white !border-black dark:!border-zinc-500"
             className="w-full"
           />
           <div className={clsx("flex items-center space-x-6 shrink-0")}>
@@ -67,7 +75,7 @@ export const NFTs: FC<INFTs> = ({
       <p
         id={"items-amount"}
         className={clsx(
-          "text-sm text-center text-gray-400 h-[50px] leading-[50px]",
+          "text-sm text-center text-gray-400 dark:text-zinc-400 h-[50px] leading-[50px]",
           nftsFiltered.length === 0 && "hidden",
         )}
       >
@@ -92,7 +100,7 @@ export const NFTs: FC<INFTs> = ({
               "w-[100vw] absolute right-[-1rem] mt-[120px] ",
               "sm:right-[-30px] md:mt-0 md:w-[40vw]",
             )}
-            src={EmptyNFT}
+            src={isDarkTheme ? EmptyNFTDark : EmptyNFT}
           />
         </div>
       ) : display === "table" ? (
@@ -102,7 +110,7 @@ export const NFTs: FC<INFTs> = ({
             theadClassName="!h-0 sm:!h-[40px]"
             id="nft-table"
             tableHeader={
-              <tr className="text-sm font-bold text-gray-400">
+              <tr className="text-sm font-bold text-gray-400 dark:text-zinc-500">
                 <th className="w-[86px]">Asset</th>
                 <th>Number</th>
                 <th>Collection</th>
@@ -150,22 +158,30 @@ export const NFTs: FC<INFTs> = ({
                     )}
                   </td>
                   <td
-                    className="font-semibold"
+                    className="font-semibold dark:text-white"
                     id={`nft_token_${nft.getTokenName()}_${nft.getCollectionId()}`}
                   >
                     #{nft.getTokenNumber()}
                   </td>
-                  <td id={`nft_collection_${nft.getCollectionId()}`}>
+                  <td
+                    className="dark:text-white"
+                    id={`nft_collection_${nft.getCollectionId()}`}
+                  >
                     {nft.getCollectionName()}
                   </td>
-                  <td id={`nft_id_${nft.getTokenId()}`}>{nft.getTokenId()}</td>
+                  <td
+                    className="dark:text-white"
+                    id={`nft_id_${nft.getTokenId()}`}
+                  >
+                    {nft.getTokenId()}
+                  </td>
                   <td>
                     {nft.getTokenFloorPriceIcpFormatted() ? (
                       <>
-                        <p className="leading-[26px]">
+                        <p className="leading-[26px] dark:text-white">
                           {nft.getTokenFloorPriceIcpFormatted()}
                         </p>
-                        <p className="text-xs text-gray-400 leading-[20px]">
+                        <p className="text-xs text-gray-400 dark:text-zinc-500 leading-[20px]">
                           {nft.getTokenFloorPriceUSDFormatted()}
                         </p>
                       </>
@@ -176,7 +192,7 @@ export const NFTs: FC<INFTs> = ({
                   <td>
                     {!nft.getError() && (
                       <div
-                        className="p-[12px] w-[42px] ml-auto hover:bg-gray-100 rounded-[12px]"
+                        className="p-[12px] w-[42px] ml-auto hover:bg-gray-100 dark:hover:bg-zinc-700 rounded-[12px]"
                         onClick={(e) => {
                           e.stopPropagation()
                           onTransferNFT(nft.getTokenId())
@@ -212,7 +228,7 @@ export const NFTs: FC<INFTs> = ({
               >
                 <div
                   className={clsx(
-                    "cursor-pointer rounded-[12px] bg-gray-50 group hover:shadow-xl",
+                    "cursor-pointer rounded-[12px] bg-gray-50 dark:bg-zinc-800 group hover:shadow-xl",
                     "h-full flex flex-col",
                   )}
                   key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
@@ -245,8 +261,9 @@ export const NFTs: FC<INFTs> = ({
                     <div
                       className={clsx(
                         "absolute top-0 bottom-0 left-0 right-0 m-auto z-2",
-                        "bg-white/60 flex justify-center items-center overflow-hidden",
+                        "bg-white/60 dark:bg-zinc-500/60 flex justify-center items-center overflow-hidden",
                         "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+                        nft.getError() && "dark:!bg-black",
                       )}
                       style={{
                         backdropFilter: "blur(10px)",
@@ -255,18 +272,18 @@ export const NFTs: FC<INFTs> = ({
                     >
                       <div
                         className={clsx(
-                          "bg-white px-[15px] py-[9px] rounded-[12px] text-center",
+                          "bg-white dark:bg-black px-[15px] py-[9px] rounded-[12px] text-center",
                           nft.getError() ? "w-full" : "w-[164px]",
                         )}
                       >
                         {nft.getError() ? (
-                          <p>{nft.getError()}</p>
+                          <p className="dark:text-white">{nft.getError()}</p>
                         ) : nft.getTokenFloorPriceIcpFormatted() ? (
                           <>
-                            <p className="leading-[26px]">
+                            <p className="leading-[26px] dark:text-white">
                               {nft.getTokenFloorPriceIcpFormatted()}
                             </p>
-                            <p className="text-gray-400 text-xs leading-[20px]">
+                            <p className="text-gray-400 dark:text-zinc-400 text-xs leading-[20px]">
                               {nft.getTokenFloorPriceUSDFormatted()}
                             </p>
                           </>
@@ -280,11 +297,11 @@ export const NFTs: FC<INFTs> = ({
                   </div>
                   <div className="px-[10px] pt-[10px] pb-[14px] mt-auto">
                     <p
-                      className="mb-[2px] text-black font-bold leading-[24px]"
+                      className="mb-[2px] text-black dark:text-white font-bold leading-[24px]"
                       id={`nft_token_${nft.getTokenName()}_${nft.getCollectionId()}`}
                     >
                       {nft.getError() ? (
-                        <span className="text-gray-400">
+                        <span className="text-gray-400 dark:text-zinc-400">
                           {nft.getCollectionId()}
                         </span>
                       ) : (
@@ -292,7 +309,7 @@ export const NFTs: FC<INFTs> = ({
                       )}
                     </p>
                     <p
-                      className="text-gray-400 leading-[20px]"
+                      className="text-gray-400 dark:text-zinc-400 leading-[20px]"
                       id={`nft_collection_${nft.getCollectionId()}`}
                     >
                       {nft.getError()

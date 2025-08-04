@@ -43,7 +43,7 @@ export const TabsSwitcher: React.FC<ITabsSwitcher> = ({
       })}
       <div
         className={clsx(
-          "pb-1.5 border-b-2 border-black w-full",
+          "pb-1.5 border-b-2 border-black dark:border-white w-full",
           isFitLine ? "flex" : "hidden",
         )}
       />

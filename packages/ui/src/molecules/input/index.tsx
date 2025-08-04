@@ -46,8 +46,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {labelText && (
           <Label
             className={clsx(
-              "text-xs mb-1 inline-block",
-              inputProps.disabled && "!text-secondary",
+              "text-xs mb-1 inline-block dark:text-white",
+              inputProps.disabled && "!text-secondary dark:!text-zinc-700",
             )}
           >
             {labelText}
@@ -58,7 +58,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             <div
               className={clsx(
                 "flex-shrink-0 absolute left-2 top-1/2 -translate-y-1/2 z-10",
-                inputProps.disabled && "text-secondary",
+                inputProps.disabled && "text-secondary dark:text-zinc-500",
               )}
             >
               {icon}
@@ -68,14 +68,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             id={id}
             type={type}
             className={clsx(
-              "flex-1 block w-full py-[7px]",
-              "placeholder:text-gray-400 placeholder:text-sm",
-              "disabled:bg-gray-200 disabled:text-secondary disabled:drop-shadow-none shadow-none",
+              "flex-1 block w-full py-[7px] dark:bg-[#FFFFFF0D] dark:text-white",
+              "placeholder:text-gray-400 dark:placeholder:text-zinc-400 placeholder:text-sm",
+              "disabled:bg-gray-200 dark:disabled:bg-zinc-700 disabled:text-secondary disabled:drop-shadow-none shadow-none",
               "border-1 border-gray-400 disabled:border-gray-200",
               "rounded-[12px]",
               errorText || isErrorStyles
                 ? clsx(
-                    "border-red-600 active:border-red-600 focus:border-red-600 ",
+                    "border-red-600 dark:border-red-500 active:border-red-600 focus:border-red-600 ",
                     "active:bg-red-50",
                     "ring-red-100 focus:ring-[3px] active:ring-red-200 focus:ring-red-200 focus-within:ring-red-100 ",
                   )
@@ -114,7 +114,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {errorText && (
           <div
             id={`${id}-error`}
-            className={clsx("mt-1 text-xs text-red-base text-red-600")}
+            className={clsx(
+              "mt-1 text-xs text-red-base text-red-600 dark:text-red-500",
+            )}
           >
             {errorText}
           </div>

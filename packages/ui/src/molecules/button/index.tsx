@@ -53,7 +53,7 @@ export const Button: React.FC<ButtonProps> = ({
             "hover:shadow-md hover:shadow-teal-600/40 hover:bg-teal-600",
             "active:bg-teal-700",
             "focus:border-primaryButtonColor focus:bg-primaryButtonColor",
-            "disabled:bg-gray-300 disabled:shadow-none",
+            "disabled:bg-gray-300 dark:disabled:bg-zinc-700 dark:disabled:text-zinc-500 disabled:shadow-none",
           ),
         isSecondary &&
           clsx(
@@ -64,7 +64,7 @@ export const Button: React.FC<ButtonProps> = ({
           ),
         isStroke &&
           clsx(
-            "text-black bg-transparent border-secondaryButtonColor",
+            "text-black dark:text-white bg-transparent border-secondaryButtonColor",
             "hover:text-white hover:bg-gray-700 hover:border-gray-700 hover:shadow-md hover:shadow-gray-700/40",
             "active:text-white active:bg-secondaryButtonColor",
             "disabled:shadow-none disabled:border-gray-300 disabled:border-secondaryButtonColor/50 disabled:text-gray-300 disabled:bg-white",

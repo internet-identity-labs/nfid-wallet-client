@@ -46,14 +46,14 @@ export const BlurredLoader: React.FC<BlurredLoaderProps> = ({
             "transform transition-all duration-1000 ease-in-out",
           )}
         >
-          <div className="flex flex-col items-center justify-center w-full h-full px-14">
+          <div className="flex flex-col items-center justify-center w-full h-full px-14 dark:bg-darkGray">
             <Loader
               isLoading={isVisible}
               fullscreen={false}
               imageClasses={"w-[90px] mx-auto py-6 -mt-4 z-20"}
             />
             {loadingMessage && (
-              <div className="z-20 mt-5 text-sm text-center">
+              <div className="z-20 mt-5 text-sm text-center dark:text-white">
                 {loadingMessage}
               </div>
             )}

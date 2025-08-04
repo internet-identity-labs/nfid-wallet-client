@@ -5,6 +5,7 @@ import { Loader, PasskeySkeleton, Toggle } from "@nfid-frontend/ui"
 import { Icon } from "@nfid/integration"
 import { useSWR } from "@nfid/swr"
 
+import { useDarkTheme } from "frontend/hooks"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon-decider"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
@@ -22,6 +23,7 @@ export type IHandleWithLoading = (
 ) => void
 
 const SecurityPage = () => {
+  const isDarkTheme = useDarkTheme()
   const [isLoading, setIsLoading] = React.useState(false)
   const { profile, refreshProfile } = useProfile()
 
@@ -91,11 +93,14 @@ const SecurityPage = () => {
           <div className="flex items-center justify-between">
             <div className="flex space-x-2.5 items-center">
               <div className="w-10 h-10 p-2 rounded-full">
-                <DeviceIconDecider icon={Icon.document} />
+                <DeviceIconDecider
+                  color={isDarkTheme ? "#71717A" : "#9CA3AF"}
+                  icon={Icon.document}
+                />
               </div>
               <div>
                 <p className="text-sm leading-5">Recovery phrase</p>
-                <p className="text-xs leading-4 text-gray-400">
+                <p className="text-xs leading-4 text-gray-400 dark:text-zinc-500">
                   Last activity: {devices.recoveryDevice.last_used}
                 </p>
               </div>
@@ -110,7 +115,7 @@ const SecurityPage = () => {
         )}
       </>
     ),
-    [devices?.recoveryDevice, handleWithLoading],
+    [devices?.recoveryDevice, handleWithLoading, isDarkTheme],
   )
 
   if (!profile) return <Loader isLoading={true} />
@@ -130,7 +135,11 @@ const SecurityPage = () => {
     : CANISTER_WITH_AT_LEAST_ONE_PASSKEY
 
   return (
-    <ProfileTemplate showBackButton pageTitle="Security">
+    <ProfileTemplate
+      showBackButton
+      pageTitle="Security"
+      className="dark:text-white"
+    >
       <Security
         primarySignInElement={<PrimarySignInMethod profile={profile} />}
         showCreatePasskeyOnCanister={showCreatePasskeyOnCanister}

@@ -77,14 +77,14 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
     <div
       id={"success_window_3"}
       className={clsx(
-        "text-black text-center w-full h-full",
+        "text-black dark:text-white text-center w-full h-full",
         "px-5 pb-5 pt-[18px] absolute left-0 top-0 z-[3]",
-        "flex flex-col justify-between bg-white",
+        "flex flex-col justify-between bg-white dark:bg-darkGray",
         !isOpen && "hidden",
       )}
     >
       <div className="text-center">
-        <H5 className="mt-5 text-xl !font-bold leading-6">
+        <H5 className="mt-5 text-xl !font-bold leading-6 dark:text-white">
           {status === SendStatus.FAILED
             ? "Transaction failed"
             : status === SendStatus.COMPLETED
@@ -126,10 +126,17 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
         <p className="text-sm leading-[25px] font-inter" id="title">
           {title}
         </p>
-        <p className="text-xs text-gray-500 leading-[18px]" id="subTitle">
+        <p
+          className="text-xs text-gray-500 dark:text-zinc-500 leading-[18px]"
+          id="subTitle"
+        >
           {subTitle}
         </p>
-        {error && <div className="text-sm text-red-600 mt-[30px]">{error}</div>}
+        {error && (
+          <div className="text-sm text-red-600 dark:text-red-500 mt-[30px]">
+            {error}
+          </div>
+        )}
         <Button
           type="primary"
           block

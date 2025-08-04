@@ -44,7 +44,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   isResponsive,
   setIsResponsive,
   tokensAvailableToSwap,
-  color = "bg-gray-100",
+  color = "bg-gray-100 dark:bg-transparent",
 }) => {
   const { setValue, register } = useFormContext()
   const initedToken = useTokenInit(token)
@@ -74,7 +74,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
       <div
         id={"targetSection"}
         className={clsx(
-          "rounded-[12px] p-4",
+          "rounded-[12px] p-4 dark:border-zinc-500 dark:border",
           isResponsive ? "h-[168px]" : "h-[102px]",
           color,
         )}
@@ -94,7 +94,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
           />
           <div
             className={clsx(
-              "p-[6px] pr-[12px] bg-gray-300/40 rounded-[24px] inline-block",
+              "p-[6px] pr-[12px] bg-gray-300/40 dark:bg-zinc-900 rounded-[24px] inline-block",
               isResponsive && "w-full flex-[0_0_100%] order-1 mt-2",
             )}
           >
@@ -140,7 +140,11 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
             )}
           </div>
           <div className="flex-[0_0_100%]"></div>
-          <p className={clsx("text-xs mt-2 text-gray-500 leading-5 text-left")}>
+          <p
+            className={clsx(
+              "text-xs mt-2 text-gray-500 dark:text-zinc-500 leading-5 text-left",
+            )}
+          >
             {!isLoading ? (
               <>
                 {usdRate || "0.00 USD"}&nbsp;
@@ -158,10 +162,10 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
                       className={clsx(
                         "inline-block cursor-pointer",
                         priceImpact?.status === PriceImpactStatus.LOW
-                          ? "text-green-700"
+                          ? "text-green-700 dark:text-teal-500"
                           : priceImpact?.status === PriceImpactStatus.MEDIUM
-                          ? "text-orange-600"
-                          : "text-red-700",
+                          ? "text-orange-600 dark:text-amber-500"
+                          : "text-red-700 dark:text-red-500",
                       )}
                     >
                       ({priceImpact?.priceImpact})
@@ -170,12 +174,12 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
                 </Tooltip>
               </>
             ) : (
-              <Skeleton className="w-20 h-1 !bg-gray-200 rounded-[4px]" />
+              <Skeleton className="w-20 h-1 !bg-gray-200 dark:!bg-[#3F3F4680] rounded-[4px]" />
             )}
           </p>
           <div
             className={clsx(
-              "mt-2 text-xs leading-5 text-gray-500",
+              "mt-2 text-xs leading-5 text-gray-500 dark:text-zinc-500",
               isResponsive ? "flex-[0_0_100%] order-2" : "text-right",
             )}
           >

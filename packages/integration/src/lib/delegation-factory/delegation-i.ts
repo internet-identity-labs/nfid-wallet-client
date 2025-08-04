@@ -26,6 +26,7 @@ import {
   getDelegationChainSignedByCanister,
   getPrincipalSignedByCanister,
 } from "./delegation-factory"
+import { storageWithTtl } from "@nfid/client-db"
 
 export enum DelegationType {
   GLOBAL = "GLOBAL",
@@ -107,11 +108,15 @@ export async function getGlobalDelegation(
   targets: string[],
   origin = GLOBAL_ORIGIN,
 ): Promise<DelegationIdentity> {
-  const cachedValue = await integrationCache.getItem(
-    JSON.stringify({ identity, targets }),
-  )
-
-  if (cachedValue) return cachedValue as any
+  let identityKey = JSON.stringify(identity.getPrincipal().toText() + targets + origin + "_session")
+  const chainKey = JSON.stringify(identity.getPrincipal().toText() + targets + origin + "_chain")
+  const identityKeyFromStorage = await storageWithTtl.get(identityKey) as string | null
+  const chainFromStorage = await storageWithTtl.get(chainKey) as string | null
+  if (identityKeyFromStorage && chainFromStorage) {
+    const sessionKey = Ed25519KeyIdentity.fromJSON(identityKeyFromStorage)
+    const delegationChain = DelegationChain.fromJSON(chainFromStorage)
+    return DelegationIdentity.fromDelegation(sessionKey, delegationChain)
+  }
 
   const sessionKey = Ed25519KeyIdentity.generate()
 
@@ -136,15 +141,19 @@ export async function getGlobalDelegation(
       targets,
     )
   }
+  await storageWithTtl.set(
+    identityKey,
+    JSON.stringify(sessionKey.toJSON()),
+    ONE_HOUR_IN_MS,
+  )
+  await storageWithTtl.set(
+    chainKey,
+    delegationChain.toJSON(),
+    ONE_HOUR_IN_MS,
+  )
   const response = DelegationIdentity.fromDelegation(
     sessionKey,
     delegationChain,
-  )
-
-  await integrationCache.setItem(
-    JSON.stringify({ identity, targets }),
-    response,
-    { ttl: 600 },
   )
 
   return response

@@ -1,8 +1,3 @@
-// import {
-//   IconCmpNavVaults,
-//   IconCmpNavWallet,
-//   IconCmpNavSecurity,
-// } from "@nfid-frontend/ui"
 import { NavSecurityIcon } from "packages/ui/src/atoms/icons/nav-security"
 import { NavVaultsIcon } from "packages/ui/src/atoms/icons/nav-vaults"
 import { NavWalletIcon } from "packages/ui/src/atoms/icons/nav-wallet"

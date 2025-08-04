@@ -33,8 +33,10 @@ export const Receive: FC<ReceiveProps> = ({
         Bitcoin, with more support coming soon.
       </p>
       <div className="mb-2.5">
-        <p className="mb-1 text-xs text-gray-500">ICP wallet address</p>
-        <div className="rounded-[12px] bg-gray-100 text-gray-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
+        <p className="mb-1 text-xs text-gray-500 dark:text-zinc-500">
+          ICP wallet address
+        </p>
+        <div className="rounded-[12px] bg-gray-100 dark:bg-zinc-700 text-gray-500 dark:text-zinc-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
           <CenterEllipsis
             value={selectedAccountAddress ?? ""}
             leadingChars={29}
@@ -45,10 +47,10 @@ export const Receive: FC<ReceiveProps> = ({
         </div>
       </div>
       <div className="mb-2.5">
-        <p className="mb-1 text-xs text-gray-500">
+        <p className="mb-1 text-xs text-gray-500 dark:text-zinc-500">
           Account ID (for deposits from exchanges)
         </p>
-        <div className="rounded-[12px] bg-gray-100 text-gray-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
+        <div className="rounded-[12px] bg-gray-100 dark:bg-zinc-700 text-gray-500 dark:text-zinc-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
           <CenterEllipsis
             value={address ?? ""}
             leadingChars={29}
@@ -59,8 +61,10 @@ export const Receive: FC<ReceiveProps> = ({
         </div>
       </div>
       <div className="mb-2.5">
-        <p className="mb-1 text-xs text-gray-500">BTC wallet address</p>
-        <div className="rounded-[12px] bg-gray-100 text-gray-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
+        <p className="mb-1 text-xs text-gray-500 dark:text-zinc-500">
+          BTC wallet address
+        </p>
+        <div className="rounded-[12px] bg-gray-100 dark:bg-zinc-700 text-gray-500 dark:text-zinc-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
           {btcAddress ? (
             <>
               <CenterEllipsis
@@ -72,15 +76,15 @@ export const Receive: FC<ReceiveProps> = ({
               <Copy value={btcAddress ?? ""} />
             </>
           ) : (
-            <Spinner className="w-5 h-5 mx-auto text-black" />
+            <Spinner className="w-5 h-5 mx-auto text-black dark:text-white" />
           )}
         </div>
       </div>
       <div>
-        <p className="mb-1 text-xs text-gray-500">
+        <p className="mb-1 text-xs text-gray-500 dark:text-zinc-500">
           BTC wallet address for auto-conversion to ckBTC
         </p>
-        <div className="rounded-[12px] bg-gray-100 text-gray-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
+        <div className="rounded-[12px] bg-gray-100 dark:bg-zinc-700 text-gray-500 dark:text-zinc-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
           {autoConversionBtcAddress ? (
             <>
               <CenterEllipsis
@@ -92,10 +96,10 @@ export const Receive: FC<ReceiveProps> = ({
               <Copy value={autoConversionBtcAddress ?? ""} />
             </>
           ) : (
-            <Spinner className="w-5 h-5 mx-auto text-black" />
+            <Spinner className="w-5 h-5 mx-auto text-black dark:text-white" />
           )}
         </div>
-        <p className="text-xs tracking-[0.16px] text-gray-400 mt-1">
+        <p className="text-xs tracking-[0.16px] text-gray-500 dark:text-zinc-500 mt-1">
           ckBTC will be received by your wallet after 6 Bitcoin network{" "}
           <br className="hidden sm:block" />
           confirmations. This usually takes about 90 minutes.

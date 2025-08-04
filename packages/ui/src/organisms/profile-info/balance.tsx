@@ -28,7 +28,7 @@ export function Balance({
         <Skeleton className="w-[50%] h-[24px]" />
       ) : (
         <div className="flex flex-wrap items-baseline">
-          <div className="font-semibold">
+          <div className="font-semibold dark:text-white">
             {usdBalance?.value || "0.00"}{" "}
             <span className="text-[16px] font-bold uppercase self-end mr-3">
               usd
@@ -41,8 +41,10 @@ export function Balance({
               <div className="flex mt-2.5">
                 <small
                   className={clsx("text-xs font-bold mr-2.5 self-end", {
-                    "text-emerald-600": usdBalance.dayChangePositive,
-                    "text-red-600": !usdBalance.dayChangePositive,
+                    "text-emerald-600 dark:text-emerald-500":
+                      usdBalance.dayChangePositive,
+                    "text-red-600 dark:text-red-500":
+                      !usdBalance.dayChangePositive,
                   })}
                 >
                   {usdBalance.dayChangePositive && "+"}
@@ -52,9 +54,11 @@ export function Balance({
                   className="self-end"
                   value={usdBalance.dayChangePercent}
                   positive={usdBalance.dayChangePositive}
-                  positiveClassName="text-emerald-600"
+                  positiveClassName="text-emerald-600 dark:text-emerald-500"
                 />
-                <small className="text-xs ml-2.5 self-end">last 24h</small>
+                <small className="text-xs ml-2.5 self-end dark:text-white">
+                  last 24h
+                </small>
               </div>
             )}
         </div>

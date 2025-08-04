@@ -26,7 +26,7 @@ import { useIntersectionObserver } from "../../organisms/send-receive/hooks/inte
 const INITED_TOKENS_LIMIT = 6
 
 export interface IChooseTokenModal<T> {
-  id: string,
+  id: string
   searchInputId?: string
   tokens: T[]
   onSelect: (value: T) => void
@@ -145,7 +145,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
       <div onClick={() => setIsModalVisible(true)}>{trigger}</div>
       <div
         className={clsx(
-          "p-5 absolute w-full h-full z-50 left-0 top-0 bg-frameBgColor",
+          "p-5 absolute w-full h-full z-50 left-0 top-0 bg-frameBgColor dark:bg-darkGray",
           "flex flex-col rounded-[24px]",
           !isModalVisible && "hidden",
         )}
@@ -159,7 +159,9 @@ export const ChooseTokenModal = <T extends FT | NFT>({
               <IconCmpArrow className="mr-2" />
             </div>
             <div className="flex items-center justify-between w-full">
-              <p id={id} className="text-xl font-bold leading-10">{title}</p>
+              <p id={id} className="text-xl font-bold leading-10">
+                {title}
+              </p>
               {tokensAvailableToSwap && (
                 <Tooltip
                   align="end"
@@ -185,14 +187,19 @@ export const ChooseTokenModal = <T extends FT | NFT>({
           id={searchInputId}
           type="text"
           placeholder="Search by token name"
-          inputClassName="!border-black"
-          icon={<IoIosSearch size="20" className="text-gray-400" />}
+          inputClassName="!border-black dark:!border-zinc-500"
+          icon={
+            <IoIosSearch
+              size="20"
+              className="text-gray-400 dark:text-zinc-500"
+            />
+          }
           onKeyUp={(e) => handleSearch((e.target as HTMLInputElement).value)}
           className="mt-4 mb-5"
         />
         {isTokenOptionsLoading && <ChooseTokenSkeleton rows={6} />}
         {!tokensOptions.length && !isTokenOptionsLoading ? (
-          <div className="flex items-center justify-center h-full text-sm text-gray-400">
+          <div className="flex items-center justify-center h-full text-sm text-gray-400 dark:text-zinc-500">
             No tokens available yet
           </div>
         ) : (
@@ -201,6 +208,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
               "flex-1 overflow-auto snap-end pr-[10px]",
               "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
               "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
+              "dark:scrollbar-thumb-zinc-600 dark:scrollbar-track-[#242427]",
             )}
           >
             {filteredTokens.map((token, index) => (

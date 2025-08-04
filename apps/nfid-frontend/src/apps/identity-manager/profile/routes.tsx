@@ -1,4 +1,6 @@
-import { SecurityIcon, VaultsIcon, WalletIcon } from "@nfid-frontend/ui"
+import { NavSecurityIcon } from "packages/ui/src/atoms/icons/nav-security"
+import { NavVaultsIcon } from "packages/ui/src/atoms/icons/nav-vaults"
+import { NavWalletIcon } from "packages/ui/src/atoms/icons/nav-wallet"
 
 export const ProfileConstants = {
   base: "/wallet",
@@ -17,21 +19,21 @@ export const ProfileConstants = {
 
 export const navigationPopupLinks = [
   {
-    icon: VaultsIcon,
+    icon: NavVaultsIcon,
     title: "Vaults",
     link: ProfileConstants.vaults,
     id: "nav-vaults",
     separator: true,
   },
   {
-    icon: WalletIcon,
+    icon: NavWalletIcon,
     title: "Wallet",
     link: `${ProfileConstants.base}/${ProfileConstants.tokens}`,
     id: "nav-assets",
     separator: true,
   },
   {
-    icon: SecurityIcon,
+    icon: NavSecurityIcon,
     title: "Security",
     link: ProfileConstants.security,
     id: "nav-security",

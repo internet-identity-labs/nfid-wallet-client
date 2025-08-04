@@ -7,6 +7,7 @@ import {
   Button,
   IconCmpArrowConvert,
   IconCmpConvertWhite,
+  IconCmpConvert,
   Skeleton,
   Tooltip,
 } from "@nfid-frontend/ui"
@@ -15,9 +16,12 @@ import {
   CKBTC_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 
+import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 
+import ConvertArrowBoxDark from "../assets/convert-arrow-box-dark.png"
 import ConvertArrowBox from "../assets/convert-arrow-box.png"
+import ConvertDarkIcon from "../assets/convert-dark.svg"
 import ConvertIcon from "../assets/convert.svg"
 import { IConversionFee, IModalType } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
@@ -59,6 +63,14 @@ export const ConvertForm: FC<ConvertFormProps> = ({
   fee,
   targetAmount,
 }) => {
+  const isDarkTheme = useDarkTheme()
+  const isDisabled =
+    isFeeLoading ||
+    !amount ||
+    Boolean(errors["amount"]?.message) ||
+    !fee ||
+    Boolean(btcError)
+
   return (
     <div className={clsx(!isOpen && "hidden")}>
       <div>
@@ -79,7 +91,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
             >
               <img
                 className="cursor-pointer hover:opacity-60"
-                src={ConvertIcon}
+                src={isDarkTheme ? ConvertDarkIcon : ConvertIcon}
                 alt="NFID swap settings"
                 onClick={() => setConvertModal(ConvertModal.DETAILS)}
               />
@@ -114,14 +126,16 @@ export const ConvertForm: FC<ConvertFormProps> = ({
               "flex justify-center items-center mx-auto text-black cursor-pointer",
             )}
             style={{
-              backgroundImage: `url(${ConvertArrowBox})`,
+              backgroundImage: `url(${
+                isDarkTheme ? ConvertArrowBoxDark : ConvertArrowBox
+              })`,
               backgroundRepeat: "no-repeat",
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}
             onClick={handleReverse}
           >
-            <IconCmpArrowConvert className="h-5 w-[27px]" />
+            <IconCmpArrowConvert className="h-5 w-[27px] dark:text-white" />
           </div>
         </div>
         <ChooseToToken
@@ -132,7 +146,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           )}
           isLoading={isFeeLoading}
           value={targetAmount}
-          color="bg-gray-50"
+          color="bg-gray-50 dark:bg-transparent"
         />
         <div
           className={clsx(
@@ -162,13 +176,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
               <IconCmpConvertWhite className="text-gray-400 !w-[18px] !h-[18px] text-white" />
             )
           }
-          disabled={
-            isFeeLoading ||
-            !amount ||
-            Boolean(errors["amount"]?.message) ||
-            !fee ||
-            Boolean(btcError)
-          }
+          disabled={isDisabled}
           onClick={submit}
         >
           {!amount

@@ -74,14 +74,16 @@ export const StakeAnimation: React.FC<StakeSuccessProps> = ({
   return (
     <div
       className={clsx(
-        status === SendStatus.FAILED && "border-[3px] border-red-600",
-        status === SendStatus.COMPLETED && "border-[3px] border-teal-600",
+        status === SendStatus.FAILED &&
+          "border-[3px] border-red-600 dark:border-red-500",
+        status === SendStatus.COMPLETED &&
+          "border-[3px] border-teal-600 dark:border-teal-500",
         "circle-gradient flex justify-center items-center",
         "w-[148px] h-[148px] rounded-full",
         "relative before:content-[''] before:absolute before:top-0 before:left-0",
         "before:w-full before:h-full before:rounded-full",
         stageClassnames[animationStage].before,
-        "after:content-[''] after:bg-white after:rounded-full after:w-[calc(100%-6px)] after:h-[calc(100%-6px)] after:absolute",
+        "after:content-[''] after:bg-white dark:after:bg-zinc-700 after:rounded-full after:w-[calc(100%-6px)] after:h-[calc(100%-6px)] after:absolute",
         "after:top-[3px] after:left-[3px]",
       )}
     >
@@ -107,8 +109,8 @@ export const StakeAnimation: React.FC<StakeSuccessProps> = ({
           "rounded-full w-[96px] h-[96px] z-[2] flex items-center justify-center",
           status !== SendStatus.PENDING &&
             stageClassnames[animationStage].imageWrapper,
-          status === SendStatus.COMPLETED && "bg-teal-600",
-          status === SendStatus.FAILED && "bg-red-600",
+          status === SendStatus.COMPLETED && "bg-teal-600 dark:bg-teal-500",
+          status === SendStatus.FAILED && "bg-red-600 dark:bg-red-500",
         )}
       >
         {status !== SendStatus.PENDING ? (

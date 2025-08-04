@@ -61,7 +61,7 @@ export const ChooseFtItem = ({
           >
             <span className="font-semibold">{token.getTokenSymbol()}</span>
           </p>
-          <p className="text-xs text-left text-gray-400">
+          <p className="text-xs text-left text-gray-400 dark:text-zinc-500">
             {token.getTokenName()}
           </p>
         </div>
@@ -75,7 +75,7 @@ export const ChooseFtItem = ({
           <p className="text-sm text-right">{`${
             token.getTokenBalanceFormatted() || "0"
           } ${token.getTokenSymbol()}`}</p>
-          <p className="text-xs text-right text-gray-400">
+          <p className="text-xs text-right text-gray-400 dark:text-zinc-500">
             {token.getUSDBalanceFormatted() ?? "Not listed"}
           </p>
         </div>

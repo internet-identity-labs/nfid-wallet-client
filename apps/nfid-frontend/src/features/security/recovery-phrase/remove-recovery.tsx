@@ -29,7 +29,7 @@ export const DeleteRecoveryPhrase: React.FC<IDeleteRecoveryPhraseModal> = ({
     <div>
       <IconCmpTrash
         onClick={() => setIsModalVisible(true)}
-        className="w-6 text-gray-400 cursor-pointer hover:opacity-50"
+        className="w-6 text-gray-400 cursor-pointer dark:text-zinc-500 hover:opacity-50"
       />
       <RemoveDeviceInUseError
         isModalVisible={isModalVisible && isInUseDevice}
@@ -46,11 +46,10 @@ export const DeleteRecoveryPhrase: React.FC<IDeleteRecoveryPhraseModal> = ({
         <p className="mt-5 text-sm leading-[22px]">
           Enter your recovery phrase to confirm removal:
         </p>
-
         <textarea
           name="recoveryPhrase"
           className={clsx(
-            "border border-black rounded-[12px]",
+            "dark:bg-zinc-900 border border-black dark:border-zinc-500 rounded-[12px]",
             "focus:outline-none resize-none focus:ring-0",
             "w-full -mb-2 leading-[26px] h-[218px] mb-5",
           )}

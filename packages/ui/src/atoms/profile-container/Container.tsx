@@ -24,7 +24,7 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
     <div
       id={id}
       className={clsx(
-        "block border-0 md:border border-gray-200 rounded-[24px] relative",
+        "block border-0 md:border border-gray-200 dark:border-zinc-700 rounded-[24px] relative",
         "py-0 md:py-[30px] mb-[30px]",
         className,
       )}
@@ -36,7 +36,7 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
           </div>
         )}
         {subTitle && (
-          <div className="flex items-center justify-between mb-5 text-sm leading-[18px] text-secondary">
+          <div className="flex items-center justify-between mb-5 text-sm leading-[18px] text-secondary dark:text-zinc-500">
             {subTitle}
           </div>
         )}

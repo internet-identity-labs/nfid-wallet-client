@@ -25,14 +25,17 @@ export const StakingDelegates: FC<StakingDelegatesProps> = ({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.25 }}
     >
-      <div className="border border-gray-200 rounded-3xl px-[30px] py-[20px] relative">
+      <div className="border border-gray-200 dark:border-zinc-500 rounded-3xl px-[30px] py-[20px] relative">
         <div>
           {followees.map((followee, index) => (
             <div key={`${followee.id}_${index}`}>
               <div className="flex justify-between text-sm items-center h-[54px]">
-                <p className="text-gray-400">{followee.name}</p>
+                <p className="text-gray-400 dark:text-zinc-500">
+                  {followee.name}
+                </p>
                 <div>
                   <CopyAddress
+                    className="dark:text-white"
                     address={followee.id}
                     trailingChars={4}
                     leadingChars={6}
@@ -40,14 +43,14 @@ export const StakingDelegates: FC<StakingDelegatesProps> = ({
                 </div>
               </div>
               {index < followees.length - 1 && (
-                <div className="w-full h-[1px] bg-gray-200" />
+                <div className="w-full h-[1px] bg-gray-200 dark:bg-zinc-500" />
               )}
             </div>
           ))}
           <Button
             icon={
               isDelegateLoading ? (
-                <Spinner className="w-5 h-5 text-gray-300" />
+                <Spinner className="w-5 h-5 text-gray-300 dark:text-white" />
               ) : null
             }
             disabled={isDelegateLoading}

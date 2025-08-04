@@ -59,9 +59,9 @@ export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
           trigger={
             <div
               id={"filter-ft"}
-              className="flex items-center justify-end p-[10px] rounded-md md:bg-white px-5 sm:px-[30px]"
+              className="flex items-center justify-end p-[10px] rounded-md md:bg-white dark:md:bg-[#141518] px-5 sm:px-[30px]"
             >
-              <IconCmpFilters className="w-[21px] h-[21px] transition-opacity cursor-pointer hover:opacity-60" />
+              <IconCmpFilters className="w-[21px] h-[21px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white" />
             </div>
           }
           onReset={resetHandler}

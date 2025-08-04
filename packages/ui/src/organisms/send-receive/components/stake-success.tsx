@@ -31,7 +31,7 @@ export const StakeSuccessUi: FC<StakeSuccessProps> = ({
   return (
     <div
       className={clsx(
-        "text-black text-center w-full h-full",
+        "text-black text-center w-full h-full dark:bg-darkGray dark:text-white",
         "px-5 pb-5 pt-[18px] absolute left-0 top-0 z-[3]",
         "flex flex-col justify-between bg-white",
         !isOpen && "hidden",
@@ -41,7 +41,7 @@ export const StakeSuccessUi: FC<StakeSuccessProps> = ({
         id={"stakingProcessTitle"}
         className={clsx("text-center", { "mb-[50px]": !!error })}
       >
-        <H5 className="mt-5 text-xl !font-bold leading-6">
+        <H5 className="mt-5 text-xl !font-bold leading-6 dark:text-white">
           {status === SendStatus.FAILED
             ? "Transaction failed"
             : status === SendStatus.COMPLETED
@@ -63,11 +63,14 @@ export const StakeSuccessUi: FC<StakeSuccessProps> = ({
         <p className="text-sm leading-[25px] font-inter" id="title">
           {title}
         </p>
-        <p className="text-xs text-gray-500 leading-[18px]" id="subTitle">
+        <p
+          className="text-xs text-gray-500 dark:text-zinc-500 leading-[18px]"
+          id="subTitle"
+        >
           {subTitle}
         </p>
         {error && (
-          <div className="text-sm text-red-600 mt-[20px]">
+          <div className="text-sm text-red-600 dark:text-red-500 mt-[20px]">
             Something went wrong with creating stake. <br />
             Please try again later.
           </div>

@@ -10,9 +10,15 @@ import {
 } from "react"
 import { useLocation, useParams } from "react-router-dom"
 
-import { IconSvgArrow, Loader, Tooltip } from "@nfid-frontend/ui"
+import {
+  IconSvgArrow,
+  IconSvgArrowWhite,
+  Loader,
+  Tooltip,
+} from "@nfid-frontend/ui"
 import { useSWR } from "@nfid/swr"
 
+import { useDarkTheme } from "frontend/hooks"
 import { ProfileContext } from "frontend/provider"
 import { NotFound } from "frontend/ui/pages/404"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
@@ -24,6 +30,7 @@ import { nftInitialState, nftReducer } from "./utils"
 const DEFAULT_LIMIT_PER_PAGE = 8
 
 const NFTDetailsPage = () => {
+  const isDarkTheme = useDarkTheme()
   const globalServices = useContext(ProfileContext)
   const [state, dispatch] = useReducer(nftReducer, nftInitialState)
   const [, send] = useActor(globalServices.transferService)
@@ -141,13 +148,13 @@ const NFTDetailsPage = () => {
               <div
                 className={clsx(
                   "p-[8px] rounded-[12px] cursor-pointer",
-                  "hover:bg-gray-100 active:bg-gray-200",
+                  "hover:bg-gray-100 dark:hover:bg-zinc-700 active:bg-gray-200",
                 )}
                 onClick={onTransferNFT}
               >
                 <img
                   className="rotate-[135deg]"
-                  src={IconSvgArrow}
+                  src={isDarkTheme ? IconSvgArrowWhite : IconSvgArrow}
                   alt="transfer"
                 />
               </div>

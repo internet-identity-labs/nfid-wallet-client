@@ -16,8 +16,8 @@ export const A = ({
   return (
     <a
       className={clsx(
-        "text-primaryButtonColor cursor-pointer",
-        "hover:underline hover:text-teal-600 transition duration-300 ease-in-out",
+        "text-primaryButtonColor dark:text-teal-500 cursor-pointer",
+        "hover:underline hover:text-teal-600 dark:hover:text-teal-700 transition duration-300 ease-in-out",
         withGapBetweenChildren && "flex items-center gap-2",
         className,
       )}

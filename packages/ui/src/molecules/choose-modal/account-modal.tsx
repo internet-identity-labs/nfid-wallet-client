@@ -112,7 +112,7 @@ export const ChooseAccountModal = ({
 
   return (
     <div className="flex flex-col shrink-0" id={"choose_modal"}>
-      {label && <Label className="mb-1">{label}</Label>}
+      {label && <Label className="mb-1 dark:text-white">{label}</Label>}
 
       {type === "input" ? (
         <InputTrigger

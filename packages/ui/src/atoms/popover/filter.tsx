@@ -30,7 +30,7 @@ export const FilterPopover = ({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25, ease: "easeInOut" }}
           className={clsx(
-            "min-w-[350px] relative z-50 bg-white h-full p-5 rounded-[24px] shadow-md",
+            "min-w-[350px] relative z-50 bg-white dark:bg-darkGray dark:text-white h-full p-5 rounded-[24px] shadow-md",
             className,
           )}
         >

@@ -108,9 +108,9 @@ const NFTsPage = () => {
   return (
     <>
       {nfts.length > 0 && (
-        <div className="p-[20px] md:p-[30px] border-gray-200 border rounded-[24px] mb-[20px] md:mb-[30px] flex flex-col md:flex-row">
+        <div className="p-[20px] md:p-[30px] border-gray-200 dark:border-zinc-500 border rounded-[24px] mb-[20px] md:mb-[30px] flex flex-col md:flex-row">
           <div className="flex flex-col flex-1 md:mr-[60px]">
-            <p className="mb-[16px] text-sm font-bold text-gray-400">
+            <p className="mb-[16px] text-sm font-bold text-gray-400 dark:text-zinc-500">
               NFT balance
             </p>
             <Balance
@@ -122,10 +122,10 @@ const NFTsPage = () => {
           </div>
           <div className="flex mt-[20px] flex-1 md:my-[0]">
             <div className="flex flex-col mr-[60px]">
-              <p className="mb-[10px] text-sm font-bold text-gray-400">
+              <p className="mb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500">
                 NFTs owned
               </p>
-              <p className="mb-0 text-[26px] font-bold">
+              <p className="mb-0 text-[26px] font-bold dark:text-white">
                 {data === undefined ? (
                   <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
                 ) : (
@@ -134,10 +134,10 @@ const NFTsPage = () => {
               </p>
             </div>
             <div className="flex flex-col">
-              <p className="mb-[10px] text-sm font-bold text-gray-400">
+              <p className="mb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500">
                 NFTs w/o price
               </p>
-              <p className="mb-0 text-[26px] font-bold">
+              <p className="mb-0 text-[26px] font-bold dark:text-white">
                 {data === undefined ? (
                   <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
                 ) : (
@@ -162,7 +162,7 @@ const NFTsPage = () => {
         <Button
           disabled={isLoading}
           className={clsx(
-            "block mx-auto",
+            "block mx-auto dark:text-teal-500",
             (totalPages === currentPage || !nfts.length || isLoading) &&
               "hidden",
           )}

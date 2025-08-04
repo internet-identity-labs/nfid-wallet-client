@@ -61,7 +61,7 @@ export const Redeem: FC<ReceiveProps> = ({
           </div>
           <div className="max-w-[180px] sm:max-w-[265px]">
             <p className="leading-[24px]">Initial stake</p>
-            <p className="text-xs text-secondary">
+            <p className="text-xs text-secondary dark:text-zinc-500">
               The amount of tokens initially staked.
             </p>
           </div>
@@ -69,7 +69,7 @@ export const Redeem: FC<ReceiveProps> = ({
             <p className="leading-[24px]">
               {stakeToRedeem.getInitialStakeFormatted().getTokenValue()}
             </p>
-            <p className="text-xs text-secondary">
+            <p className="text-xs text-secondary dark:text-zinc-500">
               {stakeToRedeem.getInitialStakeFormatted().getUSDValue()}
             </p>
           </div>
@@ -80,7 +80,7 @@ export const Redeem: FC<ReceiveProps> = ({
           </div>
           <div className="max-w-[180px] sm:max-w-[265px]">
             <p className="leading-[24px]">Rewards</p>
-            <p className="text-xs text-secondary">
+            <p className="text-xs text-secondary dark:text-zinc-500">
               The amount of governance rewards earned.
             </p>
           </div>
@@ -88,18 +88,18 @@ export const Redeem: FC<ReceiveProps> = ({
             <p className="leading-[24px]">
               {stakeToRedeem.getRewardsFormatted().getTokenValue()}
             </p>
-            <p className="text-xs text-secondary">
+            <p className="text-xs text-secondary dark:text-zinc-500">
               {stakeToRedeem.getRewardsFormatted().getUSDValue()}
             </p>
           </div>
         </div>
         <div className="flex items-center text-sm relative pl-[35px]">
           <div className="absolute top-[3px] left-0 w-5 h-5 bg-teal-600 border-4 border-white rounded-full">
-            <div className="absolute w-0.5 bg-gray-300 left-[5px] h-[100px] sm:h-[108px] top-[100%] mt-1"></div>
+            <div className="absolute w-0.5 bg-gray-300 dark:bg-zinc-400 left-[5px] h-[100px] sm:h-[108px] top-[100%] mt-1"></div>
           </div>
           <div className="max-w-[180px] sm:max-w-[265px]">
             <p className="leading-[24px]">Protocol fee</p>
-            <p className="text-xs text-secondary">
+            <p className="text-xs text-secondary dark:text-zinc-500">
               The amount NFID Wallet DAO earns for its in-wallet staking
               service.
             </p>
@@ -108,17 +108,16 @@ export const Redeem: FC<ReceiveProps> = ({
             <p className="leading-[24px]">
               {stakeToRedeem.getProtocolFeeFormatted().getTokenValue()}
             </p>
-            <p className="text-xs text-secondary">
+            <p className="text-xs text-secondary dark:text-zinc-500">
               {stakeToRedeem.getProtocolFeeFormatted().getUSDValue()}
             </p>
           </div>
         </div>
         <div className="mt-[22px] sm:mt-[35px] mb-[13px] pl-[35px]">
-          <div className="h-[1px] bg-gray-100"></div>
+          <div className="h-[1px] bg-gray-100 dark:bg-zinc-500"></div>
         </div>
-
         <div className="flex items-center text-sm relative pl-[35px]">
-          <div className="absolute top-0 bottom-0 left-0 w-5 h-5 my-auto bg-gray-300 border-4 border-white rounded-full"></div>
+          <div className="absolute top-0 bottom-0 left-0 w-5 h-5 my-auto bg-gray-300 border-4 border-white rounded-full dark:bg-zinc-400"></div>
           <div className="max-w-[180px] sm:max-w-[265px]">
             <p className="leading-[28px] text-[16px] font-bold">
               Total redemption
@@ -128,7 +127,7 @@ export const Redeem: FC<ReceiveProps> = ({
             <p className="leading-[24px] font-bold">
               {stakeToRedeem.getTotalValueFormatted().getTokenValue()}
             </p>
-            <p className="text-xs text-secondary">
+            <p className="text-xs text-secondary dark:text-zinc-500">
               {stakeToRedeem.getTotalValueFormatted().getUSDValue()}
             </p>
           </div>

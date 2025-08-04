@@ -43,7 +43,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
   address,
 }) => {
   return (
-    <div className="p-[20px] sm:p-[30px] bg-portfolioColor rounded-[24px] flex flex-col md:flex-row justify-between md:items-center">
+    <div className="p-[20px] sm:p-[30px] bg-portfolioColor dark:bg-zinc-800 rounded-[24px] flex flex-col md:flex-row justify-between md:items-center">
       <div className="flex flex-col justify-between h-full">
         <div className="mb-[20px] flex items-center">
           {!isAddressLoading && address ? (
@@ -52,15 +52,15 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
               address={address}
               leadingChars={6}
               trailingChars={4}
-              className="text-xs"
-              iconClassName="h-[16px] w-[16px] text-gray-400"
+              className="text-xs dark:text-white dark:hover:text-zinc-500"
+              iconClassName="h-[16px] w-[16px] text-gray-400 dark:text-zinc-500"
             />
           ) : (
             <Skeleton className="w-[100%] h-[20px]" />
           )}
           <div
             id="receive_button_2"
-            className="text-xs text-primaryButtonColor cursor-pointer ml-[20px]"
+            className="text-xs text-primaryButtonColor dark:text-teal-500 cursor-pointer ml-[20px]"
             onClick={onReceiveClick}
           >
             Account ID

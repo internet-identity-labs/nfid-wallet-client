@@ -7,12 +7,19 @@ import {
   IconCmpDots,
   IconSvgArrow,
   IconSvgSwapAction,
+  IconSvgSwapActionWhite,
   IconSvgEyeClosedBlack,
+  IconSvgEyeClosedWhite,
   IconSvgHistoryIcon,
+  IconSvgHistoryWhiteIcon,
   IconSvgTokenInfo,
+  IconSvgTokenInfoWhite,
   IDropdownPosition,
   IconSvgConvertAction,
+  IconSvgConvertActionWhite,
   IconSvgStakeAction,
+  IconSvgStakeActionWhite,
+  IconSvgArrowWhite,
 } from "@nfid-frontend/ui"
 import {
   BTC_NATIVE_ID,
@@ -22,6 +29,7 @@ import {
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp } from "@nfid/swr"
 
+import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 
 import { IProfileConstants } from ".."
@@ -55,6 +63,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
   setIsTokenProcessed,
   isTokenProcessed,
 }) => {
+  const isDarkTheme = useDarkTheme()
   const navigate = useNavigate()
   const navigateToTransactions = useCallback(
     (canisterId: string) => () => {
@@ -75,33 +84,37 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
         position={dropdownPosition}
         className={"!rounded-[12px]"}
         triggerElement={
-          <IconCmpDots className="mx-auto transition-all cursor-pointer text-secondary hover:text-black" />
+          <IconCmpDots className="mx-auto transition-all cursor-pointer text-secondary hover:text-black dark:text-zinc-400 dark:hover:text-zinc-700" />
         }
         isDisabled={isTokenProcessed}
       >
         <DropdownOption
           label="Send"
-          icon={IconSvgArrow}
-          iconClassName="rotate-[135deg]"
+          icon={isDarkTheme ? IconSvgArrowWhite : IconSvgArrow}
+          iconClassName="rotate-[135deg] dark:text-white"
           handler={() => onSendClick(token.getTokenAddress())}
         />
         {token.getTokenAddress() !== BTC_NATIVE_ID ? (
           <DropdownOption
             label="Swap"
-            icon={IconSvgSwapAction}
+            icon={isDarkTheme ? IconSvgSwapActionWhite : IconSvgSwapAction}
             handler={() => onSwapClick(token.getTokenAddress())}
           />
         ) : (
           <DropdownOption
             label="Convert"
-            icon={IconSvgConvertAction}
+            icon={
+              isDarkTheme ? IconSvgConvertActionWhite : IconSvgConvertAction
+            }
             handler={onConvertToCkBtc}
           />
         )}
         {token.getTokenAddress() === CKBTC_CANISTER_ID && (
           <DropdownOption
             label="Convert"
-            icon={IconSvgConvertAction}
+            icon={
+              isDarkTheme ? IconSvgConvertActionWhite : IconSvgConvertAction
+            }
             handler={onConvertToBtc}
           />
         )}
@@ -109,24 +122,24 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
           token.getTokenAddress() === ICP_CANISTER_ID) && (
           <DropdownOption
             label="Stake"
-            icon={IconSvgStakeAction}
+            icon={isDarkTheme ? IconSvgStakeActionWhite : IconSvgStakeAction}
             handler={() => onStakeClick(token.getTokenAddress())}
           />
         )}
         <DropdownOption
           label="Token information"
-          icon={IconSvgTokenInfo}
+          icon={isDarkTheme ? IconSvgTokenInfoWhite : IconSvgTokenInfo}
           handler={() => setToken(token)}
         />
         <DropdownOption
           label="Transactions"
-          icon={IconSvgHistoryIcon}
+          icon={isDarkTheme ? IconSvgHistoryWhiteIcon : IconSvgHistoryIcon}
           handler={navigateToTransactions(token.getTokenAddress())}
         />
         {token.isHideable() && (
           <DropdownOption
             label="Hide token"
-            icon={IconSvgEyeClosedBlack}
+            icon={isDarkTheme ? IconSvgEyeClosedWhite : IconSvgEyeClosedBlack}
             handler={async () => {
               setIsTokenProcessed(true)
               await token.hideToken()

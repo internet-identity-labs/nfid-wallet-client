@@ -31,7 +31,7 @@ export const Card = ({
 }: ICard) => (
   <div
     className={clsx(
-      type === CardType.WARNING && "bg-orange-50",
+      type === CardType.WARNING && "bg-orange-50 dark:bg-orange-500/10",
       type === CardType.NOTICE && "bg-green-50",
       "w-full p-[15px] my-3 rounded-[12px]",
       classNames,
@@ -43,7 +43,8 @@ export const Card = ({
           {hasIcon && (
             <IconCmpWarning
               className={clsx(
-                type === CardType.WARNING && "text-orange-900",
+                type === CardType.WARNING &&
+                  "text-orange-900 dark:text-amber-600",
                 type === CardType.NOTICE && "text-green-900",
                 "w-[22px] mr-2.5",
               )}
@@ -52,7 +53,8 @@ export const Card = ({
 
           <p
             className={clsx(
-              type === CardType.WARNING && "text-orange-900",
+              type === CardType.WARNING &&
+                "text-orange-900 dark:text-amber-600",
               type === CardType.NOTICE && "text-green-900",
               "text-sm font-bold",
             )}
@@ -68,7 +70,8 @@ export const Card = ({
           {!title && hasIcon && (
             <IconCmpWarning
               className={clsx(
-                type === CardType.WARNING && "text-orange-900",
+                type === CardType.WARNING &&
+                  "text-orange-900 dark:text-amber-600",
                 type === CardType.NOTICE && "text-green-900",
                 "h-[22px] w-[22px] shrink-0",
               )}
@@ -76,7 +79,8 @@ export const Card = ({
           )}
           <p
             className={clsx(
-              type === CardType.WARNING && "text-orange-900",
+              type === CardType.WARNING &&
+                "text-orange-900 dark:text-amber-600",
               type === CardType.NOTICE && "text-green-900",
               "text-sm",
               classNames,

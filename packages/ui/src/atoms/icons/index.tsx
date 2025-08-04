@@ -2,12 +2,15 @@ import LogoMain from "../nfid-logo/nfid-wallet-logo-black.svg"
 import LogoLanding from "../nfid-logo/nfid-wallet-logo-white.svg"
 import IconSvgArrowGreen from "./arrow-green.svg"
 import IconSvgArrowRed from "./arrow-red.svg"
+import IconSvgArrowRightWhite from "./arrow-right-white.svg"
 import IconSvgArrowRight from "./arrow-right.svg"
+import IconSvgArrowWhite from "./arrow-white.svg"
 import IconSvgArrow from "./arrow.svg"
 import IconSvgCmpArrow from "./arrow.svg"
 import IconSvgCancel from "./cancel.svg"
 import IconSvgChevron from "./chevron.svg"
 import IconClose from "./close.svg"
+import IconSvgConvertActionWhite from "./convert-action-white.svg"
 import IconSvgConvertAction from "./convert-action.svg"
 import IconSvgCopy from "./copy.svg"
 import IconSvgDesktop from "./desktop.svg"
@@ -15,13 +18,17 @@ import IconSvgDfinity from "./dfinity.svg"
 import IconSvgDokument from "./document.svg"
 import IconSvgDots from "./dots.svg"
 import IconSvgError from "./error.svg"
-import IconSvgExternalIcon from "./external.svg"
+import IconSvgExternalWhite from "./external-white.svg"
+import IconSvgExternal from "./external.svg"
 import IconSvgEyeClosedBlack from "./eye-closed-black.svg"
+import IconSvgEyeClosedWhite from "./eye-closed-white.svg"
 import IconSvgEyeClosed from "./eye-closed.svg"
+import IconSvgEyeShownWhite from "./eye-shown-white.svg"
 import IconSvgEyeShown from "./eye-shown.svg"
 import IconSvgGmail from "./gmail.svg"
 import IconSvgGoogle from "./google.svg"
 import IconSvgGrid from "./grid.svg"
+import IconSvgHistoryWhiteIcon from "./history-white.svg"
 import IconSvgHistoryIcon from "./history.svg"
 import IconInfo from "./info-icon.svg"
 import IconSvgInfo from "./info.svg"
@@ -44,12 +51,15 @@ import IconSvgRecovery from "./recovery.svg"
 import IconSvgRefresh from "./refresh.svg"
 import IconSvgSettings from "./settings.svg"
 import IconSvgShare from "./share.svg"
+import IconSvgStakeActionWhite from "./stake-action-white.svg"
 import IconSvgStakeAction from "./stake-action.svg"
 import IconSvgSuccess from "./success.svg"
+import IconSvgSwapActionWhite from "./swap-action-white.svg"
 import IconSvgSwapAction from "./swap-action.svg"
 import IconSvgTable from "./table.svg"
 import IconSvgTablet from "./tablet.svg"
 import IconSvgText from "./text.svg"
+import IconSvgTokenInfoWhite from "./token-info-white.svg"
 import IconSvgTokenInfo from "./token-info.svg"
 import IconSvgTouchId from "./touch-id.svg"
 import IconSvgTransactions from "./transactions.svg"
@@ -66,6 +76,8 @@ export {
   IconSvgSwapAction,
   IconSvgConvertAction,
   IconSvgStakeAction,
+  IconSvgStakeActionWhite,
+  IconSvgSwapActionWhite,
   IconSvgCancel,
   IconSvgChevron,
   IconSvgCopy,
@@ -102,6 +114,7 @@ export {
   IconSvgTransfer,
   IconSvgArrowRed,
   IconSvgArrowGreen,
+  IconSvgArrowWhite,
   IconSvgShare,
   IconNftPlaceholder,
   SecurityIcon,
@@ -114,20 +127,34 @@ export {
   IconInfo,
   IconDisconnect,
   IconSvgEyeShown,
+  IconSvgEyeShownWhite,
   IconSvgEyeClosed,
   IconSvgEyeClosedBlack,
+  IconSvgEyeClosedWhite,
   IconSvgCmpArrow,
   IconSvgArrowRight,
-  IconSvgExternalIcon,
+  IconSvgArrowRightWhite,
+  IconSvgExternal,
+  IconSvgExternalWhite,
   IconSvgHistoryIcon,
+  IconSvgTokenInfoWhite,
+  IconSvgHistoryWhiteIcon,
+  IconSvgConvertActionWhite,
 }
+
+export { ReactComponent as IconCmpNavVaults } from "./nav-vaults.svg"
+export { ReactComponent as IconCmpNavWallet } from "./nav-wallet.svg"
+export { ReactComponent as IconCmpNavSecurity } from "./nav-security.svg"
 
 export { ReactComponent as IconCmpStakeAction } from "./stake-action.svg"
 export { ReactComponent as IconCmpSwap } from "./swap.svg"
 export { ReactComponent as IconCmpStake } from "./stake.svg"
+export { ReactComponent as IconCmpStakeGray } from "./stake-gray.svg"
 export { ReactComponent as IconCmpConvert } from "./convert.svg"
 export { ReactComponent as IconCmpConvertWhite } from "./convert-white.svg"
+export { ReactComponent as IconCmpConvertGray } from "./convert-white.svg"
 export { ReactComponent as IconCmpArrow } from "./arrow.svg"
+export { ReactComponent as IconCmpArrowWhite } from "./arrow-light.svg"
 export { ReactComponent as IconCmpArrowConvert } from "./arrow-convert.svg"
 export { ReactComponent as IconCmpCalendar } from "./calendar.svg"
 export { ReactComponent as IconCmpCancel } from "./cancel.svg"

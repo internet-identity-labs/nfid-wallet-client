@@ -187,7 +187,9 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       id={"sourceSection"}
       className={clsx(
         "border rounded-[12px] p-4",
-        errors["amount"] ? "ring border-red-600 ring-red-100" : "border-black",
+        errors["amount"]
+          ? "ring border-red-600 dark:border-red-500 ring-red-100"
+          : "border-black dark:border-zinc-500",
         isResponsive ? "h-[168px]" : "h-[100px]",
       )}
     >
@@ -225,7 +227,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         )}
         <div
           className={clsx(
-            "py-[6px] pl-[6px] pr-[12px] bg-gray-300/40 rounded-[24px] inline-block",
+            "py-[6px] pl-[6px] pr-[12px] bg-gray-300/40 dark:bg-zinc-900 rounded-[24px] inline-block",
             isResponsive && "w-full flex-[0_0_100%] order-1 mt-2",
           )}
         >
@@ -250,7 +252,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
                   <p className="text-lg font-semibold">
                     {token.getTokenSymbol()}
                   </p>
-                  <IconCmpArrowRight className="ml-auto" />
+                  <IconCmpArrowRight className="ml-auto dark:text-white" />
                 </div>
               }
               tokensAvailableToSwap={tokensAvailableToSwap}
@@ -271,20 +273,26 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         {isLoading || isBtcLoading || !Boolean(initedToken) ? (
           <Skeleton className="w-[124px] h-1 rounded-[6px] mt-[15px]" />
         ) : (
-          <p className={clsx("text-xs mt-2 text-gray-500 leading-5 text-left")}>
+          <p
+            className={clsx(
+              "text-xs mt-2 text-gray-500 dark:text-zinc-500 leading-5 text-left",
+            )}
+          >
             {usdRate || "0.00 USD"}
           </p>
         )}
         <div
           className={clsx(
-            "mt-2 text-xs leading-5 text-gray-500",
+            "mt-2 text-xs leading-5 text-gray-500 dark:text-zinc-500",
             isResponsive ? "flex-[0_0_100%] order-2" : "text-right",
           )}
         >
           Balance:&nbsp;
           <span
             className={clsx(
-              isMaxAvailable ? "text-teal-600 cursor-pointer" : "text-gray-500",
+              isMaxAvailable
+                ? "text-teal-600 dark:text-teal-500 cursor-pointer"
+                : "text-gray-500 dark:text-zinc-500",
             )}
             onClick={maxHandler}
           >

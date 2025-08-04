@@ -22,12 +22,14 @@ import {
   IconCmpApproveActivity,
   IconNftPlaceholder,
   IconSvgArrowRight,
+  IconSvgArrowRightWhite,
   ImageWithFallback,
   Tooltip,
 } from "@nfid-frontend/ui"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
+import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 import { APPROXIMATE_SWAP_DURATION } from "frontend/integration/swap/transaction/transaction-service"
 
@@ -109,22 +111,22 @@ export const getActionMarkup = (
   switch (action) {
     case IActivityAction.SENT:
       return {
-        bg: "bg-red-50",
+        bg: "bg-red-50 dark:bg-red-900",
         icon: <IconCmpArrow className="rotate-[135deg] text-red-600" />,
       }
 
     case IActivityAction.RECEIVED:
       return {
-        bg: "bg-emerald-50",
+        bg: "bg-emerald-50 dark:bg-emerald-900",
         icon: <IconCmpArrow className="rotate-[-45deg] text-emerald-600" />,
       }
 
     case IActivityAction.SWAP:
       return {
-        bg: "bg-violet-50",
+        bg: "bg-violet-50 dark:bg-indigo-900",
         icon: (
           <>
-            <IconCmpSwapActivity />
+            <IconCmpSwapActivity className="text-violet-500 dark:text-indigo-500" />
             {getTooltipAndButtonText(transaction) && (
               <div className="absolute bottom-0 right-0 w-3 h-3 bg-red-600 border-2 border-white rounded-full" />
             )}
@@ -134,19 +136,19 @@ export const getActionMarkup = (
 
     case IActivityAction.MINT:
       return {
-        bg: "bg-emerald-50",
+        bg: "bg-emerald-50 dark:bg-emerald-900",
         icon: <IconCmpMintActivity className="text-emerald-600" />,
       }
 
     case IActivityAction.BURN:
       return {
-        bg: "bg-red-50",
+        bg: "bg-red-50 dark:bg-red-900",
         icon: <IconCmpBurnActivity className="text-emerald-600" />,
       }
 
     case IActivityAction.APPROVE:
       return {
-        bg: "bg-emerald-50",
+        bg: "bg-emerald-50 dark:bg-emerald-900",
         icon: <IconCmpApproveActivity className="text-emerald-600" />,
       }
 
@@ -177,6 +179,7 @@ export const ActivityTableRow = ({
   transaction,
   token,
 }: IActivityTableRow) => {
+  const isDarkTheme = useDarkTheme()
   const [isLoading, setIsLoading] = useState(false)
 
   const providerName =
@@ -247,7 +250,7 @@ export const ActivityTableRow = ({
     >
       <tr
         id={id}
-        className="relative items-center text-sm activity-row hover:bg-gray-50"
+        className="relative items-center text-sm activity-row hover:bg-gray-50 dark:hover:bg-zinc-800"
       >
         <td className="flex items-center sm:pl-[30px] w-[156px] sm:w-[30%]">
           <div
@@ -261,13 +264,13 @@ export const ActivityTableRow = ({
           <div className="ml-2.5 mb-[11px] mt-[11px] shrink-0">
             <p
               id={"activity-table-row-action"}
-              className="font-semibold text-sm leading-[20px]"
+              className="font-semibold text-sm leading-[20px] dark:text-white"
             >
               {action}
             </p>
             <p
               id={"activity-table-row-date"}
-              className="text-xs text-gray-400 leading-[20px]"
+              className="text-xs text-gray-400 dark:text-zinc-500 leading-[20px]"
             >
               {format(new Date(timestamp), "HH:mm:ss aaa")}
             </p>
@@ -286,7 +289,7 @@ export const ActivityTableRow = ({
               )}
             >
               {action === IActivityAction.SWAP && asset?.type === "ft" ? (
-                <div className="flex items-center gap-[8px]">
+                <div className="flex items-center gap-[8px] dark:text-white">
                   <ImageWithFallback
                     alt="NFID token"
                     fallbackSrc={IconNftPlaceholder}
@@ -301,6 +304,7 @@ export const ActivityTableRow = ({
                 </div>
               ) : (
                 <CopyAddress
+                  className="dark:text-white"
                   address={from}
                   leadingChars={6}
                   trailingChars={4}
@@ -308,7 +312,10 @@ export const ActivityTableRow = ({
               )}
             </td>
             <td className="w-[34px] h-[24px] m-auto hidden sm:table-cell">
-              <img src={IconSvgArrowRight} alt="" />
+              <img
+                src={isDarkTheme ? IconSvgArrowRightWhite : IconSvgArrowRight}
+                alt=""
+              />
             </td>
             <td
               className={clsx(
@@ -316,7 +323,7 @@ export const ActivityTableRow = ({
               )}
             >
               {action === IActivityAction.SWAP && asset?.type === "ft" ? (
-                <div className="flex items-center gap-[8px]">
+                <div className="flex items-center gap-[8px] dark:text-white">
                   <ImageWithFallback
                     alt="NFID token"
                     fallbackSrc={IconNftPlaceholder}
@@ -330,7 +337,12 @@ export const ActivityTableRow = ({
                   />
                 </div>
               ) : (
-                <CopyAddress address={to} leadingChars={6} trailingChars={4} />
+                <CopyAddress
+                  className="dark:text-white"
+                  address={to}
+                  leadingChars={6}
+                  trailingChars={4}
+                />
               )}
             </td>
           </>
@@ -344,13 +356,19 @@ export const ActivityTableRow = ({
                   )}
                 >
                   <CopyAddress
+                    className="dark:text-white"
                     address={from}
                     leadingChars={6}
                     trailingChars={4}
                   />
                 </td>
                 <td className="w-[34px] h-[24px] m-auto hidden sm:table-cell">
-                  <img src={IconSvgArrowRight} alt="" />
+                  <img
+                    src={
+                      isDarkTheme ? IconSvgArrowRightWhite : IconSvgArrowRight
+                    }
+                    alt=""
+                  />
                 </td>
                 <td
                   className={clsx(
@@ -358,6 +376,7 @@ export const ActivityTableRow = ({
                   )}
                 >
                   <CopyAddress
+                    className="dark:text-white"
                     address={to}
                     leadingChars={6}
                     trailingChars={4}
@@ -371,7 +390,7 @@ export const ActivityTableRow = ({
                   "transition-opacity w-[20%] hidden sm:table-cell pl-[28px]",
                 )}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 dark:text-white">
                   <ImageWithFallback
                     alt={`${token?.getTokenSymbol()} token`}
                     fallbackSrc={IconNftPlaceholder}
@@ -422,7 +441,7 @@ export const ActivityTableRow = ({
                 </>
               ) : (
                 <div className="flex flex-col">
-                  <p className="text-sm whitespace-nowrap">
+                  <p className="text-sm whitespace-nowrap text-primaryButtonColor dark:text-teal-400">
                     <TickerAmount
                       value={asset.amount}
                       decimals={asset.decimals}
@@ -430,7 +449,7 @@ export const ActivityTableRow = ({
                     />
                   </p>
                   {Boolean(asset.rate) && (
-                    <p className="text-xs text-gray-400 whitespace-nowrap">
+                    <p className="text-xs text-gray-400 whitespace-nowrap dark:text-zinc-500">
                       <TickerAmount
                         value={asset.amount}
                         decimals={asset.decimals}

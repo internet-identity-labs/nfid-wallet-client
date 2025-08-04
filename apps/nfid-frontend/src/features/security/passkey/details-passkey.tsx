@@ -42,40 +42,46 @@ export const DetailsPasskey: React.FC<IDetailsPasskeyModal> = ({
             </tr>
           </thead>
           <tbody className="text-sm break-all">
-            <tr className="border-b border-gray-200 h-14">
-              <td className="text-gray-400">Name</td>
+            <tr className="border-b border-gray-200 dark:border-zinc-500 h-14">
+              <td className="text-gray-400 dark:text-zinc-500">Name</td>
               <td>{device.label}</td>
             </tr>
-            <tr className="border-b border-gray-200 h-14">
-              <td className="text-gray-400">Passkey type</td>
+            <tr className="border-b border-gray-200 dark:border-zinc-500 h-14">
+              <td className="text-gray-400 dark:text-zinc-500">Passkey type</td>
               <td>
                 {device.isMultiDevice
                   ? "Multi-device Passkey"
                   : "Single-device Passkey"}
               </td>
             </tr>
-            <tr className="border-b border-gray-200 h-14">
-              <td className="text-gray-400">Created</td>
+            <tr className="border-b border-gray-200 dark:border-zinc-500 h-14">
+              <td className="text-gray-400 dark:text-zinc-500">Created</td>
               <td>{device.created_at}</td>
             </tr>
-            <tr className="border-b border-gray-200 h-14">
-              <td className="text-gray-400">Last activity</td>
+            <tr className="border-b border-gray-200 dark:border-zinc-500 h-14">
+              <td className="text-gray-400 dark:text-zinc-500">
+                Last activity
+              </td>
               <td>{device.last_used}</td>
             </tr>
-            <tr className="border-b border-gray-200 h-14">
-              <td className="text-gray-400">Transports</td>
+            <tr className="border-b border-gray-200 dark:border-zinc-500 h-14">
+              <td className="text-gray-400 dark:text-zinc-500">Transports</td>
               <td>{data?.transports.join(", ")}</td>
             </tr>
-            <tr className="border-b border-gray-200 h-14">
-              <td className="text-gray-400">User verification</td>
+            <tr className="border-b border-gray-200 dark:border-zinc-500 h-14">
+              <td className="text-gray-400 dark:text-zinc-500">
+                User verification
+              </td>
               <td>{data?.flags.userVerified ? "True" : "False"}</td>
             </tr>
-            <tr className="border-b border-gray-200 h-14">
-              <td className="text-gray-400">User presence</td>
+            <tr className="border-b border-gray-200 dark:border-zinc-500 h-14">
+              <td className="text-gray-400 dark:text-zinc-500">
+                User presence
+              </td>
               <td>{data?.flags.userPresent ? "True" : "False"}</td>
             </tr>
-            <tr className="border-b border-gray-200 h-14">
-              <td className="text-gray-400">AAGUID</td>
+            <tr className="border-b border-gray-200 dark:border-zinc-500 h-14">
+              <td className="text-gray-400 dark:text-zinc-500">AAGUID</td>
               <td>{data?.aaguid}</td>
             </tr>
           </tbody>

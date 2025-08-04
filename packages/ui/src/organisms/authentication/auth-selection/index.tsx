@@ -189,7 +189,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
               {isPasskeySupported && (
                 <Button
                   id="passkey-sign-button"
-                  className="h-12 !p-0 group mt-[10px]"
+                  className="h-12 !p-0 group mt-[10px] active:!text-black"
                   type="stroke"
                   icon={<IconCmpPasskey />}
                   block

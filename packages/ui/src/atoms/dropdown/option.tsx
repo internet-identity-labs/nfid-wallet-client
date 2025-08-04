@@ -25,7 +25,7 @@ export const DropdownOption = ({
     <div
       id={`option_${label}`}
       className={clsx(
-        "flex items-center gap-[8px] hover:bg-gray-100 cursor-pointer px-[10px]",
+        "flex items-center gap-[8px] hover:bg-gray-100 dark:hover:bg-zinc-700 cursor-pointer px-[10px]",
         className,
       )}
       onClick={() => {
@@ -57,7 +57,7 @@ export const DropdownOption = ({
           ) : (
             <p
               className={clsx(
-                "text-black text-sm w-full h-[40px] px-[10px] flex items-center",
+                "text-black dark:text-white text-sm w-full h-[40px] px-[10px] flex items-center",
                 textClassName,
               )}
             >

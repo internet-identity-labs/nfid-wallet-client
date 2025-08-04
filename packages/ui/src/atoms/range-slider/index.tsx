@@ -57,7 +57,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
                 <div
                   key={`range_slider_section_${i}`}
                   className={clsx(
-                    "block w-full h-2 bg-gray-200",
+                    "block w-full h-2 bg-gray-200 dark:bg-zinc-500",
                     isFilled && "!bg-teal-600",
                   )}
                 />

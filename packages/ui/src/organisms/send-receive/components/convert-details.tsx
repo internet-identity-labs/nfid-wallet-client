@@ -42,10 +42,11 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
             "overflow-auto max-h-[396px] pr-[16px]",
             "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
             "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
+            "dark:scrollbar-thumb-zinc-600 dark:scrollbar-track-[#242427]",
           )}
         >
           <div className="text-sm">
-            <div className="flex justify-between py-3 leading-5 border-b border-gray-100">
+            <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-500">
               <p>BTC network fee</p>
               <p className="leading-5 text-right font-inter">
                 {!fee ? (
@@ -53,14 +54,14 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
                 ) : (
                   <>
                     {fee?.btcNetworkFee} {token.getTokenSymbol()}
-                    <span className="block text-xs text-gray-400">
+                    <span className="block text-xs text-gray-400 dark:text-zinc-500">
                       {token?.getTokenRateFormatted(fee?.btcNetworkFee || "0")}
                     </span>
                   </>
                 )}
               </p>
             </div>
-            <div className="flex justify-between py-3 leading-5 border-b border-gray-100">
+            <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-500">
               <p>ICP network fee</p>
               <p className="leading-5 text-right font-inter">
                 {!fee ? (
@@ -68,7 +69,7 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
                 ) : (
                   <>
                     {fee?.icpNetworkFee} {token.getTokenSymbol()}
-                    <span className="block text-xs text-gray-400">
+                    <span className="block text-xs text-gray-400 dark:text-zinc-500">
                       {token?.getTokenRateFormatted(fee?.icpNetworkFee || "0")}
                     </span>
                   </>

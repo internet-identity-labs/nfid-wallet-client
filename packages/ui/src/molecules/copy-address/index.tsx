@@ -39,7 +39,7 @@ export const CopyAddress: FC<CopyAddressProps> = ({
       className={clsx(
         "inline-flex gap-[10px] items-center cursor-pointer",
         "text-black active:text-gray-400 hover:text-zinc-500 transition-colors",
-        copied && "!text-black",
+        copied && "!text-black dark:!text-white",
         className,
       )}
       onMouseEnter={() => setHovered(true)}

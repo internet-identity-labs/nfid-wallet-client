@@ -60,7 +60,7 @@ class RefreshingDelegation {
       const deviceIdentity = authState.get().delegationIdentity
       if (!deviceIdentity) throw new Error("No device identity")
 
-      this._delegationPromise = getGlobalDelegation(deviceIdentity, accessList)
+      this._delegationPromise = getGlobalDelegation(deviceIdentity, [])
         .then((delegation) => {
           this._setupRefreshingDelay(delegation)
           this._delegation = delegation

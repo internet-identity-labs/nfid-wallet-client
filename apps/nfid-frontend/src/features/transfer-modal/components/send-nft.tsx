@@ -5,10 +5,11 @@ import { useCallback, useEffect, useState } from "react"
 import { useSWR } from "@nfid/swr"
 
 import { fetchNFT, fetchNFTs } from "frontend/features/collectibles/utils/util"
+import { useIdentity } from "frontend/hooks/identity"
 import { transferEXT } from "frontend/integration/entrepot/ext"
 
 import { SendStatus } from "../types"
-import { getIdentity, validateNftAddress } from "../utils"
+import { validateNftAddress } from "../utils"
 
 interface ITransferNFT {
   preselectedNFTId?: string
@@ -28,6 +29,7 @@ export const TransferNFT = ({
   const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [status, setStatus] = useState(SendStatus.PENDING)
+  const { identity } = useIdentity()
 
   useEffect(() => {
     setSelectedNFTId(preselectedNFTId)
@@ -47,9 +49,9 @@ export const TransferNFT = ({
   const submit = useCallback(
     async (values: { to: string }) => {
       if (!selectedNFT) return toaster.error("No selected NFT")
+      if (!identity) return toaster.error("No Identity found")
 
       setIsSuccessOpen(true)
-      const identity = await getIdentity([selectedNFT.getCollectionId()])
 
       transferEXT(selectedNFT.getTokenId(), identity, values.to)
         .then(() => {
@@ -68,7 +70,7 @@ export const TransferNFT = ({
           setStatus(SendStatus.FAILED)
         })
     },
-    [selectedNFT, setErrorMessage, setSuccessMessage],
+    [selectedNFT, setErrorMessage, setSuccessMessage, identity],
   )
 
   return (

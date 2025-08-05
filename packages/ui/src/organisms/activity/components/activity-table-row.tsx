@@ -1,4 +1,4 @@
-import { getIdentity } from "apps/nfid-frontend/src/features/transfer-modal/utils"
+import { SignIdentity } from "@dfinity/agent"
 import clsx from "clsx"
 import { format } from "date-fns"
 import { Spinner } from "packages/ui/src/atoms/spinner"
@@ -7,9 +7,6 @@ import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import { useState } from "react"
 import { errorHandlerFactory } from "src/integration/swap/errors/handler-factory"
 import { ContactSupportError } from "src/integration/swap/errors/types/contact-support-error"
-import { ShroffIcpSwapImpl } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
-import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-service"
-import { KongSwapShroffImpl } from "src/integration/swap/kong/impl/kong-swap-shroff"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
@@ -163,6 +160,7 @@ export const getActionMarkup = (
 interface IActivityTableRow extends IActivityRow {
   id: string
   token?: FT
+  identity?: SignIdentity
 }
 
 export const StatusIcons = {
@@ -178,6 +176,7 @@ export const ActivityTableRow = ({
   id,
   transaction,
   token,
+  identity,
 }: IActivityTableRow) => {
   const isDarkTheme = useDarkTheme()
   const [isLoading, setIsLoading] = useState(false)
@@ -186,29 +185,8 @@ export const ActivityTableRow = ({
     transaction?.getSwapName() && SwapName[transaction?.getSwapName()]
 
   const completeHandler = async () => {
-    if (!transaction) return
+    if (!transaction || !identity) return
     setIsLoading(true)
-
-    let identity
-
-    if (providerName === SwapName.ICPSwap) {
-      const pool = await icpSwapService.getPoolFactory(
-        transaction.getSourceLedger(),
-        transaction.getTargetLedger(),
-      )
-      identity = await getIdentity([
-        transaction.getSourceLedger(),
-        transaction.getTargetLedger(),
-        pool.canisterId.toText(),
-        ...ShroffIcpSwapImpl.getStaticTargets(),
-      ])
-    } else {
-      identity = await getIdentity([
-        transaction.getSourceLedger(),
-        transaction.getTargetLedger(),
-        ...KongSwapShroffImpl.getStaticTargets(),
-      ])
-    }
 
     try {
       const errorHandler = errorHandlerFactory.getHandler(transaction)

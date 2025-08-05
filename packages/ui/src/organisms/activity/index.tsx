@@ -1,3 +1,4 @@
+import { SignIdentity } from "@dfinity/agent"
 import clsx from "clsx"
 import { FC, useMemo } from "react"
 
@@ -30,9 +31,14 @@ export interface ActivityProps {
     isFirstLoading: boolean
   }
   tokens: FT[]
+  identity?: SignIdentity
 }
 
-export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
+export const Activity: FC<ActivityProps> = ({
+  activityData,
+  tokens,
+  identity,
+}) => {
   const {
     activities,
     filter,
@@ -106,6 +112,7 @@ export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
                     rows={group.rows}
                     key={`group_${group.date}`}
                     token={ckBTC}
+                    identity={identity}
                   />
                 ))
               )}

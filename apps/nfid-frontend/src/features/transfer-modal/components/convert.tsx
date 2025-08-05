@@ -1,4 +1,3 @@
-import { SignIdentity } from "@dfinity/agent"
 import debounce from "lodash/debounce"
 import { ConvertUi } from "packages/ui/src/organisms/send-receive/components/convert"
 import { useCallback, useEffect, useMemo, useState } from "react"
@@ -11,6 +10,7 @@ import {
 import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
+import { useIdentity } from "frontend/hooks/identity"
 import {
   bitcoinService,
   BtcToCkBtcFee,
@@ -21,7 +21,6 @@ import { FT } from "frontend/integration/ft/ft"
 import { FormValues, SendStatus } from "../types"
 import {
   getConversionTokenAddress,
-  getIdentity,
   getTokensWithUpdatedBalance,
 } from "../utils"
 
@@ -47,12 +46,12 @@ export const ConvertBTC = ({
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [status, setStatus] = useState(SendStatus.PENDING)
   const [error, setError] = useState<string | undefined>()
-  const [identity, setIdentity] = useState<SignIdentity>()
   const [btcFee, setBtcFee] = useState<BtcToCkBtcFee | CkBtcToBtcFee>()
   const [btcError, setBtcError] = useState<string | undefined>()
   const [fromTokenAddress, setFromTokenAddress] = useState(
     preselectedSourceTokenAddress || BTC_NATIVE_ID,
   )
+  const { identity } = useIdentity()
 
   const [toTokenAddress, setToTokenAddress] = useState(
     getConversionTokenAddress(preselectedSourceTokenAddress ?? BTC_NATIVE_ID),
@@ -96,20 +95,6 @@ export const ConvertBTC = ({
   useEffect(() => {
     onError(Boolean(btcError))
   }, [btcError, onError])
-
-  useEffect(() => {
-    const getSignIdentity = async () => {
-      const identity = await getIdentity([
-        PATRON_CANISTER_ID,
-        CHAIN_FUSION_SIGNER_CANISTER_ID,
-        CK_BTC_MINTER_CANISTER_ID,
-        CK_BTC_LEDGER_CANISTER_ID,
-      ])
-      setIdentity(identity)
-    }
-
-    getSignIdentity()
-  }, [])
 
   const { watch } = formMethods
   const amount = watch("amount")

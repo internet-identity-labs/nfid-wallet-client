@@ -72,11 +72,11 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
             disabled={disabled}
             id={id}
             className={clsx(
-              "min-w-0 font-semibold leading-10 bg-transparent",
+              "min-w-0 font-semibold leading-10 bg-transparent dark:text-white",
               "outline-none border-none focus:ring-0 p-0 max-w-[100px] sm:max-w-[190px]",
               disabled
                 ? "text-gray-500 placeholder:text-gray-500"
-                : "text-black placeholder:text-black",
+                : "text-black placeholder:text-black dark:placeholder:text-white",
               className,
             )}
             name={name}

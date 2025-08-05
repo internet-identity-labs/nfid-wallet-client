@@ -42,7 +42,7 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
         onClick={() => setIsModalVisible(true)}
         icon={<IconCmpPlus className="w-[18px] h-[18px]" />}
         type="ghost"
-        className="text-sm font-bold mt-[20px]"
+        className="text-sm font-bold mt-[20px] dark:text-teal-500"
       >
         Add recovery phrase
       </Button>

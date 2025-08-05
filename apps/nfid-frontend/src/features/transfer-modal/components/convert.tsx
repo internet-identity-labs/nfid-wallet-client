@@ -31,6 +31,7 @@ interface ConvertBTCProps {
   setErrorMessage: (message: string) => void
   setSuccessMessage: (message: string) => void
   setIsConvertSuccess: (value: boolean) => void
+  onError: (value: boolean) => void
 }
 
 const DEFAULT_CONVERT_ERROR = "Something went wrong"
@@ -41,12 +42,14 @@ export const ConvertBTC = ({
   setErrorMessage,
   setSuccessMessage,
   setIsConvertSuccess,
+  onError,
 }: ConvertBTCProps) => {
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [status, setStatus] = useState(SendStatus.PENDING)
   const [error, setError] = useState<string | undefined>()
   const [identity, setIdentity] = useState<SignIdentity>()
   const [btcFee, setBtcFee] = useState<BtcToCkBtcFee | CkBtcToBtcFee>()
+  const [btcError, setBtcError] = useState<string | undefined>()
   const [fromTokenAddress, setFromTokenAddress] = useState(
     preselectedSourceTokenAddress || BTC_NATIVE_ID,
   )
@@ -78,6 +81,10 @@ export const ConvertBTC = ({
     )
   }, [toTokenAddress, tokens])
 
+  useEffect(() => {
+    setBtcError(undefined)
+  }, [fromTokenAddress, toTokenAddress])
+
   const formMethods = useForm<FormValues>({
     mode: "all",
     defaultValues: {
@@ -85,6 +92,10 @@ export const ConvertBTC = ({
       to: "",
     },
   })
+
+  useEffect(() => {
+    onError(Boolean(btcError))
+  }, [btcError, onError])
 
   useEffect(() => {
     const getSignIdentity = async () => {
@@ -112,12 +123,18 @@ export const ConvertBTC = ({
       debounce(async (identity, tokenAddress, amount) => {
         setBtcFee(undefined)
 
-        const fee =
-          tokenAddress === BTC_NATIVE_ID
-            ? await bitcoinService.getBtcToCkBtcFee(identity, amount)
-            : await bitcoinService.getCkBtcToBtcFee(identity, amount)
+        try {
+          const fee =
+            tokenAddress === BTC_NATIVE_ID
+              ? await bitcoinService.getBtcToCkBtcFee(identity, amount)
+              : await bitcoinService.getCkBtcToBtcFee(identity, amount)
 
-        setBtcFee(fee)
+          setBtcFee(fee)
+        } catch (e) {
+          console.error(`BTC error: ${e}`)
+          setBtcError((e as Error).message)
+          setBtcFee(undefined)
+        }
       }, 500),
     [],
   )
@@ -211,6 +228,7 @@ export const ConvertBTC = ({
         btcFee={btcFee}
         status={status}
         error={error}
+        btcError={btcError}
       />
     </FormProvider>
   )

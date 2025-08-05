@@ -27,6 +27,12 @@ const NFTsPage = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [, send] = useActor(globalServices.transferService)
 
+  const { data: allNfts, isLoading: isAllNFTsLoading } = useSWR(
+    "nftList",
+    () => fetchNFTs(),
+    { revalidateOnFocus: false, revalidateIfStale: false },
+  )
+
   const { data, isLoading, isValidating } = useSWR(
     ["nftList", currentPage],
     () => fetchNFTs(currentPage, DEFAULT_LIMIT_PER_PAGE),
@@ -48,7 +54,7 @@ const NFTsPage = () => {
     mutate,
   } = useSWR(
     "nftTotalPrice",
-    () => nftService.getNFTsTotalPrice(data?.items, icp),
+    () => nftService.getNFTsTotalPrice(allNfts?.items, icp),
     {
       revalidateOnFocus: false,
       revalidateIfStale: false,
@@ -96,61 +102,53 @@ const NFTsPage = () => {
     })
   }, [data])
 
-  const totalItems = data?.totalItems || 0
-  const totalPages = data?.totalPages || 0
-
-  const tokensWithoutPrice = useMemo(() => {
-    if (!nfts) return
-
-    return nfts
-      .filter((nft): nft is NFT => nft !== null)
-      .filter(
-        (nft) => nft.getTokenFloorPriceUSD() === undefined || nft.getError(),
-      ).length
-  }, [nfts])
+  const totalItems = useMemo(() => data?.totalItems || 0, [data])
+  const totalPages = useMemo(() => data?.totalPages || 0, [data])
 
   return (
     <>
-      <div className="p-[20px] md:p-[30px] border-gray-200 border rounded-[24px] mb-[20px] md:mb-[30px] flex flex-col md:flex-row">
-        <div className="flex flex-col flex-1 md:mr-[60px]">
-          <p className="mb-[16px] text-sm font-bold text-gray-400">
-            NFT balance
-          </p>
-          <Balance
-            id={"totalBalance"}
-            isLoading={nftTotalPriceLoading}
-            className="text-[26px]"
-            usdBalance={nftTotalPrice}
-          />
-        </div>
-        <div className="flex mt-[20px] flex-1 md:my-[0]">
-          <div className="flex flex-col mr-[60px]">
-            <p className="mb-[10px] text-sm font-bold text-gray-400">
-              NFTs owned
+      {nfts.length > 0 && (
+        <div className="p-[20px] md:p-[30px] border-gray-200 dark:border-zinc-500 border rounded-[24px] mb-[20px] md:mb-[30px] flex flex-col md:flex-row">
+          <div className="flex flex-col flex-1 md:mr-[60px]">
+            <p className="mb-[16px] text-sm font-bold text-gray-400 dark:text-zinc-500">
+              NFT balance
             </p>
-            <p className="mb-0 text-[26px] font-bold">
-              {data === undefined ? (
-                <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
-              ) : (
-                data.totalItems
-              )}
-            </p>
+            <Balance
+              id={"totalBalance"}
+              isLoading={nftTotalPriceLoading || isAllNFTsLoading}
+              className="text-[26px]"
+              usdBalance={nftTotalPrice}
+            />
           </div>
-          <div className="flex flex-col">
-            <p className="mb-[10px] text-sm font-bold text-gray-400">
-              NFTs w/o price
-            </p>
-            <p className="mb-0 text-[26px] font-bold">
-              {tokensWithoutPrice === undefined ? (
-                <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
-              ) : (
-                tokensWithoutPrice
-              )}
-            </p>
+          <div className="flex mt-[20px] flex-1 md:my-[0]">
+            <div className="flex flex-col mr-[60px]">
+              <p className="mb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500">
+                NFTs owned
+              </p>
+              <p className="mb-0 text-[26px] font-bold dark:text-white">
+                {data === undefined ? (
+                  <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
+                ) : (
+                  data.totalItems
+                )}
+              </p>
+            </div>
+            <div className="flex flex-col">
+              <p className="mb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500">
+                NFTs w/o price
+              </p>
+              <p className="mb-0 text-[26px] font-bold dark:text-white">
+                {data === undefined ? (
+                  <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
+                ) : (
+                  data?.nftsWithoutPrice ?? 0
+                )}
+              </p>
+            </div>
           </div>
+          <div className="flex-1"></div>
         </div>
-        <div className="flex-1"></div>
-      </div>
+      )}
       <ProfileContainer>
         <NFTs
           nfts={nfts}
@@ -164,7 +162,7 @@ const NFTsPage = () => {
         <Button
           disabled={isLoading}
           className={clsx(
-            "block mx-auto",
+            "block mx-auto dark:text-teal-500",
             (totalPages === currentPage || !nfts.length || isLoading) &&
               "hidden",
           )}

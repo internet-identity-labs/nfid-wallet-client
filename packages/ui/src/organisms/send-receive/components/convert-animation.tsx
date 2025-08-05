@@ -7,7 +7,7 @@ import { SendStatus } from "frontend/features/transfer-modal/types"
 
 import FailedIcon from "../assets/animation-failed.svg"
 import "../assets/animation-gradient.css"
-import SuccessIcon from "../assets/animation-success.svg"
+import BtcWaitIcon from "../assets/bitcoin-wait.svg"
 
 const HIDE_ANIMATION_DURATION = 0.3
 
@@ -23,7 +23,7 @@ export interface CustomAnimationProps {
   status: SendStatus
 }
 
-export const CustomAnimation: React.FC<CustomAnimationProps> = ({
+export const ConvertAnimation: React.FC<CustomAnimationProps> = ({
   assetImg,
   assetImgTo,
   status,
@@ -77,13 +77,14 @@ export const CustomAnimation: React.FC<CustomAnimationProps> = ({
     <div
       className={clsx(
         status === SendStatus.FAILED && "border-[3px] border-gray-200",
-        status === SendStatus.COMPLETED && "border-[3px] border-teal-600",
+        status === SendStatus.COMPLETED &&
+          "border-[3px] border-teal-600 dark:border-teal-500",
         "circle-gradient flex justify-center items-center",
         "w-[148px] h-[148px] rounded-full",
         "relative before:content-[''] before:absolute before:top-0 before:left-0",
         "before:w-full before:h-full before:rounded-full",
         stageClassnames[animationStage].before,
-        "after:content-[''] after:bg-white after:rounded-full after:w-[calc(100%-6px)] after:h-[calc(100%-6px)] after:absolute",
+        "after:content-[''] after:bg-white after:bg-white dark:after:bg-zinc-700 after:rounded-full after:w-[calc(100%-6px)] after:h-[calc(100%-6px)] after:absolute",
         "after:top-[3px] after:left-[3px]",
       )}
     >
@@ -106,16 +107,15 @@ export const CustomAnimation: React.FC<CustomAnimationProps> = ({
 
       <div
         className={clsx(
-          "rounded-full w-[96px] h-[96px] z-[2] flex items-center justify-center",
+          "rounded-full w-[120px] h-[120px] z-[2] flex items-center justify-center",
           status !== SendStatus.PENDING &&
             stageClassnames[animationStage].imageWrapper,
-          status === SendStatus.COMPLETED && "bg-teal-600",
-          status === SendStatus.FAILED && "bg-red-600",
+          status === SendStatus.FAILED && "bg-red-600 dark:bg-red-500",
         )}
       >
         {status !== SendStatus.PENDING ? (
           <img
-            src={status === SendStatus.COMPLETED ? SuccessIcon : FailedIcon}
+            src={status === SendStatus.COMPLETED ? BtcWaitIcon : FailedIcon}
             alt={
               status === SendStatus.COMPLETED ? "Stake success" : "Stake failed"
             }
@@ -124,7 +124,7 @@ export const CustomAnimation: React.FC<CustomAnimationProps> = ({
           <>
             <div
               className={clsx(
-                "absolute h-[68px] w-[68px] rounded-full p-[10px] bg-white top-[25px] left-[25px] sm:top-[25px] sm:left-[25px]",
+                "absolute h-[68px] w-[68px] rounded-full p-[10px] bg-white dark:bg-zinc-500 top-[25px] left-[25px] sm:top-[25px] sm:left-[25px]",
               )}
             >
               <ImageWithFallback
@@ -136,7 +136,7 @@ export const CustomAnimation: React.FC<CustomAnimationProps> = ({
             </div>
             <div
               className={clsx(
-                "absolute h-[68px] w-[68px] rounded-full p-[10px] bg-white z-2 top-[52px] left-[52px] sm:top-[52px] sm:left-[52px]",
+                "absolute h-[68px] w-[68px] rounded-full p-[10px] bg-white dark:bg-zinc-500 z-2 top-[52px] left-[52px] sm:top-[52px] sm:left-[52px]",
               )}
             >
               <ImageWithFallback

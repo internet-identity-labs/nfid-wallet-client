@@ -18,12 +18,12 @@ export const StakingHeader: FC<StakingInfoProps> = ({
 }) => {
   return (
     <ProfileContainer
-      className="!py-[20px] md:!py-[30px] !border !mb-[20px] md:!mb-[30px]"
+      className="!py-[20px] md:!py-[30px] !border !mb-[20px] md:!mb-[30px] dark:text-white"
       innerClassName="!px-[20px] md:!px-[30px]"
     >
       <div className="flex items-center gap-[20px] sm:gap-[40px] md:gap-[80px] lg:gap-[120px] flex-wrap">
         <div>
-          <p className="leading-5 text-secondary text-sm font-bold mb-[10px]">
+          <p className="leading-5 text-secondary dark:text-zinc-500 text-sm font-bold mb-[10px]">
             Staking balance
           </p>
           <p
@@ -45,7 +45,7 @@ export const StakingHeader: FC<StakingInfoProps> = ({
         </div>
         <div className="block w-[50%] sm:hidden"></div>
         <div>
-          <p className="leading-5 text-secondary text-sm font-bold mb-[10px]">
+          <p className="leading-5 text-secondary dark:text-zinc-500 text-sm font-bold mb-[10px]">
             Staked
           </p>
           <p
@@ -66,7 +66,7 @@ export const StakingHeader: FC<StakingInfoProps> = ({
           </p>
         </div>
         <div>
-          <p className="leading-5 text-secondary text-sm font-bold mb-[10px]">
+          <p className="leading-5 text-secondary dark:text-zinc-500 text-sm font-bold mb-[10px]">
             Rewards
           </p>
           <p

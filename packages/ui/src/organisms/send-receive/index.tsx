@@ -15,6 +15,7 @@ export interface TransferModalProps {
   component: JSX.Element
   isOpen: boolean
   hasSwapError: boolean
+  hasBtcError: boolean
   isConvertSuccess: boolean
 }
 
@@ -36,6 +37,7 @@ export const TransferModal: FC<TransferModalProps> = ({
   component,
   isOpen,
   hasSwapError,
+  hasBtcError,
   isConvertSuccess,
 }) => {
   return (
@@ -47,6 +49,8 @@ export const TransferModal: FC<TransferModalProps> = ({
           ? "min-h-[540px]"
           : isConvertSuccess
           ? "min-h-[580px]"
+          : hasBtcError
+          ? "min-h-[520px]"
           : "min-h-[480px]",
       )}
       overlayClassName={!isOpen ? "hidden" : ""}

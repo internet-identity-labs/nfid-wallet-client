@@ -2,6 +2,7 @@ import clsx from "clsx"
 import { FC } from "react"
 import { NavigateFunction } from "react-router-dom"
 
+import { useDarkTheme } from "frontend/hooks"
 import { StakedToken } from "frontend/integration/staking/staked-token"
 import { TotalBalance } from "frontend/integration/staking/types"
 
@@ -38,32 +39,33 @@ export const Staking: FC<StakingProps> = ({
   totalBalances,
   onStakeClick,
 }) => {
+  const isDarkTheme = useDarkTheme()
+
   return (
     <>
       {isLoading ? (
         <StakingHeaderSkeleton />
       ) : (
-        <StakingHeader
-          total={totalBalances?.total}
-          staked={totalBalances?.staked}
-          rewards={totalBalances?.rewards}
-          symbol="USD"
-        />
+        stakedTokens.length > 0 && (
+          <StakingHeader
+            total={totalBalances?.total}
+            staked={totalBalances?.staked}
+            rewards={totalBalances?.rewards}
+            symbol="USD"
+          />
+        )
       )}
-
       <ProfileContainer innerClassName="!px-0">
-        <div
-          className={clsx("overflow-auto", isLoading && "pl-5 sm:pl-[30px]")}
-        >
+        <div className={clsx(isLoading && "pl-5 sm:pl-[30px]")}>
           <Table className="!min-w-0" id="staking-table">
             {isLoading ? (
               <TableActivitySkeleton tableRowsAmount={3} tableCellAmount={3} />
             ) : stakedTokens.length ? (
               <>
-                <tr className="hidden md:table-row">
+                <tr className="hidden md:table-row dark:text-zinc-500">
                   <td
                     className={clsx(
-                      "pb-[10px] text-sm font-bold text-gray-400",
+                      "pb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500",
                       "px-0 md:px-[30px] min-w-[230px]",
                     )}
                   >
@@ -71,7 +73,7 @@ export const Staking: FC<StakingProps> = ({
                   </td>
                   <td
                     className={clsx(
-                      "pb-[10px] text-sm font-bold text-gray-400",
+                      "pb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500",
                       "w-[230px]",
                     )}
                   >
@@ -79,7 +81,7 @@ export const Staking: FC<StakingProps> = ({
                   </td>
                   <td
                     className={clsx(
-                      "pb-[10px] text-sm font-bold text-gray-400",
+                      "pb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500",
                       "px-0 md:px-[30px] w-[290px]",
                     )}
                   >
@@ -90,13 +92,11 @@ export const Staking: FC<StakingProps> = ({
                 {stakedTokens.map((stakedToken) => {
                   return (
                     <tr
-                      className="text-sm hover:bg-gray-50 h-[64px] transition-all group cursor-pointer"
-                      id={
-                        `stakedToken_${stakedToken
-                          .getToken()
-                          .getTokenName()
-                          .replace(/\s+/g, "")}`
-                      }
+                      className="text-sm hover:bg-gray-50 dark:hover:bg-zinc-800 h-[64px] transition-all group cursor-pointer"
+                      id={`stakedToken_${stakedToken
+                        .getToken()
+                        .getTokenName()
+                        .replace(/\s+/g, "")}`}
                       key={stakedToken.getToken().getTokenAddress()}
                       onClick={() =>
                         navigate(
@@ -122,7 +122,7 @@ export const Staking: FC<StakingProps> = ({
                               <div
                                 className={clsx(
                                   "absolute bottom-0 right-0 rounded-full",
-                                  "flex items-center justify-center w-5 h-5 bg-white",
+                                  "flex items-center justify-center w-5 h-5 bg-white dark:bg-zinc-200",
                                 )}
                               >
                                 <img src={DiamondIcon} />
@@ -132,13 +132,13 @@ export const Staking: FC<StakingProps> = ({
                           <div>
                             <p
                               id={"tokenSymbol"}
-                              className="text-sm font-semibold leading-[25px]"
+                              className="text-sm font-semibold leading-[25px] dark:text-white"
                             >
                               {stakedToken.getToken().getTokenSymbol()}
                             </p>
                             <p
                               id={"tokenName"}
-                              className="text-secondary text-xs leading-[20px]"
+                              className="text-secondary dark:text-zinc-500 text-xs leading-[20px]"
                             >
                               {stakedToken.getToken().getTokenName()}
                             </p>
@@ -146,20 +146,26 @@ export const Staking: FC<StakingProps> = ({
                         </div>
                       </td>
                       <td className="flex flex-col ml-auto h-[64px] justify-center w-max md:table-cell text-right md:text-left">
-                        <p id={"tokenStakedAmount"} className="text-sm leading-6">
+                        <p
+                          id={"tokenStakedAmount"}
+                          className="text-sm leading-6 dark:text-white"
+                        >
                           {stakedToken.getStakedFormatted().getTokenValue()}{" "}
                           {stakedToken.getToken().getTokenSymbol()}
                         </p>
-                        <p className="text-xs leading-5 text-secondary">
+                        <p className="text-xs leading-5 text-secondary dark:text-zinc-500">
                           {stakedToken.getStakedFormatted().getUSDValue()}
                         </p>
                       </td>
                       <td className="px-0 md:px-[30px] hidden md:table-cell">
-                        <p id={"tokenRewards"} className="text-sm leading-6">
+                        <p
+                          id={"tokenRewards"}
+                          className="text-sm leading-6 dark:text-white"
+                        >
                           {stakedToken.getRewardsFormatted().getTokenValue()}{" "}
                           {stakedToken.getToken().getTokenSymbol()}
                         </p>
-                        <p className="text-xs leading-5 text-secondary">
+                        <p className="text-xs leading-5 text-secondary dark:text-zinc-500">
                           {stakedToken.getRewardsFormatted().getUSDValue()}
                         </p>
                       </td>
@@ -168,7 +174,7 @@ export const Staking: FC<StakingProps> = ({
                           id={"tokenStakingDetailsButton"}
                           className="inline-flex items-center justify-between gap-1"
                         >
-                          <IconCaret />
+                          <IconCaret color={isDarkTheme ? "white" : "black"} />
                         </div>
                       </td>
                     </tr>
@@ -182,9 +188,8 @@ export const Staking: FC<StakingProps> = ({
               >
                 <img
                   className={clsx(
-                    "w-full mb-[20px]",
-                    "md:absolute md:w-[375px] md:right-[30px] md:top-[30px] md:mb-0",
-                    "lg:right-[70px]",
+                    "w-[100vw] absolute right-[-1rem] mt-[120px] ",
+                    "sm:right-[-30px] md:mt-0 md:w-[40vw] top-0",
                   )}
                   src={EmptyStaking}
                 />

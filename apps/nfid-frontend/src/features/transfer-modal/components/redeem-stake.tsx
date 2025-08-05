@@ -1,9 +1,10 @@
 import { SignIdentity } from "@dfinity/agent"
+import { resetIntegrationCache } from "packages/integration/src/cache"
 import { Redeem } from "packages/ui/src/organisms/send-receive/components/redeem"
 import { useEffect, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 
-import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import { mutate, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { fetchStakedToken } from "frontend/features/staking/utils"
@@ -81,6 +82,8 @@ export const RedeemStake = ({
       .then(() => {
         setSuccessMessage(`Staked ${stakeId} redeemed successful`)
         setStatus(SendStatus.COMPLETED)
+        resetIntegrationCache(["getStakedTokens"])
+        mutate(["stakedToken", tokenSymbol])
       })
       .catch((e) => {
         console.error("Redeem error: ", e)

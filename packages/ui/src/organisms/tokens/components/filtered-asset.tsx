@@ -7,6 +7,7 @@ import { FC, useCallback, useState } from "react"
 import {
   IconSvgEyeClosed,
   IconSvgEyeShown,
+  IconSvgEyeShownWhite,
   ImageWithFallback,
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
@@ -14,6 +15,7 @@ import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp } from "@nfid/swr"
 
 import { getUserPrincipalId } from "frontend/features/fungible-token/utils"
+import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 
 interface FilteredTokenProps {
@@ -29,6 +31,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({
 }) => {
   const [showTokenLoading, setShowTokenLoading] = useState(false)
   const [hideTokenLoading, setHideTokenLoading] = useState(false)
+  const isDarkTheme = useDarkTheme()
 
   const hideToken = useCallback(
     async (token: FT) => {
@@ -86,18 +89,20 @@ export const FilteredToken: FC<FilteredTokenProps> = ({
             className={clsx(
               "text-sm text-black leading-[20px] font-semibold",
               token.getTokenState() === State.Active
-                ? "text-black"
-                : "text-secondary",
+                ? "text-black dark:text-white"
+                : "text-secondary dark:text-zinc-400",
             )}
           >
             {token.getTokenSymbol()}
           </p>
-          <p className="text-xs text-secondary leading-[20px]">
+          <p className="text-xs text-secondary dark:text-zinc-400 leading-[20px]">
             {token.getTokenName()}
           </p>
         </div>
       </div>
-      <div className="text-sm">{token.getTokenCategoryFormatted()}</div>
+      <div className="text-sm dark:text-white">
+        {token.getTokenCategoryFormatted()}
+      </div>
       <div className="ml-auto">
         {showTokenLoading || hideTokenLoading ? (
           <Spinner />
@@ -106,9 +111,11 @@ export const FilteredToken: FC<FilteredTokenProps> = ({
             id={`${token.getTokenName()}_showHideButton`}
             className="cursor-pointer"
             src={
-              token.getTokenState() === State.Active
-                ? IconSvgEyeShown
-                : IconSvgEyeClosed
+              token.getTokenState() !== State.Active
+                ? IconSvgEyeClosed
+                : isDarkTheme
+                ? IconSvgEyeShownWhite
+                : IconSvgEyeShown
             }
             alt="Show NFID asset"
             onClick={() =>

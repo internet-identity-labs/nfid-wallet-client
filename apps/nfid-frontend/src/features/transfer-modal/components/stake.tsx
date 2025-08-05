@@ -80,22 +80,29 @@ export const StakeFT = ({
   })
 
   const { watch } = formMethods
-
-  useEffect(() => {
-    setLockValue(stakingParams?.getMinimumLockTimeInMonths())
-  }, [tokenAddress, stakingParams])
-
   const amount = watch("amount")
 
   useEffect(() => {
+    setLockValue(stakingParams?.getMinimumLockTimeInMonths())
+    if (amount.trim()) formMethods.trigger("amount")
+  }, [tokenAddress, stakingParams, amount, formMethods])
+
+  useEffect(() => {
     const getParams = async () => {
+      setStakingParams(undefined)
+      setIsStakingParamsLoading(true)
       if (!token) return
       const rootCanisterId = token.getRootSnsCanister()
-      if (!rootCanisterId) return
+      if (!rootCanisterId) {
+        console.error(
+          `Root canister ID for ${token.getTokenSymbol()} token not found`,
+        )
+        return
+      }
+
       const canister_ids = await stakingService.getTargets(rootCanisterId)
       if (!canister_ids) return
 
-      setIsStakingParamsLoading(true)
       const identity = await getIdentity([
         canister_ids,
         token.getTokenAddress(),
@@ -120,7 +127,8 @@ export const StakeFT = ({
 
   const submit = useCallback(async () => {
     if (!identity) return
-    if (!token || !lockValue) return toaster.error(DEFAULT_STAKE_ERROR)
+    if (!token || lockValue === undefined)
+      return toaster.error(DEFAULT_STAKE_ERROR)
     setIsSuccessOpen(true)
     const rootCanisterId = token.getRootSnsCanister()
     if (!rootCanisterId) return
@@ -146,7 +154,7 @@ export const StakeFT = ({
           console.error("Stake error: ", e)
           setError((e as Error).message)
           setStatus(SendStatus.FAILED)
-          setErrorMessage("Something went wrong")
+          setErrorMessage(DEFAULT_STAKE_ERROR)
         })
         .finally(() => {
           getTokensWithUpdatedBalance([ICP_CANISTER_ID], tokens).then(
@@ -180,7 +188,7 @@ export const StakeFT = ({
         console.error("Stake error: ", e)
         setError((e as Error).message)
         setStatus(SendStatus.FAILED)
-        setErrorMessage("Something went wrong")
+        setErrorMessage(DEFAULT_STAKE_ERROR)
       })
       .finally(() => {
         getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(

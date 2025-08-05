@@ -14,6 +14,7 @@ import Success1 from "../assets/NFID_WS_1_1.json"
 import Success2 from "../assets/NFID_WS_3.json"
 import Successs3 from "../assets/NFID_WS_3_1.json"
 import Fail from "../assets/NFID_WS_3_2.json"
+import BtcWaitIcon from "../assets/bitcoin-wait.svg"
 
 const BTC_NATIVE_DESCRIPTION =
   "BTC will be on the recipient address after 6 Bitcoin network confirmations. This usually takes about 90 minutes."
@@ -76,19 +77,19 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
     <div
       id={"success_window_3"}
       className={clsx(
-        "text-black text-center w-full h-full",
+        "text-black dark:text-white text-center w-full h-full",
         "px-5 pb-5 pt-[18px] absolute left-0 top-0 z-[3]",
-        "flex flex-col justify-between bg-white",
+        "flex flex-col justify-between bg-white dark:bg-darkGray",
         !isOpen && "hidden",
       )}
     >
       <div className="text-center">
-        <H5 className="mt-5 text-xl font-bold leading-6">
+        <H5 className="mt-5 text-xl !font-bold leading-6 dark:text-white">
           {status === SendStatus.FAILED
             ? "Transaction failed"
             : status === SendStatus.COMPLETED
             ? "Sent successfully"
-            : "Processing..."}
+            : "Processing"}
         </H5>
         <p className="h-5 mt-3 text-sm leading-5">
           {status === SendStatus.FAILED
@@ -103,7 +104,7 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
         </p>
         <div className="flex items-center justify-center w-full">
           <LottieAnimation
-            className="max-w-[370px] flex justify-center mt-[10px]"
+            className="max-w-[370px] flex justify-center mt-[35px]"
             animationData={animation}
             loop={step === 1}
             style={{ transform: "scale(1.1)" }}
@@ -111,7 +112,11 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
           />
           <ImageWithFallback
             alt="assetImg"
-            src={`${assetImg}`}
+            src={`${
+              isNativeBtc && status === SendStatus.COMPLETED
+                ? BtcWaitIcon
+                : assetImg
+            }`}
             fallbackSrc={IconNftPlaceholder}
             className={clsx("absolute rounded-full", assetImageClassname)}
           />
@@ -121,10 +126,17 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
         <p className="text-sm leading-[25px] font-inter" id="title">
           {title}
         </p>
-        <p className="text-xs text-gray-500 leading-[18px]" id="subTitle">
+        <p
+          className="text-xs text-gray-500 dark:text-zinc-500 leading-[18px]"
+          id="subTitle"
+        >
           {subTitle}
         </p>
-        {error && <div className="text-sm text-red-600 mt-[30px]">{error}</div>}
+        {error && (
+          <div className="text-sm text-red-600 dark:text-red-500 mt-[30px]">
+            {error}
+          </div>
+        )}
         <Button
           type="primary"
           block

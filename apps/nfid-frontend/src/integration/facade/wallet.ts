@@ -6,7 +6,7 @@ import {
   WALLET_SESSION_TTL_2_MIN_IN_NS,
   getScope,
 } from "@nfid/config"
-import { delegationState } from "@nfid/integration"
+import { authState, delegationState } from "@nfid/integration"
 
 import { fetchPrincipal } from "frontend/integration/internet-identity"
 
@@ -16,11 +16,16 @@ export async function getWalletPrincipal(anchor: number): Promise<Principal> {
   })
 }
 
+//internal function to retrieve global delegation for NFID wallet
+//DON'T USE FOR IDENTITY KIT or THIRD PARTY AUTH!!!!
 export async function getWalletDelegation(
-  userNumber: number,
+  userNumber?: number,
   hostName?: string,
   personaId?: string,
 ): Promise<DelegationIdentity> {
+  if (!userNumber) {
+    userNumber = Number(authState.getUserIdData().anchor)
+  }
   const scope =
     typeof hostName === "undefined" || hostName === "nfid.one"
       ? WALLET_SCOPE

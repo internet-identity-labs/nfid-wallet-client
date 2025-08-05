@@ -19,6 +19,7 @@ import {
 import { SendStatus } from "frontend/features/transfer-modal/types"
 import { FT } from "frontend/integration/ft/ft"
 
+import { IModalType } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { SendSuccessUi } from "./send-success"
 
@@ -40,6 +41,7 @@ export interface TransferFTUiProps {
   isSuccessOpen: boolean
   onClose: () => void
   error: string | undefined
+  btcError: string | undefined
   btcFee?: bigint
   isFeeLoading: boolean
 }
@@ -62,6 +64,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   isSuccessOpen,
   onClose,
   error,
+  btcError,
   btcFee,
   isFeeLoading,
 }) => {
@@ -100,12 +103,13 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         assetImg={`${token.getTokenLogo()}`}
         isOpen={isSuccessOpen}
         status={status}
-        assetImageClassname="w-[74px] h-[74px] top-[151px]"
+        assetImageClassname="w-[100px] h-[100px] top-[161px] sm:w-[115px] sm:h-[115px] sm:top-[154px]"
         error={error}
         isNativeBtc={token.getTokenAddress() === BTC_NATIVE_ID}
       />
-      <p className="mb-1 text-xs">Amount to send</p>
+      <p className="mb-1 text-xs dark:text-white">Amount to send</p>
       <ChooseFromToken
+        modalType={IModalType.SEND}
         id={"token-to-send-title"}
         token={token}
         balance={vaultsBalance}
@@ -115,7 +119,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         tokens={tokens}
         title="Token to send"
       />
-      <div className="h-4 mt-1 text-xs leading-4 text-red-600">
+      <div className="h-4 mt-1 text-xs leading-4 text-red-600 dark:text-red-500">
         {errors["amount"]?.message as string}
       </div>
       {isVault && (
@@ -159,10 +163,15 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         }}
       />
       <div className="flex justify-between">
-        <div className="text-xs text-gray-500">Network fee</div>
+        <div className="text-xs text-gray-500 dark:text-zinc-400">
+          Network fee
+        </div>
         <div>
           <div className="text-right">
-            <p className="text-xs leading-5 text-gray-600" id="fee">
+            <p
+              className="text-xs leading-5 text-gray-600 dark:text-zinc-400"
+              id="fee"
+            >
               {token.getTokenAddress() === BTC_NATIVE_ID ? (
                 !btcFee || isFeeLoading ? (
                   <>
@@ -191,6 +200,11 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           </div>
         </div>
       </div>
+      {btcError && (
+        <div className="mt-2 text-xs text-red-600 dark:text-red-500">
+          {btcError}
+        </div>
+      )}
       <Button
         className="absolute bottom-5 left-5 right-5 !w-auto"
         disabled={
@@ -205,7 +219,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         block
         onClick={submit}
         icon={
-          isFeeLoading && token.getTokenAddress() ? (
+          isFeeLoading && token.getTokenAddress() === BTC_NATIVE_ID ? (
             <Spinner className="w-5 h-5 text-white" />
           ) : (
             <IconCmpArrow className="rotate-[135deg] !max-w-5 !max-h-5" />
@@ -213,7 +227,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         }
       >
         {isFeeLoading && token.getTokenAddress() === BTC_NATIVE_ID
-          ? "BTC fee loading"
+          ? "Calculating fee"
           : "Send"}
       </Button>
     </>

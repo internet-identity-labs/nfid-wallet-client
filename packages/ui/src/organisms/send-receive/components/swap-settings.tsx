@@ -5,6 +5,7 @@ import { FC, useEffect, useRef, useState } from "react"
 
 import { IconCmpArrow, IconInfo, Tooltip } from "@nfid-frontend/ui"
 
+import { useDarkTheme } from "frontend/hooks"
 import { Quote } from "frontend/integration/swap/quote"
 import { Shroff } from "frontend/integration/swap/shroff"
 import { SwapName } from "frontend/integration/swap/types/enums"
@@ -42,6 +43,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
   amount,
   setProvider,
 }) => {
+  const isDarkTheme = useDarkTheme()
   const [isCustom, setIsCustom] = useState(false)
   const [customSlippage, setCustomSlippage] = useState<number | undefined>()
   const customInputRef = useRef<HTMLInputElement>(null)
@@ -116,11 +118,11 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
             The amount the price can change before it’s reverted between the
             time your order is placed and confirmed.
           </p>
-          <div className="rounded-[12px] bg-gray-100 h-[48px] flex text-sm mb-[30px] cursor-pointer overflow-hidden">
+          <div className="rounded-[12px] bg-gray-100 dark:bg-zinc-900 h-[48px] flex text-sm mb-[30px] cursor-pointer overflow-hidden">
             {SLIPPAGE_VARIANTS.map((percent) => (
               <div
                 key={percent}
-                className="flex border-r border-white basis-1/5 shrink-0 grow-0 hover:bg-gray-50"
+                className="flex border-r border-white dark:border-darkGray basis-1/5 shrink-0 grow-0 hover:bg-gray-50 dark:hover:bg-zinc-800"
                 onClick={() => setSlippage(percent)}
               >
                 <span
@@ -137,13 +139,15 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
             ))}
             <div
               className={clsx(
-                "relative flex border-r border-white basis-1/5 shrink-0 grow-0 hover:bg-gray-50",
+                "relative flex border-r border-white dark:border-darkGray basis-1/5 shrink-0 grow-0 hover:bg-gray-50 dark:hover:bg-zinc-800",
               )}
             >
               <span
                 className={clsx(
                   "rounded-[12px] h-full w-full flex items-center justify-center",
-                  isCustom ? "bg-primaryButtonColor text-white" : "text-black",
+                  isCustom
+                    ? "bg-primaryButtonColor text-white"
+                    : "text-black dark:text-white",
                 )}
                 onClick={handleCustomClick}
               >
@@ -195,7 +199,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                 and NFID Wallet’s recommendation optimized on tokens received
                 and swap success rate.
               </p>
-              <div className="flex items-center text-sm font-bold leading-5 text-gray-400 mb-[10px]">
+              <div className="flex items-center text-sm font-bold leading-5 text-gray-400 dark:text-zinc-400 mb-[10px]">
                 <p className="flex items-center gap-1">
                   <span>Guaranteed amount</span>
                   {isOpen && (
@@ -293,10 +297,10 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                     <div
                       key={swapName}
                       className={clsx(
-                        "flex items-center pl-[14px] rounded-[12px] h-[48px] text-sm",
+                        "flex items-center pl-[14px] rounded-[12px] h-[48px] text-sm transition-colors",
                         shroff.getSwapName() === swapNameValue
                           ? "cursor-default bg-primaryButtonColor text-white"
-                          : "cursor-pointer hover:bg-gray-50",
+                          : "cursor-pointer hover:bg-gray-50 dark:hover:bg-zinc-700",
                       )}
                       onClick={() => {
                         if (shroff.getSwapName() === swapNameValue) return
@@ -316,13 +320,14 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                             "relative transition-all cursor-pointer group w-[36px] h-[36px]",
                             "flex items-center justify-center mr-2.5 rounded-[6px]",
                             shroff.getSwapName() === swapNameValue
-                              ? "hover:bg-teal-600"
-                              : "hover:bg-gray-50",
+                              ? "hover:bg-teal-600 dark:hover:bg-teal-600"
+                              : "hover:bg-gray-50 hover:bg-zinc-500",
                           )}
                         >
                           <IconCaret
                             color={
-                              shroff.getSwapName() === swapNameValue
+                              shroff.getSwapName() === swapNameValue ||
+                              isDarkTheme
                                 ? "white"
                                 : "black"
                             }

@@ -13,11 +13,15 @@ import {
   Tooltip,
 } from "@nfid-frontend/ui"
 
+import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
+import SwapArrowBoxDark from "../assets/swap-arrow-box-dark.png"
 import SwapArrowBox from "../assets/swap-arrow-box.png"
+import SettingsIconWhite from "../assets/swap-settings-white.svg"
 import SettingsIcon from "../assets/swap-settings.svg"
+import { IModalType } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { ChooseToToken } from "./choose-to-token"
 import { SwapModal } from "./swap"
@@ -67,6 +71,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
   isResponsive,
   setIsResponsive,
 }) => {
+  const isDarkTheme = useDarkTheme()
   const [isChecked, setIsChecked] = useState(false)
   const priceImpact = quote?.getPriceImpact()
 
@@ -78,6 +83,13 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
       setIsResponsive(isFromResponsive || isToResponsive)
     }
   }, [isFromResponsive, isToResponsive, setIsResponsive])
+
+  const isDisabled =
+    isQuoteLoading ||
+    !amount ||
+    !quote ||
+    Boolean(errors["amount"]?.message) ||
+    (!isChecked && priceImpact?.status === "high")
 
   return (
     <div
@@ -102,7 +114,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
             >
               <img
                 className="cursor-pointer hover:opacity-60"
-                src={SettingsIcon}
+                src={isDarkTheme ? SettingsIconWhite : SettingsIcon}
                 alt="NFID swap settings"
                 onClick={() => setSwapModal(SwapModal.SETTINGS)}
               />
@@ -111,6 +123,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
         </div>
         <p className="mb-1 text-xs">From</p>
         <ChooseFromToken
+          modalType={IModalType.SWAP}
           id={"swap-from-title"}
           token={fromToken}
           setFromChosenToken={setFromChosenToken}
@@ -118,23 +131,22 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           tokens={tokens}
           value={amount}
           title="Swap from"
-          isSwap={true}
           isResponsive={isResponsive}
           setIsResponsive={setIsFromResponsive}
           tokensAvailableToSwap={tokensAvailableToSwap}
         />
         {showLiquidityError ? (
-          <div className="h-4 mt-1 text-xs leading-4 text-red-600">
+          <div className="h-4 mt-1 text-xs leading-4 text-red-600 dark:text-red-500">
             {showLiquidityError?.message}
           </div>
         ) : (
           errors["amount"] && (
-            <div className="h-4 mt-1 text-xs leading-4 text-red-600">
+            <div className="h-4 mt-1 text-xs leading-4 text-red-600 dark:text-red-500">
               {errors["amount"]?.message as string}
             </div>
           )
         )}
-        <div className="relative mt-5 mb-1 text-xs text-gray-500">
+        <div className="relative mt-5 mb-1 text-xs text-gray-500 dark:text-white">
           <span>To</span>
           <div
             className={clsx(
@@ -142,13 +154,15 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
               "flex justify-center items-end mx-auto text-black",
             )}
             style={{
-              backgroundImage: `url(${SwapArrowBox})`,
+              backgroundImage: `url(${
+                isDarkTheme ? SwapArrowBoxDark : SwapArrowBox
+              })`,
               backgroundRepeat: "no-repeat",
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}
           >
-            <IconCmpArrow className="rotate-[-90deg] h-5 w-5" />
+            <IconCmpArrow className="rotate-[-90deg] h-5 w-5 dark:text-white" />
           </div>
         </div>
         <ChooseToToken
@@ -164,7 +178,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           tokensAvailableToSwap={tokensAvailableToSwap}
         />
         {amount && quote && (
-          <div className="flex items-center justify-between mt-6 text-xs text-gray-500">
+          <div className="flex items-center justify-between mt-6 text-xs text-gray-500 dark:text-zinc-500">
             {quote?.getQuoteRate()} ({quoteTimer} sec)
           </div>
         )}
@@ -177,14 +191,14 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
               isChecked={isChecked}
               onChange={() => setIsChecked(!isChecked)}
               labelText="I understand liquidity is too low in this DEX to maintain a reasonable impact on price, and would like to proceed anyway."
-              labelClassName="!text-sm text-red-700"
-              className="text-red-700 border-red-700 mt-[2px]"
+              labelClassName="!text-sm text-red-700 dark:text-red-500"
+              className="text-red-700 border-red-700 dark:text-red-500 dark:border-red-500 mt-[2px]"
               overlayClassnames="!items-start"
             />
           </div>
         )}
         {slippageQuoteError && (
-          <div className="text-xs text-red-600 mt-2.5">
+          <div className="text-xs text-red-600 dark:text-red-500 mt-2.5">
             {slippageQuoteError}
           </div>
         )}
@@ -201,16 +215,15 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
             !amount ? null : isQuoteLoading ? (
               <Spinner className="w-5 h-5 text-white" />
             ) : (
-              <IconCmpSwap className="text-gray-400 !w-[18px] !h-[18px] text-white" />
+              <IconCmpSwap
+                className={clsx(
+                  "!w-[18px] !h-[18px]",
+                  isDisabled ? "text-white dark:text-zinc-500" : "!text-white",
+                )}
+              />
             )
           }
-          disabled={
-            isQuoteLoading ||
-            !amount ||
-            !quote ||
-            Boolean(errors["amount"]?.message) ||
-            (!isChecked && priceImpact?.status === "high")
-          }
+          disabled={isDisabled}
           onClick={submit}
         >
           {!amount

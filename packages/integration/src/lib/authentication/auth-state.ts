@@ -181,10 +181,7 @@ function makeAuthState() {
   }
 
   async function _clearAuthSessionFromCache() {
-    await Promise.all([
-      authStorage.remove(KEY_STORAGE_KEY),
-      authStorage.remove(KEY_STORAGE_DELEGATION),
-    ])
+    await authStorage.clear()
     return true
   }
 

@@ -2,6 +2,8 @@ import { useState } from "react"
 
 import { BurgerMenu, Dropdown, DropdownOption } from "@nfid-frontend/ui"
 
+import { NFIDTheme } from "frontend/App"
+
 type ILandingDropdown = {
   handler: () => void
   logoutHandler: () => void
@@ -18,7 +20,13 @@ export const LandingDropdown: React.FC<ILandingDropdown> = ({
     <>
       <Dropdown
         className="!rounded-[24px] text-white !bg-zinc-900 overflow-hidden p-[20px] top-[45px] !right-0"
-        triggerElement={<BurgerMenu isOpened={isOpen} isLanding={true} />}
+        triggerElement={
+          <BurgerMenu
+            walletTheme={NFIDTheme.DARK}
+            isOpened={isOpen}
+            isLanding={true}
+          />
+        }
         setIsOpen={(v) => setIsOpen(v)}
         minWidth={160}
       >

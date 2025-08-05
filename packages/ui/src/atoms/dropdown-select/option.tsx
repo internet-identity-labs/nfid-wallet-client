@@ -24,7 +24,7 @@ export const DropdownSelectOption = ({
       id={`option_${option.label.replace(/\s/g, "")}`}
       htmlFor={`option_cbx_${option.label.replace(/\s/g, "")}`}
       className={clsx(
-        "py-2.5 hover:bg-gray-100 cursor-pointer px-[13px]",
+        "py-2.5 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700 cursor-pointer px-[13px]",
         "flex items-center text-sm text-black",
         option.disabled && "pointer-events-none !text-gray-300",
       )}
@@ -33,7 +33,11 @@ export const DropdownSelectOption = ({
         value={option.value}
         isChecked={isChecked}
         onChange={toggleCheckbox}
-        className={clsx("mr-[13px]", !isCheckbox && "hidden")}
+        className={clsx(
+          "mr-[13px]",
+          !isCheckbox && "hidden",
+          "dark:bg-zinc-900 dark:border-zinc-500",
+        )}
         id={`option_cbx_${option.label.replace(/\s/g, "")}`}
       />
       {option.icon !== undefined && (
@@ -46,7 +50,7 @@ export const DropdownSelectOption = ({
       )}
       <div>
         <span className="block text-sm leading-[26px]">{option.symbol}</span>
-        <span className="block text-xs leading-[20px] text-secondary">
+        <span className="block text-xs leading-[20px] text-secondary dark:text-zinc-500">
           {option.label}
         </span>
       </div>

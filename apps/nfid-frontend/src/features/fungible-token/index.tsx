@@ -10,7 +10,10 @@ import useSWR from "swr"
 import { Skeleton } from "@nfid-frontend/ui"
 import { storageWithTtl } from "@nfid/client-db"
 import { authState } from "@nfid/integration"
-import { CKBTC_CANISTER_ID } from "@nfid/integration/token/constants"
+import {
+  BTC_NATIVE_ID,
+  CKBTC_CANISTER_ID,
+} from "@nfid/integration/token/constants"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
@@ -96,13 +99,23 @@ const TokensPage = () => {
       .length
   }, [initedTokens])
 
+  const btc = useMemo(
+    () => activeTokens?.find((t) => t.getTokenAddress() === BTC_NATIVE_ID),
+    [activeTokens],
+  )
+
   const {
     data: tokensUsdBalance,
     isLoading: tokensUsdBalanceLoading,
     mutate: refetchFtUsdBalance,
   } = useSWR(
-    initedTokens && initedTokens.length > 0 ? "ftUsdValue" : null,
-    async () => ftService.getUSDBalance(initedTokens!),
+    btc?.isInited() &&
+      btc.getTokenBalance() !== undefined &&
+      initedTokens &&
+      initedTokens.length > 0
+      ? "ftUsdValue"
+      : null,
+    async () => ftService.getFTUSDBalance(initedTokens!),
     { revalidateOnFocus: false },
   )
 
@@ -155,9 +168,9 @@ const TokensPage = () => {
 
   return (
     <>
-      <div className="p-[20px] md:p-[30px] border-gray-200 border rounded-[24px] mb-[20px] md:mb-[30px] flex flex-col md:flex-row">
+      <div className="p-[20px] md:p-[30px] border-gray-200 dark:border-zinc-700 border rounded-[24px] mb-[20px] md:mb-[30px] flex flex-col md:flex-row">
         <div className="flex flex-col flex-1">
-          <p className="mb-[16px] text-sm font-bold text-gray-400">
+          <p className="mb-[16px] text-sm font-bold text-gray-400 dark:text-zinc-500">
             Token balance
           </p>
           <Balance
@@ -167,16 +180,18 @@ const TokensPage = () => {
             isLoading={
               tokensUsdBalanceLoading ||
               tokensOwnedQuantity === undefined ||
-              tokensWithoutPrice === undefined
+              tokensWithoutPrice === undefined ||
+              isBtcAddressLoading ||
+              (!btc?.isInited() && btc?.getTokenBalance() === undefined)
             }
           />
         </div>
         <div className="flex flex-1 my-[20px] md:my-[0]">
           <div className="flex flex-col mr-[30px]">
-            <p className="mb-[10px] text-sm font-bold text-gray-400">
+            <p className="mb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500">
               Token owned
             </p>
-            <p className="mb-0 text-[26px] font-bold">
+            <p className="mb-0 text-[26px] font-bold dark:text-white">
               {tokensOwnedQuantity === undefined ? (
                 <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
               ) : (
@@ -185,10 +200,10 @@ const TokensPage = () => {
             </p>
           </div>
           <div className="flex flex-col">
-            <p className="mb-[10px] text-sm font-bold text-gray-400">
+            <p className="mb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500">
               Tokens w/o price
             </p>
-            <p className="mb-0 text-[26px] font-bold">
+            <p className="mb-0 text-[26px] font-bold dark:text-white">
               {tokensWithoutPrice === undefined ? (
                 <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
               ) : (
@@ -198,7 +213,7 @@ const TokensPage = () => {
           </div>
         </div>
         <div className="flex items-center flex-1 md:justify-end">
-          <ScanTokens triggerClassName="w-full sm:w-fit" />
+          <ScanTokens triggerClassName="w-full sm:w-fit dark:text-white" />
         </div>
       </div>
       <ProfileContainer>

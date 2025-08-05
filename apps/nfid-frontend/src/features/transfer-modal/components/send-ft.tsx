@@ -27,7 +27,11 @@ import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
-import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
+import { useBtcAddress } from "frontend/hooks"
+import {
+  bitcoinService,
+  BitcointNetworkFeeAndUtxos,
+} from "frontend/integration/bitcoin/bitcoin.service"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
@@ -51,6 +55,7 @@ interface ITransferFT {
   hideZeroBalance: boolean
   setErrorMessage: (message: string) => void
   setSuccessMessage: (message: string) => void
+  onError: (value: boolean) => void
 }
 
 export const TransferFT = ({
@@ -61,6 +66,7 @@ export const TransferFT = ({
   hideZeroBalance,
   setErrorMessage,
   setSuccessMessage,
+  onError,
 }: ITransferFT) => {
   const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
   const [status, setStatus] = useState(SendStatus.PENDING)
@@ -70,8 +76,14 @@ export const TransferFT = ({
   const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
     useState(preselectedAccountAddress)
   const [error, setError] = useState<string | undefined>()
+  const [btcError, setBtcError] = useState<string | undefined>()
   const { profile } = useProfile()
   const { balances } = useAllVaultsWallets()
+  const { isBtcAddressLoading } = useBtcAddress()
+  const [btcFee, setBtcFee] = useState<BitcointNetworkFeeAndUtxos | undefined>(
+    undefined,
+  )
+  const [isValidating, setIsValidating] = useState(false)
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -149,6 +161,7 @@ export const TransferFT = ({
   useEffect(() => {
     if (!token) return
 
+    let isMounted = true
     setIdentity(undefined)
     setIsIdentityLoading(true)
 
@@ -158,13 +171,31 @@ export const TransferFT = ({
         : [PATRON_CANISTER_ID, CHAIN_FUSION_SIGNER_CANISTER_ID]
 
     const getSignIdentity = async () => {
-      const identity = await getIdentity(targets)
-      setIdentity(identity)
-      setIsIdentityLoading(false)
+      try {
+        const identity = await getIdentity(targets)
+        if (isMounted) {
+          setIdentity(identity)
+          setIsIdentityLoading(false)
+        }
+      } catch (e) {
+        if (isMounted) {
+          setIsIdentityLoading(false)
+          setIdentity(undefined)
+        }
+        console.error("Failed to get identity", e)
+      }
     }
 
     getSignIdentity()
+
+    return () => {
+      isMounted = false
+    }
   }, [token])
+
+  useEffect(() => {
+    onError(Boolean(btcError))
+  }, [btcError, onError])
 
   useEffect(() => {
     if (isAmountValid) {
@@ -176,21 +207,53 @@ export const TransferFT = ({
     }
   }, [parsedAmount, isAmountValid, debouncedUpdate])
 
-  const shouldFetchBtcFee =
-    token?.getTokenAddress() === BTC_NATIVE_ID &&
-    isAmountValid &&
-    !formMethods.formState.errors.amount &&
-    isIdentityReady
+  useEffect(() => {
+    let isCancelled = false
 
-  const { data: btcFee, isValidating } = useSWR(
-    shouldFetchBtcFee ? ["btcFee", debouncedAmount.toString()] : null,
-    () => token!.getBTCFee(identity!, debouncedAmount.toString()),
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    },
-  )
+    const fetchFee = async () => {
+      if (
+        token?.getTokenAddress() === BTC_NATIVE_ID &&
+        isAmountValid &&
+        !formMethods.formState.errors.amount &&
+        isIdentityReady
+      ) {
+        setBtcFee(undefined)
+        setIsValidating(true)
+        try {
+          const fee = await token.getBTCFee(
+            identity!,
+            debouncedAmount.toString(),
+          )
+          if (!isCancelled) setBtcFee(fee)
+        } catch (e) {
+          console.error(`BTC error: ${e}`)
+          setBtcError((e as Error).message)
+          if (!isCancelled) setBtcFee(undefined)
+        } finally {
+          if (!isCancelled) setIsValidating(false)
+        }
+      } else {
+        setBtcFee(undefined)
+      }
+    }
+
+    fetchFee()
+
+    return () => {
+      isCancelled = true
+    }
+  }, [
+    token,
+    identity,
+    debouncedAmount,
+    isAmountValid,
+    formMethods.formState.errors.amount,
+    isIdentityReady,
+  ])
+
+  useEffect(() => {
+    setBtcError(undefined)
+  }, [token])
 
   const submit = useCallback(async () => {
     if (!token) return toaster.error("No selected token")
@@ -357,7 +420,7 @@ export const TransferFT = ({
             ? validateBTCAddress
             : validateICRC1Address
         }
-        isLoading={isTokensLoading}
+        isLoading={isTokensLoading || isBtcAddressLoading}
         isVault={isVault}
         selectedVaultsAccountAddress={selectedVaultsAccountAddress}
         submit={submit}
@@ -372,8 +435,9 @@ export const TransferFT = ({
         isSuccessOpen={isSuccessOpen}
         onClose={onClose}
         error={error}
+        btcError={btcError}
         btcFee={btcFee?.fee_satoshis || undefined}
-        isFeeLoading={isValidating}
+        isFeeLoading={isValidating || isIdentityLoading || !identity}
       />
     </FormProvider>
   )

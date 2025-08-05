@@ -12,16 +12,18 @@ import {
   Tooltip,
   IconInfo,
   IconCmpStake,
+  IconCmpStakeGray,
   Skeleton,
 } from "@nfid-frontend/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
+import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
 
 import DiamondIcon from "../../staking/assets/diamond.svg"
 import { DiamondAnimation } from "../../staking/components/diamond-animation"
-import { getFormattedPeriod } from "../utils"
+import { getFormattedPeriod, IModalType } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { StakeSuccessUi } from "./stake-success"
 
@@ -58,6 +60,7 @@ export const StakeUi: FC<StakeUiProps> = ({
   stakingParams,
   isParamsLoading,
 }) => {
+  const isDarkTheme = useDarkTheme()
   const {
     watch,
     register,
@@ -74,6 +77,9 @@ export const StakeUi: FC<StakeUiProps> = ({
         className="text-xs"
       />
     )
+
+  const isDisabled =
+    Boolean(errors["amount"]?.message) || !amount || !stakingParams
 
   return (
     <>
@@ -138,6 +144,7 @@ export const StakeUi: FC<StakeUiProps> = ({
       </div>
       <p className="mb-1 text-xs">Amount to stake</p>
       <ChooseFromToken
+        modalType={IModalType.STAKE}
         id="convert-from"
         token={token}
         setFromChosenToken={setChosenToken}
@@ -148,7 +155,7 @@ export const StakeUi: FC<StakeUiProps> = ({
         isLoading={isParamsLoading || !stakingParams}
       />
       {Boolean(errors["amount"]?.message) && (
-        <div className="h-4 mt-1 text-xs leading-4 text-red-600">
+        <div className="h-4 mt-1 text-xs leading-4 text-red-600 dark:text-red-500">
           {errors["amount"]?.message as string}
         </div>
       )}
@@ -160,7 +167,7 @@ export const StakeUi: FC<StakeUiProps> = ({
           <Input
             id={"lock-time-period"}
             className="mb-[-11px]"
-            inputClassName="h-[60px] !border-black border-b-0 rounded-b-none !bg-white !text-black"
+            inputClassName="h-[60px] !border-black dark:!border-zinc-500 border-b-0 rounded-b-none !bg-white dark:!bg-zinc-900 !text-black dark:!text-white"
             value={getFormattedPeriod(lockValue, true)}
             disabled
             {...register("lockTime")}
@@ -184,7 +191,7 @@ export const StakeUi: FC<StakeUiProps> = ({
           !Boolean(errors["amount"]?.message) ? "mb-[123px]" : "mb-[103px]",
         )}
       >
-        <div className="flex items-center justify-between h-[48px]">
+        <div className="flex items-center justify-between h-[48px] dark:text-zinc-500">
           <p>Transaction fee</p>
           <div className="text-right">
             {isParamsLoading ? (
@@ -197,7 +204,7 @@ export const StakeUi: FC<StakeUiProps> = ({
                 <p className="leading-[22px]">
                   {stakingParams?.getFeeFormatted().getTokenValue()}
                 </p>
-                <p className="text-xs leading-[20px] text-secondary">
+                <p className="text-xs leading-[20px] text-secondary dark:text-zinc-500">
                   {stakingParams?.getFeeFormatted().getUSDValue()}
                 </p>
               </>
@@ -206,12 +213,18 @@ export const StakeUi: FC<StakeUiProps> = ({
         </div>
       </div>
       <Button
-        disabled={Boolean(errors["amount"]?.message) || !amount}
+        disabled={isDisabled}
         type="primary"
         id="stakeTokensButton"
         block
         onClick={submit}
-        icon={<IconCmpStake className="!w-[18px] !h-[18px] text-white" />}
+        icon={
+          isDisabled && isDarkTheme ? (
+            <IconCmpStakeGray className="!w-[18px] !h-[18px]" />
+          ) : (
+            <IconCmpStake className="!w-[18px] !h-[18px]" />
+          )
+        }
       >
         Stake
       </Button>

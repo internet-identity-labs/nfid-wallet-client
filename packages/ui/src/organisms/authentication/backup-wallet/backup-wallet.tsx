@@ -23,7 +23,7 @@ export const AuthBackupWallet: FC<AuthBackupWalletProps> = ({
   return (
     <div
       className={clsx(
-        "flex flex-col flex-grow w-full h-full text-sm text-center",
+        "flex flex-col flex-grow w-full h-full text-sm text-center dark:text-white",
         className,
       )}
     >
@@ -48,7 +48,12 @@ export const AuthBackupWallet: FC<AuthBackupWalletProps> = ({
       <Button className="mt-auto" block onClick={onCreate} type="primary">
         Create recovery phrase
       </Button>
-      <Button className="mt-2.5" block onClick={onSkip} type="ghost">
+      <Button
+        className="mt-2.5 dark:text-teal-500"
+        block
+        onClick={onSkip}
+        type="ghost"
+      >
         Skip for now
       </Button>
     </div>

@@ -56,26 +56,27 @@ export const QuoteModal: FC<QuoteModalProps> = ({
             "overflow-auto max-h-[396px] pr-[16px]",
             "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
             "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
+            "dark:scrollbar-thumb-zinc-600 dark:scrollbar-track-[#242427]",
           )}
         >
           <div className="text-sm">
-            <div className="flex justify-between py-3 leading-5 border-b border-gray-100">
+            <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-500">
               <p>Quote rate</p>
               <p>{quote?.getQuoteRate()}</p>
             </div>
-            <div className="flex flex-wrap justify-between py-3 leading-5 border-b border-gray-100">
+            <div className="flex flex-wrap justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-500">
               <p>Liquidity provider fee</p>
               <p>{quote?.getLiquidityProviderFee()}</p>
             </div>
-            <div className="flex flex-wrap justify-between py-3 leading-5 border-b border-gray-100">
+            <div className="flex flex-wrap justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-500">
               <p>Price impact</p>
               <p>{quote?.getPriceImpact()?.priceImpact}</p>
-              <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
+              <p className="text-xs text-gray-500 dark:text-zinc-500 basis-[100%] leading-[19px] mt-1">
                 The difference between the market price and your price due to
                 trade size.
               </p>
             </div>
-            <div className="flex justify-between py-3 leading-5 border-b border-gray-100">
+            <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-500">
               <p>Estimated transfer fee</p>
               <p className="text-right">
                 {targetFee} <br />
@@ -85,7 +86,7 @@ export const QuoteModal: FC<QuoteModalProps> = ({
             <div className="flex flex-wrap justify-between py-3 leading-5">
               <p>Widget fee</p>
               <p>{quote?.getWidgetFee()}</p>
-              <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
+              <p className="text-xs text-gray-500 dark:text-zinc-500 basis-[100%] leading-[19px] mt-1">
                 The fee of 0.875% is automatically factored into this quote to
                 support the NFID Wallet Community.
               </p>

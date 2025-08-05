@@ -4,7 +4,6 @@ import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { formatAssetAmountRaw } from "packages/ui/src/molecules/ticker-amount"
 import { FC, useCallback, useEffect, useMemo, useState } from "react"
 import { useFormContext } from "react-hook-form"
-import { getMaxAmountFee } from "src/integration/swap/icpswap/util/util"
 
 import {
   IconCmpArrowRight,
@@ -21,9 +20,11 @@ import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
 import { useTokenInit } from "../hooks/token-init"
+import { getMaxAmountFee, IModalType } from "../utils"
 import { BALANCE_EDGE_LENGTH } from "./swap-form"
 
 interface ChooseFromTokenProps {
+  modalType: IModalType
   id: string
   token: FT | undefined
   tokens?: FT[]
@@ -32,17 +33,16 @@ interface ChooseFromTokenProps {
   setFromChosenToken?: (value: string) => void
   usdRate?: string
   title: string
-  isSwap?: boolean
   isResponsive?: boolean
   setIsResponsive?: (v: boolean) => void
   tokensAvailableToSwap?: TokensAvailableToSwap
   btcFee?: bigint
-  isConvertFromCkBtc?: boolean
   minAmount?: number
   isLoading?: boolean
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
+  modalType,
   id,
   token,
   tokens,
@@ -51,12 +51,10 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   setFromChosenToken,
   usdRate = "0.00 USD",
   title,
-  isSwap = false,
   isResponsive,
   setIsResponsive,
   tokensAvailableToSwap,
   btcFee,
-  isConvertFromCkBtc,
   minAmount,
   isLoading,
 }) => {
@@ -70,20 +68,37 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     setValue,
     register,
     formState: { errors },
+    trigger,
   } = useFormContext()
   const userBalance = balance !== undefined ? balance : token!.getTokenBalance()
   const decimals = token!.getTokenDecimals()
 
+  useEffect(() => {
+    if (token && inputAmountValue.trim()) {
+      trigger("amount")
+    }
+  }, [token, inputAmountValue])
+
   const fee = useMemo(() => {
     if (!token || userBalance === undefined) return
-    return isSwap
+    return modalType === IModalType.SWAP
       ? getMaxAmountFee(userBalance, token.getTokenFee())
-      : token.getTokenAddress() !== BTC_NATIVE_ID
+      : modalType === IModalType.STAKE ||
+        (modalType === IModalType.SEND &&
+          token.getTokenAddress() !== BTC_NATIVE_ID)
       ? token.getTokenFee()
       : btcFee
-  }, [token, userBalance, isSwap, btcFee])
+  }, [token, userBalance, btcFee])
 
   const isMaxAvailable = useMemo(() => {
+    if (
+      modalType === IModalType.CONVERT_TO_CKBTC ||
+      modalType === IModalType.CONVERT_TO_BTC ||
+      (modalType === IModalType.SEND &&
+        token?.getTokenAddress() === BTC_NATIVE_ID)
+    )
+      return false
+
     if (
       userBalance === undefined ||
       (token?.getTokenAddress() !== BTC_NATIVE_ID && fee === undefined) ||
@@ -120,7 +135,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     if (fee === undefined) return
 
     const feeNum = new BigNumber(fee.toString())
-    const maxAmount = isSwap ? balanceNum : balanceNum.minus(feeNum)
+    const maxAmount =
+      modalType === IModalType.SWAP ? balanceNum : balanceNum.minus(feeNum)
     const formattedValue = formatAssetAmountRaw(maxAmount, decimals)
 
     setInputAmountValue(formattedValue)
@@ -142,7 +158,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
     const balanceNum = new BigNumber(userBalance.toString())
     const feeNum = new BigNumber(fee.toString())
-    const maxAmount = isSwap ? balanceNum : balanceNum.minus(feeNum)
+    const maxAmount =
+      modalType === IModalType.SWAP ? balanceNum : balanceNum.minus(feeNum)
     const formattedValue = formatAssetAmountRaw(maxAmount, decimals)
 
     setInputAmountValue(formattedValue)
@@ -170,7 +187,9 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       id={"sourceSection"}
       className={clsx(
         "border rounded-[12px] p-4",
-        errors["amount"] ? "ring border-red-600 ring-red-100" : "border-black",
+        errors["amount"]
+          ? "ring border-red-600 dark:border-red-500 ring-red-100"
+          : "border-black dark:border-zinc-500",
         isResponsive ? "h-[168px]" : "h-[100px]",
       )}
     >
@@ -192,9 +211,11 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
               validate: (value) => {
                 const amountValidationError = validateTransferAmountField(
                   balance || token.getTokenBalance(),
-                  isSwap ? BigInt(0) : token.getTokenFee(),
+                  modalType === IModalType.SWAP
+                    ? BigInt(0)
+                    : token.getTokenFee(),
                   decimals,
-                  !!isConvertFromCkBtc,
+                  modalType === IModalType.CONVERT_TO_BTC,
                   minAmount,
                   token.getTokenSymbol(),
                 )(value)
@@ -206,7 +227,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         )}
         <div
           className={clsx(
-            "py-[6px] pl-[6px] pr-[12px] bg-gray-300/40 rounded-[24px] inline-block",
+            "py-[6px] pl-[6px] pr-[12px] bg-gray-300/40 dark:bg-zinc-900 rounded-[24px] inline-block",
             isResponsive && "w-full flex-[0_0_100%] order-1 mt-2",
           )}
         >
@@ -231,7 +252,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
                   <p className="text-lg font-semibold">
                     {token.getTokenSymbol()}
                   </p>
-                  <IconCmpArrowRight className="ml-auto" />
+                  <IconCmpArrowRight className="ml-auto dark:text-white" />
                 </div>
               }
               tokensAvailableToSwap={tokensAvailableToSwap}
@@ -252,20 +273,26 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         {isLoading || isBtcLoading || !Boolean(initedToken) ? (
           <Skeleton className="w-[124px] h-1 rounded-[6px] mt-[15px]" />
         ) : (
-          <p className={clsx("text-xs mt-2 text-gray-500 leading-5 text-left")}>
+          <p
+            className={clsx(
+              "text-xs mt-2 text-gray-500 dark:text-zinc-500 leading-5 text-left",
+            )}
+          >
             {usdRate || "0.00 USD"}
           </p>
         )}
         <div
           className={clsx(
-            "mt-2 text-xs leading-5 text-gray-500",
+            "mt-2 text-xs leading-5 text-gray-500 dark:text-zinc-500",
             isResponsive ? "flex-[0_0_100%] order-2" : "text-right",
           )}
         >
           Balance:&nbsp;
           <span
             className={clsx(
-              isMaxAvailable ? "text-teal-600 cursor-pointer" : "text-gray-500",
+              isMaxAvailable
+                ? "text-teal-600 dark:text-teal-500 cursor-pointer"
+                : "text-gray-500 dark:text-zinc-500",
             )}
             onClick={maxHandler}
           >

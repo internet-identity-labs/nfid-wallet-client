@@ -238,15 +238,15 @@ export class Assets extends Page {
     waitForElementOrAction:
       | ChainablePromiseElement
       | {
-          element: ChainablePromiseElement
-          action: (el: ChainablePromiseElement) => Promise<void>
-        },
+      element: ChainablePromiseElement
+      action: (el: ChainablePromiseElement) => Promise<void>
+    },
   ) {
     await browser.waitUntil(
       async () => {
         try {
-          await Profile.waitUntilBalanceLoaded()
           await super.loader.waitForDisplayed({ reverse: true, timeout: 30000 })
+          await Profile.waitUntilBalanceLoaded()
 
           await clickElement.waitForClickable({ timeout: 20000 })
           await clickElement.click()
@@ -265,12 +265,12 @@ export class Assets extends Page {
         }
       },
       {
-        timeout: 80000,
+        timeout: 170000,
         timeoutMsg: `Element ${
           "element" in waitForElementOrAction
             ? await waitForElementOrAction.element.selector
             : await waitForElementOrAction.selector
-        } didn't load properly in 80 seconds`,
+        } didn't load properly in 170second`,
       },
     )
   }

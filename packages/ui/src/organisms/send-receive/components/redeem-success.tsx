@@ -32,19 +32,19 @@ export const RedeemSuccessUi: FC<RedeemSuccessProps> = ({
     <div
       id={"success_window_3"}
       className={clsx(
-        "text-black text-center w-full h-full",
+        "text-black dark:text-white text-center w-full h-full",
         "px-5 pb-5 pt-[18px] absolute left-0 top-0 z-[3]",
-        "flex flex-col justify-between bg-white",
+        "flex flex-col justify-between bg-white dark:bg-darkGray",
         !isOpen && "hidden",
       )}
     >
       <div className={clsx("text-center", { "mb-[50px]": !!error })}>
-        <H5 className="mt-5 text-xl !font-bold leading-6">
+        <H5 className="mt-5 text-xl !font-bold leading-6 dark:text-white">
           {status === SendStatus.FAILED
             ? "Transaction failed"
             : status === SendStatus.COMPLETED
             ? "Redeemed successfully"
-            : "Redeeming stake..."}
+            : "Redeeming stake"}
         </H5>
         <p className="h-5 mt-3 text-sm leading-5">
           {status === SendStatus.FAILED
@@ -65,7 +65,7 @@ export const RedeemSuccessUi: FC<RedeemSuccessProps> = ({
           {subTitle}
         </p>
         {error && (
-          <div className="text-sm text-red-600 mt-[20px]">
+          <div className="text-sm text-red-600 dark:text-red-500 mt-[20px]">
             Something went wrong with redeeming stake. <br />
             Please try again later.
           </div>

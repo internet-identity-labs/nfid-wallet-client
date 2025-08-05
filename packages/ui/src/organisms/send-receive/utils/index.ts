@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js"
+import { WIDGET_FEE } from "src/integration/swap/calculator/calculator-abstract"
 import {
   DepositError,
   SlippageSwapError,
@@ -19,6 +20,14 @@ export interface IConversionFee {
   btcNetworkFee: string
   icpNetworkFee: string
   widgetFee: string
+}
+
+export enum IModalType {
+  SWAP = "SWAP",
+  SEND = "SEND",
+  STAKE = "STAKE",
+  CONVERT_TO_BTC = "CONVERT_TO_BTC",
+  CONVERT_TO_CKBTC = "CONVERT_TO_CKBTC",
 }
 
 export const getTitleAndButtonText = (
@@ -92,7 +101,7 @@ export const getConversionFee = (fee?: BtcToCkBtcFee | CkBtcToBtcFee) => {
 
 export const getFormattedPeriod = (value?: number, fullName?: boolean) => {
   if (value === undefined) return ""
-  if (value === 0) return "0"
+  if (value === 0) return "Less than a month"
 
   const years = Math.floor(value / 12)
   const months = value % 12
@@ -112,4 +121,17 @@ export const getFormattedPeriod = (value?: number, fullName?: boolean) => {
       : ""
 
   return [yearsString, monthsString].filter(Boolean).join(", ")
+}
+
+export const getMaxAmountFee = (
+  sourceAmount: bigint,
+  sourceFee: bigint,
+): bigint => {
+  const tokenFee = new BigNumber(sourceFee.toString()).multipliedBy(3)
+  const amount = new BigNumber(sourceAmount.toString())
+  const widgetFee = new BigNumber(WIDGET_FEE)
+  const divisor = new BigNumber(1).plus(widgetFee)
+  const fee = amount.minus(tokenFee).dividedBy(divisor)
+
+  return BigInt(amount.minus(fee).toFixed(0))
 }

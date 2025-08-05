@@ -5,7 +5,6 @@ import { integrationCache } from "packages/integration/src/cache"
 import BtcIcon from "packages/ui/src/organisms/tokens/assets/bitcoin.svg"
 import { FT } from "src/integration/ft/ft"
 import { FTImpl } from "src/integration/ft/impl/ft-impl"
-import { nftService } from "src/integration/nft/nft-service"
 
 import {
   BTC_NATIVE_ID,
@@ -17,7 +16,6 @@ import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
-import { NFT } from "../nft/nft"
 import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
 import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 
@@ -147,39 +145,13 @@ export class FtService {
     })
   }
 
-  //todo move somewhere because contains NFT balance as well
-  async getTotalUSDBalance(
-    userPublicKey: Principal,
-    nfts: NFT[] | undefined,
-    ft: FT[],
-  ): Promise<
+  async getFTUSDBalance(ft: FT[]): Promise<
     | {
         value: string
         dayChangePercent?: string
         dayChange?: string
         dayChangePositive?: boolean
-      }
-    | undefined
-  > {
-    const icp = ft.find((token) => token.getTokenAddress() === ICP_CANISTER_ID)
-    if (!icp?.isInited()) await icp?.init(userPublicKey)
-
-    const [nftPrice] = await Promise.all([
-      nftService.getNFTsTotalPrice(nfts, icp),
-    ])
-
-    return this.getUSDBalance(ft, !nftPrice ? 0 : Number(nftPrice.value))
-  }
-
-  async getUSDBalance(
-    ft: FT[],
-    nftPrice?: number,
-  ): Promise<
-    | {
-        value: string
-        dayChangePercent?: string
-        dayChange?: string
-        dayChangePositive?: boolean
+        value24h?: string
       }
     | undefined
   > {
@@ -209,7 +181,7 @@ export class FtService {
       )
 
     return {
-      value: price.usdBalance!.plus(nftPrice || 0).toFixed(2),
+      value: price.usdBalance.toFixed(2),
       dayChangePercent: price.usdBalance.eq(0)
         ? "0.00"
         : BigNumber(price.usdBalanceDayChange!)
@@ -219,6 +191,7 @@ export class FtService {
             .toFixed(2),
       dayChange: BigNumber(price.usdBalanceDayChange!).toFixed(2),
       dayChangePositive: price.usdBalanceDayChange!.gte(0),
+      value24h: price.usdBalance.minus(price.usdBalanceDayChange).toFixed(2),
     }
   }
 

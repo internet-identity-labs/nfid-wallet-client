@@ -105,6 +105,7 @@ When(
     await Assets.getTokenByNameFromList(tokenRole, token.replace(/^\$/, "")).then(
       async (it) => {
         await it.waitForDisplayed({ timeout: 70000 })
+        await it.waitForClickable({ timeout: 25000 })
         await it.click()
       },
     )

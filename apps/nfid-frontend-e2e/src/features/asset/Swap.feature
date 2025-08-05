@@ -16,7 +16,7 @@ Feature: Swap functionality
     When User goes to Tokens tab
     And Verifying the balance of $NFIDW token and $ICP token has changed correctly
 
-  @skip @swap @mobile
+  @swap @mobile
   Scenario: User swaps his token
     Given User opens NFID site
     And User is already authenticated by 31870 anchor

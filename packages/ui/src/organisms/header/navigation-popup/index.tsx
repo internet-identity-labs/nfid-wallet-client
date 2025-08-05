@@ -6,13 +6,15 @@ import { useNavigate, useLocation } from "react-router-dom"
 
 import { Skeleton } from "@nfid-frontend/ui"
 
+import { NFIDTheme } from "frontend/App"
+
 import darkDarkIcon from "../assets/dark-dark.svg"
 import darkIcon from "../assets/dark.svg"
 import lightDarkIcon from "../assets/light-dark.svg"
 import lightIcon from "../assets/light.svg"
 import systemDarkIcon from "../assets/system-dark.svg"
 import systemIcon from "../assets/system.svg"
-import { INavigationPopupLinks, NFIDTheme } from "../profile-header"
+import { INavigationPopupLinks } from "../profile-header"
 import { renderLink, shouldRenderLink } from "./renderLinks"
 
 export interface IAuthenticatedPopup extends HTMLAttributes<HTMLDivElement> {
@@ -71,7 +73,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
               )}
               onClick={() => setWalletTheme(NFIDTheme.LIGHT)}
             >
-              {walletTheme === NFIDTheme.DARK ? (
+              {walletTheme !== NFIDTheme.LIGHT ? (
                 <img src={lightDarkIcon} alt="Light theme" />
               ) : (
                 <img src={lightIcon} alt="Light theme" />
@@ -87,7 +89,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
               )}
               onClick={() => setWalletTheme(NFIDTheme.DARK)}
             >
-              {walletTheme === NFIDTheme.DARK ? (
+              {walletTheme !== NFIDTheme.LIGHT ? (
                 <img src={darkDarkIcon} alt="Dark theme" />
               ) : (
                 <img src={darkIcon} alt="Dark theme" />
@@ -103,7 +105,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
               )}
               onClick={() => setWalletTheme(NFIDTheme.SYSTEM)}
             >
-              {walletTheme === NFIDTheme.DARK ? (
+              {walletTheme !== NFIDTheme.LIGHT ? (
                 <img src={systemDarkIcon} alt="System theme" />
               ) : (
                 <img src={systemIcon} alt="System theme" />
@@ -168,7 +170,9 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
               onClick={onSignOut}
             >
               <NavDisconnectIcon
-                strokeColor={walletTheme === NFIDTheme.DARK ? "white" : "black"}
+                strokeColor={
+                  walletTheme !== NFIDTheme.LIGHT ? "white" : "black"
+                }
               />
               Disconnect
             </div>

@@ -1,4 +1,4 @@
-import { CKBTC_CANISTER_ID } from "@nfid/integration/token/constants"
+import { BTC_NATIVE_ID } from "@nfid/integration/token/constants"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
@@ -31,7 +31,7 @@ export const getBtcActivitiesRows = async (
       rate: 0,
       decimals: 8,
       decimalsTo: 8,
-      canister: CKBTC_CANISTER_ID,
+      canister: BTC_NATIVE_ID,
     },
     type: activity.from === address ? "Sent" : "Received",
     timestamp: new Date(Number(activity.date) * 1000),

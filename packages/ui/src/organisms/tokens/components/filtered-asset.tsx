@@ -15,6 +15,7 @@ import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp } from "@nfid/swr"
 
 import { getUserPrincipalId } from "frontend/features/fungible-token/utils"
+import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 
 interface FilteredTokenProps {
@@ -30,7 +31,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({
 }) => {
   const [showTokenLoading, setShowTokenLoading] = useState(false)
   const [hideTokenLoading, setHideTokenLoading] = useState(false)
-  const isDarkTheme = document.documentElement.classList.contains("dark")
+  const isDarkTheme = useDarkTheme()
 
   const hideToken = useCallback(
     async (token: FT) => {

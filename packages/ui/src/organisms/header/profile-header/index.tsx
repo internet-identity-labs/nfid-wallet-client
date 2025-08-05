@@ -10,13 +10,9 @@ import {
   NFIDLogo,
 } from "@nfid-frontend/ui"
 
-import AuthenticatedPopup from "../navigation-popup"
+import { NFIDTheme } from "frontend/App"
 
-export enum NFIDTheme {
-  LIGHT = "light",
-  DARK = "dark",
-  SYSTEM = "system",
-}
+import AuthenticatedPopup from "../navigation-popup"
 
 export interface INavigationPopupLinks {
   icon: FC<{ strokeColor?: string }> & SVGProps<SVGSVGElement>
@@ -40,6 +36,8 @@ export interface IProfileHeader extends React.HTMLAttributes<HTMLDivElement> {
     security: string
     vaults: string
   }
+  walletTheme?: NFIDTheme
+  setWalletTheme?: (theme: NFIDTheme) => void
 }
 
 export const ProfileHeader: React.FC<IProfileHeader> = ({
@@ -53,48 +51,11 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
   assetsLink,
   hasVaults,
   profileConstants,
+  walletTheme,
+  setWalletTheme,
 }) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false)
-  const [walletTheme, setWalletTheme] = useState<NFIDTheme>(NFIDTheme.SYSTEM)
   const popupRef = useClickOutside(() => setIsMenuVisible(false))
-
-  useEffect(() => {
-    const saved = localStorage.getItem("walletTheme") as NFIDTheme | null
-    if (saved) {
-      setWalletTheme(saved)
-    }
-  }, [])
-
-  useEffect(() => {
-    const root = document.documentElement
-
-    const applyTheme = () => {
-      if (walletTheme === NFIDTheme.DARK) {
-        root.classList.add("dark")
-      } else if (walletTheme === NFIDTheme.LIGHT) {
-        root.classList.remove("dark")
-      } else if (walletTheme === NFIDTheme.SYSTEM) {
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-          root.classList.add("dark")
-        } else {
-          root.classList.remove("dark")
-        }
-      }
-    }
-
-    applyTheme()
-    localStorage.setItem("walletTheme", walletTheme)
-
-    const mq = window.matchMedia("(prefers-color-scheme: dark)")
-    const handleChange = () => {
-      if (walletTheme === NFIDTheme.SYSTEM) {
-        applyTheme()
-      }
-    }
-    mq.addEventListener("change", handleChange)
-
-    return () => mq.removeEventListener("change", handleChange)
-  }, [walletTheme])
 
   return (
     <>
@@ -106,7 +67,7 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
         )}
       >
         <Loader isLoading={isLoading} />
-        {walletTheme === NFIDTheme.DARK ? (
+        {walletTheme !== NFIDTheme.LIGHT ? (
           <NFIDLogo />
         ) : (
           <NFIDLogoMain assetsLink={assetsLink} />
@@ -116,7 +77,7 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
           <BurgerMenu
             isOpened={isMenuVisible}
             onClick={() => setIsMenuVisible(!isMenuVisible)}
-            walletTheme={walletTheme}
+            walletTheme={walletTheme!}
           />
           {isMenuVisible && (
             <AuthenticatedPopup
@@ -127,8 +88,8 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
               hasVaults={hasVaults}
               profileConstants={profileConstants}
               isOpen={isMenuVisible}
-              walletTheme={walletTheme}
-              setWalletTheme={setWalletTheme}
+              walletTheme={walletTheme!}
+              setWalletTheme={setWalletTheme!}
             />
           )}
         </div>

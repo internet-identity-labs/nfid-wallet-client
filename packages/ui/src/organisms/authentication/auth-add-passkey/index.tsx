@@ -26,7 +26,7 @@ export const AuthAddPasskey: FC<AuthAddPasskeyProps> = ({
       isLoading={isLoading}
       overlayClassnames="rounded-[24px]"
     >
-      <div className="flex flex-col w-full h-full text-sm text-center">
+      <div className="flex flex-col w-full h-full text-sm text-center dark:text-white">
         <h5
           className={clsx(
             "text-center font-bold mt-[50px] mb-0 text-[20px]",
@@ -51,7 +51,7 @@ export const AuthAddPasskey: FC<AuthAddPasskeyProps> = ({
         </Button>
         <Button
           id={"skip-secure-wallet"}
-          className="mt-2.5"
+          className="mt-2.5 dark:text-teal-500"
           block
           onClick={onSkip}
           type="ghost"

@@ -34,7 +34,7 @@ export const AuthSaveRecoveryPhrase: FC<AuthSaveRecoveryPhraseProps> = ({
   return (
     <div
       className={clsx(
-        "flex flex-col w-full h-full flex-grow text-sm text-center",
+        "flex flex-col w-full h-full flex-grow text-sm text-center dark:text-white",
         className,
       )}
     >
@@ -52,16 +52,16 @@ export const AuthSaveRecoveryPhrase: FC<AuthSaveRecoveryPhraseProps> = ({
         number, password, or passkeys are lost. Keep this phrase secret, safe,
         and offline,
       </p>
-      <div className="my-[10px] rounded-[12px] border border-black flex flex-col">
+      <div className="my-[10px] rounded-[12px] border border-black dark:border-zinc-500 flex flex-col">
         <div className="px-[10px] py-[10px] md:px-[14px] text-left h-[220px]">
           {recoveryPhrase}
         </div>
         <div
-          className="mt-auto border-t border-black h-[45px] flex justify-center items-center cursor-pointer"
+          className="mt-auto border-t border-black dark:border-zinc-500 h-[45px] flex justify-center items-center cursor-pointer"
           onClick={copyToClipboard}
         >
-          <div className="text-sm font-bold flex">
-            <CopyIcon className="text-black stroke-black mr-[8px]" />
+          <div className="flex text-sm font-bold">
+            <CopyIcon className="text-black dark:text-white stroke-black mr-[8px]" />
             {copied ? "Copied" : "Copy"}
           </div>
         </div>
@@ -74,7 +74,7 @@ export const AuthSaveRecoveryPhrase: FC<AuthSaveRecoveryPhraseProps> = ({
           }}
           value=""
           id="save-phrase"
-          labelClassName="!text-sm"
+          labelClassName="!text-sm dark:text-white"
           labelText="I’ve saved this phrase in a safe place"
         />
       </div>

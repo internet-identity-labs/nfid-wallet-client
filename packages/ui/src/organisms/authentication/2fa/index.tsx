@@ -41,7 +41,7 @@ export const Auth2FA = ({
     <>
       <AuthAppMeta title="Passkey authentication" withLogo={!isIdentityKit} />
       {email && <p className="text-sm text-center">{email}</p>}
-      <p className="mt-3 text-sm text-center">
+      <p className="mt-3 text-sm text-center dark:text-white">
         Your account has been configured for self-sovereign mode. Use your
         Passkey to confirm it’s you.
       </p>

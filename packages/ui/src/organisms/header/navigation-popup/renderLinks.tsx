@@ -2,7 +2,9 @@ import clsx from "clsx"
 import { Fragment } from "react"
 import { useNavigate, Location } from "react-router-dom"
 
-import { INavigationPopupLinks, NFIDTheme } from "../profile-header"
+import { NFIDTheme } from "frontend/App"
+
+import { INavigationPopupLinks } from "../profile-header"
 
 export const shouldRenderLink = (
   linkItem: INavigationPopupLinks,
@@ -69,7 +71,7 @@ export const renderLink = (
       >
         {linkItem.icon && (
           <linkItem.icon
-            strokeColor={walletTheme === NFIDTheme.DARK ? "white" : "black"}
+            strokeColor={walletTheme !== NFIDTheme.LIGHT ? "white" : "black"}
           />
         )}
         {linkItem.title}

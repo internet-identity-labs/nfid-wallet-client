@@ -16,7 +16,7 @@ export const AuthEmailVerified: React.FC<AuthEmailVerifiedProps> = ({
 }) => (
   <div className="flex flex-col flex-1 w-full h-full text-sm text-center">
     <AuthAppMeta title="Sign in verified" withLogo={!isIdentityKit} />
-    <p>You may now continue to the application.</p>
+    <p className="dark:text-white">You may now continue to the application.</p>
     <img
       src={ImageVerified}
       className="object-contain w-full my-9"

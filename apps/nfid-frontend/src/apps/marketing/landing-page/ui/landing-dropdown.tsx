@@ -1,7 +1,8 @@
-import { NFIDTheme } from "packages/ui/src/organisms/header/profile-header"
 import { useState } from "react"
 
 import { BurgerMenu, Dropdown, DropdownOption } from "@nfid-frontend/ui"
+
+import { NFIDTheme } from "frontend/App"
 
 type ILandingDropdown = {
   handler: () => void

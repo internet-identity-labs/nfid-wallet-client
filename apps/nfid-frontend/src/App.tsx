@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion"
-import React, { Suspense } from "react"
+import { Suspense, useEffect, useState, lazy } from "react"
 import { Route, Routes, useLocation } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
@@ -21,42 +21,48 @@ import { WalletRouter } from "./features/wallet"
 import { NotFound } from "./ui/pages/404"
 import ProfileTemplate from "./ui/templates/profile-template/Template"
 
-const LandingHomePage = React.lazy(() =>
+const LandingHomePage = lazy(() =>
   import("./apps/marketing/landing-page").then((components) => ({
     default: components.LandingHomePage,
   })),
 )
 
-const NFIDEmbedCoordinator = React.lazy(
-  () => import("./features/embed/coordinator"),
-)
+const NFIDEmbedCoordinator = lazy(() => import("./features/embed/coordinator"))
 
-const IframeTrustDeviceCoordinator = React.lazy(
+const IframeTrustDeviceCoordinator = lazy(
   () => import("./features/iframe/iframe-trust-device/coordinator"),
 )
-const ProfileSecurity = React.lazy(() => import("../src/features/security"))
-const CopyRecoveryPhrase = React.lazy(
+const ProfileSecurity = lazy(() => import("../src/features/security"))
+const CopyRecoveryPhrase = lazy(
   () => import("../src/apps/identity-manager/profile/copy-recovery-phrase"),
 )
-const VaultsListPage = React.lazy(
+const VaultsListPage = lazy(
   () => import("frontend/features/vaults/vaults-list-page"),
 )
-const VaultsDetailsCoordinator = React.lazy(
+const VaultsDetailsCoordinator = lazy(
   () => import("frontend/features/vaults/vaults-details"),
 )
-const VaultTransactionsDetailsPage = React.lazy(
+const VaultTransactionsDetailsPage = lazy(
   () =>
     import("frontend/features/vaults/vaults-details/transactions-details-page"),
 )
 
-const NFTDetailsPage = React.lazy(() => import("frontend/features/nft-details"))
+const NFTDetailsPage = lazy(() => import("frontend/features/nft-details"))
 
 if (USERGEEK_API_KEY) {
   Usergeek.init({ apiKey: USERGEEK_API_KEY as string, host: ic.host })
 }
 
+export enum NFIDTheme {
+  LIGHT = "light",
+  DARK = "dark",
+  SYSTEM = "system",
+}
+
 export const App = () => {
-  React.useEffect(() => {
+  const [walletTheme, setWalletTheme] = useState<NFIDTheme>(NFIDTheme.SYSTEM)
+
+  useEffect(() => {
     const sub = authState.subscribe(({ cacheLoaded }) => {
       const root = document.getElementById("root")
       if (root) {
@@ -65,6 +71,44 @@ export const App = () => {
     })
     return () => sub.unsubscribe()
   }, [])
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("walletTheme") as NFIDTheme | null
+    if (savedTheme) {
+      setWalletTheme(savedTheme)
+    }
+  }, [])
+
+  useEffect(() => {
+    const root = document.documentElement
+
+    const applyTheme = () => {
+      if (walletTheme === NFIDTheme.DARK) {
+        root.classList.add("dark")
+      } else if (walletTheme === NFIDTheme.LIGHT) {
+        root.classList.remove("dark")
+      } else if (walletTheme === NFIDTheme.SYSTEM) {
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          root.classList.add("dark")
+        } else {
+          root.classList.remove("dark")
+        }
+      }
+    }
+
+    applyTheme()
+    localStorage.setItem("walletTheme", walletTheme)
+
+    const mq = window.matchMedia("(prefers-color-scheme: dark)")
+    const handleChange = () => {
+      if (walletTheme === NFIDTheme.SYSTEM) {
+        applyTheme()
+      }
+    }
+    mq.addEventListener("change", handleChange)
+
+    return () => mq.removeEventListener("change", handleChange)
+  }, [walletTheme])
 
   useSWR("cacheUSDICPRate", () => exchangeRateService.cacheUsdIcpRate(), {
     dedupingInterval: 60_000,
@@ -81,7 +125,7 @@ export const App = () => {
   )
 
   return (
-    <React.Suspense fallback={<BlurredLoader isLoading />}>
+    <Suspense fallback={<BlurredLoader isLoading />}>
       <AnimatePresence mode="wait">
         <BtcAddressProvider>
           {isExcludedFromAnimation ? (
@@ -90,7 +134,11 @@ export const App = () => {
                 path={`${ProfileConstants.base}/*`}
                 element={
                   <AuthWrapper>
-                    <ProfileTemplate isWallet />
+                    <ProfileTemplate
+                      isWallet
+                      walletTheme={walletTheme}
+                      setWalletTheme={setWalletTheme}
+                    />
                   </AuthWrapper>
                 }
               >
@@ -213,7 +261,7 @@ export const App = () => {
           )}
         </BtcAddressProvider>
       </AnimatePresence>
-    </React.Suspense>
+    </Suspense>
   )
 }
 

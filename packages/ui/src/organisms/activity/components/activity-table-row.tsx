@@ -36,7 +36,7 @@ import {
 } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
-import { useSWR } from "@nfid/swr"
+import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { IActivityRow } from "frontend/features/activity/types"
 import { fetchTokens } from "frontend/features/fungible-token/utils"
@@ -86,8 +86,8 @@ const getExplorerLink = (id: string, token?: FT, swapTx?: SwapTransaction) => {
 
   if (token.getTokenCategory() === Category.Sns) {
     return swapTx
-      ? `${ICP_EXPLORER}/sns/${token.getTokenAddress()}/transaction/${swapTx.getTransferId()}`
-      : `${ICP_EXPLORER}/sns/${token.getTokenAddress()}/transaction/${id}`
+      ? `${ICP_EXPLORER}/sns/${token.getRootSnsCanister()}/transaction/${swapTx.getTransferId()}`
+      : `${ICP_EXPLORER}/sns/${token.getRootSnsCanister()}/transaction/${id}`
   }
 
   if (token.getTokenCategory() === Category.ChainFusion) {
@@ -247,10 +247,14 @@ export const ActivityTableRow = ({
 }: IActivityTableRow) => {
   const isDarkTheme = useDarkTheme()
   const [isLoading, setIsLoading] = useState(false)
-  const { data: tokens = undefined } = useSWR("tokens", fetchTokens, {
-    revalidateOnFocus: false,
-    revalidateOnMount: false,
-  })
+  const { data: tokens = undefined } = useSWRWithTimestamp(
+    "tokens",
+    fetchTokens,
+    {
+      revalidateOnFocus: false,
+      revalidateOnMount: false,
+    },
+  )
 
   const currentToken = useMemo(() => {
     if (asset.type !== "ft" || !tokens) return
@@ -510,7 +514,7 @@ export const ActivityTableRow = ({
                     <Spinner className="w-[22px] h-[22px] text-gray-400 mx-auto" />
                   ) : (
                     <span
-                      className="cursor-pointer text-primaryButtonColor"
+                      className="cursor-pointer text-primaryButtonColor dark:text-teal-500 dark:hover:text-teal-700"
                       onClick={completeHandler}
                     >
                       {getTooltipAndButtonText(transaction)?.buttonText}

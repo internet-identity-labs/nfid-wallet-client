@@ -57,7 +57,7 @@ export const AddPasskey = ({
         disabled={isDisabled}
         icon={<IconCmpPlus className="w-[18px] h-[18px]" />}
         type="ghost"
-        className="text-sm font-bold mt-[20px]"
+        className="text-sm font-bold mt-[20px] dark:text-teal-500"
       >
         Add Passkey
       </Button>

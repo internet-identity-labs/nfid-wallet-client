@@ -276,7 +276,7 @@ export default function AuthenticationCoordinator({
                   button={
                     <Button
                       id="google-sign-button"
-                      className="h-12 !p-0 active:!text-black"
+                      className="h-12 !p-0 active:!text-black dark:active:!text-white"
                       type="stroke"
                       icon={<IconCmpGoogle />}
                       block

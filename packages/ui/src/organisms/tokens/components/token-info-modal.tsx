@@ -130,7 +130,7 @@ export const TokenInfoModal: FC<TokenInfoModalProps> = ({ token, onClose }) => {
             <div className="text-sm text-gray-400 dark:text-zinc-400 w-[150px]">
               Network
             </div>
-            <div className="text-sm">Bitcoin</div>
+            <div className="text-sm dark:text-white">Bitcoin</div>
           </div>
         )}
       </ModalComponent>

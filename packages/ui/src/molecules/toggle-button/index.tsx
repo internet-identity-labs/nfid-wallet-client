@@ -27,7 +27,7 @@ export const ToggleButton: React.FC<IToggleButton> = ({
   return (
     <div
       className={clsx(
-        "w-full h-7 rounded-[12px] bg-gray-100 cursor-pointer",
+        "w-full h-7 rounded-[12px] bg-gray-100 dark:bg-zinc-700 cursor-pointer",
         "grid grid-cols-2 relative select-none",
         "hover:bg-gray-200",
         className,
@@ -37,7 +37,7 @@ export const ToggleButton: React.FC<IToggleButton> = ({
     >
       <div
         className={clsx(
-          "text-center text-black hover:text-gray-500",
+          "text-center text-black dark:text-white hover:text-gray-500",
           "font-semibold text-xs leading-7",
           "flex items-center justify-center",
         )}
@@ -46,7 +46,7 @@ export const ToggleButton: React.FC<IToggleButton> = ({
       </div>
       <div
         className={clsx(
-          "text-center text-black hover:text-gray-500",
+          "text-center text-black dark:text-white hover:text-gray-500",
           "font-semibold text-xs leading-7",
           "flex items-center justify-center",
         )}

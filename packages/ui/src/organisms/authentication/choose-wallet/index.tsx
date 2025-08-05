@@ -5,6 +5,8 @@ import { FC } from "react"
 import { Button, CenterEllipsis } from "@nfid-frontend/ui"
 import { ExistingWallet } from "@nfid/integration"
 
+import { useDarkTheme } from "frontend/hooks"
+
 import { AuthAppMeta } from "../app-meta"
 
 export interface ChooseWalletProps {
@@ -22,6 +24,7 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
   applicationURL,
   wallets,
 }) => {
+  const isDarkTheme = useDarkTheme()
   if (!wallets) return null
   return (
     <>
@@ -46,13 +49,15 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
                 className={clsx(
                   "flex items-center h-[64px] gap-1 justify-between cursor-pointer",
                   "border-b border-gray-100 last:border-b-0 px-[14px] rounded-[12px]",
-                  "hover:bg-gray-50 transition-all group",
+                  "hover:bg-gray-50 dark:bg-zinc-900 dark:hover:bg-zinc-800 transition-all group",
                 )}
                 onClick={() => onLoginWithPasskey(wallet.allowedPasskeys)}
               >
                 <div>
-                  <p>{wallet.email ?? wallet.name}</p>
-                  <p className="mt-0.5 tex-xs text-gray-400 leading-4.5">
+                  <p className="dark:text-white">
+                    {wallet.email ?? wallet.name}
+                  </p>
+                  <p className="mt-0.5 tex-xs text-gray-400 dark:text-zinc-500 leading-4.5">
                     <CenterEllipsis
                       value={wallet.principal}
                       leadingChars={6}
@@ -60,12 +65,17 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
                     />
                   </p>
                 </div>
-                <IconCaret />
+                <IconCaret color={isDarkTheme ? "white" : "black"} />
               </div>
             )
           })}
         </div>
-        <Button className="mt-4" block onClick={onAuthSelection} type="ghost">
+        <Button
+          className="mt-4 dark:text-teal-500"
+          block
+          onClick={onAuthSelection}
+          type="ghost"
+        >
           Use a different wallet
         </Button>
       </div>

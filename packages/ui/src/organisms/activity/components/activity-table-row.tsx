@@ -1,10 +1,11 @@
 import { SignIdentity } from "@dfinity/agent"
 import clsx from "clsx"
 import { format } from "date-fns"
+import { A } from "packages/ui/src/atoms/custom-link"
 import { Spinner } from "packages/ui/src/atoms/spinner"
 import CopyAddress from "packages/ui/src/molecules/copy-address"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { errorHandlerFactory } from "src/integration/swap/errors/handler-factory"
 import { ContactSupportError } from "src/integration/swap/errors/types/contact-support-error"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
@@ -23,9 +24,19 @@ import {
   ImageWithFallback,
   Tooltip,
 } from "@nfid-frontend/ui"
+import {
+  BTC_NATIVE_ID,
+  CKBTC_CANISTER_ID,
+  CKETH_CANISTER_ID,
+  ETH_NATIVE_ID,
+  ICP_CANISTER_ID,
+} from "@nfid/integration/token/constants"
+import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
+import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { IActivityRow } from "frontend/features/activity/types"
+import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 import { APPROXIMATE_SWAP_DURATION } from "frontend/integration/swap/transaction/transaction-service"
@@ -34,6 +45,59 @@ interface ErrorStage {
   buttonText: string
   tooltipTitle: string
   tooltipMessage: string
+}
+
+const ICP_EXPLORER = "https://dashboard.internetcomputer.org"
+const BTC_EXPLORER = "https://mempool.space/tx"
+const ETH_EXPLORER = "https://etherscan.io/tx"
+
+const getChainFusionTokenName = (address: string) => {
+  if (address === CKBTC_CANISTER_ID) {
+    return "bitcoin"
+  } else if (address === CKETH_CANISTER_ID) {
+    return "ethereum"
+  } else {
+    return `ethereum/${address}`
+  }
+}
+
+const getExplorerLink = (id: string, token?: FT, swapTx?: SwapTransaction) => {
+  if (!token) return undefined
+
+  if (
+    token.getTokenAddress() === BTC_NATIVE_ID ||
+    token.getTokenName() === "BTC"
+  ) {
+    return `${BTC_EXPLORER}/${id}`
+  }
+
+  if (token.getTokenAddress() === ETH_NATIVE_ID) {
+    return `${ETH_EXPLORER}/${id}`
+  }
+
+  if (token.getTokenAddress() === ICP_CANISTER_ID) {
+    return swapTx
+      ? `${ICP_EXPLORER}/transaction/${swapTx.getTransferId()}`
+      : `${ICP_EXPLORER}/transaction/${id}`
+  }
+
+  if (token.getTokenCategory() === Category.Sns) {
+    return swapTx
+      ? `${ICP_EXPLORER}/sns/${token.getRootSnsCanister()}/transaction/${swapTx.getTransferId()}`
+      : `${ICP_EXPLORER}/sns/${token.getRootSnsCanister()}/transaction/${id}`
+  }
+
+  if (token.getTokenCategory() === Category.ChainFusion) {
+    return swapTx
+      ? `${ICP_EXPLORER}/${getChainFusionTokenName(
+          token.getTokenAddress(),
+        )}/transaction/${swapTx.getTransferId()}`
+      : `${ICP_EXPLORER}/${getChainFusionTokenName(
+          token.getTokenAddress(),
+        )}/transaction/${id}`
+  }
+
+  return undefined
 }
 
 export const getTooltipAndButtonText = (
@@ -159,6 +223,7 @@ export const getActionMarkup = (
 
 interface IActivityTableRow extends IActivityRow {
   id: string
+  nodeId: string
   token?: FT
   identity?: SignIdentity
 }
@@ -174,12 +239,27 @@ export const ActivityTableRow = ({
   timestamp,
   to,
   id,
+  nodeId,
   transaction,
   token,
   identity,
 }: IActivityTableRow) => {
   const isDarkTheme = useDarkTheme()
   const [isLoading, setIsLoading] = useState(false)
+  const { data: tokens = undefined } = useSWRWithTimestamp(
+    "tokens",
+    fetchTokens,
+    {
+      revalidateOnFocus: false,
+      revalidateOnMount: false,
+    },
+  )
+
+  const currentToken = useMemo(() => {
+    if (asset.type !== "ft" || !tokens) return
+
+    return tokens?.find((token) => token.getTokenAddress() === asset.canister)
+  }, [asset.type, tokens])
 
   const providerName =
     transaction?.getSwapName() && SwapName[transaction?.getSwapName()]
@@ -209,6 +289,8 @@ export const ActivityTableRow = ({
   )
     return null
 
+  const explorerLink = getExplorerLink(id, currentToken, transaction)
+
   return (
     <Tooltip
       className={getTooltipAndButtonText(transaction) ? "" : "hidden"}
@@ -227,7 +309,7 @@ export const ActivityTableRow = ({
       }
     >
       <tr
-        id={id}
+        id={nodeId}
         className="relative items-center text-sm activity-row hover:bg-gray-50 dark:hover:bg-zinc-800"
       >
         <td className="flex items-center sm:pl-[30px] w-[156px] sm:w-[30%]">
@@ -410,7 +492,7 @@ export const ActivityTableRow = ({
                     <Spinner className="w-[22px] h-[22px] text-gray-400 mx-auto" />
                   ) : (
                     <span
-                      className="cursor-pointer text-primaryButtonColor"
+                      className="cursor-pointer text-primaryButtonColor dark:text-teal-500 dark:hover:text-teal-700"
                       onClick={completeHandler}
                     >
                       {getTooltipAndButtonText(transaction)?.buttonText}
@@ -419,13 +501,34 @@ export const ActivityTableRow = ({
                 </>
               ) : (
                 <div className="flex flex-col">
-                  <p className="text-sm whitespace-nowrap text-primaryButtonColor dark:text-teal-400">
-                    <TickerAmount
-                      value={asset.amount}
-                      decimals={asset.decimals}
-                      symbol={asset.currency}
-                    />
-                  </p>
+                  {explorerLink ? (
+                    <A
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sm whitespace-nowrap"
+                      onClick={() =>
+                        window.open(
+                          explorerLink,
+                          "_blank",
+                          "noopener,noreferrer",
+                        )
+                      }
+                    >
+                      <TickerAmount
+                        value={asset.amount}
+                        decimals={asset.decimals}
+                        symbol={asset.currency}
+                      />
+                    </A>
+                  ) : (
+                    <p className="text-sm whitespace-nowrap dark:text-white">
+                      <TickerAmount
+                        value={asset.amount}
+                        decimals={asset.decimals}
+                        symbol={asset.currency}
+                      />
+                    </p>
+                  )}
                   {Boolean(asset.rate) && (
                     <p className="text-xs text-gray-400 whitespace-nowrap dark:text-zinc-500">
                       <TickerAmount

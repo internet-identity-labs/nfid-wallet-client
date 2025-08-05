@@ -52,7 +52,7 @@ export const ActivityTableGroup = ({
       {rows.map((row, i) => (
         <ActivityTableRow
           {...row}
-          id={getRowId(row)}
+          nodeId={getRowId(row)}
           key={`group_${groupIndex}_activity_${i}`}
           token={token}
           identity={identity}

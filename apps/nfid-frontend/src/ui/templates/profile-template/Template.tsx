@@ -28,6 +28,7 @@ import {
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
+import { NFIDTheme } from "frontend/App"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import {
   ProfileConstants,
@@ -63,6 +64,8 @@ interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   isWallet?: boolean
   withPortfolio?: boolean
   titleClassNames?: string
+  walletTheme?: NFIDTheme
+  setWalletTheme?: (theme: NFIDTheme) => void
 }
 
 const ProfileTemplate: FC<IProfileTemplate> = ({
@@ -80,6 +83,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   iconId,
   isWallet,
   titleClassNames,
+  walletTheme,
+  setWalletTheme,
 }) => {
   const handleNavigateBack = useCallback(() => {
     window.history.back()
@@ -305,6 +310,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         links={navigationPopupLinks}
         assetsLink={`${ProfileConstants.base}/${ProfileConstants.tokens}`}
         hasVaults={hasVaults}
+        walletTheme={walletTheme}
+        setWalletTheme={setWalletTheme}
       />
       <TransferModalCoordinator />
       <div

@@ -18,17 +18,18 @@ import { getSwapActivitiesRows } from "./swap-activity"
 
 export const getAllActivity = async ({
   btcAddress,
+  ethAddress,
   ...params
 }: GetAllActivityParams): Promise<GetAllActivityResult> => {
   const { filteredContracts, offset = 0, limit = PAGINATION_ITEMS } = params
 
-  const [icrc1Activities, swapActivities, btcActivities, ethActivities] = await Promise.all([
-    getIcrc1ActivitiesRows(filteredContracts, limit),
-    getSwapActivitiesRows(filteredContracts),
-    getBtcActivitiesRows(btcAddress),
-    //TODO change to users address
-    getEthActivitiesRows("0xAd984257f35B8dD8BF4154ccCfEDDE229CD1DC89"),
-  ])
+  const [icrc1Activities, swapActivities, btcActivities, ethActivities] =
+    await Promise.all([
+      getIcrc1ActivitiesRows(filteredContracts, limit),
+      getSwapActivitiesRows(filteredContracts),
+      getBtcActivitiesRows(btcAddress),
+      getEthActivitiesRows(ethAddress),
+    ])
 
   const activitiesArray = [
     ...icrc1Activities,

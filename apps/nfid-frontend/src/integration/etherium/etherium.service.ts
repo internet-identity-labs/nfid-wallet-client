@@ -34,9 +34,9 @@ const INFURA_API_KEY = "010993c30ae14b2b94ff239547b6ebbe"
 
 //TESTNET
 let chainId = BigInt(11155111)
-export let minterAddress = "0x2D39863d30716aaf2B7fFFd85Dd03Dda2BFC2E38"
-export let minterCanisterId = "jzenf-aiaaa-aaaar-qaa7q-cai"
-export let ledgerCanisterId = "apia6-jaaaa-aaaar-qabma-cai"
+export const MINTER_ADDRESS = "0x2D39863d30716aaf2B7fFFd85Dd03Dda2BFC2E38"
+export const MINTER_CANISTER_ID = "jzenf-aiaaa-aaaar-qaa7q-cai"
+export const LEDGER_CANISTER_ID = "apia6-jaaaa-aaaar-qabma-cai"
 
 export class EtheriumService {
   private provider: InfuraProvider
@@ -84,7 +84,7 @@ export class EtheriumService {
 
   //deposit eth to ckETH
   public async depositEth(identity: SignIdentity, amount: bigint) {
-    const ckEthContract = new Contract(minterAddress, CKETH_ABI, this.provider)
+    const ckEthContract = new Contract(MINTER_ADDRESS, CKETH_ABI, this.provider)
 
     let address = await this.getAddress(identity)
 
@@ -135,8 +135,8 @@ export class EtheriumService {
     }
 
     await this.approveTransfer(
-      ledgerCanisterId,
-      minterCanisterId,
+      LEDGER_CANISTER_ID,
+      MINTER_CANISTER_ID,
       amount,
       identity,
     )
@@ -148,7 +148,7 @@ export class EtheriumService {
 
     let ckEthMinter = await CkETHMinterCanister.create({
       agent,
-      canisterId: Principal.fromText(minterCanisterId),
+      canisterId: Principal.fromText(MINTER_CANISTER_ID),
     })
 
     let result = await ckEthMinter.withdrawEth({ address, amount })

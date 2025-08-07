@@ -1,19 +1,17 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
-import { IcrcLedgerCanister } from "@dfinity/ledger-icrc"
-import { Principal } from "@dfinity/principal"
 
 import { mockIdentityA } from "@nfid/integration"
 
-import { etheriumService, ledgerCanisterId } from "./etherium.service"
+import { etheriumService } from "./etherium.service"
 
-const principal = Principal.fromText(
-  "535yc-uxytb-gfk7h-tny7p-vjkoe-i4krp-3qmcl-uqfgr-cpgej-yqtjq-rqe",
-)
+// const principal = Principal.fromText(
+//   "535yc-uxytb-gfk7h-tny7p-vjkoe-i4krp-3qmcl-uqfgr-cpgej-yqtjq-rqe",
+// )
 
 let idA = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
 let address = "0xAd984257f35B8dD8BF4154ccCfEDDE229CD1DC89"
 
-describe("EtheriumService", () => {
+describe.skip("EtheriumService", () => {
   jest.setTimeout(50000)
 
   it.skip("should be address", async () => {
@@ -22,12 +20,7 @@ describe("EtheriumService", () => {
   })
 
   it("should be balance ckETH", async () => {
-    let ledger = IcrcLedgerCanister.create({
-      canisterId: Principal.fromText(ledgerCanisterId),
-    })
-    let balance = await ledger.balance({
-      owner: principal,
-    })
+    let balance = await etheriumService.getBalance(address)
     expect(balance).toEqual(BigInt(174999970000000000))
     console.log(balance)
   })

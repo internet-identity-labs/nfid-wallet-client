@@ -55,6 +55,8 @@ export const Activity: FC<ActivityProps> = ({
     [tokens],
   )
 
+  console.log("filterzzz", filter, filter.length)
+
   return (
     <>
       <div className={clsx("flex justify-end", isValidating && "hidden")}>
@@ -67,7 +69,15 @@ export const Activity: FC<ActivityProps> = ({
               id={"filter-ft"}
               className="flex items-center justify-end p-[10px] rounded-md md:bg-white dark:md:bg-[#141518] px-5 sm:px-[30px]"
             >
-              <IconCmpFilters className="w-[21px] h-[21px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white" />
+              <div className="relative">
+                <IconCmpFilters className="w-[21px] h-[21px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white" />
+                <div
+                  className={clsx(
+                    "absolute w-2.5 h-2.5 bg-teal-600 dark:bg-teal-500 right-0 bottom-0 rounded-full border-2 border-white",
+                    filter.length > 0 ? "block" : "hidden",
+                  )}
+                ></div>
+              </div>
             </div>
           }
           onReset={resetHandler}

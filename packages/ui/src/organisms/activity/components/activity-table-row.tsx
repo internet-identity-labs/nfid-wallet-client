@@ -172,19 +172,19 @@ export const getActionMarkup = (
   switch (action) {
     case IActivityAction.SENT:
       return {
-        bg: "bg-red-50 dark:bg-red-900",
+        bg: "bg-red-50 dark:bg-red-900/60",
         icon: <IconCmpArrow className="rotate-[135deg] text-red-600" />,
       }
 
     case IActivityAction.RECEIVED:
       return {
-        bg: "bg-emerald-50 dark:bg-emerald-900",
+        bg: "bg-emerald-50 dark:bg-emerald-900/60",
         icon: <IconCmpArrow className="rotate-[-45deg] text-emerald-600" />,
       }
 
     case IActivityAction.SWAP:
       return {
-        bg: "bg-violet-50 dark:bg-indigo-900",
+        bg: "bg-violet-50 dark:bg-indigo-900/60",
         icon: (
           <>
             <IconCmpSwapActivity className="text-violet-500 dark:text-indigo-500" />
@@ -197,19 +197,19 @@ export const getActionMarkup = (
 
     case IActivityAction.MINT:
       return {
-        bg: "bg-emerald-50 dark:bg-emerald-900",
+        bg: "bg-emerald-50 dark:bg-emerald-900/60",
         icon: <IconCmpMintActivity className="text-emerald-600" />,
       }
 
     case IActivityAction.BURN:
       return {
-        bg: "bg-red-50 dark:bg-red-900",
+        bg: "bg-red-50 dark:bg-red-900/60",
         icon: <IconCmpBurnActivity className="text-emerald-600" />,
       }
 
     case IActivityAction.APPROVE:
       return {
-        bg: "bg-emerald-50 dark:bg-emerald-900",
+        bg: "bg-emerald-50 dark:bg-emerald-900/60",
         icon: <IconCmpApproveActivity className="text-emerald-600" />,
       }
 
@@ -315,7 +315,7 @@ export const ActivityTableRow = ({
         <td className="flex items-center sm:pl-[30px] w-[156px] sm:w-[30%]">
           <div
             className={clsx(
-              "w-10 min-w-10 h-10 rounded-[9px] flex items-center justify-center relative",
+              "w-10 min-w-10 h-10 rounded-[12px] flex items-center justify-center relative",
               getActionMarkup(action, transaction).bg,
             )}
           >

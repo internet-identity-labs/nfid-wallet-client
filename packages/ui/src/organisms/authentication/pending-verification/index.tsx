@@ -32,7 +32,7 @@ export const AuthEmailPending: React.FC<AuthEmailFlowProps> = ({
       <Button
         onClick={onResend}
         type="ghost"
-        className="inline-block mx-auto mt-2 dark:text-teal-500"
+        className="inline-block mx-auto mt-2"
       >
         Resend email
       </Button>

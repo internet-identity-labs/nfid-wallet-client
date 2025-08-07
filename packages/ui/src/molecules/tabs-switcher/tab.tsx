@@ -26,10 +26,10 @@ const Tab: React.FC<ITab> = ({
   return (
     <div
       className={clsx(
-        "py-[10px] border-b-2 mr-0.5 cursor-pointer relative transition-all",
+        "py-[10px] border-b-2 mr-0.5 cursor-pointer relative transition-all text-black dark:text-white",
         "flex-shrink-0 sm:min-w-[150px] sm:!w-auto border-black dark:border-white",
         !isActive &&
-          "hover:border-gray-500 hover:text-gray-500 dark:hover:border-gray-500",
+          "hover:border-gray-500 hover:text-gray-500 dark:hover:border-gray-500 dark:hover:text-gray-500",
       )}
       onClick={onClick}
       style={{ width: getWidth() }}
@@ -39,7 +39,7 @@ const Tab: React.FC<ITab> = ({
           "flex gap-[8px] items-center text-[20px] leading-[20px] transition-all",
           isActive
             ? "font-bold text-teal-600 dark:text-teal-500"
-            : "font-semibold dark:text-white dark:hover:text-gray-500",
+            : "font-semibold",
         )}
         id={`${id}`}
       >

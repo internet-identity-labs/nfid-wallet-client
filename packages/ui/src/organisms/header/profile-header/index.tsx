@@ -11,6 +11,7 @@ import {
 } from "@nfid-frontend/ui"
 
 import { NFIDTheme } from "frontend/App"
+import { useDarkTheme } from "frontend/hooks"
 
 import AuthenticatedPopup from "../navigation-popup"
 
@@ -56,6 +57,7 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
 }) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false)
   const popupRef = useClickOutside(() => setIsMenuVisible(false))
+  const isDarkTheme = useDarkTheme()
 
   return (
     <>
@@ -67,11 +69,7 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
         )}
       >
         <Loader isLoading={isLoading} />
-        {walletTheme !== NFIDTheme.LIGHT ? (
-          <NFIDLogo />
-        ) : (
-          <NFIDLogoMain assetsLink={assetsLink} />
-        )}
+        {isDarkTheme ? <NFIDLogo /> : <NFIDLogoMain assetsLink={assetsLink} />}
 
         <div className={clsx("relative")} ref={popupRef} id="profile">
           <BurgerMenu

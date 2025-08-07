@@ -201,7 +201,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
               {isSignIn && (
                 <Button
                   id="other-sign-button"
-                  className="h-12 !p-0 mt-[10px] dark:text-teal-500"
+                  className="h-12 !p-0 mt-[10px]"
                   type="ghost"
                   block
                   onClick={onSelectOtherAuth}

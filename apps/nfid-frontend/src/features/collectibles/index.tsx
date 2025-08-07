@@ -162,7 +162,7 @@ const NFTsPage = () => {
         <Button
           disabled={isLoading}
           className={clsx(
-            "block mx-auto dark:text-teal-500",
+            "block mx-auto",
             (totalPages === currentPage || !nfts.length || isLoading) &&
               "hidden",
           )}

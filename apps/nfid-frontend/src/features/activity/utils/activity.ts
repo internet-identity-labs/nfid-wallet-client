@@ -3,6 +3,7 @@ import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 import { exchangeRateService } from "@nfid/integration"
 
 import { getBtcActivitiesRows } from "frontend/integration/bitcoin/services/btc-transaction-service"
+import { getEthActivitiesRows } from "frontend/integration/etherium/eth-transaction.service"
 
 import { PAGINATION_ITEMS } from "../constants"
 import {
@@ -21,16 +22,19 @@ export const getAllActivity = async ({
 }: GetAllActivityParams): Promise<GetAllActivityResult> => {
   const { filteredContracts, offset = 0, limit = PAGINATION_ITEMS } = params
 
-  const [icrc1Activities, swapActivities, btcActivities] = await Promise.all([
+  const [icrc1Activities, swapActivities, btcActivities, ethActivities] = await Promise.all([
     getIcrc1ActivitiesRows(filteredContracts, limit),
     getSwapActivitiesRows(filteredContracts),
     getBtcActivitiesRows(btcAddress),
+    //TODO change to users address
+    getEthActivitiesRows("0xAd984257f35B8dD8BF4154ccCfEDDE229CD1DC89"),
   ])
 
   const activitiesArray = [
     ...icrc1Activities,
     ...swapActivities,
     ...btcActivities,
+    ...ethActivities,
   ]
 
   const groupedRowsByDate = groupActivityRowsByDate(

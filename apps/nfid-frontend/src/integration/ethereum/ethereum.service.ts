@@ -38,7 +38,7 @@ export const MINTER_ADDRESS = "0x2D39863d30716aaf2B7fFFd85Dd03Dda2BFC2E38"
 export const MINTER_CANISTER_ID = "jzenf-aiaaa-aaaar-qaa7q-cai"
 export const LEDGER_CANISTER_ID = "apia6-jaaaa-aaaar-qabma-cai"
 
-export class EtheriumService {
+export class EthereumService {
   private provider: InfuraProvider
 
   constructor() {
@@ -244,4 +244,4 @@ export class EtheriumService {
   }
 }
 
-export const etheriumService = new EtheriumService()
+export const ethereumService = new EthereumService()

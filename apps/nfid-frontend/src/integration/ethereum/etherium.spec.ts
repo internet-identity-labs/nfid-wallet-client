@@ -2,7 +2,7 @@ import { Ed25519KeyIdentity } from "@dfinity/identity"
 
 import { mockIdentityA } from "@nfid/integration"
 
-import { etheriumService } from "./etherium.service"
+import { ethereumService } from "./ethereum.service"
 import { getEthActivitiesRows } from "./eth-transaction.service"
 
 // const principal = Principal.fromText(
@@ -16,24 +16,24 @@ describe("EtheriumService", () => {
   jest.setTimeout(50000)
 
   it.skip("should be address", async () => {
-    let response = await etheriumService.getAddress(idA)
+    let response = await ethereumService.getAddress(idA)
     expect(response).toBe(address)
   })
 
   it.skip("should be balance ckETH", async () => {
-    let balance = await etheriumService.getBalance(address)
+    let balance = await ethereumService.getBalance(address)
     expect(balance).toEqual(BigInt(174999970000000000))
     console.log(balance)
   })
 
   it.skip("should be ETH balance", async () => {
     //59936866100220000n
-    let ethBalance = await etheriumService.getBalance(address)
+    let ethBalance = await ethereumService.getBalance(address)
     expect(ethBalance).toBe(BigInt(59936722671726420))
   })
 
   it.skip("should send ckETH to eth", async () => {
-    let tr = await etheriumService.convertCkETHToEth(
+    let tr = await ethereumService.convertCkETHToEth(
       address,
       BigInt(30000000000000000),
       idA,
@@ -42,7 +42,7 @@ describe("EtheriumService", () => {
   })
 
   it.skip("should send eth to ckETH", async () => {
-    let tr = await etheriumService.depositEth(idA, BigInt(9000070045000000))
+    let tr = await ethereumService.depositEth(idA, BigInt(9000070045000000))
     console.log(tr)
   })
 })

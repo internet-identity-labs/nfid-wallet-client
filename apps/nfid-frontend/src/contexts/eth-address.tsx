@@ -1,7 +1,7 @@
 import { createContext, useContext, useCallback, useEffect, useState } from "react"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { etheriumService } from "frontend/integration/etherium/etherium.service"
+import { ethereumService } from "frontend/integration/ethereum/ethereum.service"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
 type EthAddressContextType = {
@@ -25,7 +25,7 @@ export const EthAddressProvider = ({
       setIsEthAddressLoading(true)
       try {
         let identity = await getWalletDelegation()
-        const address = await etheriumService.getAddress(identity)
+        const address = await ethereumService.getAddress(identity)
         setEthAddress(address)
       } catch (error) {
         console.error("Error fetching ETH address:", error)

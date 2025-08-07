@@ -3,7 +3,7 @@ import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 import { exchangeRateService } from "@nfid/integration"
 
 import { getBtcActivitiesRows } from "frontend/integration/bitcoin/services/btc-transaction-service"
-import { getEthActivitiesRows } from "frontend/integration/etherium/eth-transaction.service"
+import { getEthActivitiesRows } from "frontend/integration/ethereum/eth-transaction.service"
 
 import { PAGINATION_ITEMS } from "../constants"
 import {

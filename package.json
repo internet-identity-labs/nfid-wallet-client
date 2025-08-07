@@ -102,7 +102,9 @@
     "vm-browserify": "^1.1.2",
     "web3modal": "^1.9.12",
     "wouter": "3.3.5",
-    "xstate": "4.38.3"
+    "xstate": "4.38.3",
+    "ethers": "^6.15.0",
+    "@dfinity/cketh": "^3.4.11"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",

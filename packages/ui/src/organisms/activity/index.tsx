@@ -55,8 +55,6 @@ export const Activity: FC<ActivityProps> = ({
     [tokens],
   )
 
-  console.log("filterzzz", filter, filter.length)
-
   return (
     <>
       <div className={clsx("flex justify-end", isValidating && "hidden")}>

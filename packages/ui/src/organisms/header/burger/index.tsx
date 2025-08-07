@@ -16,7 +16,6 @@ export const BurgerMenu: React.FC<BurgerMenuProps> = ({
   ...props
 }) => {
   const isDarkTheme = useDarkTheme()
-  console.log("isDarkTheme", isDarkTheme)
 
   return (
     <div className="cursor-pointer w-[24px] h-[24px] relative" {...props}>

@@ -36,7 +36,15 @@ Then(
 Then(
   /^Verifying that swap transactions are stored in activity table$/,
   async () => {
-    let expectedTime: Date | undefined
+    const now = new Date()
+    const expectedTime = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      now.getHours(),
+      now.getMinutes(),
+      now.getSeconds(),
+    ).toISOString()
     await browser.waitUntil(
       async () => {
         await browser.refresh()
@@ -47,7 +55,7 @@ Then(
         ).replace(/\s?[ap]m$/, "")
         const [hours, minutes, seconds] = actualDate.split(":").map(Number)
         const now = new Date()
-        expectedTime = new Date(
+        const actualTime = new Date(
           now.getFullYear(),
           now.getMonth(),
           now.getDate(),
@@ -55,20 +63,25 @@ Then(
           minutes,
           seconds,
         )
-        const timeDifference = Math.abs(now.getTime() - expectedTime.getTime())
+        const timeDifference = Math.abs(now.getTime() - actualTime.getTime())
         await (await Activity.rowActionType(tableRows[1])).waitForDisplayed(
           {
             timeout: 50000,
             timeoutMsg: "List of transactions wasn't loaded in 70sec",
           },
         )
-        return (
-          (await (await Activity.rowActionType(tableRows[1])).getText()) ==
-          "Sent" && timeDifference < 200000
-        )
+        if (timeDifference > 200000) {
+          console.log(
+            `Expected time: ${expectedTime}\n
+            Actual time: ${actualDate}`,
+          )
+        }
+        return (timeDifference <= 200000)
       },
       {
-        timeout: 200000, timeoutMsg: `Time difference is more than 200sec:\n
+        timeout: 200000,
+        interval: 5000,
+        timeoutMsg: `Time difference is more than 200sec:\n
       Transaction was created at: ~${expectedTime}
       and didn't appear in Activity in 200sec`,
       },

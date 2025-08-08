@@ -2,6 +2,11 @@ import { Page } from "./page.js"
 
 export class Activity extends Page {
   async allActivityTable() {
+    const firstRow = await $("#activity-table tr")
+    await firstRow.waitForDisplayed({
+      timeout: 50000,
+      timeoutMsg: "Transactions wasn't loaded in 50 sec on Activity page",
+    })
     return $$("#activity-table tr")
   }
 
@@ -18,7 +23,7 @@ export class Activity extends Page {
   }
 
   async filterName(filterName: string): Promise<WebdriverIO.Element> {
-    return $(`#option_${filterName.replace(/\s+/g, '')}`)
+    return $(`#option_${filterName.replace(/\s+/g, "")}`)
   }
 
   async rowDate(row: WebdriverIO.Element) {

@@ -41,6 +41,7 @@ Then(
       async () => {
         await browser.refresh()
         const tableRows = await Activity.allActivityTable()
+        await browser.pause(500)
         const actualDate = (
           await (await Activity.rowDate(tableRows[1])).getText()
         ).replace(/\s?[ap]m$/, "")

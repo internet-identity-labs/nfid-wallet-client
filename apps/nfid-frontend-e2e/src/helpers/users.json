@@ -285,6 +285,10 @@
       "signCount": 1
     },
     "authstate": {
+      "bitcoin": {
+        "key": "bitcoin-address-tqrza-w5v36-6slmc-wmo2l-gptrj-qvl4j-oi5la-lcdu7-nv37n-fv3jg-pqe",
+        "value": "bc1qt956y2wpqu4yydkmhc76pfz6gupwqse84zgdra"
+      },
       "delegation": {
         "delegations": [
           {

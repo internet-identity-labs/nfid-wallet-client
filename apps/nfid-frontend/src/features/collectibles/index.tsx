@@ -125,7 +125,7 @@ const NFTsPage = () => {
               <p className="mb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500">
                 NFTs owned
               </p>
-              <p className="mb-0 text-[26px] font-bold dark:text-white">
+              <p id={"items-amount"} className="mb-0 text-[26px] font-bold dark:text-white">
                 {data === undefined ? (
                   <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
                 ) : (

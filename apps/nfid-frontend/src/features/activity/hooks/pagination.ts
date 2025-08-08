@@ -19,7 +19,7 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
   const { btcAddress } = useBtcAddress()
   const { ethAddress } = useEthAddress()
 
-  const { data, isValidating, isLoading, mutate } = useSWR(
+  const { data, isValidating, isLoading } = useSWR(
     ["activity", filter, offset],
     () =>
       getAllActivity({

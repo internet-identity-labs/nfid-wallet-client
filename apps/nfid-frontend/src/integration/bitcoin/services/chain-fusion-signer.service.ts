@@ -6,6 +6,8 @@ import { actor, agentBaseConfig } from "@nfid/integration"
 import { idlFactory as chainFusionSignerIDL } from "../idl/chain-fusion-signer"
 import {
   _SERVICE as ChainFusionSigner,
+  EthAddressRequest,
+  EthSignTransactionRequest,
   GetAddressRequest,
   GetBalanceRequest,
   PaymentType,
@@ -41,6 +43,41 @@ export class ChainFusionSignerService {
     }
 
     return response.Ok.address
+  }
+
+  public async getEthAddress(identity: SignIdentity): Promise<Address> {
+    const chainFusionSignerActor = this.getChainFusionSignerActor(identity)
+
+    const request: EthAddressRequest = { principal: [] }
+
+    const paymentType: PaymentType = patronService.getPaymentType()
+
+    const response = await chainFusionSignerActor.eth_address(
+      request,
+      [paymentType],
+    )
+
+    if ("Err" in response) {
+      console.error(response)
+      throw Error("Unable to retrieve Ethereum address.")
+    }
+
+    return response.Ok.address
+  }
+
+  public async ethSignTransaction(identity: SignIdentity, transaction: EthSignTransactionRequest): Promise<string> {
+    const chainFusionSignerActor = this.getChainFusionSignerActor(identity)
+
+    
+
+    const response = await chainFusionSignerActor.eth_sign_transaction(transaction, [patronService.getPaymentType()])
+
+    if ("Err" in response) {
+      console.error(response)
+      throw Error("Unable to sign transaction.")
+    }
+
+    return response.Ok.signature
   }
 
   public async getBalance(

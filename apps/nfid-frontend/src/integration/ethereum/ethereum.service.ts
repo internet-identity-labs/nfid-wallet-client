@@ -161,16 +161,14 @@ export class EthereumService {
     identity: SignIdentity,
     to: Address,
     value: bigint,
+    feeData: {
+      maxPriorityFeePerGas: bigint
+      maxFeePerGas: bigint
+      gasPrice: bigint
+    }
   ): Promise<TransactionResponse> {
     let address = await this.getAddress(identity)
     let nonce = await this.getTransactionCount(address)
-
-    const feeData = await this.provider.getFeeData()
-
-    const max_priority_fee_per_gas =
-      feeData.maxPriorityFeePerGas || BigInt(2000000000)
-    const max_fee_per_gas =
-      feeData.maxFeePerGas || max_priority_fee_per_gas + BigInt(5000000000)
 
     let request: EthSignTransactionRequest = {
       chain_id: chainId,
@@ -178,9 +176,9 @@ export class EthereumService {
       value: value,
       data: [],
       nonce: BigInt(nonce + 1),
-      gas: feeData.gasPrice || CKETH_FEE,
-      max_priority_fee_per_gas: max_priority_fee_per_gas,
-      max_fee_per_gas: max_fee_per_gas,
+      gas: feeData.gasPrice,
+      max_priority_fee_per_gas: feeData.maxPriorityFeePerGas,
+      max_fee_per_gas: feeData.maxFeePerGas,
     }
 
     console.log(request)

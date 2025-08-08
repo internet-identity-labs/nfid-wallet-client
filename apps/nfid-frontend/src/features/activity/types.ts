@@ -26,6 +26,7 @@ export interface GetAllActivityParams {
   offset?: number
   limit?: number
   btcAddress: string
+  ethAddress: string
 }
 
 export interface GetAllActivityResult {

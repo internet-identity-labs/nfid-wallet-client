@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 
 import { useSWR } from "@nfid/swr"
 
+import { useEthAddress } from "frontend/contexts/eth-address"
 import { useBtcAddress } from "frontend/hooks"
 
 import { PAGINATION_ITEMS } from "../constants"
@@ -16,6 +17,8 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
   const [isButtonLoading, setIsButtonLoading] = useState(false)
   const [hasMoreData, setHasMoreData] = useState(true)
   const { btcAddress } = useBtcAddress()
+  const { ethAddress } = useEthAddress()
+
   const { data, isValidating, isLoading, mutate } = useSWR(
     ["activity", filter, offset],
     () =>
@@ -24,6 +27,7 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
         offset,
         limit: PAGINATION_ITEMS,
         btcAddress,
+        ethAddress,
       }),
     {
       revalidateOnMount: true,
@@ -66,31 +70,28 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
   }, [data])
 
   const loadMore = async () => {
+    if (isButtonLoading || isValidating) return
+
     setIsButtonLoading(true)
-    const newOffset = offset + PAGINATION_ITEMS
-    setOffset(newOffset)
+    setOffset((prev) => prev + PAGINATION_ITEMS)
     setIsButtonLoading(false)
   }
 
   const resetHandler = () => {
-    setFilter([])
     setActivities([])
     setOffset(0)
     setHasMoreData(true)
-    mutate()
   }
-
-  const isFirstLoading = !data && !isLoading && !isValidating
 
   return {
     activities,
     filter,
     setFilter,
-    isValidating: isLoading || isValidating,
+    isValidating,
     hasMoreData,
     loadMore,
     isButtonLoading,
     resetHandler,
-    isFirstLoading,
+    isFirstLoading: isLoading,
   }
 }

@@ -49,7 +49,7 @@ export const DeleteRecoveryPhrase: React.FC<IDeleteRecoveryPhraseModal> = ({
         <textarea
           name="recoveryPhrase"
           className={clsx(
-            "dark:bg-zinc-900 border border-black dark:border-zinc-500 rounded-[12px]",
+            "dark:bg-darkGray border border-black dark:border-white rounded-[12px]",
             "focus:outline-none resize-none focus:ring-0",
             "w-full -mb-2 leading-[26px] h-[218px] mb-5",
           )}

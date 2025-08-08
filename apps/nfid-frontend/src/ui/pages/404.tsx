@@ -24,10 +24,12 @@ export const NotFound: React.FC<NotFoundProps> = ({ children, className }) => {
       <main className={clsx("flex flex-1")}>
         <div className="container px-6 py-0 mx-auto sm:py-4">
           <Card className="flex flex-col items-center justify-center h-full text-center">
-            <H2 className="mb-4 capitalize">Page not found</H2>
+            <H2 className="mb-4 capitalize dark:text-white">Page not found</H2>
 
             <div>
-              <P>The page you are looking for does not exist.</P>
+              <P className="dark:text-white">
+                The page you are looking for does not exist.
+              </P>
 
               <Button
                 type="stroke"

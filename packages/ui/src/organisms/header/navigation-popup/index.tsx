@@ -7,15 +7,11 @@ import { useNavigate, useLocation } from "react-router-dom"
 import { Skeleton } from "@nfid-frontend/ui"
 
 import { NFIDTheme } from "frontend/App"
+import { useDarkTheme } from "frontend/hooks"
 
-import darkDarkIcon from "../assets/dark-dark.svg"
-import darkIcon from "../assets/dark.svg"
-import lightDarkIcon from "../assets/light-dark.svg"
-import lightIcon from "../assets/light.svg"
-import systemDarkIcon from "../assets/system-dark.svg"
-import systemIcon from "../assets/system.svg"
 import { INavigationPopupLinks } from "../profile-header"
 import { renderLink, shouldRenderLink } from "./renderLinks"
+import { ThemeSwitcher } from "./theme-switcher"
 
 export interface IAuthenticatedPopup extends HTMLAttributes<HTMLDivElement> {
   onSignOut: () => void
@@ -48,6 +44,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
 }) => {
   const navigate = useNavigate()
   const location = useLocation()
+  const isDarkTheme = useDarkTheme()
 
   return (
     <>
@@ -63,56 +60,10 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25, ease: "easeInOut" }}
         >
-          <div className="flex justify-center mb-2.5 font-semibold text-sm rounded-[12px] p-0.5 bg-gray-100 dark:bg-zinc-900 h-10 dark:text-white">
-            <button
-              className={clsx(
-                "flex-1 flex items-center justify-center gap-[6px] rounded-[10px]",
-                walletTheme === NFIDTheme.LIGHT
-                  ? "bg-white dark:bg-darkGray"
-                  : "bg-transparent",
-              )}
-              onClick={() => setWalletTheme(NFIDTheme.LIGHT)}
-            >
-              {walletTheme !== NFIDTheme.LIGHT ? (
-                <img src={lightDarkIcon} alt="Light theme" />
-              ) : (
-                <img src={lightIcon} alt="Light theme" />
-              )}
-              Light
-            </button>
-            <button
-              className={clsx(
-                "flex-1 flex items-center justify-center gap-[6px] rounded-[10px]",
-                walletTheme === NFIDTheme.DARK
-                  ? "bg-white dark:bg-darkGray"
-                  : "bg-transparent",
-              )}
-              onClick={() => setWalletTheme(NFIDTheme.DARK)}
-            >
-              {walletTheme !== NFIDTheme.LIGHT ? (
-                <img src={darkDarkIcon} alt="Dark theme" />
-              ) : (
-                <img src={darkIcon} alt="Dark theme" />
-              )}
-              Dark
-            </button>
-            <button
-              className={clsx(
-                "flex-1 flex items-center justify-center gap-[6px] rounded-[10px]",
-                walletTheme === NFIDTheme.SYSTEM
-                  ? "bg-white dark:bg-darkGray"
-                  : "bg-transparent",
-              )}
-              onClick={() => setWalletTheme(NFIDTheme.SYSTEM)}
-            >
-              {walletTheme !== NFIDTheme.LIGHT ? (
-                <img src={systemDarkIcon} alt="System theme" />
-              ) : (
-                <img src={systemIcon} alt="System theme" />
-              )}
-              System
-            </button>
-          </div>
+          <ThemeSwitcher
+            walletTheme={walletTheme}
+            setWalletTheme={setWalletTheme}
+          />
           <div className="mb-[16px]">
             <div
               className={clsx(
@@ -170,9 +121,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
               onClick={onSignOut}
             >
               <NavDisconnectIcon
-                strokeColor={
-                  walletTheme !== NFIDTheme.LIGHT ? "white" : "black"
-                }
+                strokeColor={isDarkTheme ? "white" : "black"}
               />
               Disconnect
             </div>

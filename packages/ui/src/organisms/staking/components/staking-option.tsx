@@ -1,6 +1,10 @@
 import clsx from "clsx"
 import { A } from "packages/ui/src/atoms/custom-link"
-import { IconInfo, IconNftPlaceholder } from "packages/ui/src/atoms/icons"
+import {
+  IconInfo,
+  IconInfoDark,
+  IconNftPlaceholder,
+} from "packages/ui/src/atoms/icons"
 import { IconCaret } from "packages/ui/src/atoms/icons/caret"
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
@@ -62,7 +66,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
                 }
               >
                 <img
-                  src={IconInfo}
+                  src={isDarkTheme ? IconInfoDark : IconInfo}
                   alt="icon"
                   className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
                 />
@@ -104,7 +108,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
                 }
               >
                 <img
-                  src={IconInfo}
+                  src={isDarkTheme ? IconInfoDark : IconInfo}
                   alt="icon"
                   className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
                 />

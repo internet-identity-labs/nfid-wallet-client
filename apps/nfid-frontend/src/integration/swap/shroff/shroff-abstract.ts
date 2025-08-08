@@ -2,7 +2,6 @@ import { ActorSubclass, SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { DepositError, WithdrawError } from "src/integration/swap/errors/types"
-import { SWAP_FACTORY_CANISTER } from "src/integration/swap/icpswap/service/icpswap-service"
 import { Account, ApproveArgs } from "src/integration/swap/kong/idl/icrc1.d"
 import type { _SERVICE as ICRC1ServiceIDL } from "src/integration/swap/kong/idl/icrc1.d"
 import { Quote } from "src/integration/swap/quote"
@@ -11,12 +10,7 @@ import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
 import { userPrefService } from "src/integration/user-preferences/user-pref-service"
 
-import {
-  exchangeRateService,
-  hasOwnProperty,
-  ICRC1TypeOracle,
-  TransferArg,
-} from "@nfid/integration"
+import { hasOwnProperty, ICRC1TypeOracle, TransferArg } from "@nfid/integration"
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 
@@ -37,8 +31,6 @@ export abstract class ShroffAbstract implements Shroff {
 
   abstract getSwapName(): SwapName
 
-  abstract getTargets(): string[]
-
   setQuote(quote: Quote) {
     this.requestedQuote = quote
   }
@@ -49,14 +41,6 @@ export abstract class ShroffAbstract implements Shroff {
 
   getSwapTransaction(): SwapTransaction | undefined {
     return this.swapTransaction
-  }
-
-  static getStaticTargets(): string[] {
-    return [
-      exchangeRateService.getNodeCanister(),
-      SWAP_TRS_STORAGE,
-      SWAP_FACTORY_CANISTER,
-    ]
   }
 
   abstract getQuote(amount: string): Promise<Quote>

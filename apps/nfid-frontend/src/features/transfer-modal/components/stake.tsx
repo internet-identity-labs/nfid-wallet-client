@@ -1,4 +1,3 @@
-import { SignIdentity } from "@dfinity/agent"
 import toaster from "packages/ui/src/atoms/toast"
 import { StakeUi } from "packages/ui/src/organisms/send-receive/components/stake"
 import { useCallback, useMemo, useState, useEffect } from "react"
@@ -13,12 +12,12 @@ import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
+import { useIdentity } from "frontend/hooks/identity"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
 import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
 
 import { FormValues, SendStatus } from "../types"
 import {
-  getIdentity,
   getAccurateDateForStakeInSeconds,
   getTokensWithUpdatedBalance,
 } from "../utils"
@@ -45,7 +44,7 @@ export const StakeFT = ({
   const [stakingParams, setStakingParams] = useState<StakeParamsCalculator>()
   const [isStakingParamsLoading, setIsStakingParamsLoading] = useState(false)
   const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
-  const [identity, setIdentity] = useState<SignIdentity>()
+  const { identity } = useIdentity()
 
   const isMaxLockTimeSelected =
     lockValue === stakingParams?.getMaximumLockTimeInMonths()
@@ -91,23 +90,7 @@ export const StakeFT = ({
     const getParams = async () => {
       setStakingParams(undefined)
       setIsStakingParamsLoading(true)
-      if (!token) return
-      const rootCanisterId = token.getRootSnsCanister()
-      if (!rootCanisterId) {
-        console.error(
-          `Root canister ID for ${token.getTokenSymbol()} token not found`,
-        )
-        return
-      }
-
-      const canister_ids = await stakingService.getTargets(rootCanisterId)
-      if (!canister_ids) return
-
-      const identity = await getIdentity([
-        canister_ids,
-        token.getTokenAddress(),
-      ])
-      setIdentity(identity)
+      if (!token || !identity) return
 
       const params = await stakingService.getStakeCalculator(token, identity)
       setStakingParams(params)
@@ -115,7 +98,7 @@ export const StakeFT = ({
     }
 
     getParams()
-  }, [token])
+  }, [token, identity])
 
   useEffect(() => {
     if (!preselectedTokenAddress) {

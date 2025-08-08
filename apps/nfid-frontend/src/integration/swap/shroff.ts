@@ -8,7 +8,6 @@ import { FT } from "../ft/ft"
 export interface Shroff {
   getSwapName(): SwapName
   setQuote(quote: Quote): void
-  getTargets(): string[]
   getQuote(amount: string): Promise<Quote>
   swap(delegationIdentity: SignIdentity): Promise<SwapTransaction>
   getSwapTransaction(): SwapTransaction | undefined

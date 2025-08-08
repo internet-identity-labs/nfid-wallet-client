@@ -25,7 +25,7 @@ export const StakingDelegates: FC<StakingDelegatesProps> = ({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.25 }}
     >
-      <div className="border border-gray-200 dark:border-zinc-500 rounded-3xl px-[30px] py-[20px] relative">
+      <div className="border border-gray-200 dark:border-zinc-700 rounded-3xl px-[30px] py-[20px] relative">
         <div>
           {followees.map((followee, index) => (
             <div key={`${followee.id}_${index}`}>
@@ -43,7 +43,7 @@ export const StakingDelegates: FC<StakingDelegatesProps> = ({
                 </div>
               </div>
               {index < followees.length - 1 && (
-                <div className="w-full h-[1px] bg-gray-200 dark:bg-zinc-500" />
+                <div className="w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
               )}
             </div>
           ))}

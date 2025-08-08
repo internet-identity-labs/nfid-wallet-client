@@ -14,6 +14,7 @@ import {
   Button,
   IconCmpArrow,
   IconInfo,
+  IconInfoDark,
   Input,
   Tooltip,
   Card,
@@ -23,6 +24,7 @@ import {
 } from "@nfid-frontend/ui"
 import { ICRC1Error } from "@nfid/integration/token/icrc1/types"
 
+import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
 
@@ -66,6 +68,7 @@ export const ManageTokens: FC<ManageTokensProps> = ({
   manageBtnDisabled,
   className,
 }) => {
+  const isDarkTheme = useDarkTheme()
   const [modalStep, setModalStep] = useState<"manage" | "import" | null>(null)
   const [tokenInfo, setTokenInfo] = useState<ICRC1Metadata | null>(null)
   const [isImportLoading, setIsImportLoading] = useState(false)
@@ -201,7 +204,7 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                 }
               >
                 <img
-                  src={IconInfo}
+                  src={isDarkTheme ? IconInfoDark : IconInfo}
                   alt="icon"
                   className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
                 />

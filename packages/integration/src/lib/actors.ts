@@ -66,7 +66,7 @@ for (const [label, canister] of canisterConfig) {
     throw new Error(`Missing canister id for "${label}", please check envars.`)
 }
 
-export const agentBaseConfig = { host: "https://ic0.app" }
+export const agentBaseConfig = { host: "https://ic0.app", retryTimes: 5 }
 
 /**
  * Create an actor with shared identity from security device.

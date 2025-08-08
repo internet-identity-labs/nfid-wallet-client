@@ -44,7 +44,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   isResponsive,
   setIsResponsive,
   tokensAvailableToSwap,
-  color = "bg-gray-100 dark:bg-transparent",
+  color = "bg-gray-100 dark:bg-zinc-700",
 }) => {
   const { setValue, register } = useFormContext()
   const initedToken = useTokenInit(token)
@@ -74,16 +74,18 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
       <div
         id={"targetSection"}
         className={clsx(
-          "rounded-[12px] p-4 dark:border-zinc-500 dark:border",
+          "rounded-[12px] p-4 dark:border-zinc-500 dark:border-0",
           isResponsive ? "h-[168px]" : "h-[102px]",
           color,
         )}
       >
         <div className="flex flex-wrap justify-between">
           <InputAmount
+            skeletonClassName="dark:!bg-zinc-600"
             className={clsx(
               isResponsive &&
                 "leading-[26px] h-[30px] !max-w-full flex-[0_0_100%]",
+              "dark:text-zinc-400 dark:placeholder:text-zinc-400",
             )}
             id={"choose-to-token-amount"}
             decimals={decimals}
@@ -94,7 +96,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
           />
           <div
             className={clsx(
-              "p-[6px] pr-[12px] bg-gray-300/40 dark:bg-zinc-900 rounded-[24px] inline-block",
+              "p-[6px] pr-[12px] bg-gray-300/40 dark:bg-[#E5E7EB1A] rounded-[24px] inline-block",
               isResponsive && "w-full flex-[0_0_100%] order-1 mt-2",
             )}
           >
@@ -142,7 +144,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
           <div className="flex-[0_0_100%]"></div>
           <p
             className={clsx(
-              "text-xs mt-2 text-gray-500 dark:text-zinc-500 leading-5 text-left",
+              "text-xs mt-2 text-gray-500 dark:text-zinc-400 leading-5 text-left",
             )}
           >
             {!isLoading ? (
@@ -174,12 +176,12 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
                 </Tooltip>
               </>
             ) : (
-              <Skeleton className="w-20 h-1 !bg-gray-200 dark:!bg-[#3F3F4680] rounded-[4px]" />
+              <Skeleton className="w-20 h-1 !bg-gray-200 dark:!bg-zinc-600 rounded-[4px]" />
             )}
           </p>
           <div
             className={clsx(
-              "mt-2 text-xs leading-5 text-gray-500 dark:text-zinc-500",
+              "mt-2 text-xs leading-5 text-gray-500 dark:text-zinc-400",
               isResponsive ? "flex-[0_0_100%] order-2" : "text-right",
             )}
           >

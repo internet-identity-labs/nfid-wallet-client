@@ -14,6 +14,7 @@ import {
   IconCmpStake,
   IconCmpStakeGray,
   Skeleton,
+  IconInfoDark,
 } from "@nfid-frontend/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
@@ -136,7 +137,7 @@ export const StakeUi: FC<StakeUiProps> = ({
           }
         >
           <img
-            src={IconInfo}
+            src={isDarkTheme ? IconInfoDark : IconInfo}
             alt="icon"
             className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
           />
@@ -167,7 +168,7 @@ export const StakeUi: FC<StakeUiProps> = ({
           <Input
             id={"lock-time-period"}
             className="mb-[-11px]"
-            inputClassName="h-[60px] !border-black dark:!border-zinc-500 border-b-0 rounded-b-none !bg-white dark:!bg-zinc-900 !text-black dark:!text-white"
+            inputClassName="h-[60px] !border-black dark:!border-zinc-500 border-b-0 rounded-b-none !bg-white dark:!bg-[#FFFFFF0D] !text-black dark:!text-white text-sm"
             value={getFormattedPeriod(lockValue, true)}
             disabled
             {...register("lockTime")}
@@ -191,7 +192,7 @@ export const StakeUi: FC<StakeUiProps> = ({
           !Boolean(errors["amount"]?.message) ? "mb-[123px]" : "mb-[103px]",
         )}
       >
-        <div className="flex items-center justify-between h-[48px] dark:text-zinc-500">
+        <div className="flex items-center justify-between h-[48px] dark:text-zinc-400">
           <p>Transaction fee</p>
           <div className="text-right">
             {isParamsLoading ? (

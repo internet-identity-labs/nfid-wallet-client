@@ -70,12 +70,7 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
             )
           })}
         </div>
-        <Button
-          className="mt-4 dark:text-teal-500"
-          block
-          onClick={onAuthSelection}
-          type="ghost"
-        >
+        <Button className="mt-4" block onClick={onAuthSelection} type="ghost">
           Use a different wallet
         </Button>
       </div>

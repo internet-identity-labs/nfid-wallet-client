@@ -65,12 +65,6 @@ interface ITransferResponse {
   blockIndex?: Icrc1BlockIndex
 }
 
-export const getIdentity = async (
-  targetCanisters: string[],
-): Promise<DelegationIdentity> => {
-  return getWalletDelegationAdapter("nfid.one", "-1", targetCanisters)
-}
-
 export const getVaultsAccountsOptions = async (): Promise<
   IGroupedOptions[]
 > => {

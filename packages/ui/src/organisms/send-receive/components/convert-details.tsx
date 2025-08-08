@@ -46,7 +46,7 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
           )}
         >
           <div className="text-sm">
-            <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-500">
+            <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-700">
               <p>BTC network fee</p>
               <p className="leading-5 text-right font-inter">
                 {!fee ? (
@@ -61,7 +61,7 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
                 )}
               </p>
             </div>
-            <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-500">
+            <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-700">
               <p>ICP network fee</p>
               <p className="leading-5 text-right font-inter">
                 {!fee ? (

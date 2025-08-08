@@ -109,7 +109,9 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
                   )}
                 </div>
                 {!selectedNFT ? (
-                  <p className="leading-3 text-gray-400">Choose NFT</p>
+                  <p className="text-sm leading-3 text-gray-400 dark:text-zinc-500">
+                    Choose NFT
+                  </p>
                 ) : (
                   <div>
                     <p className="mb-1 text-sm">{selectedNFT.getTokenName()}</p>

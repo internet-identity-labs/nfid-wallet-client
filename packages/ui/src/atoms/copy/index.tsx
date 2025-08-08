@@ -38,7 +38,7 @@ export const Copy: React.FC<ICopy> = ({
           <div
             className={clsx(
               !copied && "hover:opacity-50 cursor-pointer transition-opacity",
-              "flex items-center stroke-gray-400 text-xs text-secondary font-semibold",
+              "flex items-center stroke-gray-400 dark:stroke-zinc-400 text-xs text-secondary dark:text-zinc-400 font-semibold",
               className,
             )}
             onClick={copyToClipboard}
@@ -73,8 +73,8 @@ export const Copy: React.FC<ICopy> = ({
         </ReactTooltip.Trigger>
         {!copied && (
           <ReactTooltip.Content side="top" align="center">
-            <ReactTooltip.Arrow className="fill-current text-gray-800" />
-            <div className="bg-gray-800 text-white p-2 rounded-md text-xs">
+            <ReactTooltip.Arrow className="text-gray-800 fill-current" />
+            <div className="p-2 text-xs text-white bg-gray-800 rounded-md">
               Copy
             </div>
           </ReactTooltip.Content>

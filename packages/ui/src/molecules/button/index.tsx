@@ -57,23 +57,24 @@ export const Button: React.FC<ButtonProps> = ({
           ),
         isSecondary &&
           clsx(
-            "text-white bg-black border-0",
-            "hover:bg-gray-700 hover:shadow-md hover:shadow-gray-700/40",
+            "text-white dark:text-black bg-black dark:bg-gray-200 border-0",
+            "hover:bg-white hover:shadow-md hover:shadow-gray-700/40",
+            "dark:active:bg-gray-300",
             "focus:border-secondaryButtonColor focus:bg-secondaryButtonColor",
             "disabled:shadow-none disabled:bg-gray-300",
           ),
         isStroke &&
           clsx(
-            "text-black dark:text-white bg-transparent border-secondaryButtonColor",
-            "hover:text-white hover:bg-gray-700 hover:border-gray-700 hover:shadow-md hover:shadow-gray-700/40",
-            "active:text-white active:bg-secondaryButtonColor",
+            "text-black dark:text-white bg-transparent border-secondaryButtonColor dark:border-white",
+            "hover:text-white hover:bg-gray-700 hover:border-gray-700 hover:shadow-md hover:shadow-gray-700/40 dark:hover:text-black dark:hover:bg-white",
+            "active:text-white active:bg-secondaryButtonColor dark:active:text-black dark:active:bg-gray-300 dark:active:border-gray-300 active:ring-offset-0",
             "disabled:shadow-none disabled:border-gray-300 disabled:border-secondaryButtonColor/50 disabled:text-gray-300 disabled:bg-white",
           ),
         isGhost &&
           clsx(
-            "text-primaryButtonColor border-transparent",
-            "hover:bg-gray-100",
-            "active:bg-gray-200",
+            "text-primaryButtonColor border-transparent dark:text-teal-500",
+            "hover:bg-gray-100 dark:hover:bg-zinc-800",
+            "active:bg-gray-200 dark:active:bg-zinc-900 active:ring-offset-0 active:ring-0",
             "disabled:bg-white disabled:border-transparent disabled:text-secondary",
           ),
         isRed &&
@@ -82,7 +83,7 @@ export const Button: React.FC<ButtonProps> = ({
             "hover:shadow-md hover:shadow-red-600/40 hover:border-red-500 hover:bg-red-500",
             "active:border-red-700 active:bg-red-700",
             "focus:border-red-600 focus:bg-red-600",
-            "disabled:shadow-none disabled:bg-gray-300 disabled:border-gray-300",
+            "disabled:shadow-none disabled:bg-gray-300 dark:disabled:bg-zinc-700 disabled:border-gray-300 dark:border-zinc-700 dark:text-zinc-500",
           ),
         block && clsx("w-full block"),
         className,

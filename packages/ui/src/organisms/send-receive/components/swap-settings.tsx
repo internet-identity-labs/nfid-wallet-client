@@ -122,7 +122,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
             {SLIPPAGE_VARIANTS.map((percent) => (
               <div
                 key={percent}
-                className="flex border-r border-white dark:border-darkGray basis-1/5 shrink-0 grow-0 hover:bg-gray-50 dark:hover:bg-zinc-800"
+                className="flex border-r border-white dark:border-darkGray basis-1/5 shrink-0 grow-0 hover:bg-gray-50 dark:hover:bg-black"
                 onClick={() => setSlippage(percent)}
               >
                 <span

@@ -146,7 +146,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           )}
           isLoading={isFeeLoading}
           value={targetAmount}
-          color="bg-gray-50 dark:bg-transparent"
+          color="bg-gray-50 dark:bg-zinc-700"
         />
         <div
           className={clsx(

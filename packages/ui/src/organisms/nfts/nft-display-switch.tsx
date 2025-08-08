@@ -22,7 +22,7 @@ export const NFTDisplaySwitch = ({ state, setState }: INFTDisplaySwitch) => {
         <IconCmpGrid
           className={clsx(
             "text-black dark:text-white",
-            state !== "grid" && "!text-secondary",
+            state !== "grid" && "!text-secondary dark:!text-zinc-500",
           )}
         />
       </div>
@@ -39,7 +39,7 @@ export const NFTDisplaySwitch = ({ state, setState }: INFTDisplaySwitch) => {
         <IconCmpTable
           className={clsx(
             "text-black dark:text-white",
-            state !== "table" && "!text-secondary",
+            state !== "table" && "!text-secondary dark:!text-zinc-500",
           )}
         />
       </div>

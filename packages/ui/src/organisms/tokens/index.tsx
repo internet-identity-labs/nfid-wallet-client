@@ -5,6 +5,8 @@ import { FT } from "src/integration/ft/ft"
 
 import { BTC_NATIVE_ID } from "@nfid/integration/token/constants"
 
+import { useDarkTheme } from "frontend/hooks"
+
 import SortAscendingIcon from "./assets/sort-ascending.svg"
 import SortDefaultIcon from "./assets/sort-default.svg"
 import SortDescendingIcon from "./assets/sort-descending.svg"
@@ -75,6 +77,7 @@ export const Tokens: FC<TokensProps> = ({
   const [sorting, setSorting] = useState<Sorting>(Sorting.DEFAULT)
   const [isHovered, setIsHovered] = useState(false)
   const [loadingToken, setLoadingToken] = useState<FT | null>(null)
+  const isDarkTheme = useDarkTheme()
 
   const handleSorting = () => {
     const nextSorting = {
@@ -87,7 +90,11 @@ export const Tokens: FC<TokensProps> = ({
   }
 
   const getSortingIcon = () => {
-    if (isHovered && sorting === Sorting.DEFAULT) return SortHoverIcon
+    if (sorting === Sorting.DEFAULT) {
+      if (isHovered || isDarkTheme) return SortHoverIcon
+      return SortDefaultIcon
+    }
+
     switch (sorting) {
       case Sorting.ASCENDING:
         return SortAscendingIcon

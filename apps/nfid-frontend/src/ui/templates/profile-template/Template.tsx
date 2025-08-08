@@ -324,7 +324,12 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         )}
       >
         <section className={clsx("relative", className)}>
-          <div className="flex justify-between items-center leading-[40px] mb-[30px]">
+          <div
+            className={clsx(
+              "flex justify-between items-center leading-[40px]",
+              showBackButton && "mb-[30px]",
+            )}
+          >
             <div className="sticky left-0 flex items-center space-x-2">
               {showBackButton && (
                 <ArrowButton

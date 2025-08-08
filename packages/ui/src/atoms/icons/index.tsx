@@ -30,6 +30,7 @@ import IconSvgGoogle from "./google.svg"
 import IconSvgGrid from "./grid.svg"
 import IconSvgHistoryWhiteIcon from "./history-white.svg"
 import IconSvgHistoryIcon from "./history.svg"
+import IconInfoDark from "./info-icon-dark.svg"
 import IconInfo from "./info-icon.svg"
 import IconSvgInfo from "./info.svg"
 import IconSvgKey from "./key.svg"
@@ -42,6 +43,7 @@ import IconDisconnect from "./nav-logout.svg"
 import SecurityIcon from "./nav-security.svg"
 import VaultsIcon from "./nav-vaults.svg"
 import WalletIcon from "./nav-wallet.svg"
+import IconNftPlaceholderDark from "./nft-placeholder-dark.svg"
 import IconNftPlaceholder from "./nft-placeholder.svg"
 import IconSvgNFTPreview from "./nft-preview.svg"
 import IconSvgPasskey from "./passkey.svg"
@@ -117,6 +119,7 @@ export {
   IconSvgArrowWhite,
   IconSvgShare,
   IconNftPlaceholder,
+  IconNftPlaceholderDark,
   SecurityIcon,
   VaultsIcon,
   WalletIcon,
@@ -125,6 +128,7 @@ export {
   LogoMain,
   LogoLanding,
   IconInfo,
+  IconInfoDark,
   IconDisconnect,
   IconSvgEyeShown,
   IconSvgEyeShownWhite,

@@ -10,6 +10,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   value: string
   fontSize?: number
   className?: string
+  skeletonClassName?: string
 }
 
 export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
@@ -17,6 +18,7 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
     {
       fontSize,
       className,
+      skeletonClassName,
       id,
       decimals,
       disabled,
@@ -55,10 +57,13 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
     return (
       <>
         {isLoading ? (
-          <Skeleton className="!w-[124px] rounded-[6px]" />
+          <Skeleton
+            className={clsx("!w-[124px] rounded-[6px]", skeletonClassName)}
+          />
         ) : (
           <NumericFormat
             placeholder="0.00"
+            autoComplete="off"
             decimalScale={decimals}
             allowedDecimalSeparators={[",", "."]}
             min={0.0}

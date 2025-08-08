@@ -48,12 +48,7 @@ export const AuthBackupWallet: FC<AuthBackupWalletProps> = ({
       <Button className="mt-auto" block onClick={onCreate} type="primary">
         Create recovery phrase
       </Button>
-      <Button
-        className="mt-2.5 dark:text-teal-500"
-        block
-        onClick={onSkip}
-        type="ghost"
-      >
+      <Button className="mt-2.5" block onClick={onSkip} type="ghost">
         Skip for now
       </Button>
     </div>

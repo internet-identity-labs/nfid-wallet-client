@@ -79,7 +79,7 @@ export const BtcBanner: FC<BtcBanner> = ({
         <div className="flex gap-[20px]">
           <Button
             type="stroke"
-            className="bg-white border-0 w-[120px]"
+            className="bg-white dark:!text-black border-0 w-[120px]"
             isSmall
             onClick={onConvertClick}
           >
@@ -87,7 +87,7 @@ export const BtcBanner: FC<BtcBanner> = ({
           </Button>
           <Button
             type="ghost"
-            className="text-white border-white w-[230px] hover:text-primaryButtonColor"
+            className="text-white dark:text-white border-white w-[230px] hover:text-primaryButtonColor"
             isSmall
             onClick={onBtcSwapClick}
           >

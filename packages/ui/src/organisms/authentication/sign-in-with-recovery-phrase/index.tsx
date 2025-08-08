@@ -42,7 +42,7 @@ export function AuthSignInWithRecoveryPhrase({
       </p>
       <TextArea
         id={"recovery-phrase-text-area"}
-        className="flex flex-grow flex-col mb-[20px] dark:bg-[#FFFFFF0D] dark:text-white dark:border-zinc-500 rounded-[12px]"
+        className="flex flex-grow flex-col mb-[20px] dark:text-white dark:border-zinc-500 rounded-[12px]"
         areaClassName="px-[10px] py-[10px] md:px-[14px] rounded-[12px] border flex flex-grow"
         errorText={error}
         onChange={(e) => {

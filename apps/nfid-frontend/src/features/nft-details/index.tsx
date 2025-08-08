@@ -7,6 +7,7 @@ import {
   MouseEvent,
   useEffect,
   useReducer,
+  FC,
 } from "react"
 import { useLocation, useParams } from "react-router-dom"
 
@@ -18,6 +19,7 @@ import {
 } from "@nfid-frontend/ui"
 import { useSWR } from "@nfid/swr"
 
+import { NFIDTheme } from "frontend/App"
 import { useDarkTheme } from "frontend/hooks"
 import { ProfileContext } from "frontend/provider"
 import { NotFound } from "frontend/ui/pages/404"
@@ -27,9 +29,17 @@ import { fetchNFT } from "../collectibles/utils/util"
 import { ModalType } from "../transfer-modal/types"
 import { nftInitialState, nftReducer } from "./utils"
 
+type NftDetailsProps = {
+  walletTheme: NFIDTheme
+  setWalletTheme: (theme: NFIDTheme) => void
+}
+
 const DEFAULT_LIMIT_PER_PAGE = 8
 
-const NFTDetailsPage = () => {
+const NFTDetailsPage: FC<NftDetailsProps> = ({
+  walletTheme,
+  setWalletTheme,
+}) => {
   const isDarkTheme = useDarkTheme()
   const globalServices = useContext(ProfileContext)
   const [state, dispatch] = useReducer(nftReducer, nftInitialState)
@@ -141,6 +151,8 @@ const NFTDetailsPage = () => {
     <ProfileTemplate
       titleClassNames="hidden sm:block"
       showBackButton
+      walletTheme={walletTheme}
+      setWalletTheme={setWalletTheme}
       headerMenu={
         !nft.getError() && (
           <div className="flex items-center space-x-4">

@@ -15,7 +15,7 @@ export const GalleryNftSkeleton = ({
         <div
           key={`skeleton${index}`}
           className={clsx(
-            "w-full rounded-[12px] min-h-[400px] bg-gray-50 dark:bg-zinc-800",
+            "w-full rounded-[12px] min-h-[400px] bg-gray-50 dark:bg-zinc-800 overflow-hidden",
           )}
         >
           <Skeleton

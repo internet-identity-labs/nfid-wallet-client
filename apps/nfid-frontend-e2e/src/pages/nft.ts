@@ -65,11 +65,11 @@ export class Nft extends Page {
     await browser.waitUntil(
       async () => {
         currentItemsAmount = await this.amountOfNFTs.getText()
-        return currentItemsAmount == `${expectedItemsAmount} items`
+        return currentItemsAmount == `${expectedItemsAmount}`
       },
       {
         timeout: 15000,
-        timeoutMsg: `Expected ${expectedItemsAmount} items, but was ${await this.amountOfNFTs.getText()}`,
+        timeoutMsg: `Expected ${expectedItemsAmount}, but was ${await this.amountOfNFTs.getText()}`,
       },
     )
   }

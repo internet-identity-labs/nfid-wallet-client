@@ -1,7 +1,7 @@
 import { SignIdentity } from "@dfinity/agent"
 import { NeuronId as NeuronICPId, NeuronInfo, Topic } from "@dfinity/nns"
 import { Principal } from "@dfinity/principal"
-import { SnsNeuronId, SnsRootCanister } from "@dfinity/sns"
+import { SnsNeuronId } from "@dfinity/sns"
 import { Neuron } from "@dfinity/sns/dist/candid/sns_governance"
 import { hexStringToUint8Array } from "@dfinity/utils"
 import { BigNumber } from "bignumber.js"
@@ -31,7 +31,6 @@ import {
 } from "@nfid/integration"
 import {
   ICP_CANISTER_ID,
-  ICP_GOV_CANISTER_ID,
   ICP_ROOT_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
@@ -213,24 +212,6 @@ export class StakingServiceImpl implements StakingService {
 
       return new StakeICPParamsCalculatorImpl(token, icpParams)
     }
-  }
-
-  async getTargets(rootCanisterId: Principal) {
-    let canisterId
-    if (rootCanisterId.toText() === ICP_ROOT_CANISTER_ID) {
-      canisterId = ICP_GOV_CANISTER_ID
-    } else {
-      try {
-        const root = SnsRootCanister.create({ canisterId: rootCanisterId })
-        const canister_ids = await root.listSnsCanisters({ certified: false })
-        canisterId = canister_ids.governance[0]?.toText()
-      } catch (e) {
-        console.error("getTargets error: ", e)
-        return
-      }
-    }
-
-    return canisterId
   }
 
   async stake(

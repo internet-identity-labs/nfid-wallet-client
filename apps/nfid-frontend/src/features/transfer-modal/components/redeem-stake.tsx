@@ -1,17 +1,14 @@
-import { SignIdentity } from "@dfinity/agent"
 import { resetIntegrationCache } from "packages/integration/src/cache"
 import { Redeem } from "packages/ui/src/organisms/send-receive/components/redeem"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 
-import { mutate, useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import { mutate, useSWR } from "@nfid/swr"
 
-import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { fetchStakedToken } from "frontend/features/staking/utils"
-import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
+import { useIdentity } from "frontend/hooks/identity"
 
 import { SendStatus } from "../types"
-import { getIdentity } from "../utils"
 
 export interface ITransferReceive {
   onClose: () => void
@@ -29,44 +26,15 @@ export const RedeemStake = ({
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [status, setStatus] = useState(SendStatus.PENDING)
   const [error, setError] = useState<string | undefined>()
-  const [identity, setIdentity] = useState<SignIdentity>()
-  const [identityLoading, setIdentityLoading] = useState(false)
+  const { identity, isLoading: identityLoading } = useIdentity()
   const location = useLocation()
   const tokenSymbol = location.pathname.split("/")[3]
-
-  const { data: tokens = [] } = useSWRWithTimestamp("tokens", fetchTokens, {
-    revalidateOnFocus: false,
-    revalidateOnMount: false,
-  })
-
-  const token = useMemo(() => {
-    return tokens.find((token) => token.getTokenSymbol() === tokenSymbol)
-  }, [tokenSymbol, tokens])
 
   const { data: stakedToken, isLoading } = useSWR(
     tokenSymbol && identity ? ["stakedToken", tokenSymbol] : null,
     () => fetchStakedToken(tokenSymbol!, identity!),
     { revalidateOnFocus: false },
   )
-
-  useEffect(() => {
-    const getSignIdentity = async () => {
-      if (!token) return
-      const rootCanisterId = token.getRootSnsCanister()
-      if (!rootCanisterId) return
-      const canister_ids = await stakingService.getTargets(rootCanisterId)
-      if (!canister_ids) return
-      setIdentityLoading(true)
-      const identity = await getIdentity([
-        canister_ids,
-        token.getTokenAddress(),
-      ])
-      setIdentity(identity)
-      setIdentityLoading(false)
-    }
-
-    getSignIdentity()
-  }, [token])
 
   const stakeToRedeem = useMemo(() => {
     return stakedToken

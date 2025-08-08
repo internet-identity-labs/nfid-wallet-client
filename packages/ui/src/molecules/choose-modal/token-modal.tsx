@@ -11,11 +11,17 @@ import {
 } from "react"
 import { IoIosSearch } from "react-icons/io"
 
-import { ChooseTokenSkeleton, IconInfo, Tooltip } from "@nfid-frontend/ui"
+import {
+  ChooseTokenSkeleton,
+  IconInfo,
+  IconInfoDark,
+  Tooltip,
+} from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
 import { IconCmpArrow } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
 
+import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 import { FTImpl } from "frontend/integration/ft/impl/ft-impl"
@@ -54,6 +60,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   isSwapTo,
   tokensAvailableToSwap,
 }: IChooseTokenModal<T>) => {
+  const isDarkTheme = useDarkTheme()
   const [searchInput, setSearchInput] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [tokensOptions, setTokensOptions] = useState<T[]>([])
@@ -174,7 +181,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
                   }
                 >
                   <img
-                    src={IconInfo}
+                    src={isDarkTheme ? IconInfoDark : IconInfo}
                     alt="icon"
                     className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
                   />

@@ -52,7 +52,8 @@ interface ErrorStage {
 
 const ICP_EXPLORER = "https://dashboard.internetcomputer.org"
 const BTC_EXPLORER = "https://mempool.space/tx"
-const ETH_EXPLORER = "https://etherscan.io/tx"
+// const ETH_EXPLORER = "https://etherscan.io/tx"
+const ETH_EXPLORER = "https://sepolia.etherscan.io/tx"
 
 const getChainFusionTokenName = (address: string) => {
   if (address === CKBTC_CANISTER_ID) {

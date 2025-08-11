@@ -24,6 +24,7 @@ import { authState } from "@nfid/integration"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
+  ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
@@ -44,7 +45,7 @@ import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-s
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { ModalType } from "frontend/features/transfer-modal/types"
 import { getAllVaults } from "frontend/features/vaults/services"
-import { useBtcAddress } from "frontend/hooks"
+import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
@@ -91,6 +92,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }, [])
   const [hasUncompletedSwap, setHasUncompletedSwap] = useState(false)
   const [btc, setBtc] = useState<FT>()
+  const [eth, setEth] = useState<FT>()
 
   const tabs = useMemo(() => {
     return [
@@ -143,6 +145,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const { profile } = useProfile()
   const { logout } = useAuthentication()
   const { isBtcAddressLoading } = useBtcAddress()
+  const { isEthAddressLoading } = useEthAddress()
 
   const hasVaults = useMemo(() => !!vaults?.length, [vaults])
 
@@ -156,7 +159,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   const { data: initedTokens = [], mutate: reinitTokens } = useSWR(
     activeTokens.length > 0 && isWallet ? "initedTokens" : null,
-    () => initTokens(activeTokens, !!isBtcAddressLoading),
+    () =>
+      initTokens(activeTokens, !!isBtcAddressLoading, !!isEthAddressLoading),
     { revalidateOnFocus: false },
   )
 
@@ -168,12 +172,15 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     },
   )
 
-  const balance = btc?.getTokenBalance()
+  const btcBalance = btc?.getTokenBalance()
   const isBtcInited = btc?.isInited()
+  const ethBalance = eth?.getTokenBalance()
+  const isEthInited = eth?.isInited()
 
   useEffect(() => {
     const btcToken = tokens.find((t) => t.getTokenAddress() === BTC_NATIVE_ID)
-    if (!btcToken) return
+    const ethToken = tokens.find((t) => t.getTokenAddress() === ETH_NATIVE_ID)
+    if (!btcToken || !ethToken) return
 
     if (!btcToken.isInited() && !isBtcAddressLoading) {
       btcToken
@@ -182,17 +189,29 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
           setBtc(btcToken)
         })
     }
-  }, [tokens, isBtcAddressLoading])
+
+    if (!ethToken.isInited() && !isEthAddressLoading) {
+      ethToken
+        .init(Principal.fromText(authState.getUserIdData().publicKey))
+        .then(() => {
+          setEth(ethToken)
+        })
+    }
+  }, [tokens, isBtcAddressLoading, isEthAddressLoading])
 
   const isReady = useMemo(() => {
     return (
       Array.isArray(nfts?.items) &&
       initedTokens.length > 0 &&
       !!isWallet &&
+      eth &&
       btc &&
       isBtcInited &&
-      balance !== undefined &&
-      !isBtcAddressLoading
+      isEthInited &&
+      btcBalance !== undefined &&
+      !isBtcAddressLoading &&
+      !isEthAddressLoading &&
+      ethBalance !== undefined
     )
   }, [
     nfts?.items,
@@ -200,8 +219,12 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     isWallet,
     btc,
     isBtcAddressLoading,
-    balance,
+    btcBalance,
     isBtcInited,
+    eth,
+    ethBalance,
+    isEthAddressLoading,
+    isEthInited,
   ])
 
   const {

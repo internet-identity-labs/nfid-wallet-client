@@ -3,12 +3,15 @@ import BigNumber from "bignumber.js"
 import { Cache } from "node-ts-cache"
 import { integrationCache } from "packages/integration/src/cache"
 import BtcIcon from "packages/ui/src/organisms/tokens/assets/bitcoin.svg"
+import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
 import { FT } from "src/integration/ft/ft"
 import { FTImpl } from "src/integration/ft/impl/ft-impl"
 
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
+  CKETH_CANISTER_ID,
+  ETH_NATIVE_ID,
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -30,8 +33,10 @@ const TOKENS_TO_REORDER: {
   ft?: FT | null
 }[] = [
   { canisterId: BTC_NATIVE_ID, index: 1 },
-  { canisterId: NFIDW_CANISTER_ID, index: 2 },
-  { canisterId: CKBTC_CANISTER_ID, index: 3 },
+  { canisterId: ETH_NATIVE_ID, index: 2 },
+  { canisterId: NFIDW_CANISTER_ID, index: 3 },
+  { canisterId: CKBTC_CANISTER_ID, index: 4 },
+  { canisterId: CKETH_CANISTER_ID, index: 5 },
 ]
 
 export class FtService {
@@ -89,6 +94,8 @@ export class FtService {
         const ft = canisters.map((canister) => new FTImpl(canister))
 
         ft.push(this.getNativeBtcToken())
+        ft.push(this.getNativeEthToken())
+
         return this.sortTokens(ft)
       })
   }
@@ -101,6 +108,21 @@ export class FtService {
       decimals: 8,
       category: Category.Native,
       logo: BtcIcon,
+      state: State.Active,
+      fee: BigInt(0),
+      index: undefined,
+      rootCanisterId: undefined,
+    })
+  }
+
+  private getNativeEthToken(): FTImpl {
+    return new FTImpl({
+      ledger: ETH_NATIVE_ID,
+      symbol: "ETH",
+      name: "Ethereum",
+      decimals: 8,
+      category: Category.Native,
+      logo: EthIcon,
       state: State.Active,
       fee: BigInt(0),
       index: undefined,

@@ -1,3 +1,4 @@
+import { SignIdentity } from "@dfinity/agent"
 import clsx from "clsx"
 import { FC, useMemo } from "react"
 
@@ -30,9 +31,14 @@ export interface ActivityProps {
     isFirstLoading: boolean
   }
   tokens: FT[]
+  identity?: SignIdentity
 }
 
-export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
+export const Activity: FC<ActivityProps> = ({
+  activityData,
+  tokens,
+  identity,
+}) => {
   const {
     activities,
     filter,
@@ -61,7 +67,15 @@ export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
               id={"filter-ft"}
               className="flex items-center justify-end p-[10px] rounded-md md:bg-white dark:md:bg-[#141518] px-5 sm:px-[30px]"
             >
-              <IconCmpFilters className="w-[21px] h-[21px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white" />
+              <div className="relative">
+                <IconCmpFilters className="w-[21px] h-[21px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white" />
+                <div
+                  className={clsx(
+                    "absolute w-2.5 h-2.5 bg-teal-600 dark:bg-teal-500 right-0 bottom-0 rounded-full border-2 border-white",
+                    filter.length > 0 ? "block" : "hidden",
+                  )}
+                ></div>
+              </div>
             </div>
           }
           onReset={resetHandler}
@@ -106,6 +120,7 @@ export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
                     rows={group.rows}
                     key={`group_${group.date}`}
                     token={ckBTC}
+                    identity={identity}
                   />
                 ))
               )}

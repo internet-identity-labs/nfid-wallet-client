@@ -1,10 +1,11 @@
 import { Security } from "packages/ui/src/organisms/security"
-import React, { useMemo, useCallback } from "react"
+import React, { useMemo, useCallback, FC } from "react"
 
 import { Loader, PasskeySkeleton, Toggle } from "@nfid-frontend/ui"
 import { Icon } from "@nfid/integration"
 import { useSWR } from "@nfid/swr"
 
+import { NFIDTheme } from "frontend/App"
 import { useDarkTheme } from "frontend/hooks"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon-decider"
@@ -17,12 +18,20 @@ import { AddPasskey } from "./passkey/add-passkey"
 import { AddRecoveryPhrase } from "./recovery-phrase/add-recovery"
 import { DeleteRecoveryPhrase } from "./recovery-phrase/remove-recovery"
 
+type SecurityPageProps = {
+  walletTheme: NFIDTheme
+  setWalletTheme: (theme: NFIDTheme) => void
+}
+
 export type IHandleWithLoading = (
   action: () => Promise<any>,
   callback?: () => void,
 ) => void
 
-const SecurityPage = () => {
+const SecurityPage: FC<SecurityPageProps> = ({
+  walletTheme,
+  setWalletTheme,
+}) => {
   const isDarkTheme = useDarkTheme()
   const [isLoading, setIsLoading] = React.useState(false)
   const { profile, refreshProfile } = useProfile()
@@ -139,6 +148,8 @@ const SecurityPage = () => {
       showBackButton
       pageTitle="Security"
       className="dark:text-white"
+      walletTheme={walletTheme}
+      setWalletTheme={setWalletTheme}
     >
       <Security
         primarySignInElement={<PrimarySignInMethod profile={profile} />}

@@ -193,7 +193,7 @@ export const Staking: FC<StakingProps> = ({
                   )}
                   src={EmptyStaking}
                 />
-                <p className="leading-[18px] mb-[20px] text-sm md:max-w-[400px] lg:max-w-[460px]">
+                <p className="leading-[18px] mb-[20px] text-sm md:max-w-[400px] lg:max-w-[460px] dark:text-zinc-500">
                   Stake your tokens to collect rewards for participating in
                   governance and helping to decentralize Web3 ecosystems.
                 </p>

@@ -5,7 +5,7 @@ import clsx from "clsx"
 import { motion } from "framer-motion"
 import { resetIntegrationCache } from "packages/integration/src/cache"
 import { A } from "packages/ui/src/atoms/custom-link"
-import { IconInfo } from "packages/ui/src/atoms/icons"
+import { IconInfo, IconInfoDark } from "packages/ui/src/atoms/icons"
 import { IconCaret } from "packages/ui/src/atoms/icons/caret"
 import { Spinner } from "packages/ui/src/atoms/spinner"
 import { Button } from "packages/ui/src/molecules/button"
@@ -178,7 +178,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25 }}
               >
-                <div className="border border-gray-200 dark:border-zinc-500 rounded-3xl px-[30px] py-[20px] relative">
+                <div className="border border-gray-200 dark:border-zinc-700 rounded-3xl px-[30px] py-[20px] relative">
                   <div>
                     <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
                       <div className="flex items-center gap-1">
@@ -196,7 +196,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                           }
                         >
                           <img
-                            src={IconInfo}
+                            src={isDarkTheme ? IconInfoDark : IconInfo}
                             alt="icon"
                             className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
                           />
@@ -211,7 +211,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                         />
                       </div>
                     </div>
-                    <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-500" />
+                    <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
                     <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
                       <p className="text-gray-400 dark:text-zinc-500">
                         Initial stake
@@ -232,7 +232,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                         </p>
                       </div>
                     </div>
-                    <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-500" />
+                    <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
                     <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
                       <div className="flex items-center gap-1">
                         <p className="text-gray-400 dark:text-zinc-500">
@@ -258,7 +258,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                           }
                         >
                           <img
-                            src={IconInfo}
+                            src={isDarkTheme ? IconInfoDark : IconInfo}
                             alt="icon"
                             className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
                           />
@@ -277,7 +277,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                         </p>
                       </div>
                     </div>
-                    <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-500" />
+                    <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
                     <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
                       <div className="flex items-center gap-1">
                         <p className="text-gray-400 dark:text-zinc-500">
@@ -294,7 +294,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                           }
                         >
                           <img
-                            src={IconInfo}
+                            src={isDarkTheme ? IconInfoDark : IconInfo}
                             alt="icon"
                             className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
                           />
@@ -318,7 +318,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                     </div>
                     {sidePanelOption.state === StakingState.Unlocking && (
                       <>
-                        <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-500" />
+                        <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
                         <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
                           <p className="text-gray-400 dark:text-zinc-500">
                             Unlock in
@@ -336,7 +336,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                     )}
                   </div>
                 </div>
-                <div className="border border-gray-200 dark:border-zinc-500 rounded-3xl px-[30px] pb-[30px] pt-[16px] mt-5">
+                <div className="border border-gray-200 dark:border-zinc-700 rounded-3xl px-[30px] pb-[30px] pt-[16px] mt-5">
                   <div className="text-[24px] leading-[50px] mb-[10px] dark:text-white">
                     Details
                   </div>
@@ -361,7 +361,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                     </div>
                   </div>
                   {sidePanelOption.state !== StakingState.Available && (
-                    <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-500" />
+                    <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
                   )}
                   {sidePanelOption.state == StakingState.Locked && (
                     <>
@@ -405,7 +405,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                     </div>
                   )}
                   {}
-                  <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-500" />
+                  <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
                   <Button
                     id={"sidePanel-lock_unlock_Button"}
                     icon={
@@ -439,7 +439,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                   </Button>
                 </div>
                 {followees && (
-                  <div className="border border-gray-200 dark:border-zinc-500 rounded-3xl px-[30px] py-[20px] relative mt-[20px]">
+                  <div className="border border-gray-200 dark:border-zinc-700 rounded-3xl px-[30px] py-[20px] relative mt-[20px]">
                     <div
                       className="flex items-center justify-between transition-all cursor-pointer group"
                       onClick={() => setIsStakingDelegatesOpen(true)}

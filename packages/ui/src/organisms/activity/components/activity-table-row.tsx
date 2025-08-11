@@ -1,4 +1,4 @@
-import { getIdentity } from "apps/nfid-frontend/src/features/transfer-modal/utils"
+import { SignIdentity } from "@dfinity/agent"
 import clsx from "clsx"
 import { format } from "date-fns"
 import { A } from "packages/ui/src/atoms/custom-link"
@@ -8,9 +8,6 @@ import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import { useMemo, useState } from "react"
 import { errorHandlerFactory } from "src/integration/swap/errors/handler-factory"
 import { ContactSupportError } from "src/integration/swap/errors/types/contact-support-error"
-import { ShroffIcpSwapImpl } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
-import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-service"
-import { KongSwapShroffImpl } from "src/integration/swap/kong/impl/kong-swap-shroff"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
@@ -176,19 +173,19 @@ export const getActionMarkup = (
   switch (action) {
     case IActivityAction.SENT:
       return {
-        bg: "bg-red-50 dark:bg-red-900",
+        bg: "bg-red-50 dark:bg-red-900/60",
         icon: <IconCmpArrow className="rotate-[135deg] text-red-600" />,
       }
 
     case IActivityAction.RECEIVED:
       return {
-        bg: "bg-emerald-50 dark:bg-emerald-900",
+        bg: "bg-emerald-50 dark:bg-emerald-900/60",
         icon: <IconCmpArrow className="rotate-[-45deg] text-emerald-600" />,
       }
 
     case IActivityAction.SWAP:
       return {
-        bg: "bg-violet-50 dark:bg-indigo-900",
+        bg: "bg-violet-50 dark:bg-indigo-900/60",
         icon: (
           <>
             <IconCmpSwapActivity className="text-violet-500 dark:text-indigo-500" />
@@ -201,19 +198,19 @@ export const getActionMarkup = (
 
     case IActivityAction.MINT:
       return {
-        bg: "bg-emerald-50 dark:bg-emerald-900",
+        bg: "bg-emerald-50 dark:bg-emerald-900/60",
         icon: <IconCmpMintActivity className="text-emerald-600" />,
       }
 
     case IActivityAction.BURN:
       return {
-        bg: "bg-red-50 dark:bg-red-900",
+        bg: "bg-red-50 dark:bg-red-900/60",
         icon: <IconCmpBurnActivity className="text-emerald-600" />,
       }
 
     case IActivityAction.APPROVE:
       return {
-        bg: "bg-emerald-50 dark:bg-emerald-900",
+        bg: "bg-emerald-50 dark:bg-emerald-900/60",
         icon: <IconCmpApproveActivity className="text-emerald-600" />,
       }
 
@@ -229,6 +226,7 @@ interface IActivityTableRow extends IActivityRow {
   id: string
   nodeId: string
   token?: FT
+  identity?: SignIdentity
 }
 
 export const StatusIcons = {
@@ -245,6 +243,7 @@ export const ActivityTableRow = ({
   nodeId,
   transaction,
   token,
+  identity,
 }: IActivityTableRow) => {
   const isDarkTheme = useDarkTheme()
   const [isLoading, setIsLoading] = useState(false)
@@ -267,29 +266,8 @@ export const ActivityTableRow = ({
     transaction?.getSwapName() && SwapName[transaction?.getSwapName()]
 
   const completeHandler = async () => {
-    if (!transaction) return
+    if (!transaction || !identity) return
     setIsLoading(true)
-
-    let identity
-
-    if (providerName === SwapName.ICPSwap) {
-      const pool = await icpSwapService.getPoolFactory(
-        transaction.getSourceLedger(),
-        transaction.getTargetLedger(),
-      )
-      identity = await getIdentity([
-        transaction.getSourceLedger(),
-        transaction.getTargetLedger(),
-        pool.canisterId.toText(),
-        ...ShroffIcpSwapImpl.getStaticTargets(),
-      ])
-    } else {
-      identity = await getIdentity([
-        transaction.getSourceLedger(),
-        transaction.getTargetLedger(),
-        ...KongSwapShroffImpl.getStaticTargets(),
-      ])
-    }
 
     try {
       const errorHandler = errorHandlerFactory.getHandler(transaction)
@@ -338,7 +316,7 @@ export const ActivityTableRow = ({
         <td className="flex items-center sm:pl-[30px] w-[156px] sm:w-[30%]">
           <div
             className={clsx(
-              "w-10 min-w-10 h-10 rounded-[9px] flex items-center justify-center relative",
+              "w-10 min-w-10 h-10 rounded-[12px] flex items-center justify-center relative",
               getActionMarkup(action, transaction).bg,
             )}
           >

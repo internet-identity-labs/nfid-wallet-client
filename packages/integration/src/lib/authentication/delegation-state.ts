@@ -42,34 +42,18 @@ class RefreshingDelegation {
       return this._delegationPromise
     }
 
-    if (this._anchor < 100000000) {
-      this._delegationPromise = delegationByScope(
-        this._anchor,
-        this._scope,
-        this._maxTimeToLive,
-      )
-        .then((delegation) => {
-          this._setupRefreshingDelay(delegation)
-          this._delegation = delegation
-          return delegation
-        })
-        .finally(() => {
-          this._delegationPromise = undefined
-        })
-    } else {
-      const deviceIdentity = authState.get().delegationIdentity
-      if (!deviceIdentity) throw new Error("No device identity")
+    const deviceIdentity = authState.get().delegationIdentity
+    if (!deviceIdentity) throw new Error("No device identity")
 
-      this._delegationPromise = getGlobalDelegation(deviceIdentity, [])
-        .then((delegation) => {
-          this._setupRefreshingDelay(delegation)
-          this._delegation = delegation
-          return delegation
-        })
-        .finally(() => {
-          this._delegationPromise = undefined
-        })
-    }
+    this._delegationPromise = getGlobalDelegation(deviceIdentity, [])
+      .then((delegation) => {
+        this._setupRefreshingDelay(delegation)
+        this._delegation = delegation
+        return delegation
+      })
+      .finally(() => {
+        this._delegationPromise = undefined
+      })
 
     return this._delegationPromise
   }

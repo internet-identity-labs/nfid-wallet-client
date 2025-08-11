@@ -150,7 +150,10 @@ export const App = () => {
                   path={`${ProfileConstants.base}/${ProfileConstants.nfts}/${ProfileConstants.nftDetails}`}
                   element={
                     <AuthWrapper>
-                      <NFTDetailsPage />
+                      <NFTDetailsPage
+                        walletTheme={walletTheme}
+                        setWalletTheme={setWalletTheme}
+                      />
                     </AuthWrapper>
                   }
                 />
@@ -202,7 +205,10 @@ export const App = () => {
                       </ScreenResponsive>
                     }
                   />
-                  <Route path={ROUTE_EMBED} element={<NFIDEmbedCoordinator />} />
+                  <Route
+                    path={ROUTE_EMBED}
+                    element={<NFIDEmbedCoordinator />}
+                  />
                   <Route
                     path={ROUTE_RPC}
                     element={<IdentityKitRPCCoordinator />}
@@ -211,7 +217,10 @@ export const App = () => {
                     path={ProfileConstants.security}
                     element={
                       <AuthWrapper>
-                        <ProfileSecurity />
+                        <ProfileSecurity
+                          walletTheme={walletTheme}
+                          setWalletTheme={setWalletTheme}
+                        />
                       </AuthWrapper>
                     }
                   />
@@ -245,7 +254,10 @@ export const App = () => {
                     path={`${ProfileConstants.base}/${ProfileConstants.nfts}/${ProfileConstants.nftDetails}`}
                     element={
                       <AuthWrapper>
-                        <NFTDetailsPage />
+                        <NFTDetailsPage
+                          walletTheme={walletTheme}
+                          setWalletTheme={setWalletTheme}
+                        />
                       </AuthWrapper>
                     }
                   />

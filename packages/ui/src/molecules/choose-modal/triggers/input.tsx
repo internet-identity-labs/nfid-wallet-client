@@ -36,11 +36,12 @@ export const InputTrigger = ({
       >
         {!selectedOption ? (
           <input
+            autoComplete="off"
             id="input"
             className={clsx(
               "outline-none bg-transparent w-full h-11",
               "text-sm",
-              "placeholder:text-gray-400",
+              "placeholder:text-gray-400 placeholder:text-zinc-500",
             )}
             placeholder={placeholder}
             onChangeCapture={(e: ChangeEvent<HTMLInputElement>) =>

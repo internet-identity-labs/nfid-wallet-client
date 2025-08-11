@@ -45,7 +45,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
           >
             <motion.div
               className={clsx(
-                "text-white text-sm bg-black dark:bg-zinc-800 p-[15px] rounded-[6px]",
+                "text-white text-sm bg-black dark:bg-zinc-700 p-[15px] rounded-[6px]",
                 className,
                 ["left", "right"].includes(contentProps.side || "top")
                   ? "my-2"
@@ -59,7 +59,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
               {tip}
               <RadixTooltip.Arrow
                 className={clsx(
-                  "fill-black dark:fill-zinc-800",
+                  "fill-black dark:fill-zinc-700",
                   arrowClassname,
                 )}
               />

@@ -92,7 +92,7 @@ describe("ft test suite", () => {
 
       const result: FT[] = await ftService.getTokens(userId)
 
-      expect(result.length).toEqual(6)
+      expect(result.length).toEqual(7)
       const icpResult = result.find(
         (r) => r.getTokenName() === "Internet Computer",
       )
@@ -115,10 +115,11 @@ describe("ft test suite", () => {
 
       expect(result[0].getTokenName()).toEqual("Internet Computer")
       expect(result[1].getTokenName()).toEqual("Bitcoin")
-      expect(result[2].getTokenName()).toEqual("NFID Wallet")
-      expect(result[3].getTokenName()).toEqual("ckBTC")
-      expect(result[4].getTokenName()).toEqual("A first letter")
-      expect(result[5].getTokenName()).toEqual("Chat")
+      expect(result[2].getTokenName()).toEqual("Ethereum")
+      expect(result[3].getTokenName()).toEqual("NFID Wallet")
+      expect(result[4].getTokenName()).toEqual("ckBTC")
+      expect(result[5].getTokenName()).toEqual("A first letter")
+      expect(result[6].getTokenName()).toEqual("Chat")
     })
 
     it("should calculate no usd balance change", async () => {
@@ -389,13 +390,14 @@ describe("ft test suite", () => {
 
       const result: FT[] = await ftService.getTokens(userId)
 
-      expect(result.length).toEqual(6)
+      expect(result.length).toEqual(7)
       expect(result[0].getTokenCategory()).toEqual(Category.Native)
       expect(result[1].getTokenCategory()).toEqual(Category.Native)
-      expect(result[2].getTokenCategory()).toEqual(Category.Community)
-      expect(result[3].getTokenCategory()).toEqual(Category.ChainFusion)
-      expect(result[4].getTokenCategory()).toEqual(Category.Sns)
-      expect(result[5].getTokenCategory()).toEqual(Category.Spam)
+      expect(result[2].getTokenCategory()).toEqual(Category.Native)
+      expect(result[3].getTokenCategory()).toEqual(Category.Community)
+      expect(result[4].getTokenCategory()).toEqual(Category.ChainFusion)
+      expect(result[5].getTokenCategory()).toEqual(Category.Sns)
+      expect(result[6].getTokenCategory()).toEqual(Category.Spam)
     })
 
     it("should calculate USD balance", async function () {

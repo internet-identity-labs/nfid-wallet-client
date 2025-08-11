@@ -19,12 +19,13 @@
     "@dfinity/auth-client": "2.4.1",
     "@dfinity/candid": "2.4.1",
     "@dfinity/ckbtc": "^3.1.14",
+    "@dfinity/cketh": "^3.4.11",
     "@dfinity/identity": "2.4.1",
     "@dfinity/identity-secp256k1": "2.4.1",
     "@dfinity/ledger-icp": "2.6.13",
     "@dfinity/ledger-icrc": "2.9.1",
-    "@dfinity/nns-proto": "^2.0.2",
     "@dfinity/nns": "8.5.0",
+    "@dfinity/nns-proto": "^2.0.2",
     "@dfinity/principal": "2.4.1",
     "@dfinity/sns": "3.7.1",
     "@dfinity/utils": "2.13.2",
@@ -63,6 +64,7 @@
     "comment-parser": "^1.4.1",
     "date-fns": "^4.1.0",
     "dompurify": "3.2.4",
+    "ethers": "^6.15.0",
     "framer-motion": "^12.4.3",
     "idb": "8.0.0",
     "immer": "10.1.1",
@@ -102,9 +104,7 @@
     "vm-browserify": "^1.1.2",
     "web3modal": "^1.9.12",
     "wouter": "3.3.5",
-    "xstate": "4.38.3",
-    "ethers": "^6.15.0",
-    "@dfinity/cketh": "^3.4.11"
+    "xstate": "4.38.3"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",

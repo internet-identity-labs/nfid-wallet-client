@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 
 import { btcDepositService } from "@nfid/integration/token/btc/service"
 
-import { useBtcAddress } from "frontend/hooks"
+import { useBtcAddress, useEthAddress } from "frontend/hooks"
 
 export interface ITransferReceive {
   preselectedAccountAddress: string
@@ -24,6 +24,7 @@ export const TransferReceive = ({
   const [autoConversionBtcAddress, setAutoConversionBtcAddress] =
     useState<string>("")
   const { btcAddress } = useBtcAddress()
+  const { ethAddress } = useEthAddress()
 
   useEffect(() => {
     setSelectedAccountAddress(publicKey)
@@ -67,6 +68,7 @@ export const TransferReceive = ({
         address={accountId}
         autoConversionBtcAddress={autoConversionBtcAddress}
         btcAddress={btcAddress}
+        ethAddress={ethAddress}
       />
     </div>
   )

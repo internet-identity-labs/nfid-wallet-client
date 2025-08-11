@@ -1,4 +1,4 @@
-import { createContext, useContext, useCallback, useEffect, useState } from "react"
+import { createContext, useCallback, useEffect, useState } from "react"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { ethereumService } from "frontend/integration/ethereum/ethereum.service"
@@ -10,7 +10,9 @@ type EthAddressContextType = {
   fetchEthAddress: () => void
 }
 
-export const EthAddressContext = createContext<EthAddressContextType | null>(null)
+export const EthAddressContext = createContext<EthAddressContextType | null>(
+  null,
+)
 
 export const EthAddressProvider = ({
   children,
@@ -50,12 +52,4 @@ export const EthAddressProvider = ({
       {children}
     </EthAddressContext.Provider>
   )
-}
-
-export const useEthAddress = () => {
-  const ctx = useContext(EthAddressContext)
-  if (!ctx) {
-    throw new Error("useEthAddress must be used within <EthAddressProvider>")
-  }
-  return ctx
 }

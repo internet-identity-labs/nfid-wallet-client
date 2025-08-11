@@ -22,6 +22,7 @@ import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
+import { useIdentity } from "frontend/hooks/identity"
 import { FT } from "frontend/integration/ft/ft"
 import {
   ftService,
@@ -31,11 +32,7 @@ import { swapService } from "frontend/integration/swap/service/swap-service"
 import { userPrefService } from "frontend/integration/user-preferences/user-pref-service"
 
 import { FormValues } from "../types"
-import {
-  getIdentity,
-  getQuoteData,
-  getTokensWithUpdatedBalance,
-} from "../utils"
+import { getQuoteData, getTokensWithUpdatedBalance } from "../utils"
 
 const QUOTE_REFETCH_TIMER = 30
 
@@ -83,6 +80,7 @@ export const SwapFT = ({
     ServiceUnavailableError | undefined
   >()
   const previousFromTokenAddress = useRef(fromTokenAddress)
+  const { identity } = useIdentity()
 
   useEffect(() => {
     if (!preselectedSourceTokenAddress) {
@@ -323,11 +321,9 @@ export const SwapFT = ({
     if (!sourceAmount || !targetAmount || !sourceUsdAmount || !targetUsdAmount)
       return
 
-    if (!shroff) return
+    if (!shroff || !identity) return
 
     setIsSuccessOpen(true)
-
-    const identity = await getIdentity(shroff.getTargets())
 
     shroff
       .swap(identity)
@@ -356,6 +352,7 @@ export const SwapFT = ({
     toTokenAddress,
     setErrorMessage,
     setSuccessMessage,
+    identity,
   ])
 
   return (

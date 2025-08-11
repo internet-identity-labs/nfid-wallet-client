@@ -7,10 +7,7 @@ import { idlFactory as SwapPoolIDL } from "src/integration/swap/icpswap/idl/Swap
 import { SourceInputCalculatorIcpSwap } from "src/integration/swap/icpswap/impl/icp-swap-calculator"
 import { IcpSwapQuoteImpl } from "src/integration/swap/icpswap/impl/icp-swap-quote-impl"
 import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
-import {
-  icpSwapService,
-  SWAP_FACTORY_CANISTER,
-} from "src/integration/swap/icpswap/service/icpswap-service"
+import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-service"
 import { idlFactory as icrc1IDL } from "src/integration/swap/kong/idl/icrc1"
 import { _SERVICE as ICRC1ServiceIDL } from "src/integration/swap/kong/idl/icrc1.d"
 import { Quote } from "src/integration/swap/quote"
@@ -111,23 +108,6 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
 
   getSwapTransaction(): SwapTransaction | undefined {
     return this.swapTransaction
-  }
-
-  static getStaticTargets(): string[] {
-    return [
-      exchangeRateService.getNodeCanister(),
-      SWAP_TRS_STORAGE,
-      SWAP_FACTORY_CANISTER,
-    ]
-  }
-
-  getTargets(): string[] {
-    return [
-      this.source.ledger,
-      this.target.ledger,
-      this.poolData.canisterId.toText(),
-      ...ShroffAbstract.getStaticTargets(),
-    ]
   }
 
   async getQuote(amount: string): Promise<Quote> {

@@ -65,11 +65,12 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             </div>
           )}
           <input
+            autoComplete="off"
             id={id}
             type={type}
             className={clsx(
               "flex-1 block w-full py-[7px] dark:bg-[#FFFFFF0D] dark:text-white",
-              "placeholder:text-gray-400 dark:placeholder:text-zinc-400 placeholder:text-sm",
+              "placeholder:text-gray-400 dark:placeholder:text-zinc-500 placeholder:text-sm",
               "disabled:bg-gray-200 dark:disabled:bg-zinc-700 disabled:text-secondary disabled:drop-shadow-none shadow-none",
               "border-1 border-gray-400 disabled:border-gray-200",
               "rounded-[12px]",

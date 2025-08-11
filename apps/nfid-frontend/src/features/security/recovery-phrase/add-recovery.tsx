@@ -42,7 +42,7 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
         onClick={() => setIsModalVisible(true)}
         icon={<IconCmpPlus className="w-[18px] h-[18px]" />}
         type="ghost"
-        className="text-sm font-bold mt-[20px] dark:text-teal-500"
+        className="text-sm font-bold mt-[20px]"
       >
         Add recovery phrase
       </Button>
@@ -60,7 +60,7 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
         <div>
           <div
             className={clsx(
-              "border-2 border-black rounded-t-md mt-4",
+              "border-2 border-black dark:border-white rounded-t-[12px] mt-4",
               "focus:outline-none resize-none focus:ring-0",
               "w-full leading-[26px] p-[12px] pb-[30px]",
             )}
@@ -70,13 +70,13 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
           <div
             className={clsx(
               "flex items-center justify-center space-x-2 h-[48px]",
-              "border-2 border-t-0 border-black cursor-pointer",
+              "border-2 border-t-0 border-black dark:border-white cursor-pointer",
               "rounded-[12px] rounded-t-none",
             )}
             onClick={copyToClipboard}
             id="copy-button"
           >
-            <CopyIcon className="text-black stroke-black" />
+            <CopyIcon className="text-black stroke-black dark:text-white dark:stroke-white" />
             <span className="text-sm font-bold">
               {copied ? "Copied" : "Copy"}
             </span>

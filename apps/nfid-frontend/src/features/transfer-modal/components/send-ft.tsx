@@ -1,4 +1,3 @@
-import { SignIdentity } from "@dfinity/agent"
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
@@ -28,6 +27,7 @@ import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useBtcAddress } from "frontend/hooks"
+import { useIdentity } from "frontend/hooks/identity"
 import {
   bitcoinService,
   BitcointNetworkFeeAndUtxos,
@@ -37,7 +37,6 @@ import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
 import { FormValues, SendStatus } from "../types"
 import {
-  getIdentity,
   getTokensWithUpdatedBalance,
   getVaultsAccountsOptions,
   validateBTCAddress,
@@ -71,8 +70,7 @@ export const TransferFT = ({
   const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
   const [status, setStatus] = useState(SendStatus.PENDING)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
-  const [identity, setIdentity] = useState<SignIdentity>()
-  const [isIdentityLoading, setIsIdentityLoading] = useState(false)
+  const { identity, isLoading: isIdentityLoading } = useIdentity()
   const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
     useState(preselectedAccountAddress)
   const [error, setError] = useState<string | undefined>()
@@ -157,41 +155,6 @@ export const TransferFT = ({
       (balance) => balance.address === selectedVaultsAccountAddress,
     )
   }, [selectedVaultsAccountAddress, balances])
-
-  useEffect(() => {
-    if (!token) return
-
-    let isMounted = true
-    setIdentity(undefined)
-    setIsIdentityLoading(true)
-
-    const targets =
-      token.getTokenAddress() !== BTC_NATIVE_ID
-        ? [token.getTokenAddress()]
-        : [PATRON_CANISTER_ID, CHAIN_FUSION_SIGNER_CANISTER_ID]
-
-    const getSignIdentity = async () => {
-      try {
-        const identity = await getIdentity(targets)
-        if (isMounted) {
-          setIdentity(identity)
-          setIsIdentityLoading(false)
-        }
-      } catch (e) {
-        if (isMounted) {
-          setIsIdentityLoading(false)
-          setIdentity(undefined)
-        }
-        console.error("Failed to get identity", e)
-      }
-    }
-
-    getSignIdentity()
-
-    return () => {
-      isMounted = false
-    }
-  }, [token])
 
   useEffect(() => {
     onError(Boolean(btcError))

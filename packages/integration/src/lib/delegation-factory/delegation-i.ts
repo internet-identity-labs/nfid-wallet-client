@@ -4,6 +4,7 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 
+import { storageWithTtl } from "@nfid/client-db"
 import { ONE_HOUR_IN_MS } from "@nfid/config"
 
 import { integrationCache } from "../../cache"
@@ -26,7 +27,6 @@ import {
   getDelegationChainSignedByCanister,
   getPrincipalSignedByCanister,
 } from "./delegation-factory"
-import { storageWithTtl } from "@nfid/client-db"
 
 export enum DelegationType {
   GLOBAL = "GLOBAL",
@@ -108,10 +108,18 @@ export async function getGlobalDelegation(
   targets: string[],
   origin = GLOBAL_ORIGIN,
 ): Promise<DelegationIdentity> {
-  let identityKey = JSON.stringify(identity.getPrincipal().toText() + targets + origin + "_session")
-  const chainKey = JSON.stringify(identity.getPrincipal().toText() + targets + origin + "_chain")
-  const identityKeyFromStorage = await integrationCache.getItem(identityKey) as string | null
-  const chainFromStorage = await integrationCache.getItem(chainKey) as string | null
+  let identityKey = JSON.stringify(
+    identity.getPrincipal().toText() + targets + origin + "_session",
+  )
+  const chainKey = JSON.stringify(
+    identity.getPrincipal().toText() + targets + origin + "_chain",
+  )
+  const identityKeyFromStorage = (await integrationCache.getItem(
+    identityKey,
+  )) as string | null
+  const chainFromStorage = (await integrationCache.getItem(chainKey)) as
+    | string
+    | null
   if (identityKeyFromStorage && chainFromStorage) {
     const sessionKey = Ed25519KeyIdentity.fromJSON(identityKeyFromStorage)
     const delegationChain = DelegationChain.fromJSON(chainFromStorage)
@@ -146,11 +154,9 @@ export async function getGlobalDelegation(
     JSON.stringify(sessionKey.toJSON()),
     { ttl: ONE_HOUR_IN_MS * 2 },
   )
-  await integrationCache.setItem(
-    chainKey,
-    delegationChain.toJSON(),
-    { ttl: ONE_HOUR_IN_MS * 2 },
-  )
+  await integrationCache.setItem(chainKey, delegationChain.toJSON(), {
+    ttl: ONE_HOUR_IN_MS * 2,
+  })
   const response = DelegationIdentity.fromDelegation(
     sessionKey,
     delegationChain,

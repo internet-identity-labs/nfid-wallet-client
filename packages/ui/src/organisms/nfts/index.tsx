@@ -8,6 +8,7 @@ import {
   Input,
   Table,
   IconNftPlaceholder,
+  IconNftPlaceholderDark,
   ImageWithFallback,
 } from "@nfid-frontend/ui"
 
@@ -52,7 +53,7 @@ export const NFTs: FC<INFTs> = ({
   return (
     <>
       {nfts.length > 0 && (
-        <div className="flex items-center justify-between gap-6">
+        <div className="flex items-center justify-between gap-6 mb-5">
           <Input
             type="text"
             value={search}
@@ -72,15 +73,6 @@ export const NFTs: FC<INFTs> = ({
           </div>
         </div>
       )}
-      <p
-        id={"items-amount"}
-        className={clsx(
-          "text-sm text-center text-gray-400 dark:text-zinc-400 h-[50px] leading-[50px]",
-          nftsFiltered.length === 0 && "hidden",
-        )}
-      >
-        {totalItems} items
-      </p>
       {isLoading ? (
         <div
           className={clsx(
@@ -92,7 +84,7 @@ export const NFTs: FC<INFTs> = ({
         </div>
       ) : !nftsFiltered.length ? (
         <div className="flex justify-between">
-          <span className="w-full my-20 text-sm text-center text-gray-400 md:text-left">
+          <span className="w-full my-20 text-sm text-center text-gray-400 dark:text-zinc-500 md:text-left">
             You don’t own any collectibles yet
           </span>
           <img
@@ -149,7 +141,11 @@ export const NFTs: FC<INFTs> = ({
                     ) : (
                       <ImageWithFallback
                         alt={`${nft.getCollectionName()} ${nft.getTokenId()}`}
-                        fallbackSrc={IconNftPlaceholder}
+                        fallbackSrc={
+                          isDarkTheme
+                            ? IconNftPlaceholderDark
+                            : IconNftPlaceholder
+                        }
                         src={nft.getError() ? "#" : nft.getAssetPreview()?.url}
                         className={clsx(
                           `w-[74px] h-[74px] object-cover rounded-[12px] my-[5px]`,
@@ -228,18 +224,22 @@ export const NFTs: FC<INFTs> = ({
               >
                 <div
                   className={clsx(
-                    "cursor-pointer rounded-[12px] bg-gray-50 dark:bg-zinc-800 group hover:shadow-xl",
+                    "cursor-pointer rounded-[12px] bg-gray-50 dark:bg-zinc-800 group hover:shadow-xl dark:hover:bg-zinc-700 transition-all",
                     "h-full flex flex-col",
                   )}
                   key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
                 >
-                  <div className="relative rounded-[12px] overflow-hidden basis-[100%]">
+                  <div className="relative rounded-[12px] overflow-hidden basis-[100%] flex items-center justify-center">
                     {nft.getError() ? (
                       <ImageWithFallback
                         alt={nft.getTokenName()}
-                        fallbackSrc={IconNftPlaceholder}
+                        fallbackSrc={
+                          isDarkTheme
+                            ? IconNftPlaceholderDark
+                            : IconNftPlaceholder
+                        }
                         src={"#"}
-                        className="object-cover w-full aspect-square"
+                        className="object-cover aspect-square w-[80px] h-[80px]"
                       />
                     ) : nft.getAssetPreview()?.format === "video" ? (
                       <video
@@ -252,7 +252,11 @@ export const NFTs: FC<INFTs> = ({
                     ) : (
                       <ImageWithFallback
                         alt={nft.getTokenName()}
-                        fallbackSrc={IconNftPlaceholder}
+                        fallbackSrc={
+                          isDarkTheme
+                            ? IconNftPlaceholderDark
+                            : IconNftPlaceholder
+                        }
                         src={nft.getAssetPreview()?.url}
                         className="object-cover w-full aspect-square"
                       />

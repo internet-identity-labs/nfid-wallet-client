@@ -181,24 +181,30 @@ export const StakingOption: FC<StakingOptionProps> = ({
                 </div>
               </td>
               <td className="flex flex-col ml-auto h-[64px] justify-center w-max md:table-cell text-right md:text-left">
-                <p id={"tokenInitialStake"} className="text-sm leading-6">
+                <p
+                  id={"tokenInitialStake"}
+                  className="text-sm leading-6 dark:text-white"
+                >
                   {stake.getInitialStakeFormatted().getTokenValue()}
                 </p>
-                <p className="text-xs leading-5 text-secondary">
+                <p className="text-xs leading-5 text-secondary dark:zinc-500">
                   {stake.getInitialStakeFormatted().getUSDValue()}
                 </p>
               </td>
               <td className="px-0 md:px-[10px] hidden md:table-cell">
-                <p id={"tokenRewards"} className="text-sm leading-6">
+                <p
+                  id={"tokenRewards"}
+                  className="text-sm leading-6 dark:text-white"
+                >
                   {stake.getRewardsFormatted().getTokenValue()}
                 </p>
-                <p className="text-xs leading-5 text-secondary">
+                <p className="text-xs leading-5 text-secondary dark:zinc-500">
                   {stake.getRewardsFormatted().getUSDValue()}
                 </p>
               </td>
               <td className="px-0 md:px-[10px] hidden md:table-cell">
                 <p
-                  className="text-sm leading-5 opacity-80"
+                  className="text-sm leading-5 opacity-80 dark:text-white"
                   id={
                     stakingState === StakingState.Unlocking
                       ? "tokenUnlockTime"

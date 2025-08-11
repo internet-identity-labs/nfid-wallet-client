@@ -9,6 +9,7 @@ export interface ReceiveProps {
   address: string
   autoConversionBtcAddress?: string
   btcAddress?: string
+  ethAddress?: string
 }
 
 export const Receive: FC<ReceiveProps> = ({
@@ -16,6 +17,7 @@ export const Receive: FC<ReceiveProps> = ({
   address,
   autoConversionBtcAddress,
   btcAddress,
+  ethAddress,
 }) => {
   return (
     <>
@@ -61,7 +63,27 @@ export const Receive: FC<ReceiveProps> = ({
         </div>
       </div>
       <div className="mb-2.5">
-        <p className="mb-1 text-xs text-gray-500 dark:text-zinc-400">
+        <p className="mb-1 text-xs text-gray-500 dark:text-zinc-500">
+          ETH wallet address
+        </p>
+        <div className="rounded-[12px] bg-gray-100 dark:bg-zinc-700 text-gray-500 dark:text-zinc-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
+          {ethAddress ? (
+            <>
+              <CenterEllipsis
+                value={ethAddress ?? ""}
+                leadingChars={29}
+                trailingChars={5}
+                id={"ethAddress"}
+              />
+              <Copy value={ethAddress ?? ""} />
+            </>
+          ) : (
+            <Spinner className="w-5 h-5 mx-auto text-black dark:text-white" />
+          )}
+        </div>
+      </div>
+      <div className="mb-2.5">
+        <p className="mb-1 text-xs text-gray-500 dark:text-zinc-500">
           BTC wallet address
         </p>
         <div className="rounded-[12px] bg-gray-100 dark:bg-[#FFFFFF0D] text-gray-500 dark:text-zinc-400 flex items-center justify-between px-2.5 h-[56px] text-sm">

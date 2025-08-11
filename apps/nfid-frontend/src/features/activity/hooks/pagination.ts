@@ -2,8 +2,7 @@ import { useEffect, useState } from "react"
 
 import { useSWR } from "@nfid/swr"
 
-import { useEthAddress } from "frontend/contexts/eth-address"
-import { useBtcAddress } from "frontend/hooks"
+import { useBtcAddress, useEthAddress } from "frontend/hooks"
 
 import { PAGINATION_ITEMS } from "../constants"
 import { IActivityRowGroup } from "../types"

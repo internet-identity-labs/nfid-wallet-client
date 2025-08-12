@@ -15,10 +15,12 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
   const [activities, setActivities] = useState<IActivityRowGroup[]>([])
   const [isButtonLoading, setIsButtonLoading] = useState(false)
   const [hasMoreData, setHasMoreData] = useState(true)
+  const [isFirstLoading, setIsFirstLoading] = useState(true)
+
   const { btcAddress } = useBtcAddress()
   const { ethAddress } = useEthAddress()
 
-  const { data, isValidating, isLoading } = useSWR(
+  const { data, isValidating } = useSWR(
     ["activity", filter, offset],
     () =>
       getAllActivity({
@@ -38,6 +40,7 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
   useEffect(() => {
     setActivities([])
     setOffset(0)
+    setIsFirstLoading(true)
   }, [filter])
 
   useEffect(() => {
@@ -66,6 +69,7 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
     })
 
     setHasMoreData(data.isEnd)
+    setIsFirstLoading(false)
   }, [data])
 
   const loadMore = async () => {
@@ -80,6 +84,7 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
     setActivities([])
     setOffset(0)
     setHasMoreData(true)
+    setIsFirstLoading(true)
   }
 
   return {
@@ -91,6 +96,6 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
     loadMore,
     isButtonLoading,
     resetHandler,
-    isFirstLoading: isLoading,
+    isFirstLoading,
   }
 }

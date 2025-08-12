@@ -31,7 +31,7 @@ export const Toggle: React.FC<ToggleProps> = ({
       />
       <div
         className={clsx(
-          "w-12 h-6 bg-white dark:bg-black peer-focus:outline-none rounded-full peer border border-black dark:border-white",
+          "w-12 h-6 bg-white dark:bg-transparent peer-focus:outline-none rounded-full peer border border-black dark:border-white",
           "outline outline-2 outline-transparent hover:outline-[#0D948833] dark:hover:outline-[#2DD4BF4D] transition-all hover:border-gray-700 dark:hover:border-zinc-300",
           "after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-black hover:after:bg-gray-700 dark:hover:after:bg-zinc-300 dark:after:bg-white after:rounded-full after:h-[18px] after:w-[18px] after:transition-all",
           "peer-checked:bg-primaryButtonColor hover:peer-checked:bg-teal-600 peer-checked:after:bg-white dark:peer-checked:hover:after:bg-white",

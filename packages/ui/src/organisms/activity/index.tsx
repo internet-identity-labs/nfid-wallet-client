@@ -74,7 +74,7 @@ export const Activity: FC<ActivityProps> = ({
                 <IconCmpFilters className="w-[21px] h-[21px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white" />
                 <div
                   className={clsx(
-                    "absolute w-2.5 h-2.5 bg-teal-600 dark:bg-teal-500 right-0 bottom-0 rounded-full border-2 border-white",
+                    "absolute w-2.5 h-2.5 bg-teal-600 dark:bg-teal-500 right-0 bottom-0 rounded-full border-2 border-white dark:border-[#141518]",
                     filter.length > 0 ? "block" : "hidden",
                   )}
                 ></div>

@@ -20,7 +20,7 @@ import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc
 import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { useBtcAddress } from "frontend/hooks"
+import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
 import { ProfileContext } from "frontend/provider"
@@ -35,6 +35,7 @@ const TokensPage = () => {
   const [, send] = useActor(globalServices.transferService)
   const [initedTokens, setInitedTokens] = useState<Array<FT> | undefined>()
   const { isBtcAddressLoading } = useBtcAddress()
+  const { isEthAddressLoading } = useEthAddress()
 
   const onSendClick = (selectedToken: string) => {
     send({ type: "ASSIGN_VAULTS", data: false })
@@ -125,9 +126,11 @@ const TokensPage = () => {
 
   useEffect(() => {
     if (activeTokens) {
-      initTokens(activeTokens, isBtcAddressLoading).then(setInitedTokens)
+      initTokens(activeTokens, isBtcAddressLoading, isEthAddressLoading).then(
+        setInitedTokens,
+      )
     }
-  }, [activeTokens, isBtcAddressLoading])
+  }, [activeTokens, isBtcAddressLoading, isEthAddressLoading])
 
   useEffect(() => {
     userPrefService.getUserPreferences().then((userPref) => {
@@ -233,6 +236,7 @@ const TokensPage = () => {
           hideZeroBalance={hideZeroBalance}
           onZeroBalanceToggle={onZeroBalanceToggle}
           isBtcAddressLoading={isBtcAddressLoading}
+          isEthAddressLoading={isEthAddressLoading}
         />
       </ProfileContainer>
     </>

@@ -7,6 +7,8 @@ import { exchangeRateService } from "@nfid/integration"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
+  CKETH_CANISTER_ID,
+  ETH_NATIVE_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
@@ -19,6 +21,7 @@ import {
   BitcointNetworkFeeAndUtxos,
 } from "frontend/integration/bitcoin/bitcoin.service"
 import { satoshiService } from "frontend/integration/bitcoin/services/satoshi.service"
+import { ethereumService } from "frontend/integration/ethereum/ethereum.service"
 
 import { formatUsdAmount } from "../../../util/format-usd-amount"
 
@@ -59,6 +62,10 @@ export class FTImpl implements FT {
     return this.tokenAddress === BTC_NATIVE_ID
   }
 
+  private isNativeEth(): boolean {
+    return this.tokenAddress === ETH_NATIVE_ID
+  }
+
   private async getNativeBtcBalance(globalPrincipal: Principal): Promise<void> {
     try {
       this.tokenBalance = await bitcoinService.getQuickBalance(globalPrincipal)
@@ -69,6 +76,19 @@ export class FTImpl implements FT {
 
     this.tokenRate = await exchangeRateService.usdPriceForICRC1(
       CKBTC_CANISTER_ID,
+    )
+  }
+
+  private async getNativeEthBalance(globalPrincipal: Principal): Promise<void> {
+    try {
+      this.tokenBalance = await ethereumService.getQuickBalance(globalPrincipal)
+    } catch (e) {
+      console.error("EthereumService error: ", (e as Error).message)
+      return
+    }
+
+    this.tokenRate = await exchangeRateService.usdPriceForICRC1(
+      CKETH_CANISTER_ID,
     )
   }
 
@@ -90,6 +110,8 @@ export class FTImpl implements FT {
   private async getBalance(globalPrincipal: Principal): Promise<void> {
     if (this.isNativeBtc()) {
       await this.getNativeBtcBalance(globalPrincipal)
+    } else if (this.isNativeEth()) {
+      await this.getNativeEthBalance(globalPrincipal)
     } else {
       await this.getIcrc1Balance(globalPrincipal)
     }

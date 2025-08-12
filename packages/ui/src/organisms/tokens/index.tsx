@@ -3,7 +3,7 @@ import clsx from "clsx"
 import { HTMLAttributes, FC, useState, useMemo } from "react"
 import { FT } from "src/integration/ft/ft"
 
-import { BTC_NATIVE_ID } from "@nfid/integration/token/constants"
+import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 
 import { useDarkTheme } from "frontend/hooks"
 
@@ -54,6 +54,7 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   onZeroBalanceToggle: () => void
   tokensIniting?: boolean
   isBtcAddressLoading: boolean
+  isEthAddressLoading: boolean
 }
 
 export const Tokens: FC<TokensProps> = ({
@@ -72,6 +73,7 @@ export const Tokens: FC<TokensProps> = ({
   onZeroBalanceToggle,
   tokensIniting,
   isBtcAddressLoading,
+  isEthAddressLoading,
 }) => {
   const [token, setToken] = useState<FT | undefined>()
   const [sorting, setSorting] = useState<Sorting>(Sorting.DEFAULT)
@@ -184,7 +186,9 @@ export const Tokens: FC<TokensProps> = ({
                     isIniting={
                       tokensIniting ||
                       (token.getTokenAddress() === BTC_NATIVE_ID &&
-                        isBtcAddressLoading)
+                        isBtcAddressLoading) ||
+                      (token.getTokenAddress() === ETH_NATIVE_ID &&
+                        isEthAddressLoading)
                     }
                     hideZeroBalance={hideZeroBalance}
                     key={`token_${token.getTokenAddress()}_${token.getTokenState()}`}

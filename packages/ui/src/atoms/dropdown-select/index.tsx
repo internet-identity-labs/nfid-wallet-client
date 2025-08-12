@@ -151,7 +151,7 @@ export const DropdownSelect = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25, ease: "easeInOut" }}
-          className="w-full dark:bg-darkGray rounded-[12px] mt-[1px] absolute z-50 shadow-md"
+          className="w-full bg-white dark:bg-darkGray rounded-[12px] mt-[1px] absolute z-50 shadow-md"
         >
           {isSearch && (
             <Input

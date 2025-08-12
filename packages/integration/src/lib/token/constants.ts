@@ -15,6 +15,7 @@ export const ICP_GOV_CANISTER_ID = "rrkah-fqaaa-aaaaa-aaaaq-cai"
 export const ICP_INDEX_ID = "qhbym-qaaaa-aaaaa-aaafq-cai"
 export const NFIDW_CANISTER_ID = "mih44-vaaaa-aaaaq-aaekq-cai"
 export const ICP_DECIMALS = 8
+export const ETH_DECIMALS = 10
 export const USDC_DECIMALS = 6
 export const MAX_DECIMAL_USD_LENGTH = 2
 export const TRIM_ZEROS = /\.?0+$/

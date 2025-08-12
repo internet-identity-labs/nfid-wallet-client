@@ -15,6 +15,8 @@ import {
 import { agentBaseConfig } from "packages/integration/src/lib/actors"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 
+import { ETH_DECIMALS } from "@nfid/integration/token/constants"
+
 import { EthSignTransactionRequest } from "../bitcoin/idl/chain-fusion-signer.d"
 import {
   Address,
@@ -65,6 +67,18 @@ export class EthereumService {
   public async getBalance(address: Address): Promise<Balance> {
     const balance = await this.provider.getBalance(address)
     return balance
+  }
+
+  public async getQuickBalance(principal: Principal): Promise<Balance> {
+    const { cachedValue } = await this.getAddressFromCache(principal.toText())
+
+    if (!cachedValue) {
+      throw Error("No ethereum address in a cache.")
+    }
+
+    const balance = await this.getBalance(cachedValue as Address)
+
+    return balance / BigInt(10 ** ETH_DECIMALS)
   }
 
   //retrieve fee data from provider
@@ -165,7 +179,7 @@ export class EthereumService {
       maxPriorityFeePerGas: bigint
       maxFeePerGas: bigint
       gasPrice: bigint
-    }
+    },
   ): Promise<TransactionResponse> {
     let address = await this.getAddress(identity)
     let nonce = await this.getTransactionCount(address)

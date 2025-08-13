@@ -7,6 +7,7 @@ import {
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 import validate, { Network } from "bitcoin-address-validation"
+import { isAddress } from "ethers"
 import { PRINCIPAL_LENGTH } from "packages/constants"
 import { Shroff } from "src/integration/swap/shroff"
 
@@ -23,6 +24,8 @@ import {
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
+  ETH_NATIVE_ID,
+  ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 import { mutate } from "@nfid/swr"
@@ -160,6 +163,11 @@ export const validateBTCAddress = (address: string): boolean | string => {
   return result || "Incorrect wallet address"
 }
 
+export const validateETHAddress = (address: string): boolean | string => {
+  const result = isAddress(address)
+  return result || "Incorrect wallet address"
+}
+
 export const getUserBalance = async (address: string): Promise<bigint> => {
   const addressVerified =
     address.length === PRINCIPAL_LENGTH
@@ -266,4 +274,13 @@ export const getAccurateDateForStakeInSeconds = (months: number): number => {
   future.setMilliseconds(now.getMilliseconds())
 
   return Math.floor((future.getTime() - now.getTime()) / 1000)
+}
+
+export const addressValidators: Record<
+  string,
+  (address: string) => boolean | string
+> = {
+  [ICP_CANISTER_ID]: validateICPAddress,
+  [BTC_NATIVE_ID]: validateBTCAddress,
+  [ETH_NATIVE_ID]: validateETHAddress,
 }

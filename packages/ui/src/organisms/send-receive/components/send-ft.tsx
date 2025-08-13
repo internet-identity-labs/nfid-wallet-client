@@ -13,6 +13,7 @@ import {
 } from "@nfid-frontend/ui"
 import {
   BTC_NATIVE_ID,
+  ETH_NATIVE_ID,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 
@@ -42,7 +43,9 @@ export interface TransferFTUiProps {
   onClose: () => void
   error: string | undefined
   btcError: string | undefined
+  ethError: string | undefined
   btcFee?: bigint
+  ethFee?: bigint
   isFeeLoading: boolean
 }
 
@@ -65,7 +68,9 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   onClose,
   error,
   btcError,
+  ethError,
   btcFee,
+  ethFee,
   isFeeLoading,
 }) => {
   const {
@@ -114,6 +119,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         token={token}
         balance={vaultsBalance}
         btcFee={btcFee}
+        ethFee={ethFee}
         setFromChosenToken={setChosenToken}
         usdRate={token.getTokenRateFormatted(amount || 0)}
         tokens={tokens}
@@ -188,6 +194,22 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
                     </span>
                   </>
                 )
+              ) : token.getTokenAddress() === ETH_NATIVE_ID ? (
+                !ethFee || isFeeLoading ? (
+                  <>
+                    <Skeleton className="w-[80px] h-5" />
+                    <span className="block mt-1 text-xs">
+                      <Skeleton className="w-[60px] h-4 ml-auto" />
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    {token.getETHFeeFormatted(ethFee)}
+                    <span className="block mt-1 text-xs">
+                      {token.getETHFeeFormattedUsd(ethFee)}
+                    </span>
+                  </>
+                )
               ) : (
                 <>
                   {token.getTokenFeeFormatted()}
@@ -205,6 +227,11 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           {btcError}
         </div>
       )}
+      {ethError && (
+        <div className="mt-2 text-xs text-red-600 dark:text-red-500">
+          {ethError}
+        </div>
+      )}
       <Button
         className="absolute bottom-5 left-5 right-5 !w-auto"
         disabled={
@@ -212,7 +239,8 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           Boolean(errors["to"]?.message) ||
           !amount ||
           !to ||
-          (token?.getTokenAddress() === BTC_NATIVE_ID && !btcFee)
+          (token?.getTokenAddress() === BTC_NATIVE_ID && !btcFee) ||
+          (token?.getTokenAddress() === ETH_NATIVE_ID && !ethFee)
         }
         type="primary"
         id="sendButton"

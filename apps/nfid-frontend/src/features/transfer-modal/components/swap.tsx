@@ -15,6 +15,7 @@ import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 import {
   BTC_NATIVE_ID,
+  ETH_NATIVE_ID,
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -114,7 +115,8 @@ export const SwapFT = ({
     const activeTokens = tokens.filter(
       (token: FT) =>
         token.getTokenState() === State.Active &&
-        token.getTokenAddress() !== BTC_NATIVE_ID,
+        token.getTokenAddress() !== BTC_NATIVE_ID &&
+        token.getTokenAddress() !== ETH_NATIVE_ID,
     )
 
     if (!hideZeroBalance) return activeTokens

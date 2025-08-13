@@ -320,6 +320,25 @@ export class FTImpl implements FT {
     )
   }
 
+  async getETHFee(to: string, value: string): Promise<bigint> {
+    return await ethereumService.getApproximateEthFee(to, value)
+  }
+
+  getETHFeeFormatted(fee: bigint): string {
+    return `${(Number(fee) / 10 ** this.decimals).toLocaleString("en", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: this.decimals,
+    })} ${this.symbol}`
+  }
+
+  getETHFeeFormattedUsd(fee: bigint): string | undefined {
+    const feeInUsd = this.getTokenRateFormatted(
+      (Number(fee) / 10 ** this.decimals).toString(),
+    )
+
+    return feeInUsd
+  }
+
   getTokenFeeFormatted(): string {
     return `${(Number(this.fee) / 10 ** this.decimals).toLocaleString("en", {
       minimumFractionDigits: 0,

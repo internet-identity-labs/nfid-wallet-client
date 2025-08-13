@@ -254,13 +254,11 @@ export const TransferFT = ({
 
     if (token.getTokenAddress() === ETH_NATIVE_ID) {
       if (!identity || !ethFee) return
-      console.log("asdadasdad", token.getTokenAddress())
 
       setIsSuccessOpen(true)
       ethereumService
         .sendEthTransaction(identity, to, amount)
-        .then((aa) => {
-          console.log("asdadasdad aa", aa)
+        .then(() => {
           setSuccessMessage(
             `Transaction ${amount} ${token.getTokenSymbol()} successful`,
           )

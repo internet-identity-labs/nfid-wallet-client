@@ -55,9 +55,12 @@ export const Activity: FC<ActivityProps> = ({
     [tokens],
   )
 
+  const showSkeleton = isFirstLoading || (isValidating && !activities.length)
+  const showEmpty = !showSkeleton && activities.length === 0
+
   return (
     <>
-      <div className={clsx("flex justify-end", isValidating && "hidden")}>
+      <div className={clsx("flex justify-end", showSkeleton && "hidden")}>
         <FilterPopover
           title="Assets"
           align="end"
@@ -71,7 +74,7 @@ export const Activity: FC<ActivityProps> = ({
                 <IconCmpFilters className="w-[21px] h-[21px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white" />
                 <div
                   className={clsx(
-                    "absolute w-2.5 h-2.5 bg-teal-600 dark:bg-teal-500 right-0 bottom-0 rounded-full border-2 border-white",
+                    "absolute w-2.5 h-2.5 bg-teal-600 dark:bg-teal-500 right-0 bottom-0 rounded-full border-2 border-white dark:border-[#141518]",
                     filter.length > 0 ? "block" : "hidden",
                   )}
                 ></div>
@@ -94,18 +97,18 @@ export const Activity: FC<ActivityProps> = ({
           />
         </FilterPopover>
       </div>
-      {!isFirstLoading && activities.length === 0 && !isValidating ? (
+      {showEmpty ? (
         <ActivityEmpty />
       ) : (
         <>
           <div
             className={clsx(
               "overflow-auto",
-              isValidating && !activities.length && "pl-5 sm:pl-[30px]",
+              showSkeleton && "pl-5 sm:pl-[30px]",
             )}
           >
             <Table className="!min-w-0 !sm:min-w-[720px] " id="activity-table">
-              {(isValidating && !activities.length) || isFirstLoading ? (
+              {showSkeleton ? (
                 <>
                   <TableActivitySkeleton
                     tableRowsAmount={10}

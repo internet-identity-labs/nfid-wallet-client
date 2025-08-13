@@ -86,7 +86,11 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
             <input
               type="checkbox"
               id="saved-checkbox"
-              className="w-5 h-5 border-2 border-black rounded cursor-pointer"
+              className={clsx(
+                "w-5 h-5 border-black rounded cursor-pointer border-1 dark:border-white dark:bg-transparent",
+                isSaved &&
+                  "dark:bg-primaryButtonColor dark:border-primaryButtonColor",
+              )}
               onChange={() => setIsSaved(!isSaved)}
               checked={isSaved}
             />

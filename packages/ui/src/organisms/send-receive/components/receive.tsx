@@ -66,7 +66,7 @@ export const Receive: FC<ReceiveProps> = ({
         <p className="mb-1 text-xs text-gray-500 dark:text-zinc-500">
           ETH wallet address
         </p>
-        <div className="rounded-[12px] bg-gray-100 dark:bg-zinc-700 text-gray-500 dark:text-zinc-500 flex items-center justify-between px-2.5 h-[56px] text-sm">
+        <div className="rounded-[12px] bg-gray-100 dark:bg-[#FFFFFF0D] text-gray-500 dark:text-zinc-400 flex items-center justify-between px-2.5 h-[56px] text-sm">
           {ethAddress ? (
             <>
               <CenterEllipsis

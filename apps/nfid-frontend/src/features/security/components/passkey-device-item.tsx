@@ -40,7 +40,7 @@ export const PasskeyDeviceItem = ({
         </div>
         {device.label.length ? (
           <div>
-            <p className="leading-[26px]">{device.label}</p>
+            <p className="dark:text-white leading-[26px]">{device.label}</p>
             <p className="text-xs text-gray-400 dark:text-zinc-500 leading-[16px]">
               {device.origin}
             </p>
@@ -51,13 +51,17 @@ export const PasskeyDeviceItem = ({
           </span>
         )}
         {device.isMultiDevice && (
-          <span className="ml-2.5 px-2 py-1 text-gray-600 dark:text-white uppercase bg-gray-50 dark:bg-zinc-700 font-bold tracking-[0.2px] text-[10px]">
+          <span className="ml-2.5 px-2 py-1 text-gray-600 dark:text-white uppercase bg-gray-50 dark:bg-zinc-700 font-bold tracking-[0.2px] text-[10px] rounded-[6px]">
             Multi-device
           </span>
         )}
       </td>
-      <td className="hidden sm:table-cell">{device.created_at}</td>
-      <td className="hidden sm:table-cell">{device.last_used}</td>
+      <td className="hidden sm:table-cell dark:text-white">
+        {device.created_at}
+      </td>
+      <td className="hidden sm:table-cell dark:text-white">
+        {device.last_used}
+      </td>
       <td className="w-11 pr-[14px]">
         {device.isLegacyDevice && (
           <Tooltip
@@ -100,7 +104,7 @@ export const PasskeyDeviceItem = ({
                       "flex items-center space-x-2 cursor-pointer",
                     )}
                   >
-                    <span>Details</span>
+                    <span className="dark:text-white">Details</span>
                   </div>
                 </DetailsPasskey>
                 <DeletePasskey
@@ -114,7 +118,7 @@ export const PasskeyDeviceItem = ({
                       "flex items-center space-x-2 cursor-pointer",
                     )}
                   >
-                    <span>Remove</span>
+                    <span className="dark:text-white">Remove</span>
                   </div>
                 </DeletePasskey>
               </motion.div>

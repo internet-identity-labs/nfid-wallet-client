@@ -9,13 +9,12 @@ import { Principal } from "@dfinity/principal"
 import {
   Contract,
   InfuraProvider,
+  parseEther,
   type FeeData,
   type TransactionResponse,
 } from "ethers"
 import { agentBaseConfig } from "packages/integration/src/lib/actors"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
-
-import { ETH_DECIMALS } from "@nfid/integration/token/constants"
 
 import { EthSignTransactionRequest } from "../bitcoin/idl/chain-fusion-signer.d"
 import {
@@ -65,8 +64,7 @@ export class EthereumService {
 
   //get balance of eth address
   public async getBalance(address: Address): Promise<Balance> {
-    const balance = await this.provider.getBalance(address)
-    return balance
+    return await this.provider.getBalance(address)
   }
 
   public async getQuickBalance(principal: Principal): Promise<Balance> {
@@ -76,24 +74,21 @@ export class EthereumService {
       throw Error("No ethereum address in a cache.")
     }
 
-    const balance = await this.getBalance(cachedValue as Address)
-
-    return balance / BigInt(10 ** ETH_DECIMALS)
+    return await this.getBalance(cachedValue as Address)
   }
 
   //retrieve fee data from provider
-  public async getFee(): Promise<FeeData> {
+  private async getFee(): Promise<FeeData> {
     const feeData = await this.provider.getFeeData()
     return feeData
   }
 
   //estimate gas for transaction
-  public async estimateGas(address: Address, amount: bigint): Promise<bigint> {
-    const gas = await this.provider.estimateGas({
+  private async estimateGas(address: Address, amount: string): Promise<bigint> {
+    return await this.provider.estimateGas({
       to: address,
-      value: amount,
+      value: parseEther(amount),
     })
-    return gas
   }
 
   //deposit eth to ckETH
@@ -170,41 +165,63 @@ export class EthereumService {
     return result
   }
 
+  public async getApproximateEthFee(to: Address, value: string) {
+    const feeData = await this.getFee()
+
+    if (
+      feeData.gasPrice === null ||
+      feeData.maxFeePerGas === null ||
+      feeData.maxPriorityFeePerGas === null
+    ) {
+      throw new Error("sendEthTransaction Gas error")
+    }
+
+    const [gasUsed, baseFee] = await Promise.all([
+      this.estimateGas(to, value),
+      this.getBaseFee(),
+    ])
+
+    return gasUsed * (baseFee + feeData.maxPriorityFeePerGas)
+  }
+
   //transfer eth
   public async sendEthTransaction(
     identity: SignIdentity,
     to: Address,
-    value: bigint,
-    feeData: {
-      maxPriorityFeePerGas: bigint
-      maxFeePerGas: bigint
-      gasPrice: bigint
-    },
+    value: string,
   ): Promise<TransactionResponse> {
-    let address = await this.getAddress(identity)
-    let nonce = await this.getTransactionCount(address)
+    const address = await this.getAddress(identity)
+
+    const [nonce, gasLimit, feeData] = await Promise.all([
+      this.getTransactionCount(address),
+      this.estimateGas(to, value),
+      this.getFee(),
+    ])
+
+    if (
+      feeData.gasPrice === null ||
+      feeData.maxFeePerGas === null ||
+      feeData.maxPriorityFeePerGas === null
+    )
+      throw new Error("sendEthTransaction Gas error")
 
     let request: EthSignTransactionRequest = {
       chain_id: chainId,
       to: to,
-      value: value,
+      value: parseEther(value),
       data: [],
-      nonce: BigInt(nonce + 1),
-      gas: feeData.gasPrice,
+      nonce: BigInt(nonce),
+      gas: gasLimit,
       max_priority_fee_per_gas: feeData.maxPriorityFeePerGas,
       max_fee_per_gas: feeData.maxFeePerGas,
     }
-
-    console.log(request)
 
     let signedTransaction = await chainFusionSignerService.ethSignTransaction(
       identity,
       request,
     )
 
-    let response = await this.sendTransaction(signedTransaction)
-
-    return response
+    return await this.sendTransaction(signedTransaction)
   }
 
   private async getAddressFromCache(principal: string) {
@@ -248,11 +265,23 @@ export class EthereumService {
     return transactionCount
   }
 
+  private async getBaseFee() {
+    const block = await this.provider.getBlock("latest")
+    return block?.baseFeePerGas ?? BigInt(0)
+  }
+
   private async sendTransaction(
     signedTransaction: string,
   ): Promise<TransactionResponse> {
-    const response = await this.provider.broadcastTransaction(signedTransaction)
-    return response
+    try {
+      const response = await this.provider.broadcastTransaction(
+        signedTransaction,
+      )
+      await response.wait()
+      return response
+    } catch (e) {
+      throw e
+    }
   }
 }
 

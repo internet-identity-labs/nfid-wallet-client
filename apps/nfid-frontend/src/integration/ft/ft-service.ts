@@ -8,9 +8,11 @@ import { FT } from "src/integration/ft/ft"
 import { FTImpl } from "src/integration/ft/impl/ft-impl"
 
 import {
+  BTC_DECIMALS,
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_CANISTER_ID,
+  ETH_DECIMALS,
   ETH_NATIVE_ID,
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
@@ -56,6 +58,10 @@ export class FtService {
           (canister) => canister.ledger === CKBTC_CANISTER_ID,
         )
 
+        const ckEth = canisters.find(
+          (canister) => canister.ledger === CKETH_CANISTER_ID,
+        )
+
         const updatePromises = []
 
         if (!icp || icp.state === State.Inactive) {
@@ -85,6 +91,15 @@ export class FtService {
           )
         }
 
+        if (!ckEth || ckEth.state === State.Inactive) {
+          updatePromises.push(
+            icrc1RegistryService.storeICRC1Canister(
+              CKETH_CANISTER_ID,
+              State.Active,
+            ),
+          )
+        }
+
         await Promise.all(updatePromises)
 
         if (updatePromises.length > 0) {
@@ -105,7 +120,7 @@ export class FtService {
       ledger: BTC_NATIVE_ID,
       symbol: "BTC",
       name: "Bitcoin",
-      decimals: 8,
+      decimals: BTC_DECIMALS,
       category: Category.Native,
       logo: BtcIcon,
       state: State.Active,
@@ -120,7 +135,7 @@ export class FtService {
       ledger: ETH_NATIVE_ID,
       symbol: "ETH",
       name: "Ethereum",
-      decimals: 8,
+      decimals: ETH_DECIMALS,
       category: Category.Native,
       logo: EthIcon,
       state: State.Active,

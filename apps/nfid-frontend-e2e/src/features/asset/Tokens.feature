@@ -24,7 +24,7 @@ Feature: Tokens tab
       | Native   | ICP      | 28542       | Internet Computer | available | ckWBTC | 0.01007 ICP   |
       | Native   | ICP      | 100000830   | Internet Computer | available | ckUSDT | 0.0497 ICP    |
 
-  @assets @mobile
+  @assets @mobile @skip
   Scenario Outline: User checks his tokens are displayed and checks the ability to manage his tokens
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor

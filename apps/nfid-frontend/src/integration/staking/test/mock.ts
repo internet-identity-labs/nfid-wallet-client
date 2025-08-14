@@ -1,5 +1,6 @@
 import {
   CKBTC_CANISTER_ID,
+  CKETH_CANISTER_ID,
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -38,6 +39,16 @@ export const mockFt = [
     category: "ChainFusion",
     fee: BigInt(1000),
     decimals: 8,
+  },
+  {
+    ledger: CKETH_CANISTER_ID,
+    name: "ckETH",
+    symbol: "ckETH",
+    index: "",
+    state: "Active",
+    category: "ChainFusion",
+    fee: BigInt(2000000000000),
+    decimals: 18,
   },
 ]
 

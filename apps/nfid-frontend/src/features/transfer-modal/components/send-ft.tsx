@@ -12,6 +12,7 @@ import { useForm, FormProvider } from "react-hook-form"
 import { RootWallet, registerTransaction } from "@nfid/integration"
 import {
   BTC_NATIVE_ID,
+  ETH_NATIVE_ID,
   E8S,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -26,12 +27,13 @@ import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
-import { useBtcAddress } from "frontend/hooks"
+import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { useIdentity } from "frontend/hooks/identity"
 import {
   bitcoinService,
   BitcointNetworkFeeAndUtxos,
 } from "frontend/integration/bitcoin/bitcoin.service"
+import { ethereumService } from "frontend/integration/ethereum/ethereum.service"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
@@ -39,9 +41,8 @@ import { FormValues, SendStatus } from "../types"
 import {
   getTokensWithUpdatedBalance,
   getVaultsAccountsOptions,
-  validateBTCAddress,
-  validateICPAddress,
   validateICRC1Address,
+  addressValidators,
 } from "../utils"
 
 const DEFAULT_TRANSFER_ERROR = "Something went wrong"
@@ -75,12 +76,15 @@ export const TransferFT = ({
     useState(preselectedAccountAddress)
   const [error, setError] = useState<string | undefined>()
   const [btcError, setBtcError] = useState<string | undefined>()
+  const [ethError, setEthError] = useState<string | undefined>()
   const { profile } = useProfile()
   const { balances } = useAllVaultsWallets()
   const { isBtcAddressLoading } = useBtcAddress()
+  const { isEthAddressLoading } = useEthAddress()
   const [btcFee, setBtcFee] = useState<BitcointNetworkFeeAndUtxos | undefined>(
     undefined,
   )
+  const [ethFee, setEthFee] = useState<bigint | undefined>(undefined)
   const [isValidating, setIsValidating] = useState(false)
 
   const formMethods = useForm<FormValues>({
@@ -104,7 +108,7 @@ export const TransferFT = ({
     () =>
       debounce((val: number) => {
         setDebouncedAmount(val)
-      }, 500),
+      }, 1000),
     [setDebouncedAmount],
   )
 
@@ -173,7 +177,7 @@ export const TransferFT = ({
   useEffect(() => {
     let isCancelled = false
 
-    const fetchFee = async () => {
+    const fetchBtcFee = async () => {
       if (
         token?.getTokenAddress() === BTC_NATIVE_ID &&
         isAmountValid &&
@@ -200,7 +204,32 @@ export const TransferFT = ({
       }
     }
 
-    fetchFee()
+    const fetchEthFee = async () => {
+      if (
+        token?.getTokenAddress() === ETH_NATIVE_ID &&
+        isAmountValid &&
+        !formMethods.formState.errors.amount &&
+        isIdentityReady
+      ) {
+        setEthFee(undefined)
+        setIsValidating(true)
+        try {
+          const fee = await token.getETHFee(to, debouncedAmount.toString())
+          if (!isCancelled) setEthFee(fee)
+        } catch (e) {
+          console.error(`ETH error: ${e}`)
+          setEthError((e as Error).message)
+          if (!isCancelled) setEthFee(undefined)
+        } finally {
+          if (!isCancelled) setIsValidating(false)
+        }
+      } else {
+        setBtcFee(undefined)
+      }
+    }
+
+    fetchBtcFee()
+    fetchEthFee()
 
     return () => {
       isCancelled = true
@@ -212,14 +241,47 @@ export const TransferFT = ({
     isAmountValid,
     formMethods.formState.errors.amount,
     isIdentityReady,
+    to,
   ])
 
   useEffect(() => {
     setBtcError(undefined)
+    setEthError(undefined)
   }, [token])
 
   const submit = useCallback(async () => {
     if (!token) return toaster.error("No selected token")
+
+    if (token.getTokenAddress() === ETH_NATIVE_ID) {
+      if (!identity || !ethFee) return
+
+      setIsSuccessOpen(true)
+      ethereumService
+        .sendEthTransaction(identity, to, amount)
+        .then(() => {
+          setSuccessMessage(
+            `Transaction ${amount} ${token.getTokenSymbol()} successful`,
+          )
+          setStatus(SendStatus.COMPLETED)
+          getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
+            (updatedTokens) => {
+              mutateWithTimestamp("tokens", updatedTokens, false)
+            },
+          )
+        })
+        .catch((e) => {
+          console.error(
+            `Transfer error: ${
+              (e as Error).message ? (e as Error).message : e
+            }`,
+          )
+          setErrorMessage(DEFAULT_TRANSFER_ERROR)
+          setError(DEFAULT_TRANSFER_ERROR)
+          setStatus(SendStatus.FAILED)
+        })
+
+      return
+    }
 
     if (token.getTokenAddress() === BTC_NATIVE_ID) {
       if (!identity || !btcFee) return
@@ -367,6 +429,7 @@ export const TransferFT = ({
     setErrorMessage,
     setSuccessMessage,
     btcFee,
+    ethFee,
     identity,
   ])
 
@@ -377,13 +440,12 @@ export const TransferFT = ({
         tokens={activeTokens}
         setChosenToken={setTokenAddress}
         validateAddress={
-          token?.getTokenAddress() === ICP_CANISTER_ID
-            ? validateICPAddress
-            : token?.getTokenAddress() === BTC_NATIVE_ID
-            ? validateBTCAddress
-            : validateICRC1Address
+          addressValidators[token?.getTokenAddress() ?? ""] ||
+          validateICRC1Address
         }
-        isLoading={isTokensLoading || isBtcAddressLoading}
+        isLoading={
+          isTokensLoading || isBtcAddressLoading || isEthAddressLoading
+        }
         isVault={isVault}
         selectedVaultsAccountAddress={selectedVaultsAccountAddress}
         submit={submit}
@@ -399,7 +461,9 @@ export const TransferFT = ({
         onClose={onClose}
         error={error}
         btcError={btcError}
+        ethError={ethError}
         btcFee={btcFee?.fee_satoshis || undefined}
+        ethFee={ethFee || undefined}
         isFeeLoading={isValidating || isIdentityLoading || !identity}
       />
     </FormProvider>

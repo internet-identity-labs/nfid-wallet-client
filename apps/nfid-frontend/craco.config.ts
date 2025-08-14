@@ -44,6 +44,7 @@ const setupCSP = () => {
         "https://accounts.google.com/gsi/",
         "https://sepolia.infura.io/",
         "https://etherscan.io/",
+        "https://api-sepolia.etherscan.io/",
       ],
       "worker-src": "'self' blob:",
       "img-src": ["'self' blob: data: content: https:"],

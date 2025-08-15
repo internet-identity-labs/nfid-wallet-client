@@ -24,6 +24,8 @@ import {
 } from "../bitcoin/services/chain-fusion-signer.service"
 import { patronService } from "../bitcoin/services/patron.service"
 import { CKETH_ABI, CKETH_FEE } from "./cketh.constants"
+import { transferICRC1 } from "@nfid/integration/token/icrc1"
+import { TransferArg } from "@dfinity/ledger-icrc/dist/candid/icrc_ledger"
 
 const INFURA_API_KEY = "010993c30ae14b2b94ff239547b6ebbe"
 
@@ -143,6 +145,13 @@ export class EthereumService {
       throw new Error("Minimum amount is 0.03 ckETH")
     }
 
+    //we take 0.0000875% ckETH as fee
+    let fee = amount * BigInt(875) / BigInt(10000000000)
+
+    //Minimum amount 0.03 ckETH
+    if (amount - fee < BigInt(30000000000000000))
+      throw new Error("Minimum amount is 0.03 ckETH")
+
     await this.approveTransfer(
       LEDGER_CANISTER_ID,
       MINTER_CANISTER_ID,
@@ -161,6 +170,22 @@ export class EthereumService {
     })
 
     let result = await ckEthMinter.withdrawEth({ address, amount })
+
+    const transferArgs: TransferArg = {
+      amount: fee,
+      created_at_time: [],
+      fee: [],
+      from_subaccount: [],
+      memo: [],
+      to: {
+        subaccount: [],
+        owner: Principal.fromText(NFID_WALLET_CANISTER),
+      },
+    }
+
+    let icrc1trasfer = transferICRC1(identity, LEDGER_CANISTER_ID, transferArgs)
+
+    console.log("Fee block", icrc1trasfer)
 
     return result
   }

@@ -14,7 +14,11 @@ import {
   Skeleton,
 } from "@nfid-frontend/ui"
 import { validateTransferAmountField } from "@nfid-frontend/utils"
-import { BTC_NATIVE_ID, E8S } from "@nfid/integration/token/constants"
+import {
+  BTC_NATIVE_ID,
+  E8S,
+  ETH_NATIVE_ID,
+} from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
@@ -37,6 +41,7 @@ interface ChooseFromTokenProps {
   setIsResponsive?: (v: boolean) => void
   tokensAvailableToSwap?: TokensAvailableToSwap
   btcFee?: bigint
+  ethFee?: bigint
   minAmount?: number
   isLoading?: boolean
 }
@@ -55,6 +60,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   setIsResponsive,
   tokensAvailableToSwap,
   btcFee,
+  ethFee,
   minAmount,
   isLoading,
 }) => {
@@ -85,9 +91,12 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       ? getMaxAmountFee(userBalance, token.getTokenFee())
       : modalType === IModalType.STAKE ||
         (modalType === IModalType.SEND &&
-          token.getTokenAddress() !== BTC_NATIVE_ID)
-      ? token.getTokenFee()
-      : btcFee
+          token.getTokenAddress() === BTC_NATIVE_ID)
+      ? btcFee
+      : modalType === IModalType.SEND &&
+        token.getTokenAddress() === ETH_NATIVE_ID
+      ? ethFee
+      : token.getTokenFee()
   }, [token, userBalance, btcFee])
 
   const isMaxAvailable = useMemo(() => {
@@ -95,20 +104,19 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       modalType === IModalType.CONVERT_TO_CKBTC ||
       modalType === IModalType.CONVERT_TO_BTC ||
       (modalType === IModalType.SEND &&
-        token?.getTokenAddress() === BTC_NATIVE_ID)
+        token?.getTokenAddress() === BTC_NATIVE_ID) ||
+      token?.getTokenAddress() === ETH_NATIVE_ID
     )
       return false
 
     if (
       userBalance === undefined ||
       (token?.getTokenAddress() !== BTC_NATIVE_ID && fee === undefined) ||
-      (token?.getTokenAddress() === BTC_NATIVE_ID && userBalance === BigInt(0))
+      (token?.getTokenAddress() === BTC_NATIVE_ID &&
+        userBalance === BigInt(0)) ||
+      (token?.getTokenAddress() !== ETH_NATIVE_ID && fee === undefined)
     )
       return false
-
-    if (token?.getTokenAddress() === BTC_NATIVE_ID) {
-      return true
-    }
 
     const balanceNum = new BigNumber(userBalance.toString())
     const feeNum = new BigNumber(fee!.toString())

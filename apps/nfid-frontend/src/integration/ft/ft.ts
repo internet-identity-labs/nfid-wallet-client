@@ -69,9 +69,15 @@ export interface FT {
     amount: string,
   ): Promise<BitcointNetworkFeeAndUtxos>
 
+  getETHFee(to: string, value: string): Promise<bigint>
+
   getBTCFeeFormatted(fee: bigint): string
 
   getBTCFeeFormattedUsd(fee: bigint): string | undefined
+
+  getETHFeeFormatted(fee: bigint): string
+
+  getETHFeeFormattedUsd(fee: bigint): string | undefined
 
   getTokenFeeFormattedUsd(): string | undefined
 

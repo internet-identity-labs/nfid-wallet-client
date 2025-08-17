@@ -44,4 +44,4 @@ Feature: Tokens tab
     Then Verifying that the <token2> token is displayed
     Examples:
       | category     | currency | nfid number | token1 | stake       | token2 | token balance |
-      | Chain Fusion | ckPEPE   | 200000276   | ckPEPE | unavailable | ckETH  | 953 ckPEPE    |
+      | Chain Fusion | ckPEPE   | 200000276   | ckPEPE | unavailable | ckOCT  | 953 ckPEPE    |

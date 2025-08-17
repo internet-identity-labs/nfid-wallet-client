@@ -321,7 +321,7 @@ export class FTImpl implements FT {
   }
 
   async getETHFee(to: string, value: string): Promise<bigint> {
-    return await ethereumService.getApproximateEthFee(to, value)
+    return await ethereumService.getApproximateSendEthFee(to, value)
   }
 
   getETHFeeFormatted(fee: bigint): string {

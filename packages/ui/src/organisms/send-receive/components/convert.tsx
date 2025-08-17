@@ -3,6 +3,13 @@ import { FC, useMemo, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
+import {
+  BTC_NATIVE_ID,
+  CKBTC_CANISTER_ID,
+  CKETH_CANISTER_ID,
+  ETH_DECIMALS,
+  ETH_NATIVE_ID,
+} from "@nfid/integration/token/constants"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 import {
@@ -11,7 +18,7 @@ import {
 } from "frontend/integration/bitcoin/bitcoin.service"
 import { FT } from "frontend/integration/ft/ft"
 
-import { getConversionFee } from "../utils"
+import { getBtcConversionFee } from "../utils"
 import { ConvertDetails } from "./convert-details"
 import { ConvertForm } from "./convert-form"
 import { ConvertSuccessUi } from "./convert-success"
@@ -31,11 +38,13 @@ export interface ConvertUiProps {
   isFeeLoading: boolean
   status: SendStatus
   error: string | undefined
-  btcError: string | undefined
+  conversionError: string | undefined
   isSuccessOpen: boolean
   onClose: () => void
   handleReverse: () => void
   btcFee?: BtcToCkBtcFee | CkBtcToBtcFee
+  ethFee?: bigint
+  tokens: FT[]
 }
 
 export const ConvertUi: FC<ConvertUiProps> = ({
@@ -48,11 +57,13 @@ export const ConvertUi: FC<ConvertUiProps> = ({
   isFeeLoading,
   status,
   error,
-  btcError,
+  conversionError,
   isSuccessOpen,
   onClose,
   handleReverse,
   btcFee,
+  ethFee,
+  tokens,
 }) => {
   const [convertModal, setConvertModal] = useState(ConvertModal.CONVERT)
 
@@ -62,9 +73,18 @@ export const ConvertUi: FC<ConvertUiProps> = ({
   } = useFormContext()
 
   const amount = watch("amount")
-  const fee = getConversionFee(btcFee)
+  const fee =
+    fromToken?.getTokenAddress() === ETH_NATIVE_ID ||
+    fromToken?.getTokenAddress() === CKETH_CANISTER_ID
+      ? ethFee
+      : getBtcConversionFee(btcFee)
 
   const targetAmount = useMemo(() => {
+    if (typeof fee === "bigint") {
+      if (!amount || !fee) return "0.00"
+      return (Number(amount) - Number(fee) / 10 ** ETH_DECIMALS).toString()
+    }
+
     if (!amount || !fee?.total) return "0.00"
     return (Number(amount) - Number(fee?.total)).toFixed(
       toToken?.getTokenDecimals(),
@@ -104,6 +124,11 @@ export const ConvertUi: FC<ConvertUiProps> = ({
             onClose={onClose}
             status={status}
             error={error}
+            tokenName={toToken.getTokenName()}
+            isBtc={
+              toToken.getTokenAddress() === BTC_NATIVE_ID ||
+              toToken.getTokenAddress() === CKBTC_CANISTER_ID
+            }
           />
         </motion.div>
       )}
@@ -142,10 +167,11 @@ export const ConvertUi: FC<ConvertUiProps> = ({
             setConvertModal={setConvertModal}
             amount={amount}
             errors={errors}
-            btcError={btcError}
+            conversionError={conversionError}
             handleReverse={handleReverse}
             fee={fee}
             targetAmount={targetAmount}
+            tokens={tokens}
           />
         </motion.div>
       )}

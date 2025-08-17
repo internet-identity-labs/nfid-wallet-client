@@ -8,7 +8,7 @@ import { ChooseTokenModal } from "./token-modal"
 
 export interface IChooseFtModal {
   id: string
-  searchInputId: string
+  searchInputId?: string
   tokens: FT[]
   onSelect: (value: string) => void
   title: string

@@ -159,7 +159,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
               </>
             )}
           </p>
-          <p className="text-secondary text-xs leading-[20px]">
+          <p className="text-secondary text-xs leading-[20px] dark:text-zinc-400">
             {token.getTokenName()}
           </p>
         </div>

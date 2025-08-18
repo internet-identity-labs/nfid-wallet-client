@@ -75,7 +75,7 @@ export const Button: React.FC<ButtonProps> = ({
             "text-primaryButtonColor border-transparent dark:text-teal-500",
             "hover:bg-gray-100 dark:hover:bg-zinc-800",
             "active:bg-gray-200 dark:active:bg-zinc-900 active:ring-offset-0 active:ring-0",
-            "disabled:bg-white disabled:border-transparent disabled:text-secondary",
+            "disabled:bg-white dark:disabled:bg-transparent disabled:border-transparent disabled:text-secondary dark:disabled:text-zinc-600",
           ),
         isRed &&
           clsx(

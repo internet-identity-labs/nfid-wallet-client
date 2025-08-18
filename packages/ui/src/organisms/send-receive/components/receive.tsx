@@ -63,7 +63,7 @@ export const Receive: FC<ReceiveProps> = ({
         </div>
       </div>
       <div className="mb-2.5">
-        <p className="mb-1 text-xs text-gray-500 dark:text-zinc-500">
+        <p className="mb-1 text-xs text-gray-500 dark:text-zinc-400">
           ETH wallet address
         </p>
         <div className="rounded-[12px] bg-gray-100 dark:bg-[#FFFFFF0D] text-gray-500 dark:text-zinc-400 flex items-center justify-between px-2.5 h-[56px] text-sm">
@@ -83,7 +83,7 @@ export const Receive: FC<ReceiveProps> = ({
         </div>
       </div>
       <div className="mb-2.5">
-        <p className="mb-1 text-xs text-gray-500 dark:text-zinc-500">
+        <p className="mb-1 text-xs text-gray-500 dark:text-zinc-400">
           BTC wallet address
         </p>
         <div className="rounded-[12px] bg-gray-100 dark:bg-[#FFFFFF0D] text-gray-500 dark:text-zinc-400 flex items-center justify-between px-2.5 h-[56px] text-sm">

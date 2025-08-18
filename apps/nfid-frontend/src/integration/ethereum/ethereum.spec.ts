@@ -2,8 +2,8 @@ import { Ed25519KeyIdentity } from "@dfinity/identity"
 
 import { mockIdentityA } from "@nfid/integration"
 
-import { ethereumService } from "./ethereum.service"
 import { getEthActivitiesRows } from "./eth-transaction.service"
+import { ethereumService } from "./ethereum.service"
 
 // const principal = Principal.fromText(
 //   "535yc-uxytb-gfk7h-tny7p-vjkoe-i4krp-3qmcl-uqfgr-cpgej-yqtjq-rqe",
@@ -12,7 +12,7 @@ import { getEthActivitiesRows } from "./eth-transaction.service"
 let idA = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
 let address = "0xAd984257f35B8dD8BF4154ccCfEDDE229CD1DC89"
 
-describe("EtheriumService", () => {
+describe("EthereumService", () => {
   jest.setTimeout(50000)
 
   it.skip("should be address", async () => {
@@ -33,16 +33,12 @@ describe("EtheriumService", () => {
   })
 
   it.skip("should send ckETH to eth", async () => {
-    let tr = await ethereumService.convertCkETHToEth(
-      address,
-      BigInt(30000000000000000),
-      idA,
-    )
+    let tr = await ethereumService.convertCkETHToEth(address, "0.03", idA)
     console.log(tr)
   })
 
   it.skip("should send eth to ckETH", async () => {
-    let tr = await ethereumService.depositEth(idA, BigInt(9000070045000000))
+    let tr = await ethereumService.depositEth(idA, "0.009000070045")
     console.log(tr)
   })
 })

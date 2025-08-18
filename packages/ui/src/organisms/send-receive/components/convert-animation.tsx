@@ -7,7 +7,7 @@ import { SendStatus } from "frontend/features/transfer-modal/types"
 
 import FailedIcon from "../assets/animation-failed.svg"
 import "../assets/animation-gradient.css"
-import BtcWaitIcon from "../assets/bitcoin-wait.svg"
+import ConvertWaitIcon from "../assets/convert-wait.png"
 
 const HIDE_ANIMATION_DURATION = 0.3
 
@@ -115,7 +115,7 @@ export const ConvertAnimation: React.FC<CustomAnimationProps> = ({
       >
         {status !== SendStatus.PENDING ? (
           <img
-            src={status === SendStatus.COMPLETED ? BtcWaitIcon : FailedIcon}
+            src={status === SendStatus.COMPLETED ? ConvertWaitIcon : FailedIcon}
             alt={
               status === SendStatus.COMPLETED ? "Stake success" : "Stake failed"
             }

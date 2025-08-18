@@ -224,6 +224,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
                     : token.getTokenFee(),
                   decimals,
                   modalType === IModalType.CONVERT_TO_BTC,
+                  modalType === IModalType.CONVERT_TO_ETH,
                   minAmount,
                   token.getTokenSymbol(),
                 )(value)
@@ -242,7 +243,13 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           {tokens !== undefined && setFromChosenToken ? (
             <ChooseFtModal
               id={id}
-              searchInputId={"sourceTokenSearchInput"}
+              searchInputId={
+                modalType === IModalType.SEND ||
+                modalType === IModalType.SWAP ||
+                modalType === IModalType.STAKE
+                  ? "sourceTokenSearchInput"
+                  : undefined
+              }
               tokens={tokens}
               title={title}
               onSelect={setFromChosenToken}

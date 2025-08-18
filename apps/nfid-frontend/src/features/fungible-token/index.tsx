@@ -13,6 +13,8 @@ import { authState } from "@nfid/integration"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
+  CKETH_CANISTER_ID,
+  ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
@@ -66,6 +68,22 @@ const TokensPage = () => {
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
     send({ type: "ASSIGN_SELECTED_FT", data: CKBTC_CANISTER_ID })
+    send("SHOW")
+  }
+
+  const onConvertToCkEth = () => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
+    send({ type: "ASSIGN_SELECTED_FT", data: ETH_NATIVE_ID })
+    send("SHOW")
+  }
+
+  const onConvertToEth = () => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
+    send({ type: "ASSIGN_SELECTED_FT", data: CKETH_CANISTER_ID })
     send("SHOW")
   }
 
@@ -232,6 +250,8 @@ const TokensPage = () => {
           onSwapClick={onSwapClick}
           onConvertToBtc={onConvertToBtc}
           onConvertToCkBtc={onConvertToCkBtc}
+          onConvertToEth={onConvertToEth}
+          onConvertToCkEth={onConvertToCkEth}
           onStakeClick={onStakeClick}
           hideZeroBalance={hideZeroBalance}
           onZeroBalanceToggle={onZeroBalanceToggle}

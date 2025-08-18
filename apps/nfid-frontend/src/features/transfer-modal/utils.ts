@@ -24,6 +24,7 @@ import {
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
+  CKETH_CANISTER_ID,
   ETH_NATIVE_ID,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -259,6 +260,10 @@ export const getTokensWithUpdatedBalance = async (
 export const getConversionTokenAddress = (source: string): string => {
   if (source === BTC_NATIVE_ID) return CKBTC_CANISTER_ID
   if (source === CKBTC_CANISTER_ID) return BTC_NATIVE_ID
+
+  if (source === ETH_NATIVE_ID) return CKETH_CANISTER_ID
+  if (source === CKETH_CANISTER_ID) return ETH_NATIVE_ID
+
   return CKBTC_CANISTER_ID
 }
 

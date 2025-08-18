@@ -16,6 +16,8 @@ export interface ConvertSuccessUiProps {
   titleTo: string
   subTitleFrom: string
   subTitleTo: string
+  tokenName: string
+  isBtc: boolean
   onClose: () => void
   assetImgFrom: string
   assetImgTo: string
@@ -30,6 +32,8 @@ export const ConvertSuccessUi: FC<ConvertSuccessUiProps> = ({
   titleTo,
   subTitleFrom,
   subTitleTo,
+  tokenName,
+  isBtc,
   onClose,
   assetImgFrom,
   assetImgTo,
@@ -62,8 +66,12 @@ export const ConvertSuccessUi: FC<ConvertSuccessUiProps> = ({
           {status === SendStatus.FAILED
             ? "Your assets are still in your wallet."
             : status === SendStatus.COMPLETED
-            ? `${titleFrom} will be on your address after 6 Bitcoin network confirmations. This usually takes about 90 minutes.`
-            : `Conversion usually takes around ${duration} minutes.`}
+            ? isBtc
+              ? `${tokenName} will be on your address after 6 Bitcoin network confirmations. This usually takes about 90 minutes.`
+              : `${tokenName} will be on your address after the transaction is confirmed on the network. This usually takes a few minutes, depending on network congestion.`
+            : isBtc
+            ? `Conversion usually takes around ${duration} minutes.`
+            : `Conversion usually takes a few minutes, depending on network congestion`}
         </p>
       </div>
       <div
@@ -114,7 +122,7 @@ export const ConvertSuccessUi: FC<ConvertSuccessUiProps> = ({
               )}
             </div>
           </div>
-          <div className="bg-gradient-to-b from-gray-50 dark:from-zinc-900 to-white dark:to-darkGray py-[10px] rounded-t-[12px]">
+          <div className="bg-gradient-to-b from-gray-50 dark:from-zinc-700 to-white dark:to-darkGray py-[10px] rounded-t-[12px]">
             <p className="text-sm leading-[25px] font-inter" id="title">
               {titleTo}
             </p>

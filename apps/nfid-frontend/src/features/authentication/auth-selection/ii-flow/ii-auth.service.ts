@@ -5,7 +5,7 @@ import {
 } from "@dfinity/auth-client"
 import { DelegationIdentity } from "@dfinity/identity"
 
-import { authState, im, DeviceType, Icon } from "@nfid/integration"
+import { authState, im, DeviceType, Icon, replaceActorIdentity } from "@nfid/integration"
 import { IIAuthSession } from "frontend/state/authentication"
 
 import {
@@ -31,6 +31,7 @@ export async function signWithIIService(): Promise<IIAuthSession> {
             try {
               let profile
               try {
+                await replaceActorIdentity(im, identity)
                 profile = await fetchProfile()
                 await im.use_access_point([identity.getPrincipal().toString()])
               } catch (e) {

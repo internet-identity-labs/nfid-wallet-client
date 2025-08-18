@@ -140,11 +140,6 @@ export class EthereumService {
     amount: bigint,
     identity: SignIdentity,
   ) {
-    //Minimum amount 0.03 ckETH
-    if (amount < BigInt(30000000000000000)) {
-      throw new Error("Minimum amount is 0.03 ckETH")
-    }
-
     //we take 0.0000875% ckETH as fee
     let fee = amount * BigInt(875) / BigInt(10000000000)
 

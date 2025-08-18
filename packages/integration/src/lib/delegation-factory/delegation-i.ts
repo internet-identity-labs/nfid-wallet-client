@@ -212,6 +212,8 @@ export async function getPublicKey(
 
   if (cachedValue) return cachedValue as any
 
+  debugger
+
   const account = await im.get_account()
 
   const anchor = account.data[0]!.anchor

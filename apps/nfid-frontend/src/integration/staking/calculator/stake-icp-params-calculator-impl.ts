@@ -18,6 +18,7 @@ export class StakeICPParamsCalculatorImpl extends StakeParamsCalculatorImpl<Netw
 
   getMinimumLockTime(): number {
     return Number(
+      // @ts-ignore
       this.params.votingPowerEconomics!.neuronMinimumDissolveDelayToVoteSeconds,
     )
   }

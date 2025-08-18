@@ -314,7 +314,12 @@ export async function createNFIDProfile(
       ? devicePrincipal
       : delegationIdentity.getPrincipal().toText(),
     browser: "",
-    device_type: email ? { Email: null } : { Passkey: null },
+    device_type:
+      deviceType === DeviceType.InternetIdentity
+        ? { InternetIdentity: null }
+        : email
+        ? { Email: null }
+        : { Passkey: null },
     credential_id: credentialId ? [credentialId] : [],
   }
 
@@ -488,6 +493,9 @@ function deviceTypeToDevice(response: DeviceVariant): DeviceType {
   }
   if (hasOwnProperty(response, "Password")) {
     return DeviceType.Password
+  }
+  if (hasOwnProperty(response, "InternetIdentity")) {
+    return DeviceType.InternetIdentity
   }
   throw Error("Unexpected enum value")
 }

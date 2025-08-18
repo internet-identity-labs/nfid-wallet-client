@@ -94,7 +94,7 @@ export class EthereumService {
   }
 
   //deposit eth to ckETH
-  public async depositEth(identity: SignIdentity, amount: bigint) {
+  public async depositEth(identity: SignIdentity, amount: string) {
     const ckEthContract = new Contract(MINTER_ADDRESS, CKETH_ABI, this.provider)
 
     let address = await this.getAddress(identity)
@@ -107,7 +107,7 @@ export class EthereumService {
     let trs = await ckEthContract.depositEth.populateTransaction(
       principalHex,
       subaccount,
-      { value: amount },
+      { value: parseEther(amount) },
     )
     const feeData = await this.provider.getFeeData()
     let nonce = await this.getTransactionCount(address)
@@ -118,7 +118,7 @@ export class EthereumService {
       feeData.maxFeePerGas || max_priority_fee_per_gas + BigInt(5000000000)
     let trs_request: EthSignTransactionRequest = {
       to: trs.to,
-      value: amount,
+      value: parseEther(amount),
       data: [trs.data],
       nonce: BigInt(nonce),
       gas: trs.gasPrice || CKETH_FEE,
@@ -137,20 +137,22 @@ export class EthereumService {
   //convert ckETH to eth
   public async convertCkETHToEth(
     address: Address,
-    amount: bigint,
+    amount: string,
     identity: SignIdentity,
   ) {
     //we take 0.0000875% ckETH as fee
     let fee = amount * BigInt(875) / BigInt(10000000000)
 
+    const parsedAmount = parseEther(amount)
     //Minimum amount 0.03 ckETH
-    if (amount - fee < BigInt(30000000000000000))
+    if (parsedAmount < BigInt(30000000000000000)) {
       throw new Error("Minimum amount is 0.03 ckETH")
+    }
 
     await this.approveTransfer(
       LEDGER_CANISTER_ID,
       MINTER_CANISTER_ID,
-      amount,
+      parsedAmount,
       identity,
     )
 
@@ -164,7 +166,10 @@ export class EthereumService {
       canisterId: Principal.fromText(MINTER_CANISTER_ID),
     })
 
-    let result = await ckEthMinter.withdrawEth({ address, amount })
+    let result = await ckEthMinter.withdrawEth({
+      address,
+      amount: parsedAmount,
+    })
 
     const transferArgs: TransferArg = {
       amount: fee,
@@ -185,7 +190,7 @@ export class EthereumService {
     return result
   }
 
-  public async getApproximateEthFee(to: Address, value: string) {
+  public async getApproximateSendEthFee(to: Address, value: string) {
     const feeData = await this.getFee()
 
     if (
@@ -202,6 +207,42 @@ export class EthereumService {
     ])
 
     return gasUsed * (baseFee + feeData.maxPriorityFeePerGas)
+  }
+
+  public async getApproximateDepositEthFee(
+    identity: SignIdentity,
+    amount: string,
+  ): Promise<bigint> {
+    const ckEthContract = new Contract(MINTER_ADDRESS, CKETH_ABI, this.provider)
+    const fromAddress = await this.getAddress(identity)
+    const principalHex = encodePrincipalToEthAddress(identity.getPrincipal())
+
+    const subaccount =
+      "0x0000000000000000000000000000000000000000000000000000000000000000"
+
+    const txRequest = await ckEthContract.depositEth.populateTransaction(
+      principalHex,
+      subaccount,
+      { value: parseEther(amount.toString()) },
+    )
+
+    const gasEstimate = await this.provider.estimateGas({
+      to: txRequest.to,
+      from: fromAddress,
+      value: txRequest.value,
+      data: txRequest.data,
+    })
+
+    const feeData = await this.provider.getFeeData()
+    const maxPriorityFeePerGas =
+      feeData.maxPriorityFeePerGas || BigInt(2_000_000_000)
+
+    const baseFee = await this.getBaseFee()
+
+    const effectiveGasPrice = baseFee + maxPriorityFeePerGas
+    const totalFee = gasEstimate * effectiveGasPrice
+
+    return totalFee
   }
 
   //transfer eth

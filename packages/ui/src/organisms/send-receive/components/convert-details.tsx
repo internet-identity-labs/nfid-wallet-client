@@ -3,7 +3,11 @@ import { IconCmpArrow } from "packages/ui/src/atoms/icons"
 import { Skeleton } from "packages/ui/src/atoms/skeleton"
 import { FC } from "react"
 
-import { BTC_NATIVE_ID } from "@nfid/integration/token/constants"
+import {
+  BTC_NATIVE_ID,
+  ETH_DECIMALS,
+  ETH_NATIVE_ID,
+} from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
 
@@ -14,7 +18,7 @@ export interface ConvertDetailsProps {
   token: FT
   isOpen: boolean
   setConvertModal: (v: ConvertModal) => void
-  fee?: IConversionFee
+  fee?: IConversionFee | bigint
 }
 
 export const ConvertDetails: FC<ConvertDetailsProps> = ({
@@ -47,10 +51,19 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
         >
           <div className="text-sm">
             <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-700">
-              <p>BTC network fee</p>
+              <p>{token.getTokenSymbol()} network fee</p>
               <p className="leading-5 text-right font-inter">
                 {!fee ? (
                   <Skeleton className="w-[70px] h-4 rounded-lg" />
+                ) : typeof fee === "bigint" ? (
+                  <>
+                    {Number(fee) / 10 ** ETH_DECIMALS} {token.getTokenSymbol()}
+                    <span className="block text-xs text-gray-400 dark:text-zinc-500">
+                      {token?.getTokenRateFormatted(
+                        (Number(fee) / 10 ** ETH_DECIMALS).toString() || "0",
+                      )}
+                    </span>
+                  </>
                 ) : (
                   <>
                     {fee?.btcNetworkFee} {token.getTokenSymbol()}
@@ -66,6 +79,13 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
               <p className="leading-5 text-right font-inter">
                 {!fee ? (
                   <Skeleton className="w-[70px] h-4 rounded-lg" />
+                ) : typeof fee === "bigint" ? (
+                  <>
+                    {fee} {token.getTokenSymbol()}
+                    <span className="block text-xs text-gray-400 dark:text-zinc-500">
+                      {token?.getTokenRateFormatted(fee.toString() || "0")}
+                    </span>
+                  </>
                 ) : (
                   <>
                     {fee?.icpNetworkFee} {token.getTokenSymbol()}
@@ -76,27 +96,35 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
                 )}
               </p>
             </div>
-            {token.getTokenAddress() !== BTC_NATIVE_ID && (
-              <div className="flex flex-wrap justify-between py-3 leading-5">
-                <p>Widget fee</p>
-                <p className="leading-5 text-right font-inter">
-                  {!fee ? (
-                    <Skeleton className="w-[70px] h-4 rounded-lg" />
-                  ) : (
-                    <>
-                      {fee?.widgetFee} {token.getTokenSymbol()}
-                      <span className="block text-xs text-gray-400">
-                        {token?.getTokenRateFormatted(fee?.widgetFee || "0")}
-                      </span>
-                    </>
-                  )}
-                </p>
-                <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
-                  The fee of 0.875% is automatically factored into this <br />
-                  conversion to support the NFID Wallet Community.
-                </p>
-              </div>
-            )}
+            {token.getTokenAddress() !== BTC_NATIVE_ID &&
+              token.getTokenAddress() !== ETH_NATIVE_ID && (
+                <div className="flex flex-wrap justify-between py-3 leading-5">
+                  <p>Widget fee</p>
+                  <p className="leading-5 text-right font-inter">
+                    {!fee ? (
+                      <Skeleton className="w-[70px] h-4 rounded-lg" />
+                    ) : typeof fee === "bigint" ? (
+                      <>
+                        {fee} {token.getTokenSymbol()}
+                        <span className="block text-xs text-gray-400">
+                          {token?.getTokenRateFormatted(fee.toString() || "0")}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        {fee?.widgetFee} {token.getTokenSymbol()}
+                        <span className="block text-xs text-gray-400">
+                          {token?.getTokenRateFormatted(fee?.widgetFee || "0")}
+                        </span>
+                      </>
+                    )}
+                  </p>
+                  <p className="text-xs text-gray-500 basis-[100%] leading-[19px] mt-1">
+                    The fee of 0.875% is automatically factored into this <br />
+                    conversion to support the NFID Wallet Community.
+                  </p>
+                </div>
+              )}
           </div>
         </div>
       </div>

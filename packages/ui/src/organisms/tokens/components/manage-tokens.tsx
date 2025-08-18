@@ -151,7 +151,7 @@ export const ManageTokens: FC<ManageTokensProps> = ({
         type="ghost"
         disabled={!!manageBtnDisabled}
       >
-        <span className="dark:text-teal-500">Manage tokens</span>
+        <span>Manage tokens</span>
       </Button>
       <ModalComponent
         isVisible={Boolean(modalStep)}

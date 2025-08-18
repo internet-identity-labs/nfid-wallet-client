@@ -42,8 +42,6 @@ export const Toggle: React.FC<ToggleProps> = ({
       ></div>
     </label>
   )
-
-  //focus:outline-black
   if (!tooltip) return jsx
   return <Tooltip tip={tooltip}>{jsx}</Tooltip>
 }

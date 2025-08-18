@@ -9,9 +9,17 @@ import {
 import { SwapStage } from "src/integration/swap/types/enums"
 
 import {
+  BTC_NATIVE_ID,
+  CKBTC_CANISTER_ID,
+  CKETH_CANISTER_ID,
+  ETH_NATIVE_ID,
+} from "@nfid/integration/token/constants"
+
+import {
   BtcToCkBtcFee,
   CkBtcToBtcFee,
 } from "frontend/integration/bitcoin/bitcoin.service"
+import { FT } from "frontend/integration/ft/ft"
 import { e8s } from "frontend/integration/nft/constants/constants"
 import { ContactSupportError } from "frontend/integration/swap/errors/types/contact-support-error"
 
@@ -28,6 +36,8 @@ export enum IModalType {
   STAKE = "STAKE",
   CONVERT_TO_BTC = "CONVERT_TO_BTC",
   CONVERT_TO_CKBTC = "CONVERT_TO_CKBTC",
+  CONVERT_TO_ETH = "CONVERT_TO_ETH",
+  CONVERT_TO_CKETH = "CONVERT_TO_CKETH",
 }
 
 export const getTitleAndButtonText = (
@@ -74,7 +84,7 @@ const textStatusByStep: { [key in SwapStage]: string } = {
 export const getTextStatusByStep = (step: SwapStage) =>
   textStatusByStep[step] || ""
 
-export const getConversionFee = (fee?: BtcToCkBtcFee | CkBtcToBtcFee) => {
+export const getBtcConversionFee = (fee?: BtcToCkBtcFee | CkBtcToBtcFee) => {
   if (!fee || fee.bitcointNetworkFee.fee_satoshis === BigInt(0)) return
 
   const {
@@ -134,4 +144,27 @@ export const getMaxAmountFee = (
   const fee = amount.minus(tokenFee).dividedBy(divisor)
 
   return BigInt(amount.minus(fee).toFixed(0))
+}
+
+export const getModalType = (fromToken?: FT, toToken?: FT) => {
+  switch (true) {
+    case fromToken?.getTokenAddress() === BTC_NATIVE_ID &&
+      toToken?.getTokenAddress() === CKBTC_CANISTER_ID:
+      return IModalType.CONVERT_TO_CKBTC
+
+    case fromToken?.getTokenAddress() === CKBTC_CANISTER_ID &&
+      toToken?.getTokenAddress() === BTC_NATIVE_ID:
+      return IModalType.CONVERT_TO_BTC
+
+    case fromToken?.getTokenAddress() === ETH_NATIVE_ID &&
+      toToken?.getTokenAddress() === CKETH_CANISTER_ID:
+      return IModalType.CONVERT_TO_CKETH
+
+    case fromToken?.getTokenAddress() === CKETH_CANISTER_ID &&
+      toToken?.getTokenAddress() === ETH_NATIVE_ID:
+      return IModalType.CONVERT_TO_ETH
+
+    default:
+      return IModalType.CONVERT_TO_CKBTC
+  }
 }

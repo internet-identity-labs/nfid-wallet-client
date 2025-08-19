@@ -61,7 +61,7 @@ export const StakeFT = ({
     return tokens.filter(
       (token) =>
         token.getTokenCategory() === Category.Sns ||
-        token.getTokenCategory() === Category.Native,
+        token.getTokenAddress() === ICP_CANISTER_ID,
     )
   }, [tokens])
 

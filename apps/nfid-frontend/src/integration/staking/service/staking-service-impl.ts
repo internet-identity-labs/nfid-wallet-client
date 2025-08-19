@@ -1,5 +1,7 @@
 import { SignIdentity } from "@dfinity/agent"
 import { NeuronId as NeuronICPId, NeuronInfo, Topic } from "@dfinity/nns"
+import { Followees } from "@dfinity/nns/dist/candid/governance"
+import { Neuron as FullNeuron } from "@dfinity/nns/dist/types/types/governance_converters"
 import { Principal } from "@dfinity/principal"
 import { SnsNeuronId } from "@dfinity/sns"
 import { Neuron } from "@dfinity/sns/dist/candid/sns_governance"
@@ -14,6 +16,7 @@ import {
 import { ftService } from "src/integration/ft/ft-service"
 import { StakingService } from "src/integration/staking/staking-service"
 
+import { storageWithTtl } from "@nfid/client-db"
 import {
   autoStakeMaturity,
   increaseDissolveDelay,
@@ -48,6 +51,7 @@ import { StakedToken } from "../staked-token"
 import { IStakingDelegates, IStakingICPDelegates, TotalBalance } from "../types"
 
 const NEURON_ERROR_TEXT = "No neuron for given NeuronId."
+export const stakedTokensCacheName = "StakedTokens"
 
 export class StakingServiceImpl implements StakingService {
   static readonly ICP_DELEGATES: IStakingICPDelegates = {
@@ -78,6 +82,47 @@ export class StakingServiceImpl implements StakingService {
     publicKey: string,
     identity: SignIdentity,
   ): Promise<Array<StakedToken>> {
+    const cache = await storageWithTtl.getEvenExpired(stakedTokensCacheName)
+
+    if (!cache) {
+      const stakes = await this.fetchStakedTokens(userId, publicKey, identity)
+      storageWithTtl.set(
+        stakedTokensCacheName,
+        this.serializeStakes(stakes),
+        60 * 1000,
+      )
+      return stakes
+    }
+
+    if (cache && cache.expired) {
+      this.fetchStakedTokens(userId, publicKey, identity).then((stakes) => {
+        storageWithTtl.set(
+          stakedTokensCacheName,
+          this.serializeStakes(stakes),
+          60 * 1000,
+        )
+      })
+      return this.deserializeStakes(
+        cache.value as string,
+        userId,
+        publicKey,
+        identity,
+      )
+    }
+
+    return this.deserializeStakes(
+      cache.value as string,
+      userId,
+      publicKey,
+      identity,
+    )
+  }
+
+  private async fetchStakedTokens(
+    userId: string,
+    publicKey: string,
+    identity: SignIdentity,
+  ): Promise<StakedToken[]> {
     const principal = Principal.fromText(publicKey)
     const tokens = await ftService.getTokens(userId)
 
@@ -114,6 +159,175 @@ export class StakingServiceImpl implements StakingService {
     ) as StakedToken[]
 
     return allStakedTokens
+  }
+
+  private serializeStakes(stakes: Array<StakedToken>): string {
+    const data = stakes.map((stake) => ({
+      token: stake.getToken().getTokenAddress(),
+      neurons: stake
+        .getAvailable()
+        .concat(stake.getUnlocking())
+        .concat(stake.getLocked())
+        .map((n: any) => {
+          const rawStakeData = n.neuron as NeuronInfo | Neuron
+
+          if ("fullNeuron" in rawStakeData) {
+            return {
+              neuronId: rawStakeData.neuronId.toString(),
+              state: rawStakeData.state,
+              createdTimestampSeconds:
+                rawStakeData.createdTimestampSeconds.toString(),
+              fullNeuron: {
+                followees: rawStakeData.fullNeuron?.followees,
+                cachedNeuronStake:
+                  rawStakeData.fullNeuron?.cachedNeuronStake.toString(),
+                stakedMaturityE8sEquivalent: rawStakeData.fullNeuron
+                  ?.stakedMaturityE8sEquivalent
+                  ? rawStakeData.fullNeuron.stakedMaturityE8sEquivalent.toString()
+                  : undefined,
+                dissolveState: rawStakeData.fullNeuron?.dissolveState
+                  ? "DissolveDelaySeconds" in
+                    rawStakeData.fullNeuron.dissolveState
+                    ? {
+                        DissolveDelaySeconds:
+                          rawStakeData.fullNeuron.dissolveState.DissolveDelaySeconds.toString(),
+                      }
+                    : {
+                        WhenDissolvedTimestampSeconds:
+                          rawStakeData.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds.toString(),
+                      }
+                  : undefined,
+              },
+            }
+          } else {
+            const dissolveStateRaw = rawStakeData.dissolve_state[0]
+            return {
+              id: bytesToHexString(rawStakeData.id[0]!.id),
+              dissolveState: dissolveStateRaw
+                ? "DissolveDelaySeconds" in dissolveStateRaw
+                  ? {
+                      DissolveDelaySeconds:
+                        dissolveStateRaw.DissolveDelaySeconds.toString(),
+                    }
+                  : {
+                      WhenDissolvedTimestampSeconds:
+                        dissolveStateRaw.WhenDissolvedTimestampSeconds.toString(),
+                    }
+                : undefined,
+              followees: rawStakeData.followees.map(([nid, f]) => [
+                nid.toString(),
+                f,
+              ]),
+              cachedNeuronStake:
+                rawStakeData.cached_neuron_stake_e8s.toString(),
+              stakedMaturityE8sEquivalent: rawStakeData
+                .staked_maturity_e8s_equivalent[0]
+                ? rawStakeData.staked_maturity_e8s_equivalent[0].toString()
+                : undefined,
+              createdTimestampSeconds:
+                rawStakeData.created_timestamp_seconds.toString(),
+            }
+          }
+        }),
+    }))
+
+    return JSON.stringify(data)
+  }
+
+  private async deserializeStakes(
+    serialized: string,
+    userId: string,
+    publicKey: string,
+    delegation: SignIdentity,
+  ): Promise<StakedToken[]> {
+    const data: Array<{ token: string; neurons: any[] }> =
+      JSON.parse(serialized)
+
+    const tokens = await ftService.getTokens(userId)
+
+    return Promise.all(
+      data.map(async (data) => {
+        const principal = Principal.fromText(publicKey)
+        const token = tokens.find((t) => t.getTokenAddress() === data.token)
+
+        if (!token?.isInited()) await token?.init(principal)
+
+        const params =
+          token!.getRootSnsCanister()?.toText() !== ICP_ROOT_CANISTER_ID
+            ? await this.getStakeCalculator(token!, delegation)
+            : undefined
+
+        const neurons = data.neurons.map((raw) => {
+          if ("fullNeuron" in raw) {
+            const dissolveState = raw.fullNeuron?.dissolveState
+              ? "DissolveDelaySeconds" in raw.fullNeuron.dissolveState
+                ? {
+                    DissolveDelaySeconds: BigInt(
+                      raw.fullNeuron.dissolveState.DissolveDelaySeconds,
+                    ),
+                  }
+                : {
+                    WhenDissolvedTimestampSeconds: BigInt(
+                      raw.fullNeuron.dissolveState
+                        .WhenDissolvedTimestampSeconds,
+                    ),
+                  }
+              : undefined
+
+            const neuronInfo = {
+              neuronId: BigInt(raw.neuronId),
+              state: raw.state,
+              createdTimestampSeconds: BigInt(raw.createdTimestampSeconds),
+              fullNeuron: {
+                followees: raw.fullNeuron?.followees || [],
+                cachedNeuronStake: BigInt(
+                  raw.fullNeuron?.cachedNeuronStake || 0,
+                ),
+                stakedMaturityE8sEquivalent: raw.fullNeuron
+                  ?.stakedMaturityE8sEquivalent
+                  ? BigInt(raw.fullNeuron.stakedMaturityE8sEquivalent)
+                  : undefined,
+                dissolveState,
+              } as unknown as FullNeuron,
+            } as unknown as NeuronInfo
+
+            return new NfidICPNeuronImpl(neuronInfo, token!)
+          } else {
+            const dissolveStateRaw = raw.dissolveState
+              ? "DissolveDelaySeconds" in raw.dissolveState
+                ? {
+                    DissolveDelaySeconds: BigInt(
+                      raw.dissolveState.DissolveDelaySeconds,
+                    ),
+                  }
+                : {
+                    WhenDissolvedTimestampSeconds: BigInt(
+                      raw.dissolveState.WhenDissolvedTimestampSeconds,
+                    ),
+                  }
+              : undefined
+
+            const neuron = {
+              id: [{ id: hexStringToBytes(raw.id) }],
+              dissolve_state: dissolveStateRaw ? [dissolveStateRaw] : [],
+              followees: raw.followees.map(([nid, f]: [string, Followees]) => [
+                BigInt(nid),
+                f,
+              ]),
+              cached_neuron_stake_e8s: BigInt(raw.cachedNeuronStake),
+              staked_maturity_e8s_equivalent: raw.stakedMaturityE8sEquivalent
+                ? [BigInt(raw.stakedMaturityE8sEquivalent)]
+                : [],
+              created_timestamp_seconds: BigInt(raw.createdTimestampSeconds),
+            } as unknown as Neuron
+
+            return new NfidSNSNeuronImpl(neuron, token!, params)
+          }
+        })
+
+        return new StakedTokenImpl(token!, neurons)
+      }),
+    )
   }
 
   async validateNeuron(
@@ -457,5 +671,14 @@ export const bytesToHexString = (bytes: Uint8Array | number[]): string =>
   Array.from(bytes)
     .map((byte) => byte.toString(16).padStart(2, "0"))
     .join("")
+
+export const hexStringToBytes = (hex: string): Uint8Array => {
+  if (hex.startsWith("0x")) hex = hex.slice(2)
+  const bytes = new Uint8Array(hex.length / 2)
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = parseInt(hex.substr(i * 2, 2), 16)
+  }
+  return bytes
+}
 
 export const stakingService = new StakingServiceImpl()

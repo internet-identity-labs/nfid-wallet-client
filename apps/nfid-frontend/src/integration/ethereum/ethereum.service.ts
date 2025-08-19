@@ -141,7 +141,7 @@ export class EthereumService {
     identity: SignIdentity,
   ) {
     //we take 0.0000875% ckETH as fee
-    let fee = amount * BigInt(875) / BigInt(10000000000)
+    let fee: bigint = (BigInt(amount) * BigInt(875)) / BigInt(10000000000)
 
     //Minimum amount 0.03 ckETH
     if (amount - fee < BigInt(30000000000000000))

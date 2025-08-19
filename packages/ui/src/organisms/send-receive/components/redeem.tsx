@@ -61,7 +61,7 @@ export const Redeem: FC<ReceiveProps> = ({
           </div>
           <div className="max-w-[180px] sm:max-w-[265px]">
             <p className="leading-[24px]">Initial stake</p>
-            <p className="text-xs text-secondary dark:text-zinc-500">
+            <p className="text-xs text-secondary dark:text-zinc-400">
               The amount of tokens initially staked.
             </p>
           </div>
@@ -69,7 +69,7 @@ export const Redeem: FC<ReceiveProps> = ({
             <p className="leading-[24px]">
               {stakeToRedeem.getInitialStakeFormatted().getTokenValue()}
             </p>
-            <p className="text-xs text-secondary dark:text-zinc-500">
+            <p className="text-xs text-secondary dark:text-zinc-400">
               {stakeToRedeem.getInitialStakeFormatted().getUSDValue()}
             </p>
           </div>
@@ -80,7 +80,7 @@ export const Redeem: FC<ReceiveProps> = ({
           </div>
           <div className="max-w-[180px] sm:max-w-[265px]">
             <p className="leading-[24px]">Rewards</p>
-            <p className="text-xs text-secondary dark:text-zinc-500">
+            <p className="text-xs text-secondary dark:text-zinc-400">
               The amount of governance rewards earned.
             </p>
           </div>
@@ -88,7 +88,7 @@ export const Redeem: FC<ReceiveProps> = ({
             <p className="leading-[24px]">
               {stakeToRedeem.getRewardsFormatted().getTokenValue()}
             </p>
-            <p className="text-xs text-secondary dark:text-zinc-500">
+            <p className="text-xs text-secondary dark:text-zinc-400">
               {stakeToRedeem.getRewardsFormatted().getUSDValue()}
             </p>
           </div>
@@ -99,7 +99,7 @@ export const Redeem: FC<ReceiveProps> = ({
           </div>
           <div className="max-w-[180px] sm:max-w-[265px]">
             <p className="leading-[24px]">Protocol fee</p>
-            <p className="text-xs text-secondary dark:text-zinc-500">
+            <p className="text-xs text-secondary dark:text-zinc-400">
               The amount NFID Wallet DAO earns for its in-wallet staking
               service.
             </p>
@@ -108,7 +108,7 @@ export const Redeem: FC<ReceiveProps> = ({
             <p className="leading-[24px]">
               {stakeToRedeem.getProtocolFeeFormatted().getTokenValue()}
             </p>
-            <p className="text-xs text-secondary dark:text-zinc-500">
+            <p className="text-xs text-secondary dark:text-zinc-400">
               {stakeToRedeem.getProtocolFeeFormatted().getUSDValue()}
             </p>
           </div>
@@ -127,7 +127,7 @@ export const Redeem: FC<ReceiveProps> = ({
             <p className="leading-[24px] font-bold">
               {stakeToRedeem.getTotalValueFormatted().getTokenValue()}
             </p>
-            <p className="text-xs text-secondary dark:text-zinc-500">
+            <p className="text-xs text-secondary dark:text-zinc-4s00">
               {stakeToRedeem.getTotalValueFormatted().getUSDValue()}
             </p>
           </div>

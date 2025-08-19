@@ -1,6 +1,7 @@
 import BigNumber from "bignumber.js"
 
 const MIN_CK_BTC_AMOUNT_TO_CONVERT = 0.00051
+const MIN_CK_ETH_AMOUNT_TO_CONVERT = 0.03
 
 interface Validation {
   min?: number
@@ -32,6 +33,7 @@ export const validateTransferAmountField =
     fee: bigint,
     decimals: number | undefined,
     isConvertFromCkBtc: boolean,
+    isConvertFromCkEth: boolean,
     minAmount?: number,
     symbol?: string,
   ) =>
@@ -54,7 +56,14 @@ export const validateTransferAmountField =
       isConvertFromCkBtc &&
       valueNum.isLessThan(MIN_CK_BTC_AMOUNT_TO_CONVERT)
     ) {
-      return `Amount can't be less than ${MIN_CK_BTC_AMOUNT_TO_CONVERT} BTC.`
+      return `Amount can't be less than ${MIN_CK_BTC_AMOUNT_TO_CONVERT} ckBTC.`
+    }
+
+    if (
+      isConvertFromCkEth &&
+      valueNum.isLessThan(MIN_CK_ETH_AMOUNT_TO_CONVERT)
+    ) {
+      return `Amount can't be less than ${MIN_CK_ETH_AMOUNT_TO_CONVERT} ckETH.`
     }
 
     if (minAmount !== undefined && valueNum.isLessThan(minAmount)) {

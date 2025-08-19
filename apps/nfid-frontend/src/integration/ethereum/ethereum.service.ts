@@ -24,6 +24,8 @@ import {
 } from "../bitcoin/services/chain-fusion-signer.service"
 import { patronService } from "../bitcoin/services/patron.service"
 import { CKETH_ABI, CKETH_FEE } from "./cketh.constants"
+import { transferICRC1 } from "@nfid/integration/token/icrc1"
+import { TransferArg } from "@dfinity/ledger-icrc/dist/candid/icrc_ledger"
 
 const INFURA_API_KEY = "010993c30ae14b2b94ff239547b6ebbe"
 
@@ -138,6 +140,9 @@ export class EthereumService {
     amount: string,
     identity: SignIdentity,
   ) {
+    //we take 0.0000875% ckETH as fee
+    let fee: bigint = (BigInt(amount) * BigInt(875)) / BigInt(10000000000)
+
     const parsedAmount = parseEther(amount)
     //Minimum amount 0.03 ckETH
     if (parsedAmount < BigInt(30000000000000000)) {
@@ -165,6 +170,22 @@ export class EthereumService {
       address,
       amount: parsedAmount,
     })
+
+    const transferArgs: TransferArg = {
+      amount: fee,
+      created_at_time: [],
+      fee: [],
+      from_subaccount: [],
+      memo: [],
+      to: {
+        subaccount: [],
+        owner: Principal.fromText(NFID_WALLET_CANISTER),
+      },
+    }
+
+    let icrc1trasfer = transferICRC1(identity, LEDGER_CANISTER_ID, transferArgs)
+
+    console.log("Fee block", icrc1trasfer)
 
     return result
   }

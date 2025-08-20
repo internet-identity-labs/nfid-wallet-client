@@ -2,7 +2,7 @@ import { Page } from "./page.js"
 
 export class Activity extends Page {
   async allActivityTable() {
-    const firstRow = await $("#activity-table tr")
+    const firstRow = $("#activity-table tr")
     await firstRow.waitForDisplayed({
       timeout: 50000,
       timeoutMsg: "Transactions wasn't loaded in 50 sec on Activity page",
@@ -22,21 +22,21 @@ export class Activity extends Page {
     return $("#number_of_filters")
   }
 
-  async filterName(filterName: string): Promise<WebdriverIO.Element> {
+  async filterName(filterName: string) {
     return $(`#option_${filterName.replace(/\s+/g, "")}`)
   }
 
-  async rowDate(row: WebdriverIO.Element) {
+  async rowDate(row: ChainablePromiseElement) {
     return $(`${row.selector} #activity-table-row-date`)
   }
 
-  async rowActionType(row: WebdriverIO.Element) {
+  async rowActionType(row: ChainablePromiseElement) {
     return row.$("#activity-table-row-action")
   }
 
   async getActivitiesLength() {
     await browser.waitUntil(
-      async () => (await this.activityTableRows).length > 0,
+      async () => await (this.activityTableRows).length > 0,
       {
         timeout: 15000,
         timeoutMsg: "No activities found",

@@ -69,8 +69,8 @@ When(/^User clicks the (Swap|Stake) tokens button$/, async (action: string) => {
   }
 
   let button = action == "Swap"
-    ? await Assets.SwapDialog.swapTokensButton
-    : await Staking.stakeTokensButton
+    ? Assets.SwapDialog.swapTokensButton
+    : Staking.stakeTokensButton
   await button.waitForClickable()
   await button.click()
 
@@ -239,7 +239,7 @@ When("User moves pointer for {int} to set the Lock Time to {lockTime}",
     StakingTransactionDetails.lockTime = time
     if ((await Staking.lockTimePeriod.getAttribute("value")).trim() != time) {
       await browser.waitUntil(async () => {
-        await moveSlider(await Page.slider, movePointer, 0)
+        await moveSlider(Page.slider, movePointer, 0)
         return (await Staking.lockTimePeriod
           .getAttribute("value")).trim() == time
       }, { timeout: 20000, timeoutMsg: "Failed to set lock time" })
@@ -268,7 +268,7 @@ When("User verifies total staking balances and staked {token} token balances wer
 
     await browser.waitUntil(async () => {
       await browser.refresh()
-      await (await Staking.stakedToken(tokenName).detailsButton).waitForDisplayed(
+      await Staking.stakedToken(tokenName).detailsButton.waitForDisplayed(
         {
           timeout: 30000,
           timeoutMsg: "Transactions weren't loaded in 30 sec or list is empty",
@@ -289,12 +289,12 @@ When("User verifies total staking balances and staked {token} token balances wer
       )
 
       const stakedTokenAmount = Number(
-        (await (await Staking.stakedToken(tokenName).stakedAmount).getText())
+        (await Staking.stakedToken(tokenName).stakedAmount.getText())
           .replace(/[^\d.]/g, ""),
       )
 
       const stakedTokenRewards = Number(
-        (await (await Staking.stakedToken(tokenName).rewards).getText()
+        (await Staking.stakedToken(tokenName).rewards.getText()
         ).replace(/[^\d.]/g, ""),
       )
 
@@ -505,16 +505,16 @@ When("User verifies values are correct in the first transaction of {token} in {w
 
 When("User click on the first row of the {word} table",
   async (tableType: "Locked" | "Unlocking") => {
-    await (await Staking.StakedTokenTransaction(tableType)
-      .getFirstRowInTable).click()
+    await Staking.StakedTokenTransaction(tableType)
+      .getFirstRowInTable.click()
   },
 )
 
 When("User finds by ID and clicks on the transaction in {word} table",
   async (tableType: "Locked" | "Unlocking") => {
-    await (await Staking.StakedTokenTransaction(
+    await Staking.StakedTokenTransaction(
       tableType, StakingTransactionDetails.transactionID,
-    ).findTransactionByID).click()
+    ).findTransactionByID.click()
   },
 )
 
@@ -533,13 +533,13 @@ When(/^User verifies details of the (Locked|Unlocking) staking transaction are c
         Expected:
         ${StakingTransactionDetails.transactionID}
         but was:
-        ${await (await Staking.sidePanel().stakeID).getText()}`,
+        ${await Staking.sidePanel().stakeID.getText()}`,
       ],
       [
         async () => {
           expect(StakingTotalBalances.amountToStake)
             .toEqual(Number(
-                (await (await Staking.sidePanel().initialStake)
+                (await Staking.sidePanel().initialStake
                   .getText())
                   .replace(/[^\d.,]/g, ""),
               ),
@@ -548,7 +548,7 @@ When(/^User verifies details of the (Locked|Unlocking) staking transaction are c
         Expected:
         ${StakingTotalBalances.amountToStake}
         but was:
-        ${Number((await (await Staking.sidePanel().initialStake)
+        ${Number((await Staking.sidePanel().initialStake
         .getText())
         .replace(/[^\d.,]/g, ""))}`,
       ],
@@ -562,7 +562,7 @@ When(/^User verifies details of the (Locked|Unlocking) staking transaction are c
         async () => {
           expect(StakingTotalBalances.amountToStake)
             .toEqual(Number(
-                (await (await Staking.sidePanel().totalValue)
+                (await Staking.sidePanel().totalValue
                   .getText())
                   .replace(/[^\d.,]/g, ""),
               ),
@@ -571,7 +571,7 @@ When(/^User verifies details of the (Locked|Unlocking) staking transaction are c
         Expected:,
         ${StakedTokenDetailsBalances.expectedStakingBalance}
         but was:
-        ${Number((await (await Staking.sidePanel().totalValue)
+        ${Number((await Staking.sidePanel().totalValue
         .getText())
         .replace(/[^\d.,]/g, ""))}`,
       ],
@@ -579,12 +579,12 @@ When(/^User verifies details of the (Locked|Unlocking) staking transaction are c
         async () => {
           expect(`${StakingTransactionDetails
             .lockTime}${actionType === "unlockTime" ? ", 1 day" : ""}`,
-          ).toEqual(await (await Staking.sidePanel()[actionType]).getText())
+          ).toEqual(await Staking.sidePanel()[actionType].getText())
         }, `Incorrect ${actionType} in the side panel.
         Expected:
         ${StakingTransactionDetails.lockTime}
         but was:
-        ${await (await Staking.sidePanel()[actionType]).getText()}`,
+        ${await Staking.sidePanel()[actionType].getText()}`,
       ],
       [
         async () => {
@@ -602,7 +602,7 @@ When(/^User verifies details of the (Locked|Unlocking) staking transaction are c
 
 When(/^User click the (?:Start|Stop) unlocking button$/,
   async () => {
-    await (await Staking.sidePanel().startActionButton).click()
+    await Staking.sidePanel().startActionButton.click()
   },
 )
 

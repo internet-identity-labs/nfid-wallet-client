@@ -1,5 +1,5 @@
 export async function moveSlider(
-  slider: WebdriverIO.Element,
+  slider: ChainablePromiseElement,
   moveX: number,
   moveY: number,
 ) {

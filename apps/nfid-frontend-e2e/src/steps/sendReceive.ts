@@ -87,15 +87,15 @@ Then(
     await softAssertAll(
       async () =>
         await expect(
-          (await currentAddress.firstAddressPart.getText()) +
+          (currentAddress.firstAddressPart.getText()) +
             "..." +
-            (await currentAddress.secondAddressPart.getText()),
+            (currentAddress.secondAddressPart.getText()),
         ).toEqual(account),
       async () =>
         await expect(
-          (await currentPrincipal.firstAddressPart.getText()) +
+          (currentPrincipal.firstAddressPart.getText()) +
             "..." +
-            (await currentPrincipal.secondAddressPart.getText()),
+            (currentPrincipal.secondAddressPart.getText()),
         ).toEqual(principal),
     )
   },

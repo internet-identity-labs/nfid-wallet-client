@@ -35,7 +35,7 @@ export async function signWithIIService(): Promise<IIAuthSession> {
                 profile = await fetchProfile()
                 await im.use_access_point([identity.getPrincipal().toString()])
               } catch (e) {
-                console.log("creating new profile")
+                console.debug("creating new profile")
                 profile = await createNFIDProfile({
                   delegationIdentity: identity,
                   email: undefined,

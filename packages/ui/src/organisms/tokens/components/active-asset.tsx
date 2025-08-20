@@ -14,6 +14,8 @@ import { ArrowPercentChange } from "@nfid-frontend/ui"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
+  CKETH_CANISTER_ID,
+  ETH_NATIVE_ID,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
@@ -29,6 +31,8 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   onSwapClick: (value: string) => void
   onConvertToBtc: () => void
   onConvertToCkBtc: () => void
+  onConvertToEth: () => void
+  onConvertToCkEth: () => void
   onStakeClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
@@ -45,6 +49,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   onSwapClick,
   onConvertToBtc,
   onConvertToCkBtc,
+  onConvertToEth,
+  onConvertToCkEth,
   onStakeClick,
   setToken,
   dropdownPosition,
@@ -103,6 +109,18 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
                 </span>
               </>
             )}
+            {token.getTokenAddress() === ETH_NATIVE_ID && (
+              <>
+                <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+                <span
+                  className="flex items-center text-xs cursor-pointer text-primaryButtonColor dark:text-teal-500"
+                  onClick={onConvertToCkEth}
+                >
+                  <IconCmpConvert className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor dark:text-teal-500" />
+                  Convert to ckETH
+                </span>
+              </>
+            )}
             {token.getTokenAddress() === CKBTC_CANISTER_ID && (
               <>
                 <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
@@ -112,6 +130,18 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
                 >
                   <IconCmpConvert className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor dark:text-teal-500" />
                   Convert to BTC
+                </span>
+              </>
+            )}
+            {token.getTokenAddress() === CKETH_CANISTER_ID && (
+              <>
+                <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+                <span
+                  className="flex items-center text-xs cursor-pointer text-primaryButtonColor dark:text-teal-500"
+                  onClick={onConvertToEth}
+                >
+                  <IconCmpConvert className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor dark:text-teal-500" />
+                  Convert to ETH
                 </span>
               </>
             )}
@@ -129,7 +159,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
               </>
             )}
           </p>
-          <p className="text-secondary text-xs leading-[20px]">
+          <p className="text-secondary text-xs leading-[20px] dark:text-zinc-400">
             {token.getTokenName()}
           </p>
         </div>
@@ -222,6 +252,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           onSwapClick={onSwapClick}
           onConvertToBtc={onConvertToBtc}
           onConvertToCkBtc={onConvertToCkBtc}
+          onConvertToEth={onConvertToEth}
+          onConvertToCkEth={onConvertToCkEth}
           onStakeClick={onStakeClick}
           setToken={setToken}
           dropdownPosition={dropdownPosition}

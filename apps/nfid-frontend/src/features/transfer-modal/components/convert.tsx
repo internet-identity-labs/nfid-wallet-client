@@ -6,16 +6,20 @@ import { FormProvider, useForm } from "react-hook-form"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
+  CKETH_CANISTER_ID,
+  ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
 import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
+import { useEthAddress } from "frontend/hooks"
 import { useIdentity } from "frontend/hooks/identity"
 import {
   bitcoinService,
   BtcToCkBtcFee,
   CkBtcToBtcFee,
 } from "frontend/integration/bitcoin/bitcoin.service"
+import { ethereumService } from "frontend/integration/ethereum/ethereum.service"
 import { FT } from "frontend/integration/ft/ft"
 
 import { FormValues, SendStatus } from "../types"
@@ -47,7 +51,8 @@ export const ConvertBTC = ({
   const [status, setStatus] = useState(SendStatus.PENDING)
   const [error, setError] = useState<string | undefined>()
   const [btcFee, setBtcFee] = useState<BtcToCkBtcFee | CkBtcToBtcFee>()
-  const [btcError, setBtcError] = useState<string | undefined>()
+  const [conversionError, setConversionError] = useState<string | undefined>()
+  const [ethFee, setEthFee] = useState<bigint>()
   const [fromTokenAddress, setFromTokenAddress] = useState(
     preselectedSourceTokenAddress || BTC_NATIVE_ID,
   )
@@ -56,6 +61,7 @@ export const ConvertBTC = ({
   const [toTokenAddress, setToTokenAddress] = useState(
     getConversionTokenAddress(preselectedSourceTokenAddress ?? BTC_NATIVE_ID),
   )
+  const { ethAddress } = useEthAddress()
 
   const handleReverse = useCallback(() => {
     setFromTokenAddress(toTokenAddress)
@@ -67,6 +73,21 @@ export const ConvertBTC = ({
     fetchTokens,
     { revalidateOnFocus: false, revalidateOnMount: false },
   )
+
+  const tokensToConvert = useMemo(() => {
+    return tokens.filter((t) => {
+      return (
+        t.getTokenAddress() === ETH_NATIVE_ID ||
+        t.getTokenAddress() === BTC_NATIVE_ID ||
+        t.getTokenAddress() === CKETH_CANISTER_ID ||
+        t.getTokenAddress() === CKBTC_CANISTER_ID
+      )
+    })
+  }, [tokens])
+
+  useEffect(() => {
+    setToTokenAddress(getConversionTokenAddress(fromTokenAddress))
+  }, [fromTokenAddress])
 
   const fromToken = useMemo(() => {
     return tokens.find(
@@ -81,7 +102,7 @@ export const ConvertBTC = ({
   }, [toTokenAddress, tokens])
 
   useEffect(() => {
-    setBtcError(undefined)
+    setConversionError(undefined)
   }, [fromTokenAddress, toTokenAddress])
 
   const formMethods = useForm<FormValues>({
@@ -93,8 +114,8 @@ export const ConvertBTC = ({
   })
 
   useEffect(() => {
-    onError(Boolean(btcError))
-  }, [btcError, onError])
+    onError(Boolean(setConversionError))
+  }, [conversionError, onError])
 
   const { watch } = formMethods
   const amount = watch("amount")
@@ -106,21 +127,45 @@ export const ConvertBTC = ({
   const debouncedFetchFee = useMemo(
     () =>
       debounce(async (identity, tokenAddress, amount) => {
-        setBtcFee(undefined)
-
-        try {
-          const fee =
-            tokenAddress === BTC_NATIVE_ID
-              ? await bitcoinService.getBtcToCkBtcFee(identity, amount)
-              : await bitcoinService.getCkBtcToBtcFee(identity, amount)
-
-          setBtcFee(fee)
-        } catch (e) {
-          console.error(`BTC error: ${e}`)
-          setBtcError((e as Error).message)
+        if (
+          tokenAddress === BTC_NATIVE_ID ||
+          tokenAddress === CKBTC_CANISTER_ID
+        ) {
           setBtcFee(undefined)
+
+          try {
+            const fee =
+              tokenAddress === BTC_NATIVE_ID
+                ? await bitcoinService.getBtcToCkBtcFee(identity, amount)
+                : await bitcoinService.getCkBtcToBtcFee(identity, amount)
+
+            setBtcFee(fee)
+          } catch (e) {
+            console.error(`BTC error: ${e}`)
+            setConversionError((e as Error).message)
+            setBtcFee(undefined)
+          }
+        } else {
+          setEthFee(undefined)
+          setConversionError(undefined)
+          try {
+            const fee =
+              tokenAddress === ETH_NATIVE_ID
+                ? await ethereumService.getApproximateDepositEthFee(
+                    identity,
+                    amount,
+                  )
+                : // TODO: adjust when PR#2858 will be merged
+                  BigInt(1)
+
+            setEthFee(fee)
+          } catch (e) {
+            console.error(`ETH error: ${e}`)
+            setConversionError((e as Error).message)
+            setEthFee(undefined)
+          }
         }
-      }, 500),
+      }, 1000),
     [],
   )
 
@@ -142,10 +187,58 @@ export const ConvertBTC = ({
   ])
 
   const submit = useCallback(() => {
-    if (!identity || !fromToken || !btcFee) return
+    if (!identity || !fromToken) return
 
     setIsSuccessOpen(true)
     setIsConvertSuccess(true)
+
+    if (
+      fromTokenAddress === ETH_NATIVE_ID ||
+      fromTokenAddress === CKETH_CANISTER_ID
+    ) {
+      let convertResponse
+
+      if (fromTokenAddress === ETH_NATIVE_ID) {
+        convertResponse = ethereumService.depositEth(identity, amount)
+      } else {
+        convertResponse = ethereumService.convertCkETHToEth(
+          ethAddress,
+          amount,
+          identity,
+        )
+      }
+
+      convertResponse
+        .then(() => {
+          setSuccessMessage(
+            `Conversion from ${amount} ${fromToken.getTokenSymbol()} successful`,
+          )
+          setStatus(SendStatus.COMPLETED)
+
+          if (fromToken.getTokenAddress() === CKETH_CANISTER_ID) {
+            getTokensWithUpdatedBalance(
+              [fromTokenAddress, toTokenAddress],
+              tokens,
+            ).then((updatedTokens) => {
+              mutateWithTimestamp("tokens", updatedTokens, false)
+            })
+          }
+        })
+        .catch((error) => {
+          console.error(
+            `Convert error: ${
+              (error as Error).message ? (error as Error).message : error
+            }`,
+          )
+          setErrorMessage(DEFAULT_CONVERT_ERROR)
+          setStatus(SendStatus.FAILED)
+          setError(error)
+        })
+
+      return
+    }
+
+    if (!btcFee) return
     let convertResponse
 
     if ("identityLabsFee" in btcFee) {
@@ -195,6 +288,7 @@ export const ConvertBTC = ({
     tokens,
     btcFee,
     setIsConvertSuccess,
+    ethAddress,
   ])
 
   return (
@@ -206,14 +300,16 @@ export const ConvertBTC = ({
         setFromChosenToken={setFromTokenAddress}
         setToChosenToken={setToTokenAddress}
         submit={submit}
-        isFeeLoading={btcFee === undefined}
+        isFeeLoading={btcFee === undefined && ethFee === undefined}
         isSuccessOpen={isSuccessOpen}
         onClose={onClose}
         handleReverse={handleReverse}
         btcFee={btcFee}
+        ethFee={ethFee}
         status={status}
         error={error}
-        btcError={btcError}
+        conversionError={conversionError}
+        tokens={tokensToConvert}
       />
     </FormProvider>
   )

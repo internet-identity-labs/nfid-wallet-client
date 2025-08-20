@@ -203,7 +203,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
               )}
             </div>
           </div>
-          <div className="bg-gradient-to-b from-gray-50 dark:from-zinc-900 to-white dark:to-darkGray py-[10px] rounded-t-[12px]">
+          <div className="bg-gradient-to-b from-gray-50 dark:from-zinc-700 to-white dark:to-darkGray py-[10px] rounded-t-[12px]">
             <p className="text-sm leading-[25px] font-inter" id="title">
               {titleTo}
             </p>

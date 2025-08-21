@@ -5,6 +5,7 @@ import { Followees } from "@dfinity/sns/dist/candid/sns_governance"
 
 import { ICP_ROOT_CANISTER_ID } from "@nfid/integration/token/constants"
 
+import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
 import {
   IStakingDelegates,
@@ -13,21 +14,17 @@ import {
 
 import { getUserPrincipalId } from "../fungible-token/utils"
 
-export const fetchStakedTokens = async (identity?: SignIdentity) => {
-  if (!identity) return
+export const fetchStakedTokens = async () => {
   const { userPrincipal, publicKey } = await getUserPrincipalId()
   return await stakingService.getStakedTokens(
     userPrincipal,
     publicKey,
-    identity,
+    getWalletDelegation(),
   )
 }
 
-export const fetchStakedToken = async (
-  symbol: string,
-  identity?: SignIdentity,
-) => {
-  const tokens = await fetchStakedTokens(identity)
+export const fetchStakedToken = async (symbol: string) => {
+  const tokens = await fetchStakedTokens()
   if (!tokens) return
   return tokens.find((token) => token.getToken().getTokenSymbol() === symbol)
 }

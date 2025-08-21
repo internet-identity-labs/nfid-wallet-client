@@ -50,6 +50,8 @@ export abstract class NfidNeuronImpl<T> implements NFIDNeuron {
 
   abstract isDiamond(): boolean
 
+  abstract serialize(): unknown
+
   abstract redeem(signIdentity: SignIdentity): Promise<void>
 
   getToken(): FT {

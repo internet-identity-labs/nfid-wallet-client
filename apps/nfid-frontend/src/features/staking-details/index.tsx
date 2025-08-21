@@ -18,7 +18,7 @@ import { ModalType } from "../transfer-modal/types"
 
 const StakingDetailsPage = () => {
   const { tokenSymbol } = useParams()
-  const { identity, isLoading: identityLoading } = useIdentity()
+  const { identity } = useIdentity()
 
   const { data: tokens = [] } = useSWRWithTimestamp("tokens", fetchTokens, {
     revalidateOnFocus: false,
@@ -37,8 +37,8 @@ const StakingDetailsPage = () => {
     isLoading,
     isValidating,
   } = useSWR(
-    tokenSymbol && identity ? ["stakedToken", tokenSymbol] : null,
-    () => fetchStakedToken(tokenSymbol!, identity),
+    tokenSymbol ? ["stakedToken", tokenSymbol] : null,
+    () => fetchStakedToken(tokenSymbol!),
     { revalidateOnFocus: false },
   )
 
@@ -91,7 +91,7 @@ const StakingDetailsPage = () => {
     <StakingDetails
       onRedeemOpen={onRedeemOpen}
       stakedToken={stakedToken}
-      isLoading={isLoading || isValidating || identityLoading || !delegates}
+      isLoading={isLoading || isValidating || !delegates}
       identity={identity}
       delegates={delegates}
       updateDelegates={updateDelegates}

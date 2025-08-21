@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom"
 import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { useIdentity } from "frontend/hooks/identity"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
 import { ProfileContext } from "frontend/provider"
 
@@ -17,7 +16,6 @@ const StakingPage = () => {
   const navigate = useNavigate()
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
-  const { identity, isLoading: identityLoading } = useIdentity()
 
   const onStakeClick = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
@@ -26,9 +24,9 @@ const StakingPage = () => {
     send("SHOW")
   }
 
-  const { data: stakedTokens = [], isLoading } = useSWRWithTimestamp(
-    identity ? "stakedTokens" : null,
-    () => fetchStakedTokens(identity),
+  const { data: stakedTokens, isLoading } = useSWRWithTimestamp(
+    "stakedTokens",
+    fetchStakedTokens,
     { revalidateOnFocus: false },
   )
 
@@ -36,7 +34,7 @@ const StakingPage = () => {
 
   return (
     <Staking
-      isLoading={isLoading || identityLoading}
+      isLoading={isLoading}
       stakedTokens={stakedTokens}
       links={ProfileConstants}
       navigate={navigate}

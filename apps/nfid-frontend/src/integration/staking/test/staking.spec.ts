@@ -75,7 +75,7 @@ describe("Staking", () => {
     const stakedTokens = await stakingService.getStakedTokens(
       pairPrincipal,
       pairPrincipal,
-      edId,
+      Promise.resolve(edId),
     )
 
     const nfidwStake = stakedTokens.find(
@@ -155,13 +155,15 @@ describe("Staking", () => {
     jest.setSystemTime(new Date("2025-04-08T00:00:00Z"))
     expect(unlocking[0].getLockTime()).toBeUndefined()
     expect(unlocking[0].getLockTimeInMonths()).toBeUndefined()
-    expect(unlocking[0].getUnlockIn()).toEqual(1755675741)
-    expect(unlocking[0].getUnlockInMonths()).toEqual("4 months, 12 days")
+    expect(unlocking[0].getUnlockIn()).toEqual(1761043067)
+    expect(unlocking[0].getUnlockInMonths()).toEqual("6 months, 13 days")
     jest.useRealTimers()
     expect(unlocking[0].getUnlockInFormatted()?.getDate()).toEqual(
-      "Aug 20, 2025",
+      "Oct 21, 2025",
     )
-    expect(unlocking[0].getUnlockInFormatted()?.getTime()).toEqual("7:42:21 AM")
+    expect(unlocking[0].getUnlockInFormatted()?.getTime()).toEqual(
+      "10:37:47 AM",
+    )
     expect(unlocking[0].getCreatedAt()).toEqual(1742298123)
     expect(unlocking[0].getCreatedAtFormatted().getDate()).toEqual(
       "Mar 18, 2025",

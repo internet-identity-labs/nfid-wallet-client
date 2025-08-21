@@ -42,6 +42,7 @@ Before(async function(scenario) {
 })
 
 AfterStep(async function(step: ITestStepHookParameter): Promise<void> {
+  if (!step.pickleStep) return
   console.info(step.pickleStep.text + " " +
     (step.result?.status === "PASSED"
       ? "\x1b[32mPASSED\x1b[0m"
@@ -64,7 +65,7 @@ After(async () => {
     localStorage.clear()
     sessionStorage.clear()
   })
-  await browser.deleteCookies([])
+  await browser.deleteCookies()
 })
 
 AfterAll(async function() {

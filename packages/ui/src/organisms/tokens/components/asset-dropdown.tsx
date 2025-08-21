@@ -24,6 +24,7 @@ import {
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
+  CKETH_CANISTER_ID,
   ETH_NATIVE_ID,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -43,6 +44,8 @@ type AssetDropdownProps = {
   onSwapClick: (value: string) => void
   onConvertToBtc: () => void
   onConvertToCkBtc: () => void
+  onConvertToEth: () => void
+  onConvertToCkEth: () => void
   onStakeClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
@@ -58,6 +61,8 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
   onSwapClick,
   onConvertToBtc,
   onConvertToCkBtc,
+  onConvertToEth,
+  onConvertToCkEth,
   onStakeClick,
   setToken,
   dropdownPosition,
@@ -96,13 +101,23 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
           handler={() => onSendClick(token.getTokenAddress())}
         />
         {token.getTokenAddress() !== BTC_NATIVE_ID &&
-        token.getTokenAddress() !== ETH_NATIVE_ID ? (
+          token.getTokenAddress() !== ETH_NATIVE_ID && (
+            <DropdownOption
+              label="Swap"
+              icon={isDarkTheme ? IconSvgSwapActionWhite : IconSvgSwapAction}
+              handler={() => onSwapClick(token.getTokenAddress())}
+            />
+          )}
+        {token.getTokenAddress() === CKBTC_CANISTER_ID && (
           <DropdownOption
-            label="Swap"
-            icon={isDarkTheme ? IconSvgSwapActionWhite : IconSvgSwapAction}
-            handler={() => onSwapClick(token.getTokenAddress())}
+            label="Convert"
+            icon={
+              isDarkTheme ? IconSvgConvertActionWhite : IconSvgConvertAction
+            }
+            handler={onConvertToBtc}
           />
-        ) : (
+        )}
+        {token.getTokenAddress() === BTC_NATIVE_ID && (
           <DropdownOption
             label="Convert"
             icon={
@@ -111,13 +126,22 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             handler={onConvertToCkBtc}
           />
         )}
-        {token.getTokenAddress() === CKBTC_CANISTER_ID && (
+        {token.getTokenAddress() === ETH_NATIVE_ID && (
           <DropdownOption
             label="Convert"
             icon={
               isDarkTheme ? IconSvgConvertActionWhite : IconSvgConvertAction
             }
-            handler={onConvertToBtc}
+            handler={onConvertToCkEth}
+          />
+        )}
+        {token.getTokenAddress() === CKETH_CANISTER_ID && (
+          <DropdownOption
+            label="Convert"
+            icon={
+              isDarkTheme ? IconSvgConvertActionWhite : IconSvgConvertAction
+            }
+            handler={onConvertToEth}
           />
         )}
         {(token.getTokenCategory() === Category.Sns ||

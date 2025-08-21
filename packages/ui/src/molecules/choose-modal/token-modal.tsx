@@ -190,21 +190,28 @@ export const ChooseTokenModal = <T extends FT | NFT>({
             </div>
           </div>
         </div>
-        <Input
-          id={searchInputId}
-          type="text"
-          placeholder="Search by token name"
-          inputClassName="!border-black dark:!border-zinc-500"
-          icon={
-            <IoIosSearch
-              size="20"
-              className="text-gray-400 dark:text-zinc-500"
-            />
-          }
-          onKeyUp={(e) => handleSearch((e.target as HTMLInputElement).value)}
-          className="mt-4 mb-5"
-        />
-        {isTokenOptionsLoading && <ChooseTokenSkeleton rows={6} />}
+        {searchInputId && (
+          <Input
+            id={searchInputId}
+            type="text"
+            placeholder="Search by token name"
+            inputClassName="!border-black dark:!border-zinc-500"
+            icon={
+              <IoIosSearch
+                size="20"
+                className="text-gray-400 dark:text-zinc-500"
+              />
+            }
+            onKeyUp={(e) => handleSearch((e.target as HTMLInputElement).value)}
+            className="mt-4 mb-5"
+          />
+        )}
+
+        {isTokenOptionsLoading && (
+          <div className={clsx(!searchInputId && "mt-4")}>
+            <ChooseTokenSkeleton rows={6} />
+          </div>
+        )}
         {!tokensOptions.length && !isTokenOptionsLoading ? (
           <div className="flex items-center justify-center h-full text-sm text-gray-400 dark:text-zinc-500">
             No tokens available yet
@@ -216,6 +223,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
               "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
               "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
               "dark:scrollbar-thumb-zinc-600 dark:scrollbar-track-[#242427]",
+              !searchInputId && "mt-4",
             )}
           >
             {filteredTokens.map((token, index) => (

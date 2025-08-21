@@ -111,6 +111,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         assetImageClassname="w-[100px] h-[100px] top-[161px] sm:w-[115px] sm:h-[115px] sm:top-[154px]"
         error={error}
         isNativeBtc={token.getTokenAddress() === BTC_NATIVE_ID}
+        isNativeEth={token.getTokenAddress() === ETH_NATIVE_ID}
       />
       <p className="mb-1 text-xs dark:text-white">Amount to send</p>
       <ChooseFromToken

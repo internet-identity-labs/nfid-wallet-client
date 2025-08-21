@@ -39,6 +39,7 @@ export const chromeBrowser = {
 
 export const mobileChromeBrowser = {
   browserName: "chrome",
+  'wdio:enforceWebDriverClassic': true,
   acceptInsecureCerts: true,
   "goog:chromeOptions": {
     mobileEmulation: {

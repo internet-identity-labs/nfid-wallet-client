@@ -21,19 +21,6 @@ BeforeAll(async function() {
   })
 })
 
-// BeforeAll(async () => {
-//   if (process.env.DEMO_APPLICATION_URL) console.info(`DEMO_APPLICATION_URL: ${process.env.DEMO_APPLICATION_URL}`)
-//   if (process.env.NFID_PROVIDER_URL) console.info(`NFID_PROVIDER_URL: ${process.env.NFID_PROVIDER_URL}`)
-//
-//   await (browser as any).sessionSubscribe({ events: ["log.entryAdded"] })
-//
-//   ;(browser as any).on("log.entryAdded", (entry: any) => {
-//     const level = String(entry?.level ?? "info").toUpperCase()
-//     const text = String(entry?.text ?? "")
-//     browserLogs.push(`[${level}] ${text}`)
-//   })
-// })
-
 Before(async function(scenario) {
   console.info("Scenario: " + scenario.pickle.name)
   allureReporter.addArgument("Browser", "Chrome")

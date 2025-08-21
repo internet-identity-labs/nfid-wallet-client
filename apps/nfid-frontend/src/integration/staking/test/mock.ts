@@ -130,7 +130,10 @@ export const mockStake = [
     voting_power_percentage_multiplier: BigInt(100),
     vesting_period_seconds: [],
     disburse_maturity_in_progress: [],
-    followees: [1, 2],
+    followees: [
+      [BigInt(1), { followees: [BigInt(10), BigInt(20)] }],
+      [BigInt(2), { followees: [BigInt(30)] }],
+    ],
     neuron_fees_e8s: BigInt(0),
   },
   {
@@ -204,13 +207,16 @@ export const mockStake = [
     aging_since_timestamp_seconds: BigInt(1742298125),
     dissolve_state: [
       {
-        WhenDissolvedTimestampSeconds: BigInt(1755675741),
+        WhenDissolvedTimestampSeconds: BigInt(1761043067),
       },
     ],
     voting_power_percentage_multiplier: BigInt(100),
     vesting_period_seconds: [],
     disburse_maturity_in_progress: [],
-    followees: [1, 2, 3],
+    followees: [
+      [BigInt(1), { followees: [BigInt(10), BigInt(20)] }],
+      [BigInt(2), { followees: [BigInt(30)] }],
+    ],
     neuron_fees_e8s: BigInt(0),
   },
   {
@@ -292,7 +298,10 @@ export const mockStake = [
     voting_power_percentage_multiplier: BigInt(100),
     vesting_period_seconds: [],
     disburse_maturity_in_progress: [],
-    followees: [1, 2, 3, 4],
+    followees: [
+      [BigInt(1), { followees: [BigInt(10), BigInt(20)] }],
+      [BigInt(2), { followees: [BigInt(30)] }],
+    ],
     neuron_fees_e8s: BigInt(0),
   },
 ]

@@ -539,7 +539,7 @@ describe("ft test suite", () => {
       const stakedTokens = await stakingService.getStakedTokens(
         pairPrincipal,
         pairPrincipal,
-        edId,
+        Promise.resolve(edId),
       )
 
       const balance = await portfolioService.getPortfolioUSDBalance(

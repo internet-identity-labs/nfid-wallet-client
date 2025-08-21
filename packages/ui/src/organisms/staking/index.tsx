@@ -20,7 +20,7 @@ import { Table } from "../../molecules/table"
 import { StakingHeader } from "./components/staking-header"
 
 export interface StakingProps {
-  stakedTokens: StakedToken[]
+  stakedTokens?: StakedToken[]
   isLoading: boolean
   links: {
     base: string
@@ -46,6 +46,7 @@ export const Staking: FC<StakingProps> = ({
       {isLoading ? (
         <StakingHeaderSkeleton />
       ) : (
+        stakedTokens &&
         stakedTokens.length > 0 && (
           <StakingHeader
             total={totalBalances?.total}
@@ -60,7 +61,7 @@ export const Staking: FC<StakingProps> = ({
           <Table className="!min-w-0" id="staking-table">
             {isLoading ? (
               <TableActivitySkeleton tableRowsAmount={3} tableCellAmount={3} />
-            ) : stakedTokens.length ? (
+            ) : stakedTokens && stakedTokens.length ? (
               <>
                 <tr className="hidden md:table-row dark:text-zinc-500">
                   <td

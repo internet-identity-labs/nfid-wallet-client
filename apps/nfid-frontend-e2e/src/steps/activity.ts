@@ -66,7 +66,7 @@ Then(
         const timeDifference = Math.abs(now.getTime() - actualTime.getTime())
         await (await Activity.rowActionType(tableRows[1])).waitForDisplayed(
           {
-            timeout: 50000,
+            timeout: 70000,
             timeoutMsg: "List of transactions wasn't loaded in 70sec",
           },
         )

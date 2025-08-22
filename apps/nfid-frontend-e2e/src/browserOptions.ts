@@ -19,6 +19,7 @@ if (isHeadless) {
 
 export const chromeBrowser = {
   browserName: "chrome",
+  'wdio:enforceWebDriverClassic': true,
   acceptInsecureCerts: true,
   "goog:chromeOptions": {
     ...chromeBrowserOptions,
@@ -38,6 +39,7 @@ export const chromeBrowser = {
 
 export const mobileChromeBrowser = {
   browserName: "chrome",
+  'wdio:enforceWebDriverClassic': true,
   acceptInsecureCerts: true,
   "goog:chromeOptions": {
     mobileEmulation: {

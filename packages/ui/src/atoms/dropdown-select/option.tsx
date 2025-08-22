@@ -37,6 +37,7 @@ export const DropdownSelectOption = ({
           "mr-[13px]",
           !isCheckbox && "hidden",
           "dark:bg-zinc-900 dark:border-zinc-500",
+          "hover:border-teal-600 dark:hover:border-teal-600 hover:outline-[#0D948833] hover:outline outline-2",
         )}
         id={`option_cbx_${option.label.replace(/\s/g, "")}`}
       />

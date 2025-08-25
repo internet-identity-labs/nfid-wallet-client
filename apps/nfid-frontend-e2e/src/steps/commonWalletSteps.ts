@@ -38,7 +38,9 @@ When(/^User refreshes the page$/, async () => {
 Then(
   /^User opens (.+) dialog window(?: of (\S+))?$/,
   async (window: string, optionalArg: string) => {
-    const clickWithWait = async (element: WebdriverIO.Element) => {
+    const clickWithWait = async (
+      element: ChainablePromiseElement,
+    ) => {
       await element.waitForClickable({ timeout: 20000 })
       await element.click()
     }
@@ -48,14 +50,12 @@ Then(
       Send: async () => await Assets.sendDialog(),
       "Send nft": async () => await Assets.sendNFTDialog(),
       "Choose nft": async () =>
-        await clickWithWait(await Assets.chooseNFTinSend),
+        await clickWithWait(Assets.chooseNFTinSend),
       "Manage tokens": async () =>
-        await clickWithWait(
-          await Assets.ManageTokensDialog.manageTokensDialogButton,
-        ),
+        await clickWithWait(Assets.ManageTokensDialog.manageTokensDialogButton),
       "Token options": async () =>
         await clickWithWait(await Assets.tokenOptionsButton(optionalArg)),
-      Swap: async () => await clickWithWait(await Assets.swapButton),
+      Swap: async () => await clickWithWait(Assets.swapButton),
       Stake: async () => await Staking.stakeButton.click(),
     }
     await (windows[window]?.() ||

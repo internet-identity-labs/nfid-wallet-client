@@ -32,7 +32,7 @@ export const RedeemStake = ({
 
   const { data: stakedToken, isLoading } = useSWR(
     tokenSymbol && identity ? ["stakedToken", tokenSymbol] : null,
-    () => fetchStakedToken(tokenSymbol!, identity!),
+    () => fetchStakedToken(tokenSymbol),
     { revalidateOnFocus: false },
   )
 

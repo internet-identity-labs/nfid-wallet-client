@@ -1,6 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
 import { AccountIdentifier } from "@dfinity/ledger-icp"
-import { Followees, NeuronInfo, NeuronState } from "@dfinity/nns"
+import { Followees, Neuron, NeuronInfo, NeuronState } from "@dfinity/nns"
 
 import {
   disburseICP,
@@ -12,6 +12,9 @@ import {
   transfer as transferICP,
 } from "@nfid/integration/token/icp"
 
+import { FT } from "frontend/integration/ft/ft"
+
+import { StakeICPParamsCalculatorImpl } from "../calculator/stake-icp-params-calculator-impl"
 import { NfidNeuronImpl } from "./nfid-neuron-impl"
 
 export class NfidICPNeuronImpl extends NfidNeuronImpl<NeuronInfo> {
@@ -82,6 +85,69 @@ export class NfidICPNeuronImpl extends NfidNeuronImpl<NeuronInfo> {
     if (!lockTime || this.getState() !== NeuronState.Locked) return false
 
     return this.params?.getMaximumLockTime() === lockTime
+  }
+
+  serialize(): unknown {
+    return {
+      neuronId: this.neuron.neuronId.toString(),
+      state: this.neuron.state,
+      createdTimestampSeconds: this.neuron.createdTimestampSeconds.toString(),
+      fullNeuron: {
+        followees: this.neuron.fullNeuron?.followees,
+        cachedNeuronStake: this.neuron.fullNeuron?.cachedNeuronStake.toString(),
+        stakedMaturityE8sEquivalent: this.neuron.fullNeuron
+          ?.stakedMaturityE8sEquivalent
+          ? this.neuron.fullNeuron.stakedMaturityE8sEquivalent.toString()
+          : undefined,
+        dissolveState: this.neuron.fullNeuron?.dissolveState
+          ? "DissolveDelaySeconds" in this.neuron.fullNeuron.dissolveState
+            ? {
+                DissolveDelaySeconds:
+                  this.neuron.fullNeuron.dissolveState.DissolveDelaySeconds.toString(),
+              }
+            : {
+                WhenDissolvedTimestampSeconds:
+                  this.neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds.toString(),
+              }
+          : undefined,
+      },
+    }
+  }
+
+  static deserialize(
+    raw: any,
+    token: FT,
+    params: StakeICPParamsCalculatorImpl,
+  ): NfidICPNeuronImpl {
+    const dissolveState = raw.fullNeuron?.dissolveState
+      ? "DissolveDelaySeconds" in raw.fullNeuron.dissolveState
+        ? {
+            DissolveDelaySeconds: BigInt(
+              raw.fullNeuron.dissolveState.DissolveDelaySeconds,
+            ),
+          }
+        : {
+            WhenDissolvedTimestampSeconds: BigInt(
+              raw.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds,
+            ),
+          }
+      : undefined
+
+    const neuronInfo = {
+      neuronId: BigInt(raw.neuronId),
+      state: raw.state,
+      createdTimestampSeconds: BigInt(raw.createdTimestampSeconds),
+      fullNeuron: {
+        followees: raw.fullNeuron?.followees || [],
+        cachedNeuronStake: BigInt(raw.fullNeuron?.cachedNeuronStake || 0),
+        stakedMaturityE8sEquivalent: raw.fullNeuron?.stakedMaturityE8sEquivalent
+          ? BigInt(raw.fullNeuron.stakedMaturityE8sEquivalent)
+          : undefined,
+        dissolveState,
+      } as unknown as Neuron,
+    } as unknown as NeuronInfo
+
+    return new NfidICPNeuronImpl(neuronInfo, token, params)
   }
 
   async redeem(signIdentity: SignIdentity): Promise<void> {

@@ -29,5 +29,6 @@ export interface NFIDNeuron {
   startUnlocking(signIdentity: SignIdentity): Promise<void>
   stopUnlocking(signIdentity: SignIdentity): Promise<void>
   isDiamond(): boolean
+  serialize(): unknown
   redeem(signIdentity: SignIdentity): Promise<void>
 }

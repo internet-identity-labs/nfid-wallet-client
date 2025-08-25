@@ -39,42 +39,33 @@ export class DemoTransactions extends demoAppPage {
   }
 
   async sendICPTransaction(amount: number, address: string) {
-    await this.getReceiverICAddressInput("FT").then(async (it) => {
-      await it.waitForDisplayed()
-      await it.setValue(address)
-    })
+    await this.getReceiverICAddressInput("FT").waitForDisplayed()
+    await this.getReceiverICAddressInput("FT").setValue(address)
 
-    await this.getFTInput("ICP").then(async (it) => {
-      await it.waitForDisplayed()
-      await it.setValue(amount)
-    })
+    await this.getFTInput("ICP").waitForDisplayed()
+    await this.getFTInput("ICP").setValue(amount)
 
-    await this.getRequestFTButton("ICP").then(async (it) => {
-      await it.waitForClickable()
-      await it.click()
-    })
+    await this.getRequestFTButton("ICP").waitForClickable()
+    await this.getRequestFTButton("ICP").click()
   }
 
   async sendNFTTransaction(address: string) {
     await browser.waitUntil(
       async () => {
         try {
-          await this.getReceiverICAddressInput("NFT").then(async (it) => {
-            await it.waitForDisplayed({ timeout: 5000 })
-            await it.setValue(address)
-          })
-          await this.getFTInput("NFT").then(async (it) => {
-            await it.waitForClickable({ timeout: 5000 })
-            await it.click()
-          })
-          await this.myNFTSelector.then(async (it) => {
-            await it.waitForClickable({ timeout: 5000 })
-            await it.click()
-          })
-          await this.getRequestFTButton("NFT").then(async (it) => {
-            await it.waitForClickable({ timeout: 10000 })
-            await it.click()
-          })
+          await this.getReceiverICAddressInput("NFT")
+            .waitForDisplayed({ timeout: 5000 })
+          await this.getReceiverICAddressInput("NFT").setValue(address)
+
+          await this.getFTInput("NFT").waitForClickable({ timeout: 5000 })
+          await this.getFTInput("NFT").click()
+
+          await this.myNFTSelector.waitForClickable({ timeout: 5000 })
+          await this.myNFTSelector.click()
+
+          await this.getRequestFTButton("NFT")
+            .waitForClickable({ timeout: 10000 })
+          await this.getRequestFTButton("NFT").click()
           return true
         } catch (e) {
           /*empty*/

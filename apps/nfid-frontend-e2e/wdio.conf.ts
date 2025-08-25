@@ -13,13 +13,8 @@ export const isMobile = (): boolean => {
 
 export const config: WebdriverIO.Config = {
   runner: "local",
-  autoCompileOpts: {
-    autoCompile: true,
-    tsNodeOpts: {
-      transpileOnly: true,
-      project: "tsconfig.json",
-    },
-  },
+  tsConfigPath: "./tsconfig.json",
+  services: ['devtools'],
   specs: ["./src/features/**/*.feature"],
   exclude: [
     // 'path/to/excluded/files'

@@ -1,11 +1,9 @@
-import { After, AfterAll, AfterStep, Before, BeforeAll } from "@wdio/cucumber-framework"
+import { After, AfterAll, AfterStep, Before, BeforeAll, ITestStepHookParameter } from "@wdio/cucumber-framework"
 import { browser } from "@wdio/globals"
 import allureReporter from "@wdio/allure-reporter"
 import { ConsoleMessage } from "puppeteer"
 
-const baseURL = process.env.NFID_PROVIDER_URL
-  ? process.env.NFID_PROVIDER_URL
-  : "http://localhost:9090"
+const baseURL = process.env.NFID_PROVIDER_URL ?? "http://localhost:9090"
 
 let browserLogs: string[] = []
 
@@ -23,18 +21,6 @@ BeforeAll(async function() {
   })
 })
 
-After(async function() {
-  await browser.execute(() => {
-    const dbNames = ['authstate', 'profile-db', 'ttl-db', 'domainkey-db']
-    for (const name of dbNames) {
-      indexedDB.deleteDatabase(name)
-    }
-    localStorage.clear()
-    sessionStorage.clear()
-  })
-  await browser.deleteCookies()
-})
-
 Before(async function(scenario) {
   console.info("Scenario: " + scenario.pickle.name)
   allureReporter.addArgument("Browser", "Chrome")
@@ -42,15 +28,31 @@ Before(async function(scenario) {
   allureReporter.addArgument("Platform", process.platform)
 })
 
-AfterStep(async function(scenario) {
-  console.info(
-    scenario.pickleStep.text + " " +
-    ("PASSED" ? "\x1b[32mPASSED\x1b[0m" : "\x1b[31mFAILED\x1b[0m"),
+AfterStep(async function(step: ITestStepHookParameter): Promise<void> {
+  if (!step.pickleStep) return
+  console.info(step.pickleStep.text + " " +
+    (step.result?.status === "PASSED"
+      ? "\x1b[32mPASSED\x1b[0m"
+      : "\x1b[31mFAILED\x1b[0m"),
   )
-  if (browserLogs.length > 0) {
-    allureReporter.addAttachment("Browser Console Log", browserLogs.join("\n"), "text/plain")
+  if (browserLogs.length) {
+    allureReporter.addAttachment(
+      "Browser Console",
+      browserLogs.join("\n"),
+      "text/plain",
+    )
     browserLogs = []
   }
+})
+
+After(async () => {
+  await browser.execute(() => {
+    const dbNames = ["authstate", "profile-db", "ttl-db", "domainkey-db"]
+    for (const name of dbNames) indexedDB.deleteDatabase(name)
+    localStorage.clear()
+    sessionStorage.clear()
+  })
+  await browser.deleteCookies()
 })
 
 AfterAll(async function() {

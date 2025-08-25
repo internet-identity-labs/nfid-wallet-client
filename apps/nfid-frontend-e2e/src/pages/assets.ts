@@ -209,23 +209,23 @@ export class Assets extends Page {
     let parent
     await this.address.waitForDisplayed({ timeout: 10000 })
     if (isAddress) {
-      parent = await this.address
+      parent = this.address
     } else {
-      parent = await this.principal
+      parent = this.principal
     }
-    const firstAddressPart = await parent.$("#first_part")
+    const firstAddressPart = parent.$("#first_part")
     await firstAddressPart.waitForDisplayed({
       timeout: 7000,
     })
-    const secondAddressPart = await parent.$("#second_part")
+    const secondAddressPart = parent.$("#second_part")
     await secondAddressPart.waitForDisplayed({
       timeout: 7000,
     })
     await browser.waitUntil(
       async () => {
         return (
-          (await firstAddressPart.getText()) != "" &&
-          (await secondAddressPart.getText()) != ""
+          (await (firstAddressPart.getText())) != "" &&
+          (await (secondAddressPart.getText())) != ""
         )
       },
       { timeout: 15000, timeoutMsg: "Address is still empty after 15 sec" },

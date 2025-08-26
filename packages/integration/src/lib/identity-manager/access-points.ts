@@ -21,6 +21,7 @@ export enum DeviceType {
   Recovery = "Recovery",
   Password = "Password",
   Unknown = "Unknown",
+  InternetIdentity = "InternetIdentity",
 }
 
 export interface AccessPointCommon {

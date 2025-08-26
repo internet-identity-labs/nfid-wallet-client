@@ -28,11 +28,13 @@ type WalletState = {
 export interface AuthSelectionProps {
   onSelectEmailAuth: (email: string) => void
   onSelectOtherAuth?: () => void
+  onSelectIIAuth?: () => void
   applicationURL?: string
   isIdentityKit?: boolean
   onLoginWithPasskey: () => Promise<void>
   getAllWalletsFromThisDevice: () => Promise<ExistingWallet[]>
   googleButton: JSX.Element
+  iiButton?: JSX.Element
   isLoading: boolean
   passKeySupported?: boolean
   type?: "sign-in" | "sign-up"
@@ -42,11 +44,13 @@ export interface AuthSelectionProps {
 export const AuthSelection: React.FC<AuthSelectionProps> = ({
   onSelectEmailAuth,
   onSelectOtherAuth,
+  onSelectIIAuth,
   applicationURL,
   isIdentityKit,
   onLoginWithPasskey,
   getAllWalletsFromThisDevice,
   googleButton,
+  iiButton,
   isLoading,
   type = "sign-in",
   onTypeChange,
@@ -186,6 +190,11 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
             <Separator className="my-[10px]" />
             <div className={`mb-[${isSignIn ? "30px" : "50px"}]`}>
               {googleButton}
+              {iiButton && (
+                <div className="mt-[10px]">
+                  {iiButton}
+                </div>
+              )}
               {isPasskeySupported && (
                 <Button
                   id="passkey-sign-button"

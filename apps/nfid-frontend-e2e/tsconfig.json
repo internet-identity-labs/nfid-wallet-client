@@ -16,12 +16,18 @@
     "isolatedModules": true,
     "noEmit": true,
     "downlevelIteration": true,
+    "typeRoots": [
+      "../../node_modules",
+      "../../node_modules/@types",
+      "../../types"
+    ],
     "types": [
       "node",
-      "@wdio/globals",
+      "@wdio/globals/types",
+      "@wdio/cucumber-framework",
       "expect-webdriverio",
-      "@wdio/cucumber-framework"
-    ]
+    ],
+    "include": ["src/**/*.ts", "wdio*.ts"]
   },
   "exclude": ["node_modules"]
 }

@@ -19,16 +19,14 @@ When(/^User clicks the (.*) option button$/, async (option: string) => {
 When(
   /^User clicks the ShowHide button of (.*) token$/,
   async (tokenName: string) => {
-    await Assets.ManageTokensDialog.tokenShowHideButton(tokenName).then(
-      async (it) => {
-        await it.waitForDisplayed()
-        await it.click()
-        await it.waitForDisplayed({
-          timeout: 50000,
-          timeoutMsg: "Failed attempt to change token visibility state",
-        })
-      },
-    )
+    await Assets.ManageTokensDialog.tokenShowHideButton(tokenName)
+      .waitForDisplayed()
+    await Assets.ManageTokensDialog.tokenShowHideButton(tokenName).click()
+    await Assets.ManageTokensDialog.tokenShowHideButton(tokenName)
+      .waitForDisplayed({
+      timeout: 50000,
+      timeoutMsg: "Failed attempt to change token visibility state",
+    })
   },
 )
 
@@ -42,13 +40,11 @@ When(
     if (!(await (await Assets.tokenLabel(tokenName)).isDisplayed())) {
       await Assets.ManageTokensDialog.manageTokensDialogButton.click()
       await Assets.ManageTokensDialog.filterField.setValue(tokenName)
-      await Assets.ManageTokensDialog.tokenShowHideButton(tokenName).then(
-        async (it) => {
-          await it.waitForDisplayed()
-          await it.click()
-          await it.waitForDisplayed()
-        },
-      )
+      await Assets.ManageTokensDialog.tokenShowHideButton(tokenName)
+        .waitForDisplayed()
+      await Assets.ManageTokensDialog.tokenShowHideButton(tokenName).click()
+      await Assets.ManageTokensDialog.tokenShowHideButton(tokenName)
+        .waitForDisplayed()
 
       await (await Assets.tokenLabel(tokenName)).waitForDisplayed({
         timeout: 50000,

@@ -19,7 +19,7 @@ import { AuthSignInWithRecoveryPhrase } from "packages/ui/src/organisms/authenti
 import { AuthSignUpPassKey } from "packages/ui/src/organisms/authentication/sign-up-passkey"
 import { ReactNode, useCallback, useMemo, useState } from "react"
 
-import { Button, IconCmpGoogle } from "@nfid-frontend/ui"
+import { Button, IconCmpGoogle, IconCmpDfinity } from "@nfid-frontend/ui"
 import { getAllWalletsFromThisDevice } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
@@ -31,6 +31,7 @@ import { generate } from "frontend/integration/internet-identity/crypto/mnemonic
 import { parseUserNumber } from "frontend/integration/internet-identity/userNumber"
 import { AbstractAuthSession } from "frontend/state/authentication"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
+import { signWithIIService } from "frontend/features/authentication/auth-selection/ii-flow/ii-auth.service"
 
 import { authWithAnchor } from "../auth-selection/other-sign-options/services"
 import { passkeyConnector } from "../auth-selection/passkey-flow/services"
@@ -68,6 +69,22 @@ export default function AuthenticationCoordinator({
         email: decodeJwt(credential).email as string,
         isEmbed,
       },
+    })
+  }
+
+  const onSelectIIAuth = async () => {
+    try {
+      const authSession = await signWithIIService()
+      onAuthWithII(authSession)
+    } catch (error) {
+      console.error("II authentication failed:", error)
+    }
+  }
+
+  const onAuthWithII = (authSession: AbstractAuthSession) => {
+    send({
+      type: "AUTHENTICATED",
+      data: authSession,
     })
   }
 
@@ -267,6 +284,7 @@ export default function AuthenticationCoordinator({
                   data: { isEmbed },
                 })
               }}
+              onSelectIIAuth={onSelectIIAuth}
               isLoading={isPasskeyLoading}
               applicationURL={state.context.authRequest?.hostname}
               onLoginWithPasskey={onLoginWithPasskey}
@@ -285,6 +303,18 @@ export default function AuthenticationCoordinator({
                     </Button>
                   }
                 />
+              }
+              iiButton={
+                <Button
+                  id="ii-sign-button"
+                  className="h-12 !p-0 active:!text-black dark:active:!text-white"
+                  type="stroke"
+                  icon={<IconCmpDfinity />}
+                  block
+                  onClick={onSelectIIAuth}
+                >
+                  Continue with Internet Identity
+                </Button>
               }
               onTypeChange={() => send({ type: "SIGN_UP" })}
             />

@@ -14,19 +14,14 @@ import {
 
 import { getUserPrincipalId } from "../fungible-token/utils"
 
-export const fetchStakedTokens = async () => {
+export const fetchStakedTokens = async (refetch?: boolean) => {
   const { userPrincipal, publicKey } = await getUserPrincipalId()
   return await stakingService.getStakedTokens(
     userPrincipal,
     publicKey,
     getWalletDelegation(),
+    refetch,
   )
-}
-
-export const fetchStakedToken = async (symbol: string) => {
-  const tokens = await fetchStakedTokens()
-  if (!tokens) return
-  return tokens.find((token) => token.getToken().getTokenSymbol() === symbol)
 }
 
 export const fetchDelegates = async (

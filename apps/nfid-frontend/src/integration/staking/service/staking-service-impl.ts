@@ -83,9 +83,11 @@ export class StakingServiceImpl implements StakingService {
     userId: string,
     publicKey: string,
     delegation: Promise<SignIdentity>,
+    refetch?: boolean,
   ): Promise<Array<StakedToken>> {
     const cache = await storageWithTtl.getEvenExpired(stakedTokensCacheName)
-    if (!cache) {
+
+    if (!cache || Boolean(refetch)) {
       const identity = await delegation
       const stakes = await this.fetchStakedTokens(userId, publicKey, identity)
       storageWithTtl.set(

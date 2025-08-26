@@ -12,6 +12,7 @@ import {
 import { CKBTC_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { IActivityRowGroup } from "frontend/features/activity/types"
+import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 
 import { TableActivitySkeleton } from "../../atoms/skeleton"
@@ -55,7 +56,14 @@ export const Activity: FC<ActivityProps> = ({
     [tokens],
   )
 
-  const showSkeleton = isFirstLoading || (isValidating && !activities.length)
+  const { isBtcAddressLoading } = useBtcAddress()
+  const { isEthAddressLoading } = useEthAddress()
+
+  const showSkeleton =
+    isFirstLoading ||
+    (isValidating && !activities.length) ||
+    isBtcAddressLoading ||
+    isEthAddressLoading
   const showEmpty = !showSkeleton && activities.length === 0
 
   return (

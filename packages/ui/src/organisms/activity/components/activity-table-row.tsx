@@ -291,24 +291,10 @@ export const ActivityTableRow = ({
     return null
 
   const explorerLink = getExplorerLink(id, currentToken, transaction)
+  const tooltipAndButtonText = getTooltipAndButtonText(transaction)
 
-  return (
-    <Tooltip
-      className={getTooltipAndButtonText(transaction) ? "" : "hidden"}
-      align="start"
-      alignOffset={20}
-      arrowClassname="translate-x-[-330px] visible"
-      tip={
-        <span className="block max-w-[270px] sm:max-w-[320px]">
-          <b>
-            {providerName} {getTooltipAndButtonText(transaction)?.tooltipTitle}{" "}
-            failed.
-          </b>{" "}
-          Something went wrong with the {providerName} service.{" "}
-          {getTooltipAndButtonText(transaction)?.tooltipMessage}
-        </span>
-      }
-    >
+  const rednderRow = () => {
+    return (
       <tr
         id={nodeId}
         className="relative items-center text-sm activity-row hover:bg-gray-50 dark:hover:bg-zinc-800"
@@ -553,6 +539,27 @@ export const ActivityTableRow = ({
           </td>
         )}
       </tr>
+    )
+  }
+
+  return tooltipAndButtonText ? (
+    <Tooltip
+      align="start"
+      alignOffset={20}
+      arrowClassname="translate-x-[-330px] visible"
+      tip={
+        <span className="block max-w-[270px] sm:max-w-[320px]">
+          <b>
+            {providerName} {tooltipAndButtonText!.tooltipTitle} failed.
+          </b>{" "}
+          Something went wrong with the {providerName} service.{" "}
+          {tooltipAndButtonText!.tooltipMessage}
+        </span>
+      }
+    >
+      {rednderRow()}
     </Tooltip>
+  ) : (
+    <>{rednderRow()}</>
   )
 }

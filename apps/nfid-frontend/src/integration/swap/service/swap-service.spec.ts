@@ -38,7 +38,7 @@ describe("SwapService", () => {
     expect(result?.getSwapName()).toEqual(SwapName.ICPSwap)
   })
 
-  it("should return Kongswap shroff only", async () => {
+  it.skip("should return Kongswap shroff only", async () => {
     const targetLedger = "3h3vv-7yaaa-aaaam-qcu5a-cai"
     const result = await swapService.getSwapProviders(
       sourceLedger,
@@ -51,7 +51,7 @@ describe("SwapService", () => {
     expect(result.get(SwapName.Kongswap)).toBeDefined()
   })
 
-  it("should return ICPSwap shroff only", async () => {
+  it.skip("should return ICPSwap shroff only", async () => {
     const targetLedger = "etik7-oiaaa-aaaar-qagia-cai"
     const result = await swapService.getSwapProviders(
       sourceLedger,

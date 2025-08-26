@@ -34,6 +34,7 @@ export const idlFactory = ({ IDL }: any) => {
     Recovery: IDL.Null,
     Unknown: IDL.Null,
     Password: IDL.Null,
+    InternetIdentity: IDL.Null,
   })
   const AccessPointRequest = IDL.Record({
     icon: IDL.Text,

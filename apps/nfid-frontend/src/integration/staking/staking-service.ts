@@ -10,7 +10,7 @@ export interface StakingService {
   getStakedTokens(
     userId: string,
     publicKey: string,
-    identity: SignIdentity,
+    identity: Promise<SignIdentity>,
   ): Promise<Array<StakedToken>>
   getTotalBalances(stakedToken: StakedToken[]): TotalBalance | undefined
   getStakeCalculator(

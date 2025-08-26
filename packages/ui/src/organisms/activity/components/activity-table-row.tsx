@@ -225,7 +225,6 @@ export const getActionMarkup = (
 interface IActivityTableRow extends IActivityRow {
   id: string
   nodeId: string
-  token?: FT
   identity?: SignIdentity
 }
 
@@ -242,7 +241,6 @@ export const ActivityTableRow = ({
   id,
   nodeId,
   transaction,
-  token,
   identity,
 }: IActivityTableRow) => {
   const isDarkTheme = useDarkTheme()
@@ -292,6 +290,7 @@ export const ActivityTableRow = ({
 
   const explorerLink = getExplorerLink(id, currentToken, transaction)
   const tooltipAndButtonText = getTooltipAndButtonText(transaction)
+  const actionMarkup = getActionMarkup(action, transaction)
 
   const rednderRow = () => {
     return (
@@ -303,10 +302,10 @@ export const ActivityTableRow = ({
           <div
             className={clsx(
               "w-10 min-w-10 h-10 rounded-[12px] flex items-center justify-center relative",
-              getActionMarkup(action, transaction).bg,
+              actionMarkup.bg,
             )}
           >
-            {getActionMarkup(action, transaction).icon}
+            {actionMarkup.icon}
           </div>
           <div className="ml-2.5 mb-[11px] mt-[11px] shrink-0">
             <p
@@ -439,15 +438,15 @@ export const ActivityTableRow = ({
               >
                 <div className="flex items-center gap-2 dark:text-white">
                   <ImageWithFallback
-                    alt={`${token?.getTokenSymbol()} token`}
+                    alt={`${currentToken?.getTokenSymbol()} token`}
                     fallbackSrc={IconNftPlaceholder}
-                    src={token?.getTokenLogo()}
+                    src={currentToken?.getTokenLogo()}
                     className="rounded-full w-[28px] h-[28px]"
                   />
                   <TickerAmount
                     value={asset.amount!}
-                    decimals={token?.getTokenDecimals()}
-                    symbol={token?.getTokenSymbol()!}
+                    decimals={currentToken?.getTokenDecimals()}
+                    symbol={currentToken?.getTokenSymbol()!}
                   />
                 </div>
               </td>

@@ -14,7 +14,6 @@ export const isMobile = (): boolean => {
 export const config: WebdriverIO.Config = {
   runner: "local",
   tsConfigPath: "./tsconfig.json",
-  services: ['devtools'],
   specs: ["./src/features/**/*.feature"],
   exclude: [
     // 'path/to/excluded/files'

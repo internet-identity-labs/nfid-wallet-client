@@ -13,7 +13,7 @@ import { stakingService } from "frontend/integration/staking/service/staking-ser
 import { ProfileContext } from "frontend/provider"
 
 import { fetchTokens } from "../fungible-token/utils"
-import { fetchDelegates, fetchStakedToken } from "../staking/utils"
+import { fetchDelegates, fetchStakedTokens } from "../staking/utils"
 import { ModalType } from "../transfer-modal/types"
 
 const StakingDetailsPage = () => {
@@ -32,15 +32,19 @@ const StakingDetailsPage = () => {
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
 
-  const {
-    data: stakedToken,
-    isLoading,
-    isValidating,
-  } = useSWR(
-    tokenSymbol ? ["stakedToken", tokenSymbol] : null,
-    () => fetchStakedToken(tokenSymbol!),
-    { revalidateOnFocus: false },
+  const { data: stakedTokens, isLoading } = useSWRWithTimestamp(
+    "stakedTokens",
+    () => fetchStakedTokens(false),
+    {
+      revalidateOnFocus: false,
+    },
   )
+
+  const stakedToken = useMemo(() => {
+    return stakedTokens?.find(
+      (s) => s.getToken().getTokenSymbol() === tokenSymbol,
+    )
+  }, [stakedTokens, tokenSymbol])
 
   const { data: delegates } = useSWR(
     stakedToken && tokenSymbol && identity
@@ -91,7 +95,7 @@ const StakingDetailsPage = () => {
     <StakingDetails
       onRedeemOpen={onRedeemOpen}
       stakedToken={stakedToken}
-      isLoading={isLoading || isValidating || !delegates}
+      isLoading={isLoading}
       identity={identity}
       delegates={delegates}
       updateDelegates={updateDelegates}

@@ -157,7 +157,12 @@ export class NfidSNSNeuronImpl extends NfidNeuronImpl<Neuron> {
                 dissolveState.WhenDissolvedTimestampSeconds.toString(),
             }
         : undefined,
-      followees: this.neuron.followees.map(([nid, f]) => [nid.toString(), f]),
+      followees: this.neuron.followees.map(([nid, f]) => [
+        nid.toString(),
+        {
+          followees: f.followees.map(({ id }) => bytesToHexString(id)),
+        },
+      ]),
       cachedNeuronStake: this.neuron.cached_neuron_stake_e8s.toString(),
       stakedMaturityE8sEquivalent: this.neuron.staked_maturity_e8s_equivalent[0]
         ? this.neuron.staked_maturity_e8s_equivalent[0].toString()
@@ -188,10 +193,16 @@ export class NfidSNSNeuronImpl extends NfidNeuronImpl<Neuron> {
     const neuron = {
       id: [{ id: hexStringToBytes(raw.id) }],
       dissolve_state: dissolveStateRaw ? [dissolveStateRaw] : [],
-      followees: raw.followees.map(([nid, f]: [string, Followees]) => [
-        BigInt(nid),
-        f,
-      ]),
+      followees: raw.followees.map(
+        ([nid, f]: [string, { followees: string[] }]) => [
+          BigInt(nid),
+          {
+            followees: f.followees.map((hexId: string) => ({
+              id: hexStringToBytes(hexId),
+            })),
+          },
+        ],
+      ),
       cached_neuron_stake_e8s: BigInt(raw.cachedNeuronStake),
       staked_maturity_e8s_equivalent: raw.stakedMaturityE8sEquivalent
         ? [BigInt(raw.stakedMaturityE8sEquivalent)]

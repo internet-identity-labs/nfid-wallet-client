@@ -1,11 +1,10 @@
-import { resetIntegrationCache } from "packages/integration/src/cache"
 import { Redeem } from "packages/ui/src/organisms/send-receive/components/redeem"
 import { useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 
-import { mutate, useSWR } from "@nfid/swr"
+import { mutate, useSWRWithTimestamp } from "@nfid/swr"
 
-import { fetchStakedToken } from "frontend/features/staking/utils"
+import { fetchStakedTokens } from "frontend/features/staking/utils"
 import { useIdentity } from "frontend/hooks/identity"
 
 import { SendStatus } from "../types"
@@ -30,11 +29,17 @@ export const RedeemStake = ({
   const location = useLocation()
   const tokenSymbol = location.pathname.split("/")[3]
 
-  const { data: stakedToken, isLoading } = useSWR(
-    tokenSymbol && identity ? ["stakedToken", tokenSymbol] : null,
-    () => fetchStakedToken(tokenSymbol),
+  const { data: stakedTokens, isLoading } = useSWRWithTimestamp(
+    "stakedTokens",
+    () => fetchStakedTokens(false),
     { revalidateOnFocus: false },
   )
+
+  const stakedToken = useMemo(() => {
+    return stakedTokens?.find(
+      (s) => s.getToken().getTokenSymbol() === tokenSymbol,
+    )
+  }, [stakedTokens, tokenSymbol])
 
   const stakeToRedeem = useMemo(() => {
     return stakedToken
@@ -50,8 +55,7 @@ export const RedeemStake = ({
       .then(() => {
         setSuccessMessage(`Staked ${stakeId} redeemed successful`)
         setStatus(SendStatus.COMPLETED)
-        resetIntegrationCache(["getStakedTokens"])
-        mutate(["stakedToken", tokenSymbol])
+        mutate("stakedTokens", fetchStakedTokens(true), { revalidate: false })
       })
       .catch((e) => {
         console.error("Redeem error: ", e)

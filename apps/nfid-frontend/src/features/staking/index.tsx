@@ -26,8 +26,10 @@ const StakingPage = () => {
 
   const { data: stakedTokens, isLoading } = useSWRWithTimestamp(
     "stakedTokens",
-    fetchStakedTokens,
-    { revalidateOnFocus: false },
+    () => fetchStakedTokens(false),
+    {
+      revalidateOnFocus: false,
+    },
   )
 
   const totalBalances = stakingService.getTotalBalances(stakedTokens)

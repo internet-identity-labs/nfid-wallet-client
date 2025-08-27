@@ -9,9 +9,10 @@ import {
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
-import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
+import { mutate, mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
+import { fetchStakedTokens } from "frontend/features/staking/utils"
 import { useIdentity } from "frontend/hooks/identity"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
 import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
@@ -132,6 +133,7 @@ export const StakeFT = ({
         .then(() => {
           setSuccessMessage(`Stake ${amount} ICP successful`)
           setStatus(SendStatus.COMPLETED)
+          mutate("stakedTokens", fetchStakedTokens(true), { revalidate: false })
         })
         .catch((e) => {
           console.error("Stake error: ", e)
@@ -166,6 +168,9 @@ export const StakeFT = ({
           `Stake ${amount} ${token.getTokenSymbol()} successful`,
         )
         setStatus(SendStatus.COMPLETED)
+        mutate("stakedTokens", () => fetchStakedTokens(true), {
+          revalidate: true,
+        })
       })
       .catch((e) => {
         console.error("Stake error: ", e)

@@ -184,7 +184,7 @@ export class EthereumService {
       },
     }
 
-    let icrc1trasfer = transferICRC1(identity, LEDGER_CANISTER_ID, transferArgs)
+    transferICRC1(identity, LEDGER_CANISTER_ID, transferArgs)
 
     return result
   }

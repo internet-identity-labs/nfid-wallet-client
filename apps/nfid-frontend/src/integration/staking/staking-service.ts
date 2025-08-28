@@ -11,6 +11,7 @@ export interface StakingService {
     userId: string,
     publicKey: string,
     identity: Promise<SignIdentity>,
+    refetch?: boolean,
   ): Promise<Array<StakedToken>>
   getTotalBalances(stakedToken: StakedToken[]): TotalBalance | undefined
   getStakeCalculator(

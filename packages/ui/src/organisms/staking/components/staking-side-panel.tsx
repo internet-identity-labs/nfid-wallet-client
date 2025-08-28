@@ -3,7 +3,6 @@ import { Followees as IcpFollowees, Topic } from "@dfinity/nns"
 import { uint8ArrayToHexString } from "@dfinity/utils"
 import clsx from "clsx"
 import { motion } from "framer-motion"
-import { resetIntegrationCache } from "packages/integration/src/cache"
 import { A } from "packages/ui/src/atoms/custom-link"
 import { IconInfo, IconInfoDark } from "packages/ui/src/atoms/icons"
 import { IconCaret } from "packages/ui/src/atoms/icons/caret"
@@ -17,7 +16,10 @@ import { FC, useMemo, useState } from "react"
 
 import { mutate } from "@nfid/swr"
 
-import { isSNSFollowees } from "frontend/features/staking/utils"
+import {
+  fetchStakedTokens,
+  isSNSFollowees,
+} from "frontend/features/staking/utils"
 import { useDarkTheme } from "frontend/hooks"
 import { NFIDNeuron } from "frontend/integration/staking/nfid-neuron"
 import {
@@ -40,9 +42,7 @@ export interface StakingSidePanelProps {
   sidePanelOption: SidePanelOption | null
   onRedeemOpen: (id: string) => void
   identity?: SignIdentity
-  isLoading: boolean
   isDelegateLoading: boolean
-  setIsLoading: (v: boolean) => void
   delegates: IStakingDelegates | IStakingICPDelegates | undefined
   setIsModalOpen: (value: boolean) => void
 }
@@ -53,20 +53,19 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   sidePanelOption,
   onRedeemOpen,
   identity,
-  isLoading,
   isDelegateLoading,
-  setIsLoading,
   delegates,
   setIsModalOpen,
 }) => {
   const isDarkTheme = useDarkTheme()
   const [isStakingDelegatesOpen, setIsStakingDelegatesOpen] = useState(false)
   useDisableScroll(isOpen)
+  const [isLoading, setIsLoading] = useState(false)
 
   const followees = useMemo(() => {
     const followees = sidePanelOption?.option.getFollowees()
 
-    if (!followees) return
+    if (!followees || !delegates) return
 
     if (isSNSFollowees(followees, delegates)) {
       return followees.map(([topicId, followee]) => ({
@@ -81,7 +80,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
       name: (delegates as Partial<Record<Topic, string>>)?.[followee.topic],
       id: followee.followees[0]?.toString(),
     }))
-  }, [sidePanelOption?.option])
+  }, [sidePanelOption?.option, delegates])
 
   const symbol = sidePanelOption?.option.getToken().getTokenSymbol()
 
@@ -95,9 +94,10 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   const stopUnlocking = () => {
     if (!identity) return
     setIsLoading(true)
-    resetIntegrationCache(["getStakedTokens"])
     sidePanelOption?.option.stopUnlocking(identity).then(async () => {
-      await mutate(["stakedToken", symbol])
+      await mutate("stakedTokens", () => fetchStakedTokens(true), {
+        revalidate: true,
+      })
       onClose()
       setIsLoading(false)
     })
@@ -106,9 +106,10 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   const startUnlocking = async () => {
     if (!identity) return
     setIsLoading(true)
-    resetIntegrationCache(["getStakedTokens"])
     sidePanelOption?.option.startUnlocking(identity).then(async () => {
-      await mutate(["stakedToken", symbol])
+      await mutate("stakedTokens", () => fetchStakedTokens(true), {
+        revalidate: true,
+      })
       onClose()
       setIsLoading(false)
     })
@@ -410,7 +411,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                     id={"sidePanel-lock_unlock_Button"}
                     icon={
                       isLoading ? (
-                        <Spinner className="w-5 h-5 text-gray-300 dark:text-black" />
+                        <Spinner className="w-5 h-5 text-gray-300 dark:text-white" />
                       ) : null
                     }
                     disabled={isLoading}
@@ -421,10 +422,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                         ? startUnlocking
                         : openRedeemModal
                     }
-                    className={clsx(
-                      "w-full mt-[20px]",
-                      isLoading && "dark:text-black",
-                    )}
+                    className={clsx("w-full mt-[20px]")}
                     type={
                       sidePanelOption.state === StakingState.Available
                         ? "primary"

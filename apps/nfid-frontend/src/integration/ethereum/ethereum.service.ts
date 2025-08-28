@@ -5,6 +5,7 @@ import {
 } from "@dfinity/cketh"
 import { Account } from "@dfinity/ledger-icp"
 import { ApproveParams, IcrcLedgerCanister } from "@dfinity/ledger-icrc"
+import { TransferArg } from "@dfinity/ledger-icrc/dist/candid/icrc_ledger"
 import { Principal } from "@dfinity/principal"
 import {
   Contract,
@@ -16,6 +17,8 @@ import {
 import { agentBaseConfig } from "packages/integration/src/lib/actors"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 
+import { transferICRC1 } from "@nfid/integration/token/icrc1"
+
 import { EthSignTransactionRequest } from "../bitcoin/idl/chain-fusion-signer.d"
 import {
   Address,
@@ -24,8 +27,6 @@ import {
 } from "../bitcoin/services/chain-fusion-signer.service"
 import { patronService } from "../bitcoin/services/patron.service"
 import { CKETH_ABI, CKETH_FEE } from "./cketh.constants"
-import { transferICRC1 } from "@nfid/integration/token/icrc1"
-import { TransferArg } from "@dfinity/ledger-icrc/dist/candid/icrc_ledger"
 
 const INFURA_API_KEY = "010993c30ae14b2b94ff239547b6ebbe"
 
@@ -140,10 +141,10 @@ export class EthereumService {
     amount: string,
     identity: SignIdentity,
   ) {
-    //we take 0.0000875% ckETH as fee
-    let fee: bigint = (BigInt(amount) * BigInt(875)) / BigInt(10000000000)
-
     const parsedAmount = parseEther(amount)
+    //we take 0.0000875% ckETH as fee
+    let fee: bigint = (parsedAmount * BigInt(875)) / BigInt(10000000000)
+
     //Minimum amount 0.03 ckETH
     if (parsedAmount < BigInt(30000000000000000)) {
       throw new Error("Minimum amount is 0.03 ckETH")
@@ -183,9 +184,7 @@ export class EthereumService {
       },
     }
 
-    let icrc1trasfer = transferICRC1(identity, LEDGER_CANISTER_ID, transferArgs)
-
-    console.log("Fee block", icrc1trasfer)
+    transferICRC1(identity, LEDGER_CANISTER_ID, transferArgs)
 
     return result
   }

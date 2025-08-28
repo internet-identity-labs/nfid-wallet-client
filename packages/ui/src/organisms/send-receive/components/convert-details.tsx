@@ -18,7 +18,7 @@ export interface ConvertDetailsProps {
   token: FT
   isOpen: boolean
   setConvertModal: (v: ConvertModal) => void
-  fee?: IConversionFee | bigint
+  fee?: IConversionFee | string
 }
 
 export const ConvertDetails: FC<ConvertDetailsProps> = ({
@@ -55,12 +55,12 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
               <p className="leading-5 text-right font-inter">
                 {!fee ? (
                   <Skeleton className="w-[70px] h-4 rounded-lg" />
-                ) : typeof fee === "bigint" ? (
+                ) : typeof fee === "string" ? (
                   <>
-                    {Number(fee) / 10 ** ETH_DECIMALS} {token.getTokenSymbol()}
+                    {Number(fee)} {token.getTokenSymbol()}
                     <span className="block text-xs text-gray-400 dark:text-zinc-500">
                       {token?.getTokenRateFormatted(
-                        (Number(fee) / 10 ** ETH_DECIMALS).toString() || "0",
+                        Number(fee).toString() || "0",
                       )}
                     </span>
                   </>
@@ -79,7 +79,7 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
               <p className="leading-5 text-right font-inter">
                 {!fee ? (
                   <Skeleton className="w-[70px] h-4 rounded-lg" />
-                ) : typeof fee === "bigint" ? (
+                ) : typeof fee === "string" ? (
                   <>
                     {fee} {token.getTokenSymbol()}
                     <span className="block text-xs text-gray-400 dark:text-zinc-500">
@@ -103,7 +103,7 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
                   <p className="leading-5 text-right font-inter">
                     {!fee ? (
                       <Skeleton className="w-[70px] h-4 rounded-lg" />
-                    ) : typeof fee === "bigint" ? (
+                    ) : typeof fee === "string" ? (
                       <>
                         {fee} {token.getTokenSymbol()}
                         <span className="block text-xs text-gray-400">

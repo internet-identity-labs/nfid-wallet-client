@@ -4,6 +4,9 @@ import clsx from "clsx"
 import { FC, useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
 
+import { mutate } from "@nfid/swr"
+
+import { fetchStakedTokens } from "frontend/features/staking/utils"
 import { NeuronFormValues } from "frontend/features/transfer-modal/types"
 import { StakedToken } from "frontend/integration/staking/staked-token"
 import {
@@ -52,7 +55,6 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
 }) => {
   const [sidePanelOption, setSidePanelOption] =
     useState<SidePanelOption | null>(null)
-  const [isStateLoading, setIsStateLoading] = useState(false)
   const [isDelegateLoading, setIsDelegateLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -99,7 +101,15 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
         : updateDelegates(neuron, id)
     }
 
-    update(userNeuron, stakeId).then(() => setIsDelegateLoading(false))
+    update(userNeuron, stakeId).then(async () => {
+      await mutate("stakedTokens", () => fetchStakedTokens(true), {
+        revalidate: true,
+      })
+
+      setIsDelegateLoading(false)
+      setIsModalOpen(false)
+      setSidePanelOption(null)
+    })
   }
 
   if (!stakedToken && !isLoading) return <NotFound />
@@ -152,13 +162,11 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
         sidePanelOption={sidePanelOption}
         onRedeemOpen={onRedeemOpen}
         identity={identity}
-        setIsLoading={setIsStateLoading}
-        isLoading={isStateLoading}
         delegates={delegates}
         setIsModalOpen={setIsModalOpen}
         isDelegateLoading={isDelegateLoading}
       />
-      {isLoading || isStateLoading || !stakedToken ? (
+      {isLoading || !stakedToken ? (
         <>
           <div className="flex gap-[10px] items-center mb-[30px]">
             <div className="px-[15px]">

@@ -33,7 +33,10 @@
         "*.json",
         "*.yml",
         "*.yaml",
-        "*.md"
+        "*.md",
+        "*.css",
+        "*.scss",
+        "*.html"
       ],
       "options": {
         "tabWidth": 2

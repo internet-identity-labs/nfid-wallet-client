@@ -76,13 +76,13 @@ export const ConvertUi: FC<ConvertUiProps> = ({
   const fee =
     fromToken?.getTokenAddress() === ETH_NATIVE_ID ||
     fromToken?.getTokenAddress() === CKETH_CANISTER_ID
-      ? ethFee
+      ? (Number(ethFee) / 10 ** ETH_DECIMALS).toString()
       : getBtcConversionFee(btcFee)
 
   const targetAmount = useMemo(() => {
-    if (typeof fee === "bigint") {
+    if (typeof fee === "string") {
       if (!amount || !fee) return "0.00"
-      return (Number(amount) - Number(fee) / 10 ** ETH_DECIMALS).toString()
+      return (Number(amount) - Number(fee)).toString()
     }
 
     if (!amount || !fee?.total) return "0.00"

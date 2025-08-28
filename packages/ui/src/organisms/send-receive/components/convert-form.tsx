@@ -44,7 +44,7 @@ export interface ConvertFormProps {
   errors: FieldErrors<FieldValues>
   conversionError: string | undefined
   handleReverse: () => void
-  fee?: IConversionFee | bigint
+  fee?: IConversionFee | string
   targetAmount: string
   tokens: FT[]
 }
@@ -141,8 +141,8 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           token={toToken}
           setToChosenToken={setToChosenToken}
           usdRate={toToken!.getTokenRateFormatted(
-            typeof fee === "bigint"
-              ? (+amount - Number(fee) / 10 ** ETH_DECIMALS).toString()
+            typeof fee === "string"
+              ? (+amount - +fee).toString()
               : fee && fee.total
               ? (+amount - +fee?.total).toString() || "0"
               : "0",
@@ -163,7 +163,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           ) : (
             <span>
               {fromToken?.getTokenRateFormatted(
-                typeof fee === "bigint" ? fee.toString() : fee.total,
+                typeof fee === "string" ? fee : fee.total,
               )}
             </span>
           )}

@@ -1,6 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
 import clsx from "clsx"
-import { FC, useMemo } from "react"
+import { FC } from "react"
 
 import {
   Button,
@@ -9,9 +9,9 @@ import {
   IconCmpFilters,
   Table,
 } from "@nfid-frontend/ui"
-import { CKBTC_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { IActivityRowGroup } from "frontend/features/activity/types"
+import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 
 import { TableActivitySkeleton } from "../../atoms/skeleton"
@@ -50,12 +50,14 @@ export const Activity: FC<ActivityProps> = ({
     resetHandler,
     isFirstLoading,
   } = activityData
-  const ckBTC = useMemo(
-    () => tokens.find((token) => token.getTokenAddress() === CKBTC_CANISTER_ID),
-    [tokens],
-  )
+  const { isBtcAddressLoading } = useBtcAddress()
+  const { isEthAddressLoading } = useEthAddress()
 
-  const showSkeleton = isFirstLoading || (isValidating && !activities.length)
+  const showSkeleton =
+    isFirstLoading ||
+    (isValidating && !activities.length) ||
+    isBtcAddressLoading ||
+    isEthAddressLoading
   const showEmpty = !showSkeleton && activities.length === 0
 
   return (
@@ -122,7 +124,6 @@ export const Activity: FC<ActivityProps> = ({
                     date={group.date}
                     rows={group.rows}
                     key={`group_${group.date}`}
-                    token={ckBTC}
                     identity={identity}
                   />
                 ))

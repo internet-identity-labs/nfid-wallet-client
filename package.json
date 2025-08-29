@@ -1,7 +1,7 @@
 {
   "name": "@internet-identity-labs/nfid-frontend",
   "engines": {
-    "node": "22.10.0"
+    "node": "22.18.0"
   },
   "packageManager": "yarn@1.22.22",
   "scripts": {
@@ -215,24 +215,6 @@
     "webdriverio": "9.19.2",
     "webpack": "5.101.3",
     "whatwg-fetch": "3.6.20"
-  },
-  "resolutions": {
-    "@imtbl/imx-sdk": "npm:dry-uninstall@0.3.0",
-    "@rarible/solana-sdk": "npm:dry-uninstall@0.3.0",
-    "express": "4.21.0",
-    "ws": "8.18.0",
-    "path-to-regexp": "3.3.0",
-    "http-proxy-middleware": "2.0.8",
-    "cookie": "0.7.0",
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.0",
-    "workbox-webpack-plugin": "7.3.0",
-    "koa": "2.16.2",
-    "esbuild": "0.25.0",
-    "tar-fs": "3.1.0",
-    "prismjs": "1.30.0",
-    "got": "12.6.1",
-    "tmp": "0.2.4",
-    "on-headers": "1.1.0"
   },
   "repository": "git@github.com:internet-identity-labs/nfid-wallet-client.git",
   "license": "MIT"

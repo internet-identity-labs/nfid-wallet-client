@@ -1,32 +1,61 @@
-ARG NODE_VERSION=22.18.0
-FROM node:${NODE_VERSION}-slim
+ARG TAG=22.04
+FROM ubuntu:${TAG}
 
-# Use non-root user
 ARG USER_ID=1000
 ARG GROUP_ID=1000
-RUN groupadd -g ${GROUP_ID} user \
-    && useradd -m -u ${USER_ID} -g ${GROUP_ID} -s /bin/sh user
-USER user
+ARG NODE_VERSION=22.11
+ARG NVM_VERSION=0.40.1
 
-WORKDIR /home/user/workdir
+ENV NVM_DIR=/usr/local/nvm
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    sudo curl wget git ca-certificates gnupg apt-utils \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN echo 'debconf debconf/frontend select teletype' | debconf-set-selections
+RUN apt-get update && apt-get upgrade -y && apt-get install -y sudo apt-utils curl wget git ca-certificates gnupg \
+    && if [ -z "`getent group ${GROUP_ID}`" ]; then \
+        addgroup --system --gid ${GROUP_ID} user; \
+    else \
+        groupmod -n user `getent group ${GROUP_ID} | cut -d: -f1`; \
+    fi \
+    && if [ -z "`getent passwd ${USER_ID}`" ]; then \
+        adduser --system --uid ${USER_ID} --ingroup user --shell /bin/sh user; \
+    else \
+        usermod -l user -g ${GROUP_ID} -d /home/user -m `getent passwd ${USER_ID} | cut -d: -f1`; \
+    fi
 
-# Install Chrome for E2E
+# Install NODE
+RUN mkdir -p "${NVM_DIR}" \
+    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v${NVM_VERSION}/install.sh | bash \
+    && [ -s "${NVM_DIR}/nvm.sh" ] && \. "${NVM_DIR}/nvm.sh" \
+    && nvm install "${NODE_VERSION}"
+
+# Install YARN
+RUN mkdir -p /etc/apt/keyrings \
+    && curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /etc/apt/keyrings/yarnkey.gpg >/dev/null \
+    && echo "deb [signed-by=/etc/apt/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list \
+    && apt-get update && apt-get install -y yarn
+
+# Install Chrome
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
-    && sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install -y \
+    && dpkg -i google-chrome-stable_current_amd64.deb || true \
+    && apt-get -f install -y \
     && ln -s /usr/bin/google-chrome /usr/local/bin/chrome \
     && rm -f google-chrome-stable_current_amd64.deb
 
-# Install Yarn via Corepack (simpler than apt)
-RUN corepack enable && corepack prepare yarn@stable --activate
+RUN apt-get clean                 \
+    && rm -rf                     \
+    /var/lib/apt/lists/*          \
+    /var/log/alternatives.log     \
+    /var/log/apt/history.log      \
+    /var/log/apt/term.log         \
+    /var/log/dpkg.log             \
+    /etc/machine-id               \
+    /var/lib/dbus/machine-id
 
-# Copy scripts
 COPY docker-entrypoint.sh /usr/bin/
 COPY CI_OUTPUT.sh /usr/src
 RUN chmod +x /usr/bin/docker-entrypoint.sh /usr/src/CI_OUTPUT.sh
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+WORKDIR /home/user/workdir
+
+USER user
+
+ENTRYPOINT [ "docker-entrypoint.sh" ]

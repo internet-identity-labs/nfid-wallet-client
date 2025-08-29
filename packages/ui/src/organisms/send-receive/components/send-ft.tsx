@@ -248,14 +248,18 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         block
         onClick={submit}
         icon={
-          isFeeLoading && token.getTokenAddress() === BTC_NATIVE_ID ? (
+          isFeeLoading &&
+          (token.getTokenAddress() === BTC_NATIVE_ID ||
+            token.getTokenAddress() === ETH_NATIVE_ID) ? (
             <Spinner className="w-5 h-5 text-white" />
           ) : (
             <IconCmpArrow className="rotate-[135deg] !max-w-5 !max-h-5" />
           )
         }
       >
-        {isFeeLoading && token.getTokenAddress() === BTC_NATIVE_ID
+        {isFeeLoading &&
+        (token.getTokenAddress() === BTC_NATIVE_ID ||
+          token.getTokenAddress() === ETH_NATIVE_ID)
           ? "Calculating fee"
           : "Send"}
       </Button>

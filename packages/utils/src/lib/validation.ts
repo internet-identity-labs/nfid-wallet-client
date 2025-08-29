@@ -30,7 +30,7 @@ export const isHex = (h: string) => {
 export const validateTransferAmountField =
   (
     balance: bigint | undefined,
-    fee: bigint,
+    fee: bigint | undefined,
     decimals: number | undefined,
     isConvertFromCkBtc: boolean,
     isConvertFromCkEth: boolean,
@@ -39,6 +39,10 @@ export const validateTransferAmountField =
   ) =>
   (value: string) => {
     if (!decimals || !balance) return "Insufficient funds"
+    if (fee === undefined) return true
+
+    console.log("validateTransferAmountField", fee)
+
     const balanceNum = BigNumber(balance.toString()).div(10 ** decimals)
     const feeNum = new BigNumber(fee.toString()).div(10 ** decimals)
     const valueNum = new BigNumber(value)

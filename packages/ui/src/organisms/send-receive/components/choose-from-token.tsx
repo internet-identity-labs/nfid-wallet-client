@@ -66,7 +66,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 }) => {
   const [inputAmountValue, setInputAmountValue] = useState(value || "")
   const [isMaxClicked, setIsMaxClicked] = useState(false)
-  const [isBtcLoading, setIsBtcLoading] = useState(false)
+  const [isFeeLoading, setIsFeeLoading] = useState(false)
 
   const initedToken = useTokenInit(token)
 
@@ -97,30 +97,27 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         token.getTokenAddress() === ETH_NATIVE_ID
       ? ethFee
       : token.getTokenFee()
-  }, [token, userBalance, btcFee])
+  }, [token, userBalance, btcFee, ethFee])
+
+  useEffect(() => {
+    if (fee !== undefined) {
+      trigger("amount")
+    }
+  }, [fee, trigger])
 
   const isMaxAvailable = useMemo(() => {
+    if (userBalance === undefined) return false
+
     if (
-      modalType === IModalType.CONVERT_TO_CKBTC ||
-      modalType === IModalType.CONVERT_TO_BTC ||
-      (modalType === IModalType.SEND &&
-        token?.getTokenAddress() === BTC_NATIVE_ID) ||
+      token?.getTokenAddress() === BTC_NATIVE_ID ||
       token?.getTokenAddress() === ETH_NATIVE_ID
-    )
-      return false
-
-    if (
-      userBalance === undefined ||
-      (token?.getTokenAddress() !== BTC_NATIVE_ID && fee === undefined) ||
-      (token?.getTokenAddress() === BTC_NATIVE_ID &&
-        userBalance === BigInt(0)) ||
-      (token?.getTokenAddress() !== ETH_NATIVE_ID && fee === undefined)
-    )
-      return false
-
-    const balanceNum = new BigNumber(userBalance.toString())
-    const feeNum = new BigNumber(fee!.toString())
-    return balanceNum.minus(feeNum).isGreaterThanOrEqualTo(0)
+    ) {
+      return true
+    } else {
+      const balanceNum = new BigNumber(userBalance.toString())
+      const feeNum = new BigNumber(fee!.toString())
+      return balanceNum.minus(feeNum).isGreaterThanOrEqualTo(0)
+    }
   }, [userBalance, fee, token])
 
   const maxHandler = useCallback(() => {
@@ -131,11 +128,14 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
     const balanceNum = new BigNumber(userBalance.toString())
 
-    if (token.getTokenAddress() === BTC_NATIVE_ID) {
+    if (
+      token.getTokenAddress() === ETH_NATIVE_ID ||
+      token.getTokenAddress() === BTC_NATIVE_ID
+    ) {
       const formattedValue = formatAssetAmountRaw(balanceNum, decimals)
       setValue("amount", formattedValue, { shouldValidate: true })
 
-      setIsBtcLoading(true)
+      setIsFeeLoading(true)
       setIsMaxClicked(true)
       return
     }
@@ -155,7 +155,6 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     if (
       !isMaxClicked ||
       !token ||
-      token.getTokenAddress() !== BTC_NATIVE_ID ||
       fee === undefined ||
       userBalance === undefined
     )
@@ -166,14 +165,15 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
     const balanceNum = new BigNumber(userBalance.toString())
     const feeNum = new BigNumber(fee.toString())
-    const maxAmount =
-      modalType === IModalType.SWAP ? balanceNum : balanceNum.minus(feeNum)
-    const formattedValue = formatAssetAmountRaw(maxAmount, decimals)
+    const formattedValue = formatAssetAmountRaw(
+      balanceNum.minus(feeNum),
+      decimals,
+    )
 
     setInputAmountValue(formattedValue)
     setValue("amount", formattedValue, { shouldValidate: true })
 
-    setIsBtcLoading(false)
+    setIsFeeLoading(false)
     setIsMaxClicked(false)
   }, [fee, isMaxClicked, token, userBalance])
 
@@ -210,7 +210,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
               isResponsive && "leading-[26px] h-[30px] !max-w-full",
             )}
             id={"choose-from-token-amount"}
-            isLoading={isBtcLoading}
+            isLoading={isFeeLoading}
             decimals={decimals}
             value={inputAmountValue}
             {...register("amount", {
@@ -219,9 +219,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
               validate: (value) => {
                 const amountValidationError = validateTransferAmountField(
                   balance || token.getTokenBalance(),
-                  modalType === IModalType.SWAP
-                    ? BigInt(0)
-                    : token.getTokenFee(),
+                  modalType === IModalType.SWAP ? BigInt(0) : fee,
                   decimals,
                   modalType === IModalType.CONVERT_TO_BTC,
                   modalType === IModalType.CONVERT_TO_ETH,
@@ -285,7 +283,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           )}
         </div>
         <div className="flex-[0_0_100%]"></div>
-        {isLoading || isBtcLoading || !Boolean(initedToken) ? (
+        {isLoading || isFeeLoading || !Boolean(initedToken) ? (
           <Skeleton className="w-[124px] h-1 rounded-[6px] mt-[15px]" />
         ) : (
           <p

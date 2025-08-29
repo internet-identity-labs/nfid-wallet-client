@@ -125,6 +125,7 @@
     "@types/elliptic": "6.4.14",
     "@types/google-one-tap": "^1.2.0",
     "@types/jest": "29.4.4",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.20",
     "@types/node": "^22.10.6",
     "@types/react": "18.3.1",

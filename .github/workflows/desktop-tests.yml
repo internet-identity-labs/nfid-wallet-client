@@ -102,6 +102,12 @@ jobs:
           ref: main
           path: ci_libs
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "yarn"
+
       - name: Versions
         run: |
           source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
@@ -259,6 +265,12 @@ jobs:
           ref: main
           path: ci_libs
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "yarn"
+
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
 
@@ -402,6 +414,12 @@ jobs:
           repository: internet-identity-labs/ci_libs
           ref: main
           path: ci_libs
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "yarn"
 
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin

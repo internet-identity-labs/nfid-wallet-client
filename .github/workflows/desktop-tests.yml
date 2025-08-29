@@ -102,8 +102,13 @@ jobs:
           ref: main
           path: ci_libs
 
+      - name: Versions
+        run: |
+          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
+
+          ci_versions
+
       - name: Log in to registry
-        # This is where you will update the personal access token to GITHUB_TOKEN
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
 
       - name: Pull Build Push Image
@@ -254,8 +259,13 @@ jobs:
           ref: main
           path: ci_libs
 
+      - name: Use Node.js 22.18.0
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
       - name: Log in to registry
-        # This is where you will update the personal access token to GITHUB_TOKEN
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
 
       - name: Pull Image and preparing Env Vars

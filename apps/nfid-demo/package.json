@@ -27,5 +27,6 @@
       "last 1 safari version"
     ]
   },
+  "repository": "git@github.com:internet-identity-labs/nfid-wallet-client.git",
   "license": "MIT"
 }

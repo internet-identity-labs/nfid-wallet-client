@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { Spinner } from "packages/ui/src/atoms/spinner"
-import { FC } from "react"
+import { FC, useEffect, useState } from "react"
 import { FieldErrors, FieldValues } from "react-hook-form"
 
 import {
@@ -41,6 +41,8 @@ export interface ConvertFormProps {
   fee?: IConversionFee | string
   targetAmount: string
   tokens: FT[]
+  isResponsive?: boolean
+  setIsResponsive?: (value: boolean) => void
 }
 
 export const ConvertForm: FC<ConvertFormProps> = ({
@@ -59,7 +61,18 @@ export const ConvertForm: FC<ConvertFormProps> = ({
   fee,
   targetAmount,
   tokens,
+  isResponsive,
+  setIsResponsive,
 }) => {
+  const [isFromResponsive, setIsFromResponsive] = useState(false)
+  const [isToResponsive, setIsToResponsive] = useState(false)
+
+  useEffect(() => {
+    if (setIsResponsive) {
+      setIsResponsive(isFromResponsive || isToResponsive)
+    }
+  }, [isFromResponsive, isToResponsive, setIsResponsive])
+
   const isDarkTheme = useDarkTheme()
   const isDisabled =
     isFeeLoading ||
@@ -69,7 +82,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
     Boolean(conversionError)
 
   return (
-    <div className={clsx(!isOpen && "hidden")}>
+    <div className={clsx(!isOpen && "hidden", isResponsive && "pb-[70px]")}>
       <div>
         <div
           className={clsx(
@@ -105,6 +118,8 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           value={amount}
           tokens={tokens}
           title="Convert from"
+          isResponsive={isResponsive}
+          setIsResponsive={setIsFromResponsive}
         />
         {errors["amount"] && (
           <div className="h-4 mt-1 text-xs leading-4 text-red-600">
@@ -144,6 +159,8 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           isLoading={isFeeLoading && !!amount}
           value={targetAmount}
           color="bg-gray-50 dark:bg-zinc-700"
+          isResponsive={isResponsive}
+          setIsResponsive={setIsToResponsive}
         />
         <div
           className={clsx(

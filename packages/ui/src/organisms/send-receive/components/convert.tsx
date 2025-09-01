@@ -66,6 +66,7 @@ export const ConvertUi: FC<ConvertUiProps> = ({
   tokens,
 }) => {
   const [convertModal, setConvertModal] = useState(ConvertModal.CONVERT)
+  const [isResponsive, setIsResponsive] = useState(false)
 
   const {
     watch,
@@ -131,6 +132,7 @@ export const ConvertUi: FC<ConvertUiProps> = ({
               toToken.getTokenAddress() === BTC_NATIVE_ID ||
               toToken.getTokenAddress() === CKBTC_CANISTER_ID
             }
+            isResponsive={isResponsive}
           />
         </motion.div>
       )}
@@ -160,6 +162,8 @@ export const ConvertUi: FC<ConvertUiProps> = ({
           transition={{ duration: 0.25, ease: "easeInOut" }}
         >
           <ConvertForm
+            setIsResponsive={setIsResponsive}
+            isResponsive={isResponsive}
             fromToken={fromToken}
             toToken={toToken}
             submit={submit}

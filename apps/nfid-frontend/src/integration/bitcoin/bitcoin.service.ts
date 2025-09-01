@@ -21,15 +21,15 @@ export type BlockIndex = bigint
 export type BitcointNetworkFeeAndUtxos = SelectedUtxosFeeResponse
 
 export type BtcToCkBtcFee = {
-  conversionFee: bigint
-  interNetwokFee: bigint
   bitcointNetworkFee: BitcointNetworkFeeAndUtxos
+  amountToReceive: bigint
+  icpNetworkFee: bigint
 }
 
 export type CkBtcToBtcFee = {
-  conversionFee: bigint
-  interNetwokFee: bigint
   bitcointNetworkFee: BitcointNetworkFeeAndUtxos
+  amountToReceive: bigint
+  icpNetworkFee: bigint
   identityLabsFee: bigint
 }
 
@@ -88,14 +88,16 @@ export class BitcoinService {
       throw new Error(confirmationResult.error)
     }
 
-    const interNetwokFee = satoshiService.getInSatoshis("0.000001")
+    const checkerFee = satoshiService.getInSatoshis("0.000001")
+    const icpNetworkFee = checkerFee
     const amountInSatoshis = satoshiService.getInSatoshis(amount)
     const bitcointNetworkFee: BitcointNetworkFeeAndUtxos =
       await patronService.askToCalcUtxosAndFee(identity, amountInSatoshis)
     return {
       bitcointNetworkFee,
-      conversionFee: BigInt(0),
-      interNetwokFee,
+      amountToReceive:
+        amountInSatoshis - icpNetworkFee - bitcointNetworkFee.fee_satoshis,
+      icpNetworkFee,
     }
   }
 
@@ -160,7 +162,11 @@ export class BitcoinService {
     const txId: TransactionId = await this.send(
       identity,
       address,
-      amount,
+      (
+        satoshiService.getInSatoshis(amount) -
+        fee.icpNetworkFee -
+        fee.bitcointNetworkFee.fee_satoshis
+      ).toString(),
       fee.bitcointNetworkFee,
     )
     return txId
@@ -188,17 +194,25 @@ export class BitcoinService {
         error: "No bitcoin address in cache for fee calculation.",
       }
     }
-    const hasConfirmations = await mempoolService.checkWalletConfirmations(
-      cachedValue as string,
-    )
-    if (!hasConfirmations) {
+    try {
+      const hasConfirmations = await mempoolService.checkWalletConfirmations(
+        cachedValue as string,
+      )
+      if (!hasConfirmations) {
+        return {
+          ok: false,
+          error:
+            "Your last BTC transaction is still going through confirmations. Once it hits all six, you will be able to send again.",
+        }
+      }
+      return { ok: true }
+    } catch (e) {
       return {
         ok: false,
         error:
-          "Your last BTC transaction is still going through confirmations. Once it hits all six, you will be able to send again.",
+          "The Bitcoin service is currently unreachable. Please try again in a few minutes.",
       }
     }
-    return { ok: true }
   }
 }
 

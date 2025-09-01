@@ -39,7 +39,6 @@ export interface ConvertFormProps {
   conversionError: string | undefined
   handleReverse: () => void
   fee?: IConversionFee | string
-  targetAmount: string
   tokens: FT[]
   isResponsive?: boolean
   setIsResponsive?: (value: boolean) => void
@@ -59,7 +58,6 @@ export const ConvertForm: FC<ConvertFormProps> = ({
   conversionError,
   handleReverse,
   fee,
-  targetAmount,
   tokens,
   isResponsive,
   setIsResponsive,
@@ -152,12 +150,14 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           usdRate={toToken!.getTokenRateFormatted(
             typeof fee === "string"
               ? (+amount - +fee).toString()
-              : fee && fee.total
-              ? (+amount - +fee?.total).toString() || "0"
-              : "0",
+              : fee?.amountToReceive || "0",
           )}
           isLoading={isFeeLoading && !!amount && !errors["amount"]}
-          value={targetAmount}
+          value={
+            typeof fee === "string"
+              ? (+amount - +fee).toString()
+              : fee?.amountToReceive
+          }
           color="bg-gray-50 dark:bg-zinc-700"
           isResponsive={isResponsive}
           setIsResponsive={setIsToResponsive}

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import { FC, useMemo, useState } from "react"
+import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
@@ -82,18 +82,6 @@ export const ConvertUi: FC<ConvertUiProps> = ({
         : undefined
       : getBtcConversionFee(btcFee)
 
-  const targetAmount = useMemo(() => {
-    if (typeof fee === "string") {
-      if (!amount || !fee) return "0.00"
-      return (Number(amount) - Number(fee)).toString()
-    }
-
-    if (!amount || !fee?.total) return "0.00"
-    return (Number(amount) - Number(fee?.total)).toFixed(
-      toToken?.getTokenDecimals(),
-    )
-  }, [amount, fee])
-
   if (isTokenLoading || !fromToken || !toToken)
     return (
       <BlurredLoader
@@ -118,11 +106,15 @@ export const ConvertUi: FC<ConvertUiProps> = ({
             assetImgFrom={fromToken?.getTokenLogo() ?? ""}
             assetImgTo={toToken?.getTokenLogo() ?? ""}
             titleFrom={`${amount} ${fromToken!.getTokenSymbol()}`}
-            titleTo={`${targetAmount} ${toToken!.getTokenSymbol()}`}
+            titleTo={`${
+              typeof fee === "string" ? fee : fee?.amountToReceive
+            } ${toToken!.getTokenSymbol()}`}
             subTitleFrom={`${fromToken!.getTokenRateFormatted(amount || "0")}`}
-            subTitleTo={`${toToken!.getTokenRateFormatted(
-              targetAmount || "0",
-            )}`}
+            subTitleTo={
+              `${toToken!.getTokenRateFormatted(
+                typeof fee === "string" ? fee : fee!.amountToReceive,
+              )}` || "0"
+            }
             isOpen={isSuccessOpen}
             onClose={onClose}
             status={status}
@@ -177,7 +169,6 @@ export const ConvertUi: FC<ConvertUiProps> = ({
             conversionError={conversionError}
             handleReverse={handleReverse}
             fee={fee}
-            targetAmount={targetAmount}
             tokens={tokens}
           />
         </motion.div>

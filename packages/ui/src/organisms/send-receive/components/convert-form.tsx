@@ -156,7 +156,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
               ? (+amount - +fee?.total).toString() || "0"
               : "0",
           )}
-          isLoading={isFeeLoading && !!amount}
+          isLoading={isFeeLoading && !!amount && !errors["amount"]}
           value={targetAmount}
           color="bg-gray-50 dark:bg-zinc-700"
           isResponsive={isResponsive}
@@ -169,7 +169,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           )}
         >
           <span>Network fees</span>
-          {!amount ? null : fee === undefined ? (
+          {!amount || errors["amount"] ? null : fee === undefined ? (
             <Skeleton className="w-[70px] h-4 rounded-lg" />
           ) : (
             <span>
@@ -188,7 +188,8 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           id="swapTokensButton"
           block
           icon={
-            !amount ? null : fee === undefined && !conversionError ? (
+            !amount || errors["amount"] ? null : fee === undefined &&
+              !conversionError ? (
               <Spinner className="w-5 h-5 text-white" />
             ) : (
               <IconCmpConvertWhite className="text-gray-400 !w-[18px] !h-[18px] text-white" />
@@ -199,7 +200,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
         >
           {!amount
             ? "Enter an amount"
-            : fee === undefined && !conversionError
+            : fee === undefined && !conversionError && !errors["amount"]
             ? "Calculating fee"
             : "Convert"}
         </Button>

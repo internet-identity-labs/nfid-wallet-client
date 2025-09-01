@@ -39,13 +39,15 @@ export const validateTransferAmountField =
   ) =>
   (value: string) => {
     if (!decimals || !balance) return "Insufficient funds"
+    const balanceNum = BigNumber(balance.toString()).div(10 ** decimals)
+    const valueNum = new BigNumber(value)
+    if (balanceNum.isLessThan(valueNum)) return "Insufficient funds"
+
     if (fee === undefined) return true
 
     console.log("validateTransferAmountField", fee)
 
-    const balanceNum = BigNumber(balance.toString()).div(10 ** decimals)
     const feeNum = new BigNumber(fee.toString()).div(10 ** decimals)
-    const valueNum = new BigNumber(value)
 
     if (valueNum.isNaN()) return "Invalid input"
     if (valueNum.isLessThan(0)) return "Transfer amount can't be negative value"

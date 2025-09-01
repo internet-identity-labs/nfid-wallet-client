@@ -190,6 +190,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
   if (!decimals || !token) return null
 
+  console.log("whatttt", modalType, fee)
+
   return (
     <div
       id={"sourceSection"}

@@ -180,7 +180,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
               id="fee"
             >
               {token.getTokenAddress() === BTC_NATIVE_ID ? (
-                !btcFee || isFeeLoading ? (
+                !amount ? null : !btcFee || isFeeLoading ? (
                   <>
                     <Skeleton className="w-[80px] h-5" />
                     <span className="block mt-1 text-xs">
@@ -196,7 +196,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
                   </>
                 )
               ) : token.getTokenAddress() === ETH_NATIVE_ID ? (
-                !ethFee || isFeeLoading ? (
+                !amount ? null : !ethFee || isFeeLoading ? (
                   <>
                     <Skeleton className="w-[80px] h-5" />
                     <span className="block mt-1 text-xs">

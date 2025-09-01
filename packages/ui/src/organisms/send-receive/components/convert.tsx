@@ -76,7 +76,9 @@ export const ConvertUi: FC<ConvertUiProps> = ({
   const fee =
     fromToken?.getTokenAddress() === ETH_NATIVE_ID ||
     fromToken?.getTokenAddress() === CKETH_CANISTER_ID
-      ? (Number(ethFee) / 10 ** ETH_DECIMALS).toString()
+      ? ethFee !== undefined
+        ? (Number(ethFee) / 10 ** ETH_DECIMALS).toString()
+        : undefined
       : getBtcConversionFee(btcFee)
 
   const targetAmount = useMemo(() => {
@@ -145,6 +147,7 @@ export const ConvertUi: FC<ConvertUiProps> = ({
             isOpen={convertModal === ConvertModal.DETAILS}
             setConvertModal={setConvertModal}
             fee={fee}
+            amount={amount}
           />
         </motion.div>
       )}

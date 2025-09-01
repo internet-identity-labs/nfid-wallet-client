@@ -19,6 +19,7 @@ export interface ConvertDetailsProps {
   isOpen: boolean
   setConvertModal: (v: ConvertModal) => void
   fee?: IConversionFee | string
+  amount?: string
 }
 
 export const ConvertDetails: FC<ConvertDetailsProps> = ({
@@ -26,6 +27,7 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
   isOpen,
   setConvertModal,
   fee,
+  amount,
 }) => {
   return (
     <div className={clsx(!isOpen && "hidden")}>
@@ -53,7 +55,7 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
             <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-700">
               <p>{token.getTokenSymbol()} network fee</p>
               <p className="leading-5 text-right font-inter">
-                {!fee ? (
+                {!amount ? null : !fee ? (
                   <Skeleton className="w-[70px] h-4 rounded-lg" />
                 ) : typeof fee === "string" ? (
                   <>
@@ -77,7 +79,7 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
             <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-700">
               <p>ICP network fee</p>
               <p className="leading-5 text-right font-inter">
-                {!fee ? (
+                {!amount ? null : !fee ? (
                   <Skeleton className="w-[70px] h-4 rounded-lg" />
                 ) : typeof fee === "string" ? (
                   <>
@@ -101,7 +103,7 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
                 <div className="flex flex-wrap justify-between py-3 leading-5">
                   <p>Widget fee</p>
                   <p className="leading-5 text-right font-inter">
-                    {!fee ? (
+                    {!amount ? null : !fee ? (
                       <Skeleton className="w-[70px] h-4 rounded-lg" />
                     ) : typeof fee === "string" ? (
                       <>

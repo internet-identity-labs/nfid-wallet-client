@@ -7,15 +7,9 @@ import {
   Button,
   IconCmpArrowConvert,
   IconCmpConvertWhite,
-  IconCmpConvert,
   Skeleton,
   Tooltip,
 } from "@nfid-frontend/ui"
-import {
-  BTC_NATIVE_ID,
-  CKBTC_CANISTER_ID,
-  ETH_DECIMALS,
-} from "@nfid/integration/token/constants"
 
 import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
@@ -24,7 +18,7 @@ import ConvertArrowBoxDark from "../assets/convert-arrow-box-dark.png"
 import ConvertArrowBox from "../assets/convert-arrow-box.png"
 import ConvertDarkIcon from "../assets/convert-dark.svg"
 import ConvertIcon from "../assets/convert.svg"
-import { getModalType, IConversionFee, IModalType } from "../utils"
+import { getModalType, IConversionFee } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { ChooseToToken } from "./choose-to-token"
 import { ConvertModal } from "./convert"
@@ -147,7 +141,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
               ? (+amount - +fee?.total).toString() || "0"
               : "0",
           )}
-          isLoading={isFeeLoading}
+          isLoading={isFeeLoading && !!amount}
           value={targetAmount}
           color="bg-gray-50 dark:bg-zinc-700"
         />
@@ -158,7 +152,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           )}
         >
           <span>Network fees</span>
-          {fee === undefined ? (
+          {!amount ? null : fee === undefined ? (
             <Skeleton className="w-[70px] h-4 rounded-lg" />
           ) : (
             <span>

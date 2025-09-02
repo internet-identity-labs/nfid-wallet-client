@@ -45,8 +45,6 @@ export const validateTransferAmountField =
 
     if (fee === undefined) return true
 
-    console.log("validateTransferAmountField", fee)
-
     const feeNum = new BigNumber(fee.toString()).div(10 ** decimals)
 
     if (valueNum.isNaN()) return "Invalid input"

@@ -27,6 +27,8 @@ import {
 } from "../bitcoin/services/chain-fusion-signer.service"
 import { patronService } from "../bitcoin/services/patron.service"
 import { CKETH_ABI, CKETH_FEE } from "./cketh.constants"
+import { authState } from "packages/integration/src/lib/authentication/auth-state"
+import { getWalletDelegation } from "../facade/wallet"
 
 const INFURA_API_KEY = "010993c30ae14b2b94ff239547b6ebbe"
 
@@ -47,6 +49,18 @@ export class EthereumService {
 
   constructor() {
     this.provider = new InfuraProvider(chainId, INFURA_API_KEY)
+  }
+
+  public async getQuickAddress() {
+    let principal = Principal.from(authState.getUserIdData().publicKey)
+    const { cachedValue } = await this.getAddressFromCache(principal.toText())
+
+    if (cachedValue == null) {
+      let identity = await getWalletDelegation()
+      return this.getAddress(identity)
+    } else {
+      return cachedValue as string
+    }
   }
 
   //get eth address from global identity
@@ -334,9 +348,8 @@ export class EthereumService {
     signedTransaction: string,
   ): Promise<TransactionResponse> {
     try {
-      const response = await this.provider.broadcastTransaction(
-        signedTransaction,
-      )
+      const response =
+        await this.provider.broadcastTransaction(signedTransaction)
       await response.wait()
       return response
     } catch (e) {

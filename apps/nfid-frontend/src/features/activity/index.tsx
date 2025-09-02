@@ -13,7 +13,6 @@ import { fetchTokens } from "../fungible-token/utils"
 
 const ActivityPage = () => {
   const { state } = useLocation()
-  const { identity } = useIdentity()
   const initialFilter = state && state.canisterId ? [state.canisterId] : []
   const data = useActivityPagination(initialFilter)
   const { data: tokens = [] } = useSWRWithTimestamp("tokens", fetchTokens, {
@@ -25,9 +24,7 @@ const ActivityPage = () => {
     return tokens.filter((token) => token.getTokenState() === State.Active)
   }, [tokens])
 
-  return (
-    <Activity activityData={data} tokens={activeTokens} identity={identity} />
-  )
+  return <Activity activityData={data} tokens={activeTokens} />
 }
 
 export default ActivityPage

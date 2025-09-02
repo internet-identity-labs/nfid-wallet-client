@@ -17,9 +17,6 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
   const [hasMoreData, setHasMoreData] = useState(true)
   const [isFirstLoading, setIsFirstLoading] = useState(true)
 
-  const { btcAddress } = useBtcAddress()
-  const { ethAddress } = useEthAddress()
-
   const { data, isValidating } = useSWR(
     ["activity", filter, offset],
     () =>
@@ -27,8 +24,6 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
         filteredContracts: filter,
         offset,
         limit: PAGINATION_ITEMS,
-        btcAddress,
-        ethAddress,
       }),
     {
       revalidateOnMount: true,

@@ -1,6 +1,8 @@
 import * as Agent from "@dfinity/agent"
 import { HttpAgent, Identity } from "@dfinity/agent"
 
+import { storageWithTtl } from "@nfid/client-db"
+
 import { idlFactory as icrc1IDL } from "../../_ic_api/icrc1"
 import {
   _SERVICE as ICRC1Service,
@@ -22,9 +24,27 @@ export async function getICRC1HistoryDataForUser(
   publicKey: string,
   maxResults: bigint,
 ): Promise<Array<ICRC1IndexData>> {
-  const canisters = await icrc1StorageService.getICRC1ActiveCanisters(
-    rootPrincipalId,
-  )
+  const canisters =
+    await icrc1StorageService.getICRC1ActiveCanisters(rootPrincipalId)
+
+  let cachedICRC1IndexData = (await storageWithTtl.get(
+    "Activity_" + rootPrincipalId,
+  )) as ICRC1IndexData[]
+  let ledgerAndBlockNumberToStartFrom: {
+    ledger: string
+    blockNumberToStartFrom: bigint | undefined
+  }[] = []
+  if (cachedICRC1IndexData) {
+    ledgerAndBlockNumberToStartFrom = cachedICRC1IndexData.map(
+      (data: ICRC1IndexData) => {
+        return {
+          ledger: data.canisterId!,
+          blockNumberToStartFrom: data.oldestTransactionId,
+        }
+      },
+    )
+  }
+
   const indexedCanisters = canisters
     .filter((canister) => canister.index !== undefined)
     .map((l) => {
@@ -33,17 +53,39 @@ export async function getICRC1HistoryDataForUser(
           ledger: l.ledger,
           index: l.index!,
         },
-        blockNumberToStartFrom: undefined,
+        blockNumberToStartFrom: ledgerAndBlockNumberToStartFrom?.find(
+          (data) => data.ledger === l.ledger,
+        )?.blockNumberToStartFrom,
       }
     })
 
   if (!indexedCanisters.length) return []
 
-  return icrc1TransactionHistoryService.getICRC1IndexData(
-    indexedCanisters,
-    publicKey,
-    maxResults,
+  let icrc1IndexData: Array<ICRC1IndexData> =
+    await icrc1TransactionHistoryService.getICRC1IndexData(
+      indexedCanisters,
+      publicKey,
+      maxResults,
+    )
+
+  icrc1IndexData.forEach((data) => {
+    if (cachedICRC1IndexData) {
+      let cachedTransactions = cachedICRC1IndexData.find(
+        (d) => d.canisterId === data.canisterId,
+      )?.transactions
+      if (cachedTransactions) {
+        data.transactions = [...data.transactions, ...cachedTransactions]
+      }
+    }
+  })
+
+  await storageWithTtl.set(
+    "Activity_" + rootPrincipalId,
+    icrc1IndexData,
+    15 * 1000,
   )
+
+  return icrc1IndexData
 }
 
 export async function transferICRC1(

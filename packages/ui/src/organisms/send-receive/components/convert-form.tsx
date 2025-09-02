@@ -1,21 +1,15 @@
 import clsx from "clsx"
 import { Spinner } from "packages/ui/src/atoms/spinner"
-import { FC } from "react"
+import { FC, useEffect, useState } from "react"
 import { FieldErrors, FieldValues } from "react-hook-form"
 
 import {
   Button,
   IconCmpArrowConvert,
   IconCmpConvertWhite,
-  IconCmpConvert,
   Skeleton,
   Tooltip,
 } from "@nfid-frontend/ui"
-import {
-  BTC_NATIVE_ID,
-  CKBTC_CANISTER_ID,
-  ETH_DECIMALS,
-} from "@nfid/integration/token/constants"
 
 import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
@@ -24,7 +18,7 @@ import ConvertArrowBoxDark from "../assets/convert-arrow-box-dark.png"
 import ConvertArrowBox from "../assets/convert-arrow-box.png"
 import ConvertDarkIcon from "../assets/convert-dark.svg"
 import ConvertIcon from "../assets/convert.svg"
-import { getModalType, IConversionFee, IModalType } from "../utils"
+import { getModalType, IConversionFee } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { ChooseToToken } from "./choose-to-token"
 import { ConvertModal } from "./convert"
@@ -45,8 +39,9 @@ export interface ConvertFormProps {
   conversionError: string | undefined
   handleReverse: () => void
   fee?: IConversionFee | string
-  targetAmount: string
   tokens: FT[]
+  isResponsive?: boolean
+  setIsResponsive?: (value: boolean) => void
 }
 
 export const ConvertForm: FC<ConvertFormProps> = ({
@@ -63,9 +58,19 @@ export const ConvertForm: FC<ConvertFormProps> = ({
   conversionError,
   handleReverse,
   fee,
-  targetAmount,
   tokens,
+  isResponsive,
+  setIsResponsive,
 }) => {
+  const [isFromResponsive, setIsFromResponsive] = useState(false)
+  const [isToResponsive, setIsToResponsive] = useState(false)
+
+  useEffect(() => {
+    if (setIsResponsive) {
+      setIsResponsive(isFromResponsive || isToResponsive)
+    }
+  }, [isFromResponsive, isToResponsive, setIsResponsive])
+
   const isDarkTheme = useDarkTheme()
   const isDisabled =
     isFeeLoading ||
@@ -75,7 +80,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
     Boolean(conversionError)
 
   return (
-    <div className={clsx(!isOpen && "hidden")}>
+    <div className={clsx(!isOpen && "hidden", isResponsive && "pb-[70px]")}>
       <div>
         <div
           className={clsx(
@@ -111,6 +116,8 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           value={amount}
           tokens={tokens}
           title="Convert from"
+          isResponsive={isResponsive}
+          setIsResponsive={setIsFromResponsive}
         />
         {errors["amount"] && (
           <div className="h-4 mt-1 text-xs leading-4 text-red-600">
@@ -143,13 +150,17 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           usdRate={toToken!.getTokenRateFormatted(
             typeof fee === "string"
               ? (+amount - +fee).toString()
-              : fee && fee.total
-              ? (+amount - +fee?.total).toString() || "0"
-              : "0",
+              : fee?.amountToReceive || "0",
           )}
-          isLoading={isFeeLoading}
-          value={targetAmount}
+          isLoading={isFeeLoading && !!amount && !errors["amount"]}
+          value={
+            typeof fee === "string"
+              ? (+amount - +fee).toString()
+              : fee?.amountToReceive
+          }
           color="bg-gray-50 dark:bg-zinc-700"
+          isResponsive={isResponsive}
+          setIsResponsive={setIsToResponsive}
         />
         <div
           className={clsx(
@@ -158,7 +169,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           )}
         >
           <span>Network fees</span>
-          {fee === undefined ? (
+          {!amount || errors["amount"] ? null : fee === undefined ? (
             <Skeleton className="w-[70px] h-4 rounded-lg" />
           ) : (
             <span>
@@ -177,7 +188,8 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           id="swapTokensButton"
           block
           icon={
-            !amount ? null : fee === undefined && !conversionError ? (
+            !amount || errors["amount"] ? null : fee === undefined &&
+              !conversionError ? (
               <Spinner className="w-5 h-5 text-white" />
             ) : (
               <IconCmpConvertWhite className="text-gray-400 !w-[18px] !h-[18px] text-white" />
@@ -188,7 +200,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
         >
           {!amount
             ? "Enter an amount"
-            : fee === undefined && !conversionError
+            : fee === undefined && !conversionError && !errors["amount"]
             ? "Calculating fee"
             : "Convert"}
         </Button>

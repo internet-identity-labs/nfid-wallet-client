@@ -8,5 +8,6 @@
     "allure-report": "allure generate allure-results --clean && allure open",
     "clean": "rm -rf allure-results allure-report"
   },
+  "repository": "git@github.com:internet-identity-labs/nfid-wallet-client.git",
   "license": "MIT"
 }

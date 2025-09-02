@@ -5,8 +5,6 @@ import { useLocation } from "react-router-dom"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { useSWRWithTimestamp } from "@nfid/swr"
 
-import { useIdentity } from "frontend/hooks/identity"
-
 import { useActivityPagination } from "./hooks/pagination"
 
 import { fetchTokens } from "../fungible-token/utils"

@@ -5,7 +5,7 @@ import { FC } from "react"
 
 import {
   BTC_NATIVE_ID,
-  ETH_DECIMALS,
+  CKETH_CANISTER_ID,
   ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
 
@@ -19,6 +19,7 @@ export interface ConvertDetailsProps {
   isOpen: boolean
   setConvertModal: (v: ConvertModal) => void
   fee?: IConversionFee | string
+  amount?: string
 }
 
 export const ConvertDetails: FC<ConvertDetailsProps> = ({
@@ -26,6 +27,7 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
   isOpen,
   setConvertModal,
   fee,
+  amount,
 }) => {
   return (
     <div className={clsx(!isOpen && "hidden")}>
@@ -51,13 +53,19 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
         >
           <div className="text-sm">
             <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-700">
-              <p>{token.getTokenSymbol()} network fee</p>
+              <p>
+                {token.getTokenAddress() === ETH_NATIVE_ID ||
+                token.getTokenAddress() === CKETH_CANISTER_ID
+                  ? "ETH"
+                  : "BTC"}{" "}
+                network fee
+              </p>
               <p className="leading-5 text-right font-inter">
-                {!fee ? (
+                {!amount ? null : !fee ? (
                   <Skeleton className="w-[70px] h-4 rounded-lg" />
                 ) : typeof fee === "string" ? (
                   <>
-                    {Number(fee)} {token.getTokenSymbol()}
+                    {Number(fee)} ETH
                     <span className="block text-xs text-gray-400 dark:text-zinc-500">
                       {token?.getTokenRateFormatted(
                         Number(fee).toString() || "0",
@@ -66,7 +74,7 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
                   </>
                 ) : (
                   <>
-                    {fee?.btcNetworkFee} {token.getTokenSymbol()}
+                    {fee?.btcNetworkFee} BTC
                     <span className="block text-xs text-gray-400 dark:text-zinc-500">
                       {token?.getTokenRateFormatted(fee?.btcNetworkFee || "0")}
                     </span>
@@ -77,18 +85,18 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
             <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-700">
               <p>ICP network fee</p>
               <p className="leading-5 text-right font-inter">
-                {!fee ? (
+                {!amount ? null : !fee ? (
                   <Skeleton className="w-[70px] h-4 rounded-lg" />
                 ) : typeof fee === "string" ? (
                   <>
-                    {fee} {token.getTokenSymbol()}
+                    {fee} ckETH
                     <span className="block text-xs text-gray-400 dark:text-zinc-500">
                       {token?.getTokenRateFormatted(fee.toString() || "0")}
                     </span>
                   </>
                 ) : (
                   <>
-                    {fee?.icpNetworkFee} {token.getTokenSymbol()}
+                    {fee?.icpNetworkFee} ckBTC
                     <span className="block text-xs text-gray-400 dark:text-zinc-500">
                       {token?.getTokenRateFormatted(fee?.icpNetworkFee || "0")}
                     </span>
@@ -101,7 +109,7 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
                 <div className="flex flex-wrap justify-between py-3 leading-5">
                   <p>Widget fee</p>
                   <p className="leading-5 text-right font-inter">
-                    {!fee ? (
+                    {!amount ? null : !fee ? (
                       <Skeleton className="w-[70px] h-4 rounded-lg" />
                     ) : typeof fee === "string" ? (
                       <>

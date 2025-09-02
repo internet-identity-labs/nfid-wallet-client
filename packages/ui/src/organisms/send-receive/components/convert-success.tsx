@@ -25,6 +25,7 @@ export interface ConvertSuccessUiProps {
   status: SendStatus
   duration?: number
   error?: string
+  isResponsive?: boolean
 }
 
 export const ConvertSuccessUi: FC<ConvertSuccessUiProps> = ({
@@ -41,6 +42,7 @@ export const ConvertSuccessUi: FC<ConvertSuccessUiProps> = ({
   status,
   duration = 90,
   error,
+  isResponsive,
 }) => {
   const isDarkTheme = useDarkTheme()
 
@@ -88,7 +90,12 @@ export const ConvertSuccessUi: FC<ConvertSuccessUiProps> = ({
           />
         </div>
       </div>
-      <div className="relative z-20 mt-[10px]">
+      <div
+        className={clsx(
+          "relative z-20 ",
+          isResponsive ? "mt-[50px]" : "mt-[10px]",
+        )}
+      >
         <div>
           <div className="pt-[10px] pb-[40px] relative">
             <p className="text-sm leading-[25px] font-inter" id="title">

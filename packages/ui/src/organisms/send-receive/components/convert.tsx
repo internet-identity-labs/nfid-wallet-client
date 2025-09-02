@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import { FC, useMemo, useState } from "react"
+import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
@@ -66,6 +66,7 @@ export const ConvertUi: FC<ConvertUiProps> = ({
   tokens,
 }) => {
   const [convertModal, setConvertModal] = useState(ConvertModal.CONVERT)
+  const [isResponsive, setIsResponsive] = useState(false)
 
   const {
     watch,
@@ -76,20 +77,10 @@ export const ConvertUi: FC<ConvertUiProps> = ({
   const fee =
     fromToken?.getTokenAddress() === ETH_NATIVE_ID ||
     fromToken?.getTokenAddress() === CKETH_CANISTER_ID
-      ? (Number(ethFee) / 10 ** ETH_DECIMALS).toString()
+      ? ethFee !== undefined
+        ? (Number(ethFee) / 10 ** ETH_DECIMALS).toString()
+        : undefined
       : getBtcConversionFee(btcFee)
-
-  const targetAmount = useMemo(() => {
-    if (typeof fee === "string") {
-      if (!amount || !fee) return "0.00"
-      return (Number(amount) - Number(fee)).toString()
-    }
-
-    if (!amount || !fee?.total) return "0.00"
-    return (Number(amount) - Number(fee?.total)).toFixed(
-      toToken?.getTokenDecimals(),
-    )
-  }, [amount, fee])
 
   if (isTokenLoading || !fromToken || !toToken)
     return (
@@ -115,11 +106,15 @@ export const ConvertUi: FC<ConvertUiProps> = ({
             assetImgFrom={fromToken?.getTokenLogo() ?? ""}
             assetImgTo={toToken?.getTokenLogo() ?? ""}
             titleFrom={`${amount} ${fromToken!.getTokenSymbol()}`}
-            titleTo={`${targetAmount} ${toToken!.getTokenSymbol()}`}
+            titleTo={`${
+              typeof fee === "string" ? fee : fee?.amountToReceive
+            } ${toToken!.getTokenSymbol()}`}
             subTitleFrom={`${fromToken!.getTokenRateFormatted(amount || "0")}`}
-            subTitleTo={`${toToken!.getTokenRateFormatted(
-              targetAmount || "0",
-            )}`}
+            subTitleTo={
+              `${toToken!.getTokenRateFormatted(
+                typeof fee === "string" ? fee : fee!.amountToReceive,
+              )}` || "0"
+            }
             isOpen={isSuccessOpen}
             onClose={onClose}
             status={status}
@@ -129,6 +124,7 @@ export const ConvertUi: FC<ConvertUiProps> = ({
               toToken.getTokenAddress() === BTC_NATIVE_ID ||
               toToken.getTokenAddress() === CKBTC_CANISTER_ID
             }
+            isResponsive={isResponsive}
           />
         </motion.div>
       )}
@@ -145,6 +141,7 @@ export const ConvertUi: FC<ConvertUiProps> = ({
             isOpen={convertModal === ConvertModal.DETAILS}
             setConvertModal={setConvertModal}
             fee={fee}
+            amount={amount}
           />
         </motion.div>
       )}
@@ -157,6 +154,8 @@ export const ConvertUi: FC<ConvertUiProps> = ({
           transition={{ duration: 0.25, ease: "easeInOut" }}
         >
           <ConvertForm
+            setIsResponsive={setIsResponsive}
+            isResponsive={isResponsive}
             fromToken={fromToken}
             toToken={toToken}
             submit={submit}
@@ -170,7 +169,6 @@ export const ConvertUi: FC<ConvertUiProps> = ({
             conversionError={conversionError}
             handleReverse={handleReverse}
             fee={fee}
-            targetAmount={targetAmount}
             tokens={tokens}
           />
         </motion.div>

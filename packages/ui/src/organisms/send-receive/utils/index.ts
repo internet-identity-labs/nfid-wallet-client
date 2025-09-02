@@ -9,10 +9,12 @@ import {
 import { SwapStage } from "src/integration/swap/types/enums"
 
 import {
+  BTC_DECIMALS,
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_CANISTER_ID,
   ETH_NATIVE_ID,
+  TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
 
 import {
@@ -27,7 +29,8 @@ export interface IConversionFee {
   total: string
   btcNetworkFee: string
   icpNetworkFee: string
-  widgetFee: string
+  amountToReceive: string
+  widgetFee?: string
 }
 
 export enum IModalType {
@@ -89,23 +92,36 @@ export const getBtcConversionFee = (fee?: BtcToCkBtcFee | CkBtcToBtcFee) => {
 
   const {
     bitcointNetworkFee: { fee_satoshis },
-    interNetwokFee,
-    conversionFee,
+    icpNetworkFee,
+    amountToReceive,
   } = fee
 
   const identityLabsFee =
     "identityLabsFee" in fee ? fee.identityLabsFee : BigInt(0)
 
-  const totalFee =
-    fee_satoshis + interNetwokFee + conversionFee + identityLabsFee
+  const totalFee = fee_satoshis + icpNetworkFee + identityLabsFee
 
   return {
-    total: BigNumber(totalFee.toString()).div(e8s).toString(),
-    btcNetworkFee: BigNumber(fee_satoshis.toString()).div(e8s).toString(),
-    icpNetworkFee: BigNumber((interNetwokFee + conversionFee).toString())
+    btcNetworkFee: BigNumber(fee_satoshis.toString())
       .div(e8s)
-      .toString(),
-    widgetFee: BigNumber(identityLabsFee.toString()).div(e8s).toString(),
+      .toFixed(BTC_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+    icpNetworkFee: BigNumber(icpNetworkFee.toString())
+      .div(e8s)
+      .toFixed(BTC_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+    widgetFee: BigNumber(identityLabsFee.toString())
+      .div(e8s)
+      .toFixed(BTC_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+    amountToReceive: BigNumber(amountToReceive)
+      .div(e8s)
+      .toFixed(BTC_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+    total: BigNumber(totalFee.toString())
+      .div(e8s)
+      .toFixed(BTC_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
   }
 }
 

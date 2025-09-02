@@ -113,8 +113,7 @@ describe("Bitcoin Service", () => {
     const fee = await bitcoinService.getBtcToCkBtcFee(identity, amount)
 
     // Then
-    expect(fee.conversionFee).toBe(BigInt(0))
-    expect(fee.interNetwokFee).toBe(BigInt(100))
+    expect(fee.icpNetworkFee).toBe(BigInt(100))
     expect(fee.bitcointNetworkFee.fee_satoshis).not.toBeNull()
     expect(fee.bitcointNetworkFee.utxos).not.toHaveLength(0)
   })
@@ -128,8 +127,6 @@ describe("Bitcoin Service", () => {
     const fee = await bitcoinService.getCkBtcToBtcFee(identity, amount)
 
     // Then
-    expect(fee.conversionFee).toBe(BigInt(10))
-    expect(fee.interNetwokFee).toBe(BigInt(100))
     expect(fee.identityLabsFee).toBe(BigInt(9))
     expect(fee.bitcointNetworkFee.fee_satoshis).not.toBeNull()
     expect(fee.bitcointNetworkFee.utxos).toHaveLength(0)

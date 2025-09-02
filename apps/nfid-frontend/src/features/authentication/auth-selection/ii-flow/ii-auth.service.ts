@@ -5,7 +5,13 @@ import {
 } from "@dfinity/auth-client"
 import { DelegationIdentity } from "@dfinity/identity"
 
-import { authState, im, DeviceType, Icon, replaceActorIdentity } from "@nfid/integration"
+import {
+  authState,
+  im,
+  DeviceType,
+  Icon,
+  replaceActorIdentity,
+} from "@nfid/integration"
 import { IIAuthSession } from "frontend/state/authentication"
 
 import {
@@ -13,7 +19,7 @@ import {
   createNFIDProfile,
 } from "frontend/integration/identity-manager"
 
-export const identityProvider = "https://identity.ic0.app"
+export const identityProvider = "https://id.ai"
 
 export async function signWithIIService(): Promise<IIAuthSession> {
   console.log("signWithIIService")

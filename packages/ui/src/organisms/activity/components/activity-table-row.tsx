@@ -40,6 +40,7 @@ import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 import { APPROXIMATE_SWAP_DURATION } from "frontend/integration/swap/transaction/transaction-service"
+import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
 interface ErrorStage {
   buttonText: string
@@ -241,7 +242,6 @@ export const ActivityTableRow = ({
   id,
   nodeId,
   transaction,
-  identity,
 }: IActivityTableRow) => {
   const isDarkTheme = useDarkTheme()
   const [isLoading, setIsLoading] = useState(false)
@@ -264,11 +264,12 @@ export const ActivityTableRow = ({
     transaction?.getSwapName() && SwapName[transaction?.getSwapName()]
 
   const completeHandler = async () => {
-    if (!transaction || !identity) return
+    if (!transaction) return
     setIsLoading(true)
 
     try {
       const errorHandler = errorHandlerFactory.getHandler(transaction)
+      let identity = await getWalletDelegation()
       await errorHandler.completeTransaction(identity)
     } catch (e) {
       if (e instanceof ContactSupportError) {

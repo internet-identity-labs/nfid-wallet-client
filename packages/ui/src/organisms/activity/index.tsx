@@ -34,11 +34,7 @@ export interface ActivityProps {
   identity?: SignIdentity
 }
 
-export const Activity: FC<ActivityProps> = ({
-  activityData,
-  tokens,
-  identity,
-}) => {
+export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
   const {
     activities,
     filter,
@@ -124,7 +120,6 @@ export const Activity: FC<ActivityProps> = ({
                     date={group.date}
                     rows={group.rows}
                     key={`group_${group.date}`}
-                    identity={identity}
                   />
                 ))
               )}

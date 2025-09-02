@@ -15,13 +15,16 @@ import {
 import { getIcrc1ActivitiesRows } from "./icrc1-activity"
 import { groupActivityRowsByDate } from "./row"
 import { getSwapActivitiesRows } from "./swap-activity"
+import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
+import { ethereumService } from "frontend/integration/ethereum/ethereum.service"
 
 export const getAllActivity = async ({
-  btcAddress,
-  ethAddress,
   ...params
 }: GetAllActivityParams): Promise<GetAllActivityResult> => {
   const { filteredContracts, offset = 0, limit = PAGINATION_ITEMS } = params
+
+  let btcAddress = await bitcoinService.getQuickAddress()
+  let ethAddress = await ethereumService.getQuickAddress()
 
   const [icrc1Activities, swapActivities, btcActivities, ethActivities] =
     await Promise.all([

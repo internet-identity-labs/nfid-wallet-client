@@ -2,8 +2,9 @@ import { SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
+import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
-import { Balance } from "@nfid/integration"
+import { authState, Balance } from "@nfid/integration"
 
 import { bitcoinCanisterService } from "./services/bitcoin-canister.service"
 import {
@@ -34,6 +35,18 @@ export type CkBtcToBtcFee = {
 }
 
 export class BitcoinService {
+  public async getQuickAddress(): Promise<string> {
+    let principal = Principal.from(authState.getUserIdData().publicKey)
+    const { cachedValue } = await this.getAddressFromCache(principal.toText())
+
+    if (cachedValue == null) {
+      let identity = await getWalletDelegation()
+      return this.getAddress(identity)
+    } else {
+      return cachedValue as string
+    }
+  }
+
   public async getAddress(identity: SignIdentity): Promise<Address> {
     const { cachedValue, key } = await this.getAddressFromCache(
       identity.getPrincipal().toText(),
@@ -123,9 +136,8 @@ export class BitcoinService {
       fee.utxos,
     )
 
-    const isOnMempool = await mempoolService.checkTransactionAppeared(
-      transactionId,
-    )
+    const isOnMempool =
+      await mempoolService.checkTransactionAppeared(transactionId)
 
     if (!isOnMempool) {
       throw new Error(
@@ -156,9 +168,8 @@ export class BitcoinService {
     amount: string,
     fee: BtcToCkBtcFee,
   ): Promise<TransactionId> {
-    const address: Address = await ckBtcService.getBtcAddressToMintCkBtc(
-      identity,
-    )
+    const address: Address =
+      await ckBtcService.getBtcAddressToMintCkBtc(identity)
     const txId: TransactionId = await this.send(
       identity,
       address,

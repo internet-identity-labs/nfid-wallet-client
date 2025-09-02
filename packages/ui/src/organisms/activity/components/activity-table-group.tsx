@@ -54,7 +54,6 @@ export const ActivityTableGroup = ({
           {...row}
           nodeId={getRowId(row)}
           key={`group_${groupIndex}_activity_${i}`}
-          identity={identity}
         />
       ))}
     </>

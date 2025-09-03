@@ -17,15 +17,15 @@ export const JEST_GLOBALS = {
   LEDGER_CANISTER_ID: "ryjl3-tyaaa-aaaaa-aaaba-cai",
   CYCLES_MINTER_CANISTER_ID: "rkp4c-7iaaa-aaaaa-aaaca-cai",
   VERIFY_PHONE_NUMBER:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/verify/",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/verify/",
   AWS_SYMMETRIC:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/symmetric/",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/symmetric/",
   AWS_SIGNATURE_EVENT:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/signature/",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/signature/",
   AWS_X_TWEET:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/x/tweet",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/x/tweet",
   AWS_EXCHANGE_RATE:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/exchange-rate/",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/exchange-rate/",
   IC_HOST: "https://ic0.app",
   II_MODE: "dev",
   IS_DEV: "",
@@ -37,27 +37,27 @@ export const JEST_GLOBALS = {
   FRONTEND_MODE: "development",
   CHAIN_NETWORK: "testnet",
   AWS_ECDSA_REGISTER:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_register",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/ecdsa_register",
   AWS_ECDSA_REGISTER_ADDRESS:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_register_address",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/ecdsa_register_address",
   AWS_ECDSA_GET_ANONYMOUS:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_get_anonymous",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/ecdsa_get_anonymous",
   AWS_EXECUTE_CANDID:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/execute_candid",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/execute_candid",
   AWS_ECDSA_SIGN:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/ecdsa_sign",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/ecdsa_sign",
   AWS_PASSKEY:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/passkey",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/passkey",
   AWS_SEND_VERIFICATION_EMAIL:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/send_verification_email",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/send_verification_email",
   AWS_LINK_GOOGLE_ACCOUNT:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/link_google_account",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/link_google_account",
   AWS_CHECK_VERIFICATION:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/check_verification",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/check_verification",
   AWS_VERIFY_EMAIL:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/verify_email",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/verify_email",
   AWS_SIGNIN_GOOGLE_V2:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/signin/v2",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/signin/v2",
   AWS_PUBLIC_KEY:
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/publickey",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/publickey",
 }

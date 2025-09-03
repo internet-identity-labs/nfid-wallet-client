@@ -278,7 +278,7 @@ describe("Verification of email", () => {
 
 function validateVerificationRequest(url: string, options: any): string {
   expect(url).toEqual(
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/send_verification_email",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/send_verification_email",
   )
   expect(options).toMatchObject({
     method: "POST",
@@ -296,7 +296,7 @@ function validateVerificationRequest(url: string, options: any): string {
 
 function validateVerifyRequest(url: string, options: any): void {
   expect(url).toEqual(
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/verify_email",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/verify_email",
   )
   expect(options).toMatchObject({
     method: "POST",
@@ -312,7 +312,7 @@ function validateVerifyRequest(url: string, options: any): void {
 
 function validateCheckVerificationRequest(url: string, options: any): void {
   expect(url).toEqual(
-    "https://ia15v0pzlb.execute-api.us-east-1.amazonaws.com/dev/check_verification",
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/check_verification",
   )
   expect(options).toMatchObject({
     method: "POST",

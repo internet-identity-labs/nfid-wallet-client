@@ -2,8 +2,6 @@ import { useEffect, useState } from "react"
 
 import { useSWR } from "@nfid/swr"
 
-import { useBtcAddress, useEthAddress } from "frontend/hooks"
-
 import { PAGINATION_ITEMS } from "../constants"
 import { IActivityRowGroup } from "../types"
 import { getAllActivity } from "../utils/activity"

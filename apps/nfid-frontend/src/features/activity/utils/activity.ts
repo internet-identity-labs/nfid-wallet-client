@@ -47,12 +47,15 @@ export const getAllActivity = async ({
 
   const paginatedData = groupedRowsByDate.slice(offset, offset + limit)
 
+  let priceResponse = await exchangeRateService.getAllIcpTokens()
   const paginatedDataUsdRate = await Promise.all(
     paginatedData.map(async (item) => {
       const asset = item.row.asset as ActivityAssetFT
       let usdRate
       try {
-        usdRate = await exchangeRateService.usdPriceForICRC1(asset.canister)
+        usdRate = priceResponse?.find(
+          (token) => token.address === asset.canister,
+        )
       } catch (e) {
         console.error("Exchange rate error: ", e)
       }
@@ -63,7 +66,7 @@ export const getAllActivity = async ({
           ...item.row,
           asset: {
             ...item.row.asset,
-            rate: Number(usdRate?.value.toFixed(2)),
+            rate: Number(usdRate?.price),
           },
         },
       }
@@ -85,7 +88,6 @@ export const getAllActivity = async ({
     },
     [],
   )
-
   const isEnd = groupedRowsByDate.length > offset + limit
 
   return { transactions: paginatedGroupedData, isEnd }

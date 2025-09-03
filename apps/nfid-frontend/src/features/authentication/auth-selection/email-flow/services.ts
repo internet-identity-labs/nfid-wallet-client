@@ -51,9 +51,11 @@ export const checkEmailVerification = async (
   delegation: DelegationIdentity
 }> => {
   const verificationMethod = "email"
+  const maxErrorAttempts = 5
 
   return new Promise((resolve, reject) => {
     let nonce = 0
+    let errorAttempts = 0
     const int = setInterval(async () => {
       try {
         nonce++
@@ -72,8 +74,11 @@ export const checkEmailVerification = async (
       } catch (e) {
         const isPending = e instanceof VerificationIsInProgressError
         if (!isPending) {
-          clearInterval(int)
-          reject()
+          errorAttempts++
+          if (errorAttempts >= maxErrorAttempts) {
+            clearInterval(int)
+            reject(new Error("Verification failed after 3 error attempts"))
+          }
         }
       }
     }, 3000)

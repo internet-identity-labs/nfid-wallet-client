@@ -77,7 +77,7 @@ export const checkEmailVerification = async (
           errorAttempts++
           if (errorAttempts >= maxErrorAttempts) {
             clearInterval(int)
-            reject(new Error("Verification failed after 3 error attempts"))
+            reject(new Error("Verification failed after 5 error attempts"))
           }
         }
       }

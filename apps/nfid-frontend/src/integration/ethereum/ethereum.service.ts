@@ -297,14 +297,34 @@ export class EthereumService {
     }
   }
 
+  private async estimateTransaction(
+    gas: bigint,
+    maxPriorityFeePerGas: bigint,
+    maxFeePerGas: bigint,
+    baseFeePerGas: bigint,
+  ): bigint {
+    let effectiveGasPrice = Math.min(
+      Number(maxFeePerGas),
+      Number(baseFeePerGas) + Number(maxPriorityFeePerGas),
+    )
+    return gas * BigInt(effectiveGasPrice)
+  }
   //transfer eth
   public async sendEthTransaction(
     identity: SignIdentity,
     to: Address,
     value: string,
+    //точно также передать эти параметры в ethtoCkEth (предварительно рассчитав с data)
+    gas?: {
+      limit: bigint
+      maxPriorityFeePerGas: bigint
+      maxFeePerGas: bigint
+      baseFeePerGas: bigint
+    },
   ): Promise<TransactionResponse> {
     const address = await this.getAddress(identity)
 
+    //TODO remove this lines
     const [nonce, gasLimit, feeData] = await Promise.all([
       this.getTransactionCount(address),
       this.estimateGas(to, value),
@@ -324,9 +344,10 @@ export class EthereumService {
       value: parseEther(value),
       data: [],
       nonce: BigInt(nonce),
-      gas: gasLimit,
-      max_priority_fee_per_gas: feeData.maxPriorityFeePerGas,
-      max_fee_per_gas: feeData.maxFeePerGas,
+      gas: gas?.limit ?? gasLimit,
+      max_priority_fee_per_gas:
+        gas?.maxPriorityFeePerGas ?? feeData.maxPriorityFeePerGas,
+      max_fee_per_gas: gas?.maxFeePerGas ?? feeData.maxFeePerGas,
     }
 
     let signedTransaction = await chainFusionSignerService.ethSignTransaction(

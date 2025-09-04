@@ -33,12 +33,12 @@ describe("EthereumService", () => {
   })
 
   it.skip("should send ckETH to eth", async () => {
-    let tr = await ethereumService.convertCkETHToEth(address, "0.03", idA)
+    let tr = await ethereumService.convertFromCkEth(address, "0.03", idA)
     console.log(tr)
   })
 
   it.skip("should send eth to ckETH", async () => {
-    let tr = await ethereumService.depositEth(idA, "0.009000070045")
+    let tr = await ethereumService.convertToCkEth(idA, "0.009000070045")
     console.log(tr)
   })
 })

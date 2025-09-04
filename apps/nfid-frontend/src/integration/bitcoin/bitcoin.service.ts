@@ -106,6 +106,13 @@ export class BitcoinService {
     const amountInSatoshis = satoshiService.getInSatoshis(amount)
     const bitcointNetworkFee: BitcointNetworkFeeAndUtxos =
       await patronService.askToCalcUtxosAndFee(identity, amountInSatoshis)
+
+    console.log("btcctctctc FEE", {
+      bitcointNetworkFee,
+      amountToReceive:
+        amountInSatoshis - icpNetworkFee - bitcointNetworkFee.fee_satoshis,
+      icpNetworkFee,
+    })
     return {
       bitcointNetworkFee,
       amountToReceive:
@@ -121,17 +128,16 @@ export class BitcoinService {
     return ckBtcService.getCkBtcToBtcFee(identity, amount)
   }
 
-  public async send(
+  private async innerSend(
     identity: SignIdentity,
     destinationAddress: string,
-    amount: string,
+    amount: bigint,
     fee: BitcointNetworkFeeAndUtxos,
   ): Promise<TransactionId> {
-    const amountInSatoshis = satoshiService.getInSatoshis(amount)
     const transactionId = await chainFusionSignerService.sendBtc(
       identity,
       destinationAddress,
-      amountInSatoshis,
+      amount,
       fee.fee_satoshis,
       fee.utxos,
     )
@@ -146,6 +152,17 @@ export class BitcoinService {
     }
 
     return transactionId
+  }
+
+  public async send(
+    identity: SignIdentity,
+    destinationAddress: string,
+    amount: string,
+    fee: BitcointNetworkFeeAndUtxos,
+  ): Promise<TransactionId> {
+    const amountInSatoshis = satoshiService.getInSatoshis(amount)
+
+    return this.innerSend(identity, destinationAddress, amountInSatoshis, fee)
   }
 
   public async convertFromCkBtc(
@@ -170,14 +187,16 @@ export class BitcoinService {
   ): Promise<TransactionId> {
     const address: Address =
       await ckBtcService.getBtcAddressToMintCkBtc(identity)
-    const txId: TransactionId = await this.send(
+
+    const finalAmount =
+      satoshiService.getInSatoshis(amount) -
+      fee.icpNetworkFee -
+      fee.bitcointNetworkFee.fee_satoshis
+
+    const txId: TransactionId = await this.innerSend(
       identity,
       address,
-      (
-        satoshiService.getInSatoshis(amount) -
-        fee.icpNetworkFee -
-        fee.bitcointNetworkFee.fee_satoshis
-      ).toString(),
+      finalAmount,
       fee.bitcointNetworkFee,
     )
     return txId

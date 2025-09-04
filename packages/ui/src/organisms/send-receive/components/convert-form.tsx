@@ -18,7 +18,7 @@ import ConvertArrowBoxDark from "../assets/convert-arrow-box-dark.png"
 import ConvertArrowBox from "../assets/convert-arrow-box.png"
 import ConvertDarkIcon from "../assets/convert-dark.svg"
 import ConvertIcon from "../assets/convert.svg"
-import { getModalType, IConversionFee } from "../utils"
+import { getModalType, EthFormattedFee, BtcFormattedFee } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { ChooseToToken } from "./choose-to-token"
 import { ConvertModal } from "./convert"
@@ -38,7 +38,7 @@ export interface ConvertFormProps {
   errors: FieldErrors<FieldValues>
   conversionError: string | undefined
   handleReverse: () => void
-  fee?: IConversionFee | string
+  fee?: EthFormattedFee | BtcFormattedFee
   tokens: FT[]
   isResponsive?: boolean
   setIsResponsive?: (value: boolean) => void
@@ -147,17 +147,9 @@ export const ConvertForm: FC<ConvertFormProps> = ({
         <ChooseToToken
           token={toToken}
           setToChosenToken={setToChosenToken}
-          usdRate={toToken!.getTokenRateFormatted(
-            typeof fee === "string"
-              ? (+amount - +fee).toString()
-              : fee?.amountToReceive || "0",
-          )}
+          usdRate={toToken!.getTokenRateFormatted(fee?.amountToReceive || "0")}
           isLoading={isFeeLoading && !!amount && !errors["amount"]}
-          value={
-            typeof fee === "string"
-              ? (+amount - +fee).toString()
-              : fee?.amountToReceive
-          }
+          value={fee?.amountToReceive}
           color="bg-gray-50 dark:bg-zinc-700"
           isResponsive={isResponsive}
           setIsResponsive={setIsToResponsive}
@@ -172,11 +164,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           {!amount || errors["amount"] ? null : fee === undefined ? (
             <Skeleton className="w-[70px] h-4 rounded-lg" />
           ) : (
-            <span>
-              {fromToken?.getTokenRateFormatted(
-                typeof fee === "string" ? fee : fee.total,
-              )}
-            </span>
+            <span>{fromToken?.getTokenRateFormatted(fee.total)}</span>
           )}
         </div>
         {conversionError && (
@@ -201,8 +189,8 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           {!amount
             ? "Enter an amount"
             : fee === undefined && !conversionError && !errors["amount"]
-            ? "Calculating fee"
-            : "Convert"}
+              ? "Calculating fee"
+              : "Convert"}
         </Button>
       </div>
     </div>

@@ -38,6 +38,7 @@ export const getEthActivitiesRows = async (
   try {
     //TODO change to ETH after testing
     const url = `https://api-sepolia.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${ETHERSCAN_API_KEY}`
+    //const url = `https://etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${ETHERSCAN_API_KEY}`
 
     console.debug(
       "Fetching ETH transactions from Etherscan for address:",

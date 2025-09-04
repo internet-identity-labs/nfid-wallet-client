@@ -18,10 +18,14 @@ import {
 } from "frontend/integration/bitcoin/bitcoin.service"
 import { FT } from "frontend/integration/ft/ft"
 
-import { getBtcConversionFee } from "../utils"
+import { getBtcConversionFee, getEthConversionFee } from "../utils"
 import { ConvertDetails } from "./convert-details"
 import { ConvertForm } from "./convert-form"
 import { ConvertSuccessUi } from "./convert-success"
+import {
+  CkEthToEthFee,
+  EthToCkEthFee,
+} from "frontend/integration/ethereum/ethereum.service"
 
 export enum ConvertModal {
   CONVERT = "convert",
@@ -43,7 +47,7 @@ export interface ConvertUiProps {
   onClose: () => void
   handleReverse: () => void
   btcFee?: BtcToCkBtcFee | CkBtcToBtcFee
-  ethFee?: bigint
+  ethFee?: EthToCkEthFee | CkEthToEthFee
   tokens: FT[]
 }
 
@@ -77,9 +81,7 @@ export const ConvertUi: FC<ConvertUiProps> = ({
   const fee =
     fromToken?.getTokenAddress() === ETH_NATIVE_ID ||
     fromToken?.getTokenAddress() === CKETH_CANISTER_ID
-      ? ethFee !== undefined
-        ? (Number(ethFee) / 10 ** ETH_DECIMALS).toString()
-        : undefined
+      ? getEthConversionFee(ethFee)
       : getBtcConversionFee(btcFee)
 
   if (isTokenLoading || !fromToken || !toToken)

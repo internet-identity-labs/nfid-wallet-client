@@ -297,7 +297,7 @@ export class EthereumService {
     }
   }
 
-  private async estimateTransaction(
+  private estimateTransaction(
     gas: bigint,
     maxPriorityFeePerGas: bigint,
     maxFeePerGas: bigint,

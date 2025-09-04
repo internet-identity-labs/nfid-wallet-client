@@ -29,20 +29,34 @@ import { patronService } from "../bitcoin/services/patron.service"
 import { CKETH_ABI, CKETH_FEE } from "./cketh.constants"
 import { authState } from "packages/integration/src/lib/authentication/auth-state"
 import { getWalletDelegation } from "../facade/wallet"
+import { ETH_DECIMALS } from "@nfid/integration/token/constants"
 
 const INFURA_API_KEY = "010993c30ae14b2b94ff239547b6ebbe"
 
 //MAINNET
-// let address = "0x18901044688D3756C35Ed2b36D93e6a5B8e00E68"
+// let MINTER_ADDRESS = "0x18901044688D3756C35Ed2b36D93e6a5B8e00E68"
 // let chainId = BigInt(1)
-// let minterCanisterId = "ss2fx-dyaaa-aaaar-qacoq-cai"
-// export  let ledgerCanisterId = "ss2fx-dyaaa-aaaar-qacoq-cai"
+// let MINTER_CANISTER_ID = "sv3dd-oaaaa-aaaar-qacoa-cai"
+// export let LEDGER_CANISTER_ID = "ss2fx-dyaaa-aaaar-qacoq-cai"
 
 //TESTNET
 let chainId = BigInt(11155111)
-export const MINTER_ADDRESS = "0x2D39863d30716aaf2B7fFFd85Dd03Dda2BFC2E38"
-export const MINTER_CANISTER_ID = "jzenf-aiaaa-aaaar-qaa7q-cai"
-export const LEDGER_CANISTER_ID = "apia6-jaaaa-aaaar-qabma-cai"
+const MINTER_ADDRESS = "0x2D39863d30716aaf2B7fFFd85Dd03Dda2BFC2E38"
+const MINTER_CANISTER_ID = "jzenf-aiaaa-aaaar-qaa7q-cai"
+const LEDGER_CANISTER_ID = "apia6-jaaaa-aaaar-qabma-cai"
+
+export type CkEthToEthFee = {
+  ethereumNetworkFee: bigint
+  amountToReceive: bigint
+  icpNetworkFee: bigint
+  identityLabsFee: bigint
+}
+
+export type EthToCkEthFee = {
+  ethereumNetworkFee: bigint
+  amountToReceive: bigint
+  icpNetworkFee: bigint
+}
 
 export class EthereumService {
   private provider: InfuraProvider
@@ -109,7 +123,7 @@ export class EthereumService {
   }
 
   //deposit eth to ckETH
-  public async depositEth(identity: SignIdentity, amount: string) {
+  public async convertToCkEth(identity: SignIdentity, amount: string) {
     const ckEthContract = new Contract(MINTER_ADDRESS, CKETH_ABI, this.provider)
 
     let address = await this.getAddress(identity)
@@ -149,15 +163,19 @@ export class EthereumService {
     return response
   }
 
+  private getIdentityLabsFee(parsedAmount: bigint): bigint {
+    return (parsedAmount * BigInt(875)) / BigInt(10000000000)
+  }
+
   //convert ckETH to eth
-  public async convertCkETHToEth(
+  public async convertFromCkEth(
     address: Address,
     amount: string,
     identity: SignIdentity,
   ) {
     const parsedAmount = parseEther(amount)
     //we take 0.0000875% ckETH as fee
-    let fee: bigint = (parsedAmount * BigInt(875)) / BigInt(10000000000)
+    let identityLabsFee: bigint = this.getIdentityLabsFee(parsedAmount)
 
     //Minimum amount 0.03 ckETH
     if (parsedAmount < BigInt(30000000000000000)) {
@@ -187,7 +205,7 @@ export class EthereumService {
     })
 
     const transferArgs: TransferArg = {
-      amount: fee,
+      amount: identityLabsFee,
       created_at_time: [],
       fee: [],
       from_subaccount: [],
@@ -203,29 +221,26 @@ export class EthereumService {
     return result
   }
 
-  public async getApproximateSendEthFee(to: Address, value: string) {
+  public async getApproximateEthFee(to: Address, value: string) {
     const feeData = await this.getFee()
 
     if (
-      feeData.gasPrice === null ||
       feeData.maxFeePerGas === null ||
       feeData.maxPriorityFeePerGas === null
     ) {
       throw new Error("sendEthTransaction Gas error")
     }
 
-    const [gasUsed, baseFee] = await Promise.all([
-      this.estimateGas(to, value),
-      this.getBaseFee(),
-    ])
+    const gasUsed = await this.estimateGas(to, value.toString())
 
-    return gasUsed * (baseFee + feeData.maxPriorityFeePerGas)
+    return gasUsed * feeData.maxFeePerGas
   }
 
-  public async getApproximateDepositEthFee(
+  public async getEthToCkEthFee(
     identity: SignIdentity,
     amount: string,
-  ): Promise<bigint> {
+  ): Promise<EthToCkEthFee> {
+    const icpNetworkFee = BigInt(0.000002 * 10 ** ETH_DECIMALS)
     const ckEthContract = new Contract(MINTER_ADDRESS, CKETH_ABI, this.provider)
     const fromAddress = await this.getAddress(identity)
     const principalHex = encodePrincipalToEthAddress(identity.getPrincipal())
@@ -253,9 +268,33 @@ export class EthereumService {
     const baseFee = await this.getBaseFee()
 
     const effectiveGasPrice = baseFee + maxPriorityFeePerGas
-    const totalFee = gasEstimate * effectiveGasPrice
+    const ethereumNetworkFee = gasEstimate * effectiveGasPrice
 
-    return totalFee
+    return {
+      ethereumNetworkFee: ethereumNetworkFee,
+      amountToReceive:
+        parseEther(amount.toString()) - ethereumNetworkFee - icpNetworkFee,
+      icpNetworkFee,
+    }
+  }
+
+  public async getCkEthToEthFee(
+    to: string,
+    amount: string,
+  ): Promise<CkEthToEthFee> {
+    const parsedAmount = parseEther(amount.toString())
+    const icpNetworkFee = BigInt(0.000002 * 10 ** ETH_DECIMALS)
+    const amountToReceive =
+      parsedAmount - this.getIdentityLabsFee(parsedAmount) - icpNetworkFee
+
+    const ethFee = await this.getApproximateEthFee(to, amount)
+
+    return {
+      ethereumNetworkFee: ethFee,
+      amountToReceive,
+      icpNetworkFee: icpNetworkFee * BigInt(3),
+      identityLabsFee: this.getIdentityLabsFee(parsedAmount),
+    }
   }
 
   //transfer eth

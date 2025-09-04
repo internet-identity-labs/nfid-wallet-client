@@ -11,14 +11,14 @@ import {
 
 import { FT } from "frontend/integration/ft/ft"
 
-import { IConversionFee } from "../utils"
+import { EthFormattedFee, BtcFormattedFee } from "../utils"
 import { ConvertModal } from "./convert"
 
 export interface ConvertDetailsProps {
   token: FT
   isOpen: boolean
   setConvertModal: (v: ConvertModal) => void
-  fee?: IConversionFee | string
+  fee?: EthFormattedFee | BtcFormattedFee
   amount?: string
 }
 
@@ -63,22 +63,22 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
               <p className="leading-5 text-right font-inter">
                 {!amount ? null : !fee ? (
                   <Skeleton className="w-[70px] h-4 rounded-lg" />
-                ) : typeof fee === "string" ? (
+                ) : "ethNetworkFee" in fee ? (
                   <>
-                    {Number(fee)} ETH
+                    {fee.ethNetworkFee} ETH
                     <span className="block text-xs text-gray-400 dark:text-zinc-500">
-                      {token?.getTokenRateFormatted(
-                        Number(fee).toString() || "0",
-                      )}
+                      {token?.getTokenRateFormatted(fee.ethNetworkFee)}
                     </span>
                   </>
                 ) : (
-                  <>
-                    {fee?.btcNetworkFee} BTC
-                    <span className="block text-xs text-gray-400 dark:text-zinc-500">
-                      {token?.getTokenRateFormatted(fee?.btcNetworkFee || "0")}
-                    </span>
-                  </>
+                  "btcNetworkFee" in fee && (
+                    <>
+                      {fee.btcNetworkFee} BTC
+                      <span className="block text-xs text-gray-400 dark:text-zinc-500">
+                        {token?.getTokenRateFormatted(fee.btcNetworkFee)}
+                      </span>
+                    </>
+                  )
                 )}
               </p>
             </div>
@@ -87,18 +87,18 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
               <p className="leading-5 text-right font-inter">
                 {!amount ? null : !fee ? (
                   <Skeleton className="w-[70px] h-4 rounded-lg" />
-                ) : typeof fee === "string" ? (
+                ) : "ethNetworkFee" in fee ? (
                   <>
-                    {fee} ckETH
+                    {fee.icpNetworkFee} ckETH
                     <span className="block text-xs text-gray-400 dark:text-zinc-500">
-                      {token?.getTokenRateFormatted(fee.toString() || "0")}
+                      {token?.getTokenRateFormatted(fee.icpNetworkFee)}
                     </span>
                   </>
                 ) : (
                   <>
-                    {fee?.icpNetworkFee} ckBTC
+                    {fee.icpNetworkFee} ckBTC
                     <span className="block text-xs text-gray-400 dark:text-zinc-500">
-                      {token?.getTokenRateFormatted(fee?.icpNetworkFee || "0")}
+                      {token?.getTokenRateFormatted(fee.icpNetworkFee)}
                     </span>
                   </>
                 )}
@@ -111,16 +111,16 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
                   <p className="leading-5 text-right font-inter">
                     {!amount ? null : !fee ? (
                       <Skeleton className="w-[70px] h-4 rounded-lg" />
-                    ) : typeof fee === "string" ? (
+                    ) : "ethNetworkFee" in fee ? (
                       <>
-                        {fee} {token.getTokenSymbol()}
+                        {fee.widgetFee} ckETH
                         <span className="block text-xs text-gray-400">
-                          {token?.getTokenRateFormatted(fee.toString() || "0")}
+                          {token?.getTokenRateFormatted(fee.widgetFee!)}
                         </span>
                       </>
                     ) : (
                       <>
-                        {fee?.widgetFee} {token.getTokenSymbol()}
+                        {fee.widgetFee} ckBTC
                         <span className="block text-xs text-gray-400">
                           {token?.getTokenRateFormatted(fee?.widgetFee || "0")}
                         </span>

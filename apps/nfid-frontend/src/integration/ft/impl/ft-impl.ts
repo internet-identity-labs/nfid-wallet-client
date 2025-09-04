@@ -74,9 +74,8 @@ export class FTImpl implements FT {
       return
     }
 
-    this.tokenRate = await exchangeRateService.usdPriceForICRC1(
-      CKBTC_CANISTER_ID,
-    )
+    this.tokenRate =
+      await exchangeRateService.usdPriceForICRC1(CKBTC_CANISTER_ID)
   }
 
   private async getNativeEthBalance(globalPrincipal: Principal): Promise<void> {
@@ -87,9 +86,8 @@ export class FTImpl implements FT {
       return
     }
 
-    this.tokenRate = await exchangeRateService.usdPriceForICRC1(
-      CKETH_CANISTER_ID,
-    )
+    this.tokenRate =
+      await exchangeRateService.usdPriceForICRC1(CKETH_CANISTER_ID)
   }
 
   private async getIcrc1Balance(globalPrincipal: Principal): Promise<void> {
@@ -321,7 +319,7 @@ export class FTImpl implements FT {
   }
 
   async getETHFee(to: string, value: string): Promise<bigint> {
-    return await ethereumService.getApproximateSendEthFee(to, value)
+    return await ethereumService.getApproximateEthFee(to, value)
   }
 
   getETHFeeFormatted(fee: bigint): string {

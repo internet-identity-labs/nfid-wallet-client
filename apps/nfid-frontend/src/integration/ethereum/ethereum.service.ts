@@ -11,6 +11,7 @@ import {
   Contract,
   InfuraProvider,
   parseEther,
+  TransactionRequest,
   type FeeData,
   type TransactionResponse,
 } from "ethers"
@@ -115,10 +116,17 @@ export class EthereumService {
   }
 
   //estimate gas for transaction
-  private async estimateGas(address: Address, amount: string): Promise<bigint> {
+  private async estimateGas({
+    to,
+    from,
+    value,
+    data,
+  }: TransactionRequest): Promise<bigint> {
     return await this.provider.estimateGas({
-      to: address,
-      value: parseEther(amount),
+      to,
+      value,
+      from,
+      data,
     })
   }
 
@@ -224,9 +232,8 @@ export class EthereumService {
   public async getApproximateEthFee(
     to: Address,
     value: string,
-    data: string | Array<string> = [],
   ): Promise<bigint> {
-    const gasUsed = await this.provider.estimateGas({
+    const gasUsed = await this.estimateGas({
       to,
       value: parseEther(value),
     })
@@ -266,7 +273,7 @@ export class EthereumService {
       { value: parseEther(amount.toString()) },
     )
 
-    const gasEstimate = await this.provider.estimateGas({
+    const gasEstimate = await this.estimateGas({
       to: txRequest.to,
       from: fromAddress,
       value: txRequest.value,
@@ -306,7 +313,7 @@ export class EthereumService {
     const identityLabsFee = this.getIdentityLabsFee(parsedAmount)
     const amountToReceive = parsedAmount - identityLabsFee - icpNetworkFee
 
-    const gasEstimate = await this.provider.estimateGas({
+    const gasEstimate = await this.estimateGas({
       to,
       value: parsedAmount,
     })

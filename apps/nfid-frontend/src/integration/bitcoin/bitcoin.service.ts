@@ -107,12 +107,6 @@ export class BitcoinService {
     const bitcointNetworkFee: BitcointNetworkFeeAndUtxos =
       await patronService.askToCalcUtxosAndFee(identity, amountInSatoshis)
 
-    console.log("btcctctctc FEE", {
-      bitcointNetworkFee,
-      amountToReceive:
-        amountInSatoshis - icpNetworkFee - bitcointNetworkFee.fee_satoshis,
-      icpNetworkFee,
-    })
     return {
       bitcointNetworkFee,
       amountToReceive:
@@ -128,7 +122,7 @@ export class BitcoinService {
     return ckBtcService.getCkBtcToBtcFee(identity, amount)
   }
 
-  private async innerSend(
+  private async transfer(
     identity: SignIdentity,
     destinationAddress: string,
     amount: bigint,
@@ -162,7 +156,7 @@ export class BitcoinService {
   ): Promise<TransactionId> {
     const amountInSatoshis = satoshiService.getInSatoshis(amount)
 
-    return this.innerSend(identity, destinationAddress, amountInSatoshis, fee)
+    return this.transfer(identity, destinationAddress, amountInSatoshis, fee)
   }
 
   public async convertFromCkBtc(
@@ -188,15 +182,15 @@ export class BitcoinService {
     const address: Address =
       await ckBtcService.getBtcAddressToMintCkBtc(identity)
 
-    const finalAmount =
+    const amountWithoutFees =
       satoshiService.getInSatoshis(amount) -
       fee.icpNetworkFee -
       fee.bitcointNetworkFee.fee_satoshis
 
-    const txId: TransactionId = await this.innerSend(
+    const txId: TransactionId = await this.transfer(
       identity,
       address,
-      finalAmount,
+      amountWithoutFees,
       fee.bitcointNetworkFee,
     )
     return txId

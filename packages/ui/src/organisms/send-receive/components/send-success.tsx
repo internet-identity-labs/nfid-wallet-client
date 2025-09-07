@@ -93,23 +93,23 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
           {status === SendStatus.FAILED
             ? "Transaction failed"
             : status === SendStatus.COMPLETED
-            ? "Sent successfully"
-            : "Processing"}
+              ? "Sent successfully"
+              : "Processing"}
         </H5>
         <p className="h-5 mt-3 text-sm leading-5">
           {status === SendStatus.FAILED
             ? "Your assets are still in your wallet."
             : status === SendStatus.COMPLETED
-            ? isNativeBtc
-              ? BTC_NATIVE_DESCRIPTION
-              : isNativeEth
-              ? ETH_NATIVE_DESCRIPTION
-              : ""
-            : isNativeBtc
-            ? BTC_NATIVE_DESCRIPTION
-            : isNativeEth
-            ? ETH_NATIVE_DESCRIPTION
-            : `This usually takes less than ${duration} seconds.`}
+              ? isNativeBtc
+                ? BTC_NATIVE_DESCRIPTION
+                : isNativeEth
+                  ? ETH_NATIVE_DESCRIPTION
+                  : ""
+              : isNativeBtc
+                ? BTC_NATIVE_DESCRIPTION
+                : isNativeEth
+                  ? ETH_NATIVE_DESCRIPTION
+                  : `This usually takes less than ${duration} seconds.`}
         </p>
         <div className="flex items-center justify-center w-full">
           <LottieAnimation

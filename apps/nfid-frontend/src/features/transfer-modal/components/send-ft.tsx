@@ -453,7 +453,9 @@ export const TransferFT = ({
         loadingMessage={"Fetching supported tokens..."}
         accountsOptions={vaultsAccountsOptions}
         optionGroups={
-          profile?.wallet === RootWallet.NFID ? [] : vaultsAccountsOptions ?? []
+          profile?.wallet === RootWallet.NFID
+            ? []
+            : (vaultsAccountsOptions ?? [])
         }
         vaultsBalance={balance?.balance["ICP"]}
         status={status}

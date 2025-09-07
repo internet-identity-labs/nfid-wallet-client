@@ -109,7 +109,7 @@ export class EthereumService {
   }
 
   //retrieve fee data from provider
-  private async getFee(): Promise<FeeData> {
+  private async getFeeData(): Promise<FeeData> {
     const feeData = await this.provider.getFeeData()
     return feeData
   }
@@ -221,19 +221,31 @@ export class EthereumService {
     return result
   }
 
-  public async getApproximateEthFee(to: Address, value: string) {
-    const feeData = await this.getFee()
+  public async getApproximateEthFee(
+    to: Address,
+    value: string,
+    data: string | Array<string> = [],
+  ): Promise<bigint> {
+    const gasUsed = await this.provider.estimateGas({
+      to,
+      value: parseEther(value),
+    })
 
-    if (
-      feeData.maxFeePerGas === null ||
-      feeData.maxPriorityFeePerGas === null
-    ) {
-      throw new Error("sendEthTransaction Gas error")
+    const feeData = await this.getFeeData()
+    if (!feeData.maxFeePerGas || !feeData.maxPriorityFeePerGas) {
+      throw new Error("getApproximateEthFee: Gas fee data missing")
     }
 
-    const gasUsed = await this.estimateGas(to, value.toString())
+    const baseFee = await this.getBaseFee()
 
-    return gasUsed * feeData.maxFeePerGas
+    const ethereumNetworkFee = this.estimateTransaction(
+      gasUsed,
+      feeData.maxPriorityFeePerGas,
+      feeData.maxFeePerGas,
+      baseFee,
+    )
+
+    return ethereumNetworkFee
   }
 
   public async getEthToCkEthFee(
@@ -265,10 +277,17 @@ export class EthereumService {
     const maxPriorityFeePerGas =
       feeData.maxPriorityFeePerGas || BigInt(2_000_000_000)
 
+    const maxFeePerGas =
+      feeData.maxFeePerGas || maxPriorityFeePerGas + BigInt(5_000_000_000)
+
     const baseFee = await this.getBaseFee()
 
-    const effectiveGasPrice = baseFee + maxPriorityFeePerGas
-    const ethereumNetworkFee = gasEstimate * effectiveGasPrice
+    const ethereumNetworkFee = this.estimateTransaction(
+      gasEstimate,
+      maxPriorityFeePerGas,
+      maxFeePerGas,
+      baseFee,
+    )
 
     return {
       ethereumNetworkFee: ethereumNetworkFee,
@@ -284,16 +303,33 @@ export class EthereumService {
   ): Promise<CkEthToEthFee> {
     const parsedAmount = parseEther(amount.toString())
     const icpNetworkFee = BigInt(0.000002 * 10 ** ETH_DECIMALS)
-    const amountToReceive =
-      parsedAmount - this.getIdentityLabsFee(parsedAmount) - icpNetworkFee
+    const identityLabsFee = this.getIdentityLabsFee(parsedAmount)
+    const amountToReceive = parsedAmount - identityLabsFee - icpNetworkFee
 
-    const ethFee = await this.getApproximateEthFee(to, amount)
+    const gasEstimate = await this.provider.estimateGas({
+      to,
+      value: parsedAmount,
+    })
+
+    const feeData = await this.provider.getFeeData()
+    const maxPriorityFeePerGas =
+      feeData.maxPriorityFeePerGas || BigInt(2_000_000_000)
+    const maxFeePerGas =
+      feeData.maxFeePerGas || maxPriorityFeePerGas + BigInt(5_000_000_000)
+    const baseFee = await this.getBaseFee()
+
+    const ethereumNetworkFee = this.estimateTransaction(
+      gasEstimate,
+      maxPriorityFeePerGas,
+      maxFeePerGas,
+      baseFee,
+    )
 
     return {
-      ethereumNetworkFee: ethFee,
+      ethereumNetworkFee,
       amountToReceive,
       icpNetworkFee: icpNetworkFee * BigInt(3),
-      identityLabsFee: this.getIdentityLabsFee(parsedAmount),
+      identityLabsFee,
     }
   }
 
@@ -309,12 +345,12 @@ export class EthereumService {
     )
     return gas * BigInt(effectiveGasPrice)
   }
+
   //transfer eth
   public async sendEthTransaction(
     identity: SignIdentity,
     to: Address,
     value: string,
-    //точно также передать эти параметры в ethtoCkEth (предварительно рассчитав с data)
     gas?: {
       limit: bigint
       maxPriorityFeePerGas: bigint
@@ -324,19 +360,7 @@ export class EthereumService {
   ): Promise<TransactionResponse> {
     const address = await this.getAddress(identity)
 
-    //TODO remove this lines
-    const [nonce, gasLimit, feeData] = await Promise.all([
-      this.getTransactionCount(address),
-      this.estimateGas(to, value),
-      this.getFee(),
-    ])
-
-    if (
-      feeData.gasPrice === null ||
-      feeData.maxFeePerGas === null ||
-      feeData.maxPriorityFeePerGas === null
-    )
-      throw new Error("sendEthTransaction Gas error")
+    const nonce = await this.getTransactionCount(address)
 
     let request: EthSignTransactionRequest = {
       chain_id: chainId,
@@ -344,10 +368,9 @@ export class EthereumService {
       value: parseEther(value),
       data: [],
       nonce: BigInt(nonce),
-      gas: gas?.limit ?? gasLimit,
-      max_priority_fee_per_gas:
-        gas?.maxPriorityFeePerGas ?? feeData.maxPriorityFeePerGas,
-      max_fee_per_gas: gas?.maxFeePerGas ?? feeData.maxFeePerGas,
+      gas: gas?.limit ?? BigInt(21000),
+      max_priority_fee_per_gas: gas?.maxPriorityFeePerGas ?? BigInt(2000000000),
+      max_fee_per_gas: gas?.maxFeePerGas ?? BigInt(10000000000),
     }
 
     let signedTransaction = await chainFusionSignerService.ethSignTransaction(

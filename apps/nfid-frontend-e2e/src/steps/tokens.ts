@@ -19,11 +19,13 @@ When(/^User clicks the (.*) option button$/, async (option: string) => {
 When(
   /^User clicks the ShowHide button of (.*) token$/,
   async (tokenName: string) => {
-    await Assets.ManageTokensDialog.tokenShowHideButton(tokenName)
-      .waitForDisplayed()
+    await Assets.ManageTokensDialog.tokenShowHideButton(
+      tokenName,
+    ).waitForDisplayed()
     await Assets.ManageTokensDialog.tokenShowHideButton(tokenName).click()
-    await Assets.ManageTokensDialog.tokenShowHideButton(tokenName)
-      .waitForDisplayed({
+    await Assets.ManageTokensDialog.tokenShowHideButton(
+      tokenName,
+    ).waitForDisplayed({
       timeout: 50000,
       timeoutMsg: "Failed attempt to change token visibility state",
     })
@@ -40,13 +42,17 @@ When(
     if (!(await (await Assets.tokenLabel(tokenName)).isDisplayed())) {
       await Assets.ManageTokensDialog.manageTokensDialogButton.click()
       await Assets.ManageTokensDialog.filterField.setValue(tokenName)
-      await Assets.ManageTokensDialog.tokenShowHideButton(tokenName)
-        .waitForDisplayed()
+      await Assets.ManageTokensDialog.tokenShowHideButton(
+        tokenName,
+      ).waitForDisplayed()
       await Assets.ManageTokensDialog.tokenShowHideButton(tokenName).click()
-      await Assets.ManageTokensDialog.tokenShowHideButton(tokenName)
-        .waitForDisplayed()
+      await Assets.ManageTokensDialog.tokenShowHideButton(
+        tokenName,
+      ).waitForDisplayed({ timeout: 20000 })
 
-      await (await Assets.tokenLabel(tokenName)).waitForDisplayed({
+      await (
+        await Assets.tokenLabel(tokenName)
+      ).waitForDisplayed({
         timeout: 50000,
         timeoutMsg: "Failed attempt to make the token visible",
       })
@@ -73,6 +79,9 @@ Then(
     balance: string,
   ) => {
     currency = stake == "available" ? currency + " Stake" : currency
+    await (
+      await Assets.tokenBalance(tokenName)
+    ).waitForDisplayed({ timeout: 20000 })
     await softAssertAll(
       async () => {
         if (!isMobile()) {
@@ -94,24 +103,23 @@ Then(
       },
       [
         async () =>
-          await expect((await (await Assets.tokenBalance(tokenName)).getText())
-            .split("\n").map(s => s.trim()).join(" ")).toEqual(
-            balance,
-          ), `Incorrect token balance`,
+          await expect(
+            (await (await Assets.tokenBalance(tokenName)).getText())
+              .split("\n")
+              .map((s) => s.trim())
+              .join(" "),
+          ).toEqual(balance),
+        `Incorrect token balance`,
       ],
       [
         async () =>
           await expect(
-            (await (await Assets.getCurrency(tokenName))
-                .getText()
-            )
+            (await (await Assets.getCurrency(tokenName)).getText())
               .split("\n")
               .map((s) => s.trim())
               .join(" "),
-          )
-            .toBe(
-              currency,
-            ), `Incorrect token currency`,
+          ).toBe(currency),
+        `Incorrect token currency`,
       ],
       [
         async () => {
@@ -141,6 +149,7 @@ Then(
       },
       {
         timeout: 60000,
+        interval: 1000,
         timeoutMsg: `${
           Boolean(presence)
             ? "Token was displayed in 60 sec, but shouldn't"

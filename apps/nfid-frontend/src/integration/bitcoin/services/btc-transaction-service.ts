@@ -7,7 +7,7 @@ import {
   FungibleActivityRecords,
   FungibleActivityRecord,
 } from "../../../../../../packages/integration/src/lib/asset/types"
-import { REQUIRED_CONFIRMATIONS } from "./mempool.service"
+import { BLOCK_HEIGHT_URL, REQUIRED_CONFIRMATIONS } from "./mempool.service"
 
 const mainnet = "https://mempool.space/api/address/"
 const BTC_ICON =
@@ -44,13 +44,12 @@ export const getBtcActivitiesRows = async (
 async function getFungibleActivityByTokenAndUser(
   address: string,
 ): Promise<FungibleActivityRecords> {
-  const blockHeightUrl = `https://mempool.space/api/blocks/tip/height`
   const activities: FungibleActivityRecord[] = []
   let url = mainnet
   url += `${address}/txs`
 
   const [tipHeight, json] = await Promise.all([
-    fetch(blockHeightUrl).then((res) => res.json()),
+    fetch(BLOCK_HEIGHT_URL).then((res) => res.json()),
     fetch(url).then(
       (res) => res.json() as Promise<MempoolTransactionResponse[]>,
     ),

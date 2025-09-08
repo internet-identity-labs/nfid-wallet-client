@@ -21,7 +21,10 @@ import {
   BitcointNetworkFeeAndUtxos,
 } from "frontend/integration/bitcoin/bitcoin.service"
 import { satoshiService } from "frontend/integration/bitcoin/services/satoshi.service"
-import { ethereumService } from "frontend/integration/ethereum/ethereum.service"
+import {
+  ethereumService,
+  SendEthFee,
+} from "frontend/integration/ethereum/ethereum.service"
 
 import { formatUsdAmount } from "../../../util/format-usd-amount"
 
@@ -318,8 +321,8 @@ export class FTImpl implements FT {
     )
   }
 
-  async getETHFee(to: string, value: string): Promise<bigint> {
-    return await ethereumService.getApproximateEthFee(to, value)
+  async getETHFee(to: string, value: string): Promise<SendEthFee> {
+    return await ethereumService.getSendEthFee(to, value)
   }
 
   getETHFeeFormatted(fee: bigint): string {

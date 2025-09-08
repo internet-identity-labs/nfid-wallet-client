@@ -46,6 +46,14 @@ const MINTER_ADDRESS = "0x2D39863d30716aaf2B7fFFd85Dd03Dda2BFC2E38"
 const MINTER_CANISTER_ID = "jzenf-aiaaa-aaaar-qaa7q-cai"
 const LEDGER_CANISTER_ID = "apia6-jaaaa-aaaar-qabma-cai"
 
+export type SendEthFee = {
+  gasUsed: bigint
+  maxPriorityFeePerGas: bigint
+  maxFeePerGas: bigint
+  baseFeePerGas: bigint
+  ethereumNetworkFee: bigint
+}
+
 export type CkEthToEthFee = {
   ethereumNetworkFee: bigint
   amountToReceive: bigint
@@ -229,10 +237,7 @@ export class EthereumService {
     return result
   }
 
-  public async getApproximateEthFee(
-    to: Address,
-    value: string,
-  ): Promise<bigint> {
+  public async getSendEthFee(to: Address, value: string): Promise<SendEthFee> {
     const gasUsed = await this.estimateGas({
       to,
       value: parseEther(value),
@@ -252,7 +257,13 @@ export class EthereumService {
       baseFee,
     )
 
-    return ethereumNetworkFee
+    return {
+      gasUsed,
+      maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
+      maxFeePerGas: feeData.maxFeePerGas,
+      baseFeePerGas: baseFee,
+      ethereumNetworkFee,
+    }
   }
 
   public async getEthToCkEthFee(
@@ -297,7 +308,7 @@ export class EthereumService {
     )
 
     return {
-      ethereumNetworkFee: ethereumNetworkFee,
+      ethereumNetworkFee,
       amountToReceive:
         parseEther(amount.toString()) - ethereumNetworkFee - icpNetworkFee,
       icpNetworkFee,
@@ -358,8 +369,8 @@ export class EthereumService {
     identity: SignIdentity,
     to: Address,
     value: string,
-    gas?: {
-      limit: bigint
+    gas: {
+      gasUsed: bigint
       maxPriorityFeePerGas: bigint
       maxFeePerGas: bigint
       baseFeePerGas: bigint
@@ -375,9 +386,9 @@ export class EthereumService {
       value: parseEther(value),
       data: [],
       nonce: BigInt(nonce),
-      gas: gas?.limit ?? BigInt(21000),
-      max_priority_fee_per_gas: gas?.maxPriorityFeePerGas ?? BigInt(2000000000),
-      max_fee_per_gas: gas?.maxFeePerGas ?? BigInt(10000000000),
+      gas: gas?.gasUsed,
+      max_priority_fee_per_gas: gas?.maxPriorityFeePerGas,
+      max_fee_per_gas: gas?.maxFeePerGas,
     }
 
     let signedTransaction = await chainFusionSignerService.ethSignTransaction(

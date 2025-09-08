@@ -33,7 +33,10 @@ import {
   bitcoinService,
   BitcointNetworkFeeAndUtxos,
 } from "frontend/integration/bitcoin/bitcoin.service"
-import { ethereumService } from "frontend/integration/ethereum/ethereum.service"
+import {
+  ethereumService,
+  SendEthFee,
+} from "frontend/integration/ethereum/ethereum.service"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
@@ -84,7 +87,7 @@ export const TransferFT = ({
   const [btcFee, setBtcFee] = useState<BitcointNetworkFeeAndUtxos | undefined>(
     undefined,
   )
-  const [ethFee, setEthFee] = useState<bigint | undefined>(undefined)
+  const [ethFee, setEthFee] = useState<SendEthFee | undefined>(undefined)
   const [isValidating, setIsValidating] = useState(false)
 
   const formMethods = useForm<FormValues>({
@@ -257,7 +260,7 @@ export const TransferFT = ({
 
       setIsSuccessOpen(true)
       ethereumService
-        .sendEthTransaction(identity, to, amount)
+        .sendEthTransaction(identity, to, amount, ethFee)
         .then(() => {
           setSuccessMessage(
             `Transaction ${amount} ${token.getTokenSymbol()} successful`,
@@ -465,7 +468,7 @@ export const TransferFT = ({
         btcError={btcError}
         ethError={ethError}
         btcFee={btcFee?.fee_satoshis || undefined}
-        ethFee={ethFee || undefined}
+        ethFee={ethFee?.ethereumNetworkFee || undefined}
         isFeeLoading={isValidating || isIdentityLoading || !identity}
       />
     </FormProvider>

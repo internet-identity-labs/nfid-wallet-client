@@ -12,7 +12,7 @@ import { TransactionId } from "./chain-fusion-signer.service"
 
 const MAX_ATTEMPTS = 10
 const DELAY_MS = 1000
-const REQUIRED_CONFIRMATIONS = 6
+export const REQUIRED_CONFIRMATIONS = 6
 
 export class MempoolService {
   public async checkTransactionAppeared(
@@ -34,8 +34,8 @@ export class MempoolService {
           found
             ? of(true)
             : idx === MAX_ATTEMPTS - 1
-            ? of(false)
-            : of(undefined),
+              ? of(false)
+              : of(undefined),
         ),
         filter((v) => v !== undefined),
       ),

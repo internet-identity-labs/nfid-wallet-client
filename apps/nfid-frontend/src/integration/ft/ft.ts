@@ -5,6 +5,7 @@ import BigNumber from "bignumber.js"
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { BitcointNetworkFeeAndUtxos } from "../bitcoin/bitcoin.service"
+import { SendEthFee } from "../ethereum/ethereum.service"
 
 export interface FT {
   init(principal: Principal): Promise<FT>
@@ -69,7 +70,7 @@ export interface FT {
     amount: string,
   ): Promise<BitcointNetworkFeeAndUtxos>
 
-  getETHFee(to: string, value: string): Promise<bigint>
+  getETHFee(to: string, value: string): Promise<SendEthFee>
 
   getBTCFeeFormatted(fee: bigint): string
 

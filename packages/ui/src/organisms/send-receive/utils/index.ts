@@ -13,6 +13,7 @@ import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_CANISTER_ID,
+  ETH_DECIMALS,
   ETH_NATIVE_ID,
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
@@ -24,10 +25,22 @@ import {
 import { FT } from "frontend/integration/ft/ft"
 import { e8s } from "frontend/integration/nft/constants/constants"
 import { ContactSupportError } from "frontend/integration/swap/errors/types/contact-support-error"
+import {
+  CkEthToEthFee,
+  EthToCkEthFee,
+} from "frontend/integration/ethereum/ethereum.service"
 
-export interface IConversionFee {
+export interface BtcFormattedFee {
   total: string
   btcNetworkFee: string
+  icpNetworkFee: string
+  amountToReceive: string
+  widgetFee?: string
+}
+
+export interface EthFormattedFee {
+  total: string
+  ethNetworkFee: string
   icpNetworkFee: string
   amountToReceive: string
   widgetFee?: string
@@ -87,7 +100,9 @@ const textStatusByStep: { [key in SwapStage]: string } = {
 export const getTextStatusByStep = (step: SwapStage) =>
   textStatusByStep[step] || ""
 
-export const getBtcConversionFee = (fee?: BtcToCkBtcFee | CkBtcToBtcFee) => {
+export const getBtcConversionFee = (
+  fee?: BtcToCkBtcFee | CkBtcToBtcFee,
+): BtcFormattedFee | undefined => {
   if (!fee || fee.bitcointNetworkFee.fee_satoshis === BigInt(0)) return
 
   const {
@@ -121,6 +136,42 @@ export const getBtcConversionFee = (fee?: BtcToCkBtcFee | CkBtcToBtcFee) => {
     total: BigNumber(totalFee.toString())
       .div(e8s)
       .toFixed(BTC_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+  }
+}
+
+export const getEthConversionFee = (
+  fee?: EthToCkEthFee | CkEthToEthFee,
+): EthFormattedFee | undefined => {
+  if (!fee) return
+
+  const { ethereumNetworkFee, icpNetworkFee, amountToReceive } = fee
+
+  const identityLabsFee =
+    "identityLabsFee" in fee ? fee.identityLabsFee : BigInt(0)
+
+  const totalFee = ethereumNetworkFee + icpNetworkFee + identityLabsFee
+
+  return {
+    ethNetworkFee: BigNumber(ethereumNetworkFee.toString())
+      .div(10 ** ETH_DECIMALS)
+      .toFixed(ETH_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+    icpNetworkFee: BigNumber(icpNetworkFee.toString())
+      .div(10 ** ETH_DECIMALS)
+      .toFixed(ETH_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+    widgetFee: BigNumber(identityLabsFee.toString())
+      .div(10 ** ETH_DECIMALS)
+      .toFixed(ETH_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+    amountToReceive: BigNumber(amountToReceive)
+      .div(10 ** ETH_DECIMALS)
+      .toFixed(ETH_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+    total: BigNumber(totalFee.toString())
+      .div(10 ** ETH_DECIMALS)
+      .toFixed(ETH_DECIMALS)
       .replace(TRIM_ZEROS, ""),
   }
 }

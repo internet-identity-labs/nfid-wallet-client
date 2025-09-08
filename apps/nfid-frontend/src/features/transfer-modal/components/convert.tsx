@@ -19,7 +19,11 @@ import {
   BtcToCkBtcFee,
   CkBtcToBtcFee,
 } from "frontend/integration/bitcoin/bitcoin.service"
-import { ethereumService } from "frontend/integration/ethereum/ethereum.service"
+import {
+  CkEthToEthFee,
+  ethereumService,
+  EthToCkEthFee,
+} from "frontend/integration/ethereum/ethereum.service"
 import { FT } from "frontend/integration/ft/ft"
 
 import { FormValues, SendStatus } from "../types"
@@ -51,8 +55,9 @@ export const ConvertBTC = ({
   const [status, setStatus] = useState(SendStatus.PENDING)
   const [error, setError] = useState<string | undefined>()
   const [btcFee, setBtcFee] = useState<BtcToCkBtcFee | CkBtcToBtcFee>()
+  const [ethFee, setEthFee] = useState<CkEthToEthFee | EthToCkEthFee>()
   const [conversionError, setConversionError] = useState<string | undefined>()
-  const [ethFee, setEthFee] = useState<bigint>()
+
   const [fromTokenAddress, setFromTokenAddress] = useState(
     preselectedSourceTokenAddress || BTC_NATIVE_ID,
   )
@@ -151,12 +156,8 @@ export const ConvertBTC = ({
           try {
             const fee =
               tokenAddress === ETH_NATIVE_ID
-                ? await ethereumService.getApproximateDepositEthFee(
-                    identity,
-                    amount,
-                  )
-                : // TODO: adjust when PR#2858 will be merged
-                  BigInt(1)
+                ? await ethereumService.getEthToCkEthFee(identity, amount)
+                : await ethereumService.getCkEthToEthFee(ethAddress, amount)
 
             setEthFee(fee)
           } catch (e) {
@@ -166,7 +167,7 @@ export const ConvertBTC = ({
           }
         }
       }, 1000),
-    [],
+    [ethAddress],
   )
 
   useEffect(() => {
@@ -199,9 +200,9 @@ export const ConvertBTC = ({
       let convertResponse
 
       if (fromTokenAddress === ETH_NATIVE_ID) {
-        convertResponse = ethereumService.depositEth(identity, amount)
+        convertResponse = ethereumService.convertToCkEth(identity, amount)
       } else {
-        convertResponse = ethereumService.convertCkETHToEth(
+        convertResponse = ethereumService.convertFromCkEth(
           ethAddress,
           amount,
           identity,

@@ -224,8 +224,8 @@ export class Assets extends Page {
     await browser.waitUntil(
       async () => {
         return (
-          (await (firstAddressPart.getText())) != "" &&
-          (await (secondAddressPart.getText())) != ""
+          (await firstAddressPart.getText()) != "" &&
+          (await secondAddressPart.getText()) != ""
         )
       },
       { timeout: 15000, timeoutMsg: "Address is still empty after 15 sec" },
@@ -238,9 +238,9 @@ export class Assets extends Page {
     waitForElementOrAction:
       | ChainablePromiseElement
       | {
-      element: ChainablePromiseElement
-      action: (el: ChainablePromiseElement) => Promise<void>
-    },
+          element: ChainablePromiseElement
+          action: (el: ChainablePromiseElement) => Promise<void>
+        },
   ) {
     await browser.waitUntil(
       async () => {
@@ -256,7 +256,10 @@ export class Assets extends Page {
             const { element, action } = waitForElementOrAction
             await action(element)
           } else {
-            await waitForElementOrAction.waitForDisplayed()
+            await waitForElementOrAction.waitForDisplayed({
+              timeout: 40000,
+              timeoutMsg: "Expected element wasn't displayed in 40 sec",
+            })
           }
 
           return true

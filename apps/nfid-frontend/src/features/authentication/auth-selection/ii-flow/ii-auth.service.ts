@@ -22,17 +22,13 @@ import {
 export const identityProvider = "https://id.ai"
 
 export async function signWithIIService(): Promise<IIAuthSession> {
-  console.log("signWithIIService")
-
   return new Promise((resolve, reject) => {
     AuthClient.create()
       .then((authClient) => {
         authClient.login({
           identityProvider,
           onSuccess: async (_: InternetIdentityAuthResponseSuccess) => {
-            console.log("onSuccess")
             const identity = authClient.getIdentity() as SignIdentity
-            console.log("identity", identity.getPrincipal().toText())
 
             try {
               let profile
@@ -84,11 +80,8 @@ export async function signWithIIService(): Promise<IIAuthSession> {
 }
 
 export async function loginWithII(callback?: () => void) {
-  console.log("loginWithII")
-
   try {
     const session = await signWithIIService()
-    console.log("II login successful", session)
     callback?.()
     return session
   } catch (error) {

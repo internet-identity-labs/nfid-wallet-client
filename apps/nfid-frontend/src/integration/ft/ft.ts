@@ -70,7 +70,7 @@ export interface FT {
     amount: string,
   ): Promise<BitcointNetworkFeeAndUtxos>
 
-  getETHFee(to: string, value: string): Promise<SendEthFee>
+  getETHFee(to: string, from: string, value: string): Promise<SendEthFee>
 
   getBTCFeeFormatted(fee: bigint): string
 

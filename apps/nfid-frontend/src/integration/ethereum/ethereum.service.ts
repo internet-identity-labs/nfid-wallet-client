@@ -237,9 +237,14 @@ export class EthereumService {
     return result
   }
 
-  public async getSendEthFee(to: Address, value: string): Promise<SendEthFee> {
+  public async getSendEthFee(
+    to: Address,
+    from: Address,
+    value: string,
+  ): Promise<SendEthFee> {
     const gasUsed = await this.estimateGas({
       to,
+      from,
       value: parseEther(value),
     })
 
@@ -252,9 +257,7 @@ export class EthereumService {
 
     const ethereumNetworkFee = this.estimateTransaction(
       gasUsed,
-      feeData.maxPriorityFeePerGas,
       feeData.maxFeePerGas,
-      baseFee,
     )
 
     return {
@@ -298,13 +301,9 @@ export class EthereumService {
     const maxFeePerGas =
       feeData.maxFeePerGas || maxPriorityFeePerGas + BigInt(5_000_000_000)
 
-    const baseFee = await this.getBaseFee()
-
     const ethereumNetworkFee = this.estimateTransaction(
       gasEstimate,
-      maxPriorityFeePerGas,
       maxFeePerGas,
-      baseFee,
     )
 
     return {
@@ -334,13 +333,10 @@ export class EthereumService {
       feeData.maxPriorityFeePerGas || BigInt(2_000_000_000)
     const maxFeePerGas =
       feeData.maxFeePerGas || maxPriorityFeePerGas + BigInt(5_000_000_000)
-    const baseFee = await this.getBaseFee()
 
     const ethereumNetworkFee = this.estimateTransaction(
       gasEstimate,
-      maxPriorityFeePerGas,
       maxFeePerGas,
-      baseFee,
     )
 
     return {
@@ -351,17 +347,8 @@ export class EthereumService {
     }
   }
 
-  private estimateTransaction(
-    gas: bigint,
-    maxPriorityFeePerGas: bigint,
-    maxFeePerGas: bigint,
-    baseFeePerGas: bigint,
-  ): bigint {
-    let effectiveGasPrice = Math.min(
-      Number(maxFeePerGas),
-      Number(baseFeePerGas) + Number(maxPriorityFeePerGas),
-    )
-    return gas * BigInt(effectiveGasPrice)
+  private estimateTransaction(gas: bigint, maxFeePerGas: bigint): bigint {
+    return gas * maxFeePerGas
   }
 
   //transfer eth

@@ -43,7 +43,7 @@ export const RPCPromptTemplate = ({
           <img alt="NFID Wallet" className="w-[182px] mb-4" src={LogoMain} />
         ) : null}
         {title && (
-          <div className="block w-full text-[20px] lg:text-[28px] font-bold mb-2 lg:mb-4">
+          <div className="block w-full text-[20px] lg:text-[28px] font-bold mb-2 lg:mb-4 dark:text-white">
             {title}
           </div>
         )}

@@ -57,12 +57,12 @@ const RPCComponentICRC34 = ({
     <RPCPromptTemplate
       title="Approve connection"
       subTitle={
-        <div className="flex items-center justify-center gap-1">
+        <div className="flex items-center justify-center gap-1 dark:text-white">
           for{" "}
           <a
             href={origin}
             target="_blank"
-            className="no-underline text-primaryButtonColor"
+            className="no-underline text-primaryButtonColor dark:text-teal-500"
             rel="noreferrer"
           >
             {applicationName}

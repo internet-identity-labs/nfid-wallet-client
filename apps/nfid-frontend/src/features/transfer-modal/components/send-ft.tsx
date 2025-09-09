@@ -83,7 +83,7 @@ export const TransferFT = ({
   const { profile } = useProfile()
   const { balances } = useAllVaultsWallets()
   const { isBtcAddressLoading } = useBtcAddress()
-  const { isEthAddressLoading } = useEthAddress()
+  const { isEthAddressLoading, ethAddress } = useEthAddress()
   const [btcFee, setBtcFee] = useState<BitcointNetworkFeeAndUtxos | undefined>(
     undefined,
   )
@@ -217,7 +217,11 @@ export const TransferFT = ({
         setEthFee(undefined)
         setIsValidating(true)
         try {
-          const fee = await token.getETHFee(to, debouncedAmount.toString())
+          const fee = await token.getETHFee(
+            to,
+            ethAddress,
+            debouncedAmount.toString(),
+          )
           if (!isCancelled) setEthFee(fee)
         } catch (e) {
           console.error(`ETH error: ${e}`)
@@ -245,6 +249,7 @@ export const TransferFT = ({
     formMethods.formState.errors.amount,
     isIdentityReady,
     to,
+    ethAddress,
   ])
 
   useEffect(() => {

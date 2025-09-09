@@ -211,7 +211,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
                     ? await getWalletDelegationAdapter("nfid.one", "-1", [
                         nft?.canisterId!,
                       ])
-                    : identity ?? (await getWalletDelegationAdapter())
+                    : (identity ?? (await getWalletDelegationAdapter()))
 
                   const request = {
                     tokenId: tokenId,

@@ -37,7 +37,7 @@ export const Address: React.FC<AddressProps> = ({
       className={clsx(
         "flex items-center group/address cursor-pointer",
         "text-black relative hover:gap-2.5",
-        "active:text-gray-400",
+        "active:text-gray-400 dark:text-white dark:hover:text-white dark:active:text-zinc-400",
         copied && "gap-2.5",
         className,
       )}

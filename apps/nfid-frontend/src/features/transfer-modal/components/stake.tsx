@@ -127,13 +127,13 @@ export const StakeFT = ({
           isMaxLockTimeSelected
             ? stakingParams?.getMaximumLockTime()
             : isMinLockTimeSelected
-            ? stakingParams?.getMinimumLockTime()
-            : getAccurateDateForStakeInSeconds(lockValue),
+              ? stakingParams?.getMinimumLockTime()
+              : getAccurateDateForStakeInSeconds(lockValue),
         )
         .then(() => {
           setSuccessMessage(`Stake ${amount} ICP successful`)
           setStatus(SendStatus.COMPLETED)
-          mutate("stakedTokens", fetchStakedTokens(true), { revalidate: false })
+          mutate("stakedTokens", fetchStakedTokens(true), { revalidate: true })
         })
         .catch((e) => {
           console.error("Stake error: ", e)
@@ -160,8 +160,8 @@ export const StakeFT = ({
         isMaxLockTimeSelected
           ? stakingParams?.getMaximumLockTime()
           : isMinLockTimeSelected
-          ? stakingParams?.getMinimumLockTime()
-          : getAccurateDateForStakeInSeconds(lockValue),
+            ? stakingParams?.getMinimumLockTime()
+            : getAccurateDateForStakeInSeconds(lockValue),
       )
       .then(() => {
         setSuccessMessage(

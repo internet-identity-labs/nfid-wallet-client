@@ -30,21 +30,22 @@ import { patronService } from "../bitcoin/services/patron.service"
 import { CKETH_ABI, CKETH_FEE } from "./cketh.constants"
 import { authState } from "packages/integration/src/lib/authentication/auth-state"
 import { getWalletDelegation } from "../facade/wallet"
-import { ETH_DECIMALS } from "@nfid/integration/token/constants"
 
 const INFURA_API_KEY = "010993c30ae14b2b94ff239547b6ebbe"
 
 //MAINNET
-// let MINTER_ADDRESS = "0x18901044688D3756C35Ed2b36D93e6a5B8e00E68"
 // let chainId = BigInt(1)
-// let MINTER_CANISTER_ID = "sv3dd-oaaaa-aaaar-qacoa-cai"
-// export let LEDGER_CANISTER_ID = "ss2fx-dyaaa-aaaar-qacoq-cai"
+// const MINTER_ADDRESS = "0x18901044688D3756C35Ed2b36D93e6a5B8e00E68"
+// const MINTER_CANISTER_ID = "sv3dd-oaaaa-aaaar-qacoa-cai"
+// const LEDGER_CANISTER_ID = "ss2fx-dyaaa-aaaar-qacoq-cai"
+// const ICP_NETWORK_FEE = BigInt(2000000000000)
 
 //TESTNET
 let chainId = BigInt(11155111)
 const MINTER_ADDRESS = "0x2D39863d30716aaf2B7fFFd85Dd03Dda2BFC2E38"
 const MINTER_CANISTER_ID = "jzenf-aiaaa-aaaar-qaa7q-cai"
 const LEDGER_CANISTER_ID = "apia6-jaaaa-aaaar-qabma-cai"
+const ICP_NETWORK_FEE = BigInt(10000000000)
 
 export type SendEthFee = {
   gasUsed: bigint
@@ -195,7 +196,7 @@ export class EthereumService {
 
     //Minimum amount 0.03 ckETH
     if (parsedAmount < BigInt(30000000000000000)) {
-      throw new Error("Minimum amount is 0.03 ckETH")
+      throw new Error("The minimum amount for conversion is 0.03 ckETH")
     }
 
     await this.approveTransfer(
@@ -250,7 +251,7 @@ export class EthereumService {
 
     const feeData = await this.getFeeData()
     if (!feeData.maxFeePerGas || !feeData.maxPriorityFeePerGas) {
-      throw new Error("getApproximateEthFee: Gas fee data missing")
+      throw new Error("getApproximateEthFee: Gas fee data is missing")
     }
 
     const baseFee = await this.getBaseFee()
@@ -268,12 +269,10 @@ export class EthereumService {
       ethereumNetworkFee,
     }
   }
-
   public async getEthToCkEthFee(
     identity: SignIdentity,
     amount: string,
   ): Promise<EthToCkEthFee> {
-    const icpNetworkFee = BigInt(0.000002 * 10 ** ETH_DECIMALS)
     const ckEthContract = new Contract(MINTER_ADDRESS, CKETH_ABI, this.provider)
     const fromAddress = await this.getAddress(identity)
     const principalHex = encodePrincipalToEthAddress(identity.getPrincipal())
@@ -309,8 +308,8 @@ export class EthereumService {
     return {
       ethereumNetworkFee,
       amountToReceive:
-        parseEther(amount.toString()) - ethereumNetworkFee - icpNetworkFee,
-      icpNetworkFee,
+        parseEther(amount.toString()) - ethereumNetworkFee - ICP_NETWORK_FEE,
+      icpNetworkFee: ICP_NETWORK_FEE,
     }
   }
 
@@ -319,9 +318,8 @@ export class EthereumService {
     amount: string,
   ): Promise<CkEthToEthFee> {
     const parsedAmount = parseEther(amount.toString())
-    const icpNetworkFee = BigInt(0.000002 * 10 ** ETH_DECIMALS)
     const identityLabsFee = this.getIdentityLabsFee(parsedAmount)
-    const amountToReceive = parsedAmount - identityLabsFee - icpNetworkFee
+    const amountToReceive = parsedAmount - identityLabsFee - ICP_NETWORK_FEE
 
     const gasEstimate = await this.estimateGas({
       to,
@@ -342,7 +340,7 @@ export class EthereumService {
     return {
       ethereumNetworkFee,
       amountToReceive,
-      icpNetworkFee: icpNetworkFee * BigInt(3),
+      icpNetworkFee: ICP_NETWORK_FEE * BigInt(2),
       identityLabsFee,
     }
   }
@@ -395,7 +393,6 @@ export class EthereumService {
       key,
     }
   }
-
   private async approveTransfer(
     ledgerCanisterId: string,
     minterCanisterId: string,

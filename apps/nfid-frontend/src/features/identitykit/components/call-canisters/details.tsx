@@ -48,7 +48,7 @@ export const CallCanisterDetails = ({
     <>
       <p
         onClick={() => setShowDetails(true)}
-        className="text-primaryButtonColor hover:text-teal-600 text-sm mt-2.5 cursor-pointer"
+        className="text-primaryButtonColor hover:text-teal-600 text-sm mt-2.5 cursor-pointer dark:text-teal-500 dark:hover:text-teal-600"
       >
         Transaction details
       </p>
@@ -56,7 +56,7 @@ export const CallCanisterDetails = ({
       <div
         className={clsx(
           showDetails ? "block" : "hidden",
-          "absolute bg-white z-[999] w-full h-full lg:h-screen lg-pt-[140px] lg-pb-[40px]",
+          "absolute bg-white z-[999] w-full h-full lg:h-screen lg-pt-[140px] lg-pb-[40px] dark:bg-zinc-800",
           "left-0 top-0",
           "flex items-center justify-center",
         )}
@@ -67,17 +67,17 @@ export const CallCanisterDetails = ({
             "w-full lg:w-3/5 lg:w-[387px] flex flex-col h-full lg:h-auto",
           )}
         >
-          <p className="text-[20px] lg:text-[28px] font-bold text-center">
+          <p className="text-[20px] lg:text-[28px] font-bold text-center dark:text-white">
             Transaction details
           </p>
-          <p className="mt-10 text-sm">
+          <p className="mt-10 text-sm dark:text-white">
             To protect yourself against scammers, take a moment to verify
             transaction details.
           </p>
           <div
             className={clsx(
-              "rounded-xl border border-gray-200 px-3.5 py-2.5 overflow-y-auto space-y-4",
-              "text-gray-500 break-all text-sm mt-5",
+              "rounded-xl border border-gray-200 dark:border-zinc-400 px-3.5 py-2.5 overflow-y-auto space-y-4",
+              "text-gray-500 dark:text-zinc-500 break-all text-sm mt-5",
             )}
           >
             <div className="grid grid-cols-[180px,1fr]">
@@ -94,7 +94,7 @@ export const CallCanisterDetails = ({
           <IconCmpArrow
             className={clsx(
               "transition-opacity cursor-pointer hover:opacity-50 z-20",
-              "absolute left-5 top-5",
+              "absolute left-5 top-5 dark:text-white",
             )}
             onClick={() => setShowDetails(false)}
           />

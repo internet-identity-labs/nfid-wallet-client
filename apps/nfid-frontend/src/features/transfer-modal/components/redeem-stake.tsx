@@ -55,7 +55,7 @@ export const RedeemStake = ({
       .then(() => {
         setSuccessMessage(`Staked ${stakeId} redeemed successful`)
         setStatus(SendStatus.COMPLETED)
-        mutate("stakedTokens", fetchStakedTokens(true), { revalidate: false })
+        mutate("stakedTokens", fetchStakedTokens(true), { revalidate: true })
       })
       .catch((e) => {
         console.error("Redeem error: ", e)

@@ -12,7 +12,8 @@ import { TransactionId } from "./chain-fusion-signer.service"
 
 const MAX_ATTEMPTS = 10
 const DELAY_MS = 1000
-const REQUIRED_CONFIRMATIONS = 6
+export const REQUIRED_CONFIRMATIONS = 6
+export const BLOCK_HEIGHT_URL = `https://mempool.space/api/blocks/tip/height`
 
 export class MempoolService {
   public async checkTransactionAppeared(
@@ -34,8 +35,8 @@ export class MempoolService {
           found
             ? of(true)
             : idx === MAX_ATTEMPTS - 1
-            ? of(false)
-            : of(undefined),
+              ? of(false)
+              : of(undefined),
         ),
         filter((v) => v !== undefined),
       ),
@@ -47,11 +48,10 @@ export class MempoolService {
     requiredConfirmations: number = REQUIRED_CONFIRMATIONS,
   ): Promise<boolean> {
     const txsUrl = `https://mempool.space/api/address/${address}/txs`
-    const blockHeightUrl = `https://mempool.space/api/blocks/tip/height`
     try {
       const [txsResponse, blockHeightResponse] = await Promise.all([
         fetch(txsUrl),
-        fetch(blockHeightUrl),
+        fetch(BLOCK_HEIGHT_URL),
       ])
       if (!txsResponse.ok || !blockHeightResponse.ok) {
         return false

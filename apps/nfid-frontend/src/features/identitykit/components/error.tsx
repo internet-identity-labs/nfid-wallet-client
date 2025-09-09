@@ -40,17 +40,17 @@ export const RPCComponentError = ({
         methodName
       }
       subTitle={
-        <>
+        <div className="dark:text-white">
           Request from{" "}
           <a
             href={origin}
             target="_blank"
-            className="no-underline text-primaryButtonColor"
+            className="no-underline text-primaryButtonColor dark:text-teal-500"
             rel="noreferrer"
           >
             {applicationName}
           </a>
-        </>
+        </div>
       }
       primaryButtonText="Try again"
       secondaryButtonText="Cancel"
@@ -58,9 +58,9 @@ export const RPCComponentError = ({
       onSecondaryButtonClick={onCancel}
     >
       {request?.data.method !== RPCComponentsUI.icrc49_call_canister ? (
-        <div className="flex bg-orange-50 p-[15px] text-orange-900 gap-2.5 rounded-xl overflow-y-auto h-[240px]">
+        <div className="flex bg-orange-50 dark:bg-orange-500/10 p-[15px] text-orange-900 dark:text-amber-600 gap-2.5 rounded-xl overflow-y-auto h-[240px]">
           <div className="w-[22px] shrink-0">
-            <IconCmpWarning className="!text-orange-900" />
+            <IconCmpWarning className="!text-orange-900 dark:!text-amber-600" />
           </div>
           <div className="flex-1 min-w-0 text-sm">
             <p className="mb-1 font-bold">Request failed</p>
@@ -77,7 +77,7 @@ export const RPCComponentError = ({
             className="mb-5"
           />
           {isResponseTab ? (
-            <div className="flex border border-gray-200 p-[15px] text-orange-900 gap-2.5 rounded-xl overflow-y-auto h-[240px]">
+            <div className="flex border border-gray-200 dark:border-zinc-500 p-[15px] text-orange-900 gap-2.5 rounded-xl overflow-y-auto h-[240px]">
               <div className="w-[22px] shrink-0">
                 <IconCmpWarning className="!text-orange-900" />
               </div>
@@ -90,8 +90,8 @@ export const RPCComponentError = ({
             <>
               <div
                 className={clsx(
-                  "rounded-xl border border-gray-200 px-3.5 py-2.5 h-[240px] overflow-y-auto space-y-4",
-                  "text-gray-500 break-all text-sm",
+                  "rounded-xl border border-gray-200 dark:border-zinc-500 px-3.5 py-2.5 h-[240px] overflow-y-auto space-y-4",
+                  "text-gray-500 dark:text-zinc-500 break-all text-sm",
                 )}
               >
                 {consentMessage ? (

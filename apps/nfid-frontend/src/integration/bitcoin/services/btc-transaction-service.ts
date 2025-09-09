@@ -7,6 +7,7 @@ import {
   FungibleActivityRecords,
   FungibleActivityRecord,
 } from "../../../../../../packages/integration/src/lib/asset/types"
+import { BLOCK_HEIGHT_URL, REQUIRED_CONFIRMATIONS } from "./mempool.service"
 
 const mainnet = "https://mempool.space/api/address/"
 const BTC_ICON =
@@ -47,31 +48,43 @@ async function getFungibleActivityByTokenAndUser(
   let url = mainnet
   url += `${address}/txs`
 
-  const response = await fetch(url)
-  const json: MempoolTransactionResponse[] = await response.json()
+  const [tipHeight, json] = await Promise.all([
+    fetch(BLOCK_HEIGHT_URL).then((res) => res.json()),
+    fetch(url).then(
+      (res) => res.json() as Promise<MempoolTransactionResponse[]>,
+    ),
+  ])
 
-  const records = json.map((tx) => {
-    const isReceived = tx.vout.some(
-      (vout) => vout.scriptpubkey_address === address,
-    )
-    const isSent = tx.vin.some(
-      (vin) => vin.prevout.scriptpubkey_address === address,
-    )
+  const records = json
+    .filter((tx) => {
+      if (!tx.status.confirmed || tx.status.block_height === undefined)
+        return false
 
-    const vout = tx.vout.find((vout) => vout.scriptpubkey_address === address)
-    const vin = tx.vin.find(
-      (vin) => vin.prevout.scriptpubkey_address === address,
-    )
+      const confirmations = tipHeight - tx.status.block_height + 1
+      return confirmations >= REQUIRED_CONFIRMATIONS
+    })
+    .map((tx) => {
+      const isReceived = tx.vout.some(
+        (vout) => vout.scriptpubkey_address === address,
+      )
+      const isSent = tx.vin.some(
+        (vin) => vin.prevout.scriptpubkey_address === address,
+      )
 
-    return {
-      id: tx.txid,
-      date: tx.status.block_time,
-      to: isReceived ? address : tx.vout[0].scriptpubkey_address,
-      from: isSent ? address : tx.vin[0].prevout.scriptpubkey_address,
-      transactionHash: tx.txid,
-      price: isReceived ? vout?.value ?? 0 : vin?.prevout.value ?? 0,
-    }
-  })
+      const vout = tx.vout.find((vout) => vout.scriptpubkey_address === address)
+      const vin = tx.vin.find(
+        (vin) => vin.prevout.scriptpubkey_address === address,
+      )
+
+      return {
+        id: tx.txid,
+        date: tx.status.block_time,
+        to: isReceived ? address : tx.vout[0].scriptpubkey_address,
+        from: isSent ? address : tx.vin[0].prevout.scriptpubkey_address,
+        transactionHash: tx.txid,
+        price: isReceived ? (vout?.value ?? 0) : (vin?.prevout.value ?? 0),
+      }
+    })
   activities.push(...records)
   return { activities }
 }
@@ -79,7 +92,9 @@ async function getFungibleActivityByTokenAndUser(
 interface MempoolTransactionResponse {
   txid: string
   status: {
+    confirmed: boolean
     block_time: string
+    block_height?: number
   }
   vin: { prevout: { scriptpubkey_address: string; value: number } }[]
   vout: { scriptpubkey_address: string; value: number }[]

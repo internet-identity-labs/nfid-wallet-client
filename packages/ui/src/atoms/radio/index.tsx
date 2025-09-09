@@ -40,7 +40,10 @@ export const RadioButton: React.FC<RadioButtonProps> = ({
           {...props}
         />
         {text && (
-          <Label htmlFor={id} className="ml-3 !mb-0 cursor-pointer">
+          <Label
+            htmlFor={id}
+            className="ml-3 !mb-0 cursor-pointer dark:text-white"
+          >
             {text}
           </Label>
         )}

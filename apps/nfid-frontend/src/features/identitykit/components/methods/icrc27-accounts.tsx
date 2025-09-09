@@ -29,17 +29,17 @@ const RPCComponentICRC27 = ({
     <RPCPromptTemplate
       title="Approve connection"
       subTitle={
-        <>
+        <div className="dark:text-white">
           for{" "}
           <a
             href={origin}
             target="_blank"
-            className="text-primaryButtonColor no-underline"
+            className="no-underline text-primaryButtonColor dark:text-teal-500"
             rel="noreferrer"
           >
             {applicationName}
           </a>
-        </>
+        </div>
       }
       onPrimaryButtonClick={() => {
         onApprove([selectedProfile])

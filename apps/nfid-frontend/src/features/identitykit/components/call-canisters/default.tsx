@@ -38,17 +38,17 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
     <RPCPromptTemplate
       title={methodName}
       subTitle={
-        <>
+        <div className="dark:text-white">
           Request from{" "}
           <a
             href={origin}
             target="_blank"
-            className="text-primaryButtonColor no-underline"
+            className="no-underline text-primaryButtonColor dark:text-teal-500"
             rel="noreferrer"
           >
             {applicationName}
           </a>
-        </>
+        </div>
       }
       onPrimaryButtonClick={() => onApprove(request)}
       onSecondaryButtonClick={onReject}
@@ -61,8 +61,8 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
     >
       <div
         className={clsx(
-          "rounded-xl border border-gray-200 px-3.5 py-2.5 h-[240px] overflow-y-auto space-y-4",
-          "text-gray-500 break-all text-sm mt-2.5",
+          "rounded-xl border border-gray-200 dark:border-zinc-500 px-3.5 py-2.5 h-[240px] overflow-y-auto space-y-4",
+          "text-gray-500 dark:text-zinc-500 break-all text-sm mt-2.5",
           "overflow-auto",
         )}
       >
@@ -95,11 +95,11 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
       <div
         className={clsx(
           "grid grid-cols-[22px,1fr] gap-2.5 text-sm rounded-xl",
-          "bg-orange-50 p-[15px] mt-4 text-orange-900",
+          "bg-orange-50 dark:bg-orange-500/10 p-[15px] mt-4 text-orange-900 dark:text-amber-600",
           consentMessage && consentMessage.length && "hidden",
         )}
       >
-        <IconCmpWarning className="text-orange-900 w-[22px] h-[22px] shrink-1" />
+        <IconCmpWarning className="text-orange-900 dark:text-amber-600 w-[22px] h-[22px] shrink-1" />
         <p>
           <span className="font-bold leading-[20px]">
             Proceed with caution.

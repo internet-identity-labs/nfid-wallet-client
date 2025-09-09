@@ -90,13 +90,13 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     return modalType === IModalType.SWAP
       ? getMaxAmountFee(userBalance, token.getTokenFee())
       : modalType === IModalType.STAKE ||
-        (modalType === IModalType.SEND &&
-          token.getTokenAddress() === BTC_NATIVE_ID)
-      ? btcFee
-      : modalType === IModalType.SEND &&
-        token.getTokenAddress() === ETH_NATIVE_ID
-      ? ethFee
-      : token.getTokenFee()
+          (modalType === IModalType.SEND &&
+            token.getTokenAddress() === BTC_NATIVE_ID)
+        ? btcFee
+        : modalType === IModalType.SEND &&
+            token.getTokenAddress() === ETH_NATIVE_ID
+          ? ethFee
+          : token.getTokenFee()
   }, [token, userBalance, btcFee, ethFee])
 
   useEffect(() => {

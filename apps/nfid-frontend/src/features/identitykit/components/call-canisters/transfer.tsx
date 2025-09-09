@@ -27,17 +27,17 @@ const CallCanisterTransfer = (props: CallCanisterTransferProps) => {
     <RPCPromptTemplate
       title={CanisterCallTitle.transfer}
       subTitle={
-        <>
+        <div className="dark:text-white">
           Request from{" "}
           <a
             href={origin}
             target="_blank"
-            className="text-primaryButtonColor no-underline"
+            className="no-underline text-primaryButtonColor dark:text-teal-500"
             rel="noreferrer"
           >
             {applicationName}
           </a>
-        </>
+        </div>
       }
       onPrimaryButtonClick={() => onApprove(request)}
       onSecondaryButtonClick={onReject}
@@ -50,14 +50,14 @@ const CallCanisterTransfer = (props: CallCanisterTransferProps) => {
       }}
     >
       <div className="flex flex-col flex-1 mt-3">
-        <p className="text-[32px] font-medium text-center">
+        <p className="text-[32px] font-medium text-center dark:text-white">
           <TickerAmount
             symbol={metadata.symbol}
             value={metadata.amount}
             decimals={metadata.decimals}
           />
         </p>
-        <p className="text-sm text-center text-gray-400">
+        <p className="text-sm text-center text-gray-400 dark:text-zinc-500">
           <TickerAmount
             symbol={metadata.symbol}
             value={metadata.amount}
@@ -66,13 +66,13 @@ const CallCanisterTransfer = (props: CallCanisterTransferProps) => {
           />
         </p>
         <div className="flex flex-col flex-1 text-sm">
-          <div className="flex items-center justify-between h-[54px]">
+          <div className="flex items-center justify-between h-[54px] dark:text-white">
             <div>To</div>
             <div>
               <Address address={metadata.toAddress} />
             </div>
           </div>
-          <div className="flex items-center justify-between h-[54px]">
+          <div className="flex items-center justify-between h-[54px] dark:text-white">
             <div>Network fee</div>
             <div className="text-right">
               <TickerAmount
@@ -81,7 +81,7 @@ const CallCanisterTransfer = (props: CallCanisterTransferProps) => {
                 decimals={metadata.decimals}
               />
               <br />
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-gray-400 dark:text-zinc-500">
                 <TickerAmount
                   symbol={metadata.symbol}
                   value={metadata.fee}
@@ -91,7 +91,7 @@ const CallCanisterTransfer = (props: CallCanisterTransferProps) => {
               </span>
             </div>
           </div>
-          <div className="flex items-center justify-between h-[54px] font-bold border-t border-gray-200">
+          <div className="flex items-center justify-between h-[54px] font-bold border-t border-gray-200 dark:border-zinc-500 dark:text-white">
             <div>Total</div>
             <div className="text-right">
               <TickerAmount
@@ -100,7 +100,7 @@ const CallCanisterTransfer = (props: CallCanisterTransferProps) => {
                 decimals={metadata.decimals}
               />
               <br />
-              <span className="text-xs font-normal text-gray-400">
+              <span className="text-xs font-normal text-gray-400 dark:text-zinc-500">
                 <TickerAmount
                   symbol={metadata.symbol}
                   value={metadata.total}
@@ -112,7 +112,7 @@ const CallCanisterTransfer = (props: CallCanisterTransferProps) => {
           </div>
         </div>
         {metadata.isInsufficientBalance && (
-          <p className="flex flex-col justify-end flex-1 text-xs text-center text-red-600">
+          <p className="flex flex-col justify-end flex-1 text-xs text-center text-red-600 dark:text-red-500">
             Insufficient {metadata.symbol} balance
           </p>
         )}

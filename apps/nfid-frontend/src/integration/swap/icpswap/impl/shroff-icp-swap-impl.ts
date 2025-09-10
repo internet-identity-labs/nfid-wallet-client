@@ -46,6 +46,7 @@ import {
   Result,
   SwapArgs,
   WithdrawArgs,
+  DepositAndSwapArgs,
 } from "../idl/SwapPool.d"
 
 const POOL_CANISTER = "dwahc-eyaaa-aaaag-qcgnq-cai"
@@ -178,14 +179,41 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
 
-      // const icrc2supported = await this.icrc2supported()
-      const icrc2supported = false
+      const icrc2supported = await this.icrc2supported()
 
       let icrcTransferId
 
       if (icrc2supported) {
-        await this.icrc2approve(POOL_CANISTER)
-        console.log("ICRC2 approve response", JSON.stringify(icrcTransferId))
+        icrcTransferId = await this.icrc2approve(
+          this.poolData.canisterId.toString(),
+        )
+        this.swapTransaction.setTransferId(icrcTransferId)
+        console.debug("ICRC2 approve response", JSON.stringify(icrcTransferId))
+        this.restoreTransaction()
+        const amountDecimals = this.requestedQuote
+          .getSourceSwapAmount()
+          .plus(Number(this.source.fee))
+        const args: DepositAndSwapArgs = {
+          tokenInFee: this.source.fee,
+          amountIn: this.requestedQuote!.getSourceSwapAmount().toFixed(),
+          zeroForOne: this.zeroForOne,
+          amountOutMinimum: this.requestedQuote!.getTargetAmount()
+            .toFixed(this.target.decimals)
+            .replace(TRIM_ZEROS, ""),
+          tokenOutFee: this.target.fee,
+        }
+        console.debug("Amount decimals: " + BigInt(amountDecimals.toFixed()))
+        const result = await this.swapPoolActor.depositFromAndSwap(args)
+        if (hasOwnProperty(result, "ok")) {
+          const id = result.ok as bigint
+          this.swapTransaction!.setSwap(id)
+        } else {
+          let err = JSON.stringify(
+            "Deposit and swap error: " + JSON.stringify(result.err),
+          )
+          console.error(err)
+          throw new DepositError(err)
+        }
       } else {
         try {
           await this.transferToSwap()
@@ -196,18 +224,18 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
         } catch (e) {
           throw new ContactSupportError("Deposit error: " + e)
         }
+        this.restoreTransaction()
+        console.debug("Transfer to swap done")
+        await this.deposit()
+        this.restoreTransaction()
+        console.debug("Deposit done")
+        await this.swapOnExchange()
+        this.restoreTransaction()
+        console.debug("Swap done")
+        await this.withdraw()
+        console.debug("Withdraw done")
+        this.restoreTransaction()
       }
-      this.restoreTransaction()
-      console.debug("Transfer to swap done")
-      await this.deposit()
-      this.restoreTransaction()
-      console.debug("Deposit done")
-      await this.swapOnExchange()
-      this.restoreTransaction()
-      console.debug("Swap done")
-      await this.withdraw()
-      console.debug("Withdraw done")
-      this.restoreTransaction()
       await this.transferToNFID()
       console.debug("Transfer to NFID done")
       await this.restoreTransaction()

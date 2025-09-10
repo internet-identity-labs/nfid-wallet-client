@@ -31,7 +31,6 @@ class CkBtcService {
       amountInSatoshis,
     )
 
-    await this.approve(identity, fee.identityLabsFee)
     await ckBtcService.send(identity, FEE_ADDRESS, fee.identityLabsFee)
 
     return blockIndex
@@ -56,7 +55,7 @@ class CkBtcService {
 
     const amountToReceive =
       satoshiService.getInSatoshis(amount) -
-      icpNetworkFee * BigInt(3) -
+      icpNetworkFee * BigInt(2) -
       identityLabsFee -
       btcNetworkFee
 
@@ -67,7 +66,7 @@ class CkBtcService {
       },
       identityLabsFee,
       amountToReceive,
-      icpNetworkFee: icpNetworkFee * BigInt(3),
+      icpNetworkFee: icpNetworkFee * BigInt(2),
     }
   }
 

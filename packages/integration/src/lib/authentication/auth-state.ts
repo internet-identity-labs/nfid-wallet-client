@@ -18,7 +18,13 @@ import { Environment } from "../constant/env.constant"
 import { getPasskey, storePasskey } from "../lambda/passkey"
 import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
-import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
+import {
+  authStorage,
+  KEY_BTC_ADDRESS,
+  KEY_ETH_ADDRESS,
+  KEY_STORAGE_DELEGATION,
+  KEY_STORAGE_KEY,
+} from "./storage"
 import {
   createUserIdData,
   deserializeUserIdData,
@@ -180,8 +186,22 @@ function makeAuthState() {
     return true
   }
 
+  const getUserIdData = () => {
+    const state = get()
+    if (!state.userIdData) throw new Error("No user data")
+    return state.userIdData
+  }
+
   async function _clearAuthSessionFromCache() {
-    await authStorage.clear()
+    const { publicKey } = getUserIdData()
+
+    await Promise.all([
+      authStorage.remove(KEY_STORAGE_KEY),
+      authStorage.remove(KEY_STORAGE_DELEGATION),
+      authStorage.remove(`${KEY_BTC_ADDRESS}-${publicKey}`),
+      authStorage.remove(`${KEY_ETH_ADDRESS}-${publicKey}`),
+    ])
+
     return true
   }
 
@@ -299,11 +319,7 @@ function makeAuthState() {
     fromCache,
     checkAndRenewFEDelegation,
     logout: invalidateIdentity,
-    getUserIdData: () => {
-      const state = get()
-      if (!state.userIdData) throw new Error("No user data")
-      return state.userIdData
-    },
+    getUserIdData,
   }
 }
 
@@ -338,22 +354,30 @@ export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
 
   const profilesData = profiles
     .filter((profile) => profile.email || profile.name)
-    .reduce((acc, profile) => {
-      const newProfile = {
-        email: profile.email,
-        principal: profile.publicKey,
-        anchor: profile.anchor,
-        name: profile.name,
-      }
+    .reduce(
+      (acc, profile) => {
+        const newProfile = {
+          email: profile.email,
+          principal: profile.publicKey,
+          anchor: profile.anchor,
+          name: profile.name,
+        }
 
-      const isDuplicate = acc.some((p) => p.anchor === newProfile.anchor)
+        const isDuplicate = acc.some((p) => p.anchor === newProfile.anchor)
 
-      if (!isDuplicate) {
-        acc.push(newProfile)
-      }
+        if (!isDuplicate) {
+          acc.push(newProfile)
+        }
 
-      return acc
-    }, [] as { email: string | undefined; principal: string; anchor: bigint; name: string | undefined }[])
+        return acc
+      },
+      [] as {
+        email: string | undefined
+        principal: string
+        anchor: bigint
+        name: string | undefined
+      }[],
+    )
 
   const parsedCredentialIds: string[] = await authStorage
     .get("credentialIds")

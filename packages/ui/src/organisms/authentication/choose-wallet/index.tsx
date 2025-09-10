@@ -46,26 +46,30 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
             return (
               <div
                 key={wallet.principal + i}
-                className={clsx(
-                  "flex items-center h-[64px] gap-1 justify-between cursor-pointer",
-                  "border-b border-gray-100 last:border-b-0 px-[14px] rounded-[12px]",
-                  "hover:bg-gray-50 dark:bg-zinc-900 dark:hover:bg-zinc-800 transition-all group",
-                )}
-                onClick={() => onLoginWithPasskey(wallet.allowedPasskeys)}
+                className="border-b border-gray-100 dark:border-zinc-700 last:border-b-0"
               >
-                <div>
-                  <p className="dark:text-white">
-                    {wallet.email ?? wallet.name}
-                  </p>
-                  <p className="mt-0.5 tex-xs text-gray-400 dark:text-zinc-500 leading-4.5">
-                    <CenterEllipsis
-                      value={wallet.principal}
-                      leadingChars={6}
-                      trailingChars={3}
-                    />
-                  </p>
+                <div
+                  className={clsx(
+                    "flex items-center h-[64px] gap-1 justify-between cursor-pointer",
+                    "px-[14px] rounded-[12px]",
+                    "hover:bg-gray-50 dark:hover:bg-zinc-800 transition-all group",
+                  )}
+                  onClick={() => onLoginWithPasskey(wallet.allowedPasskeys)}
+                >
+                  <div>
+                    <p className="dark:text-white">
+                      {wallet.email ?? wallet.name}
+                    </p>
+                    <p className="mt-0.5 tex-xs text-gray-400 dark:text-zinc-500 leading-4.5">
+                      <CenterEllipsis
+                        value={wallet.principal}
+                        leadingChars={6}
+                        trailingChars={3}
+                      />
+                    </p>
+                  </div>
+                  <IconCaret color={isDarkTheme ? "white" : "black"} />
                 </div>
-                <IconCaret color={isDarkTheme ? "white" : "black"} />
               </div>
             )
           })}

@@ -28,7 +28,6 @@ type WalletState = {
 export interface AuthSelectionProps {
   onSelectEmailAuth: (email: string) => void
   onSelectOtherAuth?: () => void
-  onSelectIIAuth?: () => void
   applicationURL?: string
   isIdentityKit?: boolean
   onLoginWithPasskey: () => Promise<void>
@@ -44,7 +43,6 @@ export interface AuthSelectionProps {
 export const AuthSelection: React.FC<AuthSelectionProps> = ({
   onSelectEmailAuth,
   onSelectOtherAuth,
-  onSelectIIAuth,
   applicationURL,
   isIdentityKit,
   onLoginWithPasskey,
@@ -89,6 +87,8 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
       })
     }
   }, [isSignIn])
+
+  console.log("walletStatezz", walletState)
 
   const errorMessage =
     formState.errors.email?.type === "required"

@@ -78,14 +78,3 @@ export async function signWithIIService(): Promise<IIAuthSession> {
       .catch(reject)
   })
 }
-
-export async function loginWithII(callback?: () => void) {
-  try {
-    const session = await signWithIIService()
-    callback?.()
-    return session
-  } catch (error) {
-    console.error("II login failed", error)
-    throw error
-  }
-}

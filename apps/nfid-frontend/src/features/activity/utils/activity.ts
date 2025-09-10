@@ -17,6 +17,10 @@ import { groupActivityRowsByDate } from "./row"
 import { getSwapActivitiesRows } from "./swap-activity"
 import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
 import { ethereumService } from "frontend/integration/ethereum/ethereum.service"
+import {
+  CKBTC_CANISTER_ID,
+  CKETH_CANISTER_ID,
+} from "@nfid/integration/token/constants"
 
 export const getAllActivity = async ({
   ...params
@@ -53,6 +57,13 @@ export const getAllActivity = async ({
       const asset = item.row.asset as ActivityAssetFT
       let usdRate
       try {
+        let assetCanister = asset.canister
+        if (assetCanister === "btc-native") {
+          assetCanister = CKBTC_CANISTER_ID
+        }
+        if (assetCanister === "eth-native") {
+          assetCanister = CKETH_CANISTER_ID
+        }
         usdRate = priceResponse?.find(
           (token) => token.address === asset.canister,
         )

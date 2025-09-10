@@ -15,20 +15,20 @@ import {
 import { getIcrc1ActivitiesRows } from "./icrc1-activity"
 import { groupActivityRowsByDate } from "./row"
 import { getSwapActivitiesRows } from "./swap-activity"
-import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
-import { ethereumService } from "frontend/integration/ethereum/ethereum.service"
 import {
   CKBTC_CANISTER_ID,
   CKETH_CANISTER_ID,
 } from "@nfid/integration/token/constants"
+import { fetchBtcAddress } from "frontend/util/fetch-btc-address"
+import { fetchEthAddress } from "frontend/util/fetch-eth-address"
 
 export const getAllActivity = async ({
   ...params
 }: GetAllActivityParams): Promise<GetAllActivityResult> => {
   const { filteredContracts, offset = 0, limit = PAGINATION_ITEMS } = params
 
-  let btcAddress = await bitcoinService.getQuickAddress()
-  let ethAddress = await ethereumService.getQuickAddress()
+  let btcAddress = await fetchBtcAddress()
+  let ethAddress = await fetchEthAddress()
 
   const [icrc1Activities, swapActivities, btcActivities, ethActivities] =
     await Promise.all([

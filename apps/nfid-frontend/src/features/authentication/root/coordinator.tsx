@@ -31,7 +31,6 @@ import { generate } from "frontend/integration/internet-identity/crypto/mnemonic
 import { parseUserNumber } from "frontend/integration/internet-identity/userNumber"
 import { AbstractAuthSession } from "frontend/state/authentication"
 import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
-import { signWithIIService } from "frontend/features/authentication/auth-selection/ii-flow/ii-auth.service"
 
 import { authWithAnchor } from "../auth-selection/other-sign-options/services"
 import { passkeyConnector } from "../auth-selection/passkey-flow/services"
@@ -73,19 +72,7 @@ export default function AuthenticationCoordinator({
   }
 
   const onSelectIIAuth = async () => {
-    try {
-      const authSession = await signWithIIService()
-      onAuthWithII(authSession)
-    } catch (error) {
-      console.error("II authentication failed:", error)
-    }
-  }
-
-  const onAuthWithII = (authSession: AbstractAuthSession) => {
-    send({
-      type: "AUTHENTICATED",
-      data: authSession,
-    })
+    send({ type: "AUTH_WITH_II" })
   }
 
   const onAuthWithPasskey = (authSession: AbstractAuthSession) => {
@@ -309,7 +296,7 @@ export default function AuthenticationCoordinator({
                   id="ii-sign-button"
                   className="h-12 !p-0 active:!text-black dark:active:!text-white"
                   type="stroke"
-                  icon={<IconCmpDfinity />}
+                  icon={<IconCmpDfinity className="w-6 h-6 min-w-6" />}
                   block
                   onClick={onSelectIIAuth}
                 >

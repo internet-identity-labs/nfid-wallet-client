@@ -22,17 +22,13 @@ import {
 export const identityProvider = "https://id.ai"
 
 export async function signWithIIService(): Promise<IIAuthSession> {
-  console.log("signWithIIService")
-
   return new Promise((resolve, reject) => {
     AuthClient.create()
       .then((authClient) => {
         authClient.login({
           identityProvider,
           onSuccess: async (_: InternetIdentityAuthResponseSuccess) => {
-            console.log("onSuccess")
             const identity = authClient.getIdentity() as SignIdentity
-            console.log("identity", identity.getPrincipal().toText())
 
             try {
               let profile
@@ -46,7 +42,7 @@ export async function signWithIIService(): Promise<IIAuthSession> {
                   delegationIdentity: identity,
                   email: undefined,
                   deviceType: DeviceType.InternetIdentity,
-                  name: "Internet Identity",
+                  name: identity.getPrincipal().toText(),
                   icon: Icon.ii,
                 })
               }
@@ -81,18 +77,4 @@ export async function signWithIIService(): Promise<IIAuthSession> {
       })
       .catch(reject)
   })
-}
-
-export async function loginWithII(callback?: () => void) {
-  console.log("loginWithII")
-
-  try {
-    const session = await signWithIIService()
-    console.log("II login successful", session)
-    callback?.()
-    return session
-  } catch (error) {
-    console.error("II login failed", error)
-    throw error
-  }
 }

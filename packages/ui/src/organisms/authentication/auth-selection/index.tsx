@@ -88,8 +88,6 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
     }
   }, [isSignIn])
 
-  console.log("walletStatezz", walletState)
-
   const errorMessage =
     formState.errors.email?.type === "required"
       ? "Please enter your email"

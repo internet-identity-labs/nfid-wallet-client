@@ -42,7 +42,7 @@ export async function signWithIIService(): Promise<IIAuthSession> {
                   delegationIdentity: identity,
                   email: undefined,
                   deviceType: DeviceType.InternetIdentity,
-                  name: "Internet Identity",
+                  name: identity.getPrincipal().toText(),
                   icon: Icon.ii,
                 })
               }

@@ -15,6 +15,7 @@ import {
   shouldShowPasskeysEvery6thTime,
   shouldShowRecoveryPhraseEvery8thTime,
 } from "../services"
+import { signWithIIService } from "../auth-selection/ii-flow/ii-auth.service"
 
 export interface AuthenticationContext {
   verificationEmail?: string
@@ -42,6 +43,7 @@ export interface AuthenticationContext {
 export type Events =
   | { type: "done.invoke.AuthWithGoogleMachine"; data: AbstractAuthSession }
   | { type: "done.invoke.AuthWithEmailMachine"; data: AbstractAuthSession }
+  | { type: "done.invoke.AuthWithIIService"; data: AbstractAuthSession }
   | {
       type: "done.invoke.checkIf2FAEnabled"
       data?: { allowedPasskeys: string[]; email?: string }
@@ -63,6 +65,10 @@ export type Events =
   | {
       type: "AUTH_WITH_GOOGLE"
       data: { jwt: string; email: string; isEmbed: boolean }
+    }
+  | {
+      type: "AUTH_WITH_II"
+      data?: AbstractAuthSession
     }
   | { type: "AUTH_WITH_OTHER"; data: { isEmbed: boolean } }
   | { type: "AUTH_WITH_RECOVERY_PHRASE" }
@@ -105,6 +111,10 @@ const AuthenticationMachine =
             AUTH_WITH_GOOGLE: {
               target: "AuthWithGoogle",
               actions: ["assignEmail", "assignIsEmbed"],
+            },
+            AUTH_WITH_II: {
+              target: "AuthWithII",
+              actions: ["assignAuthSession"],
             },
             AUTH_WITH_OTHER: {
               target: "OtherSignOptions",
@@ -185,6 +195,23 @@ const AuthenticationMachine =
             data: (_, event: Extract<Events, { type: "AUTH_WITH_GOOGLE" }>) => {
               return { jwt: event.data.jwt }
             },
+            onDone: [
+              {
+                cond: "isExistingAccount",
+                actions: "assignAuthSession",
+                target: "check2FA",
+              },
+              {
+                actions: "assignAuthSession",
+                target: "AuthSelection",
+              },
+            ],
+          },
+        },
+        AuthWithII: {
+          invoke: {
+            id: "AuthWithIIService",
+            src: () => signWithIIService(),
             onDone: [
               {
                 cond: "isExistingAccount",

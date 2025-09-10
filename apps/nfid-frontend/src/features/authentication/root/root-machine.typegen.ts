@@ -13,6 +13,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.AuthWithIIService": {
+      type: "done.invoke.AuthWithIIService"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.checkIf2FAEnabled": {
       type: "done.invoke.checkIf2FAEnabled"
       data: unknown
@@ -62,9 +67,11 @@ export interface Typegen0 {
     assignAllowedDevices: "done.invoke.checkIf2FAEnabled"
     assignAuthSession:
       | "AUTHENTICATED"
+      | "AUTH_WITH_II"
       | "SIGN_IN_PASSKEY"
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
+      | "done.invoke.AuthWithIIService"
     assignEmail: "AUTH_WITH_GOOGLE"
     assignIsEmbed: "AUTH_WITH_EMAIL" | "AUTH_WITH_GOOGLE" | "AUTH_WITH_OTHER"
     assignShowPasskeys:
@@ -77,7 +84,9 @@ export interface Typegen0 {
   eventsCausingDelays: {}
   eventsCausingGuards: {
     is2FAEnabled: "done.invoke.checkIf2FAEnabled"
-    isExistingAccount: "done.invoke.AuthWithGoogleMachine"
+    isExistingAccount:
+      | "done.invoke.AuthWithGoogleMachine"
+      | "done.invoke.AuthWithIIService"
     isReturn: "done.invoke.AuthWithEmailMachine"
     showPasskeys:
       | "done.invoke.shouldShowPasskeys"
@@ -87,9 +96,11 @@ export interface Typegen0 {
   eventsCausingServices: {
     AuthWithEmailMachine: "AUTH_WITH_EMAIL"
     AuthWithGoogleMachine: "AUTH_WITH_GOOGLE"
+    AuthWithIIService: "AUTH_WITH_II"
     checkIf2FAEnabled:
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
+      | "done.invoke.AuthWithIIService"
     shouldShowPasskeys:
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
@@ -105,6 +116,7 @@ export interface Typegen0 {
     | "AuthSelection"
     | "AuthSelectionSignUp"
     | "AuthWithGoogle"
+    | "AuthWithII"
     | "BackupWallet"
     | "BackupWalletSavePhrase"
     | "EmailAuthentication"

@@ -1,39 +1,36 @@
-import { Security } from "packages/ui/src/organisms/security"
-import React, { useMemo, useCallback, FC } from "react"
-
+import React, { useMemo, useCallback, FC, useState } from "react"
+import { useSWR } from "@nfid/swr"
 import { Loader, PasskeySkeleton, Toggle } from "@nfid-frontend/ui"
 import { Icon } from "@nfid/integration"
-import { useSWR } from "@nfid/swr"
-
-import { NFIDTheme } from "frontend/App"
 import { useDarkTheme } from "frontend/hooks"
 import { useProfile } from "frontend/integration/identity-manager/queries"
-import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon-decider"
+import { Security } from "packages/ui/src/organisms/security"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
-
+import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon-decider"
 import { PasskeyDeviceItem } from "./components/passkey-device-item"
 import { PrimarySignInMethod } from "./components/primary-sign-in-method"
-import { securityConnector } from "./device-connector"
 import { AddPasskey } from "./passkey/add-passkey"
 import { AddRecoveryPhrase } from "./recovery-phrase/add-recovery"
 import { DeleteRecoveryPhrase } from "./recovery-phrase/remove-recovery"
+import { securityConnector } from "./device-connector"
+import { NFIDTheme } from "frontend/App"
 
 type SecurityPageProps = {
   walletTheme: NFIDTheme
   setWalletTheme: (theme: NFIDTheme) => void
 }
 
-export type IHandleWithLoading = (
-  action: () => Promise<any>,
+export type IHandleWithLoading = <T>(
+  action: () => Promise<T>,
   callback?: () => void,
-) => void
+) => Promise<void>
 
 const SecurityPage: FC<SecurityPageProps> = ({
   walletTheme,
   setWalletTheme,
 }) => {
   const isDarkTheme = useDarkTheme()
-  const [isLoading, setIsLoading] = React.useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const { profile, refreshProfile } = useProfile()
 
   const {
@@ -45,12 +42,6 @@ const SecurityPage: FC<SecurityPageProps> = ({
     securityConnector.getDevices,
     { revalidateOnFocus: false },
   )
-
-  const showLastPasskeyWarning = useMemo(() => {
-    if (!profile?.is2fa) return false
-
-    return devices?.passkeys.filter((d) => !d.isLegacyDevice).length === 1
-  }, [devices?.passkeys, profile?.is2fa])
 
   const handleWithLoading: IHandleWithLoading = useCallback(
     async (action, callback) => {
@@ -68,80 +59,83 @@ const SecurityPage: FC<SecurityPageProps> = ({
     [refetchDevices],
   )
 
-  const renderPasskeys = useCallback(() => {
-    return (
-      <>
-        {isLoading || isValidating || devices === undefined ? (
-          <PasskeySkeleton rows={3} />
-        ) : (
-          devices?.passkeys.map((device, key) => (
-            <PasskeyDeviceItem
-              showLastPasskeyWarning={
-                device.isLegacyDevice ? false : showLastPasskeyWarning
-              }
-              device={device}
-              key={`passkey_device_${key}`}
-              handleWithLoading={handleWithLoading}
-            />
-          ))
-        )}
-      </>
-    )
-  }, [
-    showLastPasskeyWarning,
-    handleWithLoading,
-    devices,
-    isLoading,
-    isValidating,
-  ])
+  const PasskeysSection = () => (
+    <>
+      {isLoading || isValidating || devices === undefined ? (
+        <PasskeySkeleton rows={3} />
+      ) : (
+        devices?.passkeys.map((device, key) => (
+          <PasskeyDeviceItem
+            key={`passkey_device_${key}`}
+            device={device}
+            showLastPasskeyWarning={
+              device.isLegacyDevice ? false : showLastPasskeyWarning
+            }
+            handleWithLoading={handleWithLoading}
+          />
+        ))
+      )}
+    </>
+  )
 
-  const renderRecoveryOptions = useCallback(
-    () => (
-      <>
-        {devices?.recoveryDevice ? (
-          <div className="flex items-center justify-between">
-            <div className="flex space-x-2.5 items-center">
-              <div className="w-10 h-10 p-2 rounded-full">
-                <DeviceIconDecider
-                  color={isDarkTheme ? "#71717A" : "#9CA3AF"}
-                  icon={Icon.document}
-                />
-              </div>
-              <div>
-                <p className="text-sm leading-5">Recovery phrase</p>
-                <p className="text-xs leading-4 text-gray-400 dark:text-zinc-500">
-                  Last activity: {devices.recoveryDevice.last_used}
-                </p>
-              </div>
+  const RecoveryPhraseSection = () => (
+    <>
+      {devices?.recoveryDevice ? (
+        <div className="flex items-center justify-between">
+          <div className="flex space-x-2.5 items-center">
+            <div className="w-10 h-10 p-2 rounded-full">
+              <DeviceIconDecider
+                color={isDarkTheme ? "#71717A" : "#9CA3AF"}
+                icon={Icon.document}
+              />
             </div>
-            <DeleteRecoveryPhrase
-              device={devices.recoveryDevice}
-              handleWithLoading={handleWithLoading}
-            />
+            <div>
+              <p className="text-sm leading-5">Recovery phrase</p>
+              <p className="text-xs leading-4 text-gray-400 dark:text-zinc-500">
+                Last activity: {devices.recoveryDevice.last_used}
+              </p>
+            </div>
           </div>
-        ) : (
-          <AddRecoveryPhrase handleWithLoading={handleWithLoading} />
-        )}
-      </>
-    ),
-    [devices?.recoveryDevice, handleWithLoading, isDarkTheme],
+          <DeleteRecoveryPhrase
+            device={devices.recoveryDevice}
+            handleWithLoading={handleWithLoading}
+          />
+        </div>
+      ) : (
+        <AddRecoveryPhrase handleWithLoading={handleWithLoading} />
+      )}
+    </>
   )
 
   if (!profile) return <Loader isLoading={true} />
 
-  let tooltip = ""
+  const showLastPasskeyWarning = useMemo(() => {
+    if (!profile?.is2fa) return false
 
-  if (!profile.email || !devices?.passkeys.length)
-    tooltip =
-      "At least one passkey and an email are required to enable Self-sovereign mode."
-  else if (!profile.email && devices?.passkeys.length)
-    tooltip = "Self-sovereign mode is always enabled for passkey-only users."
+    return devices?.passkeys.filter((d) => !d.isLegacyDevice).length === 1
+  }, [devices?.passkeys, profile?.is2fa])
+
+  const tooltip = useMemo(() => {
+    if (!profile?.email || !devices?.passkeys?.length) {
+      return "At least one passkey and an email are required to enable Self-sovereign mode."
+    }
+    if (!profile.email) {
+      return "Self-sovereign mode is always enabled for passkey-only users."
+    }
+    return ""
+  }, [profile?.email, devices?.passkeys])
 
   const showCreatePasskeyOnCanister = devices?.passkeys.find(
     (d) => d.origin === CANISTER_WITH_AT_LEAST_ONE_PASSKEY,
   )
     ? undefined
     : CANISTER_WITH_AT_LEAST_ONE_PASSKEY
+
+  const hasActivePasskey =
+    devices?.passkeys?.some((d) => !d.isLegacyDevice) ?? false
+  const hasAnyPasskey = (devices?.passkeys?.length ?? 0) > 0
+  const isToggleDisabled =
+    !hasActivePasskey || isLoading || !profile?.email || !hasAnyPasskey
 
   return (
     <ProfileTemplate
@@ -156,12 +150,7 @@ const SecurityPage: FC<SecurityPageProps> = ({
         showCreatePasskeyOnCanister={showCreatePasskeyOnCanister}
         toggleElement={
           <Toggle
-            isDisabled={
-              !devices?.passkeys?.filter((d) => !d.isLegacyDevice).length ||
-              isLoading ||
-              !profile.email ||
-              !devices.passkeys.length
-            }
+            isDisabled={isToggleDisabled}
             isChecked={!!profile?.is2fa}
             onToggle={async (val) => {
               handleWithLoading(
@@ -174,13 +163,19 @@ const SecurityPage: FC<SecurityPageProps> = ({
         }
         addPasskeyElement={
           <AddPasskey
+            // Disable "Add Passkey" for legacy II-only users since we cannot create passkeys for them.
+            // Currently, the button is enabled if the user has at least one of:
+            //   - email (Google/Email signup),
+            //   - name (passkey signup),
+            //   - principalId (II signup).
+            // TODO: Revisit this logic when we have a better way to identify legacy II-only users.
             isDisabled={!profile.email && !profile.name && !profile.principalId}
             handleWithLoading={handleWithLoading}
             isLoading={isLoading}
           />
         }
-        renderPasskeys={renderPasskeys}
-        renderRecoveryOptions={renderRecoveryOptions}
+        renderPasskeys={PasskeysSection}
+        renderRecoveryOptions={RecoveryPhraseSection}
       />
     </ProfileTemplate>
   )

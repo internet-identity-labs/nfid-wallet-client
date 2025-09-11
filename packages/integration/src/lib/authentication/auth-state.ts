@@ -187,14 +187,11 @@ function makeAuthState() {
   }
 
   async function _clearAuthSessionFromCache() {
-    const state = get()
-    if (!state.userIdData) throw new Error("No user data")
-
     await Promise.all([
       authStorage.remove(KEY_STORAGE_KEY),
       authStorage.remove(KEY_STORAGE_DELEGATION),
-      authStorage.remove(`${KEY_BTC_ADDRESS}-${state.userIdData.publicKey}`),
-      authStorage.remove(`${KEY_ETH_ADDRESS}-${state.userIdData.publicKey}`),
+      authStorage.remove(KEY_BTC_ADDRESS),
+      authStorage.remove(KEY_ETH_ADDRESS),
     ])
 
     return true

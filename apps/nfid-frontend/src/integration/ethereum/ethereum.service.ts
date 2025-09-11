@@ -76,8 +76,7 @@ export class EthereumService {
   }
 
   public async getQuickAddress() {
-    let principal = Principal.from(authState.getUserIdData().publicKey)
-    const { cachedValue } = await this.getAddressFromCache(principal.toText())
+    const { cachedValue } = await this.getAddressFromCache()
 
     if (cachedValue == null) {
       let identity = await getWalletDelegation()
@@ -89,9 +88,7 @@ export class EthereumService {
 
   //get eth address from global identity
   public async getAddress(identity: SignIdentity): Promise<Address> {
-    const { cachedValue, key } = await this.getAddressFromCache(
-      identity.getPrincipal().toText(),
-    )
+    const { cachedValue, key } = await this.getAddressFromCache()
 
     if (cachedValue != null) {
       return cachedValue as string
@@ -108,8 +105,8 @@ export class EthereumService {
     return await this.provider.getBalance(address)
   }
 
-  public async getQuickBalance(principal: Principal): Promise<Balance> {
-    const { cachedValue } = await this.getAddressFromCache(principal.toText())
+  public async getQuickBalance(): Promise<Balance> {
+    const { cachedValue } = await this.getAddressFromCache()
 
     if (!cachedValue) {
       throw Error("No ethereum address in a cache.")
@@ -384,8 +381,8 @@ export class EthereumService {
     return await this.sendTransaction(signedTransaction)
   }
 
-  private async getAddressFromCache(principal: string) {
-    const key = `eth-address-${principal}`
+  private async getAddressFromCache() {
+    const key = `eth-address`
     const cachedValue = await authStorage.get(key)
 
     return {

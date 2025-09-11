@@ -5,7 +5,10 @@ import {
 } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { Principal } from "@dfinity/principal"
 import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
-import { authStorage } from "packages/integration/src/lib/authentication/storage"
+import {
+  authStorage,
+  KEY_BTC_ADDRESS,
+} from "packages/integration/src/lib/authentication/storage"
 
 import {
   bitcoinService,
@@ -27,10 +30,8 @@ describe("Bitcoin Service", () => {
   beforeEach(async () => {
     await authStorage.clear()
 
-    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    const principal: string = identity.getPrincipal().toText()
     await authStorage.set(
-      `bitcoin-address-${principal}`,
+      KEY_BTC_ADDRESS,
       "bc1q7yu8dnvmlntrqh05wvfar2tljrm73ng6ky8n4t",
     )
   })
@@ -43,11 +44,10 @@ describe("Bitcoin Service", () => {
     // Given
     await authStorage.clear()
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    const principal: string = identity.getPrincipal().toText()
 
     // When
     const address = await bitcoinService.getAddress(identity)
-    const idbAddress = await authStorage.get(`bitcoin-address-${principal}`)
+    const idbAddress = await authStorage.get(KEY_BTC_ADDRESS)
 
     // Then
     expect(address).toEqual("bc1q7yu8dnvmlntrqh05wvfar2tljrm73ng6ky8n4t")
@@ -57,8 +57,7 @@ describe("Bitcoin Service", () => {
   it("should return different address if it's saved into idb", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    const principal: string = identity.getPrincipal().toText()
-    const key = `bitcoin-address-${principal}`
+    const key = `bitcoin-address`
     await authStorage.set(key, "address")
 
     // When
@@ -80,12 +79,8 @@ describe("Bitcoin Service", () => {
   })
 
   it("should return a quick balance", async () => {
-    // Given
-    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    const principal: Principal = identity.getPrincipal()
-
     // When
-    const balance: bigint = await bitcoinService.getQuickBalance(principal)
+    const balance: bigint = await bitcoinService.getQuickBalance()
 
     // Then
     expect(balance).toEqual(BigInt(1618))
@@ -198,8 +193,7 @@ describe("Bitcoin Service", () => {
   it("should throw an error when ensureWalletConfirmations returns false for getFee", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    const principal: string = identity.getPrincipal().toText()
-    const key = `bitcoin-address-${principal}`
+    const key = `bitcoin-address`
     await authStorage.set(key, "bc1qw9fpg8nu0qq74yqn88j5tr7yzk0jfkx6v8mh4l")
 
     const checkWalletConfirmationsSpy = jest
@@ -221,7 +215,7 @@ describe("Bitcoin Service", () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
     const principal: string = identity.getPrincipal().toText()
-    const key = `bitcoin-address-${principal}`
+    const key = `bitcoin-address`
     await authStorage.set(key, "bc1qw9fpg8nu0qq74yqn88j5tr7yzk0jfkx6v8mh4l")
 
     const checkWalletConfirmationsSpy = jest

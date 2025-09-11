@@ -107,8 +107,6 @@ const SecurityPage: FC<SecurityPageProps> = ({
     </>
   )
 
-  if (!profile) return <Loader isLoading={true} />
-
   const showLastPasskeyWarning = useMemo(() => {
     if (!profile?.is2fa) return false
 
@@ -124,6 +122,8 @@ const SecurityPage: FC<SecurityPageProps> = ({
     }
     return ""
   }, [profile?.email, devices?.passkeys])
+
+  if (!profile) return <Loader isLoading={true} />
 
   const showCreatePasskeyOnCanister = devices?.passkeys.find(
     (d) => d.origin === CANISTER_WITH_AT_LEAST_ONE_PASSKEY,

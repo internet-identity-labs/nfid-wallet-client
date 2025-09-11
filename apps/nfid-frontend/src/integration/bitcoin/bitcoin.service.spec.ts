@@ -57,8 +57,7 @@ describe("Bitcoin Service", () => {
   it("should return different address if it's saved into idb", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    const key = `bitcoin-address`
-    await authStorage.set(key, "address")
+    await authStorage.set(KEY_BTC_ADDRESS, "address")
 
     // When
     const address = await bitcoinService.getAddress(identity)
@@ -193,8 +192,10 @@ describe("Bitcoin Service", () => {
   it("should throw an error when ensureWalletConfirmations returns false for getFee", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    const key = `bitcoin-address`
-    await authStorage.set(key, "bc1qw9fpg8nu0qq74yqn88j5tr7yzk0jfkx6v8mh4l")
+    await authStorage.set(
+      KEY_BTC_ADDRESS,
+      "bc1qw9fpg8nu0qq74yqn88j5tr7yzk0jfkx6v8mh4l",
+    )
 
     const checkWalletConfirmationsSpy = jest
       .spyOn(mempoolService, "checkWalletConfirmations")
@@ -214,9 +215,10 @@ describe("Bitcoin Service", () => {
   it("should throw an error when ensureWalletConfirmations returns false for getBtcToCkBtcFee", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    const principal: string = identity.getPrincipal().toText()
-    const key = `bitcoin-address`
-    await authStorage.set(key, "bc1qw9fpg8nu0qq74yqn88j5tr7yzk0jfkx6v8mh4l")
+    await authStorage.set(
+      KEY_BTC_ADDRESS,
+      "bc1qw9fpg8nu0qq74yqn88j5tr7yzk0jfkx6v8mh4l",
+    )
 
     const checkWalletConfirmationsSpy = jest
       .spyOn(mempoolService, "checkWalletConfirmations")

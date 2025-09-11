@@ -16,7 +16,10 @@ import {
   type TransactionResponse,
 } from "ethers"
 import { agentBaseConfig } from "packages/integration/src/lib/actors"
-import { authStorage } from "packages/integration/src/lib/authentication/storage"
+import {
+  authStorage,
+  KEY_ETH_ADDRESS,
+} from "packages/integration/src/lib/authentication/storage"
 
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 
@@ -28,7 +31,6 @@ import {
 } from "../bitcoin/services/chain-fusion-signer.service"
 import { patronService } from "../bitcoin/services/patron.service"
 import { CKETH_ABI, CKETH_FEE } from "./cketh.constants"
-import { authState } from "packages/integration/src/lib/authentication/auth-state"
 import { getWalletDelegation } from "../facade/wallet"
 
 const INFURA_API_KEY = "010993c30ae14b2b94ff239547b6ebbe"
@@ -382,12 +384,11 @@ export class EthereumService {
   }
 
   private async getAddressFromCache() {
-    const key = `eth-address`
-    const cachedValue = await authStorage.get(key)
+    const cachedValue = await authStorage.get(KEY_ETH_ADDRESS)
 
     return {
       cachedValue,
-      key,
+      key: KEY_ETH_ADDRESS,
     }
   }
   private async approveTransfer(

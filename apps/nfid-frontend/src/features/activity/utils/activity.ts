@@ -20,6 +20,8 @@ import { ethereumService } from "frontend/integration/ethereum/ethereum.service"
 import {
   CKBTC_CANISTER_ID,
   CKETH_CANISTER_ID,
+  BTC_NATIVE_ID,
+  ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
 
 export const getAllActivity = async ({
@@ -58,14 +60,14 @@ export const getAllActivity = async ({
       let usdRate
       try {
         let assetCanister = asset.canister
-        if (assetCanister === "btc-native") {
+        if (assetCanister === BTC_NATIVE_ID) {
           assetCanister = CKBTC_CANISTER_ID
         }
-        if (assetCanister === "eth-native") {
+        if (assetCanister === ETH_NATIVE_ID) {
           assetCanister = CKETH_CANISTER_ID
         }
         usdRate = priceResponse?.find(
-          (token) => token.address === asset.canister,
+          (token) => token.address === assetCanister,
         )
       } catch (e) {
         console.error("Exchange rate error: ", e)

@@ -174,7 +174,7 @@ const SecurityPage: FC<SecurityPageProps> = ({
         }
         addPasskeyElement={
           <AddPasskey
-            isDisabled={!profile.email && !profile.name}
+            isDisabled={!profile.email && !profile.name && !profile.principalId}
             handleWithLoading={handleWithLoading}
             isLoading={isLoading}
           />

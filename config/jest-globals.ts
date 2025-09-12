@@ -15,7 +15,8 @@ export const JEST_GLOBALS = {
   CK_BTC_LEDGER_CANISTER_ID: "mxzaz-hqaaa-aaaar-qaada-cai",
   CK_BTC_MINTER_CANISTER_ID: "mqygn-kiaaa-aaaar-qaadq-cai",
   FEE_PERCENT: "0.00875",
-  FEE_ADDRESS: "xrzo4-h5v7q-vbas7-txnjh-q4ihf-4ywvk-l6h4a-rlpkh-47ktc-fdupw-tae",
+  FEE_ADDRESS:
+    "xrzo4-h5v7q-vbas7-txnjh-q4ihf-4ywvk-l6h4a-rlpkh-47ktc-fdupw-tae",
   ICRC1_REGISTRY_CANISTER_ID: "zdi5a-faaaa-aaaak-qc5hq-cai",
   ICRC1_ORACLE_CANISTER_ID: "ys266-uyaaa-aaaal-ajs4q-cai",
   DELEGATION_FACTORY: "wklas-pyaaa-aaaak-akv3a-cai",
@@ -24,6 +25,8 @@ export const JEST_GLOBALS = {
   VERIFIER_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",
   LEDGER_CANISTER_ID: "ryjl3-tyaaa-aaaaa-aaaba-cai",
   CYCLES_MINTER_CANISTER_ID: "rkp4c-7iaaa-aaaaa-aaaca-cai",
+  CANISTER_WITH_AT_LEAST_ONE_PASSKEY:
+    "https://appqm-xiaaa-aaaak-akwaa-cai.icp0.io",
   VERIFY_PHONE_NUMBER:
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/verify/",
   AWS_SYMMETRIC:

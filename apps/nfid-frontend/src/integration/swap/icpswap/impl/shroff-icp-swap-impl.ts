@@ -49,8 +49,6 @@ import {
   DepositAndSwapArgs,
 } from "../idl/SwapPool.d"
 
-const POOL_CANISTER = "dwahc-eyaaa-aaaag-qcgnq-cai"
-
 export class ShroffIcpSwapImpl extends ShroffAbstract {
   private readonly zeroForOne: boolean
   private readonly poolData: PoolData

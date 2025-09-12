@@ -5,6 +5,8 @@ const OBJECT_STORE_NAME = "ic-keyval"
 
 export const KEY_STORAGE_KEY = "identity"
 export const KEY_STORAGE_DELEGATION = "delegation"
+export const KEY_BTC_ADDRESS = "bitcoin-address"
+export const KEY_ETH_ADDRESS = "eth-address"
 
 export type StoredKey = string | CryptoKeyPair
 

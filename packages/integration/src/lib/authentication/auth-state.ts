@@ -18,13 +18,20 @@ import { Environment } from "../constant/env.constant"
 import { getPasskey, storePasskey } from "../lambda/passkey"
 import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
-import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
+import {
+  authStorage,
+  KEY_BTC_ADDRESS,
+  KEY_ETH_ADDRESS,
+  KEY_STORAGE_DELEGATION,
+  KEY_STORAGE_KEY,
+} from "./storage"
 import {
   createUserIdData,
   deserializeUserIdData,
   serializeUserIdData,
   UserIdData,
 } from "./user-id-data"
+import { AuthClient } from "@dfinity/auth-client"
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -87,6 +94,7 @@ function makeAuthState() {
     console.debug("_loadAuthSessionFromCache", Date.now())
     let sessionKey
     let chain
+    let delegationIdentity
     try {
       sessionKey = await authStorage.get(KEY_STORAGE_KEY)
       chain = await authStorage.get(KEY_STORAGE_DELEGATION)
@@ -94,10 +102,22 @@ function makeAuthState() {
       console.error("_loadAuthSessionFromCache", { error })
     }
     if (!sessionKey || !chain) {
-      observableAuthState$.next({
-        cacheLoaded: true,
+      let isIIAuth = await AuthClient.create().then(async (authClient) => {
+        const isAuthenticated = await authClient.isAuthenticated()
+
+        if (isAuthenticated) {
+          delegationIdentity = authClient.getIdentity() as DelegationIdentity
+        }
+
+        return isAuthenticated
       })
-      return
+
+      if (!isIIAuth) {
+        observableAuthState$.next({
+          cacheLoaded: true,
+        })
+        return
+      }
     }
 
     if (typeof sessionKey !== "string") {
@@ -111,12 +131,14 @@ function makeAuthState() {
     console.debug(
       "_loadAuthSessionFromCache load sessionKey and chain from cache. Recreate identity and delegationIdentity",
     )
-    const identity = Ed25519KeyIdentity.fromJSON(sessionKey)
+    const identity = Ed25519KeyIdentity.generate()
 
-    const delegationIdentity = DelegationIdentity.fromDelegation(
-      identity,
-      DelegationChain.fromJSON(chain),
-    )
+    if (!sessionKey && !chain) {
+      delegationIdentity = DelegationIdentity.fromDelegation(
+        identity,
+        DelegationChain.fromJSON("1"),
+      )
+    }
 
     if (isDelegationExpired(delegationIdentity)) {
       console.debug(
@@ -128,7 +150,7 @@ function makeAuthState() {
     }
 
     const cachedUserIdData = await authStorage.get(
-      getUserIdDataStorageKey(delegationIdentity),
+      getUserIdDataStorageKey(delegationIdentity!),
     )
 
     let userIdData
@@ -140,21 +162,21 @@ function makeAuthState() {
       !cachedUserIdData ||
       (userIdData && userIdData.cacheVersion !== EXPECTED_CACHE_VERSION)
     ) {
-      userIdData = await createUserIdData(delegationIdentity)
+      userIdData = await createUserIdData(delegationIdentity!)
       await authStorage.set(
-        getUserIdDataStorageKey(delegationIdentity),
+        getUserIdDataStorageKey(delegationIdentity!),
         serializeUserIdData(userIdData),
       )
-      migratePasskeys(delegationIdentity)
+      migratePasskeys(delegationIdentity!)
     }
 
-    replaceIdentity(delegationIdentity, "_loadAuthSessionFromCache")
+    replaceIdentity(delegationIdentity!, "_loadAuthSessionFromCache")
     setupSessionManager({ onIdle: invalidateIdentity })
 
     observableAuthState$.next({
       cacheLoaded: true,
       delegationIdentity,
-      activeDevicePrincipalId: delegationIdentity.getPrincipal().toText(),
+      activeDevicePrincipalId: delegationIdentity!.getPrincipal().toText(),
       identity,
       userIdData,
     })
@@ -181,8 +203,19 @@ function makeAuthState() {
   }
 
   async function _clearAuthSessionFromCache() {
-    await authStorage.clear()
-    return true
+    await Promise.all([
+      authStorage.remove(KEY_STORAGE_KEY),
+      authStorage.remove(KEY_STORAGE_DELEGATION),
+      authStorage.remove(KEY_BTC_ADDRESS),
+      authStorage.remove(KEY_ETH_ADDRESS),
+      AuthClient.create().then(async (authClient) => {
+        const isAuthenticated = await authClient.isAuthenticated()
+
+        if (isAuthenticated) {
+          authClient.logout()
+        }
+      }),
+    ])
   }
 
   async function fromCache() {
@@ -338,22 +371,30 @@ export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
 
   const profilesData = profiles
     .filter((profile) => profile.email || profile.name)
-    .reduce((acc, profile) => {
-      const newProfile = {
-        email: profile.email,
-        principal: profile.publicKey,
-        anchor: profile.anchor,
-        name: profile.name,
-      }
+    .reduce(
+      (acc, profile) => {
+        const newProfile = {
+          email: profile.email,
+          principal: profile.publicKey,
+          anchor: profile.anchor,
+          name: profile.name,
+        }
 
-      const isDuplicate = acc.some((p) => p.anchor === newProfile.anchor)
+        const isDuplicate = acc.some((p) => p.anchor === newProfile.anchor)
 
-      if (!isDuplicate) {
-        acc.push(newProfile)
-      }
+        if (!isDuplicate) {
+          acc.push(newProfile)
+        }
 
-      return acc
-    }, [] as { email: string | undefined; principal: string; anchor: bigint; name: string | undefined }[])
+        return acc
+      },
+      [] as {
+        email: string | undefined
+        principal: string
+        anchor: bigint
+        name: string | undefined
+      }[],
+    )
 
   const parsedCredentialIds: string[] = await authStorage
     .get("credentialIds")

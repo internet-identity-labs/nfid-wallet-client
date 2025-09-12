@@ -271,7 +271,6 @@ export default function AuthenticationCoordinator({
                   data: { isEmbed },
                 })
               }}
-              onSelectIIAuth={onSelectIIAuth}
               isLoading={isPasskeyLoading}
               applicationURL={state.context.authRequest?.hostname}
               onLoginWithPasskey={onLoginWithPasskey}

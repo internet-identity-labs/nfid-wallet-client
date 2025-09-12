@@ -69,9 +69,9 @@ export class FTImpl implements FT {
     return this.tokenAddress === ETH_NATIVE_ID
   }
 
-  private async getNativeBtcBalance(globalPrincipal: Principal): Promise<void> {
+  private async getNativeBtcBalance(): Promise<void> {
     try {
-      this.tokenBalance = await bitcoinService.getQuickBalance(globalPrincipal)
+      this.tokenBalance = await bitcoinService.getQuickBalance()
     } catch (e) {
       console.error("BitcoinService error: ", (e as Error).message)
       return
@@ -81,9 +81,9 @@ export class FTImpl implements FT {
       await exchangeRateService.usdPriceForICRC1(CKBTC_CANISTER_ID)
   }
 
-  private async getNativeEthBalance(globalPrincipal: Principal): Promise<void> {
+  private async getNativeEthBalance(): Promise<void> {
     try {
-      this.tokenBalance = await ethereumService.getQuickBalance(globalPrincipal)
+      this.tokenBalance = await ethereumService.getQuickBalance()
     } catch (e) {
       console.error("EthereumService error: ", (e as Error).message)
       return
@@ -110,9 +110,9 @@ export class FTImpl implements FT {
 
   private async getBalance(globalPrincipal: Principal): Promise<void> {
     if (this.isNativeBtc()) {
-      await this.getNativeBtcBalance(globalPrincipal)
+      await this.getNativeBtcBalance()
     } else if (this.isNativeEth()) {
-      await this.getNativeEthBalance(globalPrincipal)
+      await this.getNativeEthBalance()
     } else {
       await this.getIcrc1Balance(globalPrincipal)
     }

@@ -1,10 +1,12 @@
 import { SignIdentity } from "@dfinity/agent"
-import { Principal } from "@dfinity/principal"
 import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
-import { authStorage } from "packages/integration/src/lib/authentication/storage"
+import {
+  authStorage,
+  KEY_BTC_ADDRESS,
+} from "packages/integration/src/lib/authentication/storage"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
-import { authState, Balance } from "@nfid/integration"
+import { Balance } from "@nfid/integration"
 
 import { bitcoinCanisterService } from "./services/bitcoin-canister.service"
 import {
@@ -36,8 +38,7 @@ export type CkBtcToBtcFee = {
 
 export class BitcoinService {
   public async getQuickAddress(): Promise<string> {
-    let principal = Principal.from(authState.getUserIdData().publicKey)
-    const { cachedValue } = await this.getAddressFromCache(principal.toText())
+    const { cachedValue } = await this.getAddressFromCache()
 
     if (cachedValue == null) {
       let identity = await getWalletDelegation()
@@ -48,9 +49,7 @@ export class BitcoinService {
   }
 
   public async getAddress(identity: SignIdentity): Promise<Address> {
-    const { cachedValue, key } = await this.getAddressFromCache(
-      identity.getPrincipal().toText(),
-    )
+    const { cachedValue, key } = await this.getAddressFromCache()
 
     if (cachedValue != null) {
       return cachedValue as string
@@ -70,8 +69,8 @@ export class BitcoinService {
     return chainFusionSignerService.getBalance(identity, minConfirmations)
   }
 
-  public async getQuickBalance(principal: Principal): Promise<bigint> {
-    const { cachedValue } = await this.getAddressFromCache(principal.toText())
+  public async getQuickBalance(): Promise<bigint> {
+    const { cachedValue } = await this.getAddressFromCache()
 
     if (!cachedValue) {
       throw Error("No bitcoin address in a cache.")
@@ -196,8 +195,8 @@ export class BitcoinService {
     return txId
   }
 
-  private async getAddressFromCache(principal: string) {
-    const key = `bitcoin-address-${principal}`
+  private async getAddressFromCache() {
+    const key = KEY_BTC_ADDRESS
     const cachedValue = await authStorage.get(key)
 
     return {
@@ -209,9 +208,7 @@ export class BitcoinService {
   private async ensureWalletConfirmations(
     identity: SignIdentity,
   ): Promise<{ ok: boolean; error?: string }> {
-    const { cachedValue } = await this.getAddressFromCache(
-      identity.getPrincipal().toText(),
-    )
+    const { cachedValue } = await this.getAddressFromCache()
     if (!cachedValue) {
       return {
         ok: false,

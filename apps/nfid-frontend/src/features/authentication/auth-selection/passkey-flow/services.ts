@@ -377,7 +377,7 @@ export class PasskeyConnector {
       const profile = await fetchProfile()
 
       const accessPoint = profile.accessPoints.find(
-        (ap) => ap.credentialId === delegationIdentity.getPrincipal().toText(),
+        (ap) => ap.principalId === delegationIdentity.getPrincipal().toText(),
       )
       if (accessPoint) await this.updateStorageCredentialsId(accessPoint)
       im.use_access_point([])

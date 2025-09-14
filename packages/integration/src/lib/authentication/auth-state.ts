@@ -338,22 +338,30 @@ export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
 
   const profilesData = profiles
     .filter((profile) => profile.email || profile.name)
-    .reduce((acc, profile) => {
-      const newProfile = {
-        email: profile.email,
-        principal: profile.publicKey,
-        anchor: profile.anchor,
-        name: profile.name,
-      }
+    .reduce(
+      (acc, profile) => {
+        const newProfile = {
+          email: profile.email,
+          principal: profile.publicKey,
+          anchor: profile.anchor,
+          name: profile.name,
+        }
 
-      const isDuplicate = acc.some((p) => p.anchor === newProfile.anchor)
+        const isDuplicate = acc.some((p) => p.anchor === newProfile.anchor)
 
-      if (!isDuplicate) {
-        acc.push(newProfile)
-      }
+        if (!isDuplicate) {
+          acc.push(newProfile)
+        }
 
-      return acc
-    }, [] as { email: string | undefined; principal: string; anchor: bigint; name: string | undefined }[])
+        return acc
+      },
+      [] as {
+        email: string | undefined
+        principal: string
+        anchor: bigint
+        name: string | undefined
+      }[],
+    )
 
   const parsedCredentialIds: string[] = await authStorage
     .get("credentialIds")

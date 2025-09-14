@@ -121,7 +121,7 @@
     },
     "authstate": {
       "bitcoin": {
-        "key": "bitcoin-address-nejgd-f5frx-ddbma-jtskt-k237v-2c7df-eupfu-ig4ze-g6wmt-qpg73-3qe",
+        "key": "bitcoin-address",
         "value": "bc1q7md9hggte560uehhl6ayr7fc0ae5pe3sfmmpnw"
       },
       "delegation": {
@@ -241,7 +241,7 @@
     },
     "authstate": {
       "bitcoin": {
-        "key": "bitcoin-address-vso2q-ja7iv-7kzld-zje2z-2c4wd-s4tpj-hp6cv-t5srn-tknjk-ees5l-uqe",
+        "key": "bitcoin-address",
         "value": "bc1qfyqxqkru6g75qlt7e072hhjpg54gq60qajp0vm"
       },
       "delegation": {
@@ -286,7 +286,7 @@
     },
     "authstate": {
       "bitcoin": {
-        "key": "bitcoin-address-tqrza-w5v36-6slmc-wmo2l-gptrj-qvl4j-oi5la-lcdu7-nv37n-fv3jg-pqe",
+        "key": "bitcoin-address",
         "value": "bc1qt956y2wpqu4yydkmhc76pfz6gupwqse84zgdra"
       },
       "delegation": {
@@ -320,7 +320,7 @@
     },
     "authstate": {
       "bitcoin": {
-        "key": "bitcoin-address-6hg7q-37lzt-3lpdo-oocet-itvrv-as4eu-qfy56-33ss4-lutoa-2sb3s-vae",
+        "key": "bitcoin-address",
         "value": "bc1qm49khsfx6rzylttz07s7r04lr62m2q34myeuqq"
       },
       "delegation": {
@@ -348,7 +348,7 @@
     },
     "authstate": {
       "bitcoin": {
-        "key": "bitcoin-address-wlmjt-42cl4-bfewy-wqnsd-onwge-3qp4e-5bxtw-smujq-u3yrg-xmwta-bqe",
+        "key": "bitcoin-address",
         "value": "bc1q4fvc76rd70ds2jpyvh6zduy4879hzdw2vlw3le"
       },
       "delegation": {
@@ -376,7 +376,7 @@
     },
     "authstate": {
       "bitcoin": {
-        "key": "bitcoin-address-zmfwj-ds7r7-ixsfr-b6mpz-mz46s-xf4m2-vtj4g-zkpvp-vt3vd-vbhyi-yae",
+        "key": "bitcoin-address",
         "value": "bc1qspad2eelzpjqq9nz5mtjzwwp506ryzmczck065"
       },
       "delegation": {

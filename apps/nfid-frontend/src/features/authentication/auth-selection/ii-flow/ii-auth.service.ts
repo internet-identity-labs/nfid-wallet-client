@@ -20,12 +20,15 @@ import {
 } from "frontend/integration/identity-manager"
 
 export const identityProvider = "https://id.ai"
+//who knows why FE canister URL named like this....
+export const derivationOrigin = CANISTER_WITH_AT_LEAST_ONE_PASSKEY
 
 export async function signWithIIService(): Promise<IIAuthSession> {
   return new Promise((resolve, reject) => {
     AuthClient.create()
       .then((authClient) => {
         authClient.login({
+          derivationOrigin,
           identityProvider,
           onSuccess: async (_: InternetIdentityAuthResponseSuccess) => {
             const identity = authClient.getIdentity() as SignIdentity

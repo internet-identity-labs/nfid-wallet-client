@@ -18,20 +18,13 @@ import { Environment } from "../constant/env.constant"
 import { getPasskey, storePasskey } from "../lambda/passkey"
 import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
-import {
-  authStorage,
-  KEY_BTC_ADDRESS,
-  KEY_ETH_ADDRESS,
-  KEY_STORAGE_DELEGATION,
-  KEY_STORAGE_KEY,
-} from "./storage"
+import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
 import {
   createUserIdData,
   deserializeUserIdData,
   serializeUserIdData,
   UserIdData,
 } from "./user-id-data"
-import { AuthClient } from "@dfinity/auth-client"
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -94,7 +87,6 @@ function makeAuthState() {
     console.debug("_loadAuthSessionFromCache", Date.now())
     let sessionKey
     let chain
-    let delegationIdentity
     try {
       sessionKey = await authStorage.get(KEY_STORAGE_KEY)
       chain = await authStorage.get(KEY_STORAGE_DELEGATION)
@@ -102,22 +94,10 @@ function makeAuthState() {
       console.error("_loadAuthSessionFromCache", { error })
     }
     if (!sessionKey || !chain) {
-      let isIIAuth = await AuthClient.create().then(async (authClient) => {
-        const isAuthenticated = await authClient.isAuthenticated()
-
-        if (isAuthenticated) {
-          delegationIdentity = authClient.getIdentity() as DelegationIdentity
-        }
-
-        return isAuthenticated
+      observableAuthState$.next({
+        cacheLoaded: true,
       })
-
-      if (!isIIAuth) {
-        observableAuthState$.next({
-          cacheLoaded: true,
-        })
-        return
-      }
+      return
     }
 
     if (typeof sessionKey !== "string") {
@@ -131,14 +111,12 @@ function makeAuthState() {
     console.debug(
       "_loadAuthSessionFromCache load sessionKey and chain from cache. Recreate identity and delegationIdentity",
     )
-    const identity = Ed25519KeyIdentity.generate()
+    const identity = Ed25519KeyIdentity.fromJSON(sessionKey)
 
-    if (!sessionKey && !chain) {
-      delegationIdentity = DelegationIdentity.fromDelegation(
-        identity,
-        DelegationChain.fromJSON("1"),
-      )
-    }
+    const delegationIdentity = DelegationIdentity.fromDelegation(
+      identity,
+      DelegationChain.fromJSON(chain),
+    )
 
     if (isDelegationExpired(delegationIdentity)) {
       console.debug(
@@ -150,7 +128,7 @@ function makeAuthState() {
     }
 
     const cachedUserIdData = await authStorage.get(
-      getUserIdDataStorageKey(delegationIdentity!),
+      getUserIdDataStorageKey(delegationIdentity),
     )
 
     let userIdData
@@ -162,21 +140,21 @@ function makeAuthState() {
       !cachedUserIdData ||
       (userIdData && userIdData.cacheVersion !== EXPECTED_CACHE_VERSION)
     ) {
-      userIdData = await createUserIdData(delegationIdentity!)
+      userIdData = await createUserIdData(delegationIdentity)
       await authStorage.set(
-        getUserIdDataStorageKey(delegationIdentity!),
+        getUserIdDataStorageKey(delegationIdentity),
         serializeUserIdData(userIdData),
       )
-      migratePasskeys(delegationIdentity!)
+      migratePasskeys(delegationIdentity)
     }
 
-    replaceIdentity(delegationIdentity!, "_loadAuthSessionFromCache")
+    replaceIdentity(delegationIdentity, "_loadAuthSessionFromCache")
     setupSessionManager({ onIdle: invalidateIdentity })
 
     observableAuthState$.next({
       cacheLoaded: true,
       delegationIdentity,
-      activeDevicePrincipalId: delegationIdentity!.getPrincipal().toText(),
+      activeDevicePrincipalId: delegationIdentity.getPrincipal().toText(),
       identity,
       userIdData,
     })
@@ -203,19 +181,8 @@ function makeAuthState() {
   }
 
   async function _clearAuthSessionFromCache() {
-    await Promise.all([
-      authStorage.remove(KEY_STORAGE_KEY),
-      authStorage.remove(KEY_STORAGE_DELEGATION),
-      authStorage.remove(KEY_BTC_ADDRESS),
-      authStorage.remove(KEY_ETH_ADDRESS),
-      AuthClient.create().then(async (authClient) => {
-        const isAuthenticated = await authClient.isAuthenticated()
-
-        if (isAuthenticated) {
-          authClient.logout()
-        }
-      }),
-    ])
+    await authStorage.clear()
+    return true
   }
 
   async function fromCache() {

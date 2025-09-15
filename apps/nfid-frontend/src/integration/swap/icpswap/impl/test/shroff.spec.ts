@@ -32,10 +32,10 @@ describe("shroff test", () => {
       .withSource(sourceLedger)
       .withTarget(targetLedger)
       .build()
-    const quote = await shroff.getQuote("0.003")
+    const quote = await shroff.getQuote("0.01")
     await sleep(1)
 
-    expect(quote.getSourceAmountPrettified()).toEqual("0.003")
+    expect(quote.getSourceAmountPrettified()).toEqual("0.01")
     quote.getWidgetFeeAmount()
   })
 

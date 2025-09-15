@@ -131,16 +131,16 @@ function makeAuthState() {
     console.debug(
       "_loadAuthSessionFromCache load sessionKey and chain from cache. Recreate identity and delegationIdentity",
     )
-    const identity = Ed25519KeyIdentity.generate()
+    const identity = Ed25519KeyIdentity.fromJSON(sessionKey)
 
     if (!sessionKey && !chain) {
       delegationIdentity = DelegationIdentity.fromDelegation(
         identity,
-        DelegationChain.fromJSON("1"),
+        DelegationChain.fromJSON(chain),
       )
     }
 
-    if (isDelegationExpired(delegationIdentity)) {
+    if (isDelegationExpired(delegationIdentity) || !delegationIdentity) {
       console.debug(
         "_loadAuthSessionFromCache load sessionKey and chain from cache. Session expired",
       )
@@ -150,7 +150,7 @@ function makeAuthState() {
     }
 
     const cachedUserIdData = await authStorage.get(
-      getUserIdDataStorageKey(delegationIdentity!),
+      getUserIdDataStorageKey(delegationIdentity),
     )
 
     let userIdData
@@ -164,7 +164,7 @@ function makeAuthState() {
     ) {
       userIdData = await createUserIdData(delegationIdentity!)
       await authStorage.set(
-        getUserIdDataStorageKey(delegationIdentity!),
+        getUserIdDataStorageKey(delegationIdentity),
         serializeUserIdData(userIdData),
       )
       migratePasskeys(delegationIdentity!)

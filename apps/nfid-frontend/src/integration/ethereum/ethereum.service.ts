@@ -16,7 +16,10 @@ import {
   type TransactionResponse,
 } from "ethers"
 import { agentBaseConfig } from "packages/integration/src/lib/actors"
-import { authStorage } from "packages/integration/src/lib/authentication/storage"
+import {
+  authStorage,
+  KEY_ETH_ADDRESS,
+} from "packages/integration/src/lib/authentication/storage"
 
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 
@@ -28,7 +31,6 @@ import {
 } from "../bitcoin/services/chain-fusion-signer.service"
 import { patronService } from "../bitcoin/services/patron.service"
 import { CKETH_ABI, CKETH_FEE } from "./cketh.constants"
-import { authState } from "packages/integration/src/lib/authentication/auth-state"
 import { getWalletDelegation } from "../facade/wallet"
 
 const INFURA_API_KEY = "010993c30ae14b2b94ff239547b6ebbe"
@@ -76,8 +78,7 @@ export class EthereumService {
   }
 
   public async getQuickAddress() {
-    let principal = Principal.from(authState.getUserIdData().publicKey)
-    const { cachedValue } = await this.getAddressFromCache(principal.toText())
+    const { cachedValue } = await this.getAddressFromCache()
 
     if (cachedValue == null) {
       let identity = await getWalletDelegation()
@@ -89,9 +90,7 @@ export class EthereumService {
 
   //get eth address from global identity
   public async getAddress(identity: SignIdentity): Promise<Address> {
-    const { cachedValue, key } = await this.getAddressFromCache(
-      identity.getPrincipal().toText(),
-    )
+    const { cachedValue, key } = await this.getAddressFromCache()
 
     if (cachedValue != null) {
       return cachedValue as string
@@ -108,8 +107,8 @@ export class EthereumService {
     return await this.provider.getBalance(address)
   }
 
-  public async getQuickBalance(principal: Principal): Promise<Balance> {
-    const { cachedValue } = await this.getAddressFromCache(principal.toText())
+  public async getQuickBalance(): Promise<Balance> {
+    const { cachedValue } = await this.getAddressFromCache()
 
     if (!cachedValue) {
       throw Error("No ethereum address in a cache.")
@@ -384,13 +383,12 @@ export class EthereumService {
     return await this.sendTransaction(signedTransaction)
   }
 
-  private async getAddressFromCache(principal: string) {
-    const key = `eth-address-${principal}`
-    const cachedValue = await authStorage.get(key)
+  private async getAddressFromCache() {
+    const cachedValue = await authStorage.get(KEY_ETH_ADDRESS)
 
     return {
       cachedValue,
-      key,
+      key: KEY_ETH_ADDRESS,
     }
   }
   private async approveTransfer(

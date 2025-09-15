@@ -133,7 +133,7 @@ function makeAuthState() {
     )
     const identity = Ed25519KeyIdentity.fromJSON(sessionKey)
 
-    if (!sessionKey && !chain) {
+    if (sessionKey && chain) {
       delegationIdentity = DelegationIdentity.fromDelegation(
         identity,
         DelegationChain.fromJSON(chain),
@@ -162,12 +162,12 @@ function makeAuthState() {
       !cachedUserIdData ||
       (userIdData && userIdData.cacheVersion !== EXPECTED_CACHE_VERSION)
     ) {
-      userIdData = await createUserIdData(delegationIdentity!)
+      userIdData = await createUserIdData(delegationIdentity)
       await authStorage.set(
         getUserIdDataStorageKey(delegationIdentity),
         serializeUserIdData(userIdData),
       )
-      migratePasskeys(delegationIdentity!)
+      migratePasskeys(delegationIdentity)
     }
 
     replaceIdentity(delegationIdentity!, "_loadAuthSessionFromCache")
@@ -176,7 +176,7 @@ function makeAuthState() {
     observableAuthState$.next({
       cacheLoaded: true,
       delegationIdentity,
-      activeDevicePrincipalId: delegationIdentity!.getPrincipal().toText(),
+      activeDevicePrincipalId: delegationIdentity.getPrincipal().toText(),
       identity,
       userIdData,
     })
@@ -237,6 +237,7 @@ function makeAuthState() {
     chain,
     sessionKey,
   }: SetProps) {
+    debugger
     console.debug("makeAuthState set new auth state")
     const userIdData = await createUserIdData(delegationIdentity)
 

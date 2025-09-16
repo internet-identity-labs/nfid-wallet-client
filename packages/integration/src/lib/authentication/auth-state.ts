@@ -18,13 +18,20 @@ import { Environment } from "../constant/env.constant"
 import { getPasskey, storePasskey } from "../lambda/passkey"
 import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
-import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
+import {
+  authStorage,
+  KEY_BTC_ADDRESS,
+  KEY_ETH_ADDRESS,
+  KEY_STORAGE_DELEGATION,
+  KEY_STORAGE_KEY,
+} from "./storage"
 import {
   createUserIdData,
   deserializeUserIdData,
   serializeUserIdData,
   UserIdData,
 } from "./user-id-data"
+import { AuthClient } from "@dfinity/auth-client"
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -181,7 +188,18 @@ function makeAuthState() {
   }
 
   async function _clearAuthSessionFromCache() {
-    await authStorage.clear()
+    await Promise.all([
+      authStorage.remove(KEY_STORAGE_KEY),
+      authStorage.remove(KEY_STORAGE_DELEGATION),
+      authStorage.remove(KEY_BTC_ADDRESS),
+      authStorage.remove(KEY_ETH_ADDRESS),
+      AuthClient.create().then(async (authClient) => {
+        const isAuthenticated = await authClient.isAuthenticated()
+        if (isAuthenticated) {
+          authClient.logout()
+        }
+      }),
+    ])
     return true
   }
 

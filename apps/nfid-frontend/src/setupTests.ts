@@ -16,6 +16,20 @@ global.TextDecoder = TextDecoder
 // @ts-ignore
 global.crypto = webcrypto
 
+// Polyfill for localStorage and sessionStorage needed by @dfinity/auth-client
+if (typeof global.localStorage === "undefined") {
+  const storageMock = {
+    getItem: jest.fn(),
+    setItem: jest.fn(),
+    removeItem: jest.fn(),
+    clear: jest.fn(),
+  }
+  // @ts-ignore
+  global.localStorage = storageMock
+  // @ts-ignore
+  global.sessionStorage = storageMock
+}
+
 // Global userAgent Mock
 // define userAgent within your tests by
 // global.userAgent = 'iPhone'

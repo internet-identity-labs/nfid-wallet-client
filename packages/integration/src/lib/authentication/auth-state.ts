@@ -18,13 +18,7 @@ import { Environment } from "../constant/env.constant"
 import { getPasskey, storePasskey } from "../lambda/passkey"
 import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
-import {
-  authStorage,
-  KEY_BTC_ADDRESS,
-  KEY_ETH_ADDRESS,
-  KEY_STORAGE_DELEGATION,
-  KEY_STORAGE_KEY,
-} from "./storage"
+import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
 import {
   createUserIdData,
   deserializeUserIdData,
@@ -95,6 +89,8 @@ function makeAuthState() {
     let sessionKey
     let chain
     let delegationIdentity
+    let identity
+
     try {
       sessionKey = await authStorage.get(KEY_STORAGE_KEY)
       chain = await authStorage.get(KEY_STORAGE_DELEGATION)
@@ -118,22 +114,19 @@ function makeAuthState() {
         })
         return
       }
-    }
+    } else {
+      if (typeof sessionKey !== "string") {
+        sessionKey = JSON.stringify(sessionKey)
+      }
 
-    if (typeof sessionKey !== "string") {
-      sessionKey = JSON.stringify(sessionKey)
-    }
+      if (typeof chain !== "string") {
+        chain = JSON.stringify(chain)
+      }
 
-    if (typeof chain !== "string") {
-      chain = JSON.stringify(chain)
-    }
-
-    console.debug(
-      "_loadAuthSessionFromCache load sessionKey and chain from cache. Recreate identity and delegationIdentity",
-    )
-    const identity = Ed25519KeyIdentity.fromJSON(sessionKey)
-
-    if (sessionKey && chain) {
+      console.debug(
+        "_loadAuthSessionFromCache load sessionKey and chain from cache. Recreate identity and delegationIdentity",
+      )
+      identity = Ed25519KeyIdentity.fromJSON(sessionKey)
       delegationIdentity = DelegationIdentity.fromDelegation(
         identity,
         DelegationChain.fromJSON(chain),
@@ -203,11 +196,8 @@ function makeAuthState() {
   }
 
   async function _clearAuthSessionFromCache() {
+    await authStorage.clear()
     await Promise.all([
-      authStorage.remove(KEY_STORAGE_KEY),
-      authStorage.remove(KEY_STORAGE_DELEGATION),
-      authStorage.remove(KEY_BTC_ADDRESS),
-      authStorage.remove(KEY_ETH_ADDRESS),
       AuthClient.create().then(async (authClient) => {
         const isAuthenticated = await authClient.isAuthenticated()
 

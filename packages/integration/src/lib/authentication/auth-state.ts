@@ -25,7 +25,6 @@ import {
   serializeUserIdData,
   UserIdData,
 } from "./user-id-data"
-import { AuthClient } from "@dfinity/auth-client"
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -88,9 +87,6 @@ function makeAuthState() {
     console.debug("_loadAuthSessionFromCache", Date.now())
     let sessionKey
     let chain
-    let delegationIdentity
-    let identity
-
     try {
       sessionKey = await authStorage.get(KEY_STORAGE_KEY)
       chain = await authStorage.get(KEY_STORAGE_DELEGATION)
@@ -98,42 +94,31 @@ function makeAuthState() {
       console.error("_loadAuthSessionFromCache", { error })
     }
     if (!sessionKey || !chain) {
-      let isIIAuth = await AuthClient.create().then(async (authClient) => {
-        const isAuthenticated = await authClient.isAuthenticated()
-
-        if (isAuthenticated) {
-          delegationIdentity = authClient.getIdentity() as DelegationIdentity
-        }
-
-        return isAuthenticated
+      observableAuthState$.next({
+        cacheLoaded: true,
       })
-
-      if (!isIIAuth) {
-        observableAuthState$.next({
-          cacheLoaded: true,
-        })
-        return
-      }
-    } else {
-      if (typeof sessionKey !== "string") {
-        sessionKey = JSON.stringify(sessionKey)
-      }
-
-      if (typeof chain !== "string") {
-        chain = JSON.stringify(chain)
-      }
-
-      console.debug(
-        "_loadAuthSessionFromCache load sessionKey and chain from cache. Recreate identity and delegationIdentity",
-      )
-      identity = Ed25519KeyIdentity.fromJSON(sessionKey)
-      delegationIdentity = DelegationIdentity.fromDelegation(
-        identity,
-        DelegationChain.fromJSON(chain),
-      )
+      return
     }
 
-    if (isDelegationExpired(delegationIdentity) || !delegationIdentity) {
+    if (typeof sessionKey !== "string") {
+      sessionKey = JSON.stringify(sessionKey)
+    }
+
+    if (typeof chain !== "string") {
+      chain = JSON.stringify(chain)
+    }
+
+    console.debug(
+      "_loadAuthSessionFromCache load sessionKey and chain from cache. Recreate identity and delegationIdentity",
+    )
+    const identity = Ed25519KeyIdentity.fromJSON(sessionKey)
+
+    const delegationIdentity = DelegationIdentity.fromDelegation(
+      identity,
+      DelegationChain.fromJSON(chain),
+    )
+
+    if (isDelegationExpired(delegationIdentity)) {
       console.debug(
         "_loadAuthSessionFromCache load sessionKey and chain from cache. Session expired",
       )
@@ -163,7 +148,7 @@ function makeAuthState() {
       migratePasskeys(delegationIdentity)
     }
 
-    replaceIdentity(delegationIdentity!, "_loadAuthSessionFromCache")
+    replaceIdentity(delegationIdentity, "_loadAuthSessionFromCache")
     setupSessionManager({ onIdle: invalidateIdentity })
 
     observableAuthState$.next({
@@ -197,15 +182,7 @@ function makeAuthState() {
 
   async function _clearAuthSessionFromCache() {
     await authStorage.clear()
-    await Promise.all([
-      AuthClient.create().then(async (authClient) => {
-        const isAuthenticated = await authClient.isAuthenticated()
-
-        if (isAuthenticated) {
-          authClient.logout()
-        }
-      }),
-    ])
+    return true
   }
 
   async function fromCache() {
@@ -227,7 +204,6 @@ function makeAuthState() {
     chain,
     sessionKey,
   }: SetProps) {
-    debugger
     console.debug("makeAuthState set new auth state")
     const userIdData = await createUserIdData(delegationIdentity)
 

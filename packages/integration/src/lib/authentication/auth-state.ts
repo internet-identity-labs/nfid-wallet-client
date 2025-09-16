@@ -98,7 +98,10 @@ function makeAuthState() {
       console.error("_loadAuthSessionFromCache", { error })
     }
     if (!sessionKey || !chain) {
-      let isIIAuth = await AuthClient.create().then(async (authClient) => {
+      let isIIAuth = await AuthClient.create({
+        keyType: "Ed25519",
+        storage: authStorage,
+      }).then(async (authClient) => {
         const isAuthenticated = await authClient.isAuthenticated()
 
         if (isAuthenticated) {
@@ -198,13 +201,15 @@ function makeAuthState() {
   async function _clearAuthSessionFromCache() {
     await authStorage.clear()
     await Promise.all([
-      AuthClient.create().then(async (authClient) => {
-        const isAuthenticated = await authClient.isAuthenticated()
+      AuthClient.create({ keyType: "Ed25519", storage: authStorage }).then(
+        async (authClient) => {
+          const isAuthenticated = await authClient.isAuthenticated()
 
-        if (isAuthenticated) {
-          authClient.logout()
-        }
-      }),
+          if (isAuthenticated) {
+            authClient.logout()
+          }
+        },
+      ),
     ])
   }
 

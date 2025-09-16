@@ -16,6 +16,7 @@ import {
   authStorage,
   KEY_STORAGE_DELEGATION,
   KEY_STORAGE_KEY,
+  walletStorage,
 } from "packages/integration/src/lib/authentication/storage"
 import { toHexString } from "packages/integration/src/lib/delegation-factory/delegation-i"
 import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
@@ -175,11 +176,11 @@ export class PasskeyConnector {
   async updateStorageCredentialsId(accessPoint: AccessPoint) {
     if (accessPoint.credentialId) {
       const newKey = accessPoint.credentialId
-      let keys = await authStorage.get("credentialIds")
+      let keys = await walletStorage.get("credentialIds")
       const parsedKeys: string[] = keys ? JSON.parse(keys as string) : []
       if (!parsedKeys.includes(newKey)) {
         parsedKeys.push(newKey)
-        await authStorage.set("credentialIds", JSON.stringify(parsedKeys))
+        await walletStorage.set("credentialIds", JSON.stringify(parsedKeys))
       }
     }
   }

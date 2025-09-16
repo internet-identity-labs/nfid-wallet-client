@@ -20,10 +20,9 @@ import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
 import {
   authStorage,
-  KEY_BTC_ADDRESS,
-  KEY_ETH_ADDRESS,
   KEY_STORAGE_DELEGATION,
   KEY_STORAGE_KEY,
+  walletStorage,
 } from "./storage"
 import {
   createUserIdData,
@@ -31,7 +30,6 @@ import {
   serializeUserIdData,
   UserIdData,
 } from "./user-id-data"
-import { AuthClient } from "@dfinity/auth-client"
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -134,7 +132,7 @@ function makeAuthState() {
       })
     }
 
-    const cachedUserIdData = await authStorage.get(
+    const cachedUserIdData = await walletStorage.get(
       getUserIdDataStorageKey(delegationIdentity),
     )
 
@@ -148,7 +146,7 @@ function makeAuthState() {
       (userIdData && userIdData.cacheVersion !== EXPECTED_CACHE_VERSION)
     ) {
       userIdData = await createUserIdData(delegationIdentity)
-      await authStorage.set(
+      await walletStorage.set(
         getUserIdDataStorageKey(delegationIdentity),
         serializeUserIdData(userIdData),
       )
@@ -188,18 +186,7 @@ function makeAuthState() {
   }
 
   async function _clearAuthSessionFromCache() {
-    await Promise.all([
-      authStorage.remove(KEY_STORAGE_KEY),
-      authStorage.remove(KEY_STORAGE_DELEGATION),
-      authStorage.remove(KEY_BTC_ADDRESS),
-      authStorage.remove(KEY_ETH_ADDRESS),
-      AuthClient.create().then(async (authClient) => {
-        const isAuthenticated = await authClient.isAuthenticated()
-        if (isAuthenticated) {
-          authClient.logout()
-        }
-      }),
-    ])
+    await authStorage.clear()
     return true
   }
 
@@ -225,7 +212,7 @@ function makeAuthState() {
     console.debug("makeAuthState set new auth state")
     const userIdData = await createUserIdData(delegationIdentity)
 
-    const current = await authStorage.get(
+    const current = await walletStorage.get(
       getUserIdDataStorageKey(delegationIdentity),
     )
     if (
@@ -237,7 +224,7 @@ function makeAuthState() {
       migratePasskeys(delegationIdentity)
     }
 
-    await authStorage.set(
+    await walletStorage.set(
       getUserIdDataStorageKey(delegationIdentity),
       serializeUserIdData(userIdData),
     )
@@ -342,11 +329,11 @@ function getUserIdDataStorageKey(delegationIdentity: DelegationIdentity) {
 }
 
 export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
-  const walletKeys = authStorage
+  const walletKeys = walletStorage
     .getAllKeys()
     .then((keys) => keys.filter((key) => key.startsWith("user_profile_data_")))
   const wallets = await walletKeys.then((keys) =>
-    Promise.all(keys.map((key) => authStorage.get(key))),
+    Promise.all(keys.map((key) => walletStorage.get(key))),
   )
   const profiles = wallets
     .map((wallet) => {
@@ -381,7 +368,7 @@ export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
       }[],
     )
 
-  const parsedCredentialIds: string[] = await authStorage
+  const parsedCredentialIds: string[] = await walletStorage
     .get("credentialIds")
     .then((passkeysUsedOnThisDevice) =>
       passkeysUsedOnThisDevice

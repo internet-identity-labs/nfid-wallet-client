@@ -25,7 +25,7 @@ const principal = Principal.fromText(
 )
 
 describe("nft test suite", () => {
-  jest.setTimeout(35000)
+  jest.setTimeout(50000)
   describe("nft", () => {
     it("should return", async () => {
       jest

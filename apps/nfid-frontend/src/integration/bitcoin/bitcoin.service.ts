@@ -18,6 +18,7 @@ import { ckBtcService } from "./services/ckbtc.service"
 import { mempoolService } from "./services/mempool.service"
 import { patronService } from "./services/patron.service"
 import { satoshiService } from "./services/satoshi.service"
+import { EMPTY, expand, firstValueFrom, from, last } from "rxjs"
 
 export type BlockIndex = bigint
 
@@ -88,7 +89,29 @@ export class BitcoinService {
       throw new Error(confirmationResult.error)
     }
     const amountInSatoshis = satoshiService.getInSatoshis(amount)
-    return patronService.askToCalcUtxosAndFee(identity, amountInSatoshis)
+    const balance = await this.getQuickBalance()
+
+    return firstValueFrom(
+      from(patronService.askToCalcUtxosAndFee(identity, amountInSatoshis)).pipe(
+        expand((fee) => {
+          const amountPlusFee = amountInSatoshis + fee.fee_satoshis
+          const utxosAmount = fee.utxos.reduce((a, v) => a + v.value, BigInt(0))
+
+          if (balance < amountPlusFee) {
+            throw new Error(`Not enough funds.`)
+          }
+
+          if (amountPlusFee <= utxosAmount) {
+            return EMPTY
+          }
+
+          return from(
+            patronService.askToCalcUtxosAndFee(identity, amountPlusFee),
+          )
+        }),
+        last(),
+      ),
+    )
   }
 
   public async getBtcToCkBtcFee(

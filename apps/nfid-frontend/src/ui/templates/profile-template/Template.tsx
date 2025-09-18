@@ -163,7 +163,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         !!isBtcAddressLoading,
         !!isEthAddressLoading,
       ),
-    { revalidateOnFocus: false },
+    {
+      revalidateOnFocus: false,
+      revalidateOnMount: true,
+    },
   )
 
   const { data: nfts, mutate: reinitNfts } = useSWR(
@@ -238,7 +241,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   ])
 
   const {
-    data: tokensUsdBalance,
+    data: fullUsdBalance,
     isLoading: isUsdLoading,
     isValidating,
     mutate: refetchFullUsdBalance,
@@ -391,10 +394,11 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
             )}
             {headerMenu}
           </div>
+
           {isWallet && (
             <>
               <ProfileInfo
-                usdBalance={isUsdBalanceLoading ? undefined : tokensUsdBalance}
+                usdBalance={isUsdBalanceLoading ? undefined : fullUsdBalance}
                 isUsdLoading={isUsdBalanceLoading}
                 onSendClick={onSendClick}
                 onReceiveClick={onReceiveClick}

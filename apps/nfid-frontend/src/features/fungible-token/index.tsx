@@ -116,8 +116,12 @@ const TokensPage = () => {
   }, [initedTokens])
 
   const tokensWithoutPrice = useMemo(() => {
-    return initedTokens?.filter((token) => token.getUSDBalance() === undefined)
-      .length
+    return initedTokens?.filter(
+      (token) =>
+        token.getUSDBalance() === undefined &&
+        token.getTokenAddress() !== BTC_NATIVE_ID &&
+        token.getTokenAddress() !== ETH_NATIVE_ID,
+    ).length
   }, [initedTokens])
 
   const btc = useMemo(

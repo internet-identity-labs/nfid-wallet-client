@@ -4,10 +4,6 @@ import {
   JsonnableEd25519KeyIdentity,
 } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
-import {
-  authStorage,
-  KEY_BTC_ADDRESS,
-} from "packages/integration/src/lib/authentication/storage"
 
 import {
   bitcoinService,
@@ -17,6 +13,7 @@ import {
 } from "./bitcoin.service"
 import { TransactionId } from "./services/chain-fusion-signer.service"
 import { mempoolService } from "./services/mempool.service"
+import { KEY_BTC_ADDRESS } from "packages/integration/src/lib/authentication/storage"
 
 const IDENTITY: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003008adc857dfcd0477a7aaa01a657ca6923ce76c07645704b1e872deb1253baa",
@@ -27,36 +24,35 @@ describe("Bitcoin Service", () => {
   jest.setTimeout(150000)
 
   beforeEach(async () => {
-    await authStorage.clear()
-
-    await authStorage.set(
+    localStorage.clear()
+    localStorage.setItem(
       KEY_BTC_ADDRESS,
       "bc1q7yu8dnvmlntrqh05wvfar2tljrm73ng6ky8n4t",
     )
   })
 
   afterAll(async () => {
-    await authStorage.clear()
+    localStorage.clear()
   })
 
   it("should return an address", async () => {
     // Given
-    await authStorage.clear()
+    localStorage.clear()
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
 
     // When
     const address = await bitcoinService.getAddress(identity)
-    const idbAddress = await authStorage.get(KEY_BTC_ADDRESS)
+    const lsAddress = localStorage.getItem(KEY_BTC_ADDRESS)
 
     // Then
     expect(address).toEqual("bc1q7yu8dnvmlntrqh05wvfar2tljrm73ng6ky8n4t")
-    expect(idbAddress).toEqual("bc1q7yu8dnvmlntrqh05wvfar2tljrm73ng6ky8n4t")
+    expect(lsAddress).toEqual("bc1q7yu8dnvmlntrqh05wvfar2tljrm73ng6ky8n4t")
   })
 
   it("should return different address if it's saved into idb", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    await authStorage.set(KEY_BTC_ADDRESS, "address")
+    localStorage.setItem(KEY_BTC_ADDRESS, "address")
 
     // When
     const address = await bitcoinService.getAddress(identity)
@@ -203,7 +199,7 @@ describe("Bitcoin Service", () => {
   it("should throw an error when ensureWalletConfirmations returns false for getFee", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    await authStorage.set(
+    localStorage.setItem(
       KEY_BTC_ADDRESS,
       "bc1qw9fpg8nu0qq74yqn88j5tr7yzk0jfkx6v8mh4l",
     )
@@ -226,7 +222,7 @@ describe("Bitcoin Service", () => {
   it("should throw an error when ensureWalletConfirmations returns false for getBtcToCkBtcFee", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    await authStorage.set(
+    localStorage.setItem(
       KEY_BTC_ADDRESS,
       "bc1qw9fpg8nu0qq74yqn88j5tr7yzk0jfkx6v8mh4l",
     )

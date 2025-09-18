@@ -9,9 +9,9 @@ import {
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
-import { mutate, mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
+import { mutate, mutateWithTimestamp } from "@nfid/swr"
 
-import { fetchTokens } from "frontend/features/fungible-token/utils"
+import { useCachedTokens } from "frontend/features/fungible-token/use-cached-tokens"
 import { fetchStakedTokens } from "frontend/features/staking/utils"
 import { useIdentity } from "frontend/hooks/identity"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
@@ -52,17 +52,15 @@ export const StakeFT = ({
   const isMinLockTimeSelected =
     lockValue === stakingParams?.getMinimumLockTimeInMonths()
 
-  const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
-    "tokens",
-    fetchTokens,
-    { revalidateOnFocus: false, revalidateOnMount: false },
-  )
+  const { tokens, isLoading: isTokensLoading } = useCachedTokens()
 
   const tokensForStake = useMemo(() => {
-    return tokens.filter(
-      (token) =>
-        token.getTokenCategory() === Category.Sns ||
-        token.getTokenAddress() === ICP_CANISTER_ID,
+    return (
+      tokens?.filter(
+        (token) =>
+          token.getTokenCategory() === Category.Sns ||
+          token.getTokenAddress() === ICP_CANISTER_ID,
+      ) || []
     )
   }, [tokens])
 
@@ -142,11 +140,12 @@ export const StakeFT = ({
           setErrorMessage(DEFAULT_STAKE_ERROR)
         })
         .finally(() => {
-          getTokensWithUpdatedBalance([ICP_CANISTER_ID], tokens).then(
-            (updatedTokens) => {
-              mutateWithTimestamp("tokens", updatedTokens, false)
-            },
-          )
+          tokens &&
+            getTokensWithUpdatedBalance([ICP_CANISTER_ID], tokens).then(
+              (updatedTokens) => {
+                mutateWithTimestamp("tokens", updatedTokens, false)
+              },
+            )
         })
 
       return
@@ -179,11 +178,12 @@ export const StakeFT = ({
         setErrorMessage(DEFAULT_STAKE_ERROR)
       })
       .finally(() => {
-        getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
-          (updatedTokens) => {
-            mutateWithTimestamp("tokens", updatedTokens, false)
-          },
-        )
+        tokens &&
+          getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
+            (updatedTokens) => {
+              mutateWithTimestamp("tokens", updatedTokens, false)
+            },
+          )
       })
   }, [
     token,

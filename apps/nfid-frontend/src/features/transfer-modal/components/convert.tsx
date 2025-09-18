@@ -9,9 +9,9 @@ import {
   CKETH_CANISTER_ID,
   ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
-import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
+import { mutateWithTimestamp } from "@nfid/swr"
 
-import { fetchTokens } from "frontend/features/fungible-token/utils"
+import { useCachedTokens } from "frontend/features/fungible-token/use-cached-tokens"
 import { useEthAddress } from "frontend/hooks"
 import { useIdentity } from "frontend/hooks/identity"
 import {
@@ -73,21 +73,19 @@ export const ConvertBTC = ({
     setToTokenAddress(fromTokenAddress)
   }, [fromTokenAddress, toTokenAddress])
 
-  const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
-    "tokens",
-    fetchTokens,
-    { revalidateOnFocus: false, revalidateOnMount: false },
-  )
+  const { tokens, isLoading: isTokensLoading } = useCachedTokens()
 
   const tokensToConvert = useMemo(() => {
-    return tokens.filter((t) => {
-      return (
-        t.getTokenAddress() === ETH_NATIVE_ID ||
-        t.getTokenAddress() === BTC_NATIVE_ID ||
-        t.getTokenAddress() === CKETH_CANISTER_ID ||
-        t.getTokenAddress() === CKBTC_CANISTER_ID
-      )
-    })
+    return (
+      tokens?.filter((t) => {
+        return (
+          t.getTokenAddress() === ETH_NATIVE_ID ||
+          t.getTokenAddress() === BTC_NATIVE_ID ||
+          t.getTokenAddress() === CKETH_CANISTER_ID ||
+          t.getTokenAddress() === CKBTC_CANISTER_ID
+        )
+      }) || []
+    )
   }, [tokens])
 
   useEffect(() => {
@@ -95,13 +93,13 @@ export const ConvertBTC = ({
   }, [fromTokenAddress])
 
   const fromToken = useMemo(() => {
-    return tokens.find(
+    return tokens?.find(
       (token: FT) => token.getTokenAddress() === fromTokenAddress,
     )
   }, [fromTokenAddress, tokens])
 
   const toToken = useMemo(() => {
-    return tokens.find(
+    return tokens?.find(
       (token: FT) => token.getTokenAddress() === toTokenAddress,
     )
   }, [toTokenAddress, tokens])
@@ -217,12 +215,14 @@ export const ConvertBTC = ({
           setStatus(SendStatus.COMPLETED)
 
           if (fromToken.getTokenAddress() === CKETH_CANISTER_ID) {
-            getTokensWithUpdatedBalance(
-              [fromTokenAddress, toTokenAddress],
-              tokens,
-            ).then((updatedTokens) => {
-              mutateWithTimestamp("tokens", updatedTokens, false)
-            })
+            if (tokens) {
+              getTokensWithUpdatedBalance(
+                [fromTokenAddress, toTokenAddress],
+                tokens,
+              ).then((updatedTokens) => {
+                mutateWithTimestamp("tokens", updatedTokens, false)
+              })
+            }
           }
         })
         .catch((error) => {
@@ -260,12 +260,14 @@ export const ConvertBTC = ({
         setStatus(SendStatus.COMPLETED)
 
         if (fromToken.getTokenAddress() === CKBTC_CANISTER_ID) {
-          getTokensWithUpdatedBalance(
-            [fromTokenAddress, toTokenAddress],
-            tokens,
-          ).then((updatedTokens) => {
-            mutateWithTimestamp("tokens", updatedTokens, false)
-          })
+          if (tokens) {
+            getTokensWithUpdatedBalance(
+              [fromTokenAddress, toTokenAddress],
+              tokens,
+            ).then((updatedTokens) => {
+              mutateWithTimestamp("tokens", updatedTokens, false)
+            })
+          }
         }
       })
       .catch((error) => {

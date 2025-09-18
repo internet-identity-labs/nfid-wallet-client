@@ -7,7 +7,7 @@ import { useCallback, useContext, useState, useEffect, useMemo } from "react"
 
 import { Button, Skeleton } from "@nfid-frontend/ui"
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
-import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import { useSWR } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { searchTokens } from "frontend/features/collectibles/utils/util"
@@ -15,7 +15,8 @@ import { NFT } from "frontend/integration/nft/nft"
 import { nftService } from "frontend/integration/nft/nft-service"
 import { ProfileContext } from "frontend/provider"
 
-import { fetchTokens } from "../fungible-token/utils"
+import { useCachedTokens } from "../fungible-token/use-cached-tokens"
+import { tokenManager } from "../fungible-token/token-manager"
 import { ModalType } from "../transfer-modal/types"
 import { fetchNFTs } from "./utils/util"
 
@@ -39,10 +40,7 @@ const NFTsPage = () => {
     { revalidateOnFocus: false, revalidateIfStale: false },
   )
 
-  const { data: tokens = [] } = useSWRWithTimestamp("tokens", fetchTokens, {
-    revalidateOnFocus: false,
-    revalidateOnMount: false,
-  })
+  const { tokens = [] } = useCachedTokens()
 
   const icp = useMemo(() => {
     return tokens.find((token) => token.getTokenAddress() === ICP_CANISTER_ID)
@@ -54,7 +52,11 @@ const NFTsPage = () => {
     mutate,
   } = useSWR(
     "nftTotalPrice",
-    () => nftService.getNFTsTotalPrice(allNfts?.items, icp),
+    async () => {
+      if (!icp || !allNfts?.items) return undefined
+      const initializedIcp = await tokenManager.initializeToken(icp)
+      return nftService.getNFTsTotalPrice(allNfts.items, initializedIcp)
+    },
     {
       revalidateOnFocus: false,
       revalidateIfStale: false,
@@ -108,7 +110,7 @@ const NFTsPage = () => {
   return (
     <>
       {nfts.length > 0 && (
-        <div className="p-[20px] md:p-[30px] border-gray-200 dark:border-zinc-500 border rounded-[24px] mb-[20px] md:mb-[30px] flex flex-col md:flex-row">
+        <div className="p-[20px] md:p-[30px] border-gray-200 dark:border-zinc-700 border rounded-[24px] mb-[20px] md:mb-[30px] flex flex-col md:flex-row">
           <div className="flex flex-col flex-1 md:mr-[60px]">
             <p className="mb-[16px] text-sm font-bold text-gray-400 dark:text-zinc-500">
               NFT balance
@@ -125,7 +127,10 @@ const NFTsPage = () => {
               <p className="mb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500">
                 NFTs owned
               </p>
-              <p id={"items-amount"} className="mb-0 text-[26px] font-bold dark:text-white">
+              <p
+                id={"items-amount"}
+                className="mb-0 text-[26px] font-bold dark:text-white"
+              >
                 {data === undefined ? (
                   <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
                 ) : (
@@ -141,7 +146,7 @@ const NFTsPage = () => {
                 {data === undefined ? (
                   <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
                 ) : (
-                  data?.nftsWithoutPrice ?? 0
+                  (data?.nftsWithoutPrice ?? 0)
                 )}
               </p>
             </div>

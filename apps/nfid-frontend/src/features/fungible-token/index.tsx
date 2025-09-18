@@ -19,7 +19,6 @@ import {
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
-import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
@@ -28,7 +27,7 @@ import { ftService } from "frontend/integration/ft/ft-service"
 import { ProfileContext } from "frontend/provider"
 
 import { ModalType } from "../transfer-modal/types"
-import { fetchTokens, initTokens } from "./utils"
+import { useCachedTokens } from "./use-cached-tokens"
 
 const TokensPage = () => {
   const [hideZeroBalance, setHideZeroBalance] = useState(false)
@@ -95,11 +94,14 @@ const TokensPage = () => {
     send("SHOW")
   }
 
-  const { data: tokens = undefined, mutate: refetchTokens } =
-    useSWRWithTimestamp("tokens", fetchTokens, {
-      revalidateOnFocus: false,
-      revalidateOnMount: false,
-    })
+  const {
+    tokens,
+    refetch: refetchTokens,
+    tokenManager,
+  } = useCachedTokens({
+    revalidateOnFocus: false,
+    revalidateOnMount: true,
+  })
 
   const activeTokens = useMemo(() => {
     return tokens?.filter((token) => token.getTokenState() === State.Active)
@@ -143,12 +145,20 @@ const TokensPage = () => {
   }, [initedTokens, refetchFtUsdBalance])
 
   useEffect(() => {
-    if (activeTokens) {
-      initTokens(activeTokens, isBtcAddressLoading, isEthAddressLoading).then(
-        setInitedTokens,
-      )
+    if (activeTokens && activeTokens.length > 0) {
+      tokenManager
+        .initializeTokens(
+          activeTokens,
+          isBtcAddressLoading,
+          isEthAddressLoading,
+        )
+        .then(setInitedTokens)
+        .catch((error) => {
+          console.error("Failed to initialize tokens:", error)
+          setInitedTokens([])
+        })
     }
-  }, [activeTokens, isBtcAddressLoading, isEthAddressLoading])
+  }, [activeTokens, isBtcAddressLoading, isEthAddressLoading, tokenManager])
 
   useEffect(() => {
     userPrefService.getUserPreferences().then((userPref) => {

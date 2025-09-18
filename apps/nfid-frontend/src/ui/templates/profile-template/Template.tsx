@@ -1,4 +1,3 @@
-import { Principal } from "@dfinity/principal"
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import { BtcBanner } from "packages/ui/src/molecules/btc-banner"
@@ -27,7 +26,7 @@ import {
   ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
-import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import { useSWR } from "@nfid/swr"
 
 import { NFIDTheme } from "frontend/App"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
@@ -36,11 +35,8 @@ import {
   navigationPopupLinks,
 } from "frontend/apps/identity-manager/profile/routes"
 import { fetchNFTs } from "frontend/features/collectibles/utils/util"
-import {
-  fetchTokens,
-  getFullUsdValue,
-  initTokens,
-} from "frontend/features/fungible-token/utils"
+import { getFullUsdValue } from "frontend/features/fungible-token/utils"
+import { useCachedTokens } from "frontend/features/fungible-token/use-cached-tokens"
 import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { ModalType } from "frontend/features/transfer-modal/types"
@@ -149,18 +145,24 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   const hasVaults = useMemo(() => !!vaults?.length, [vaults])
 
-  const { data: tokens = [] } = useSWRWithTimestamp("tokens", fetchTokens, {
+  const { tokens, tokenManager } = useCachedTokens({
     revalidateOnFocus: false,
   })
 
   const activeTokens = useMemo(() => {
-    return tokens.filter((token) => token.getTokenState() === State.Active)
+    return (
+      tokens?.filter((token) => token.getTokenState() === State.Active) || []
+    )
   }, [tokens])
 
   const { data: initedTokens = [], mutate: reinitTokens } = useSWR(
     activeTokens.length > 0 && isWallet ? "initedTokens" : null,
     () =>
-      initTokens(activeTokens, !!isBtcAddressLoading, !!isEthAddressLoading),
+      tokenManager.initializeTokens(
+        activeTokens,
+        !!isBtcAddressLoading,
+        !!isEthAddressLoading,
+      ),
     { revalidateOnFocus: false },
   )
 
@@ -178,26 +180,34 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const isEthInited = eth?.isInited()
 
   useEffect(() => {
-    const btcToken = tokens.find((t) => t.getTokenAddress() === BTC_NATIVE_ID)
-    const ethToken = tokens.find((t) => t.getTokenAddress() === ETH_NATIVE_ID)
+    const btcToken = tokens?.find((t) => t.getTokenAddress() === BTC_NATIVE_ID)
+    const ethToken = tokens?.find((t) => t.getTokenAddress() === ETH_NATIVE_ID)
     if (!btcToken || !ethToken) return
 
-    if (!btcToken.isInited() && !isBtcAddressLoading) {
-      btcToken
-        .init(Principal.fromText(authState.getUserIdData().publicKey))
-        .then(() => {
-          setBtc(btcToken)
-        })
+    const initializeTokens = async () => {
+      try {
+        const [initializedBtc, initializedEth] = await Promise.all([
+          tokenManager.initializeToken(
+            btcToken,
+            isBtcAddressLoading,
+            isEthAddressLoading,
+          ),
+          tokenManager.initializeToken(
+            ethToken,
+            isBtcAddressLoading,
+            isEthAddressLoading,
+          ),
+        ])
+
+        setBtc(initializedBtc)
+        setEth(initializedEth)
+      } catch (error) {
+        console.error("Failed to initialize tokens:", error)
+      }
     }
 
-    if (!ethToken.isInited() && !isEthAddressLoading) {
-      ethToken
-        .init(Principal.fromText(authState.getUserIdData().publicKey))
-        .then(() => {
-          setEth(ethToken)
-        })
-    }
-  }, [tokens, isBtcAddressLoading, isEthAddressLoading])
+    initializeTokens()
+  }, [tokens, isBtcAddressLoading, isEthAddressLoading, tokenManager])
 
   const isReady = useMemo(() => {
     return (

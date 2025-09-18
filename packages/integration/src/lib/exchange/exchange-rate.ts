@@ -58,14 +58,11 @@ export class ExchangeRateService {
   }
 
   @Cache(integrationCache, { ttl: 120 })
-  async usdPriceForICRC1(ledger: string): Promise<
-    | {
-        value: BigNumber
-        dayChangePercent?: string
-        dayChangePercentPositive?: boolean
-      }
-    | undefined
-  > {
+  async usdPriceForICRC1(ledger: string): Promise<{
+    value: BigNumber
+    dayChangePercent?: string
+    dayChangePercentPositive?: boolean
+  } | null> {
     try {
       const token = (await this.getAllIcpTokens())?.find(
         (t) => t.address === ledger,
@@ -74,7 +71,7 @@ export class ExchangeRateService {
       if (!token) {
         const tokenStorageCanister = await this.getTokenStorageCanister(ledger)
         if (!tokenStorageCanister) {
-          return undefined
+          return null
         }
         const actorStorage = actorBuilder<ServiceToken>(
           tokenStorageCanister,
@@ -82,15 +79,14 @@ export class ExchangeRateService {
         )
 
         try {
-          const result: PublicTokenOverview = await actorStorage.getToken(
-            ledger,
-          )
-          if (result.priceUSD === undefined) return undefined
+          const result: PublicTokenOverview =
+            await actorStorage.getToken(ledger)
+          if (result.priceUSD === undefined) return null
           return {
             value: BigNumber(result.priceUSD),
           }
         } catch (e) {
-          return undefined
+          return null
         }
       }
 
@@ -101,7 +97,7 @@ export class ExchangeRateService {
       }
     } catch (e) {
       console.error("usdPriceForICRC1 error: ", e)
-      return undefined
+      return null
     }
   }
 

@@ -27,7 +27,7 @@ export const useCachedTokens = (options: UseCachedTokensOptions = {}) => {
   })
 
   const tokens = useMemo(() => {
-    if (!rawTokens) return undefined
+    if (!rawTokens) return []
     return tokenManager.getCachedTokens(rawTokens)
   }, [rawTokens])
 

@@ -9,7 +9,6 @@ import {
 } from "@dfinity/sns/dist/candid/sns_governance"
 import { hexStringToUint8Array } from "@dfinity/utils"
 import { BigNumber } from "bignumber.js"
-import { authState } from "@nfid/integration"
 import {
   getNetworkEconomicsParameters,
   queryNeuron as queryICPNeuron,
@@ -54,6 +53,8 @@ import { NfidSNSNeuronImpl } from "../impl/nfid-sns-neuron-impl"
 import { StakedTokenImpl } from "../impl/staked-token-impl"
 import { StakedToken } from "../staked-token"
 import { IStakingDelegates, IStakingICPDelegates, TotalBalance } from "../types"
+import { getWalletDelegation } from "frontend/integration/facade/wallet"
+import { getUserPrincipalId } from "frontend/features/fungible-token/utils"
 
 const NEURON_ERROR_TEXT = "No neuron for given NeuronId."
 export const stakedTokensCacheName = "StakedTokens"
@@ -288,16 +289,15 @@ export class StakingServiceImpl implements StakingService {
       }
     | undefined
   > {
+    console.log("asdadg getStakingUSDBalance - starting")
     try {
-      const { userId } = authState.getUserIdData()
-      const { delegationIdentity } = authState.get()
+      const { userPrincipal } = await getUserPrincipalId()
+
       const stakedTokens = await this.getStakedTokens(
-        userId,
-        Promise.resolve(delegationIdentity!),
+        userPrincipal,
+        getWalletDelegation(),
         false,
       )
-
-      console.log("asdadg", stakedTokens)
 
       if (!stakedTokens || stakedTokens.length === 0) {
         return {
@@ -321,7 +321,6 @@ export class StakingServiceImpl implements StakingService {
       }
 
       const totalBalance = new BigNumber(totalBalances.total)
-
       const dayChange = new BigNumber(0)
 
       return {

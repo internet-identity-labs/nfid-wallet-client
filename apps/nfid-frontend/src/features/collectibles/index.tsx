@@ -51,7 +51,7 @@ const NFTsPage = () => {
     isLoading: nftTotalPriceLoading,
     mutate,
   } = useSWR(
-    "nftTotalPrice",
+    icp && allNfts?.items ? "nftTotalPrice" : null,
     async () => {
       if (!icp || !allNfts?.items) return undefined
       const initializedIcp = await tokenManager.initializeToken(icp)
@@ -109,51 +109,49 @@ const NFTsPage = () => {
 
   return (
     <>
-      {nfts.length > 0 && (
-        <div className="p-[20px] md:p-[30px] border-gray-200 dark:border-zinc-700 border rounded-[24px] mb-[20px] md:mb-[30px] flex flex-col md:flex-row">
-          <div className="flex flex-col flex-1 md:mr-[60px]">
-            <p className="mb-[16px] text-sm font-bold text-gray-400 dark:text-zinc-500">
-              NFT balance
-            </p>
-            <Balance
-              id={"totalBalance"}
-              isLoading={nftTotalPriceLoading || isAllNFTsLoading}
-              className="text-[26px]"
-              usdBalance={nftTotalPrice}
-            />
-          </div>
-          <div className="flex mt-[20px] flex-1 md:my-[0]">
-            <div className="flex flex-col mr-[60px]">
-              <p className="mb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500">
-                NFTs owned
-              </p>
-              <p
-                id={"items-amount"}
-                className="mb-0 text-[26px] font-bold dark:text-white"
-              >
-                {data === undefined ? (
-                  <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
-                ) : (
-                  data.totalItems
-                )}
-              </p>
-            </div>
-            <div className="flex flex-col">
-              <p className="mb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500">
-                NFTs w/o price
-              </p>
-              <p className="mb-0 text-[26px] font-bold dark:text-white">
-                {data === undefined ? (
-                  <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
-                ) : (
-                  (data?.nftsWithoutPrice ?? 0)
-                )}
-              </p>
-            </div>
-          </div>
-          <div className="flex-1"></div>
+      <div className="p-[20px] md:p-[30px] border-gray-200 dark:border-zinc-700 border rounded-[24px] mb-[20px] md:mb-[30px] flex flex-col md:flex-row">
+        <div className="flex flex-col flex-1 md:mr-[60px]">
+          <p className="mb-[16px] text-sm font-bold text-gray-400 dark:text-zinc-500">
+            NFT balance
+          </p>
+          <Balance
+            id={"totalBalance"}
+            isLoading={nftTotalPriceLoading || isAllNFTsLoading}
+            className="text-[26px]"
+            usdBalance={nftTotalPrice}
+          />
         </div>
-      )}
+        <div className="flex mt-[20px] flex-1 md:my-[0]">
+          <div className="flex flex-col mr-[60px]">
+            <p className="mb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500">
+              NFTs owned
+            </p>
+            <p
+              id={"items-amount"}
+              className="mb-0 text-[26px] font-bold dark:text-white"
+            >
+              {data === undefined ? (
+                <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
+              ) : (
+                data.totalItems
+              )}
+            </p>
+          </div>
+          <div className="flex flex-col">
+            <p className="mb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500">
+              NFTs w/o price
+            </p>
+            <p className="mb-0 text-[26px] font-bold dark:text-white">
+              {data === undefined ? (
+                <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
+              ) : (
+                (data?.nftsWithoutPrice ?? 0)
+              )}
+            </p>
+          </div>
+        </div>
+        <div className="flex-1"></div>
+      </div>
       <ProfileContainer>
         <NFTs
           nfts={nfts}

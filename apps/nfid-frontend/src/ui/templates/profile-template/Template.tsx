@@ -147,6 +147,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   const { tokens, tokenManager } = useCachedTokens({
     revalidateOnFocus: false,
+    revalidateOnMount: true,
   })
 
   const activeTokens = useMemo(() => {
@@ -156,13 +157,15 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }, [tokens])
 
   const { data: initedTokens = [], mutate: reinitTokens } = useSWR(
-    activeTokens.length > 0 && isWallet ? "initedTokens" : null,
+    isWallet && tokens ? "initedTokens" : null,
     () =>
-      tokenManager.initializeTokens(
-        activeTokens,
-        !!isBtcAddressLoading,
-        !!isEthAddressLoading,
-      ),
+      activeTokens.length > 0
+        ? tokenManager.initializeTokens(
+            activeTokens,
+            !!isBtcAddressLoading,
+            !!isEthAddressLoading,
+          )
+        : Promise.resolve([]),
     {
       revalidateOnFocus: false,
       revalidateOnMount: true,

@@ -57,10 +57,5 @@ export const filterNotActiveNotZeroBalancesTokens = async (
 }
 
 export const getFullUsdValue = async (nfts: NFT[] | undefined, ft: FT[]) => {
-  const { publicKey } = authState.getUserIdData()
-  return await portfolioService.getPortfolioUSDBalance(
-    Principal.fromText(publicKey),
-    nfts,
-    ft,
-  )
+  return await portfolioService.getPortfolioUSDBalance(nfts, ft)
 }

@@ -9,6 +9,7 @@ import {
 } from "@dfinity/sns/dist/candid/sns_governance"
 import { hexStringToUint8Array } from "@dfinity/utils"
 import { BigNumber } from "bignumber.js"
+import { authState } from "@nfid/integration"
 import {
   getNetworkEconomicsParameters,
   queryNeuron as queryICPNeuron,
@@ -82,7 +83,6 @@ export class StakingServiceImpl implements StakingService {
 
   async getStakedTokens(
     userId: string,
-    publicKey: string,
     delegation: Promise<SignIdentity>,
     refetch?: boolean,
   ): Promise<Array<StakedToken>> {
@@ -275,6 +275,71 @@ export class StakingServiceImpl implements StakingService {
     } catch (e) {
       console.error("getNeuron error: ", e)
       return NEURON_ERROR_TEXT
+    }
+  }
+
+  async getStakingUSDBalance(): Promise<
+    | {
+        value: string
+        dayChangePercent?: string
+        dayChange?: string
+        dayChangePositive?: boolean
+        value24h?: string
+      }
+    | undefined
+  > {
+    try {
+      const { userId } = authState.getUserIdData()
+      const { delegationIdentity } = authState.get()
+      const stakedTokens = await this.getStakedTokens(
+        userId,
+        Promise.resolve(delegationIdentity!),
+        false,
+      )
+
+      console.log("asdadg", stakedTokens)
+
+      if (!stakedTokens || stakedTokens.length === 0) {
+        return {
+          value: "0.00",
+          dayChangePercent: "0.00",
+          dayChange: "0.00",
+          dayChangePositive: true,
+          value24h: "0.00",
+        }
+      }
+
+      const totalBalances = this.getTotalBalances(stakedTokens)
+      if (!totalBalances) {
+        return {
+          value: "0.00",
+          dayChangePercent: "0.00",
+          dayChange: "0.00",
+          dayChangePositive: true,
+          value24h: "0.00",
+        }
+      }
+
+      const totalBalance = new BigNumber(totalBalances.total)
+
+      const dayChange = new BigNumber(0)
+
+      return {
+        value: totalBalance.toFixed(2),
+        dayChangePercent: "0.00",
+        dayChange: dayChange.toFixed(2),
+        dayChangePositive: true,
+        value24h: totalBalance.toFixed(2),
+      }
+    } catch (error) {
+      console.error("Failed to get staking USD balance:", error)
+      return {
+        value: "0.00",
+        dayChangePercent: "0.00",
+        dayChange: "0.00",
+        dayChangePositive: true,
+        value24h: "0.00",
+      }
     }
   }
 

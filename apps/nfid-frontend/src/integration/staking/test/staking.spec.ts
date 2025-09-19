@@ -74,7 +74,6 @@ describe("Staking", () => {
 
     const stakedTokens = await stakingService.getStakedTokens(
       pairPrincipal,
-      pairPrincipal,
       Promise.resolve(edId),
     )
 

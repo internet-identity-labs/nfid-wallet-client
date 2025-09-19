@@ -1,3 +1,58 @@
+jest.mock("@nfid/integration", () => ({
+  ...jest.requireActual("@nfid/integration"),
+  authState: {
+    getUserIdData: () => ({
+      publicKey:
+        "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
+      userId: "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
+    }),
+    get: () => ({
+      delegationIdentity: {
+        getPrincipal: () =>
+          require("@dfinity/principal").Principal.fromText(
+            "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
+          ),
+        sign: jest.fn(),
+      },
+    }),
+  },
+}))
+
+jest.mock(
+  "../../packages/integration/src/lib/authentication/delegation-state",
+  () => ({
+    getGlobalDelegation: jest.fn().mockResolvedValue({
+      delegation: {
+        identity: {
+          getPrincipal: () =>
+            require("@dfinity/principal").Principal.fromText(
+              "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
+            ),
+          sign: jest.fn(),
+        },
+      },
+    }),
+    delegationState: {
+      getDelegation: jest.fn().mockResolvedValue({
+        getPrincipal: () =>
+          require("@dfinity/principal").Principal.fromText(
+            "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
+          ),
+        sign: jest.fn(),
+      }),
+    },
+    RefreshingDelegation: jest.fn().mockImplementation(() => ({
+      getDelegation: jest.fn().mockResolvedValue({
+        getPrincipal: () =>
+          require("@dfinity/principal").Principal.fromText(
+            "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
+          ),
+        sign: jest.fn(),
+      }),
+    })),
+  }),
+)
+
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { Principal } from "@dfinity/principal"

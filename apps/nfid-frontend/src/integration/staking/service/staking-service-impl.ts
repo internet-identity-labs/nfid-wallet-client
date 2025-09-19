@@ -289,7 +289,6 @@ export class StakingServiceImpl implements StakingService {
       }
     | undefined
   > {
-    console.log("asdadg getStakingUSDBalance - starting")
     try {
       const { userPrincipal } = await getUserPrincipalId()
 

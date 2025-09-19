@@ -39,7 +39,7 @@ export class FTImpl implements FT {
     value: BigNumber
     dayChangePercent?: string
     dayChangePercentPositive?: boolean
-  }
+  } | null
   private index: string | undefined
   private symbol: string
   private decimals: number
@@ -199,8 +199,11 @@ export class FTImpl implements FT {
     return this.tokenName
   }
 
-  getUSDBalanceFormatted(formatLowAmountToFixed = true): string | undefined {
-    if (!this.tokenRate) return
+  getUSDBalanceFormatted(
+    formatLowAmountToFixed = true,
+  ): string | undefined | null {
+    if (this.tokenRate === null) return null
+    if (this.tokenRate === undefined) return
 
     const tokenAmount = exchangeRateService.parseTokenAmount(
       Number(this.tokenBalance),
@@ -211,8 +214,9 @@ export class FTImpl implements FT {
     return formatUsdAmount(usdBalance, formatLowAmountToFixed)
   }
 
-  getTokenRate(amount: string): BigNumber | undefined {
-    if (!this.tokenRate) return
+  getTokenRate(amount: string): BigNumber | undefined | null {
+    if (this.tokenRate === null) return null
+    if (this.tokenRate === undefined) return
 
     const amountBigNumber = new BigNumber(amount || 0)
     const result = this.tokenRate.value.multipliedBy(amountBigNumber)
@@ -223,9 +227,10 @@ export class FTImpl implements FT {
   getTokenRateFormatted(
     amount: string,
     formatLowAmountToFixed = true,
-  ): string | undefined {
+  ): string | undefined | null {
     const tokenRate = this.getTokenRate(amount)
-    if (!tokenRate) return undefined
+    if (tokenRate === null) return null
+    if (tokenRate === undefined) return undefined
     return formatUsdAmount(tokenRate, formatLowAmountToFixed)
   }
 
@@ -316,8 +321,10 @@ export class FTImpl implements FT {
   }
 
   getBTCFeeFormattedUsd(fee: bigint): string | undefined {
-    return this.getTokenRateFormatted(
-      Number(satoshiService.getFromSatoshis(fee)).toString(),
+    return (
+      this.getTokenRateFormatted(
+        Number(satoshiService.getFromSatoshis(fee)).toString(),
+      ) || undefined
     )
   }
 
@@ -341,6 +348,8 @@ export class FTImpl implements FT {
       (Number(fee) / 10 ** this.decimals).toString(),
     )
 
+    if (!feeInUsd) return
+
     return feeInUsd
   }
 
@@ -356,7 +365,7 @@ export class FTImpl implements FT {
       (Number(this.fee) / 10 ** this.decimals).toString(),
     )
 
-    return feeInUsd
+    return feeInUsd || undefined
   }
 
   getRootSnsCanister(): Principal | undefined {

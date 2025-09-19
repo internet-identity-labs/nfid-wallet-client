@@ -14,6 +14,7 @@ import {
   queryNeuron as queryICPNeuron,
 } from "packages/integration/src/lib/staking/governance.api"
 import { ftService } from "src/integration/ft/ft-service"
+import { tokenManager } from "frontend/features/fungible-token/token-manager"
 import { StakingService } from "src/integration/staking/staking-service"
 
 import { storageWithTtl } from "@nfid/client-db"
@@ -52,6 +53,8 @@ import { NfidSNSNeuronImpl } from "../impl/nfid-sns-neuron-impl"
 import { StakedTokenImpl } from "../impl/staked-token-impl"
 import { StakedToken } from "../staked-token"
 import { IStakingDelegates, IStakingICPDelegates, TotalBalance } from "../types"
+import { getWalletDelegation } from "frontend/integration/facade/wallet"
+import { getUserPrincipalId } from "frontend/features/fungible-token/utils"
 
 const NEURON_ERROR_TEXT = "No neuron for given NeuronId."
 export const stakedTokensCacheName = "StakedTokens"
@@ -81,7 +84,6 @@ export class StakingServiceImpl implements StakingService {
 
   async getStakedTokens(
     userId: string,
-    publicKey: string,
     delegation: Promise<SignIdentity>,
     refetch?: boolean,
   ): Promise<Array<StakedToken>> {
@@ -89,7 +91,7 @@ export class StakingServiceImpl implements StakingService {
 
     if (!cache || Boolean(refetch)) {
       const identity = await delegation
-      const stakes = await this.fetchStakedTokens(userId, publicKey, identity)
+      const stakes = await this.fetchStakedTokens(userId, identity)
       storageWithTtl.set(
         stakedTokensCacheName,
         this.serializeStakes(stakes),
@@ -100,7 +102,7 @@ export class StakingServiceImpl implements StakingService {
 
     if (cache && cache.expired) {
       delegation.then((data) => {
-        this.fetchStakedTokens(userId, publicKey, data).then((stakes) => {
+        this.fetchStakedTokens(userId, data).then((stakes) => {
           storageWithTtl.set(
             stakedTokensCacheName,
             this.serializeStakes(stakes),
@@ -109,38 +111,35 @@ export class StakingServiceImpl implements StakingService {
         })
       })
 
-      return this.deserializeStakes(cache.value as string, userId, publicKey)
+      return this.deserializeStakes(cache.value as string, userId)
     }
 
-    return this.deserializeStakes(cache.value as string, userId, publicKey)
+    return this.deserializeStakes(cache.value as string, userId)
   }
 
   private async fetchStakedTokens(
     userId: string,
-    publicKey: string,
     identity: SignIdentity,
   ): Promise<StakedToken[]> {
-    const principal = Principal.fromText(publicKey)
-    const tokens = await ftService.getTokens(userId)
+    const rawTokens = await ftService.getTokens(userId)
+    const tokens = tokenManager.getCachedTokens(rawTokens)
 
     const snsTokens = tokens.filter(
       (token) => token.getTokenCategory() === Category.Sns,
     )
 
-    const icpToken = await tokens
-      .find((token) => token.getTokenAddress() === ICP_CANISTER_ID)!
-      .init(principal)
+    const icpToken = await tokenManager.initializeToken(
+      tokens.find((token) => token.getTokenAddress() === ICP_CANISTER_ID)!,
+    )
 
     const icpPromise = this.getStakedICPNeurons(icpToken, identity)
 
     const snsPromises = snsTokens
       .map(async (token) => {
-        if (!token.isInited()) {
-          await token.init(principal)
-        }
-        const root = token.getRootSnsCanister()
+        const initializedToken = await tokenManager.initializeToken(token)
+        const root = initializedToken.getRootSnsCanister()
         if (!root) return undefined
-        return this.getStakedNeurons(token, identity)
+        return this.getStakedNeurons(initializedToken, identity)
       })
       .filter((neurons) => neurons !== undefined)
 
@@ -186,28 +185,29 @@ export class StakingServiceImpl implements StakingService {
   private async deserializeStakes(
     serialized: string,
     userId: string,
-    publicKey: string,
   ): Promise<StakedToken[]> {
     const data: Array<{ token: string; neurons: any[]; params: any }> =
       JSON.parse(serialized)
 
-    const tokens = await ftService.getTokens(userId)
+    const rawTokens = await ftService.getTokens(userId)
+    const tokens = tokenManager.getCachedTokens(rawTokens)
 
     return await Promise.all(
       data.map(async (data) => {
-        const principal = Principal.fromText(publicKey)
         const token = tokens.find((t) => t.getTokenAddress() === data.token)
 
-        if (!token?.isInited()) await token?.init(principal)
+        const initializedToken = token
+          ? await tokenManager.initializeToken(token)
+          : undefined
         let params
 
-        if (token?.getTokenAddress() === ICP_CANISTER_ID) {
+        if (initializedToken?.getTokenAddress() === ICP_CANISTER_ID) {
           params = new StakeICPParamsCalculatorImpl(
-            token,
+            initializedToken,
             {} as NetworkEconomics,
           )
         } else {
-          params = new StakeSnsParamsCalculatorImpl(token!, {
+          params = new StakeSnsParamsCalculatorImpl(initializedToken!, {
             max_dissolve_delay_seconds: [BigInt(data.params)],
           } as NervousSystemParameters)
         }
@@ -216,17 +216,17 @@ export class StakingServiceImpl implements StakingService {
           "fullNeuron" in raw
             ? NfidICPNeuronImpl.deserialize(
                 raw,
-                token!,
+                initializedToken!,
                 params as StakeICPParamsCalculatorImpl,
               )
             : NfidSNSNeuronImpl.deserialize(
                 raw,
-                token!,
+                initializedToken!,
                 params as StakeSnsParamsCalculatorImpl,
               ),
         )
 
-        return new StakedTokenImpl(token!, neurons)
+        return new StakedTokenImpl(initializedToken!, neurons)
       }),
     )
   }
@@ -276,6 +276,68 @@ export class StakingServiceImpl implements StakingService {
     } catch (e) {
       console.error("getNeuron error: ", e)
       return NEURON_ERROR_TEXT
+    }
+  }
+
+  async getStakingUSDBalance(): Promise<
+    | {
+        value: string
+        dayChangePercent?: string
+        dayChange?: string
+        dayChangePositive?: boolean
+        value24h?: string
+      }
+    | undefined
+  > {
+    try {
+      const { userPrincipal } = await getUserPrincipalId()
+
+      const stakedTokens = await this.getStakedTokens(
+        userPrincipal,
+        getWalletDelegation(),
+        false,
+      )
+
+      if (!stakedTokens || stakedTokens.length === 0) {
+        return {
+          value: "0.00",
+          dayChangePercent: "0.00",
+          dayChange: "0.00",
+          dayChangePositive: true,
+          value24h: "0.00",
+        }
+      }
+
+      const totalBalances = this.getTotalBalances(stakedTokens)
+      if (!totalBalances) {
+        return {
+          value: "0.00",
+          dayChangePercent: "0.00",
+          dayChange: "0.00",
+          dayChangePositive: true,
+          value24h: "0.00",
+        }
+      }
+
+      const totalBalance = new BigNumber(totalBalances.total)
+      const dayChange = new BigNumber(0)
+
+      return {
+        value: totalBalance.toFixed(2),
+        dayChangePercent: "0.00",
+        dayChange: dayChange.toFixed(2),
+        dayChangePositive: true,
+        value24h: totalBalance.toFixed(2),
+      }
+    } catch (error) {
+      console.error("Failed to get staking USD balance:", error)
+      return {
+        value: "0.00",
+        dayChangePercent: "0.00",
+        dayChange: "0.00",
+        dayChangePositive: true,
+        value24h: "0.00",
+      }
     }
   }
 

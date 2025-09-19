@@ -22,9 +22,9 @@ import {
 } from "@nfid/integration/token/icp"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
-import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import { mutateWithTimestamp, useSWR } from "@nfid/swr"
 
-import { fetchTokens } from "frontend/features/fungible-token/utils"
+import { useCachedTokens } from "frontend/features/fungible-token/use-cached-tokens"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
@@ -134,13 +134,10 @@ export const TransferFT = ({
     }
   }, [preselectedTokenAddress])
 
-  const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
-    "tokens",
-    fetchTokens,
-    { revalidateOnFocus: false, revalidateOnMount: false },
-  )
+  const { tokens, isLoading: isTokensLoading } = useCachedTokens()
 
   const activeTokens = useMemo(() => {
+    if (!tokens) return []
     const activeTokens = tokens.filter(
       (token) => token.getTokenState() === State.Active,
     )
@@ -154,7 +151,7 @@ export const TransferFT = ({
   }, [tokens, hideZeroBalance])
 
   const token = useMemo(() => {
-    return tokens.find((token) => token.getTokenAddress() === tokenAddress)
+    return tokens?.find((token) => token.getTokenAddress() === tokenAddress)
   }, [tokenAddress, tokens])
 
   const balance = useMemo(() => {
@@ -271,11 +268,12 @@ export const TransferFT = ({
             `Transaction ${amount} ${token.getTokenSymbol()} successful`,
           )
           setStatus(SendStatus.COMPLETED)
-          getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
-            (updatedTokens) => {
-              mutateWithTimestamp("tokens", updatedTokens, false)
-            },
-          )
+          tokens &&
+            getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
+              (updatedTokens) => {
+                mutateWithTimestamp("tokens", updatedTokens, false)
+              },
+            )
         })
         .catch((e) => {
           console.error(
@@ -302,11 +300,12 @@ export const TransferFT = ({
             `Transaction ${amount} ${token.getTokenSymbol()} successful`,
           )
           setStatus(SendStatus.COMPLETED)
-          getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
-            (updatedTokens) => {
-              mutateWithTimestamp("tokens", updatedTokens, false)
-            },
-          )
+          tokens &&
+            getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
+              (updatedTokens) => {
+                mutateWithTimestamp("tokens", updatedTokens, false)
+              },
+            )
         })
         .catch((e) => {
           console.error(
@@ -413,11 +412,12 @@ export const TransferFT = ({
           `Transaction ${amount} ${token.getTokenSymbol()} successful`,
         )
         setStatus(SendStatus.COMPLETED)
-        getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
-          (updatedTokens) => {
-            mutateWithTimestamp("tokens", updatedTokens, false)
-          },
-        )
+        tokens &&
+          getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
+            (updatedTokens) => {
+              mutateWithTimestamp("tokens", updatedTokens, false)
+            },
+          )
       })
       .catch((e) => {
         console.error(

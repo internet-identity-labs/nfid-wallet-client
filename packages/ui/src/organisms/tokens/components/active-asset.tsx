@@ -173,9 +173,9 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         {token.getTokenCategoryFormatted()}
       </td>
       <td className="pr-[10px] hidden md:table-cell min-w-[120px] dark:text-white">
-        {isIniting ? (
+        {isIniting || tokenPrice === undefined ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
-        ) : tokenPrice ? (
+        ) : tokenPrice !== null ? (
           <div>
             <div id={`token_${token.getTokenName().replace(/\s/g, "")}_price`}>
               {tokenPrice}
@@ -195,7 +195,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`token_${token.getTokenName().replace(/\s/g, "")}_balance`}
         className="pr-[10px] text-right md:text-left pr-[10px] flex-grow min-w-0 sm:w-auto min-w-[120px]"
       >
-        {isIniting ? (
+        {isIniting || usdBalance === undefined ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
         ) : (
           <p className="flex items-center justify-end md:justify-start dark:text-white">
@@ -217,11 +217,11 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         )}
         <p className="text-xs md:hidden text-secondary dark:text-white">
           &nbsp;
-          {isIniting ? (
+          {isIniting || usdBalance === undefined ? (
             <Skeleton
               className={clsx("max-w-full h-[10px] w-[50px] ml-auto")}
             />
-          ) : !usdBalance ? (
+          ) : usdBalance === null ? (
             "Not listed"
           ) : (
             usdBalance
@@ -232,9 +232,9 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`token_${token.getTokenName().replace(/\s/g, "")}_usd`}
         className="pr-[10px] hidden md:table-cell pr-[10px] dark:text-white"
       >
-        {isIniting ? (
+        {isIniting || token.getUSDBalanceFormatted() === undefined ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
-        ) : token.getUSDBalanceFormatted() === undefined ? (
+        ) : token.getUSDBalanceFormatted() === null ? (
           "Not listed"
         ) : (
           token.getUSDBalanceFormatted()

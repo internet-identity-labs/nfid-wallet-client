@@ -20,9 +20,9 @@ import {
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
-import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import { mutateWithTimestamp, useSWR } from "@nfid/swr"
 
-import { fetchTokens } from "frontend/features/fungible-token/utils"
+import { useCachedTokens } from "frontend/features/fungible-token/use-cached-tokens"
 import { useIdentity } from "frontend/hooks/identity"
 import { FT } from "frontend/integration/ft/ft"
 import {
@@ -105,11 +105,7 @@ export const SwapFT = ({
     }
   }, [preselectedTargetTokenAddress, tokensAvailableToSwap.to])
 
-  const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
-    "tokens",
-    fetchTokens,
-    { revalidateOnFocus: false, revalidateOnMount: false },
-  )
+  const { tokens = [], isLoading: isTokensLoading } = useCachedTokens()
 
   const activeTokens = useMemo(() => {
     const activeTokens = tokens.filter(

@@ -16,10 +16,6 @@ import {
   type TransactionResponse,
 } from "ethers"
 import { agentBaseConfig } from "packages/integration/src/lib/actors"
-import {
-  authStorage,
-  KEY_ETH_ADDRESS,
-} from "packages/integration/src/lib/authentication/storage"
 
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 
@@ -32,6 +28,7 @@ import {
 import { patronService } from "../bitcoin/services/patron.service"
 import { CKETH_ABI, CKETH_FEE } from "./cketh.constants"
 import { getWalletDelegation } from "../facade/wallet"
+import { KEY_ETH_ADDRESS } from "packages/integration/src/lib/authentication/storage"
 
 const INFURA_API_KEY = "010993c30ae14b2b94ff239547b6ebbe"
 
@@ -90,7 +87,7 @@ export class EthereumService {
 
   //get eth address from global identity
   public async getAddress(identity: SignIdentity): Promise<Address> {
-    const { cachedValue, key } = await this.getAddressFromCache()
+    const { cachedValue, key } = this.getAddressFromCache()
 
     if (cachedValue != null) {
       return cachedValue as string
@@ -98,7 +95,7 @@ export class EthereumService {
     await patronService.askToPayFor(identity)
 
     const address = await chainFusionSignerService.getEthAddress(identity)
-    await authStorage.set(key, address)
+    localStorage.setItem(key, address)
     return address
   }
 
@@ -383,14 +380,15 @@ export class EthereumService {
     return await this.sendTransaction(signedTransaction)
   }
 
-  private async getAddressFromCache() {
-    const cachedValue = await authStorage.get(KEY_ETH_ADDRESS)
+  private getAddressFromCache() {
+    const cachedValue = localStorage.getItem(KEY_ETH_ADDRESS)
 
     return {
       cachedValue,
       key: KEY_ETH_ADDRESS,
     }
   }
+
   private async approveTransfer(
     ledgerCanisterId: string,
     minterCanisterId: string,

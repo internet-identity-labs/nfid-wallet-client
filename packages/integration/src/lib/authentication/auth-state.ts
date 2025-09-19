@@ -20,9 +20,11 @@ import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
 import {
   authStorage,
+  walletStorage,
   KEY_STORAGE_DELEGATION,
   KEY_STORAGE_KEY,
-  walletStorage,
+  KEY_BTC_ADDRESS,
+  KEY_ETH_ADDRESS,
 } from "./storage"
 import {
   createUserIdData,
@@ -186,6 +188,8 @@ function makeAuthState() {
   }
 
   async function _clearAuthSessionFromCache() {
+    localStorage.removeItem(KEY_BTC_ADDRESS)
+    localStorage.removeItem(KEY_ETH_ADDRESS)
     await authStorage.clear()
     return true
   }

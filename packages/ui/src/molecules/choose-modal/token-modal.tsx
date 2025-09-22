@@ -79,7 +79,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
       try {
         const tokenOptions = await Promise.all(
           tokens.map(async (token, index) => {
-            if (index < INITED_TOKENS_LIMIT && !token.isInited()) {
+            if (index < INITED_TOKENS_LIMIT) {
               try {
                 await token.init(Principal.fromText(publicKey))
                 return token
@@ -114,7 +114,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   useIntersectionObserver(itemRefs.current, async (index) => {
     const token = filteredTokens[index]
 
-    if (token && !token.isInited()) {
+    if (token) {
       const { publicKey } = authState.getUserIdData()
 
       const updatedToken = await token.init(Principal.fromText(publicKey))

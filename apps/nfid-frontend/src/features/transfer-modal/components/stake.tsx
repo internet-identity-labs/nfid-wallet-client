@@ -8,7 +8,7 @@ import {
   ICP_ROOT_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
-import { Category } from "@nfid/integration/token/icrc1/enum/enums"
+import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutate, mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
@@ -22,6 +22,7 @@ import {
   getAccurateDateForStakeInSeconds,
   getTokensWithUpdatedBalance,
 } from "../utils"
+import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 const DEFAULT_STAKE_ERROR = "Something went wrong"
 
@@ -58,13 +59,20 @@ export const StakeFT = ({
     { revalidateOnFocus: false, revalidateOnMount: false },
   )
 
+  const activeTokens = useMemo(() => {
+    return tokens?.filter((token) => token.getTokenState() === State.Active)
+  }, [tokens])
+
+  const initedTokens = useTokensInit(activeTokens)
+
   const tokensForStake = useMemo(() => {
-    return tokens.filter(
+    if (!initedTokens) return []
+    return initedTokens.filter(
       (token) =>
         token.getTokenCategory() === Category.Sns ||
         token.getTokenAddress() === ICP_CANISTER_ID,
     )
-  }, [tokens])
+  }, [initedTokens])
 
   const token = useMemo(() => {
     return tokensForStake.find(
@@ -131,9 +139,12 @@ export const StakeFT = ({
               : getAccurateDateForStakeInSeconds(lockValue),
         )
         .then(() => {
+          if (!initedTokens) return
           setSuccessMessage(`Stake ${amount} ICP successful`)
           setStatus(SendStatus.COMPLETED)
-          mutate("stakedTokens", fetchStakedTokens(true), { revalidate: true })
+          mutate("stakedTokens", fetchStakedTokens(initedTokens, true), {
+            revalidate: true,
+          })
         })
         .catch((e) => {
           console.error("Stake error: ", e)
@@ -142,7 +153,8 @@ export const StakeFT = ({
           setErrorMessage(DEFAULT_STAKE_ERROR)
         })
         .finally(() => {
-          getTokensWithUpdatedBalance([ICP_CANISTER_ID], tokens).then(
+          if (!initedTokens) return
+          getTokensWithUpdatedBalance([ICP_CANISTER_ID], initedTokens).then(
             (updatedTokens) => {
               mutateWithTimestamp("tokens", updatedTokens, false)
             },
@@ -164,11 +176,12 @@ export const StakeFT = ({
             : getAccurateDateForStakeInSeconds(lockValue),
       )
       .then(() => {
+        if (!initedTokens) return
         setSuccessMessage(
           `Stake ${amount} ${token.getTokenSymbol()} successful`,
         )
         setStatus(SendStatus.COMPLETED)
-        mutate("stakedTokens", () => fetchStakedTokens(true), {
+        mutate("stakedTokens", () => fetchStakedTokens(initedTokens, true), {
           revalidate: true,
         })
       })
@@ -179,18 +192,20 @@ export const StakeFT = ({
         setErrorMessage(DEFAULT_STAKE_ERROR)
       })
       .finally(() => {
-        getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
-          (updatedTokens) => {
-            mutateWithTimestamp("tokens", updatedTokens, false)
-          },
-        )
+        if (!initedTokens) return
+        getTokensWithUpdatedBalance(
+          [token.getTokenAddress()],
+          initedTokens,
+        ).then((updatedTokens) => {
+          mutateWithTimestamp("tokens", updatedTokens, false)
+        })
       })
   }, [
     token,
     amount,
     lockValue,
     identity,
-    tokens,
+    initedTokens,
     setErrorMessage,
     setSuccessMessage,
     stakingParams,

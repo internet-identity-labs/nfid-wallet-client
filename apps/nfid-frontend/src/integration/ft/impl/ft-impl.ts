@@ -3,6 +3,7 @@ import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { FT } from "src/integration/ft/ft"
 
+import { storageWithTtl } from "@nfid/client-db"
 import { exchangeRateService } from "@nfid/integration"
 import {
   BTC_NATIVE_ID,
@@ -27,6 +28,8 @@ import {
 } from "frontend/integration/ethereum/ethereum.service"
 
 import { formatUsdAmount } from "../../../util/format-usd-amount"
+
+const ftBalanceCacheName = "FTBalance"
 
 export class FTImpl implements FT {
   private readonly tokenAddress: string
@@ -119,8 +122,63 @@ export class FTImpl implements FT {
     this.inited = true
   }
 
-  async init(globalPrincipal: Principal): Promise<FT> {
-    await this.getBalance(globalPrincipal)
+  private serializeBalanceData(): string {
+    return JSON.stringify({
+      tokenAddress: this.tokenAddress,
+      tokenBalance: this.tokenBalance?.toString() || null,
+      tokenRate: this.tokenRate
+        ? {
+            value: this.tokenRate.value.toString(),
+            dayChangePercent: this.tokenRate.dayChangePercent,
+            dayChangePercentPositive: this.tokenRate.dayChangePercentPositive,
+          }
+        : null,
+      inited: this.inited,
+    })
+  }
+
+  private deserializeBalanceData(serialized: string): void {
+    const data = JSON.parse(serialized)
+    this.tokenBalance =
+      data.tokenBalance && data.tokenBalance !== null
+        ? BigInt(data.tokenBalance)
+        : undefined
+    this.tokenRate =
+      data.tokenRate && data.tokenRate !== null
+        ? {
+            value: new BigNumber(data.tokenRate.value),
+            dayChangePercent: data.tokenRate.dayChangePercent,
+            dayChangePercentPositive: data.tokenRate.dayChangePercentPositive,
+          }
+        : undefined
+    this.inited = data.inited
+  }
+
+  async init(globalPrincipal: Principal, refetch?: boolean): Promise<FT> {
+    const cacheKey = `${ftBalanceCacheName}_${this.tokenAddress}_${globalPrincipal.toText()}`
+    const cache = await storageWithTtl.getEvenExpired(cacheKey)
+
+    if (!cache || Boolean(refetch)) {
+      await this.getBalance(globalPrincipal)
+      storageWithTtl.set(
+        cacheKey,
+        this.serializeBalanceData(),
+        10 * 1000, // 10 seconds cache
+      )
+      return this
+    }
+
+    if (cache && cache.expired) {
+      // Update in background
+      this.getBalance(globalPrincipal).then(() => {
+        storageWithTtl.set(cacheKey, this.serializeBalanceData(), 10 * 1000)
+      })
+
+      this.deserializeBalanceData(cache.value as string)
+      return this
+    }
+
+    this.deserializeBalanceData(cache.value as string)
     return this
   }
 
@@ -129,8 +187,7 @@ export class FTImpl implements FT {
   }
 
   async refreshBalance(globalPrincipal: Principal): Promise<FT> {
-    await this.getBalance(globalPrincipal)
-    return this
+    return this.init(globalPrincipal, true) // Force refetch
   }
 
   getBlockExplorerLink(): string {

@@ -8,6 +8,9 @@ import { fetchStakedTokens } from "frontend/features/staking/utils"
 import { useIdentity } from "frontend/hooks/identity"
 
 import { SendStatus } from "../types"
+import { fetchTokens } from "frontend/features/fungible-token/utils"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
+import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 export interface ITransferReceive {
   onClose: () => void
@@ -29,9 +32,24 @@ export const RedeemStake = ({
   const location = useLocation()
   const tokenSymbol = location.pathname.split("/")[3]
 
-  const { data: stakedTokens, isLoading } = useSWRWithTimestamp(
-    "stakedTokens",
-    () => fetchStakedTokens(false),
+  const { data: tokens } = useSWRWithTimestamp("tokens", fetchTokens, {
+    revalidateOnFocus: false,
+    revalidateOnMount: false,
+  })
+
+  const activeTokens = useMemo(() => {
+    return tokens?.filter((token) => token.getTokenState() === State.Active)
+  }, [tokens])
+
+  const initedTokens = useTokensInit(activeTokens)
+
+  const {
+    data: stakedTokens,
+    isLoading,
+    isValidating,
+  } = useSWRWithTimestamp(
+    initedTokens ? "stakedTokens" : null,
+    () => fetchStakedTokens(initedTokens!, false),
     { revalidateOnFocus: false },
   )
 
@@ -48,14 +66,16 @@ export const RedeemStake = ({
   }, [stakedToken, stakeId])
 
   const redeem = () => {
-    if (!identity || !stakeToRedeem) return
+    if (!identity || !stakeToRedeem || !initedTokens) return
     setIsSuccessOpen(true)
     stakeToRedeem
       .redeem(identity)
       .then(() => {
         setSuccessMessage(`Staked ${stakeId} redeemed successful`)
         setStatus(SendStatus.COMPLETED)
-        mutate("stakedTokens", fetchStakedTokens(true), { revalidate: true })
+        mutate("stakedTokens", fetchStakedTokens(initedTokens, true), {
+          revalidate: true,
+        })
       })
       .catch((e) => {
         console.error("Redeem error: ", e)
@@ -73,7 +93,7 @@ export const RedeemStake = ({
       isSuccessOpen={isSuccessOpen}
       status={status}
       error={error}
-      isLoading={isLoading || identityLoading}
+      isLoading={isLoading || isValidating || identityLoading}
     />
   )
 }

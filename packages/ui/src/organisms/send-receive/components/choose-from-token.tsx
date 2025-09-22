@@ -23,7 +23,7 @@ import {
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
-import { useTokenInit } from "../hooks/token-init"
+import { useTokensInit } from "../hooks/token-init"
 import { getMaxAmountFee, IModalType } from "../utils"
 import { BALANCE_EDGE_LENGTH } from "./swap-form"
 
@@ -35,7 +35,7 @@ interface ChooseFromTokenProps {
   balance?: bigint | undefined
   value?: string
   setFromChosenToken?: (value: string) => void
-  usdRate?: string
+  usdRate?: string | null
   title: string
   isResponsive?: boolean
   setIsResponsive?: (v: boolean) => void
@@ -68,7 +68,13 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   const [isMaxClicked, setIsMaxClicked] = useState(false)
   const [isFeeLoading, setIsFeeLoading] = useState(false)
 
-  const initedToken = useTokenInit(token)
+  const initedTokens = useTokensInit(tokens)
+  const initedToken = useMemo(() => {
+    if (!token || !initedTokens) return undefined
+    return initedTokens.find(
+      (t) => t.getTokenAddress() === token.getTokenAddress(),
+    )
+  }, [token, initedTokens])
 
   const {
     setValue,

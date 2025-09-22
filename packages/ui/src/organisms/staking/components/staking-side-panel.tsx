@@ -30,6 +30,7 @@ import {
 
 import { getFormattedPeriod } from "../../send-receive/utils"
 import { StakingDelegates } from "./staking-delegation"
+import { FT } from "frontend/integration/ft/ft"
 
 export interface SidePanelOption {
   option: NFIDNeuron
@@ -45,6 +46,7 @@ export interface StakingSidePanelProps {
   isDelegateLoading: boolean
   delegates: IStakingDelegates | IStakingICPDelegates | undefined
   setIsModalOpen: (value: boolean) => void
+  initedTokens?: FT[]
 }
 
 export const StakingSidePanel: FC<StakingSidePanelProps> = ({
@@ -56,6 +58,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   isDelegateLoading,
   delegates,
   setIsModalOpen,
+  initedTokens,
 }) => {
   const isDarkTheme = useDarkTheme()
   const [isStakingDelegatesOpen, setIsStakingDelegatesOpen] = useState(false)
@@ -92,24 +95,32 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   }
 
   const stopUnlocking = () => {
-    if (!identity) return
+    if (!identity || !initedTokens) return
     setIsLoading(true)
     sidePanelOption?.option.stopUnlocking(identity).then(async () => {
-      await mutate("stakedTokens", () => fetchStakedTokens(true), {
-        revalidate: true,
-      })
+      await mutate(
+        "stakedTokens",
+        () => fetchStakedTokens(initedTokens, true),
+        {
+          revalidate: true,
+        },
+      )
       onClose()
       setIsLoading(false)
     })
   }
 
   const startUnlocking = async () => {
-    if (!identity) return
+    if (!identity || !initedTokens) return
     setIsLoading(true)
     sidePanelOption?.option.startUnlocking(identity).then(async () => {
-      await mutate("stakedTokens", () => fetchStakedTokens(true), {
-        revalidate: true,
-      })
+      await mutate(
+        "stakedTokens",
+        () => fetchStakedTokens(initedTokens, true),
+        {
+          revalidate: true,
+        },
+      )
       onClose()
       setIsLoading(false)
     })
@@ -419,8 +430,8 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       sidePanelOption.state === StakingState.Unlocking
                         ? stopUnlocking
                         : sidePanelOption.state === StakingState.Locked
-                        ? startUnlocking
-                        : openRedeemModal
+                          ? startUnlocking
+                          : openRedeemModal
                     }
                     className={clsx("w-full mt-[20px]")}
                     type={
@@ -432,8 +443,8 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                     {sidePanelOption.state === StakingState.Unlocking
                       ? "Stop unlocking"
                       : sidePanelOption.state === StakingState.Locked
-                      ? "Start unlocking"
-                      : "Redeem stake"}
+                        ? "Start unlocking"
+                        : "Redeem stake"}
                   </Button>
                 </div>
                 {followees && (

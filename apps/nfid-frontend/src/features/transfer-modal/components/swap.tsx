@@ -34,6 +34,7 @@ import { userPrefService } from "frontend/integration/user-preferences/user-pref
 
 import { FormValues } from "../types"
 import { getQuoteData, getTokensWithUpdatedBalance } from "../utils"
+import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 const QUOTE_REFETCH_TIMER = 30
 
@@ -129,31 +130,33 @@ export const SwapFT = ({
     return tokensWithBalance
   }, [tokens, hideZeroBalance])
 
+  const initedTokens = useTokensInit(activeTokens)
+
   const [getTransaction, setGetTransaction] = useState<
     SwapTransaction | undefined
   >()
 
   const fromToken = useMemo(() => {
-    return tokens.find(
+    return initedTokens?.find(
       (token: FT) => token.getTokenAddress() === fromTokenAddress,
     )
-  }, [fromTokenAddress, tokens])
+  }, [fromTokenAddress, initedTokens])
 
   const toToken = useMemo(() => {
-    return tokens.find(
+    return initedTokens?.find(
       (token: FT) =>
         token.getTokenAddress() === toTokenAddress &&
         token.getTokenAddress() !== BTC_NATIVE_ID,
     )
-  }, [toTokenAddress, tokens])
+  }, [toTokenAddress, initedTokens])
 
   const filteredAllTokens = useMemo(() => {
-    return tokens.filter(
+    return initedTokens?.filter(
       (token) =>
         token.getTokenAddress() !== fromTokenAddress &&
         token.getTokenAddress() !== BTC_NATIVE_ID,
     )
-  }, [fromTokenAddress, tokens])
+  }, [fromTokenAddress, initedTokens])
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -186,7 +189,8 @@ export const SwapFT = ({
   }, [fromTokenAddress, isEqual])
 
   const getProviders = useCallback(async () => {
-    const allFromTokens = activeTokens.map((token) => token.getTokenAddress())
+    if (!initedTokens) return
+    const allFromTokens = initedTokens.map((token) => token.getTokenAddress())
 
     try {
       const [tokensAvailableToSwapTo, providers] = await Promise.all([
@@ -214,7 +218,7 @@ export const SwapFT = ({
         setProviderError(error)
       }
     }
-  }, [fromTokenAddress, toTokenAddress, activeTokens])
+  }, [fromTokenAddress, toTokenAddress, initedTokens])
 
   useEffect(() => {
     getProviders()
@@ -337,9 +341,10 @@ export const SwapFT = ({
         setErrorMessage("Something went wrong")
       })
       .finally(() => {
+        if (!initedTokens) return
         getTokensWithUpdatedBalance(
           [fromTokenAddress, toTokenAddress],
-          tokens,
+          initedTokens,
         ).then((updatedTokens) => {
           mutateWithTimestamp("tokens", updatedTokens, false)
         })
@@ -349,7 +354,7 @@ export const SwapFT = ({
   }, [
     quote,
     shroff,
-    tokens,
+    initedTokens,
     fromTokenAddress,
     toTokenAddress,
     setErrorMessage,
@@ -360,8 +365,8 @@ export const SwapFT = ({
   return (
     <FormProvider {...formMethods}>
       <SwapFTUi
-        tokens={activeTokens}
-        allTokens={filteredAllTokens}
+        tokens={initedTokens || []}
+        allTokens={filteredAllTokens || []}
         toToken={toToken}
         fromToken={fromToken}
         setFromChosenToken={setFromTokenAddress}

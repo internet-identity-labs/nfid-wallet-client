@@ -22,7 +22,12 @@ import {
 } from "@nfid/integration/token/icp"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
-import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import {
+  mutate,
+  mutateWithTimestamp,
+  useSWR,
+  useSWRWithTimestamp,
+} from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
@@ -47,6 +52,7 @@ import {
   validateICRC1Address,
   addressValidators,
 } from "../utils"
+import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 const DEFAULT_TRANSFER_ERROR = "Something went wrong"
 
@@ -153,9 +159,13 @@ export const TransferFT = ({
     return tokensWithBalance
   }, [tokens, hideZeroBalance])
 
+  const initedTokens = useTokensInit(activeTokens)
+
   const token = useMemo(() => {
-    return tokens.find((token) => token.getTokenAddress() === tokenAddress)
-  }, [tokenAddress, tokens])
+    return initedTokens?.find(
+      (token) => token.getTokenAddress() === tokenAddress,
+    )
+  }, [tokenAddress, initedTokens])
 
   const balance = useMemo(() => {
     return balances?.find(
@@ -271,11 +281,17 @@ export const TransferFT = ({
             `Transaction ${amount} ${token.getTokenSymbol()} successful`,
           )
           setStatus(SendStatus.COMPLETED)
-          getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
-            (updatedTokens) => {
-              mutateWithTimestamp("tokens", updatedTokens, false)
-            },
-          )
+          if (!initedTokens) return
+
+          getTokensWithUpdatedBalance(
+            [token.getTokenAddress()],
+            initedTokens,
+          ).then((updatedTokens) => {
+            mutateWithTimestamp("tokens", updatedTokens, false)
+            // mutate("fullUsdValue")
+            //mutate("ftUsdValue")
+            mutate("initedTokens")
+          })
         })
         .catch((e) => {
           console.error(
@@ -302,11 +318,14 @@ export const TransferFT = ({
             `Transaction ${amount} ${token.getTokenSymbol()} successful`,
           )
           setStatus(SendStatus.COMPLETED)
-          getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
-            (updatedTokens) => {
-              mutateWithTimestamp("tokens", updatedTokens, false)
-            },
-          )
+          if (!initedTokens) return
+
+          getTokensWithUpdatedBalance(
+            [token.getTokenAddress()],
+            initedTokens,
+          ).then((updatedTokens) => {
+            mutateWithTimestamp("tokens", updatedTokens, false)
+          })
         })
         .catch((e) => {
           console.error(
@@ -413,11 +432,14 @@ export const TransferFT = ({
           `Transaction ${amount} ${token.getTokenSymbol()} successful`,
         )
         setStatus(SendStatus.COMPLETED)
-        getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
-          (updatedTokens) => {
-            mutateWithTimestamp("tokens", updatedTokens, false)
-          },
-        )
+        if (!initedTokens) return
+
+        getTokensWithUpdatedBalance(
+          [token.getTokenAddress()],
+          initedTokens,
+        ).then((updatedTokens) => {
+          mutateWithTimestamp("tokens", updatedTokens, false)
+        })
       })
       .catch((e) => {
         console.error(
@@ -433,7 +455,7 @@ export const TransferFT = ({
     selectedVaultsAccountAddress,
     amount,
     to,
-    tokens,
+    initedTokens,
     setErrorMessage,
     setSuccessMessage,
     btcFee,
@@ -445,7 +467,7 @@ export const TransferFT = ({
     <FormProvider {...formMethods}>
       <TransferFTUi
         token={token}
-        tokens={activeTokens}
+        tokens={initedTokens || []}
         setChosenToken={setTokenAddress}
         validateAddress={
           addressValidators[token?.getTokenAddress() ?? ""] ||

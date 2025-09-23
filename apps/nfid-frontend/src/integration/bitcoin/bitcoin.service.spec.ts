@@ -84,6 +84,19 @@ describe("Bitcoin Service", () => {
     expect(balance).toEqual(BigInt(2618))
   })
 
+  it("should return a empty fee for 0 input", async () => {
+    // Given
+    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
+    const amount: string = "0"
+
+    // When
+    const fee = await bitcoinService.getFee(identity, amount)
+
+    // Then
+    expect(fee.fee_satoshis).toBe(BigInt(0))
+    expect(fee.utxos).toHaveLength(0)
+  })
+
   it("should return a fee", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)

@@ -113,7 +113,7 @@ describe("Bitcoin Service", () => {
   it("should return an error of not enoguh funds for fee calculation", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    const amount: string = "0.00002618"
+    const amount: string = "0.00007618"
 
     // When
     const feePromise = bitcoinService.getFee(identity, amount)

@@ -113,7 +113,11 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       token?.getTokenAddress() === BTC_NATIVE_ID ||
       token?.getTokenAddress() === ETH_NATIVE_ID
     ) {
-      return true
+      if (userBalance === BigInt(0)) {
+        return false
+      } else {
+        return true
+      }
     } else {
       const balanceNum = new BigNumber(userBalance.toString())
       const feeNum = new BigNumber(fee!.toString())

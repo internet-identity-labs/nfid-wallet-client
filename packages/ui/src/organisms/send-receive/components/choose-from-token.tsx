@@ -170,7 +170,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     )
 
     setInputAmountValue(formattedValue)
-    setValue("amount", formattedValue, { shouldValidate: true })
+    setValue("amount", formattedValue, { shouldValidate: false })
 
     setIsFeeLoading(false)
     setIsMaxClicked(false)

@@ -80,11 +80,11 @@ export const Button: React.FC<ButtonProps> = ({
           ),
         isRed &&
           clsx(
-            "text-white bg-red-600 border-red-600",
+            "text-white dark:!text-white bg-red-600 border-red-600",
             "hover:shadow-md hover:shadow-red-600/40 hover:border-red-500 hover:bg-red-500",
             "active:border-red-700 active:bg-red-700",
             "focus:border-red-600 focus:bg-red-600",
-            "disabled:shadow-none disabled:bg-gray-300 dark:disabled:bg-zinc-700 disabled:border-gray-300 dark:border-zinc-700 dark:text-zinc-500",
+            "disabled:shadow-none disabled:bg-gray-300 dark:disabled:bg-zinc-700 disabled:border-gray-300 dark:border-zinc-700 dark:disabled:!text-zinc-500",
           ),
         block && clsx("w-full block"),
         className,

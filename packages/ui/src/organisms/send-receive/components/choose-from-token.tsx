@@ -44,6 +44,7 @@ interface ChooseFromTokenProps {
   ethFee?: bigint
   minAmount?: number
   isLoading?: boolean
+  setSkipFeeCalculation?: (value: boolean) => void
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -63,6 +64,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   ethFee,
   minAmount,
   isLoading,
+  setSkipFeeCalculation,
 }) => {
   const [inputAmountValue, setInputAmountValue] = useState(value || "")
   const [isMaxClicked, setIsMaxClicked] = useState(false)
@@ -169,8 +171,9 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       decimals,
     )
 
+    setSkipFeeCalculation?.(true)
     setInputAmountValue(formattedValue)
-    setValue("amount", formattedValue, { shouldValidate: false })
+    setValue("amount", formattedValue, { shouldValidate: true })
 
     setIsFeeLoading(false)
     setIsMaxClicked(false)

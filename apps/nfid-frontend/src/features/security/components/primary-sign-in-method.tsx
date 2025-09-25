@@ -59,7 +59,7 @@ export const PrimarySignInMethod: React.FC<PrimarySignInMethodProps> = ({
         </div>
         <div>
           <p className="text-sm leading-[23px]">{profile.principalId}</p>
-          <p className="text-xs leading-5 text-gray-400 dark:text-zinc-500">
+          <p className="text-xs leading-4 text-gray-400 dark:text-zinc-500">
             Internet Identity sign in
           </p>
         </div>
@@ -74,7 +74,7 @@ export const PrimarySignInMethod: React.FC<PrimarySignInMethodProps> = ({
         </div>
         <div>
           <p className="text-sm leading-[23px]">{profile.email}</p>
-          <p className="text-xs leading-5 text-gray-400 dark:text-zinc-500">
+          <p className="text-xs leading-4 text-gray-400 dark:text-zinc-500">
             {isGoogleUser ? "Google" : "Email"} sign in
           </p>
         </div>
@@ -92,7 +92,7 @@ export const PrimarySignInMethod: React.FC<PrimarySignInMethodProps> = ({
         </div>
         <div>
           <p className="text-sm leading-[23px]">{profile.name}</p>
-          <p className="text-xs leading-5 text-gray-400 dark:text-zinc-500">
+          <p className="text-xs leading-4 text-gray-400 dark:text-zinc-500">
             Passkey sign in
           </p>
         </div>
@@ -107,7 +107,7 @@ export const PrimarySignInMethod: React.FC<PrimarySignInMethodProps> = ({
       </div>
       <div>
         <p className="text-sm leading-[23px]">No NFID Wallet name set</p>
-        <p className="text-xs leading-5 text-gray-400 dark:text-zinc-500">
+        <p className="text-xs leading-4 text-gray-400 dark:text-zinc-500">
           Recovery phrase sign in
         </p>
       </div>

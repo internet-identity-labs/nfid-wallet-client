@@ -36,7 +36,7 @@ const Tab: React.FC<ITab> = ({
     >
       <div
         className={clsx(
-          "flex gap-[8px] items-center text-[20px] leading-[20px] transition-all",
+          "flex gap-[8px] items-center leading-[20px] transition-all",
           isActive
             ? "font-bold text-teal-600 dark:text-teal-500"
             : "font-semibold",

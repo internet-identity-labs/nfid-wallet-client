@@ -244,6 +244,7 @@ export const TransferFT = ({
     token,
     identity,
     debouncedAmount,
+    skipFeeCalculation,
     isAmountValid,
     formMethods.formState.errors.amount,
     isIdentityReady,

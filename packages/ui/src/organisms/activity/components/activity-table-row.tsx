@@ -299,7 +299,7 @@ export const ActivityTableRow = ({
         id={nodeId}
         className="relative items-center text-sm activity-row hover:bg-gray-50 dark:hover:bg-zinc-800"
       >
-        <td className="flex items-center sm:pl-[30px] w-[156px] sm:w-[30%]">
+        <td className="flex items-center sm:pl-[30px] w-[156px] min-w-[156px] sm:w-[30vw]">
           <div
             className={clsx(
               "w-10 min-w-10 h-10 rounded-[12px] flex items-center justify-center relative",
@@ -358,7 +358,7 @@ export const ActivityTableRow = ({
                 />
               )}
             </td>
-            <td className="w-[34px] h-[24px] m-auto hidden sm:table-cell">
+            <td className="w-[34px] min-w-[34px] h-[24px] m-auto hidden sm:table-cell">
               <img
                 src={isDarkTheme ? IconSvgArrowRightWhite : IconSvgArrowRight}
                 alt=""
@@ -409,7 +409,7 @@ export const ActivityTableRow = ({
                     trailingChars={4}
                   />
                 </td>
-                <td className="w-[34px] h-[24px] m-auto hidden sm:table-cell">
+                <td className="w-[34px] min-w-[34px] h-[24px] m-auto hidden sm:table-cell">
                   <img
                     src={
                       isDarkTheme ? IconSvgArrowRightWhite : IconSvgArrowRight

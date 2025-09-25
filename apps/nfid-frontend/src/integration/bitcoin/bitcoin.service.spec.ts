@@ -110,18 +110,6 @@ describe("Bitcoin Service", () => {
     expect(fee.utxos).not.toHaveLength(0)
   })
 
-  it("should return an error of not enoguh funds for fee calculation", async () => {
-    // Given
-    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    const amount: string = "0.00007618"
-
-    // When
-    const feePromise = bitcoinService.getFee(identity, amount)
-
-    // Then
-    await expect(feePromise).rejects.toThrow("Not enough funds.")
-  })
-
   it("should return a BtcToCkBtc fee", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)

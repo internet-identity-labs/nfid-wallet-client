@@ -44,6 +44,7 @@ interface ChooseFromTokenProps {
   ethFee?: bigint
   minAmount?: number
   isLoading?: boolean
+  setSkipFeeCalculation?: (value: boolean) => void
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -63,6 +64,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   ethFee,
   minAmount,
   isLoading,
+  setSkipFeeCalculation,
 }) => {
   const [inputAmountValue, setInputAmountValue] = useState(value || "")
   const [isMaxClicked, setIsMaxClicked] = useState(false)
@@ -111,7 +113,11 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       token?.getTokenAddress() === BTC_NATIVE_ID ||
       token?.getTokenAddress() === ETH_NATIVE_ID
     ) {
-      return true
+      if (userBalance === BigInt(0)) {
+        return false
+      } else {
+        return true
+      }
     } else {
       const balanceNum = new BigNumber(userBalance.toString())
       const feeNum = new BigNumber(fee!.toString())
@@ -169,6 +175,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       decimals,
     )
 
+    setSkipFeeCalculation?.(true)
     setInputAmountValue(formattedValue)
     setValue("amount", formattedValue, { shouldValidate: true })
 

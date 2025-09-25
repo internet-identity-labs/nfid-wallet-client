@@ -7,7 +7,9 @@ import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_CANISTER_ID,
+  ETH_DECIMALS,
   ETH_NATIVE_ID,
+  TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
 import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
@@ -154,10 +156,14 @@ export const ConvertBTC = ({
           setEthFee(undefined)
           setConversionError(undefined)
           try {
+            const value = (amount as number)
+              .toFixed(ETH_DECIMALS)
+              .replace(TRIM_ZEROS, "")
+
             const fee =
               tokenAddress === ETH_NATIVE_ID
-                ? await ethereumService.getEthToCkEthFee(identity, amount)
-                : await ethereumService.getCkEthToEthFee(ethAddress, amount)
+                ? await ethereumService.getEthToCkEthFee(identity, value)
+                : await ethereumService.getCkEthToEthFee(ethAddress, value)
 
             setEthFee(fee)
           } catch (e) {

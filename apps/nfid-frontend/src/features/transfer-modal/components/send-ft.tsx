@@ -89,6 +89,7 @@ export const TransferFT = ({
   )
   const [ethFee, setEthFee] = useState<SendEthFee | undefined>(undefined)
   const [isValidating, setIsValidating] = useState(false)
+  const [skipFeeCalculation, setSkipFeeCalculation] = useState(false)
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -180,6 +181,11 @@ export const TransferFT = ({
   useEffect(() => {
     let isCancelled = false
 
+    if (skipFeeCalculation) {
+      setSkipFeeCalculation(false)
+      return
+    }
+
     const fetchBtcFee = async () => {
       if (
         token?.getTokenAddress() === BTC_NATIVE_ID &&
@@ -190,10 +196,7 @@ export const TransferFT = ({
         setBtcFee(undefined)
         setIsValidating(true)
         try {
-          const fee = await token.getBTCFee(
-            identity!,
-            debouncedAmount.toString(),
-          )
+          const fee = await token.getBTCFee(identity!, debouncedAmount)
           if (!isCancelled) setBtcFee(fee)
         } catch (e) {
           console.error(`BTC error: ${e}`)
@@ -217,11 +220,7 @@ export const TransferFT = ({
         setEthFee(undefined)
         setIsValidating(true)
         try {
-          const fee = await token.getETHFee(
-            to,
-            ethAddress,
-            debouncedAmount.toString(),
-          )
+          const fee = await token.getETHFee(to, ethAddress, debouncedAmount)
           if (!isCancelled) setEthFee(fee)
         } catch (e) {
           console.error(`ETH error: ${e}`)
@@ -475,6 +474,7 @@ export const TransferFT = ({
         btcFee={btcFee?.fee_satoshis || undefined}
         ethFee={ethFee?.ethereumNetworkFee || undefined}
         isFeeLoading={isValidating || isIdentityLoading || !identity}
+        setSkipFeeCalculation={setSkipFeeCalculation}
       />
     </FormProvider>
   )

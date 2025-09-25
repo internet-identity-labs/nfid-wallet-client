@@ -67,10 +67,10 @@ export interface FT {
 
   getBTCFee(
     identity: SignIdentity,
-    amount: string,
+    value: number,
   ): Promise<BitcointNetworkFeeAndUtxos>
 
-  getETHFee(to: string, from: string, value: string): Promise<SendEthFee>
+  getETHFee(to: string, from: string, value: number): Promise<SendEthFee>
 
   getBTCFeeFormatted(fee: bigint): string
 

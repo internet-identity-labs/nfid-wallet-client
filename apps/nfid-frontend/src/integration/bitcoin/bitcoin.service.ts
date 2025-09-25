@@ -106,7 +106,7 @@ export class BitcoinService {
           const utxosAmount = fee.utxos.reduce((a, v) => a + v.value, BigInt(0))
 
           if (balance < amountPlusFee) {
-            throw new Error(`Not enough funds.`)
+            return EMPTY
           }
 
           if (amountPlusFee <= utxosAmount) {

@@ -51,7 +51,7 @@ export const PasskeyDeviceItem = ({
           </span>
         )}
         {device.isMultiDevice && (
-          <span className="ml-2.5 px-2 py-1 text-gray-600 dark:text-white uppercase bg-gray-50 dark:bg-zinc-700 font-bold tracking-[0.2px] text-[10px] rounded-[6px]">
+          <span className="ml-2.5 px-2 py-1 text-gray-600 dark:text-white uppercase bg-gray-50 dark:bg-zinc-700 font-bold tracking-[0.2px] text-[10px] rounded-[6px] leading-4">
             Multi-device
           </span>
         )}

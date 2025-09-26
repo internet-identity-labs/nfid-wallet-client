@@ -47,7 +47,7 @@ export interface TransferFTUiProps {
   btcFee?: bigint
   ethFee?: bigint
   isFeeLoading: boolean
-  setSkipFeeCalculation: (value: boolean) => void
+  setSkipFeeCalculation: () => void
 }
 
 export const TransferFTUi: FC<TransferFTUiProps> = ({

@@ -314,7 +314,10 @@ export class FTImpl implements FT {
   }
 
   getBTCFeeFormatted(fee: bigint): string {
-    return `${satoshiService.getFromSatoshis(fee)} ${this.symbol}`
+    return `${Number(satoshiService.getFromSatoshis(fee)).toLocaleString("en", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: this.decimals,
+    })} ${this.symbol}`
   }
 
   getBTCFeeFormattedUsd(fee: bigint): string | undefined {

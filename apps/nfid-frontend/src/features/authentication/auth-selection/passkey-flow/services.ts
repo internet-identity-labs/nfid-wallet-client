@@ -327,8 +327,9 @@ export class PasskeyConnector {
           },
           user: {
             id: Buffer.from(String(profile.anchor)),
-            name: profile?.email ?? profile.name ?? "",
-            displayName: profile?.email ?? profile.name ?? "",
+            name: profile?.email ?? profile.name ?? profile.principalId ?? "",
+            displayName:
+              profile?.email ?? profile.name ?? profile.principalId ?? "",
           },
         },
       })) as PublicKeyCredential

@@ -34,30 +34,40 @@ export function ScanTokens({
   const [scannedTokens, setScannedTokens] = useState<Array<FT> | undefined>()
 
   useEffect(() => {
-    if (allTokens && !scannedTokens && isModalOpen) {
-      filterNotActiveNotZeroBalancesTokens(allTokens).then((tokens) => {
-        setScannedTokens(tokens)
-        Promise.all(
-          tokens.map(async (t) => {
-            await t.showToken()
-            return t
-          }),
+    if (!isModalOpen || !allTokens) return
+
+    let cancelled = false
+    setIsScanningTokens(true)
+    ;(async () => {
+      const tokensSnapshot = [...allTokens]
+
+      const tokens = await filterNotActiveNotZeroBalancesTokens(tokensSnapshot)
+      if (cancelled) return
+      setScannedTokens(tokens)
+
+      const showedTokens = await Promise.all(
+        tokens.map(async (t) => {
+          await t.showToken()
+          return t
+        }),
+      )
+      if (cancelled) return
+
+      const newTokens = tokensSnapshot.map((aT) => {
+        const showedToken = showedTokens.find(
+          (t) => t.getTokenAddress() === aT.getTokenAddress(),
         )
-          .then((showedTokens) => {
-            const newTokens = allTokens.map((aT) => {
-              const showedToken = showedTokens.find(
-                (t) => t.getTokenAddress() === aT.getTokenAddress(),
-              )
-              return showedToken || aT
-            })
-            mutateWithTimestamp("tokens", newTokens, false)
-          })
-          .finally(() => {
-            setIsScanningTokens(false)
-          })
+        return showedToken || aT
       })
+
+      mutateWithTimestamp("tokens", newTokens, false)
+      setIsScanningTokens(false)
+    })()
+
+    return () => {
+      cancelled = true
     }
-  }, [allTokens, scannedTokens, isModalOpen])
+  }, [isModalOpen])
 
   return (
     <>

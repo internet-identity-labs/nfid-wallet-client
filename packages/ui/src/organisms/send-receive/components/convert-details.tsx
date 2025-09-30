@@ -5,7 +5,7 @@ import { FC } from "react"
 
 import {
   BTC_NATIVE_ID,
-  CKETH_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
 
@@ -55,7 +55,7 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
             <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-700">
               <p>
                 {token.getTokenAddress() === ETH_NATIVE_ID ||
-                token.getTokenAddress() === CKETH_CANISTER_ID
+                token.getTokenAddress() === CKETH_LEDGER_CANISTER_ID
                   ? "ETH"
                   : "BTC"}{" "}
                 network fee

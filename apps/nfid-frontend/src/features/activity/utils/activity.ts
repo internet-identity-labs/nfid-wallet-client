@@ -17,7 +17,7 @@ import { groupActivityRowsByDate } from "./row"
 import { getSwapActivitiesRows } from "./swap-activity"
 import {
   CKBTC_CANISTER_ID,
-  CKETH_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
   BTC_NATIVE_ID,
   ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
@@ -64,7 +64,7 @@ export const getAllActivity = async ({
           assetCanister = CKBTC_CANISTER_ID
         }
         if (assetCanister === ETH_NATIVE_ID) {
-          assetCanister = CKETH_CANISTER_ID
+          assetCanister = CKETH_LEDGER_CANISTER_ID
         }
         usdRate = priceResponse?.find(
           (token) => token.address === assetCanister,

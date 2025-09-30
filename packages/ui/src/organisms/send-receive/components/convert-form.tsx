@@ -22,6 +22,7 @@ import { getModalType, EthFormattedFee, BtcFormattedFee } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { ChooseToToken } from "./choose-to-token"
 import { ConvertModal } from "./convert"
+import { EthToCkEthFee } from "frontend/integration/ethereum/ethereum.service"
 
 export const BALANCE_EDGE_LENGTH = 20
 
@@ -42,6 +43,7 @@ export interface ConvertFormProps {
   tokens: FT[]
   isResponsive?: boolean
   setIsResponsive?: (value: boolean) => void
+  ethFee?: EthToCkEthFee
 }
 
 export const ConvertForm: FC<ConvertFormProps> = ({
@@ -61,6 +63,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
   tokens,
   isResponsive,
   setIsResponsive,
+  ethFee,
 }) => {
   const [isFromResponsive, setIsFromResponsive] = useState(false)
   const [isToResponsive, setIsToResponsive] = useState(false)
@@ -118,6 +121,8 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           title="Convert from"
           isResponsive={isResponsive}
           setIsResponsive={setIsFromResponsive}
+          ethFee={ethFee?.ethereumNetworkFee}
+          isLoading={isFeeLoading && !!amount && !errors["amount"]}
         />
         {errors["amount"] && (
           <div className="h-4 mt-1 text-xs leading-4 text-red-600">

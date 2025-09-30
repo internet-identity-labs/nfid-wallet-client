@@ -14,7 +14,7 @@ import { ArrowPercentChange } from "@nfid-frontend/ui"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
-  CKETH_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -133,7 +133,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
                 </span>
               </>
             )}
-            {token.getTokenAddress() === CKETH_CANISTER_ID && (
+            {token.getTokenAddress() === CKETH_LEDGER_CANISTER_ID && (
               <>
                 <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
                 <span

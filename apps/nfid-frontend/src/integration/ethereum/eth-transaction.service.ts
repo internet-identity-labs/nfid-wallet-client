@@ -1,7 +1,8 @@
-import { ETH_NATIVE_ID } from "@nfid/integration/token/constants"
+import { ETH_DECIMALS, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
+import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
 
 const ETHERSCAN_API_KEY = "861Q6D7WDJD35UMUU3NQ6R798IFQ211TU5"
 
@@ -36,9 +37,7 @@ export const getEthActivitiesRows = async (
   address: string,
 ): Promise<IActivityRow[]> => {
   try {
-    //TODO change to ETH after testing
-    const url = `https://api-sepolia.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${ETHERSCAN_API_KEY}`
-    //const url = `https://etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${ETHERSCAN_API_KEY}`
+    const url = `https://api.etherscan.io/v2/api?chainid=1&module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${ETHERSCAN_API_KEY}`
 
     console.debug(
       "Fetching ETH transactions from Etherscan for address:",
@@ -70,9 +69,9 @@ export const getEthActivitiesRows = async (
           type: "ft",
           currency: "ETH",
           amount: Number(tx.value),
-          icon: "https://assets.coingecko.com/coins/images/279/large/ethereum.png?1696501628",
+          icon: EthIcon,
           rate: 0,
-          decimals: 18,
+          decimals: ETH_DECIMALS,
           canister: ETH_NATIVE_ID,
         },
         from: tx.from,

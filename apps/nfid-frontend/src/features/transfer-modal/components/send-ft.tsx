@@ -6,7 +6,7 @@ import debounce from "lodash/debounce"
 import { PRINCIPAL_LENGTH } from "packages/constants"
 import toaster from "packages/ui/src/atoms/toast"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
-import { useCallback, useMemo, useState, useEffect } from "react"
+import { useCallback, useMemo, useState, useEffect, useRef } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
 import { RootWallet, registerTransaction } from "@nfid/integration"
@@ -95,6 +95,11 @@ export const TransferFT = ({
   )
   const [ethFee, setEthFee] = useState<SendEthFee | undefined>(undefined)
   const [isValidating, setIsValidating] = useState(false)
+  const skipFeeCalculation = useRef(false)
+
+  const triggerSkipCaclulation = useCallback(() => {
+    skipFeeCalculation.current = true
+  }, [])
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -190,20 +195,24 @@ export const TransferFT = ({
   useEffect(() => {
     let isCancelled = false
 
+    if (
+      !isAmountValid ||
+      !!formMethods.formState.errors.amount ||
+      !isIdentityReady
+    )
+      return
+
+    if (skipFeeCalculation.current) {
+      skipFeeCalculation.current = false
+      return
+    }
+
     const fetchBtcFee = async () => {
-      if (
-        token?.getTokenAddress() === BTC_NATIVE_ID &&
-        isAmountValid &&
-        !formMethods.formState.errors.amount &&
-        isIdentityReady
-      ) {
+      if (token?.getTokenAddress() === BTC_NATIVE_ID) {
         setBtcFee(undefined)
         setIsValidating(true)
         try {
-          const fee = await token.getBTCFee(
-            identity!,
-            debouncedAmount.toString(),
-          )
+          const fee = await token.getBTCFee(identity!, debouncedAmount)
           if (!isCancelled) setBtcFee(fee)
         } catch (e) {
           console.error(`BTC error: ${e}`)
@@ -218,20 +227,11 @@ export const TransferFT = ({
     }
 
     const fetchEthFee = async () => {
-      if (
-        token?.getTokenAddress() === ETH_NATIVE_ID &&
-        isAmountValid &&
-        !formMethods.formState.errors.amount &&
-        isIdentityReady
-      ) {
+      if (token?.getTokenAddress() === ETH_NATIVE_ID) {
         setEthFee(undefined)
         setIsValidating(true)
         try {
-          const fee = await token.getETHFee(
-            to,
-            ethAddress,
-            debouncedAmount.toString(),
-          )
+          const fee = await token.getETHFee(to, ethAddress, debouncedAmount)
           if (!isCancelled) setEthFee(fee)
         } catch (e) {
           console.error(`ETH error: ${e}`)
@@ -265,6 +265,7 @@ export const TransferFT = ({
   useEffect(() => {
     setBtcError(undefined)
     setEthError(undefined)
+    setDebouncedAmount(0)
   }, [token])
 
   const submit = useCallback(async () => {
@@ -497,6 +498,7 @@ export const TransferFT = ({
         btcFee={btcFee?.fee_satoshis || undefined}
         ethFee={ethFee?.ethereumNetworkFee || undefined}
         isFeeLoading={isValidating || isIdentityLoading || !identity}
+        setSkipFeeCalculation={triggerSkipCaclulation}
       />
     </FormProvider>
   )

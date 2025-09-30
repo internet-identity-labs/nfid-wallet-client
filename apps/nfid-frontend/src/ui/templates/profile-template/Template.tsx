@@ -319,7 +319,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
                 />
               )}
               <p
-                className={clsx("text-[28px] block", titleClassNames)}
+                className={clsx(
+                  "text-[28px] leading-[32px] block",
+                  titleClassNames,
+                )}
                 id={"page_title"}
               >
                 {pageTitle}

@@ -47,6 +47,7 @@ export interface TransferFTUiProps {
   btcFee?: bigint
   ethFee?: bigint
   isFeeLoading: boolean
+  setSkipFeeCalculation: () => void
 }
 
 export const TransferFTUi: FC<TransferFTUiProps> = ({
@@ -72,6 +73,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   btcFee,
   ethFee,
   isFeeLoading,
+  setSkipFeeCalculation,
 }) => {
   const {
     resetField,
@@ -125,6 +127,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         usdRate={token.getTokenRateFormatted(amount || 0)}
         tokens={tokens}
         title="Token to send"
+        setSkipFeeCalculation={setSkipFeeCalculation}
       />
       <div className="h-4 mt-1 text-xs leading-4 text-red-600 dark:text-red-500">
         {errors["amount"]?.message as string}

@@ -81,12 +81,20 @@ export class BitcoinService {
     identity: SignIdentity,
     amount: string,
   ): Promise<BitcointNetworkFeeAndUtxos> {
+    if (amount === "0") {
+      return { fee_satoshis: BigInt(0), utxos: [] }
+    }
+
     const confirmationResult = await this.ensureWalletConfirmations()
     if (!confirmationResult.ok) {
       throw new Error(confirmationResult.error)
     }
     const amountInSatoshis = satoshiService.getInSatoshis(amount)
     const balance = await this.getQuickBalance()
+
+    if (amountInSatoshis === balance) {
+      return patronService.askToCalcUtxosAndFee(identity, amountInSatoshis)
+    }
 
     return firstValueFrom(
       from(patronService.askToCalcUtxosAndFee(identity, amountInSatoshis)).pipe(
@@ -95,7 +103,7 @@ export class BitcoinService {
           const utxosAmount = fee.utxos.reduce((a, v) => a + v.value, BigInt(0))
 
           if (balance < amountPlusFee) {
-            throw new Error(`Not enough funds.`)
+            return EMPTY
           }
 
           if (amountPlusFee <= utxosAmount) {

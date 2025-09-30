@@ -11,6 +11,7 @@ import {
   CKETH_CANISTER_ID,
   ETH_NATIVE_ID,
   NFIDW_CANISTER_ID,
+  TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
@@ -368,13 +369,17 @@ export class FTImpl implements FT {
 
   async getBTCFee(
     identity: SignIdentity,
-    amount: string,
+    value: number,
   ): Promise<BitcointNetworkFeeAndUtxos> {
+    const amount = value.toFixed(this.decimals).replace(TRIM_ZEROS, "")
     return await bitcoinService.getFee(identity, amount)
   }
 
   getBTCFeeFormatted(fee: bigint): string {
-    return `${satoshiService.getFromSatoshis(fee)} ${this.symbol}`
+    return `${Number(satoshiService.getFromSatoshis(fee)).toLocaleString("en", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: this.decimals,
+    })} ${this.symbol}`
   }
 
   getBTCFeeFormattedUsd(fee: bigint): string | undefined {
@@ -388,9 +393,10 @@ export class FTImpl implements FT {
   async getETHFee(
     to: string,
     from: string,
-    value: string,
+    value: number,
   ): Promise<SendEthFee> {
-    return await ethereumService.getSendEthFee(to, from, value)
+    const amount = value.toFixed(this.decimals).replace(TRIM_ZEROS, "")
+    return await ethereumService.getSendEthFee(to, from, amount)
   }
 
   getETHFeeFormatted(fee: bigint): string {

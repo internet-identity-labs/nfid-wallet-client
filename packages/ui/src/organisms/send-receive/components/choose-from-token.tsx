@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js"
 import clsx from "clsx"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
 import { formatAssetAmountRaw } from "packages/ui/src/molecules/ticker-amount"
-import { FC, useCallback, useEffect, useMemo, useState } from "react"
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
 import {
@@ -44,6 +44,7 @@ interface ChooseFromTokenProps {
   ethFee?: bigint
   minAmount?: number
   isLoading?: boolean
+  setSkipFeeCalculation?: () => void
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -63,10 +64,12 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   ethFee,
   minAmount,
   isLoading,
+  setSkipFeeCalculation,
 }) => {
   const [inputAmountValue, setInputAmountValue] = useState(value || "")
   const [isMaxClicked, setIsMaxClicked] = useState(false)
   const [isFeeLoading, setIsFeeLoading] = useState(false)
+  const isChangingToken = useRef(false)
 
   const initedTokens = useTokensInit(tokens)
   const initedToken = useMemo(() => {
@@ -81,15 +84,22 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     register,
     formState: { errors },
     trigger,
+    clearErrors,
   } = useFormContext()
   const userBalance = balance !== undefined ? balance : token!.getTokenBalance()
   const decimals = token!.getTokenDecimals()
 
   useEffect(() => {
-    if (token && inputAmountValue.trim()) {
-      trigger("amount")
-    }
-  }, [token, inputAmountValue])
+    if (!token) return
+    isChangingToken.current = true
+    setInputAmountValue("")
+    setValue("amount", "", { shouldValidate: false })
+    clearErrors("amount")
+    setSkipFeeCalculation?.()
+    setTimeout(() => {
+      isChangingToken.current = false
+    }, 500)
+  }, [token, setValue, clearErrors])
 
   const fee = useMemo(() => {
     if (!token || userBalance === undefined) return
@@ -105,10 +115,14 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   }, [token, userBalance, btcFee, ethFee])
 
   useEffect(() => {
-    if (fee !== undefined) {
+    if (
+      fee !== undefined &&
+      inputAmountValue.trim() &&
+      !isChangingToken.current
+    ) {
       trigger("amount")
     }
-  }, [fee, trigger])
+  }, [fee, trigger, inputAmountValue])
 
   const isMaxAvailable = useMemo(() => {
     if (userBalance === undefined) return false
@@ -117,7 +131,11 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       token?.getTokenAddress() === BTC_NATIVE_ID ||
       token?.getTokenAddress() === ETH_NATIVE_ID
     ) {
-      return true
+      if (userBalance === BigInt(0)) {
+        return false
+      } else {
+        return true
+      }
     } else {
       const balanceNum = new BigNumber(userBalance.toString())
       const feeNum = new BigNumber(fee!.toString())
@@ -175,6 +193,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       decimals,
     )
 
+    setSkipFeeCalculation?.()
     setInputAmountValue(formattedValue)
     setValue("amount", formattedValue, { shouldValidate: true })
 
@@ -211,6 +230,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           <Skeleton className="w-[124px] h-[34px] rounded-[6px]" />
         ) : (
           <InputAmount
+            key={token.getTokenAddress()}
             className={clsx(
               isResponsive && "leading-[26px] h-[30px] !max-w-full",
             )}
@@ -219,9 +239,16 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             decimals={decimals}
             value={inputAmountValue}
             {...register("amount", {
-              required: sumRules.errorMessages.required,
               onChange: (e) => setInputAmountValue(e.target.value),
               validate: (value) => {
+                if (isChangingToken.current) {
+                  return true
+                }
+
+                if (!value || !token) {
+                  return sumRules.errorMessages.required
+                }
+
                 const amountValidationError = validateTransferAmountField(
                   balance || token.getTokenBalance(),
                   modalType === IModalType.SWAP ? BigInt(0) : fee,

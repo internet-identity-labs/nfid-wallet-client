@@ -11,7 +11,7 @@ import {
   BTC_DECIMALS,
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
-  CKETH_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
   ETH_DECIMALS,
   ETH_NATIVE_ID,
   ICP_CANISTER_ID,
@@ -38,7 +38,7 @@ const TOKENS_TO_REORDER: {
   { canisterId: ETH_NATIVE_ID, index: 2 },
   { canisterId: NFIDW_CANISTER_ID, index: 3 },
   { canisterId: CKBTC_CANISTER_ID, index: 4 },
-  { canisterId: CKETH_CANISTER_ID, index: 5 },
+  { canisterId: CKETH_LEDGER_CANISTER_ID, index: 5 },
 ]
 
 export class FtService {
@@ -59,7 +59,7 @@ export class FtService {
         )
 
         const ckEth = canisters.find(
-          (canister) => canister.ledger === CKETH_CANISTER_ID,
+          (canister) => canister.ledger === CKETH_LEDGER_CANISTER_ID,
         )
 
         const updatePromises = []
@@ -94,7 +94,7 @@ export class FtService {
         if (!ckEth || ckEth.state === State.Inactive) {
           updatePromises.push(
             icrc1RegistryService.storeICRC1Canister(
-              CKETH_CANISTER_ID,
+              CKETH_LEDGER_CANISTER_ID,
               State.Active,
             ),
           )

@@ -2,6 +2,7 @@ import { BTC_NATIVE_ID } from "@nfid/integration/token/constants"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
+import BtcIcon from "packages/ui/src/organisms/tokens/assets/bitcoin.svg"
 
 import {
   FungibleActivityRecords,
@@ -10,8 +11,6 @@ import {
 import { BLOCK_HEIGHT_URL, REQUIRED_CONFIRMATIONS } from "./mempool.service"
 
 const mainnet = "https://mempool.space/api/address/"
-const BTC_ICON =
-  "https://assets.coingecko.com/coins/images/1/large/bitcoin.png?1696501628"
 
 export const getBtcActivitiesRows = async (
   address: string,
@@ -27,8 +26,8 @@ export const getBtcActivitiesRows = async (
       type: "ft",
       currency: "BTC",
       amount: activity.price,
-      icon: BTC_ICON,
-      iconTo: BTC_ICON,
+      icon: BtcIcon,
+      iconTo: BtcIcon,
       rate: 0,
       decimals: 8,
       decimalsTo: 8,

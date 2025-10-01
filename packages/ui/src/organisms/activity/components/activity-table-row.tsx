@@ -25,11 +25,14 @@ import {
   Tooltip,
 } from "@nfid-frontend/ui"
 import {
+  BTC_EXPLORER,
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
-  CKETH_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
+  ETH_EXPLORER,
   ETH_NATIVE_ID,
   ICP_CANISTER_ID,
+  ICP_EXPLORER,
 } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
@@ -48,15 +51,10 @@ interface ErrorStage {
   tooltipMessage: string
 }
 
-const ICP_EXPLORER = "https://dashboard.internetcomputer.org"
-const BTC_EXPLORER = "https://mempool.space/tx"
-// const ETH_EXPLORER = "https://etherscan.io/tx"
-const ETH_EXPLORER = "https://sepolia.etherscan.io/tx"
-
 const getChainFusionTokenName = (address: string) => {
   if (address === CKBTC_CANISTER_ID) {
     return "bitcoin"
-  } else if (address === CKETH_CANISTER_ID) {
+  } else if (address === CKETH_LEDGER_CANISTER_ID) {
     return "ethereum"
   } else {
     return `ethereum/${address}`

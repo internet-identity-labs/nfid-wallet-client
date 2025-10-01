@@ -6,8 +6,7 @@ import { BlurredLoader } from "@nfid-frontend/ui"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
-  CKETH_CANISTER_ID,
-  ETH_DECIMALS,
+  CKETH_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
 
@@ -80,7 +79,7 @@ export const ConvertUi: FC<ConvertUiProps> = ({
   const amount = watch("amount")
   const fee =
     fromToken?.getTokenAddress() === ETH_NATIVE_ID ||
-    fromToken?.getTokenAddress() === CKETH_CANISTER_ID
+    fromToken?.getTokenAddress() === CKETH_LEDGER_CANISTER_ID
       ? getEthConversionFee(ethFee)
       : getBtcConversionFee(btcFee)
 
@@ -172,6 +171,11 @@ export const ConvertUi: FC<ConvertUiProps> = ({
             handleReverse={handleReverse}
             fee={fee}
             tokens={tokens}
+            ethFee={
+              fromToken.getTokenAddress() === ETH_NATIVE_ID
+                ? (ethFee as EthToCkEthFee)
+                : undefined
+            }
           />
         </motion.div>
       )}

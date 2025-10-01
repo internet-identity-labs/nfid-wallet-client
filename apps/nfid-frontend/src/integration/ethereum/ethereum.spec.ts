@@ -38,7 +38,12 @@ describe("EthereumService", () => {
   })
 
   it.skip("should send eth to ckETH", async () => {
-    let tr = await ethereumService.convertToCkEth(idA, "0.009000070045")
+    let tr = await ethereumService.convertToCkEth(idA, "0.009000070045", {
+      gasUsed: BigInt(21_000),
+      maxPriorityFeePerGas: BigInt(2_000_000_000),
+      maxFeePerGas: BigInt(5_000_000_000),
+      baseFeePerGas: BigInt(0),
+    })
     console.log(tr)
   })
 })

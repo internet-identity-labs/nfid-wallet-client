@@ -7,7 +7,7 @@ import { exchangeRateService } from "@nfid/integration"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
-  CKETH_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
   NFIDW_CANISTER_ID,
   TRIM_ZEROS,
@@ -90,8 +90,9 @@ export class FTImpl implements FT {
       return
     }
 
-    this.tokenRate =
-      await exchangeRateService.usdPriceForICRC1(CKETH_CANISTER_ID)
+    this.tokenRate = await exchangeRateService.usdPriceForICRC1(
+      CKETH_LEDGER_CANISTER_ID,
+    )
   }
 
   private async getIcrc1Balance(globalPrincipal: Principal): Promise<void> {

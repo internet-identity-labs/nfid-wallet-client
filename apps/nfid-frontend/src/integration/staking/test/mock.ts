@@ -1,6 +1,6 @@
 import {
   CKBTC_CANISTER_ID,
-  CKETH_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -41,7 +41,7 @@ export const mockFt = [
     decimals: 8,
   },
   {
-    ledger: CKETH_CANISTER_ID,
+    ledger: CKETH_LEDGER_CANISTER_ID,
     name: "ckETH",
     symbol: "ckETH",
     index: "",

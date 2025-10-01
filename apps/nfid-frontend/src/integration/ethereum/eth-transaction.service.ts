@@ -1,10 +1,12 @@
-import { ETH_DECIMALS, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
+import {
+  ETH_DECIMALS,
+  ETH_NATIVE_ID,
+  ETHERSCAN_API_KEY,
+} from "@nfid/integration/token/constants"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
 import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
-
-const ETHERSCAN_API_KEY = "861Q6D7WDJD35UMUU3NQ6R798IFQ211TU5"
 
 interface EtherscanTransaction {
   blockNumber: string

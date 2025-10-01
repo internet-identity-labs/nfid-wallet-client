@@ -857,10 +857,10 @@ describe("ft test suite", () => {
       const expectedResult = {
         to: [
           "2ouva-viaaa-aaaaq-aaamq-cai",
+          CKETH_LEDGER_CANISTER_ID,
           CKBTC_CANISTER_ID,
           "ryjl3-tyaaa-aaaaa-aaaba-cai",
           NFIDW_CANISTER_ID,
-          CKETH_LEDGER_CANISTER_ID,
         ],
         from: ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
       }

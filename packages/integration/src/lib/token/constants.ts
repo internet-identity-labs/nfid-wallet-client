@@ -11,6 +11,7 @@ export const BTC_EXPLORER = "https://mempool.space/tx"
 export const BTC_NATIVE_ID = "btc-native"
 export const ETH_NATIVE_ID = "eth-native"
 export const CKBTC_CANISTER_ID = "mxzaz-hqaaa-aaaar-qaada-cai"
+export const ETHERSCAN_API_KEY = "861Q6D7WDJD35UMUU3NQ6R798IFQ211TU5"
 // Eth MAINNET
 export const CHAIN_ID = BigInt(1)
 export const CKETH_LEDGER_CANISTER_ID = "ss2fx-dyaaa-aaaar-qacoq-cai"

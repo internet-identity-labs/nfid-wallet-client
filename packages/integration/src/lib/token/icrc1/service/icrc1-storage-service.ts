@@ -9,8 +9,6 @@ export class Icrc1StorageService {
   async getICRC1ActiveCanisters(
     principal: string,
   ): Promise<Array<ICRC1UserData>> {
-    // get this from DB, and update in background
-    //const cache = await storageWithTtl.getEvenExpired(stakedTokensCacheName)
     return this.getICRC1Canisters(principal).then((canisters) => {
       return canisters.filter((c) => c.state === State.Active)
     })

@@ -50,8 +50,6 @@ const StakingPage = () => {
     },
   )
 
-  console.log("szzszs", stakedTokens, isLoading, isValidating)
-
   const totalBalances = stakingService.getTotalBalances(stakedTokens)
 
   return (

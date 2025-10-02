@@ -89,8 +89,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     window.history.back()
   }, [])
   const [hasUncompletedSwap, setHasUncompletedSwap] = useState(false)
-  // const [btc, setBtc] = useState<FT>()
-  // const [eth, setEth] = useState<FT>()
 
   const tabs = useMemo(() => {
     return [

@@ -12,7 +12,7 @@ import {
   BTC_DECIMALS,
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
-  CKETH_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
   ETH_DECIMALS,
   ETH_NATIVE_ID,
   TRIM_ZEROS,
@@ -224,10 +224,10 @@ export const getModalType = (fromToken?: FT, toToken?: FT) => {
       return IModalType.CONVERT_TO_BTC
 
     case fromToken?.getTokenAddress() === ETH_NATIVE_ID &&
-      toToken?.getTokenAddress() === CKETH_CANISTER_ID:
+      toToken?.getTokenAddress() === CKETH_LEDGER_CANISTER_ID:
       return IModalType.CONVERT_TO_CKETH
 
-    case fromToken?.getTokenAddress() === CKETH_CANISTER_ID &&
+    case fromToken?.getTokenAddress() === CKETH_LEDGER_CANISTER_ID &&
       toToken?.getTokenAddress() === ETH_NATIVE_ID:
       return IModalType.CONVERT_TO_ETH
 

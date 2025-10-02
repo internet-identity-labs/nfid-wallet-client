@@ -13,7 +13,7 @@ import { authState } from "@nfid/integration"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
-  CKETH_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
@@ -82,7 +82,7 @@ const TokensPage = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
-    send({ type: "ASSIGN_SELECTED_FT", data: CKETH_CANISTER_ID })
+    send({ type: "ASSIGN_SELECTED_FT", data: CKETH_LEDGER_CANISTER_ID })
     send("SHOW")
   }
 

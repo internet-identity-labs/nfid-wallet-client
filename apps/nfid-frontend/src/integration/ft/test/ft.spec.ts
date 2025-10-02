@@ -8,7 +8,7 @@ import { mockGeekResponse } from "src/integration/nft/mock/mock"
 import { exchangeRateService } from "@nfid/integration"
 import {
   CKBTC_CANISTER_ID,
-  CKETH_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
@@ -80,7 +80,7 @@ describe("ft test suite", () => {
             decimals: 8,
           },
           {
-            ledger: CKETH_CANISTER_ID,
+            ledger: CKETH_LEDGER_CANISTER_ID,
             name: "ckETH",
             symbol: "ckETH",
             index: "",
@@ -159,7 +159,7 @@ describe("ft test suite", () => {
             decimals: 8,
           },
           {
-            ledger: CKETH_CANISTER_ID,
+            ledger: CKETH_LEDGER_CANISTER_ID,
             name: "ckETH",
             symbol: "ckETH",
             index: "",
@@ -223,7 +223,7 @@ describe("ft test suite", () => {
             decimals: 8,
           },
           {
-            ledger: CKETH_CANISTER_ID,
+            ledger: CKETH_LEDGER_CANISTER_ID,
             name: "ckETH",
             symbol: "ckETH",
             index: "",
@@ -289,7 +289,7 @@ describe("ft test suite", () => {
             decimals: 8,
           },
           {
-            ledger: CKETH_CANISTER_ID,
+            ledger: CKETH_LEDGER_CANISTER_ID,
             name: "ckETH",
             symbol: "ckETH",
             index: "",
@@ -342,7 +342,7 @@ describe("ft test suite", () => {
             decimals: 8,
           },
           {
-            ledger: CKETH_CANISTER_ID,
+            ledger: CKETH_LEDGER_CANISTER_ID,
             name: "ckETH",
             symbol: "ckETH",
             index: "",
@@ -429,7 +429,7 @@ describe("ft test suite", () => {
             decimals: 8,
           },
           {
-            ledger: CKETH_CANISTER_ID,
+            ledger: CKETH_LEDGER_CANISTER_ID,
             name: "ckETH",
             symbol: "ckETH",
             index: "",
@@ -512,7 +512,7 @@ describe("ft test suite", () => {
             decimals: 8,
           },
           {
-            ledger: CKETH_CANISTER_ID,
+            ledger: CKETH_LEDGER_CANISTER_ID,
             name: "ckETH",
             symbol: "ckETH",
             index: "",
@@ -588,7 +588,7 @@ describe("ft test suite", () => {
             decimals: 8,
           },
           {
-            ledger: CKETH_CANISTER_ID,
+            ledger: CKETH_LEDGER_CANISTER_ID,
             name: "ckETH",
             symbol: "ckETH",
             index: "",
@@ -663,7 +663,7 @@ describe("ft test suite", () => {
             decimals: 8,
           },
           {
-            ledger: CKETH_CANISTER_ID,
+            ledger: CKETH_LEDGER_CANISTER_ID,
             name: "ckETH",
             symbol: "ckETH",
             index: "",
@@ -738,7 +738,7 @@ describe("ft test suite", () => {
             decimals: 8,
           },
           {
-            ledger: CKETH_CANISTER_ID,
+            ledger: CKETH_LEDGER_CANISTER_ID,
             name: "ckETH",
             symbol: "ckETH",
             index: "",
@@ -814,7 +814,7 @@ describe("ft test suite", () => {
             decimals: 8,
           },
           {
-            ledger: CKETH_CANISTER_ID,
+            ledger: CKETH_LEDGER_CANISTER_ID,
             name: "ckETH",
             symbol: "ckETH",
             index: "",
@@ -839,10 +839,10 @@ describe("ft test suite", () => {
       const expectedResult = {
         to: [
           "2ouva-viaaa-aaaaq-aaamq-cai",
+          CKETH_LEDGER_CANISTER_ID,
           CKBTC_CANISTER_ID,
           "ryjl3-tyaaa-aaaaa-aaaba-cai",
           NFIDW_CANISTER_ID,
-          CKETH_CANISTER_ID,
         ],
         from: ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
       }

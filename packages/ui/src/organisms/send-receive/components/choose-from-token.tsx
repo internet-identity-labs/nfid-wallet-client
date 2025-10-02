@@ -108,7 +108,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       : modalType === IModalType.SEND &&
           token.getTokenAddress() === BTC_NATIVE_ID
         ? btcFee
-        : modalType === IModalType.SEND &&
+        : (modalType === IModalType.SEND ||
+              modalType === IModalType.CONVERT_TO_CKETH) &&
             token.getTokenAddress() === ETH_NATIVE_ID
           ? ethFee
           : token.getTokenFee()
@@ -179,6 +180,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       !isMaxClicked ||
       !token ||
       fee === undefined ||
+      fee === BigInt(0) ||
       userBalance === undefined
     )
       return

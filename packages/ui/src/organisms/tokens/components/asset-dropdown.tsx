@@ -24,7 +24,7 @@ import {
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
-  CKETH_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -135,7 +135,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             handler={onConvertToCkEth}
           />
         )}
-        {token.getTokenAddress() === CKETH_CANISTER_ID && (
+        {token.getTokenAddress() === CKETH_LEDGER_CANISTER_ID && (
           <DropdownOption
             label="Convert"
             icon={

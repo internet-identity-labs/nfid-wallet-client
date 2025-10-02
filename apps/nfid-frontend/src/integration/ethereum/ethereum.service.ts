@@ -26,25 +26,17 @@ import {
   chainFusionSignerService,
 } from "../bitcoin/services/chain-fusion-signer.service"
 import { patronService } from "../bitcoin/services/patron.service"
-import { CKETH_ABI, CKETH_FEE } from "./cketh.constants"
+import { CKETH_ABI } from "./cketh.constants"
 import { getWalletDelegation } from "../facade/wallet"
+import {
+  MINTER_ADDRESS,
+  CKETH_MINTER_CANISTER_ID,
+  CKETH_NETWORK_FEE,
+  INFURA_API_KEY,
+  CHAIN_ID,
+  CKETH_LEDGER_CANISTER_ID,
+} from "@nfid/integration/token/constants"
 import { KEY_ETH_ADDRESS } from "packages/integration/src/lib/authentication/storage"
-
-const INFURA_API_KEY = "010993c30ae14b2b94ff239547b6ebbe"
-
-//MAINNET
-// let chainId = BigInt(1)
-// const MINTER_ADDRESS = "0x18901044688D3756C35Ed2b36D93e6a5B8e00E68"
-// const MINTER_CANISTER_ID = "sv3dd-oaaaa-aaaar-qacoa-cai"
-// const LEDGER_CANISTER_ID = "ss2fx-dyaaa-aaaar-qacoq-cai"
-// const ICP_NETWORK_FEE = BigInt(2000000000000)
-
-//TESTNET
-let chainId = BigInt(11155111)
-const MINTER_ADDRESS = "0x2D39863d30716aaf2B7fFFd85Dd03Dda2BFC2E38"
-const MINTER_CANISTER_ID = "jzenf-aiaaa-aaaar-qaa7q-cai"
-const LEDGER_CANISTER_ID = "apia6-jaaaa-aaaar-qabma-cai"
-const ICP_NETWORK_FEE = BigInt(10000000000)
 
 export type SendEthFee = {
   gasUsed: bigint
@@ -62,6 +54,10 @@ export type CkEthToEthFee = {
 }
 
 export type EthToCkEthFee = {
+  gasUsed: bigint
+  maxPriorityFeePerGas: bigint
+  maxFeePerGas: bigint
+  baseFeePerGas: bigint
   ethereumNetworkFee: bigint
   amountToReceive: bigint
   icpNetworkFee: bigint
@@ -71,7 +67,7 @@ export class EthereumService {
   private provider: InfuraProvider
 
   constructor() {
-    this.provider = new InfuraProvider(chainId, INFURA_API_KEY)
+    this.provider = new InfuraProvider(CHAIN_ID, INFURA_API_KEY)
   }
 
   public async getQuickAddress() {
@@ -136,7 +132,17 @@ export class EthereumService {
   }
 
   //deposit eth to ckETH
-  public async convertToCkEth(identity: SignIdentity, amount: string) {
+  public async convertToCkEth(
+    identity: SignIdentity,
+    amount: string,
+    gas: {
+      gasUsed: bigint
+      maxPriorityFeePerGas: bigint
+      maxFeePerGas: bigint
+      baseFeePerGas: bigint
+    },
+  ) {
+    debugger
     const ckEthContract = new Contract(MINTER_ADDRESS, CKETH_ABI, this.provider)
 
     let address = await this.getAddress(identity)
@@ -151,22 +157,17 @@ export class EthereumService {
       subaccount,
       { value: parseEther(amount) },
     )
-    const feeData = await this.provider.getFeeData()
     let nonce = await this.getTransactionCount(address)
 
-    const max_priority_fee_per_gas =
-      feeData.maxPriorityFeePerGas || BigInt(2000000000)
-    const max_fee_per_gas =
-      feeData.maxFeePerGas || max_priority_fee_per_gas + BigInt(5000000000)
     let trs_request: EthSignTransactionRequest = {
       to: trs.to,
       value: parseEther(amount),
       data: [trs.data],
       nonce: BigInt(nonce),
-      gas: trs.gasPrice || CKETH_FEE,
-      max_priority_fee_per_gas: max_priority_fee_per_gas,
-      max_fee_per_gas: max_fee_per_gas,
-      chain_id: chainId,
+      gas: gas.gasUsed,
+      max_priority_fee_per_gas: gas.maxPriorityFeePerGas,
+      max_fee_per_gas: gas.maxFeePerGas,
+      chain_id: CHAIN_ID,
     }
     let signedTransaction = await chainFusionSignerService.ethSignTransaction(
       identity,
@@ -196,8 +197,8 @@ export class EthereumService {
     }
 
     await this.approveTransfer(
-      LEDGER_CANISTER_ID,
-      MINTER_CANISTER_ID,
+      CKETH_LEDGER_CANISTER_ID,
+      CKETH_MINTER_CANISTER_ID,
       parsedAmount,
       identity,
     )
@@ -209,7 +210,7 @@ export class EthereumService {
 
     let ckEthMinter = await CkETHMinterCanister.create({
       agent,
-      canisterId: Principal.fromText(MINTER_CANISTER_ID),
+      canisterId: Principal.fromText(CKETH_MINTER_CANISTER_ID),
     })
 
     let result = await ckEthMinter.withdrawEth({
@@ -229,7 +230,7 @@ export class EthereumService {
       },
     }
 
-    transferICRC1(identity, LEDGER_CANISTER_ID, transferArgs)
+    transferICRC1(identity, CKETH_LEDGER_CANISTER_ID, transferArgs)
 
     return result
   }
@@ -265,6 +266,7 @@ export class EthereumService {
       ethereumNetworkFee,
     }
   }
+
   public async getEthToCkEthFee(
     identity: SignIdentity,
     amount: string,
@@ -289,7 +291,12 @@ export class EthereumService {
       data: txRequest.data,
     })
 
-    const feeData = await this.provider.getFeeData()
+    const feeData = await this.getFeeData()
+    if (!feeData.maxFeePerGas || !feeData.maxPriorityFeePerGas) {
+      throw new Error("getApproximateEthFee: Gas fee data is missing")
+    }
+
+    const baseFee = await this.getBaseFee()
     const maxPriorityFeePerGas =
       feeData.maxPriorityFeePerGas || BigInt(2_000_000_000)
 
@@ -302,10 +309,14 @@ export class EthereumService {
     )
 
     return {
+      maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
+      maxFeePerGas: feeData.maxFeePerGas,
+      gasUsed: gasEstimate,
+      baseFeePerGas: baseFee,
       ethereumNetworkFee,
       amountToReceive:
-        parseEther(amount.toString()) - ethereumNetworkFee - ICP_NETWORK_FEE,
-      icpNetworkFee: ICP_NETWORK_FEE,
+        parseEther(amount.toString()) - ethereumNetworkFee - CKETH_NETWORK_FEE,
+      icpNetworkFee: CKETH_NETWORK_FEE,
     }
   }
 
@@ -315,7 +326,7 @@ export class EthereumService {
   ): Promise<CkEthToEthFee> {
     const parsedAmount = parseEther(amount.toString())
     const identityLabsFee = this.getIdentityLabsFee(parsedAmount)
-    const amountToReceive = parsedAmount - identityLabsFee - ICP_NETWORK_FEE
+    const amountToReceive = parsedAmount - identityLabsFee - CKETH_NETWORK_FEE
 
     const gasEstimate = await this.estimateGas({
       to,
@@ -336,7 +347,7 @@ export class EthereumService {
     return {
       ethereumNetworkFee,
       amountToReceive,
-      icpNetworkFee: ICP_NETWORK_FEE * BigInt(2),
+      icpNetworkFee: CKETH_NETWORK_FEE * BigInt(2),
       identityLabsFee,
     }
   }
@@ -362,7 +373,7 @@ export class EthereumService {
     const nonce = await this.getTransactionCount(address)
 
     let request: EthSignTransactionRequest = {
-      chain_id: chainId,
+      chain_id: CHAIN_ID,
       to: to,
       value: parseEther(value),
       data: [],

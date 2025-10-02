@@ -6,7 +6,7 @@ import { FormProvider, useForm } from "react-hook-form"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
-  CKETH_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
   ETH_DECIMALS,
   ETH_NATIVE_ID,
   TRIM_ZEROS,
@@ -88,7 +88,7 @@ export const ConvertBTC = ({
       return (
         t.getTokenAddress() === ETH_NATIVE_ID ||
         t.getTokenAddress() === BTC_NATIVE_ID ||
-        t.getTokenAddress() === CKETH_CANISTER_ID ||
+        t.getTokenAddress() === CKETH_LEDGER_CANISTER_ID ||
         t.getTokenAddress() === CKBTC_CANISTER_ID
       )
     })
@@ -208,12 +208,16 @@ export const ConvertBTC = ({
 
     if (
       fromTokenAddress === ETH_NATIVE_ID ||
-      fromTokenAddress === CKETH_CANISTER_ID
+      fromTokenAddress === CKETH_LEDGER_CANISTER_ID
     ) {
       let convertResponse
 
       if (fromTokenAddress === ETH_NATIVE_ID) {
-        convertResponse = ethereumService.convertToCkEth(identity, amount)
+        convertResponse = ethereumService.convertToCkEth(
+          identity,
+          amount,
+          ethFee as EthToCkEthFee,
+        )
       } else {
         convertResponse = ethereumService.convertFromCkEth(
           ethAddress,
@@ -231,7 +235,7 @@ export const ConvertBTC = ({
 
           if (!initedTokens) return
 
-          if (fromToken.getTokenAddress() === CKETH_CANISTER_ID) {
+          if (fromToken.getTokenAddress() === CKETH_LEDGER_CANISTER_ID) {
             getTokensWithUpdatedBalance(
               [fromTokenAddress, toTokenAddress],
               initedTokens,
@@ -306,6 +310,7 @@ export const ConvertBTC = ({
     setSuccessMessage,
     initedTokens,
     btcFee,
+    ethFee,
     setIsConvertSuccess,
     ethAddress,
     mutateInitedTokens,

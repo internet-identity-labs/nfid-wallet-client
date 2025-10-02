@@ -21,6 +21,7 @@ import { FormValues, SendStatus } from "../types"
 import {
   getAccurateDateForStakeInSeconds,
   getTokensWithUpdatedBalance,
+  updateCachedInitedTokens,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
@@ -63,7 +64,8 @@ export const StakeFT = ({
     return tokens?.filter((token) => token.getTokenState() === State.Active)
   }, [tokens])
 
-  const initedTokens = useTokensInit(activeTokens)
+  const { initedTokens, mutate: mutateInitedTokens } =
+    useTokensInit(activeTokens)
 
   const tokensForStake = useMemo(() => {
     if (!initedTokens) return []
@@ -157,6 +159,7 @@ export const StakeFT = ({
           getTokensWithUpdatedBalance([ICP_CANISTER_ID], initedTokens).then(
             (updatedTokens) => {
               mutateWithTimestamp("tokens", updatedTokens, false)
+              updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
             },
           )
         })
@@ -198,6 +201,7 @@ export const StakeFT = ({
           initedTokens,
         ).then((updatedTokens) => {
           mutateWithTimestamp("tokens", updatedTokens, false)
+          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
         })
       })
   }, [
@@ -211,6 +215,7 @@ export const StakeFT = ({
     stakingParams,
     isMaxLockTimeSelected,
     isMinLockTimeSelected,
+    mutateInitedTokens,
   ])
 
   return (

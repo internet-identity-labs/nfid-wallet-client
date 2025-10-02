@@ -47,7 +47,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   color = "bg-gray-100 dark:bg-zinc-700",
 }) => {
   const { setValue, register } = useFormContext()
-  const initedTokens = useTokensInit(tokens, false, false)
+  const { initedTokens } = useTokensInit(tokens)
   const initedToken = useMemo(() => {
     if (!token || !initedTokens) return undefined
     return initedTokens.find(

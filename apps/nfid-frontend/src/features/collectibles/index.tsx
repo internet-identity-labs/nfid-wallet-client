@@ -50,7 +50,7 @@ const NFTsPage = () => {
     return tokens?.filter((token) => token.getTokenState() === State.Active)
   }, [tokens])
 
-  const initedTokens = useTokensInit(activeTokens)
+  const { initedTokens } = useTokensInit(activeTokens)
 
   const icp = useMemo(() => {
     if (!initedTokens) return

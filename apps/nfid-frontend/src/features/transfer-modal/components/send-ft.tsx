@@ -22,12 +22,7 @@ import {
 } from "@nfid/integration/token/icp"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
-import {
-  mutate,
-  mutateWithTimestamp,
-  useSWR,
-  useSWRWithTimestamp,
-} from "@nfid/swr"
+import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
@@ -51,6 +46,7 @@ import {
   getVaultsAccountsOptions,
   validateICRC1Address,
   addressValidators,
+  updateCachedInitedTokens,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
@@ -164,7 +160,11 @@ export const TransferFT = ({
     return tokensWithBalance
   }, [tokens, hideZeroBalance])
 
-  const initedTokens = useTokensInit(activeTokens)
+  const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(
+    activeTokens,
+    isBtcAddressLoading,
+    isEthAddressLoading,
+  )
 
   const token = useMemo(() => {
     return initedTokens?.find(
@@ -289,9 +289,7 @@ export const TransferFT = ({
             initedTokens,
           ).then((updatedTokens) => {
             mutateWithTimestamp("tokens", updatedTokens, false)
-            // mutate("fullUsdValue")
-            //mutate("ftUsdValue")
-            mutate("initedTokens")
+            updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
           })
         })
         .catch((e) => {
@@ -326,6 +324,7 @@ export const TransferFT = ({
             initedTokens,
           ).then((updatedTokens) => {
             mutateWithTimestamp("tokens", updatedTokens, false)
+            updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
           })
         })
         .catch((e) => {
@@ -440,6 +439,7 @@ export const TransferFT = ({
           initedTokens,
         ).then((updatedTokens) => {
           mutateWithTimestamp("tokens", updatedTokens, false)
+          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
         })
       })
       .catch((e) => {
@@ -462,6 +462,7 @@ export const TransferFT = ({
     btcFee,
     ethFee,
     identity,
+    mutateInitedTokens,
   ])
 
   return (

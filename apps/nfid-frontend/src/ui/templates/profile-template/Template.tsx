@@ -155,7 +155,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     return tokens.filter((token) => token.getTokenState() === State.Active)
   }, [tokens])
 
-  const initedTokens = useTokensInit(
+  const { initedTokens } = useTokensInit(
     activeTokens,
     isBtcAddressLoading,
     isEthAddressLoading,
@@ -198,17 +198,11 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     isEthAddressLoading,
   ])
 
-  const {
-    data: fullUsdBalance,
-    isLoading: isUsdLoading,
-    isValidating,
-  } = useSWR(
+  const { data: fullUsdBalance, isLoading: isUsdLoading } = useSWR(
     isReady ? "fullUsdValue" : null,
     async () => getFullUsdValue(nfts?.items!, initedTokens!),
     { revalidateOnFocus: false },
   )
-
-  console.log("fullUsdBalance", fullUsdBalance, isUsdLoading, isValidating)
 
   const {
     data: isEmailDeviceOutOfSyncWithII,

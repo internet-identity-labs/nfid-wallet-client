@@ -32,6 +32,7 @@ import { FormValues, SendStatus } from "../types"
 import {
   getConversionTokenAddress,
   getTokensWithUpdatedBalance,
+  updateCachedInitedTokens,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
@@ -93,7 +94,8 @@ export const ConvertBTC = ({
     })
   }, [tokens])
 
-  const initedTokens = useTokensInit(tokensToConvert)
+  const { initedTokens, mutate: mutateInitedTokens } =
+    useTokensInit(tokensToConvert)
 
   useEffect(() => {
     setToTokenAddress(getConversionTokenAddress(fromTokenAddress))
@@ -235,6 +237,7 @@ export const ConvertBTC = ({
               initedTokens,
             ).then((updatedTokens) => {
               mutateWithTimestamp("tokens", updatedTokens, false)
+              updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
             })
           }
         })
@@ -279,6 +282,7 @@ export const ConvertBTC = ({
             initedTokens,
           ).then((updatedTokens) => {
             mutateWithTimestamp("tokens", updatedTokens, false)
+            updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
           })
         }
       })
@@ -304,6 +308,7 @@ export const ConvertBTC = ({
     btcFee,
     setIsConvertSuccess,
     ethAddress,
+    mutateInitedTokens,
   ])
 
   return (

@@ -71,7 +71,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   const [isFeeLoading, setIsFeeLoading] = useState(false)
   const isChangingToken = useRef(false)
 
-  const initedTokens = useTokensInit(tokens)
+  const { initedTokens } = useTokensInit(tokens)
   const initedToken = useMemo(() => {
     if (!token || !initedTokens) return undefined
     return initedTokens.find(

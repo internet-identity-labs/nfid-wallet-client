@@ -104,7 +104,7 @@ const TokensPage = () => {
     return tokens?.filter((token) => token.getTokenState() === State.Active)
   }, [tokens])
 
-  const initedTokens = useTokensInit(
+  const { initedTokens } = useTokensInit(
     activeTokens,
     isBtcAddressLoading,
     isEthAddressLoading,
@@ -233,7 +233,7 @@ const TokensPage = () => {
           tokensIniting={!initedTokens}
           activeTokens={initedTokens || []}
           allTokens={tokens || []}
-          isTokensLoading={!activeTokens}
+          isTokensLoading={!initedTokens}
           onSubmitIcrc1Pair={onSubmitIcrc1Pair}
           onFetch={onFetch}
           profileConstants={ProfileConstants}

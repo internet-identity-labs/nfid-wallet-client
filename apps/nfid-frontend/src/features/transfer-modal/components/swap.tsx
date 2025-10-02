@@ -33,7 +33,11 @@ import { swapService } from "frontend/integration/swap/service/swap-service"
 import { userPrefService } from "frontend/integration/user-preferences/user-pref-service"
 
 import { FormValues } from "../types"
-import { getQuoteData, getTokensWithUpdatedBalance } from "../utils"
+import {
+  getQuoteData,
+  getTokensWithUpdatedBalance,
+  updateCachedInitedTokens,
+} from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 const QUOTE_REFETCH_TIMER = 30
@@ -130,7 +134,8 @@ export const SwapFT = ({
     return tokensWithBalance
   }, [tokens, hideZeroBalance])
 
-  const initedTokens = useTokensInit(activeTokens)
+  const { initedTokens, mutate: mutateInitedTokens } =
+    useTokensInit(activeTokens)
 
   const [getTransaction, setGetTransaction] = useState<
     SwapTransaction | undefined
@@ -347,6 +352,7 @@ export const SwapFT = ({
           initedTokens,
         ).then((updatedTokens) => {
           mutateWithTimestamp("tokens", updatedTokens, false)
+          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
         })
       })
 
@@ -360,6 +366,7 @@ export const SwapFT = ({
     setErrorMessage,
     setSuccessMessage,
     identity,
+    mutateInitedTokens,
   ])
 
   return (

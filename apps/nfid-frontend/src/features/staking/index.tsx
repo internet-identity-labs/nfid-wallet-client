@@ -36,7 +36,7 @@ const StakingPage = () => {
     return tokens?.filter((token) => token.getTokenState() === State.Active)
   }, [tokens])
 
-  const initedTokens = useTokensInit(activeTokens)
+  const { initedTokens } = useTokensInit(activeTokens)
 
   const {
     data: stakedTokens,

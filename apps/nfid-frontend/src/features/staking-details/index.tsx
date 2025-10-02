@@ -31,7 +31,7 @@ const StakingDetailsPage = () => {
     return tokens?.filter((token) => token.getTokenState() === State.Active)
   }, [tokens])
 
-  const initedTokens = useTokensInit(activeTokens)
+  const { initedTokens } = useTokensInit(activeTokens)
 
   const token = useMemo(() => {
     return tokens.find((t) => t.getTokenSymbol() === tokenSymbol)

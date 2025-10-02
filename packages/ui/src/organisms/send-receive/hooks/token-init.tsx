@@ -1,41 +1,55 @@
 import { Principal } from "@dfinity/principal"
-import useSWR from "swr"
 
+import { useEffect } from "react"
+import { useSWR } from "@nfid/swr"
 import { authState } from "@nfid/integration"
-import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
+import { ftService } from "frontend/integration/ft/ft-service"
+import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
+import { updateCachedInitedTokens } from "frontend/features/transfer-modal/utils"
+
+const TOKENS_REFRESH_INTERVAL = 10000
 
 export const useTokensInit = (
   tokens: FT[] | undefined,
   isBtcAddressLoading?: boolean,
   isEthAddressLoading?: boolean,
 ) => {
-  const { data: initedTokens } = useSWR(
-    tokens && tokens.length > 0 ? "initedTokens" : null,
+  const {
+    data: initedTokens,
+    mutate,
+    isLoading,
+  } = useSWR(
+    tokens && tokens.length > 0
+      ? `initedTokens-${isBtcAddressLoading}-${isEthAddressLoading}`
+      : null,
     async () => {
       if (!tokens) return
 
       const { publicKey } = authState.getUserIdData()
       const principal = Principal.fromText(publicKey)
+      let initedTokens = await ftService.getInitedTokens(tokens, principal)
 
-      return await Promise.all(
-        tokens.map(async (token) => {
-          if (
-            token.getTokenAddress() === BTC_NATIVE_ID &&
-            isBtcAddressLoading
-          ) {
-            return token
-          }
-          if (
-            token.getTokenAddress() === ETH_NATIVE_ID &&
-            isEthAddressLoading
-          ) {
-            return token
-          }
-          return await token.init(principal)
-        }),
+      if (isBtcAddressLoading || isEthAddressLoading) {
+        return initedTokens
+      }
+
+      const hasUninitedTokens = initedTokens.some(
+        (token) =>
+          (token.getTokenAddress() === BTC_NATIVE_ID ||
+            token.getTokenAddress() === ETH_NATIVE_ID) &&
+          !token.isInited(),
       )
+
+      if (hasUninitedTokens) {
+        initedTokens = await ftService.initializeBtcEthTokensWhenReady(
+          initedTokens,
+          principal,
+        )
+      }
+
+      return initedTokens
     },
     {
       revalidateOnFocus: false,
@@ -43,5 +57,15 @@ export const useTokensInit = (
     },
   )
 
-  return initedTokens
+  useEffect(() => {
+    if (!tokens || tokens.length === 0) return
+
+    const interval = setInterval(async () => {
+      await updateCachedInitedTokens(tokens, mutate)
+    }, TOKENS_REFRESH_INTERVAL)
+
+    return () => clearInterval(interval)
+  }, [tokens, mutate])
+
+  return { initedTokens, mutate, isLoading }
 }

@@ -38,11 +38,7 @@ const StakingPage = () => {
 
   const { initedTokens } = useTokensInit(activeTokens)
 
-  const {
-    data: stakedTokens,
-    isLoading,
-    isValidating,
-  } = useSWRWithTimestamp(
+  const { data: stakedTokens, isLoading } = useSWRWithTimestamp(
     initedTokens ? "stakedTokens" : null,
     () => fetchStakedTokens(initedTokens!, false),
     {

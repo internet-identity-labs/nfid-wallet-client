@@ -16,6 +16,8 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 
 import { nftService } from "frontend/integration/nft/nft-service"
 import { portfolioService } from "frontend/integration/portfolio-balance/portfolio-service"
+import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
+import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
 const userId = "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae"
 const principal = Principal.fromText(userId)
@@ -522,8 +524,22 @@ describe("ft test suite", () => {
             decimals: 18,
           },
         ])
+
+      // Mock getWalletDelegation to return a resolved promise
+      jest
+        .spyOn(
+          require("frontend/integration/facade/wallet"),
+          "getWalletDelegation",
+        )
+        .mockResolvedValue({
+          getPrincipal: () => principal,
+          sign: jest.fn(),
+        } as any)
+
       const nfts = await nftService.getNFTs(principal, 1, 10)
       const result: FT[] = await ftService.getTokens(userId)
+
+      //const stakes = stakingService.getStakedTokens()
 
       const balance = await portfolioService.getPortfolioUSDBalance(
         nfts.items,

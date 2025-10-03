@@ -1,3 +1,4 @@
+import { TtlStorage } from "@nfid/client-db"
 import { State } from "../enum/enums"
 import { ICRC1 as ICRC1UserData } from "../types"
 import { mapCategory, mapState } from "../util"

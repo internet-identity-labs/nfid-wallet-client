@@ -1,9 +1,5 @@
 import { SignIdentity } from "@dfinity/agent"
 import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
-import {
-  authStorage,
-  KEY_BTC_ADDRESS,
-} from "packages/integration/src/lib/authentication/storage"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
 import { Balance } from "@nfid/integration"
@@ -19,6 +15,7 @@ import { mempoolService } from "./services/mempool.service"
 import { patronService } from "./services/patron.service"
 import { satoshiService } from "./services/satoshi.service"
 import { EMPTY, expand, firstValueFrom, from, last } from "rxjs"
+import { KEY_BTC_ADDRESS } from "packages/integration/src/lib/authentication/storage"
 
 export type BlockIndex = bigint
 
@@ -39,7 +36,7 @@ export type CkBtcToBtcFee = {
 
 export class BitcoinService {
   public async getQuickAddress(): Promise<string> {
-    const { cachedValue } = await this.getAddressFromCache()
+    const { cachedValue } = this.getAddressFromCache()
 
     if (cachedValue == null) {
       let identity = await getWalletDelegation()
@@ -50,7 +47,7 @@ export class BitcoinService {
   }
 
   public async getAddress(identity: SignIdentity): Promise<Address> {
-    const { cachedValue, key } = await this.getAddressFromCache()
+    const { cachedValue, key } = this.getAddressFromCache()
 
     if (cachedValue != null) {
       return cachedValue as string
@@ -58,7 +55,7 @@ export class BitcoinService {
 
     await patronService.askToPayFor(identity)
     const address: string = await chainFusionSignerService.getAddress(identity)
-    await authStorage.set(key, address)
+    localStorage.setItem(key, address)
     return address
   }
 
@@ -88,7 +85,7 @@ export class BitcoinService {
       return { fee_satoshis: BigInt(0), utxos: [] }
     }
 
-    const confirmationResult = await this.ensureWalletConfirmations(identity)
+    const confirmationResult = await this.ensureWalletConfirmations()
     if (!confirmationResult.ok) {
       throw new Error(confirmationResult.error)
     }
@@ -126,7 +123,7 @@ export class BitcoinService {
     identity: SignIdentity,
     amount: string,
   ): Promise<BtcToCkBtcFee> {
-    const confirmationResult = await this.ensureWalletConfirmations(identity)
+    const confirmationResult = await this.ensureWalletConfirmations()
     if (!confirmationResult.ok) {
       throw new Error(confirmationResult.error)
     }
@@ -226,9 +223,9 @@ export class BitcoinService {
     return txId
   }
 
-  private async getAddressFromCache() {
+  private getAddressFromCache() {
     const key = KEY_BTC_ADDRESS
-    const cachedValue = await authStorage.get(key)
+    const cachedValue = localStorage.getItem(key)
 
     return {
       cachedValue,
@@ -236,10 +233,11 @@ export class BitcoinService {
     }
   }
 
-  private async ensureWalletConfirmations(
-    identity: SignIdentity,
-  ): Promise<{ ok: boolean; error?: string }> {
-    const { cachedValue } = await this.getAddressFromCache()
+  private async ensureWalletConfirmations(): Promise<{
+    ok: boolean
+    error?: string
+  }> {
+    const { cachedValue } = this.getAddressFromCache()
     if (!cachedValue) {
       return {
         ok: false,

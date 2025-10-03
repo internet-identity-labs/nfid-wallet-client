@@ -1,5 +1,3 @@
-import { Ed25519KeyIdentity } from "@dfinity/identity"
-import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { FT } from "src/integration/ft/ft"
@@ -19,16 +17,10 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 import { nftService } from "frontend/integration/nft/nft-service"
 import { portfolioService } from "frontend/integration/portfolio-balance/portfolio-service"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
+import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
 const userId = "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae"
 const principal = Principal.fromText(userId)
-const pairPrincipal =
-  "ayigd-u23ly-o65by-pzgtm-udimh-ktcue-hyzwp-uqccr-t3vl4-b3mxe-bae"
-
-const identityJSON: JsonnableEd25519KeyIdentity = [
-  "302a300506032b6570032100131aeb46319e402bb2930889ab86caf1175efe71e9f313a4c5f91bb91153f63e",
-  "2803f8e8547e0ed4deced3c645c9758fc72b6e61f60aa7b46f7705925b8a28fe",
-]
 
 describe("ft test suite", () => {
   jest.setTimeout(35000)
@@ -532,18 +524,24 @@ describe("ft test suite", () => {
             decimals: 18,
           },
         ])
+
+      // Mock getWalletDelegation to return a resolved promise
+      jest
+        .spyOn(
+          require("frontend/integration/facade/wallet"),
+          "getWalletDelegation",
+        )
+        .mockResolvedValue({
+          getPrincipal: () => principal,
+          sign: jest.fn(),
+        } as any)
+
       const nfts = await nftService.getNFTs(principal, 1, 10)
       const result: FT[] = await ftService.getTokens(userId)
-      let edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
 
-      const stakedTokens = await stakingService.getStakedTokens(
-        pairPrincipal,
-        pairPrincipal,
-        Promise.resolve(edId),
-      )
+      //const stakes = stakingService.getStakedTokens()
 
       const balance = await portfolioService.getPortfolioUSDBalance(
-        principal,
         nfts.items,
         result,
       )

@@ -8,11 +8,10 @@ import { TotalBalance } from "./types"
 
 export interface StakingService {
   getStakedTokens(
-    userId: string,
-    publicKey: string,
     identity: Promise<SignIdentity>,
+    tokens: FT[],
     refetch?: boolean,
-  ): Promise<Array<StakedToken>>
+  ): Promise<Array<StakedToken> | undefined>
   getTotalBalances(stakedToken: StakedToken[]): TotalBalance | undefined
   getStakeCalculator(
     token: FT,

@@ -9,6 +9,7 @@ import { IHandleWithLoading } from ".."
 import { RemoveDeviceInUseError } from "../components/remove-device-in-use-error"
 import { securityConnector } from "../device-connector"
 import { IDevice } from "../types"
+import { Spinner } from "packages/ui/src/atoms/spinner"
 
 interface IDeleteRecoveryPhraseModal
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -21,6 +22,7 @@ export const DeleteRecoveryPhrase: React.FC<IDeleteRecoveryPhraseModal> = ({
   handleWithLoading,
 }) => {
   const [phrase, setPhrase] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
   const [isModalVisible, setIsModalVisible] = React.useState(false)
   const { activeDevicePrincipalId } = authState.get()
   const isInUseDevice = activeDevicePrincipalId === device.principal
@@ -61,12 +63,14 @@ export const DeleteRecoveryPhrase: React.FC<IDeleteRecoveryPhraseModal> = ({
           id="delete-recovery-button"
           type="red"
           block
+          icon={isLoading ? <Spinner className="w-5 h-5 text-white" /> : null}
           onClick={() =>
             handleWithLoading(
               async () => {
-                const response = await securityConnector.deleteRecoveryPhrase(
-                  phrase,
-                )
+                setIsLoading(true)
+                const response =
+                  await securityConnector.deleteRecoveryPhrase(phrase)
+                setIsLoading(false)
                 return response
               },
               () => setIsModalVisible(false),

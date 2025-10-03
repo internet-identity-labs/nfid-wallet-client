@@ -1,7 +1,6 @@
 import { Principal } from "@dfinity/principal"
 
 import { authState } from "@nfid/integration"
-import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
@@ -20,27 +19,6 @@ export const getUserPrincipalId = async (): Promise<{
   }
 }
 
-export const initTokens = async (
-  tokens: FT[],
-  isBtcAddressLoading: boolean,
-  isEthAddressLoading: boolean,
-) => {
-  const { publicKey } = await getUserPrincipalId()
-
-  return await Promise.all(
-    tokens.map((token) => {
-      if (token.isInited()) return token
-      if (token.getTokenAddress() === BTC_NATIVE_ID && isBtcAddressLoading) {
-        return token
-      }
-      if (token.getTokenAddress() === ETH_NATIVE_ID && isEthAddressLoading) {
-        return token
-      }
-      return token.init(Principal.fromText(publicKey))
-    }),
-  )
-}
-
 export const fetchTokens = async () => {
   const { userPrincipal } = await getUserPrincipalId()
   return await ftService.getTokens(userPrincipal)
@@ -56,11 +34,6 @@ export const filterNotActiveNotZeroBalancesTokens = async (
   )
 }
 
-export const getFullUsdValue = async (nfts: NFT[] | undefined, ft: FT[]) => {
-  const { publicKey } = authState.getUserIdData()
-  return await portfolioService.getPortfolioUSDBalance(
-    Principal.fromText(publicKey),
-    nfts,
-    ft,
-  )
+export const getFullUsdValue = async (nfts: NFT[], ft: FT[]) => {
+  return portfolioService.getPortfolioUSDBalance(nfts, ft)
 }

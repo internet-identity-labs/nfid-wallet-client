@@ -32,7 +32,9 @@ import { FormValues, SendStatus } from "../types"
 import {
   getConversionTokenAddress,
   getTokensWithUpdatedBalance,
+  updateCachedInitedTokens,
 } from "../utils"
+import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 interface ConvertBTCProps {
   preselectedSourceTokenAddress: string | undefined
@@ -92,21 +94,26 @@ export const ConvertBTC = ({
     })
   }, [tokens])
 
+  const { initedTokens, mutate: mutateInitedTokens } =
+    useTokensInit(tokensToConvert)
+
   useEffect(() => {
     setToTokenAddress(getConversionTokenAddress(fromTokenAddress))
   }, [fromTokenAddress])
 
   const fromToken = useMemo(() => {
-    return tokens.find(
+    if (!initedTokens) return
+    return initedTokens.find(
       (token: FT) => token.getTokenAddress() === fromTokenAddress,
     )
-  }, [fromTokenAddress, tokens])
+  }, [fromTokenAddress, initedTokens])
 
   const toToken = useMemo(() => {
-    return tokens.find(
+    if (!initedTokens) return
+    return initedTokens.find(
       (token: FT) => token.getTokenAddress() === toTokenAddress,
     )
-  }, [toTokenAddress, tokens])
+  }, [toTokenAddress, initedTokens])
 
   useEffect(() => {
     setConversionError(undefined)
@@ -226,12 +233,15 @@ export const ConvertBTC = ({
           )
           setStatus(SendStatus.COMPLETED)
 
+          if (!initedTokens) return
+
           if (fromToken.getTokenAddress() === CKETH_LEDGER_CANISTER_ID) {
             getTokensWithUpdatedBalance(
               [fromTokenAddress, toTokenAddress],
-              tokens,
+              initedTokens,
             ).then((updatedTokens) => {
               mutateWithTimestamp("tokens", updatedTokens, false)
+              updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
             })
           }
         })
@@ -268,13 +278,15 @@ export const ConvertBTC = ({
           `Conversion from ${amount} ${fromToken.getTokenSymbol()} successful`,
         )
         setStatus(SendStatus.COMPLETED)
+        if (!initedTokens) return
 
         if (fromToken.getTokenAddress() === CKBTC_CANISTER_ID) {
           getTokensWithUpdatedBalance(
             [fromTokenAddress, toTokenAddress],
-            tokens,
+            initedTokens,
           ).then((updatedTokens) => {
             mutateWithTimestamp("tokens", updatedTokens, false)
+            updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
           })
         }
       })
@@ -296,11 +308,12 @@ export const ConvertBTC = ({
     fromTokenAddress,
     setErrorMessage,
     setSuccessMessage,
-    tokens,
+    initedTokens,
     btcFee,
     ethFee,
     setIsConvertSuccess,
     ethAddress,
+    mutateInitedTokens,
   ])
 
   return (

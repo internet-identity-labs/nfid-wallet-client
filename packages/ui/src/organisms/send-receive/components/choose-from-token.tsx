@@ -23,7 +23,7 @@ import {
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
-import { useTokenInit } from "../hooks/token-init"
+import { useTokensInit } from "../hooks/token-init"
 import { getMaxAmountFee, IModalType } from "../utils"
 import { BALANCE_EDGE_LENGTH } from "./swap-form"
 
@@ -35,7 +35,7 @@ interface ChooseFromTokenProps {
   balance?: bigint | undefined
   value?: string
   setFromChosenToken?: (value: string) => void
-  usdRate?: string
+  usdRate?: string | null
   title: string
   isResponsive?: boolean
   setIsResponsive?: (v: boolean) => void
@@ -71,7 +71,13 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   const [isFeeLoading, setIsFeeLoading] = useState(false)
   const isChangingToken = useRef(false)
 
-  const initedToken = useTokenInit(token)
+  const { initedTokens } = useTokensInit(tokens)
+  const initedToken = useMemo(() => {
+    if (!token || !initedTokens) return undefined
+    return initedTokens.find(
+      (t) => t.getTokenAddress() === token.getTokenAddress(),
+    )
+  }, [token, initedTokens])
 
   const {
     setValue,
@@ -80,8 +86,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     trigger,
     clearErrors,
   } = useFormContext()
-  const userBalance = balance !== undefined ? balance : token!.getTokenBalance()
-  const decimals = token!.getTokenDecimals()
+  const userBalance = balance !== undefined ? balance : token?.getTokenBalance()
+  const decimals = token?.getTokenDecimals()
 
   useEffect(() => {
     if (!token) return
@@ -208,7 +214,20 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     }
   }, [initedToken])
 
-  if (!decimals || !token) return null
+  if (!token || decimals === undefined) {
+    return (
+      <div
+        id={"sourceSection"}
+        className={clsx(
+          "border rounded-[12px] p-4 dark:bg-[#FFFFFF0D]",
+          "border-black dark:border-zinc-500",
+          isResponsive ? "h-[168px]" : "h-[100px]",
+        )}
+      >
+        <Skeleton className="w-[124px] h-[34px] rounded-[6px]" />
+      </div>
+    )
+  }
 
   return (
     <div

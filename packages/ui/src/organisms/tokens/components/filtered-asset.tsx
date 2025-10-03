@@ -58,9 +58,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({
         await token.showToken()
         const { publicKey } = await getUserPrincipalId()
 
-        if (!token.isInited()) {
-          await token.init(Principal.fromText(publicKey))
-        }
+        await token.init(Principal.fromText(publicKey))
 
         const updatedTokens = [...tokens]
         await mutateWithTimestamp("tokens", updatedTokens, false)
@@ -114,8 +112,8 @@ export const FilteredToken: FC<FilteredTokenProps> = ({
               token.getTokenState() !== State.Active
                 ? IconSvgEyeClosed
                 : isDarkTheme
-                ? IconSvgEyeShownWhite
-                : IconSvgEyeShown
+                  ? IconSvgEyeShownWhite
+                  : IconSvgEyeShown
             }
             alt="Show NFID asset"
             onClick={() =>

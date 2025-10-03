@@ -31,6 +31,7 @@ import {
   SidePanelOption,
   StakingSidePanel,
 } from "./components/staking-side-panel"
+import { FT } from "frontend/integration/ft/ft"
 
 export interface StakingDetailsProps {
   stakedToken?: StakedToken
@@ -41,6 +42,7 @@ export interface StakingDetailsProps {
   updateICPDelegates: (value: string, userNeuron?: bigint) => Promise<void>
   identity?: SignIdentity
   validateNeuron: (neuronId: string) => Promise<true | string>
+  initedTokens?: FT[]
 }
 
 export const StakingDetails: FC<StakingDetailsProps> = ({
@@ -52,6 +54,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
   updateICPDelegates,
   identity,
   validateNeuron,
+  initedTokens,
 }) => {
   const [sidePanelOption, setSidePanelOption] =
     useState<SidePanelOption | null>(null)
@@ -102,9 +105,14 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
     }
 
     update(userNeuron, stakeId).then(async () => {
-      await mutate("stakedTokens", () => fetchStakedTokens(true), {
-        revalidate: true,
-      })
+      if (!initedTokens) return
+      await mutate(
+        initedTokens ? "stakedTokens" : null,
+        () => fetchStakedTokens(initedTokens, true),
+        {
+          revalidate: true,
+        },
+      )
 
       setIsDelegateLoading(false)
       setIsModalOpen(false)
@@ -165,6 +173,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
         delegates={delegates}
         setIsModalOpen={setIsModalOpen}
         isDelegateLoading={isDelegateLoading}
+        initedTokens={initedTokens}
       />
       {isLoading || !stakedToken ? (
         <>

@@ -12,14 +12,12 @@ import {
   IStakingICPDelegates,
 } from "frontend/integration/staking/types"
 
-import { getUserPrincipalId } from "../fungible-token/utils"
+import { FT } from "frontend/integration/ft/ft"
 
-export const fetchStakedTokens = async (refetch?: boolean) => {
-  const { userPrincipal, publicKey } = await getUserPrincipalId()
+export const fetchStakedTokens = async (tokens: FT[], refetch?: boolean) => {
   return await stakingService.getStakedTokens(
-    userPrincipal,
-    publicKey,
     getWalletDelegation(),
+    tokens,
     refetch,
   )
 }

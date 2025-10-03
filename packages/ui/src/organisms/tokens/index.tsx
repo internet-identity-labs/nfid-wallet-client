@@ -112,7 +112,7 @@ export const Tokens: FC<TokensProps> = ({
   }
 
   const sortedTokens = useMemo(() => {
-    const getUSDBalance = (token: typeof activeTokens[0]) => {
+    const getUSDBalance = (token: (typeof activeTokens)[0]) => {
       const balance = token.getUSDBalance()
       return balance ? new BigNumber(balance) : null
     }
@@ -125,7 +125,7 @@ export const Tokens: FC<TokensProps> = ({
         if (balanceA === null) return 1
         if (balanceB === null) return -1
 
-        return balanceA.comparedTo(balanceB)
+        return balanceA.comparedTo(balanceB) || 0
       })
     }
 
@@ -137,7 +137,7 @@ export const Tokens: FC<TokensProps> = ({
         if (balanceA === null) return 1
         if (balanceB === null) return -1
 
-        return balanceB.comparedTo(balanceA)
+        return balanceB.comparedTo(balanceA) || 0
       })
     }
 

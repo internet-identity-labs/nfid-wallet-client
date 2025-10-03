@@ -6,7 +6,7 @@ import {
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
 import { Skeleton } from "packages/ui/src/atoms/skeleton"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
-import { FC, useEffect } from "react"
+import { FC, useEffect, useMemo } from "react"
 import { useFormContext } from "react-hook-form"
 import { PriceImpactStatus } from "src/integration/swap/types/enums"
 import { PriceImpact } from "src/integration/swap/types/types"
@@ -16,14 +16,14 @@ import { ChooseFtModal, Tooltip } from "@nfid-frontend/ui"
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
-import { useTokenInit } from "../hooks/token-init"
+import { useTokensInit } from "../hooks/token-init"
 import { BALANCE_EDGE_LENGTH } from "./swap-form"
 
 interface ChooseToTokenProps {
   token: FT | undefined
   tokens?: FT[]
   setToChosenToken: (value: string) => void
-  usdRate: string | undefined
+  usdRate: string | undefined | null
   isLoading: boolean
   value?: string
   priceImpact?: PriceImpact
@@ -47,7 +47,13 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   color = "bg-gray-100 dark:bg-zinc-700",
 }) => {
   const { setValue, register } = useFormContext()
-  const initedToken = useTokenInit(token)
+  const { initedTokens } = useTokensInit(tokens)
+  const initedToken = useMemo(() => {
+    if (!token || !initedTokens) return undefined
+    return initedTokens.find(
+      (t) => t.getTokenAddress() === token.getTokenAddress(),
+    )
+  }, [token, initedTokens])
 
   useEffect(() => {
     setValue("to", value)
@@ -166,8 +172,8 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
                         priceImpact?.status === PriceImpactStatus.LOW
                           ? "text-green-700 dark:text-teal-500"
                           : priceImpact?.status === PriceImpactStatus.MEDIUM
-                          ? "text-orange-600 dark:text-amber-500"
-                          : "text-red-700 dark:text-red-500",
+                            ? "text-orange-600 dark:text-amber-500"
+                            : "text-red-700 dark:text-red-500",
                       )}
                     >
                       ({priceImpact?.priceImpact})

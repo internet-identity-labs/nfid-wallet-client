@@ -1,28 +1,71 @@
 import { Principal } from "@dfinity/principal"
-import { useEffect, useState } from "react"
 
+import { useEffect } from "react"
+import { useSWR } from "@nfid/swr"
 import { authState } from "@nfid/integration"
 
 import { FT } from "frontend/integration/ft/ft"
+import { ftService } from "frontend/integration/ft/ft-service"
+import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
+import { updateCachedInitedTokens } from "frontend/features/transfer-modal/utils"
 
-export const useTokenInit = (token: FT | undefined) => {
-  const [initedToken, setInitedToken] = useState<FT>()
+const TOKENS_REFRESH_INTERVAL = 10000
+
+export const useTokensInit = (
+  tokens: FT[] | undefined,
+  isBtcAddressLoading?: boolean,
+  isEthAddressLoading?: boolean,
+) => {
+  const {
+    data: initedTokens,
+    mutate,
+    isLoading,
+  } = useSWR(
+    tokens && tokens.length > 0
+      ? `initedTokens-${isBtcAddressLoading}-${isEthAddressLoading}`
+      : null,
+    async () => {
+      if (!tokens) return
+
+      const { publicKey } = authState.getUserIdData()
+      const principal = Principal.fromText(publicKey)
+      let initedTokens = await ftService.getInitedTokens(tokens, principal)
+
+      if (isBtcAddressLoading || isEthAddressLoading) {
+        return initedTokens
+      }
+
+      const hasUninitedTokens = initedTokens.some(
+        (token) =>
+          (token.getTokenAddress() === BTC_NATIVE_ID ||
+            token.getTokenAddress() === ETH_NATIVE_ID) &&
+          !token.isInited(),
+      )
+
+      if (hasUninitedTokens) {
+        initedTokens = await ftService.initializeBtcEthTokensWhenReady(
+          initedTokens,
+          principal,
+        )
+      }
+
+      return initedTokens
+    },
+    {
+      revalidateOnFocus: false,
+      revalidateOnMount: true,
+    },
+  )
 
   useEffect(() => {
-    if (!token) return
+    if (!tokens || tokens.length === 0) return
 
-    const initToken = async () => {
-      if (token.isInited()) {
-        setInitedToken(token)
-        return
-      }
-      const { publicKey } = authState.getUserIdData()
-      const initializedToken = await token.init(Principal.fromText(publicKey))
-      setInitedToken(initializedToken)
-    }
+    const interval = setInterval(async () => {
+      await updateCachedInitedTokens(tokens, mutate)
+    }, TOKENS_REFRESH_INTERVAL)
 
-    initToken()
-  }, [token])
+    return () => clearInterval(interval)
+  }, [tokens, mutate])
 
-  return initedToken
+  return { initedTokens, mutate, isLoading }
 }

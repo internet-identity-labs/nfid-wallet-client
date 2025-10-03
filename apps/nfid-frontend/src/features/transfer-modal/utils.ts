@@ -41,6 +41,7 @@ import {
 } from "frontend/integration/wallet/utils"
 
 import { fetchVaultWalletsBalances } from "../fungible-token/fetch-balances"
+import { ftService } from "frontend/integration/ft/ft-service"
 
 type ITransferRequest = {
   to: string
@@ -230,6 +231,22 @@ export const getQuoteData = async (
   } catch (error) {
     throw error
   }
+}
+
+export const updateCachedInitedTokens = async (
+  tokens: FT[],
+  mutateInitedTokens: any,
+) => {
+  const { publicKey } = authState.getUserIdData()
+  const principal = Principal.fromText(publicKey)
+  const freshInitedTokens = await ftService.getInitedTokens(
+    tokens,
+    principal,
+    true,
+  )
+  mutateInitedTokens(freshInitedTokens, false)
+  mutate("ftUsdValue")
+  mutate("fullUsdValue")
 }
 
 export const getTokensWithUpdatedBalance = async (

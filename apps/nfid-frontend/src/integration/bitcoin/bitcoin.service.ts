@@ -36,7 +36,7 @@ export type CkBtcToBtcFee = {
 
 export class BitcoinService {
   public async getQuickAddress(): Promise<string> {
-    const { cachedValue } = await this.getAddressFromCache()
+    const { cachedValue } = this.getAddressFromCache()
 
     if (cachedValue == null) {
       let identity = await getWalletDelegation()

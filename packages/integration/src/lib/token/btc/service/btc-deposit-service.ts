@@ -21,12 +21,12 @@ export class BtсDepositService {
       const btcAddress = await this.minter.getBtcAddress({
         owner: principal,
       })
-      console.log(
+      console.debug(
         `[BtсDepositService] Retrieved BTC address for principal: ${principal}`,
       )
       return btcAddress
     } catch (error) {
-      console.log(
+      console.debug(
         `[BtсDepositService] Error generating BTC address for principal: ${principal}`,
         error,
       )
@@ -44,7 +44,7 @@ export class BtсDepositService {
       try {
         await this.updateBalance(principal)
       } catch (error) {
-        console.error(
+        console.debug(
           "[BtсDepositService] updateBalance failed:",
           JSON.stringify(error, null, 2),
         )
@@ -63,7 +63,7 @@ export class BtсDepositService {
   }
 
   async updateBalance(principal: Principal) {
-    console.log(
+    console.debug(
       `[BtсDepositService] Checking for BTC deposit: ${principal.toText()}`,
     )
     return this.minter.updateBalance({ owner: principal })

@@ -74,7 +74,7 @@ export class FTImpl implements FT {
     try {
       this.tokenBalance = await bitcoinService.getQuickBalance()
     } catch (e) {
-      console.error("BitcoinService error: ", (e as Error).message)
+      console.debug("BitcoinService error: ", (e as Error).message)
       return
     }
 
@@ -82,7 +82,7 @@ export class FTImpl implements FT {
       this.tokenRate =
         await exchangeRateService.usdPriceForICRC1(CKBTC_CANISTER_ID)
     } catch (e) {
-      console.error("Bitcoin rate fetch error: ", (e as Error).message)
+      console.debug("Bitcoin rate fetch error: ", (e as Error).message)
     }
   }
 
@@ -90,7 +90,7 @@ export class FTImpl implements FT {
     try {
       this.tokenBalance = await ethereumService.getQuickBalance()
     } catch (e) {
-      console.error("EthereumService error: ", (e as Error).message)
+      console.debug("EthereumService error: ", (e as Error).message)
       return
     }
 

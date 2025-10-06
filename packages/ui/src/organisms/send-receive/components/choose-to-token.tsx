@@ -6,7 +6,7 @@ import {
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
 import { Skeleton } from "packages/ui/src/atoms/skeleton"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
-import { FC, useEffect, useMemo } from "react"
+import { FC, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
 import { PriceImpactStatus } from "src/integration/swap/types/enums"
 import { PriceImpact } from "src/integration/swap/types/types"
@@ -16,7 +16,6 @@ import { ChooseFtModal, Tooltip } from "@nfid-frontend/ui"
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
-import { useTokensInit } from "../hooks/token-init"
 import { BALANCE_EDGE_LENGTH } from "./swap-form"
 
 interface ChooseToTokenProps {
@@ -47,28 +46,21 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   color = "bg-gray-100 dark:bg-zinc-700",
 }) => {
   const { setValue, register } = useFormContext()
-  const { initedTokens } = useTokensInit(tokens)
-  const initedToken = useMemo(() => {
-    if (!token || !initedTokens) return undefined
-    return initedTokens.find(
-      (t) => t.getTokenAddress() === token.getTokenAddress(),
-    )
-  }, [token, initedTokens])
 
   useEffect(() => {
     setValue("to", value)
   }, [value])
 
   useEffect(() => {
-    if (!initedToken || !setIsResponsive) return
+    if (!token || !setIsResponsive) return
 
-    const balance = initedToken.getTokenBalanceFormatted()
+    const balance = token.getTokenBalanceFormatted()
     if (!balance || balance.length < BALANCE_EDGE_LENGTH) {
       setIsResponsive(false)
     } else {
       setIsResponsive(true)
     }
-  }, [initedToken])
+  }, [token])
 
   if (!token) return null
 
@@ -193,10 +185,10 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
           >
             Balance:&nbsp;
             <span id={"choose-to-token-balance"}>
-              {initedToken ? (
+              {token ? (
                 <>
-                  {initedToken.getTokenBalanceFormatted() || "0"}&nbsp;
-                  {initedToken.getTokenSymbol()}
+                  {token.getTokenBalanceFormatted() || "0"}&nbsp;
+                  {token.getTokenSymbol()}
                 </>
               ) : (
                 <Skeleton className="inline-block h-3 w-[80px]"></Skeleton>

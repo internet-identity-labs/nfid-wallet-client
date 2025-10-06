@@ -47,7 +47,7 @@ export interface ConvertUiProps {
   handleReverse: () => void
   btcFee?: BtcToCkBtcFee | CkBtcToBtcFee
   ethFee?: EthToCkEthFee | CkEthToEthFee
-  tokens: FT[]
+  tokens?: FT[]
 }
 
 export const ConvertUi: FC<ConvertUiProps> = ({

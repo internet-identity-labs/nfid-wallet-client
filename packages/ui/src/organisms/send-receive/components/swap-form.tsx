@@ -229,8 +229,8 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           {!amount
             ? "Enter an amount"
             : isQuoteLoading
-            ? "Fetching quotes 1 of 2"
-            : "Swap tokens"}
+              ? "Fetching quotes 1 of 2"
+              : "Swap tokens"}
         </Button>
       </div>
     </div>

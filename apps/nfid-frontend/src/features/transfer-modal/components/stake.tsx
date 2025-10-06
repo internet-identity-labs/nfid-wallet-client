@@ -8,7 +8,7 @@ import {
   ICP_ROOT_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
-import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
+import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutate, mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
@@ -60,12 +60,7 @@ export const StakeFT = ({
     { revalidateOnFocus: false, revalidateOnMount: false },
   )
 
-  const activeTokens = useMemo(() => {
-    return tokens?.filter((token) => token.getTokenState() === State.Active)
-  }, [tokens])
-
-  const { initedTokens, mutate: mutateInitedTokens } =
-    useTokensInit(activeTokens)
+  const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(tokens)
 
   const tokensForStake = useMemo(() => {
     if (!initedTokens) return []

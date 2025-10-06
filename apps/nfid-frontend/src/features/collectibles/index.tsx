@@ -19,7 +19,6 @@ import { fetchTokens } from "../fungible-token/utils"
 import { ModalType } from "../transfer-modal/types"
 import { fetchNFTs } from "./utils/util"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
 
 const DEFAULT_LIMIT_PER_PAGE = 8
 
@@ -46,11 +45,7 @@ const NFTsPage = () => {
     revalidateOnMount: false,
   })
 
-  const activeTokens = useMemo(() => {
-    return tokens?.filter((token) => token.getTokenState() === State.Active)
-  }, [tokens])
-
-  const { initedTokens } = useTokensInit(activeTokens)
+  const { initedTokens } = useTokensInit(tokens)
 
   const icp = useMemo(() => {
     if (!initedTokens) return

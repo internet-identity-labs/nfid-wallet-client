@@ -1,6 +1,6 @@
 import { useActor } from "@xstate/react"
 import { Staking } from "packages/ui/src/organisms/staking"
-import { useContext, useMemo } from "react"
+import { useContext } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { useSWRWithTimestamp } from "@nfid/swr"
@@ -12,7 +12,6 @@ import { ProfileContext } from "frontend/provider"
 import { ModalType } from "../transfer-modal/types"
 import { fetchStakedTokens } from "./utils"
 import { fetchTokens } from "../fungible-token/utils"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 const StakingPage = () => {
@@ -32,11 +31,7 @@ const StakingPage = () => {
     revalidateOnMount: false,
   })
 
-  const activeTokens = useMemo(() => {
-    return tokens?.filter((token) => token.getTokenState() === State.Active)
-  }, [tokens])
-
-  const { initedTokens } = useTokensInit(activeTokens)
+  const { initedTokens } = useTokensInit(tokens)
 
   const { data: stakedTokens, isLoading } = useSWRWithTimestamp(
     initedTokens ? "stakedTokens" : null,

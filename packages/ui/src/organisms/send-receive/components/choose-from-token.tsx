@@ -152,10 +152,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
     const balanceNum = new BigNumber(userBalance.toString())
 
-    if (
-      token.getTokenAddress() === ETH_NATIVE_ID ||
-      token.getTokenAddress() === BTC_NATIVE_ID
-    ) {
+    if (token.getTokenAddress() === ETH_NATIVE_ID) {
       const formattedValue = formatAssetAmountRaw(balanceNum, decimals)
       setValue("amount", formattedValue, { shouldValidate: true })
 
@@ -214,20 +211,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     }
   }, [initedToken])
 
-  if (!token || decimals === undefined) {
-    return (
-      <div
-        id={"sourceSection"}
-        className={clsx(
-          "border rounded-[12px] p-4 dark:bg-[#FFFFFF0D]",
-          "border-black dark:border-zinc-500",
-          isResponsive ? "h-[168px]" : "h-[100px]",
-        )}
-      >
-        <Skeleton className="w-[124px] h-[34px] rounded-[6px]" />
-      </div>
-    )
-  }
+  if (!token || !decimals) return null
 
   return (
     <div

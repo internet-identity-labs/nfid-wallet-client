@@ -259,7 +259,8 @@ export class FTImpl implements FT {
     return !(
       this.tokenCategory === Category.Native ||
       this.tokenAddress === NFIDW_CANISTER_ID ||
-      this.tokenAddress === CKBTC_CANISTER_ID
+      this.tokenAddress === CKBTC_CANISTER_ID ||
+      this.tokenAddress === CKETH_LEDGER_CANISTER_ID
     )
   }
 

@@ -21,7 +21,6 @@ import {
   transfer as transferICP,
 } from "@nfid/integration/token/icp"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
@@ -147,30 +146,28 @@ export const TransferFT = ({
     { revalidateOnFocus: false, revalidateOnMount: false },
   )
 
-  const activeTokens = useMemo(() => {
-    const activeTokens = tokens.filter(
-      (token) => token.getTokenState() === State.Active,
-    )
-    if (!hideZeroBalance) return activeTokens
-    const tokensWithBalance = activeTokens.filter(
+  const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(
+    tokens,
+    isBtcAddressLoading,
+    isEthAddressLoading,
+  )
+
+  const filteredTokens = useMemo(() => {
+    if (!initedTokens) return
+    if (!hideZeroBalance) return initedTokens
+    const tokensWithBalance = initedTokens.filter(
       (token) =>
         token.getTokenAddress() === ICP_CANISTER_ID ||
         token.getTokenBalance() !== BigInt(0),
     )
     return tokensWithBalance
-  }, [tokens, hideZeroBalance])
-
-  const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(
-    activeTokens,
-    isBtcAddressLoading,
-    isEthAddressLoading,
-  )
+  }, [initedTokens, hideZeroBalance])
 
   const token = useMemo(() => {
-    return initedTokens?.find(
+    return filteredTokens?.find(
       (token) => token.getTokenAddress() === tokenAddress,
     )
-  }, [tokenAddress, initedTokens])
+  }, [tokenAddress, filteredTokens])
 
   const balance = useMemo(() => {
     return balances?.find(
@@ -282,11 +279,11 @@ export const TransferFT = ({
             `Transaction ${amount} ${token.getTokenSymbol()} successful`,
           )
           setStatus(SendStatus.COMPLETED)
-          if (!initedTokens) return
+          if (!filteredTokens) return
 
           getTokensWithUpdatedBalance(
             [token.getTokenAddress()],
-            initedTokens,
+            filteredTokens,
           ).then((updatedTokens) => {
             mutateWithTimestamp("tokens", updatedTokens, false)
             updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
@@ -317,11 +314,11 @@ export const TransferFT = ({
             `Transaction ${amount} ${token.getTokenSymbol()} successful`,
           )
           setStatus(SendStatus.COMPLETED)
-          if (!initedTokens) return
+          if (!filteredTokens) return
 
           getTokensWithUpdatedBalance(
             [token.getTokenAddress()],
-            initedTokens,
+            filteredTokens,
           ).then((updatedTokens) => {
             mutateWithTimestamp("tokens", updatedTokens, false)
             updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
@@ -432,11 +429,11 @@ export const TransferFT = ({
           `Transaction ${amount} ${token.getTokenSymbol()} successful`,
         )
         setStatus(SendStatus.COMPLETED)
-        if (!initedTokens) return
+        if (!filteredTokens) return
 
         getTokensWithUpdatedBalance(
           [token.getTokenAddress()],
-          initedTokens,
+          filteredTokens,
         ).then((updatedTokens) => {
           mutateWithTimestamp("tokens", updatedTokens, false)
           updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
@@ -456,7 +453,7 @@ export const TransferFT = ({
     selectedVaultsAccountAddress,
     amount,
     to,
-    initedTokens,
+    filteredTokens,
     setErrorMessage,
     setSuccessMessage,
     btcFee,
@@ -469,7 +466,7 @@ export const TransferFT = ({
     <FormProvider {...formMethods}>
       <TransferFTUi
         token={token}
-        tokens={initedTokens || []}
+        tokens={filteredTokens || []}
         setChosenToken={setTokenAddress}
         validateAddress={
           addressValidators[token?.getTokenAddress() ?? ""] ||

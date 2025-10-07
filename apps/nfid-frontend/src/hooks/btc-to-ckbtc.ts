@@ -12,7 +12,10 @@ export function useBTCDepositsToMintCKBTCListener(principal: Principal | null) {
     let cancelled = false
 
     const startWatcher = async () => {
-      console.log("[BTCDepositsToMintCKBTCListener] Starting watcher for", principal.toText())
+      console.debug(
+        "[BTCDepositsToMintCKBTCListener] Starting watcher for",
+        principal.toText(),
+      )
       const result = await btcDepositService.monitorDeposit(principal)
       if (!cancelled) {
         watcherRef.current = result
@@ -22,7 +25,7 @@ export function useBTCDepositsToMintCKBTCListener(principal: Principal | null) {
     startWatcher()
 
     return () => {
-      console.log("[BTCDepositsToMintCKBTCListener] Stopping watcher")
+      console.debug("[BTCDepositsToMintCKBTCListener] Stopping watcher")
       cancelled = true
       watcherRef.current?.clearInterval()
       watcherRef.current = null

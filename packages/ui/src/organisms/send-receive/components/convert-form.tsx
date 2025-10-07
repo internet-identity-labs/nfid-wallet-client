@@ -40,7 +40,7 @@ export interface ConvertFormProps {
   conversionError: string | undefined
   handleReverse: () => void
   fee?: EthFormattedFee | BtcFormattedFee
-  tokens: FT[]
+  tokens?: FT[]
   isResponsive?: boolean
   setIsResponsive?: (value: boolean) => void
   ethFee?: EthToCkEthFee
@@ -122,7 +122,6 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           isResponsive={isResponsive}
           setIsResponsive={setIsFromResponsive}
           ethFee={ethFee?.ethereumNetworkFee}
-          isLoading={isFeeLoading && !!amount && !errors["amount"]}
         />
         {errors["amount"] && (
           <div className="h-4 mt-1 text-xs leading-4 text-red-600">

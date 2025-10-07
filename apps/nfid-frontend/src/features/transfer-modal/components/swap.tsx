@@ -19,7 +19,6 @@ import {
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
@@ -116,52 +115,52 @@ export const SwapFT = ({
     { revalidateOnFocus: false, revalidateOnMount: false },
   )
 
-  const activeTokens = useMemo(() => {
-    const activeTokens = tokens.filter(
+  const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(tokens)
+
+  const filteredTokens = useMemo(() => {
+    if (!initedTokens) return
+    const filtered = initedTokens.filter(
       (token: FT) =>
-        token.getTokenState() === State.Active &&
         token.getTokenAddress() !== BTC_NATIVE_ID &&
         token.getTokenAddress() !== ETH_NATIVE_ID,
     )
 
-    if (!hideZeroBalance) return activeTokens
+    if (!hideZeroBalance) return filtered
 
-    const tokensWithBalance = activeTokens.filter(
+    const tokensWithBalance = filtered.filter(
       (token: FT) =>
         token.getTokenAddress() === ICP_CANISTER_ID ||
         token.getTokenBalance() !== BigInt(0),
     )
     return tokensWithBalance
-  }, [tokens, hideZeroBalance])
-
-  const { initedTokens, mutate: mutateInitedTokens } =
-    useTokensInit(activeTokens)
+  }, [initedTokens, hideZeroBalance])
 
   const [getTransaction, setGetTransaction] = useState<
     SwapTransaction | undefined
   >()
 
   const fromToken = useMemo(() => {
-    return initedTokens?.find(
+    if (!filteredTokens) return undefined
+    return filteredTokens.find(
       (token: FT) => token.getTokenAddress() === fromTokenAddress,
     )
-  }, [fromTokenAddress, initedTokens])
+  }, [fromTokenAddress, filteredTokens])
 
   const toToken = useMemo(() => {
-    return initedTokens?.find(
+    return filteredTokens?.find(
       (token: FT) =>
         token.getTokenAddress() === toTokenAddress &&
         token.getTokenAddress() !== BTC_NATIVE_ID,
     )
-  }, [toTokenAddress, initedTokens])
+  }, [toTokenAddress, filteredTokens])
 
   const filteredAllTokens = useMemo(() => {
-    return initedTokens?.filter(
+    return filteredTokens?.filter(
       (token) =>
         token.getTokenAddress() !== fromTokenAddress &&
         token.getTokenAddress() !== BTC_NATIVE_ID,
     )
-  }, [fromTokenAddress, initedTokens])
+  }, [fromTokenAddress, filteredTokens])
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -194,8 +193,8 @@ export const SwapFT = ({
   }, [fromTokenAddress, isEqual])
 
   const getProviders = useCallback(async () => {
-    if (!initedTokens) return
-    const allFromTokens = initedTokens.map((token) => token.getTokenAddress())
+    if (!filteredTokens) return
+    const allFromTokens = filteredTokens.map((token) => token.getTokenAddress())
 
     try {
       const [tokensAvailableToSwapTo, providers] = await Promise.all([
@@ -223,7 +222,7 @@ export const SwapFT = ({
         setProviderError(error)
       }
     }
-  }, [fromTokenAddress, toTokenAddress, initedTokens])
+  }, [fromTokenAddress, toTokenAddress, filteredTokens])
 
   useEffect(() => {
     getProviders()
@@ -346,10 +345,10 @@ export const SwapFT = ({
         setErrorMessage("Something went wrong")
       })
       .finally(() => {
-        if (!initedTokens) return
+        if (!filteredTokens) return
         getTokensWithUpdatedBalance(
           [fromTokenAddress, toTokenAddress],
-          initedTokens,
+          filteredTokens,
         ).then((updatedTokens) => {
           mutateWithTimestamp("tokens", updatedTokens, false)
           updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
@@ -360,7 +359,7 @@ export const SwapFT = ({
   }, [
     quote,
     shroff,
-    initedTokens,
+    filteredTokens,
     fromTokenAddress,
     toTokenAddress,
     setErrorMessage,
@@ -372,7 +371,7 @@ export const SwapFT = ({
   return (
     <FormProvider {...formMethods}>
       <SwapFTUi
-        tokens={initedTokens || []}
+        tokens={filteredTokens || []}
         allTokens={filteredAllTokens || []}
         toToken={toToken}
         fromToken={fromToken}

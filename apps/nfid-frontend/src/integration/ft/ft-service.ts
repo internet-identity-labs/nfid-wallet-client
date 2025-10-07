@@ -26,6 +26,7 @@ import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
 import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 
 const InitedTokens = "InitedTokens"
+export const TOKENS_REFRESH_INTERVAL = 10000
 
 export interface TokensAvailableToSwap {
   to: string[]
@@ -132,7 +133,7 @@ export class FtService {
       await storageWithTtl.set(
         cacheKey,
         this.serializeTokensData(initedTokens),
-        10 * 1000,
+        TOKENS_REFRESH_INTERVAL,
       )
 
       return initedTokens
@@ -143,7 +144,7 @@ export class FtService {
         storageWithTtl.set(
           cacheKey,
           this.serializeTokensData(initedTokens),
-          300 * 1000,
+          TOKENS_REFRESH_INTERVAL,
         )
       })
 
@@ -181,7 +182,7 @@ export class FtService {
     await storageWithTtl.set(
       cacheKey,
       this.serializeTokensData(updatedTokens),
-      300 * 1000,
+      TOKENS_REFRESH_INTERVAL,
     )
 
     return updatedTokens
@@ -214,8 +215,12 @@ export class FtService {
 
   private deserializeTokensData(serialized: string, tokens: FT[]): FT[] {
     const cachedData = JSON.parse(serialized)
-    return tokens.map((token, index) => {
-      const data = cachedData[index]
+    return tokens.map((token) => {
+      const data = cachedData.find(
+        (d: { tokenAddress: string }) =>
+          d.tokenAddress === token.getTokenAddress(),
+      )
+
       const tokenImpl = token as any
 
       if (data.tokenBalance) {

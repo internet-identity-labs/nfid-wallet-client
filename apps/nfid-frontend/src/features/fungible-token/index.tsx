@@ -16,7 +16,6 @@ import {
   CKETH_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 import { useSWRWithTimestamp } from "@nfid/swr"
@@ -100,12 +99,8 @@ const TokensPage = () => {
       revalidateOnMount: false,
     })
 
-  const activeTokens = useMemo(() => {
-    return tokens?.filter((token) => token.getTokenState() === State.Active)
-  }, [tokens])
-
   const { initedTokens } = useTokensInit(
-    activeTokens,
+    tokens,
     isBtcAddressLoading,
     isEthAddressLoading,
   )
@@ -192,9 +187,7 @@ const TokensPage = () => {
             isLoading={
               tokensUsdBalanceLoading ||
               tokensOwnedQuantity === undefined ||
-              tokensWithoutPrice === undefined ||
-              isBtcAddressLoading ||
-              isEthAddressLoading
+              tokensWithoutPrice === undefined
             }
           />
         </div>
@@ -231,7 +224,7 @@ const TokensPage = () => {
       <ProfileContainer>
         <Tokens
           tokensIniting={!initedTokens}
-          activeTokens={initedTokens || []}
+          initedTokens={initedTokens || []}
           allTokens={tokens || []}
           isTokensLoading={!initedTokens}
           onSubmitIcrc1Pair={onSubmitIcrc1Pair}
@@ -246,8 +239,6 @@ const TokensPage = () => {
           onStakeClick={onStakeClick}
           hideZeroBalance={hideZeroBalance}
           onZeroBalanceToggle={onZeroBalanceToggle}
-          isBtcAddressLoading={isBtcAddressLoading}
-          isEthAddressLoading={isEthAddressLoading}
         />
       </ProfileContainer>
     </>

@@ -25,7 +25,6 @@ import {
   CKBTC_CANISTER_ID,
   ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { NFIDTheme } from "frontend/App"
@@ -149,12 +148,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     revalidateOnFocus: false,
   })
 
-  const activeTokens = useMemo(() => {
-    return tokens.filter((token) => token.getTokenState() === State.Active)
-  }, [tokens])
-
   const { initedTokens } = useTokensInit(
-    activeTokens,
+    tokens,
     isBtcAddressLoading,
     isEthAddressLoading,
   )
@@ -182,19 +177,9 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
       initedTokens &&
       !!isWallet &&
       eth &&
-      btc &&
-      !isBtcAddressLoading &&
-      !isEthAddressLoading
+      btc
     )
-  }, [
-    nfts,
-    initedTokens,
-    isWallet,
-    btc,
-    eth,
-    isBtcAddressLoading,
-    isEthAddressLoading,
-  ])
+  }, [nfts, initedTokens, isWallet, btc, eth])
 
   const { data: fullUsdBalance, isLoading: isUsdLoading } = useSWR(
     isReady ? "fullUsdValue" : null,

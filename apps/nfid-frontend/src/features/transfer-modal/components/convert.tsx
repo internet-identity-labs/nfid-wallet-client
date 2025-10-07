@@ -14,7 +14,7 @@ import {
 import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
-import { useEthAddress } from "frontend/hooks"
+import { useEthAddress, useBtcAddress } from "frontend/hooks"
 import { useIdentity } from "frontend/hooks/identity"
 import {
   bitcoinService,
@@ -70,7 +70,8 @@ export const ConvertBTC = ({
   const [toTokenAddress, setToTokenAddress] = useState(
     getConversionTokenAddress(preselectedSourceTokenAddress ?? BTC_NATIVE_ID),
   )
-  const { ethAddress } = useEthAddress()
+  const { ethAddress, isEthAddressLoading } = useEthAddress()
+  const { isBtcAddressLoading } = useBtcAddress()
 
   const handleReverse = useCallback(() => {
     setFromTokenAddress(toTokenAddress)
@@ -83,8 +84,15 @@ export const ConvertBTC = ({
     { revalidateOnFocus: false, revalidateOnMount: false },
   )
 
+  const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(
+    tokens,
+    isBtcAddressLoading,
+    isEthAddressLoading,
+  )
+
   const tokensToConvert = useMemo(() => {
-    return tokens.filter((t) => {
+    if (!initedTokens) return
+    return initedTokens.filter((t) => {
       return (
         t.getTokenAddress() === ETH_NATIVE_ID ||
         t.getTokenAddress() === BTC_NATIVE_ID ||
@@ -92,28 +100,25 @@ export const ConvertBTC = ({
         t.getTokenAddress() === CKBTC_CANISTER_ID
       )
     })
-  }, [tokens])
-
-  const { initedTokens, mutate: mutateInitedTokens } =
-    useTokensInit(tokensToConvert)
+  }, [initedTokens])
 
   useEffect(() => {
     setToTokenAddress(getConversionTokenAddress(fromTokenAddress))
   }, [fromTokenAddress])
 
   const fromToken = useMemo(() => {
-    if (!initedTokens) return
-    return initedTokens.find(
+    if (!tokensToConvert) return
+    return tokensToConvert.find(
       (token: FT) => token.getTokenAddress() === fromTokenAddress,
     )
-  }, [fromTokenAddress, initedTokens])
+  }, [fromTokenAddress, tokensToConvert])
 
   const toToken = useMemo(() => {
-    if (!initedTokens) return
-    return initedTokens.find(
+    if (!tokensToConvert) return
+    return tokensToConvert.find(
       (token: FT) => token.getTokenAddress() === toTokenAddress,
     )
-  }, [toTokenAddress, initedTokens])
+  }, [toTokenAddress, tokensToConvert])
 
   useEffect(() => {
     setConversionError(undefined)
@@ -233,12 +238,12 @@ export const ConvertBTC = ({
           )
           setStatus(SendStatus.COMPLETED)
 
-          if (!initedTokens) return
+          if (!tokensToConvert) return
 
           if (fromToken.getTokenAddress() === CKETH_LEDGER_CANISTER_ID) {
             getTokensWithUpdatedBalance(
               [fromTokenAddress, toTokenAddress],
-              initedTokens,
+              tokensToConvert,
             ).then((updatedTokens) => {
               mutateWithTimestamp("tokens", updatedTokens, false)
               updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
@@ -278,12 +283,12 @@ export const ConvertBTC = ({
           `Conversion from ${amount} ${fromToken.getTokenSymbol()} successful`,
         )
         setStatus(SendStatus.COMPLETED)
-        if (!initedTokens) return
+        if (!tokensToConvert) return
 
         if (fromToken.getTokenAddress() === CKBTC_CANISTER_ID) {
           getTokensWithUpdatedBalance(
             [fromTokenAddress, toTokenAddress],
-            initedTokens,
+            tokensToConvert,
           ).then((updatedTokens) => {
             mutateWithTimestamp("tokens", updatedTokens, false)
             updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
@@ -308,7 +313,7 @@ export const ConvertBTC = ({
     fromTokenAddress,
     setErrorMessage,
     setSuccessMessage,
-    initedTokens,
+    tokensToConvert,
     btcFee,
     ethFee,
     setIsConvertSuccess,

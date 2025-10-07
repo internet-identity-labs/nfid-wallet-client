@@ -62,7 +62,7 @@ export const StakeFT = ({
 
   const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(tokens)
 
-  const tokensForStake = useMemo(() => {
+  const filteredTokens = useMemo(() => {
     if (!initedTokens) return []
     return initedTokens.filter(
       (token) =>
@@ -72,10 +72,10 @@ export const StakeFT = ({
   }, [initedTokens])
 
   const token = useMemo(() => {
-    return tokensForStake.find(
+    return filteredTokens.find(
       (token) => token.getTokenAddress() === tokenAddress,
     )
-  }, [tokenAddress, tokensForStake])
+  }, [tokenAddress, filteredTokens])
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -217,7 +217,7 @@ export const StakeFT = ({
     <FormProvider {...formMethods}>
       <StakeUi
         token={token}
-        tokens={tokensForStake}
+        tokens={filteredTokens}
         setChosenToken={setTokenAddress}
         isLoading={isTokensLoading}
         submit={submit}

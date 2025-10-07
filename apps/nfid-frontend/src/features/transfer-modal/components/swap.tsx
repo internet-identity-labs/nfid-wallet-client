@@ -345,10 +345,10 @@ export const SwapFT = ({
         setErrorMessage("Something went wrong")
       })
       .finally(() => {
-        if (!filteredTokens) return
+        if (!initedTokens) return
         getTokensWithUpdatedBalance(
           [fromTokenAddress, toTokenAddress],
-          filteredTokens,
+          initedTokens,
         ).then((updatedTokens) => {
           mutateWithTimestamp("tokens", updatedTokens, false)
           updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
@@ -359,7 +359,7 @@ export const SwapFT = ({
   }, [
     quote,
     shroff,
-    filteredTokens,
+    initedTokens,
     fromTokenAddress,
     toTokenAddress,
     setErrorMessage,
@@ -378,7 +378,7 @@ export const SwapFT = ({
         setFromChosenToken={setFromTokenAddress}
         setToChosenToken={setToTokenAddress}
         loadingMessage={"Fetching supported tokens..."}
-        isTokenLoading={isTokensLoading}
+        isTokenLoading={isTokensLoading || !fromToken || !toToken}
         submit={submit}
         isQuoteLoading={isQuoteLoading || isShroffLoading || isQuoteValidating}
         quote={quote}

@@ -90,7 +90,7 @@ export const ConvertBTC = ({
     isEthAddressLoading,
   )
 
-  const tokensToConvert = useMemo(() => {
+  const filteredTokens = useMemo(() => {
     if (!initedTokens) return
     return initedTokens.filter((t) => {
       return (
@@ -107,18 +107,18 @@ export const ConvertBTC = ({
   }, [fromTokenAddress])
 
   const fromToken = useMemo(() => {
-    if (!tokensToConvert) return
-    return tokensToConvert.find(
+    if (!filteredTokens) return
+    return filteredTokens.find(
       (token: FT) => token.getTokenAddress() === fromTokenAddress,
     )
-  }, [fromTokenAddress, tokensToConvert])
+  }, [fromTokenAddress, filteredTokens])
 
   const toToken = useMemo(() => {
-    if (!tokensToConvert) return
-    return tokensToConvert.find(
+    if (!filteredTokens) return
+    return filteredTokens.find(
       (token: FT) => token.getTokenAddress() === toTokenAddress,
     )
-  }, [toTokenAddress, tokensToConvert])
+  }, [toTokenAddress, filteredTokens])
 
   useEffect(() => {
     setConversionError(undefined)
@@ -238,12 +238,12 @@ export const ConvertBTC = ({
           )
           setStatus(SendStatus.COMPLETED)
 
-          if (!tokensToConvert) return
+          if (!initedTokens) return
 
           if (fromToken.getTokenAddress() === CKETH_LEDGER_CANISTER_ID) {
             getTokensWithUpdatedBalance(
               [fromTokenAddress, toTokenAddress],
-              tokensToConvert,
+              initedTokens,
             ).then((updatedTokens) => {
               mutateWithTimestamp("tokens", updatedTokens, false)
               updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
@@ -283,12 +283,12 @@ export const ConvertBTC = ({
           `Conversion from ${amount} ${fromToken.getTokenSymbol()} successful`,
         )
         setStatus(SendStatus.COMPLETED)
-        if (!tokensToConvert) return
+        if (!initedTokens) return
 
         if (fromToken.getTokenAddress() === CKBTC_CANISTER_ID) {
           getTokensWithUpdatedBalance(
             [fromTokenAddress, toTokenAddress],
-            tokensToConvert,
+            initedTokens,
           ).then((updatedTokens) => {
             mutateWithTimestamp("tokens", updatedTokens, false)
             updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
@@ -313,7 +313,7 @@ export const ConvertBTC = ({
     fromTokenAddress,
     setErrorMessage,
     setSuccessMessage,
-    tokensToConvert,
+    initedTokens,
     btcFee,
     ethFee,
     setIsConvertSuccess,
@@ -339,7 +339,7 @@ export const ConvertBTC = ({
         status={status}
         error={error}
         conversionError={conversionError}
-        tokens={tokensToConvert}
+        tokens={filteredTokens}
       />
     </FormProvider>
   )

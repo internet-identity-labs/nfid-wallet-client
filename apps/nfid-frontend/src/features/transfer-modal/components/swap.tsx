@@ -155,12 +155,13 @@ export const SwapFT = ({
   }, [toTokenAddress, filteredTokens])
 
   const filteredAllTokens = useMemo(() => {
-    return filteredTokens?.filter(
+    return tokens?.filter(
       (token) =>
         token.getTokenAddress() !== fromTokenAddress &&
-        token.getTokenAddress() !== BTC_NATIVE_ID,
+        token.getTokenAddress() !== BTC_NATIVE_ID &&
+        token.getTokenAddress() !== ETH_NATIVE_ID,
     )
-  }, [fromTokenAddress, filteredTokens])
+  }, [fromTokenAddress, tokens])
 
   const formMethods = useForm<FormValues>({
     mode: "all",

@@ -73,6 +73,12 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   )
 
   useEffect(() => {
+    if (!isSwapTo) {
+      setTokensOptions(tokens)
+      setIsTokenOptionsLoading(false)
+      return
+    }
+
     const init = async () => {
       const { publicKey } = authState.getUserIdData()
 
@@ -101,7 +107,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
     }
 
     init()
-  }, [tokens])
+  }, [tokens, isSwapTo])
 
   const filteredTokens = useMemo(() => {
     if (searchInput.length < 2) return tokensOptions
@@ -111,7 +117,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
     )
   }, [tokensOptions, searchInput])
 
-  useIntersectionObserver(itemRefs.current, async (index) => {
+  useIntersectionObserver(itemRefs.current, !!isSwapTo, async (index) => {
     const token = filteredTokens[index]
 
     if (token) {
@@ -132,20 +138,17 @@ export const ChooseTokenModal = <T extends FT | NFT>({
     }
   })
 
-  const handleSelect = useCallback(
-    (token: T) => {
-      if (token instanceof FTImpl) {
-        const isSwappable = isSwapTo
-          ? tokensAvailableToSwap?.to.includes(token.getTokenAddress())
-          : tokensAvailableToSwap?.from.includes(token.getTokenAddress())
+  const handleSelect = (token: T) => {
+    if (token instanceof FTImpl) {
+      const isSwappable = isSwapTo
+        ? tokensAvailableToSwap?.to.includes(token.getTokenAddress())
+        : tokensAvailableToSwap?.from.includes(token.getTokenAddress())
 
-        if (!isSwappable && tokensAvailableToSwap) return
-      }
-      onSelect?.(token)
-      setIsModalVisible(false)
-    },
-    [onSelect, tokensAvailableToSwap, isSwapTo],
-  )
+      if (!isSwappable && tokensAvailableToSwap) return
+    }
+    onSelect?.(token)
+    setIsModalVisible(false)
+  }
 
   return (
     <div id={"choose_modal"}>

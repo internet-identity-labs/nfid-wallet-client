@@ -129,56 +129,53 @@ export const ConvertUi: FC<ConvertUiProps> = ({
           />
         </motion.div>
       )}
-      {convertModal === ConvertModal.DETAILS && (
-        <motion.div
-          key="convertModal"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25, ease: "easeInOut" }}
-        >
-          <ConvertDetails
-            token={fromToken}
-            isOpen={convertModal === ConvertModal.DETAILS}
-            setConvertModal={setConvertModal}
-            fee={fee}
-            amount={amount}
-          />
-        </motion.div>
-      )}
-      {convertModal === ConvertModal.CONVERT && (
-        <motion.div
-          key="formModal"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25, ease: "easeInOut" }}
-        >
-          <ConvertForm
-            setIsResponsive={setIsResponsive}
-            isResponsive={isResponsive}
-            fromToken={fromToken}
-            toToken={toToken}
-            submit={submit}
-            setFromChosenToken={setFromChosenToken}
-            setToChosenToken={setToChosenToken}
-            isFeeLoading={isFeeLoading}
-            isOpen={convertModal === ConvertModal.CONVERT}
-            setConvertModal={setConvertModal}
-            amount={amount}
-            errors={errors}
-            conversionError={conversionError}
-            handleReverse={handleReverse}
-            fee={fee}
-            tokens={tokens}
-            ethFee={
-              fromToken.getTokenAddress() === ETH_NATIVE_ID
-                ? (ethFee as EthToCkEthFee)
-                : undefined
-            }
-          />
-        </motion.div>
-      )}
+
+      <motion.div
+        key="convertModal"
+        initial={{ opacity: convertModal === ConvertModal.DETAILS ? 1 : 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25, ease: "easeInOut" }}
+      >
+        <ConvertDetails
+          token={fromToken}
+          isOpen={convertModal === ConvertModal.DETAILS}
+          setConvertModal={setConvertModal}
+          fee={fee}
+          amount={amount}
+        />
+      </motion.div>
+      <motion.div
+        key="formModal"
+        initial={{ opacity: convertModal === ConvertModal.CONVERT ? 1 : 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25, ease: "easeInOut" }}
+      >
+        <ConvertForm
+          setIsResponsive={setIsResponsive}
+          isResponsive={isResponsive}
+          fromToken={fromToken}
+          toToken={toToken}
+          submit={submit}
+          setFromChosenToken={setFromChosenToken}
+          setToChosenToken={setToChosenToken}
+          isFeeLoading={isFeeLoading}
+          isOpen={convertModal === ConvertModal.CONVERT}
+          setConvertModal={setConvertModal}
+          amount={amount}
+          errors={errors}
+          conversionError={conversionError}
+          handleReverse={handleReverse}
+          fee={fee}
+          tokens={tokens}
+          ethFee={
+            fromToken.getTokenAddress() === ETH_NATIVE_ID
+              ? (ethFee as EthToCkEthFee)
+              : undefined
+          }
+        />
+      </motion.div>
     </>
   )
 }

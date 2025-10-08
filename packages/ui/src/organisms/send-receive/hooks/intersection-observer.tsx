@@ -2,9 +2,12 @@ import { useEffect } from "react"
 
 export const useIntersectionObserver = (
   refs: (HTMLElement | null)[],
+  shouldObserve: boolean,
   callback: (index: number) => Promise<void>,
 ) => {
   useEffect(() => {
+    if (!shouldObserve) return
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {

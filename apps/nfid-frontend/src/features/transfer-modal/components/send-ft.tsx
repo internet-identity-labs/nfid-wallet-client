@@ -279,11 +279,11 @@ export const TransferFT = ({
             `Transaction ${amount} ${token.getTokenSymbol()} successful`,
           )
           setStatus(SendStatus.COMPLETED)
-          if (!filteredTokens) return
+          if (!initedTokens) return
 
           getTokensWithUpdatedBalance(
             [token.getTokenAddress()],
-            filteredTokens,
+            initedTokens,
           ).then((updatedTokens) => {
             mutateWithTimestamp("tokens", updatedTokens, false)
             updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
@@ -314,11 +314,11 @@ export const TransferFT = ({
             `Transaction ${amount} ${token.getTokenSymbol()} successful`,
           )
           setStatus(SendStatus.COMPLETED)
-          if (!filteredTokens) return
+          if (!initedTokens) return
 
           getTokensWithUpdatedBalance(
             [token.getTokenAddress()],
-            filteredTokens,
+            initedTokens,
           ).then((updatedTokens) => {
             mutateWithTimestamp("tokens", updatedTokens, false)
             updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
@@ -429,11 +429,11 @@ export const TransferFT = ({
           `Transaction ${amount} ${token.getTokenSymbol()} successful`,
         )
         setStatus(SendStatus.COMPLETED)
-        if (!filteredTokens) return
+        if (!initedTokens) return
 
         getTokensWithUpdatedBalance(
           [token.getTokenAddress()],
-          filteredTokens,
+          initedTokens,
         ).then((updatedTokens) => {
           mutateWithTimestamp("tokens", updatedTokens, false)
           updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
@@ -453,7 +453,7 @@ export const TransferFT = ({
     selectedVaultsAccountAddress,
     amount,
     to,
-    filteredTokens,
+    initedTokens,
     setErrorMessage,
     setSuccessMessage,
     btcFee,

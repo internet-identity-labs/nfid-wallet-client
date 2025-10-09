@@ -143,7 +143,10 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
     const balanceNum = new BigNumber(userBalance.toString())
 
-    if (token.getTokenAddress() === ETH_NATIVE_ID) {
+    if (
+      token.getTokenAddress() === ETH_NATIVE_ID ||
+      modalType === IModalType.SEND
+    ) {
       const formattedValue = formatAssetAmountRaw(balanceNum, decimals)
       setValue("amount", formattedValue, { shouldValidate: true })
 

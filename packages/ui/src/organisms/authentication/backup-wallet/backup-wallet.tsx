@@ -29,16 +29,16 @@ export const AuthBackupWallet: FC<AuthBackupWalletProps> = ({
     >
       <h5
         className={clsx(
-          "text-center font-bold mt-[50px] mb-0 text-[20px] font-bold font-inter",
+          "text-center mt-[50px] mb-0 text-[20px] !font-bold leading-6 font-inter",
           titleClassName,
         )}
       >
         Back up your wallet
       </h5>
       <p className="mt-2.5 mb-[30px] font-inter">NFID Wallet name: {name}</p>
-      <p className="font-inter">
-        This is the only way to recover your wallet if you lose your NFID Wallet
-        number, password, or passkeys.
+      <p className="font-inter leading-[22px]">
+        This is the only way to recover your wallet if you lose your <br />
+        NFID Wallet number, password, or passkeys.
       </p>
       <img
         className="flex-1 my-auto max-h-[245px] object-contain"

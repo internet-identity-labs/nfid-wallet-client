@@ -76,7 +76,7 @@ export const DeleteRecoveryPhrase: React.FC<IDeleteRecoveryPhraseModal> = ({
               () => setIsModalVisible(false),
             )
           }
-          disabled={phrase.split(" ").length < 11}
+          disabled={phrase.split(" ").length < 11 || isLoading}
         >
           Remove recovery phrase
         </Button>

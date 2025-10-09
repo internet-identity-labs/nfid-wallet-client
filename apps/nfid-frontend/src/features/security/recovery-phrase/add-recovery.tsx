@@ -11,6 +11,7 @@ import { CopyIcon } from "frontend/ui/atoms/icons/copy"
 
 import { IHandleWithLoading } from ".."
 import { securityConnector } from "../device-connector"
+import { Spinner } from "packages/ui/src/atoms/spinner"
 
 interface IAddRecoveryPhraseModal extends React.HTMLAttributes<HTMLDivElement> {
   handleWithLoading: IHandleWithLoading
@@ -22,6 +23,7 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
   const [isModalVisible, setIsModalVisible] = React.useState(false)
   const [copied, setCopied] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const { profile } = useProfile()
 
@@ -105,14 +107,16 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
           <Button
             id="recovery-save-button"
             block
-            disabled={!copied || !isSaved}
+            icon={isLoading ? <Spinner className="w-5 h-5 text-white" /> : null}
+            disabled={!copied || !isSaved || isLoading}
             className="mt-5"
             onClick={() =>
               handleWithLoading(
                 async () => {
-                  const response = await securityConnector.createRecoveryPhrase(
-                    phrase,
-                  )
+                  setIsLoading(true)
+                  const response =
+                    await securityConnector.createRecoveryPhrase(phrase)
+                  setIsLoading(false)
                   return response
                 },
                 () => setIsModalVisible(false),

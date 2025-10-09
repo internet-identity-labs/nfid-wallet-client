@@ -19,7 +19,6 @@ import {
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
@@ -33,7 +32,12 @@ import { swapService } from "frontend/integration/swap/service/swap-service"
 import { userPrefService } from "frontend/integration/user-preferences/user-pref-service"
 
 import { FormValues } from "../types"
-import { getQuoteData, getTokensWithUpdatedBalance } from "../utils"
+import {
+  getQuoteData,
+  getTokensWithUpdatedBalance,
+  updateCachedInitedTokens,
+} from "../utils"
+import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 const QUOTE_REFETCH_TIMER = 30
 
@@ -111,47 +115,51 @@ export const SwapFT = ({
     { revalidateOnFocus: false, revalidateOnMount: false },
   )
 
-  const activeTokens = useMemo(() => {
-    const activeTokens = tokens.filter(
+  const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(tokens)
+
+  const filteredTokens = useMemo(() => {
+    if (!initedTokens) return
+    const filtered = initedTokens.filter(
       (token: FT) =>
-        token.getTokenState() === State.Active &&
         token.getTokenAddress() !== BTC_NATIVE_ID &&
         token.getTokenAddress() !== ETH_NATIVE_ID,
     )
 
-    if (!hideZeroBalance) return activeTokens
+    if (!hideZeroBalance) return filtered
 
-    const tokensWithBalance = activeTokens.filter(
+    const tokensWithBalance = filtered.filter(
       (token: FT) =>
         token.getTokenAddress() === ICP_CANISTER_ID ||
         token.getTokenBalance() !== BigInt(0),
     )
     return tokensWithBalance
-  }, [tokens, hideZeroBalance])
+  }, [initedTokens, hideZeroBalance])
 
   const [getTransaction, setGetTransaction] = useState<
     SwapTransaction | undefined
   >()
 
   const fromToken = useMemo(() => {
-    return tokens.find(
+    if (!filteredTokens) return undefined
+    return filteredTokens.find(
       (token: FT) => token.getTokenAddress() === fromTokenAddress,
     )
-  }, [fromTokenAddress, tokens])
+  }, [fromTokenAddress, filteredTokens])
 
   const toToken = useMemo(() => {
-    return tokens.find(
+    return filteredTokens?.find(
       (token: FT) =>
         token.getTokenAddress() === toTokenAddress &&
         token.getTokenAddress() !== BTC_NATIVE_ID,
     )
-  }, [toTokenAddress, tokens])
+  }, [toTokenAddress, filteredTokens])
 
   const filteredAllTokens = useMemo(() => {
-    return tokens.filter(
+    return tokens?.filter(
       (token) =>
         token.getTokenAddress() !== fromTokenAddress &&
-        token.getTokenAddress() !== BTC_NATIVE_ID,
+        token.getTokenAddress() !== BTC_NATIVE_ID &&
+        token.getTokenAddress() !== ETH_NATIVE_ID,
     )
   }, [fromTokenAddress, tokens])
 
@@ -186,7 +194,8 @@ export const SwapFT = ({
   }, [fromTokenAddress, isEqual])
 
   const getProviders = useCallback(async () => {
-    const allFromTokens = activeTokens.map((token) => token.getTokenAddress())
+    if (!filteredTokens) return
+    const allFromTokens = filteredTokens.map((token) => token.getTokenAddress())
 
     try {
       const [tokensAvailableToSwapTo, providers] = await Promise.all([
@@ -214,7 +223,7 @@ export const SwapFT = ({
         setProviderError(error)
       }
     }
-  }, [fromTokenAddress, toTokenAddress, activeTokens])
+  }, [fromTokenAddress, toTokenAddress, filteredTokens])
 
   useEffect(() => {
     getProviders()
@@ -337,11 +346,13 @@ export const SwapFT = ({
         setErrorMessage("Something went wrong")
       })
       .finally(() => {
+        if (!initedTokens) return
         getTokensWithUpdatedBalance(
           [fromTokenAddress, toTokenAddress],
-          tokens,
+          initedTokens,
         ).then((updatedTokens) => {
           mutateWithTimestamp("tokens", updatedTokens, false)
+          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
         })
       })
 
@@ -349,25 +360,26 @@ export const SwapFT = ({
   }, [
     quote,
     shroff,
-    tokens,
+    initedTokens,
     fromTokenAddress,
     toTokenAddress,
     setErrorMessage,
     setSuccessMessage,
     identity,
+    mutateInitedTokens,
   ])
 
   return (
     <FormProvider {...formMethods}>
       <SwapFTUi
-        tokens={activeTokens}
-        allTokens={filteredAllTokens}
+        tokens={filteredTokens || []}
+        allTokens={filteredAllTokens || []}
         toToken={toToken}
         fromToken={fromToken}
         setFromChosenToken={setFromTokenAddress}
         setToChosenToken={setToTokenAddress}
         loadingMessage={"Fetching supported tokens..."}
-        isTokenLoading={isTokensLoading}
+        isTokenLoading={isTokensLoading || !fromToken || !toToken}
         submit={submit}
         isQuoteLoading={isQuoteLoading || isShroffLoading || isQuoteValidating}
         quote={quote}

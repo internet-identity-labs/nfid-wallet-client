@@ -14,7 +14,7 @@ import {
 import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
-import { useEthAddress } from "frontend/hooks"
+import { useEthAddress, useBtcAddress } from "frontend/hooks"
 import { useIdentity } from "frontend/hooks/identity"
 import {
   bitcoinService,
@@ -32,7 +32,9 @@ import { FormValues, SendStatus } from "../types"
 import {
   getConversionTokenAddress,
   getTokensWithUpdatedBalance,
+  updateCachedInitedTokens,
 } from "../utils"
+import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 interface ConvertBTCProps {
   preselectedSourceTokenAddress: string | undefined
@@ -68,7 +70,8 @@ export const ConvertBTC = ({
   const [toTokenAddress, setToTokenAddress] = useState(
     getConversionTokenAddress(preselectedSourceTokenAddress ?? BTC_NATIVE_ID),
   )
-  const { ethAddress } = useEthAddress()
+  const { ethAddress, isEthAddressLoading } = useEthAddress()
+  const { isBtcAddressLoading } = useBtcAddress()
 
   const handleReverse = useCallback(() => {
     setFromTokenAddress(toTokenAddress)
@@ -81,8 +84,15 @@ export const ConvertBTC = ({
     { revalidateOnFocus: false, revalidateOnMount: false },
   )
 
-  const tokensToConvert = useMemo(() => {
-    return tokens.filter((t) => {
+  const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(
+    tokens,
+    isBtcAddressLoading,
+    isEthAddressLoading,
+  )
+
+  const filteredTokens = useMemo(() => {
+    if (!initedTokens) return
+    return initedTokens.filter((t) => {
       return (
         t.getTokenAddress() === ETH_NATIVE_ID ||
         t.getTokenAddress() === BTC_NATIVE_ID ||
@@ -90,23 +100,25 @@ export const ConvertBTC = ({
         t.getTokenAddress() === CKBTC_CANISTER_ID
       )
     })
-  }, [tokens])
+  }, [initedTokens])
 
   useEffect(() => {
     setToTokenAddress(getConversionTokenAddress(fromTokenAddress))
   }, [fromTokenAddress])
 
   const fromToken = useMemo(() => {
-    return tokens.find(
+    if (!filteredTokens) return
+    return filteredTokens.find(
       (token: FT) => token.getTokenAddress() === fromTokenAddress,
     )
-  }, [fromTokenAddress, tokens])
+  }, [fromTokenAddress, filteredTokens])
 
   const toToken = useMemo(() => {
-    return tokens.find(
+    if (!filteredTokens) return
+    return filteredTokens.find(
       (token: FT) => token.getTokenAddress() === toTokenAddress,
     )
-  }, [toTokenAddress, tokens])
+  }, [toTokenAddress, filteredTokens])
 
   useEffect(() => {
     setConversionError(undefined)
@@ -226,12 +238,15 @@ export const ConvertBTC = ({
           )
           setStatus(SendStatus.COMPLETED)
 
+          if (!initedTokens) return
+
           if (fromToken.getTokenAddress() === CKETH_LEDGER_CANISTER_ID) {
             getTokensWithUpdatedBalance(
               [fromTokenAddress, toTokenAddress],
-              tokens,
+              initedTokens,
             ).then((updatedTokens) => {
               mutateWithTimestamp("tokens", updatedTokens, false)
+              updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
             })
           }
         })
@@ -268,13 +283,15 @@ export const ConvertBTC = ({
           `Conversion from ${amount} ${fromToken.getTokenSymbol()} successful`,
         )
         setStatus(SendStatus.COMPLETED)
+        if (!initedTokens) return
 
         if (fromToken.getTokenAddress() === CKBTC_CANISTER_ID) {
           getTokensWithUpdatedBalance(
             [fromTokenAddress, toTokenAddress],
-            tokens,
+            initedTokens,
           ).then((updatedTokens) => {
             mutateWithTimestamp("tokens", updatedTokens, false)
+            updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
           })
         }
       })
@@ -296,11 +313,12 @@ export const ConvertBTC = ({
     fromTokenAddress,
     setErrorMessage,
     setSuccessMessage,
-    tokens,
+    initedTokens,
     btcFee,
     ethFee,
     setIsConvertSuccess,
     ethAddress,
+    mutateInitedTokens,
   ])
 
   return (
@@ -321,7 +339,7 @@ export const ConvertBTC = ({
         status={status}
         error={error}
         conversionError={conversionError}
-        tokens={tokensToConvert}
+        tokens={filteredTokens}
       />
     </FormProvider>
   )

@@ -23,7 +23,6 @@ import {
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
-import { useTokenInit } from "../hooks/token-init"
 import { getMaxAmountFee, IModalType } from "../utils"
 import { BALANCE_EDGE_LENGTH } from "./swap-form"
 
@@ -35,7 +34,7 @@ interface ChooseFromTokenProps {
   balance?: bigint | undefined
   value?: string
   setFromChosenToken?: (value: string) => void
-  usdRate?: string
+  usdRate?: string | null
   title: string
   isResponsive?: boolean
   setIsResponsive?: (v: boolean) => void
@@ -71,8 +70,6 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   const [isFeeLoading, setIsFeeLoading] = useState(false)
   const isChangingToken = useRef(false)
 
-  const initedToken = useTokenInit(token)
-
   const {
     setValue,
     register,
@@ -80,8 +77,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     trigger,
     clearErrors,
   } = useFormContext()
-  const userBalance = balance !== undefined ? balance : token!.getTokenBalance()
-  const decimals = token!.getTokenDecimals()
+  const userBalance = balance !== undefined ? balance : token?.getTokenBalance()
+  const decimals = token?.getTokenDecimals()
 
   useEffect(() => {
     if (!token) return
@@ -146,10 +143,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
     const balanceNum = new BigNumber(userBalance.toString())
 
-    if (
-      token.getTokenAddress() === ETH_NATIVE_ID ||
-      token.getTokenAddress() === BTC_NATIVE_ID
-    ) {
+    if (token.getTokenAddress() === ETH_NATIVE_ID) {
       const formattedValue = formatAssetAmountRaw(balanceNum, decimals)
       setValue("amount", formattedValue, { shouldValidate: true })
 
@@ -198,17 +192,17 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   }, [fee, isMaxClicked, token, userBalance])
 
   useEffect(() => {
-    if (!initedToken || !setIsResponsive) return
+    if (!token || !setIsResponsive) return
 
-    const balance = initedToken.getTokenBalanceFormatted()
+    const balance = token.getTokenBalanceFormatted()
     if (!balance || balance.length < BALANCE_EDGE_LENGTH) {
       setIsResponsive(false)
     } else {
       setIsResponsive(true)
     }
-  }, [initedToken])
+  }, [token])
 
-  if (!decimals || !token) return null
+  if (!token || !decimals) return null
 
   return (
     <div
@@ -222,7 +216,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       )}
     >
       <div className="flex flex-wrap justify-between">
-        {isLoading || !Boolean(initedToken) ? (
+        {isLoading || !Boolean(token) ? (
           <Skeleton className="w-[124px] h-[34px] rounded-[6px]" />
         ) : (
           <InputAmount
@@ -311,7 +305,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           )}
         </div>
         <div className="flex-[0_0_100%]"></div>
-        {isLoading || isFeeLoading || !Boolean(initedToken) ? (
+        {isLoading || isFeeLoading || !Boolean(token) ? (
           <Skeleton className="w-[124px] h-1 rounded-[6px] mt-[15px]" />
         ) : (
           <p
@@ -339,10 +333,10 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           >
             {balance === undefined ? (
               <span id="choose-from-token-balance">
-                {initedToken ? (
+                {token ? (
                   <>
-                    {initedToken.getTokenBalanceFormatted() || "0"}&nbsp;
-                    {initedToken.getTokenSymbol()}
+                    {token.getTokenBalanceFormatted() || "0"}&nbsp;
+                    {token.getTokenSymbol()}
                   </>
                 ) : (
                   <Skeleton className="inline-block h-3 w-[80px]"></Skeleton>

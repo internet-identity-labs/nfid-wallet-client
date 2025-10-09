@@ -72,13 +72,13 @@ describe("Staking", () => {
       .mockResolvedValue(mockFt)
     jest.spyOn(stakingService as any, "getNeurons").mockResolvedValue(mockStake)
 
+    let tokens = await ftService.getTokens(pairPrincipal)
     const stakedTokens = await stakingService.getStakedTokens(
-      pairPrincipal,
-      pairPrincipal,
       Promise.resolve(edId),
+      tokens,
     )
 
-    const nfidwStake = stakedTokens.find(
+    const nfidwStake = stakedTokens?.find(
       (t) => t.getToken().getTokenAddress() === NFIDW_CANISTER_ID,
     )!
     const available = nfidwStake

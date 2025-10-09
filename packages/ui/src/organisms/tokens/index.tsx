@@ -30,7 +30,7 @@ enum Sorting {
 }
 
 export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
-  activeTokens: FT[]
+  initedTokens: FT[]
   allTokens: FT[]
   isTokensLoading: boolean
   profileConstants: IProfileConstants
@@ -55,12 +55,10 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   hideZeroBalance: boolean
   onZeroBalanceToggle: () => void
   tokensIniting?: boolean
-  isBtcAddressLoading: boolean
-  isEthAddressLoading: boolean
 }
 
 export const Tokens: FC<TokensProps> = ({
-  activeTokens,
+  initedTokens,
   allTokens,
   isTokensLoading,
   profileConstants,
@@ -76,8 +74,6 @@ export const Tokens: FC<TokensProps> = ({
   hideZeroBalance,
   onZeroBalanceToggle,
   tokensIniting,
-  isBtcAddressLoading,
-  isEthAddressLoading,
 }) => {
   const [token, setToken] = useState<FT | undefined>()
   const [sorting, setSorting] = useState<Sorting>(Sorting.DEFAULT)
@@ -112,37 +108,37 @@ export const Tokens: FC<TokensProps> = ({
   }
 
   const sortedTokens = useMemo(() => {
-    const getUSDBalance = (token: typeof activeTokens[0]) => {
+    const getUSDBalance = (token: (typeof initedTokens)[0]) => {
       const balance = token.getUSDBalance()
       return balance ? new BigNumber(balance) : null
     }
 
     if (sorting === Sorting.ASCENDING) {
-      return [...activeTokens].sort((a, b) => {
+      return [...initedTokens].sort((a, b) => {
         const balanceA = getUSDBalance(a)
         const balanceB = getUSDBalance(b)
 
         if (balanceA === null) return 1
         if (balanceB === null) return -1
 
-        return balanceA.comparedTo(balanceB)
+        return balanceA.comparedTo(balanceB) || 0
       })
     }
 
     if (sorting === Sorting.DESCENDING) {
-      return [...activeTokens].sort((a, b) => {
+      return [...initedTokens].sort((a, b) => {
         const balanceA = getUSDBalance(a)
         const balanceB = getUSDBalance(b)
 
         if (balanceA === null) return 1
         if (balanceB === null) return -1
 
-        return balanceB.comparedTo(balanceA)
+        return balanceB.comparedTo(balanceA) || 0
       })
     }
 
-    return activeTokens
-  }, [activeTokens, sorting])
+    return initedTokens
+  }, [initedTokens, sorting])
 
   return (
     <>
@@ -190,9 +186,9 @@ export const Tokens: FC<TokensProps> = ({
                     isIniting={
                       tokensIniting ||
                       (token.getTokenAddress() === BTC_NATIVE_ID &&
-                        isBtcAddressLoading) ||
+                        !token.isInited()) ||
                       (token.getTokenAddress() === ETH_NATIVE_ID &&
-                        isEthAddressLoading)
+                        !token.isInited())
                     }
                     hideZeroBalance={hideZeroBalance}
                     key={`token_${token.getTokenAddress()}_${token.getTokenState()}`}

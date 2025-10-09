@@ -73,13 +73,19 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   )
 
   useEffect(() => {
+    if (!isSwapTo) {
+      setTokensOptions(tokens)
+      setIsTokenOptionsLoading(false)
+      return
+    }
+
     const init = async () => {
       const { publicKey } = authState.getUserIdData()
 
       try {
         const tokenOptions = await Promise.all(
           tokens.map(async (token, index) => {
-            if (index < INITED_TOKENS_LIMIT && !token.isInited()) {
+            if (index < INITED_TOKENS_LIMIT) {
               try {
                 await token.init(Principal.fromText(publicKey))
                 return token
@@ -101,7 +107,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
     }
 
     init()
-  }, [tokens])
+  }, [tokens, isSwapTo])
 
   const filteredTokens = useMemo(() => {
     if (searchInput.length < 2) return tokensOptions
@@ -111,10 +117,10 @@ export const ChooseTokenModal = <T extends FT | NFT>({
     )
   }, [tokensOptions, searchInput])
 
-  useIntersectionObserver(itemRefs.current, async (index) => {
+  useIntersectionObserver(itemRefs.current, !!isSwapTo, async (index) => {
     const token = filteredTokens[index]
 
-    if (token && !token.isInited()) {
+    if (token) {
       const { publicKey } = authState.getUserIdData()
 
       const updatedToken = await token.init(Principal.fromText(publicKey))
@@ -132,20 +138,17 @@ export const ChooseTokenModal = <T extends FT | NFT>({
     }
   })
 
-  const handleSelect = useCallback(
-    (token: T) => {
-      if (token instanceof FTImpl) {
-        const isSwappable = isSwapTo
-          ? tokensAvailableToSwap?.to.includes(token.getTokenAddress())
-          : tokensAvailableToSwap?.from.includes(token.getTokenAddress())
+  const handleSelect = (token: T) => {
+    if (token instanceof FTImpl) {
+      const isSwappable = isSwapTo
+        ? tokensAvailableToSwap?.to.includes(token.getTokenAddress())
+        : tokensAvailableToSwap?.from.includes(token.getTokenAddress())
 
-        if (!isSwappable && tokensAvailableToSwap) return
-      }
-      onSelect?.(token)
-      setIsModalVisible(false)
-    },
-    [onSelect, tokensAvailableToSwap, isSwapTo],
-  )
+      if (!isSwappable && tokensAvailableToSwap) return
+    }
+    onSelect?.(token)
+    setIsModalVisible(false)
+  }
 
   return (
     <div id={"choose_modal"}>

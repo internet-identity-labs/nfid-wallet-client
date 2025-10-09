@@ -1,4 +1,3 @@
-import { Principal } from "@dfinity/principal"
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import { BtcBanner } from "packages/ui/src/molecules/btc-banner"
@@ -26,7 +25,6 @@ import {
   CKBTC_CANISTER_ID,
   ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { NFIDTheme } from "frontend/App"
@@ -39,14 +37,13 @@ import { fetchNFTs } from "frontend/features/collectibles/utils/util"
 import {
   fetchTokens,
   getFullUsdValue,
-  initTokens,
 } from "frontend/features/fungible-token/utils"
+import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { ModalType } from "frontend/features/transfer-modal/types"
 import { getAllVaults } from "frontend/features/vaults/services"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
-import { FT } from "frontend/integration/ft/ft"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
 
@@ -91,8 +88,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     window.history.back()
   }, [])
   const [hasUncompletedSwap, setHasUncompletedSwap] = useState(false)
-  const [btc, setBtc] = useState<FT>()
-  const [eth, setEth] = useState<FT>()
 
   const tabs = useMemo(() => {
     return [
@@ -153,99 +148,44 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     revalidateOnFocus: false,
   })
 
-  const activeTokens = useMemo(() => {
-    return tokens.filter((token) => token.getTokenState() === State.Active)
-  }, [tokens])
-
-  const { data: initedTokens = [], mutate: reinitTokens } = useSWR(
-    activeTokens.length > 0 && isWallet ? "initedTokens" : null,
-    () =>
-      initTokens(activeTokens, !!isBtcAddressLoading, !!isEthAddressLoading),
-    { revalidateOnFocus: false },
+  const { initedTokens } = useTokensInit(
+    tokens,
+    isBtcAddressLoading,
+    isEthAddressLoading,
   )
 
-  const { data: nfts, mutate: reinitNfts } = useSWR(
-    "nftList",
-    () => fetchNFTs(),
-    {
-      revalidateOnFocus: false,
-    },
-  )
+  const btc = useMemo(() => {
+    return initedTokens?.find(
+      (token) => token.getTokenAddress() === BTC_NATIVE_ID,
+    )
+  }, [initedTokens])
 
-  const btcBalance = btc?.getTokenBalance()
-  const isBtcInited = btc?.isInited()
-  const ethBalance = eth?.getTokenBalance()
-  const isEthInited = eth?.isInited()
+  const eth = useMemo(() => {
+    return initedTokens?.find(
+      (token) => token.getTokenAddress() === ETH_NATIVE_ID,
+    )
+  }, [initedTokens])
 
-  useEffect(() => {
-    const btcToken = tokens.find((t) => t.getTokenAddress() === BTC_NATIVE_ID)
-    const ethToken = tokens.find((t) => t.getTokenAddress() === ETH_NATIVE_ID)
-    if (!btcToken || !ethToken) return
-
-    if (!btcToken.isInited() && !isBtcAddressLoading) {
-      btcToken
-        .init(Principal.fromText(authState.getUserIdData().publicKey))
-        .then(() => {
-          setBtc(btcToken)
-        })
-    }
-
-    if (!ethToken.isInited() && !isEthAddressLoading) {
-      ethToken
-        .init(Principal.fromText(authState.getUserIdData().publicKey))
-        .then(() => {
-          setEth(ethToken)
-        })
-    }
-  }, [tokens, isBtcAddressLoading, isEthAddressLoading])
+  const { data: nfts } = useSWR("nftList", () => fetchNFTs(), {
+    revalidateOnFocus: false,
+  })
 
   const isReady = useMemo(() => {
     return (
+      nfts &&
       Array.isArray(nfts?.items) &&
-      initedTokens.length > 0 &&
+      initedTokens &&
       !!isWallet &&
       eth &&
-      btc &&
-      isBtcInited &&
-      isEthInited &&
-      btcBalance !== undefined &&
-      !isBtcAddressLoading &&
-      !isEthAddressLoading &&
-      ethBalance !== undefined
+      btc
     )
-  }, [
-    nfts?.items,
-    initedTokens.length,
-    isWallet,
-    btc,
-    isBtcAddressLoading,
-    btcBalance,
-    isBtcInited,
-    eth,
-    ethBalance,
-    isEthAddressLoading,
-    isEthInited,
-  ])
+  }, [nfts, initedTokens, isWallet, btc, eth])
 
-  const {
-    data: tokensUsdBalance,
-    isLoading: isUsdLoading,
-    isValidating,
-    mutate: refetchFullUsdBalance,
-  } = useSWR(
+  const { data: fullUsdBalance, isLoading: isUsdLoading } = useSWR(
     isReady ? "fullUsdValue" : null,
-    async () => getFullUsdValue(nfts?.items, initedTokens),
+    async () => getFullUsdValue(nfts?.items!, initedTokens!),
     { revalidateOnFocus: false },
   )
-
-  useEffect(() => {
-    reinitTokens()
-    reinitNfts()
-  }, [activeTokens, isWallet, isBtcAddressLoading, reinitTokens, reinitNfts])
-
-  useEffect(() => {
-    refetchFullUsdBalance()
-  }, [initedTokens, refetchFullUsdBalance, isBtcAddressLoading])
 
   const {
     data: isEmailDeviceOutOfSyncWithII,
@@ -312,13 +252,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     send("SHOW")
   }
 
-  const isUsdBalanceLoading =
-    isUsdLoading ||
-    !initedTokens.length ||
-    isValidating ||
-    isBtcAddressLoading ||
-    !btc?.isInited() ||
-    btc.getTokenBalance() === undefined
+  const isUsdBalanceLoading = isUsdLoading || !fullUsdBalance
 
   return (
     <div className={clsx("relative min-h-screen overflow-hidden", className)}>
@@ -387,7 +321,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
           {isWallet && (
             <>
               <ProfileInfo
-                usdBalance={isUsdBalanceLoading ? undefined : tokensUsdBalance}
+                usdBalance={isUsdBalanceLoading ? undefined : fullUsdBalance}
                 isUsdLoading={isUsdBalanceLoading}
                 onSendClick={onSendClick}
                 onReceiveClick={onReceiveClick}

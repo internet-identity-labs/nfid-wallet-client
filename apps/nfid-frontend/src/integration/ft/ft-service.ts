@@ -2,6 +2,7 @@ import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { Cache } from "node-ts-cache"
 import { integrationCache } from "packages/integration/src/cache"
+import { storageWithTtl } from "@nfid/client-db"
 import BtcIcon from "packages/ui/src/organisms/tokens/assets/bitcoin.svg"
 import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
 import { FT } from "src/integration/ft/ft"
@@ -23,6 +24,9 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 
 import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
 import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
+
+const InitedTokens = "InitedTokens"
+export const TOKENS_REFRESH_INTERVAL = 10000
 
 export interface TokensAvailableToSwap {
   to: string[]
@@ -113,6 +117,130 @@ export class FtService {
 
         return this.sortTokens(ft)
       })
+  }
+
+  public async getInitedTokens(
+    tokens: FT[],
+    principal: Principal,
+    refetch?: boolean,
+  ): Promise<FT[]> {
+    const cacheKey = this.getCacheKey(principal)
+    const cache = await storageWithTtl.getEvenExpired(cacheKey)
+
+    if (!cache || Boolean(refetch)) {
+      const initedTokens = await this.fetchInitedTokens(tokens, principal)
+
+      await storageWithTtl.set(
+        cacheKey,
+        this.serializeTokensData(initedTokens),
+        TOKENS_REFRESH_INTERVAL,
+      )
+
+      return initedTokens
+    }
+
+    if (cache && cache.expired) {
+      this.fetchInitedTokens(tokens, principal).then((initedTokens) => {
+        storageWithTtl.set(
+          cacheKey,
+          this.serializeTokensData(initedTokens),
+          TOKENS_REFRESH_INTERVAL,
+        )
+      })
+
+      return this.deserializeTokensData(cache.value as string, tokens)
+    }
+
+    return this.deserializeTokensData(cache?.value as string, tokens)
+  }
+
+  public async initializeBtcEthTokensWhenReady(
+    tokens: FT[],
+    principal: Principal,
+  ): Promise<FT[]> {
+    const btcEthTokens = tokens.filter(
+      (token) =>
+        (token.getTokenAddress() === BTC_NATIVE_ID ||
+          token.getTokenAddress() === ETH_NATIVE_ID) &&
+        !token.isInited(),
+    )
+
+    if (btcEthTokens.length === 0) return tokens
+
+    const reInited = await Promise.all(
+      btcEthTokens.map((token) => token.init(principal)),
+    )
+
+    const updatedTokens = tokens.map((token) => {
+      const refreshed = reInited.find(
+        (t) => t.getTokenAddress() === token.getTokenAddress(),
+      )
+      return refreshed ?? token
+    })
+
+    const cacheKey = this.getCacheKey(principal)
+    await storageWithTtl.set(
+      cacheKey,
+      this.serializeTokensData(updatedTokens),
+      TOKENS_REFRESH_INTERVAL,
+    )
+
+    return updatedTokens
+  }
+
+  private getCacheKey(principal: Principal): string {
+    return `${InitedTokens}_${principal.toText()}`
+  }
+
+  private async fetchInitedTokens(
+    tokens: FT[],
+    principal: Principal,
+  ): Promise<FT[]> {
+    return Promise.all(tokens.map((token) => token.init(principal)))
+  }
+
+  private serializeTokensData(tokens: FT[]): string {
+    return JSON.stringify(
+      tokens.map((token) => ({
+        tokenAddress: token.getTokenAddress(),
+        tokenBalance: token.getTokenBalance()?.toString(),
+        tokenRate: token.getTokenRate("1")?.toString(),
+        tokenRateDayChangePercent: token.getTokenRateDayChangePercent()?.value,
+        tokenRateDayChangePercentPositive:
+          token.getTokenRateDayChangePercent()?.positive,
+        inited: token.isInited(),
+      })),
+    )
+  }
+
+  private deserializeTokensData(serialized: string, tokens: FT[]): FT[] {
+    const cachedData = JSON.parse(serialized)
+    return tokens.map((token) => {
+      const data = cachedData.find(
+        (d: { tokenAddress: string }) =>
+          d.tokenAddress === token.getTokenAddress(),
+      )
+
+      const tokenImpl = token as any
+
+      if (data.tokenBalance) {
+        tokenImpl.tokenBalance = BigInt(data.tokenBalance)
+      }
+
+      if (data.tokenRate) {
+        tokenImpl.tokenRate = {
+          value: new BigNumber(data.tokenRate),
+          dayChangePercent: data.tokenRateDayChangePercent,
+          dayChangePercentPositive: data.tokenRateDayChangePercentPositive,
+        }
+      } else {
+        tokenImpl.tokenRate = null
+      }
+
+      tokenImpl.inited = data.inited
+
+      return token
+    })
   }
 
   private getNativeBtcToken(): FTImpl {

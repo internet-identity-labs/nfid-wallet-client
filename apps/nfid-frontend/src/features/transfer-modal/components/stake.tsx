@@ -21,7 +21,9 @@ import { FormValues, SendStatus } from "../types"
 import {
   getAccurateDateForStakeInSeconds,
   getTokensWithUpdatedBalance,
+  updateCachedInitedTokens,
 } from "../utils"
+import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 const DEFAULT_STAKE_ERROR = "Something went wrong"
 
@@ -58,19 +60,22 @@ export const StakeFT = ({
     { revalidateOnFocus: false, revalidateOnMount: false },
   )
 
-  const tokensForStake = useMemo(() => {
-    return tokens.filter(
+  const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(tokens)
+
+  const filteredTokens = useMemo(() => {
+    if (!initedTokens) return []
+    return initedTokens.filter(
       (token) =>
         token.getTokenCategory() === Category.Sns ||
         token.getTokenAddress() === ICP_CANISTER_ID,
     )
-  }, [tokens])
+  }, [initedTokens])
 
   const token = useMemo(() => {
-    return tokensForStake.find(
+    return filteredTokens.find(
       (token) => token.getTokenAddress() === tokenAddress,
     )
-  }, [tokenAddress, tokensForStake])
+  }, [tokenAddress, filteredTokens])
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -131,9 +136,12 @@ export const StakeFT = ({
               : getAccurateDateForStakeInSeconds(lockValue),
         )
         .then(() => {
+          if (!initedTokens) return
           setSuccessMessage(`Stake ${amount} ICP successful`)
           setStatus(SendStatus.COMPLETED)
-          mutate("stakedTokens", fetchStakedTokens(true), { revalidate: true })
+          mutate("stakedTokens", fetchStakedTokens(initedTokens, true), {
+            revalidate: true,
+          })
         })
         .catch((e) => {
           console.error("Stake error: ", e)
@@ -142,9 +150,11 @@ export const StakeFT = ({
           setErrorMessage(DEFAULT_STAKE_ERROR)
         })
         .finally(() => {
-          getTokensWithUpdatedBalance([ICP_CANISTER_ID], tokens).then(
+          if (!initedTokens) return
+          getTokensWithUpdatedBalance([ICP_CANISTER_ID], initedTokens).then(
             (updatedTokens) => {
               mutateWithTimestamp("tokens", updatedTokens, false)
+              updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
             },
           )
         })
@@ -164,11 +174,12 @@ export const StakeFT = ({
             : getAccurateDateForStakeInSeconds(lockValue),
       )
       .then(() => {
+        if (!initedTokens) return
         setSuccessMessage(
           `Stake ${amount} ${token.getTokenSymbol()} successful`,
         )
         setStatus(SendStatus.COMPLETED)
-        mutate("stakedTokens", () => fetchStakedTokens(true), {
+        mutate("stakedTokens", () => fetchStakedTokens(initedTokens, true), {
           revalidate: true,
         })
       })
@@ -179,30 +190,34 @@ export const StakeFT = ({
         setErrorMessage(DEFAULT_STAKE_ERROR)
       })
       .finally(() => {
-        getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
-          (updatedTokens) => {
-            mutateWithTimestamp("tokens", updatedTokens, false)
-          },
-        )
+        if (!initedTokens) return
+        getTokensWithUpdatedBalance(
+          [token.getTokenAddress()],
+          initedTokens,
+        ).then((updatedTokens) => {
+          mutateWithTimestamp("tokens", updatedTokens, false)
+          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
+        })
       })
   }, [
     token,
     amount,
     lockValue,
     identity,
-    tokens,
+    initedTokens,
     setErrorMessage,
     setSuccessMessage,
     stakingParams,
     isMaxLockTimeSelected,
     isMinLockTimeSelected,
+    mutateInitedTokens,
   ])
 
   return (
     <FormProvider {...formMethods}>
       <StakeUi
         token={token}
-        tokens={tokensForStake}
+        tokens={filteredTokens}
         setChosenToken={setTokenAddress}
         isLoading={isTokensLoading}
         submit={submit}

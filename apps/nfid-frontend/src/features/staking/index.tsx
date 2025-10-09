@@ -11,6 +11,8 @@ import { ProfileContext } from "frontend/provider"
 
 import { ModalType } from "../transfer-modal/types"
 import { fetchStakedTokens } from "./utils"
+import { fetchTokens } from "../fungible-token/utils"
+import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 const StakingPage = () => {
   const navigate = useNavigate()
@@ -24,9 +26,16 @@ const StakingPage = () => {
     send("SHOW")
   }
 
+  const { data: tokens } = useSWRWithTimestamp("tokens", fetchTokens, {
+    revalidateOnFocus: false,
+    revalidateOnMount: false,
+  })
+
+  const { initedTokens } = useTokensInit(tokens)
+
   const { data: stakedTokens, isLoading } = useSWRWithTimestamp(
-    "stakedTokens",
-    () => fetchStakedTokens(false),
+    initedTokens ? "stakedTokens" : null,
+    () => fetchStakedTokens(initedTokens!, false),
     {
       revalidateOnFocus: false,
     },

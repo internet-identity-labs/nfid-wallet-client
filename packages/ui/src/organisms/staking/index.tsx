@@ -43,7 +43,7 @@ export const Staking: FC<StakingProps> = ({
 
   return (
     <>
-      {isLoading ? (
+      {isLoading || !stakedTokens ? (
         <StakingHeaderSkeleton />
       ) : (
         stakedTokens &&
@@ -57,9 +57,11 @@ export const Staking: FC<StakingProps> = ({
         )
       )}
       <ProfileContainer innerClassName="!px-0">
-        <div className={clsx(isLoading && "pl-5 sm:pl-[30px]")}>
+        <div
+          className={clsx((isLoading || !stakedTokens) && "pl-5 sm:pl-[30px]")}
+        >
           <Table className="!min-w-0" id="staking-table">
-            {isLoading ? (
+            {isLoading || !stakedTokens ? (
               <TableActivitySkeleton tableRowsAmount={3} tableCellAmount={3} />
             ) : stakedTokens && stakedTokens.length ? (
               <>

@@ -16,14 +16,13 @@ import { ChooseFtModal, Tooltip } from "@nfid-frontend/ui"
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
-import { useTokenInit } from "../hooks/token-init"
 import { BALANCE_EDGE_LENGTH } from "./swap-form"
 
 interface ChooseToTokenProps {
   token: FT | undefined
   tokens?: FT[]
   setToChosenToken: (value: string) => void
-  usdRate: string | undefined
+  usdRate: string | undefined | null
   isLoading: boolean
   value?: string
   priceImpact?: PriceImpact
@@ -47,22 +46,21 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   color = "bg-gray-100 dark:bg-zinc-700",
 }) => {
   const { setValue, register } = useFormContext()
-  const initedToken = useTokenInit(token)
 
   useEffect(() => {
     setValue("to", value)
   }, [value])
 
   useEffect(() => {
-    if (!initedToken || !setIsResponsive) return
+    if (!token || !setIsResponsive) return
 
-    const balance = initedToken.getTokenBalanceFormatted()
+    const balance = token.getTokenBalanceFormatted()
     if (!balance || balance.length < BALANCE_EDGE_LENGTH) {
       setIsResponsive(false)
     } else {
       setIsResponsive(true)
     }
-  }, [initedToken])
+  }, [token])
 
   if (!token) return null
 
@@ -166,8 +164,8 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
                         priceImpact?.status === PriceImpactStatus.LOW
                           ? "text-green-700 dark:text-teal-500"
                           : priceImpact?.status === PriceImpactStatus.MEDIUM
-                          ? "text-orange-600 dark:text-amber-500"
-                          : "text-red-700 dark:text-red-500",
+                            ? "text-orange-600 dark:text-amber-500"
+                            : "text-red-700 dark:text-red-500",
                       )}
                     >
                       ({priceImpact?.priceImpact})
@@ -187,10 +185,10 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
           >
             Balance:&nbsp;
             <span id={"choose-to-token-balance"}>
-              {initedToken ? (
+              {token ? (
                 <>
-                  {initedToken.getTokenBalanceFormatted() || "0"}&nbsp;
-                  {initedToken.getTokenSymbol()}
+                  {token.getTokenBalanceFormatted() || "0"}&nbsp;
+                  {token.getTokenSymbol()}
                 </>
               ) : (
                 <Skeleton className="inline-block h-3 w-[80px]"></Skeleton>

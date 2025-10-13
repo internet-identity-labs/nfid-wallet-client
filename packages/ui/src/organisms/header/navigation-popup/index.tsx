@@ -108,7 +108,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
                   linkItem,
                   navigate,
                   location,
-                  walletTheme,
+                  isDarkTheme,
                   profileConstants,
                 ),
               )}

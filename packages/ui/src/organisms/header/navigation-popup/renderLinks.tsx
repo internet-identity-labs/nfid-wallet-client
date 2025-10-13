@@ -2,9 +2,6 @@ import clsx from "clsx"
 import { Fragment } from "react"
 import { useNavigate, Location } from "react-router-dom"
 
-import { NFIDTheme } from "frontend/App"
-import { useDarkTheme } from "frontend/hooks"
-
 import { INavigationPopupLinks } from "../profile-header"
 
 export const shouldRenderLink = (
@@ -38,12 +35,11 @@ export const renderLink = (
   linkItem: INavigationPopupLinks,
   navigate: ReturnType<typeof useNavigate>,
   location: Location,
-  walletTheme: NFIDTheme,
+  isDarkTheme: boolean,
   profileConstants?: {
     security: string
   },
 ) => {
-  const isDarkTheme = useDarkTheme()
   const isExternalLink = linkItem.id === "nav-knowledge-base"
   const LinkComponent = isExternalLink ? "a" : "div"
   const linkProps = isExternalLink

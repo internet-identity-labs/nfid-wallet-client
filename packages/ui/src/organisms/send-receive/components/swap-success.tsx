@@ -10,11 +10,14 @@ import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 import {
   IconCmpArrow,
+  IconCmpArrowWhite,
   IconNftPlaceholder,
   ImageWithFallback,
   LottieAnimation,
 } from "@nfid-frontend/ui"
 import { Button, H5 } from "@nfid-frontend/ui"
+
+import { useDarkTheme } from "frontend/hooks"
 
 import deposit from "../assets/NFID_WS_1.json"
 import depositSuccess from "../assets/NFID_WS_1_1.json"
@@ -24,6 +27,7 @@ import swapError from "../assets/NFID_WS_2_1.json"
 import withdraw from "../assets/NFID_WS_3.json"
 import withdrawSuccess from "../assets/NFID_WS_3_1.json"
 import withdrawError from "../assets/NFID_WS_3_2.json"
+import SwapArrowBoxDark from "../assets/swap-success-arrow-box-dark.png"
 import SwapArrowBox from "../assets/swap-success-arrow-box.png"
 import { getTextStatusByStep, getTitleAndButtonText } from "../utils"
 
@@ -67,6 +71,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
   providerName,
   isResponsive,
 }) => {
+  const isDarkTheme = useDarkTheme()
   const [currentAnimation, setCurrentAnimation] = useState<unknown>(
     allAnimations.deposit,
   )
@@ -111,14 +116,14 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
     <div
       id={"swap_success_window_" + step}
       className={clsx(
-        "text-black text-center w-full h-full",
+        "text-black dark:text-white text-center w-full h-full",
         "px-5 pb-5 pt-[18px] absolute left-0 top-0 z-[3]",
-        "flex flex-grow flex-col bg-white",
+        "flex flex-grow flex-col bg-white dark:bg-darkGray",
         !isOpen && "hidden",
       )}
     >
       <div id={"swap-success-title"}>
-        <H5 className="mt-5 text-xl !font-bold leading-6">
+        <H5 className="mt-5 text-xl !font-bold leading-6 dark:text-white">
           {isCompleted ? "Swap successful" : "Swapping"}
         </H5>
         <p
@@ -183,16 +188,22 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
                 "flex justify-center items-end mx-auto text-black",
               )}
               style={{
-                backgroundImage: `url(${SwapArrowBox})`,
+                backgroundImage: `url(${
+                  isDarkTheme ? SwapArrowBoxDark : SwapArrowBox
+                })`,
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }}
             >
-              <IconCmpArrow className="rotate-[-90deg] h-5 w-5" />
+              {isDarkTheme ? (
+                <IconCmpArrowWhite className="rotate-[-90deg] h-5 w-5" />
+              ) : (
+                <IconCmpArrow className="rotate-[-90deg] h-5 w-5" />
+              )}
             </div>
           </div>
-          <div className="bg-gradient-to-b from-gray-50 to-white py-[10px] rounded-t-[12px]">
+          <div className="bg-gradient-to-b from-gray-50 dark:from-zinc-700 to-white dark:to-darkGray py-[10px] rounded-t-[12px]">
             <p className="text-sm leading-[25px] font-inter" id="title">
               {titleTo}
             </p>
@@ -201,7 +212,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             </p>
           </div>
           {error && providerName && (
-            <div className="text-sm text-red-600 max-w-[320px] mx-auto mb-[20px]">
+            <div className="text-sm text-red-600 dark:text-red-500 max-w-[320px] mx-auto mb-[20px]">
               {error.getDisplayMessage(providerName)}
             </div>
           )}

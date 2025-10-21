@@ -6,7 +6,10 @@ import {
   Neuron,
   NeuronId,
 } from "@dfinity/sns/dist/candid/sns_governance"
-import { bytesToHexString } from "src/integration/staking/service/staking-service-impl"
+import {
+  bytesToHexString,
+  hexStringToBytes,
+} from "src/integration/staking/service/staking-service-impl"
 
 import {
   disburse,
@@ -18,6 +21,9 @@ import {
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
+import { FT } from "frontend/integration/ft/ft"
+
+import { StakeSnsParamsCalculatorImpl } from "../calculator/stake-sns-params-calculator"
 import { NfidNeuronImpl } from "./nfid-neuron-impl"
 
 const MILISECONDS_PER_SECOND = 1000
@@ -133,6 +139,78 @@ export class NfidSNSNeuronImpl extends NfidNeuronImpl<Neuron> {
       return false
 
     return this.params?.getMaximumLockTime() === lockTime
+  }
+
+  serialize(): unknown {
+    const dissolveState = this.neuron.dissolve_state[0]
+
+    return {
+      id: bytesToHexString(this.neuron.id[0]!.id),
+      dissolveState: dissolveState
+        ? "DissolveDelaySeconds" in dissolveState
+          ? {
+              DissolveDelaySeconds:
+                dissolveState.DissolveDelaySeconds.toString(),
+            }
+          : {
+              WhenDissolvedTimestampSeconds:
+                dissolveState.WhenDissolvedTimestampSeconds.toString(),
+            }
+        : undefined,
+      followees: this.neuron.followees.map(([nid, f]) => [
+        nid.toString(),
+        {
+          followees: f.followees.map(({ id }) => bytesToHexString(id)),
+        },
+      ]),
+      cachedNeuronStake: this.neuron.cached_neuron_stake_e8s.toString(),
+      stakedMaturityE8sEquivalent: this.neuron.staked_maturity_e8s_equivalent[0]
+        ? this.neuron.staked_maturity_e8s_equivalent[0].toString()
+        : undefined,
+      createdTimestampSeconds: this.neuron.created_timestamp_seconds.toString(),
+    }
+  }
+
+  static deserialize(
+    raw: any,
+    token: FT,
+    params: StakeSnsParamsCalculatorImpl,
+  ): NfidSNSNeuronImpl {
+    const dissolveStateRaw = raw.dissolveState
+      ? "DissolveDelaySeconds" in raw.dissolveState
+        ? {
+            DissolveDelaySeconds: BigInt(
+              raw.dissolveState.DissolveDelaySeconds,
+            ),
+          }
+        : {
+            WhenDissolvedTimestampSeconds: BigInt(
+              raw.dissolveState.WhenDissolvedTimestampSeconds,
+            ),
+          }
+      : undefined
+
+    const neuron = {
+      id: [{ id: hexStringToBytes(raw.id) }],
+      dissolve_state: dissolveStateRaw ? [dissolveStateRaw] : [],
+      followees: raw.followees.map(
+        ([nid, f]: [string, { followees: string[] }]) => [
+          BigInt(nid),
+          {
+            followees: f.followees.map((hexId: string) => ({
+              id: hexStringToBytes(hexId),
+            })),
+          },
+        ],
+      ),
+      cached_neuron_stake_e8s: BigInt(raw.cachedNeuronStake),
+      staked_maturity_e8s_equivalent: raw.stakedMaturityE8sEquivalent
+        ? [BigInt(raw.stakedMaturityE8sEquivalent)]
+        : [],
+      created_timestamp_seconds: BigInt(raw.createdTimestampSeconds),
+    } as unknown as Neuron
+
+    return new NfidSNSNeuronImpl(neuron, token, params)
   }
 
   async redeem(signIdentity: SignIdentity): Promise<void> {

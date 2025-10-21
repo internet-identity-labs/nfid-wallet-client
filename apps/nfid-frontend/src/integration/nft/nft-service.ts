@@ -65,8 +65,8 @@ export class NftService {
 
   @Cache(integrationCache, { ttl: 300 })
   async getNFTsTotalPrice(
-    nfts: NFT[] | undefined,
-    icp: FT | undefined,
+    nfts?: NFT[],
+    icp?: FT,
   ): Promise<
     | {
         value: string

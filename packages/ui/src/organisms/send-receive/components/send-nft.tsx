@@ -70,7 +70,9 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
         assetImageClassname="w-[102px] h-[102px] top-[161px] sm:w-[116px] sm:h-[116px] sm:top-[154px]"
       />
       <div className="text-xs">
-        <Label className="inline-block mb-1 text-xs">NFT to transfer</Label>
+        <Label className="inline-block mb-1 text-xs dark:text-white">
+          NFT to transfer
+        </Label>
         <ChooseNftModal
           tokens={nfts ?? []}
           title="NFT to send"
@@ -79,7 +81,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
             <div
               className={clsx(
                 "flex items-center justify-between w-full h-[98px] rounded-[12px]",
-                "pl-0.5 p-2 pr-5 border border-black cursor-pointer mb-[10px]",
+                "pl-0.5 p-2 pr-5 border border-black dark:border-zinc-500 cursor-pointer mb-[10px]",
               )}
               id="choose-nft"
             >
@@ -103,11 +105,13 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
                       />
                     )
                   ) : (
-                    <IconCmpNFTPreview className="text-gray-100 rounded-[10px] w-[92px] h-[92px]" />
+                    <IconCmpNFTPreview className="text-gray-100 rounded-[10px] w-[92px] h-[92px] dark:text-zinc-500" />
                   )}
                 </div>
                 {!selectedNFT ? (
-                  <p className="leading-3 text-gray-400">Choose NFT</p>
+                  <p className="text-sm leading-3 text-gray-400 dark:text-zinc-500">
+                    Choose NFT
+                  </p>
                 ) : (
                   <div>
                     <p className="mb-1 text-sm">{selectedNFT.getTokenName()}</p>
@@ -125,10 +129,11 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
         />
         <Input
           inputClassName={clsx(
-            "border !border-black rounded-[12px] h-14",
+            "border !border-black dark:!border-zinc-500 rounded-[12px] h-14 dark:bg-transparent",
             "flex items-center justify-between",
             "text-black px-4",
-            errors.to?.message && "!border-red-600 ring ring-red-100",
+            errors.to?.message &&
+              "!border-red-600 dark:!border-red-500 ring ring-red-100",
           )}
           placeholder="Recipient wallet address or account ID"
           type="text"

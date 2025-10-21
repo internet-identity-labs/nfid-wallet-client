@@ -7,7 +7,10 @@ import { exchangeRateService } from "@nfid/integration"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
+  ETH_NATIVE_ID,
   NFIDW_CANISTER_ID,
+  TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
@@ -19,6 +22,10 @@ import {
   BitcointNetworkFeeAndUtxos,
 } from "frontend/integration/bitcoin/bitcoin.service"
 import { satoshiService } from "frontend/integration/bitcoin/services/satoshi.service"
+import {
+  ethereumService,
+  SendEthFee,
+} from "frontend/integration/ethereum/ethereum.service"
 
 import { formatUsdAmount } from "../../../util/format-usd-amount"
 
@@ -33,7 +40,7 @@ export class FTImpl implements FT {
     value: BigNumber
     dayChangePercent?: string
     dayChangePercentPositive?: boolean
-  }
+  } | null
   private index: string | undefined
   private symbol: string
   private decimals: number
@@ -59,16 +66,36 @@ export class FTImpl implements FT {
     return this.tokenAddress === BTC_NATIVE_ID
   }
 
-  private async getNativeBtcBalance(globalPrincipal: Principal): Promise<void> {
+  private isNativeEth(): boolean {
+    return this.tokenAddress === ETH_NATIVE_ID
+  }
+
+  private async getNativeBtcBalance(): Promise<void> {
     try {
-      this.tokenBalance = await bitcoinService.getQuickBalance(globalPrincipal)
+      this.tokenBalance = await bitcoinService.getQuickBalance()
     } catch (e) {
-      console.error("BitcoinService error: ", (e as Error).message)
+      console.debug("BitcoinService error: ", (e as Error).message)
+      return
+    }
+
+    try {
+      this.tokenRate =
+        await exchangeRateService.usdPriceForICRC1(CKBTC_CANISTER_ID)
+    } catch (e) {
+      console.debug("Bitcoin rate fetch error: ", (e as Error).message)
+    }
+  }
+
+  private async getNativeEthBalance(): Promise<void> {
+    try {
+      this.tokenBalance = await ethereumService.getQuickBalance()
+    } catch (e) {
+      console.debug("EthereumService error: ", (e as Error).message)
       return
     }
 
     this.tokenRate = await exchangeRateService.usdPriceForICRC1(
-      CKBTC_CANISTER_ID,
+      CKETH_LEDGER_CANISTER_ID,
     )
   }
 
@@ -82,18 +109,26 @@ export class FTImpl implements FT {
       return
     }
 
-    this.tokenRate = await exchangeRateService.usdPriceForICRC1(
-      this.tokenAddress,
-    )
+    try {
+      this.tokenRate = await exchangeRateService.usdPriceForICRC1(
+        this.tokenAddress,
+      )
+    } catch (e) {
+      console.error("ICRC1 rate fetch error: ", (e as Error).message)
+    }
   }
 
   private async getBalance(globalPrincipal: Principal): Promise<void> {
     if (this.isNativeBtc()) {
-      await this.getNativeBtcBalance(globalPrincipal)
+      await this.getNativeBtcBalance()
+    } else if (this.isNativeEth()) {
+      await this.getNativeEthBalance()
     } else {
       await this.getIcrc1Balance(globalPrincipal)
     }
-    this.inited = true
+    if (this.tokenBalance !== undefined) {
+      this.inited = true
+    }
   }
 
   async init(globalPrincipal: Principal): Promise<FT> {
@@ -106,8 +141,7 @@ export class FTImpl implements FT {
   }
 
   async refreshBalance(globalPrincipal: Principal): Promise<FT> {
-    await this.getBalance(globalPrincipal)
-    return this
+    return this.init(globalPrincipal)
   }
 
   getBlockExplorerLink(): string {
@@ -176,8 +210,11 @@ export class FTImpl implements FT {
     return this.tokenName
   }
 
-  getUSDBalanceFormatted(formatLowAmountToFixed = true): string | undefined {
-    if (!this.tokenRate) return
+  getUSDBalanceFormatted(
+    formatLowAmountToFixed = true,
+  ): string | undefined | null {
+    if (this.tokenRate === null) return null
+    if (this.tokenRate === undefined) return
 
     const tokenAmount = exchangeRateService.parseTokenAmount(
       Number(this.tokenBalance),
@@ -188,8 +225,9 @@ export class FTImpl implements FT {
     return formatUsdAmount(usdBalance, formatLowAmountToFixed)
   }
 
-  getTokenRate(amount: string): BigNumber | undefined {
-    if (!this.tokenRate) return
+  getTokenRate(amount: string): BigNumber | undefined | null {
+    if (this.tokenRate === null) return null
+    if (this.tokenRate === undefined) return
 
     const amountBigNumber = new BigNumber(amount || 0)
     const result = this.tokenRate.value.multipliedBy(amountBigNumber)
@@ -200,9 +238,10 @@ export class FTImpl implements FT {
   getTokenRateFormatted(
     amount: string,
     formatLowAmountToFixed = true,
-  ): string | undefined {
+  ): string | undefined | null {
     const tokenRate = this.getTokenRate(amount)
-    if (!tokenRate) return undefined
+    if (tokenRate === null) return null
+    if (tokenRate === undefined) return undefined
     return formatUsdAmount(tokenRate, formatLowAmountToFixed)
   }
 
@@ -220,7 +259,8 @@ export class FTImpl implements FT {
     return !(
       this.tokenCategory === Category.Native ||
       this.tokenAddress === NFIDW_CANISTER_ID ||
-      this.tokenAddress === CKBTC_CANISTER_ID
+      this.tokenAddress === CKBTC_CANISTER_ID ||
+      this.tokenAddress === CKETH_LEDGER_CANISTER_ID
     )
   }
 
@@ -283,19 +323,51 @@ export class FTImpl implements FT {
 
   async getBTCFee(
     identity: SignIdentity,
-    amount: string,
+    value: number,
   ): Promise<BitcointNetworkFeeAndUtxos> {
+    const amount = value.toFixed(this.decimals).replace(TRIM_ZEROS, "")
     return await bitcoinService.getFee(identity, amount)
   }
 
   getBTCFeeFormatted(fee: bigint): string {
-    return `${satoshiService.getFromSatoshis(fee)} ${this.symbol}`
+    return `${Number(satoshiService.getFromSatoshis(fee)).toLocaleString("en", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: this.decimals,
+    })} ${this.symbol}`
   }
 
   getBTCFeeFormattedUsd(fee: bigint): string | undefined {
-    return this.getTokenRateFormatted(
-      Number(satoshiService.getFromSatoshis(fee)).toString(),
+    return (
+      this.getTokenRateFormatted(
+        Number(satoshiService.getFromSatoshis(fee)).toString(),
+      ) || undefined
     )
+  }
+
+  async getETHFee(
+    to: string,
+    from: string,
+    value: number,
+  ): Promise<SendEthFee> {
+    const amount = value.toFixed(this.decimals).replace(TRIM_ZEROS, "")
+    return await ethereumService.getSendEthFee(to, from, amount)
+  }
+
+  getETHFeeFormatted(fee: bigint): string {
+    return `${(Number(fee) / 10 ** this.decimals).toLocaleString("en", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: this.decimals,
+    })} ${this.symbol}`
+  }
+
+  getETHFeeFormattedUsd(fee: bigint): string | undefined {
+    const feeInUsd = this.getTokenRateFormatted(
+      (Number(fee) / 10 ** this.decimals).toString(),
+    )
+
+    if (!feeInUsd) return
+
+    return feeInUsd
   }
 
   getTokenFeeFormatted(): string {
@@ -310,7 +382,7 @@ export class FTImpl implements FT {
       (Number(this.fee) / 10 ** this.decimals).toString(),
     )
 
-    return feeInUsd
+    return feeInUsd || undefined
   }
 
   getRootSnsCanister(): Principal | undefined {

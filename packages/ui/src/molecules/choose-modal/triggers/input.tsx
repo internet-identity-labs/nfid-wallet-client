@@ -28,19 +28,20 @@ export const InputTrigger = ({
     <>
       <div
         className={clsx(
-          "border border-black rounded-[12px] cursor-pointer h-14",
+          "border border-black dark:border-zinc-500 rounded-[12px] cursor-pointer h-14",
           "flex items-center justify-between",
-          "text-black px-4 mb-4",
-          errorText && "!border-red-600 ring ring-red-100",
+          "text-black dark:text-white px-4 mb-4",
+          errorText && "!border-red-600 dark:!border-red-500 ring ring-red-100",
         )}
       >
         {!selectedOption ? (
           <input
+            autoComplete="off"
             id="input"
             className={clsx(
               "outline-none bg-transparent w-full h-11",
               "text-sm",
-              "placeholder:text-gray-400",
+              "placeholder:text-gray-400 placeholder:text-zinc-500",
             )}
             placeholder={placeholder}
             onChangeCapture={(e: ChangeEvent<HTMLInputElement>) =>
@@ -76,7 +77,12 @@ export const InputTrigger = ({
           {selectedOption ? <IconCmpCancel /> : <IconCmpArrowRight />}
         </div>
       </div>
-      <div className={clsx("absolute mt-[75px]", "text-xs py-1 text-red")}>
+      <div
+        className={clsx(
+          "absolute mt-[75px]",
+          "text-xs py-1 text-red dark:text-red-500",
+        )}
+      >
         {errorText}
       </div>
     </>

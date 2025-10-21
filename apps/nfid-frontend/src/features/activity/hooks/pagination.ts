@@ -2,8 +2,6 @@ import { useEffect, useState } from "react"
 
 import { useSWR } from "@nfid/swr"
 
-import { useBtcAddress } from "frontend/hooks"
-
 import { PAGINATION_ITEMS } from "../constants"
 import { IActivityRowGroup } from "../types"
 import { getAllActivity } from "../utils/activity"
@@ -15,15 +13,15 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
   const [activities, setActivities] = useState<IActivityRowGroup[]>([])
   const [isButtonLoading, setIsButtonLoading] = useState(false)
   const [hasMoreData, setHasMoreData] = useState(true)
-  const { btcAddress } = useBtcAddress()
-  const { data, isValidating, isLoading, mutate } = useSWR(
+  const [isFirstLoading, setIsFirstLoading] = useState(true)
+
+  const { data, isValidating } = useSWR(
     ["activity", filter, offset],
     () =>
       getAllActivity({
         filteredContracts: filter,
         offset,
         limit: PAGINATION_ITEMS,
-        btcAddress,
       }),
     {
       revalidateOnMount: true,
@@ -35,6 +33,7 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
   useEffect(() => {
     setActivities([])
     setOffset(0)
+    setIsFirstLoading(true)
   }, [filter])
 
   useEffect(() => {
@@ -63,30 +62,29 @@ export const useActivityPagination = (initialFilter: string[] = []) => {
     })
 
     setHasMoreData(data.isEnd)
+    setIsFirstLoading(false)
   }, [data])
 
   const loadMore = async () => {
+    if (isButtonLoading || isValidating) return
+
     setIsButtonLoading(true)
-    const newOffset = offset + PAGINATION_ITEMS
-    setOffset(newOffset)
+    setOffset((prev) => prev + PAGINATION_ITEMS)
     setIsButtonLoading(false)
   }
 
   const resetHandler = () => {
-    setFilter([])
     setActivities([])
     setOffset(0)
     setHasMoreData(true)
-    mutate()
+    setIsFirstLoading(true)
   }
-
-  const isFirstLoading = !data && !isLoading && !isValidating
 
   return {
     activities,
     filter,
     setFilter,
-    isValidating: isLoading || isValidating,
+    isValidating,
     hasMoreData,
     loadMore,
     isButtonLoading,

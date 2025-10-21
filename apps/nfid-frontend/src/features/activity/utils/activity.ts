@@ -3,6 +3,7 @@ import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 import { exchangeRateService } from "@nfid/integration"
 
 import { getBtcActivitiesRows } from "frontend/integration/bitcoin/services/btc-transaction-service"
+import { getEthActivitiesRows } from "frontend/integration/ethereum/eth-transaction.service"
 
 import { PAGINATION_ITEMS } from "../constants"
 import {
@@ -14,23 +15,36 @@ import {
 import { getIcrc1ActivitiesRows } from "./icrc1-activity"
 import { groupActivityRowsByDate } from "./row"
 import { getSwapActivitiesRows } from "./swap-activity"
+import {
+  CKBTC_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
+  BTC_NATIVE_ID,
+  ETH_NATIVE_ID,
+} from "@nfid/integration/token/constants"
+import { fetchBtcAddress } from "frontend/util/fetch-btc-address"
+import { fetchEthAddress } from "frontend/util/fetch-eth-address"
 
 export const getAllActivity = async ({
-  btcAddress,
   ...params
 }: GetAllActivityParams): Promise<GetAllActivityResult> => {
   const { filteredContracts, offset = 0, limit = PAGINATION_ITEMS } = params
 
-  const [icrc1Activities, swapActivities, btcActivities] = await Promise.all([
-    getIcrc1ActivitiesRows(filteredContracts, limit),
-    getSwapActivitiesRows(filteredContracts),
-    getBtcActivitiesRows(btcAddress),
-  ])
+  let btcAddress = await fetchBtcAddress()
+  let ethAddress = await fetchEthAddress()
+
+  const [icrc1Activities, swapActivities, btcActivities, ethActivities] =
+    await Promise.all([
+      getIcrc1ActivitiesRows(filteredContracts, limit),
+      getSwapActivitiesRows(filteredContracts),
+      getBtcActivitiesRows(btcAddress),
+      getEthActivitiesRows(ethAddress),
+    ])
 
   const activitiesArray = [
     ...icrc1Activities,
     ...swapActivities,
     ...btcActivities,
+    ...ethActivities,
   ]
 
   const groupedRowsByDate = groupActivityRowsByDate(
@@ -39,12 +53,22 @@ export const getAllActivity = async ({
 
   const paginatedData = groupedRowsByDate.slice(offset, offset + limit)
 
+  let priceResponse = await exchangeRateService.getAllIcpTokens()
   const paginatedDataUsdRate = await Promise.all(
     paginatedData.map(async (item) => {
       const asset = item.row.asset as ActivityAssetFT
       let usdRate
       try {
-        usdRate = await exchangeRateService.usdPriceForICRC1(asset.canister)
+        let assetCanister = asset.canister
+        if (assetCanister === BTC_NATIVE_ID) {
+          assetCanister = CKBTC_CANISTER_ID
+        }
+        if (assetCanister === ETH_NATIVE_ID) {
+          assetCanister = CKETH_LEDGER_CANISTER_ID
+        }
+        usdRate = priceResponse?.find(
+          (token) => token.address === assetCanister,
+        )
       } catch (e) {
         console.error("Exchange rate error: ", e)
       }
@@ -55,7 +79,7 @@ export const getAllActivity = async ({
           ...item.row,
           asset: {
             ...item.row.asset,
-            rate: Number(usdRate?.value.toFixed(2)),
+            rate: Number(usdRate?.price),
           },
         },
       }
@@ -77,7 +101,6 @@ export const getAllActivity = async ({
     },
     [],
   )
-
   const isEnd = groupedRowsByDate.length > offset + limit
 
   return { transactions: paginatedGroupedData, isEnd }

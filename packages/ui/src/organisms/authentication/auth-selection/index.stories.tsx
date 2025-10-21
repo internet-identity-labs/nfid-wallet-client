@@ -1,6 +1,5 @@
 import { Meta, StoryFn } from "@storybook/react"
-import { IconCmpGoogle } from "packages/ui/src/atoms/icons"
-import { Button } from "packages/ui/src/molecules/button"
+import { Button, IconCmpGoogle, IconCmpDfinity } from "@nfid-frontend/ui"
 
 import { withSignInDecorator } from "../../../decorators/sign-in"
 import { AuthSelection, AuthSelectionProps } from "./index"
@@ -31,6 +30,7 @@ Default.args = {
   },
   onSelectEmailAuth: () => console.log("Login with Email button clicked"),
   onSelectOtherAuth: () => console.log("Other Auth button clicked"),
+  onSelectIIAuth: () => console.log("Login with II button clicked"),
   onLoginWithPasskey: async () =>
     console.log("Login with Passkey button clicked"),
   isLoading: false,
@@ -44,6 +44,18 @@ Default.args = {
       block
     >
       Continue with Google
+    </Button>
+  ),
+  iiButton: (
+    <Button
+      onClick={() => console.log("II Login button clicked")}
+      id="ii-sign-button"
+      className="h-12 !p-0"
+      type="stroke"
+      icon={<IconCmpDfinity />}
+      block
+    >
+      Continue with Internet Identity
     </Button>
   ),
 }

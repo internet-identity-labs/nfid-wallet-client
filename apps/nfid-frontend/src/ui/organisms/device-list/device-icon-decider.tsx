@@ -13,6 +13,7 @@ import { PasskeyIcon } from "frontend/ui/atoms/icons/passkey"
 import { TabletIcon } from "frontend/ui/atoms/icons/tablet"
 import { UnknownIcon } from "frontend/ui/atoms/icons/unknown"
 import { USBIcon } from "frontend/ui/atoms/icons/usb"
+import { IiIcon } from "frontend/ui/atoms/icons/ii"
 
 interface DeviceIconDeciderProps {
   icon: Icon
@@ -32,6 +33,8 @@ export const DeviceIconDecider: React.FC<DeviceIconDeciderProps> = ({
       return (
         <PasskeyIcon className={className} onClick={onClick} color={color} />
       )
+    case "ii":
+      return <IiIcon className={className} onClick={onClick} color={color} />
     case "apple":
       return <AppleIcon className={className} onClick={onClick} color={color} />
     case "mobile":

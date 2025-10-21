@@ -16,7 +16,7 @@ export const AuthEmailPending: React.FC<AuthEmailFlowProps> = ({
   isIdentityKit,
 }) => {
   return (
-    <div className="flex flex-col flex-1 w-full h-full text-sm text-center">
+    <div className="flex flex-col flex-1 w-full h-full text-sm text-center dark:text-white">
       <IconCmpArrow
         className="absolute transition-opacity cursor-pointer left-5 lg:left-7 top-5 hover:opacity-50"
         onClick={onBack}
@@ -36,7 +36,7 @@ export const AuthEmailPending: React.FC<AuthEmailFlowProps> = ({
       >
         Resend email
       </Button>
-      <div className="flex items-center justify-center mt-auto space-x-1 text-gray-400">
+      <div className="flex items-center justify-center mt-auto space-x-1 text-gray-400 dark:text-zinc-500">
         <IconCmpDoubleSpinner className="animate-spin" />
         <p className="text-sm">Checking for magic link verification</p>
       </div>

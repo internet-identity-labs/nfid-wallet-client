@@ -13,28 +13,29 @@ import { authState } from "@nfid/integration"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
+  ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { useBtcAddress } from "frontend/hooks"
-import { FT } from "frontend/integration/ft/ft"
+import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { ftService } from "frontend/integration/ft/ft-service"
 import { ProfileContext } from "frontend/provider"
 
 import { ModalType } from "../transfer-modal/types"
-import { fetchTokens, initTokens } from "./utils"
+import { fetchTokens } from "./utils"
+import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 const TokensPage = () => {
   const [hideZeroBalance, setHideZeroBalance] = useState(false)
   const userRootPrincipalId = authState.getUserIdData().userId
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
-  const [initedTokens, setInitedTokens] = useState<Array<FT> | undefined>()
   const { isBtcAddressLoading } = useBtcAddress()
+  const { isEthAddressLoading } = useEthAddress()
 
   const onSendClick = (selectedToken: string) => {
     send({ type: "ASSIGN_VAULTS", data: false })
@@ -68,6 +69,22 @@ const TokensPage = () => {
     send("SHOW")
   }
 
+  const onConvertToCkEth = () => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
+    send({ type: "ASSIGN_SELECTED_FT", data: ETH_NATIVE_ID })
+    send("SHOW")
+  }
+
+  const onConvertToEth = () => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
+    send({ type: "ASSIGN_SELECTED_FT", data: CKETH_LEDGER_CANISTER_ID })
+    send("SHOW")
+  }
+
   const onStakeClick = (selectedToken: string) => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
@@ -82,9 +99,11 @@ const TokensPage = () => {
       revalidateOnMount: false,
     })
 
-  const activeTokens = useMemo(() => {
-    return tokens?.filter((token) => token.getTokenState() === State.Active)
-  }, [tokens])
+  const { initedTokens } = useTokensInit(
+    tokens,
+    isBtcAddressLoading,
+    isEthAddressLoading,
+  )
 
   const tokensOwnedQuantity = useMemo(() => {
     return initedTokens?.filter(
@@ -95,26 +114,20 @@ const TokensPage = () => {
   }, [initedTokens])
 
   const tokensWithoutPrice = useMemo(() => {
-    return initedTokens?.filter((token) => token.getUSDBalance() === undefined)
-      .length
+    return initedTokens?.filter(
+      (token) =>
+        token.getUSDBalance() === undefined &&
+        token.getTokenAddress() !== BTC_NATIVE_ID &&
+        token.getTokenAddress() !== ETH_NATIVE_ID,
+    ).length
   }, [initedTokens])
-
-  const btc = useMemo(
-    () => activeTokens?.find((t) => t.getTokenAddress() === BTC_NATIVE_ID),
-    [activeTokens],
-  )
 
   const {
     data: tokensUsdBalance,
     isLoading: tokensUsdBalanceLoading,
     mutate: refetchFtUsdBalance,
   } = useSWR(
-    btc?.isInited() &&
-      btc.getTokenBalance() !== undefined &&
-      initedTokens &&
-      initedTokens.length > 0
-      ? "ftUsdValue"
-      : null,
+    initedTokens && initedTokens.length > 0 ? "ftUsdValue" : null,
     async () => ftService.getFTUSDBalance(initedTokens!),
     { revalidateOnFocus: false },
   )
@@ -122,12 +135,6 @@ const TokensPage = () => {
   useEffect(() => {
     refetchFtUsdBalance()
   }, [initedTokens, refetchFtUsdBalance])
-
-  useEffect(() => {
-    if (activeTokens) {
-      initTokens(activeTokens, isBtcAddressLoading).then(setInitedTokens)
-    }
-  }, [activeTokens, isBtcAddressLoading])
 
   useEffect(() => {
     userPrefService.getUserPreferences().then((userPref) => {
@@ -168,9 +175,9 @@ const TokensPage = () => {
 
   return (
     <>
-      <div className="p-[20px] md:p-[30px] border-gray-200 border rounded-[24px] mb-[20px] md:mb-[30px] flex flex-col md:flex-row">
+      <div className="p-[20px] md:p-[30px] border-gray-200 dark:border-zinc-700 border rounded-[24px] mb-[20px] md:mb-[30px] flex flex-col md:flex-row">
         <div className="flex flex-col flex-1">
-          <p className="mb-[16px] text-sm font-bold text-gray-400">
+          <p className="mb-[16px] text-sm font-bold text-gray-400 dark:text-zinc-500">
             Token balance
           </p>
           <Balance
@@ -180,18 +187,16 @@ const TokensPage = () => {
             isLoading={
               tokensUsdBalanceLoading ||
               tokensOwnedQuantity === undefined ||
-              tokensWithoutPrice === undefined ||
-              isBtcAddressLoading ||
-              (!btc?.isInited() && btc?.getTokenBalance() === undefined)
+              tokensWithoutPrice === undefined
             }
           />
         </div>
         <div className="flex flex-1 my-[20px] md:my-[0]">
           <div className="flex flex-col mr-[30px]">
-            <p className="mb-[10px] text-sm font-bold text-gray-400">
+            <p className="mb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500">
               Token owned
             </p>
-            <p className="mb-0 text-[26px] font-bold">
+            <p className="mb-0 text-[26px] font-bold dark:text-white">
               {tokensOwnedQuantity === undefined ? (
                 <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
               ) : (
@@ -200,10 +205,10 @@ const TokensPage = () => {
             </p>
           </div>
           <div className="flex flex-col">
-            <p className="mb-[10px] text-sm font-bold text-gray-400">
+            <p className="mb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500">
               Tokens w/o price
             </p>
-            <p className="mb-0 text-[26px] font-bold">
+            <p className="mb-0 text-[26px] font-bold dark:text-white">
               {tokensWithoutPrice === undefined ? (
                 <Skeleton className="w-[80px] h-[20px] mt-[10px]" />
               ) : (
@@ -213,15 +218,15 @@ const TokensPage = () => {
           </div>
         </div>
         <div className="flex items-center flex-1 md:justify-end">
-          <ScanTokens triggerClassName="w-full sm:w-fit" />
+          <ScanTokens triggerClassName="w-full sm:w-fit dark:text-white" />
         </div>
       </div>
       <ProfileContainer>
         <Tokens
           tokensIniting={!initedTokens}
-          activeTokens={activeTokens || []}
+          initedTokens={initedTokens || []}
           allTokens={tokens || []}
-          isTokensLoading={!activeTokens}
+          isTokensLoading={!initedTokens}
           onSubmitIcrc1Pair={onSubmitIcrc1Pair}
           onFetch={onFetch}
           profileConstants={ProfileConstants}
@@ -229,10 +234,11 @@ const TokensPage = () => {
           onSwapClick={onSwapClick}
           onConvertToBtc={onConvertToBtc}
           onConvertToCkBtc={onConvertToCkBtc}
+          onConvertToEth={onConvertToEth}
+          onConvertToCkEth={onConvertToCkEth}
           onStakeClick={onStakeClick}
           hideZeroBalance={hideZeroBalance}
           onZeroBalanceToggle={onZeroBalanceToggle}
-          isBtcAddressLoading={isBtcAddressLoading}
         />
       </ProfileContainer>
     </>

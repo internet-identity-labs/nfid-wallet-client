@@ -5,6 +5,7 @@ import BigNumber from "bignumber.js"
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { BitcointNetworkFeeAndUtxos } from "../bitcoin/bitcoin.service"
+import { SendEthFee } from "../ethereum/ethereum.service"
 
 export interface FT {
   init(principal: Principal): Promise<FT>
@@ -21,13 +22,15 @@ export interface FT {
 
   getTokenBalanceFormatted(): string | undefined
 
-  getUSDBalanceFormatted(formatLowAmountToFixed?: boolean): string | undefined
+  getUSDBalanceFormatted(
+    formatLowAmountToFixed?: boolean,
+  ): string | undefined | null
 
   getUSDBalance(): BigNumber | undefined
 
   getUSDBalanceDayChange(usdAmount?: BigNumber): BigNumber | undefined
 
-  getTokenRate(amount: string): BigNumber | undefined
+  getTokenRate(amount: string): BigNumber | undefined | null
 
   getTokenRateDayChangePercent():
     | { value: string; positive: boolean }
@@ -36,7 +39,7 @@ export interface FT {
   getTokenRateFormatted(
     amount: string,
     formatLowAmountToFixed?: boolean,
-  ): string | undefined
+  ): string | undefined | null
 
   refreshBalance(principal: Principal): Promise<FT>
 
@@ -66,12 +69,18 @@ export interface FT {
 
   getBTCFee(
     identity: SignIdentity,
-    amount: string,
+    value: number,
   ): Promise<BitcointNetworkFeeAndUtxos>
+
+  getETHFee(to: string, from: string, value: number): Promise<SendEthFee>
 
   getBTCFeeFormatted(fee: bigint): string
 
   getBTCFeeFormattedUsd(fee: bigint): string | undefined
+
+  getETHFeeFormatted(fee: bigint): string
+
+  getETHFeeFormattedUsd(fee: bigint): string | undefined
 
   getTokenFeeFormattedUsd(): string | undefined
 

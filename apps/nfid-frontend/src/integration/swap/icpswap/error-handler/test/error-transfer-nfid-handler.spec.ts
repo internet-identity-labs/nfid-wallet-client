@@ -51,6 +51,8 @@ describe("shroff transfer nfid error handler test", () => {
       console.log("withdraw MOCK")
     })
 
+    jest.spyOn(shroff as any, "icrc2supported").mockResolvedValue(false)
+
     jest.spyOn(shroff as any, "transferToNFID").mockImplementation(() => {
       callCount++
       if (callCount === 1) {

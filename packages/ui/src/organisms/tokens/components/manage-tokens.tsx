@@ -14,6 +14,7 @@ import {
   Button,
   IconCmpArrow,
   IconInfo,
+  IconInfoDark,
   Input,
   Tooltip,
   Card,
@@ -23,6 +24,7 @@ import {
 } from "@nfid-frontend/ui"
 import { ICRC1Error } from "@nfid/integration/token/icrc1/types"
 
+import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
 
@@ -64,11 +66,10 @@ export const ManageTokens: FC<ManageTokensProps> = ({
   hideZeroBalance,
   onZeroBalanceToggle,
   manageBtnDisabled,
-  className
+  className,
 }) => {
-  const [modalStep, setModalStep] = useState<
-    "manage" | "import" | null
-  >(null)
+  const isDarkTheme = useDarkTheme()
+  const [modalStep, setModalStep] = useState<"manage" | "import" | null>(null)
   const [tokenInfo, setTokenInfo] = useState<ICRC1Metadata | null>(null)
   const [isImportLoading, setIsImportLoading] = useState(false)
   const [search, setSearch] = useState("")
@@ -169,7 +170,7 @@ export const ManageTokens: FC<ManageTokensProps> = ({
             transition={{ duration: 0.25, ease: "easeInOut" }}
           >
             <div className="flex items-center justify-between h-[40px]">
-              <p className="text-[20px] leading-[24px] font-bold">
+              <p className="text-[20px] leading-[24px] font-bold dark:text-white">
                 Manage tokens
               </p>
               <Tooltip
@@ -203,16 +204,16 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                 }
               >
                 <img
-                  src={IconInfo}
+                  src={isDarkTheme ? IconInfoDark : IconInfo}
                   alt="icon"
                   className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
                 />
               </Tooltip>
             </div>
             <div>
-              <div className="bg-gray-50 rounded-[12px] mt-[28px] mb-[20px]">
+              <div className="bg-gray-50 dark:bg-[#3F3F4680] rounded-[12px] mt-[28px] mb-[20px]">
                 <div className="h-[64px] px-4 flex items-center justify-between">
-                  <span>Hide zero balances</span>
+                  <span className="dark:text-white">Hide zero balances</span>
                   <Toggle
                     isChecked={hideZeroBalance}
                     onToggle={onZeroBalanceToggle}
@@ -221,7 +222,7 @@ export const ManageTokens: FC<ManageTokensProps> = ({
               </div>
               <div className="flex gap-[10px] mb-[10px]">
                 <Input
-                  inputClassName="!border-black"
+                  inputClassName="!border-black dark:!border-zinc-500"
                   className="h-[40px] w-full "
                   id="search"
                   placeholder="Search by token name"
@@ -241,6 +242,7 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                   "h-[294px] overflow-auto pr-[16px]",
                   "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
                   "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
+                  "dark:scrollbar-thumb-zinc-600 dark:scrollbar-track-[#242427]",
                 )}
               >
                 {ftService.filterTokens(tokens, search).map((token) => {
@@ -275,13 +277,13 @@ export const ManageTokens: FC<ManageTokensProps> = ({
               <div className="h-[540px] flex flex-col">
                 <div className="flex gap-[10px] items-center mb-[16px]">
                   <IconCmpArrow
-                    className="cursor-pointer"
+                    className="cursor-pointer dark:text-white"
                     onClick={() => {
                       setModalStep("manage")
                       debouncedSearch("")
                     }}
                   />
-                  <p className="text-[20px] leading-[40px] font-bold">
+                  <p className="text-[20px] leading-[40px] font-bold dark:text-white">
                     Import token
                   </p>
                 </div>
@@ -304,14 +306,14 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                   disabled={!!errors.ledgerID || !getValues("ledgerID").length}
                 />
                 {!errors.indexID && (
-                  <p className="text-gray-400 text-xs mt-1 h-[16px]">
+                  <p className="text-gray-400 dark:text-zinc-400 text-xs mt-1 h-[16px]">
                     Required to display transaction history
                   </p>
                 )}
                 <div className={clsx("text-sm flex mt-auto")}>
                   {tokenInfo && (
                     <div className="grid w-full h-full grid-rows-3">
-                      <div className="grid grid-cols-[130px,1fr] border-b border-gray-100 items-center">
+                      <div className="grid grid-cols-[130px,1fr] border-b border-gray-100 items-center h-[50px] dark:text-white">
                         <p>Token icon</p>
                         <ImageWithFallback
                           alt="NFID token"
@@ -320,18 +322,23 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                           src={`${tokenInfo.logo}`}
                         />
                       </div>
-                      <div className="grid grid-cols-[130px,1fr] border-b border-gray-100 items-center">
+                      <div className="grid grid-cols-[130px,1fr] border-b border-gray-100 items-center h-[50px] dark:text-white">
                         <p>Token symbol</p>
-                        <p className="text-black">{tokenInfo.symbol}</p>
+                        <p className="text-black dark:text-white">
+                          {tokenInfo.symbol}
+                        </p>
                       </div>
-                      <div className="grid grid-cols-[130px,1fr] border-b border-gray-100 items-center">
+                      <div className="grid grid-cols-[130px,1fr] border-b border-gray-100 items-center h-[50px] dark:text-white">
                         <p>Token name</p>
-                        <p className="text-black">{tokenInfo.name}</p>
+                        <p className="text-black dark:text-white">
+                          {tokenInfo.name}
+                        </p>
                       </div>
                     </div>
                   )}
                 </div>
                 <Card
+                  classNames="mb-0 mt-auto"
                   text={
                     <>
                       <b>Token safety.</b> Always only import ICRC-1 tokens you
@@ -340,7 +347,7 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                   }
                 />
                 <Button
-                  className="mt-5 text-base"
+                  className="mt-2.5 text-base"
                   id="importToken"
                   icon={<PlusIcon />}
                   block

@@ -137,7 +137,7 @@ export class Assets extends Page {
 
   async getTokenByNameFromList(tokenRole: string, token: string) {
     return $(
-      `//input[@id='${tokenRole}TokenSearchInput']/../../..//div[@id='choose_option_${token}']`,
+      `//input[@id='${tokenRole}TokenSearchInput']/../../..//div[@id='choose_option_${token}']/div[1]`,
     )
   }
 
@@ -209,15 +209,15 @@ export class Assets extends Page {
     let parent
     await this.address.waitForDisplayed({ timeout: 10000 })
     if (isAddress) {
-      parent = await this.address
+      parent = this.address
     } else {
-      parent = await this.principal
+      parent = this.principal
     }
-    const firstAddressPart = await parent.$("#first_part")
+    const firstAddressPart = parent.$("#first_part")
     await firstAddressPart.waitForDisplayed({
       timeout: 7000,
     })
-    const secondAddressPart = await parent.$("#second_part")
+    const secondAddressPart = parent.$("#second_part")
     await secondAddressPart.waitForDisplayed({
       timeout: 7000,
     })
@@ -238,9 +238,9 @@ export class Assets extends Page {
     waitForElementOrAction:
       | ChainablePromiseElement
       | {
-      element: ChainablePromiseElement
-      action: (el: ChainablePromiseElement) => Promise<void>
-    },
+          element: ChainablePromiseElement
+          action: (el: ChainablePromiseElement) => Promise<void>
+        },
   ) {
     await browser.waitUntil(
       async () => {
@@ -256,7 +256,10 @@ export class Assets extends Page {
             const { element, action } = waitForElementOrAction
             await action(element)
           } else {
-            await waitForElementOrAction.waitForDisplayed()
+            await waitForElementOrAction.waitForDisplayed({
+              timeout: 40000,
+              timeoutMsg: "Expected element wasn't displayed in 40 sec",
+            })
           }
 
           return true

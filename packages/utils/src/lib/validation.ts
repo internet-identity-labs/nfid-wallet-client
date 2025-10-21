@@ -1,6 +1,7 @@
 import BigNumber from "bignumber.js"
 
 const MIN_CK_BTC_AMOUNT_TO_CONVERT = 0.00051
+const MIN_CK_ETH_AMOUNT_TO_CONVERT = 0.03
 
 interface Validation {
   min?: number
@@ -29,17 +30,22 @@ export const isHex = (h: string) => {
 export const validateTransferAmountField =
   (
     balance: bigint | undefined,
-    fee: bigint,
+    fee: bigint | undefined,
     decimals: number | undefined,
     isConvertFromCkBtc: boolean,
+    isConvertFromCkEth: boolean,
     minAmount?: number,
     symbol?: string,
   ) =>
   (value: string) => {
     if (!decimals || !balance) return "Insufficient funds"
     const balanceNum = BigNumber(balance.toString()).div(10 ** decimals)
-    const feeNum = new BigNumber(fee.toString()).div(10 ** decimals)
     const valueNum = new BigNumber(value)
+    if (balanceNum.isLessThan(valueNum)) return "Insufficient funds"
+
+    if (fee === undefined) return true
+
+    const feeNum = new BigNumber(fee.toString()).div(10 ** decimals)
 
     if (valueNum.isNaN()) return "Invalid input"
     if (valueNum.isLessThan(0)) return "Transfer amount can't be negative value"
@@ -54,7 +60,14 @@ export const validateTransferAmountField =
       isConvertFromCkBtc &&
       valueNum.isLessThan(MIN_CK_BTC_AMOUNT_TO_CONVERT)
     ) {
-      return `Amount can't be less than ${MIN_CK_BTC_AMOUNT_TO_CONVERT} BTC.`
+      return `Amount can't be less than ${MIN_CK_BTC_AMOUNT_TO_CONVERT} ckBTC.`
+    }
+
+    if (
+      isConvertFromCkEth &&
+      valueNum.isLessThan(MIN_CK_ETH_AMOUNT_TO_CONVERT)
+    ) {
+      return `Amount can't be less than ${MIN_CK_ETH_AMOUNT_TO_CONVERT} ckETH.`
     }
 
     if (minAmount !== undefined && valueNum.isLessThan(minAmount)) {

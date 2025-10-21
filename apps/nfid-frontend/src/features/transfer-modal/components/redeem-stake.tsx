@@ -1,17 +1,16 @@
-import { SignIdentity } from "@dfinity/agent"
-import { resetIntegrationCache } from "packages/integration/src/cache"
 import { Redeem } from "packages/ui/src/organisms/send-receive/components/redeem"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 
-import { mutate, useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import { mutate, mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
-import { fetchTokens } from "frontend/features/fungible-token/utils"
-import { fetchStakedToken } from "frontend/features/staking/utils"
-import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
+import { fetchStakedTokens } from "frontend/features/staking/utils"
+import { useIdentity } from "frontend/hooks/identity"
 
 import { SendStatus } from "../types"
-import { getIdentity } from "../utils"
+import { fetchTokens } from "frontend/features/fungible-token/utils"
+import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
+import { getTokensWithUpdatedBalance, updateCachedInitedTokens } from "../utils"
 
 export interface ITransferReceive {
   onClose: () => void
@@ -29,44 +28,32 @@ export const RedeemStake = ({
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [status, setStatus] = useState(SendStatus.PENDING)
   const [error, setError] = useState<string | undefined>()
-  const [identity, setIdentity] = useState<SignIdentity>()
-  const [identityLoading, setIdentityLoading] = useState(false)
+  const { identity, isLoading: identityLoading } = useIdentity()
   const location = useLocation()
   const tokenSymbol = location.pathname.split("/")[3]
 
-  const { data: tokens = [] } = useSWRWithTimestamp("tokens", fetchTokens, {
+  const { data: tokens } = useSWRWithTimestamp("tokens", fetchTokens, {
     revalidateOnFocus: false,
     revalidateOnMount: false,
   })
 
-  const token = useMemo(() => {
-    return tokens.find((token) => token.getTokenSymbol() === tokenSymbol)
-  }, [tokenSymbol, tokens])
+  const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(tokens)
 
-  const { data: stakedToken, isLoading } = useSWR(
-    tokenSymbol && identity ? ["stakedToken", tokenSymbol] : null,
-    () => fetchStakedToken(tokenSymbol!, identity!),
+  const {
+    data: stakedTokens,
+    isLoading,
+    isValidating,
+  } = useSWRWithTimestamp(
+    initedTokens ? "stakedTokens" : null,
+    () => fetchStakedTokens(initedTokens!, false),
     { revalidateOnFocus: false },
   )
 
-  useEffect(() => {
-    const getSignIdentity = async () => {
-      if (!token) return
-      const rootCanisterId = token.getRootSnsCanister()
-      if (!rootCanisterId) return
-      const canister_ids = await stakingService.getTargets(rootCanisterId)
-      if (!canister_ids) return
-      setIdentityLoading(true)
-      const identity = await getIdentity([
-        canister_ids,
-        token.getTokenAddress(),
-      ])
-      setIdentity(identity)
-      setIdentityLoading(false)
-    }
-
-    getSignIdentity()
-  }, [token])
+  const stakedToken = useMemo(() => {
+    return stakedTokens?.find(
+      (s) => s.getToken().getTokenSymbol() === tokenSymbol,
+    )
+  }, [stakedTokens, tokenSymbol])
 
   const stakeToRedeem = useMemo(() => {
     return stakedToken
@@ -74,16 +61,17 @@ export const RedeemStake = ({
       .find((stake) => stake.getStakeIdFormatted() === stakeId)
   }, [stakedToken, stakeId])
 
-  const redeem = () => {
-    if (!identity || !stakeToRedeem) return
+  const redeem = useCallback(() => {
+    if (!identity || !stakeToRedeem || !initedTokens || !stakedToken) return
     setIsSuccessOpen(true)
     stakeToRedeem
       .redeem(identity)
       .then(() => {
         setSuccessMessage(`Staked ${stakeId} redeemed successful`)
         setStatus(SendStatus.COMPLETED)
-        resetIntegrationCache(["getStakedTokens"])
-        mutate(["stakedToken", tokenSymbol])
+        mutate("stakedTokens", fetchStakedTokens(initedTokens, true), {
+          revalidate: true,
+        })
       })
       .catch((e) => {
         console.error("Redeem error: ", e)
@@ -91,7 +79,26 @@ export const RedeemStake = ({
         setStatus(SendStatus.FAILED)
         setErrorMessage("Something went wrong")
       })
-  }
+      .finally(() => {
+        if (!initedTokens) return
+        getTokensWithUpdatedBalance(
+          [stakedToken?.getToken().getTokenAddress()],
+          initedTokens,
+        ).then((updatedTokens) => {
+          mutateWithTimestamp("tokens", updatedTokens, false)
+          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
+        })
+      })
+  }, [
+    identity,
+    initedTokens,
+    mutateInitedTokens,
+    setErrorMessage,
+    setSuccessMessage,
+    stakeId,
+    stakeToRedeem,
+    stakedToken,
+  ])
 
   return (
     <Redeem
@@ -101,7 +108,7 @@ export const RedeemStake = ({
       isSuccessOpen={isSuccessOpen}
       status={status}
       error={error}
-      isLoading={isLoading || identityLoading}
+      isLoading={isLoading || isValidating || identityLoading}
     />
   )
 }

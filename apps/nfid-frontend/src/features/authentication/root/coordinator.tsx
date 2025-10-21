@@ -19,7 +19,7 @@ import { AuthSignInWithRecoveryPhrase } from "packages/ui/src/organisms/authenti
 import { AuthSignUpPassKey } from "packages/ui/src/organisms/authentication/sign-up-passkey"
 import { ReactNode, useCallback, useMemo, useState } from "react"
 
-import { Button, IconCmpGoogle } from "@nfid-frontend/ui"
+import { Button, IconCmpGoogle, IconCmpDfinity } from "@nfid-frontend/ui"
 import { getAllWalletsFromThisDevice } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
@@ -69,6 +69,10 @@ export default function AuthenticationCoordinator({
         isEmbed,
       },
     })
+  }
+
+  const onSelectIIAuth = async () => {
+    send({ type: "AUTH_WITH_II" })
   }
 
   const onAuthWithPasskey = (authSession: AbstractAuthSession) => {
@@ -276,7 +280,7 @@ export default function AuthenticationCoordinator({
                   button={
                     <Button
                       id="google-sign-button"
-                      className="h-12 !p-0"
+                      className="h-12 !p-0 active:!text-black dark:active:!text-white"
                       type="stroke"
                       icon={<IconCmpGoogle />}
                       block
@@ -285,6 +289,18 @@ export default function AuthenticationCoordinator({
                     </Button>
                   }
                 />
+              }
+              iiButton={
+                <Button
+                  id="ii-sign-button"
+                  className="h-12 !p-0 active:!text-black dark:active:!text-white"
+                  type="stroke"
+                  icon={<IconCmpDfinity className="w-6 h-6 min-w-6" />}
+                  block
+                  onClick={onSelectIIAuth}
+                >
+                  Continue with Internet Identity
+                </Button>
               }
               onTypeChange={() => send({ type: "SIGN_UP" })}
             />

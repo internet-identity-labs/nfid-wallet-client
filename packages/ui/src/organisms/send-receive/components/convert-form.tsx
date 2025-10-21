@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { Spinner } from "packages/ui/src/atoms/spinner"
-import { FC } from "react"
+import { FC, useEffect, useState } from "react"
 import { FieldErrors, FieldValues } from "react-hook-form"
 
 import {
@@ -10,19 +10,19 @@ import {
   Skeleton,
   Tooltip,
 } from "@nfid-frontend/ui"
-import {
-  BTC_NATIVE_ID,
-  CKBTC_CANISTER_ID,
-} from "@nfid/integration/token/constants"
 
+import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 
+import ConvertArrowBoxDark from "../assets/convert-arrow-box-dark.png"
 import ConvertArrowBox from "../assets/convert-arrow-box.png"
+import ConvertDarkIcon from "../assets/convert-dark.svg"
 import ConvertIcon from "../assets/convert.svg"
-import { IConversionFee, IModalType } from "../utils"
+import { getModalType, EthFormattedFee, BtcFormattedFee } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { ChooseToToken } from "./choose-to-token"
 import { ConvertModal } from "./convert"
+import { EthToCkEthFee } from "frontend/integration/ethereum/ethereum.service"
 
 export const BALANCE_EDGE_LENGTH = 20
 
@@ -37,10 +37,13 @@ export interface ConvertFormProps {
   setConvertModal: (v: ConvertModal) => void
   amount: string
   errors: FieldErrors<FieldValues>
-  btcError: string | undefined
+  conversionError: string | undefined
   handleReverse: () => void
-  fee?: IConversionFee
-  targetAmount: string
+  fee?: EthFormattedFee | BtcFormattedFee
+  tokens?: FT[]
+  isResponsive?: boolean
+  setIsResponsive?: (value: boolean) => void
+  ethFee?: EthToCkEthFee
 }
 
 export const ConvertForm: FC<ConvertFormProps> = ({
@@ -54,13 +57,33 @@ export const ConvertForm: FC<ConvertFormProps> = ({
   setConvertModal,
   amount,
   errors,
-  btcError,
+  conversionError,
   handleReverse,
   fee,
-  targetAmount,
+  tokens,
+  isResponsive,
+  setIsResponsive,
+  ethFee,
 }) => {
+  const [isFromResponsive, setIsFromResponsive] = useState(false)
+  const [isToResponsive, setIsToResponsive] = useState(false)
+
+  useEffect(() => {
+    if (setIsResponsive) {
+      setIsResponsive(isFromResponsive || isToResponsive)
+    }
+  }, [isFromResponsive, isToResponsive, setIsResponsive])
+
+  const isDarkTheme = useDarkTheme()
+  const isDisabled =
+    isFeeLoading ||
+    !amount ||
+    Boolean(errors["amount"]?.message) ||
+    !fee ||
+    Boolean(conversionError)
+
   return (
-    <div className={clsx(!isOpen && "hidden")}>
+    <div className={clsx(!isOpen && "hidden", isResponsive && "pb-[70px]")}>
       <div>
         <div
           className={clsx(
@@ -79,7 +102,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
             >
               <img
                 className="cursor-pointer hover:opacity-60"
-                src={ConvertIcon}
+                src={isDarkTheme ? ConvertDarkIcon : ConvertIcon}
                 alt="NFID swap settings"
                 onClick={() => setConvertModal(ConvertModal.DETAILS)}
               />
@@ -88,18 +111,17 @@ export const ConvertForm: FC<ConvertFormProps> = ({
         </div>
         <p className="mb-1 text-xs select-none">From</p>
         <ChooseFromToken
-          modalType={
-            fromToken?.getTokenAddress() === BTC_NATIVE_ID &&
-            toToken?.getTokenAddress() === CKBTC_CANISTER_ID
-              ? IModalType.CONVERT_TO_CKBTC
-              : IModalType.CONVERT_TO_BTC
-          }
+          modalType={getModalType(fromToken, toToken)}
           id={"convert-from-title"}
           token={fromToken}
           setFromChosenToken={setFromChosenToken}
           usdRate={toToken!.getTokenRateFormatted(amount || "0")}
           value={amount}
-          title="Swap from"
+          tokens={tokens}
+          title="Convert from"
+          isResponsive={isResponsive}
+          setIsResponsive={setIsFromResponsive}
+          ethFee={ethFee?.ethereumNetworkFee}
         />
         {errors["amount"] && (
           <div className="h-4 mt-1 text-xs leading-4 text-red-600">
@@ -114,25 +136,27 @@ export const ConvertForm: FC<ConvertFormProps> = ({
               "flex justify-center items-center mx-auto text-black cursor-pointer",
             )}
             style={{
-              backgroundImage: `url(${ConvertArrowBox})`,
+              backgroundImage: `url(${
+                isDarkTheme ? ConvertArrowBoxDark : ConvertArrowBox
+              })`,
               backgroundRepeat: "no-repeat",
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}
             onClick={handleReverse}
           >
-            <IconCmpArrowConvert className="h-5 w-[27px]" />
+            <IconCmpArrowConvert className="h-5 w-[27px] dark:text-white" />
           </div>
         </div>
         <ChooseToToken
           token={toToken}
           setToChosenToken={setToChosenToken}
-          usdRate={toToken!.getTokenRateFormatted(
-            fee && fee.total ? (+amount - +fee?.total).toString() || "0" : "0",
-          )}
-          isLoading={isFeeLoading}
-          value={targetAmount}
-          color="bg-gray-50"
+          usdRate={toToken!.getTokenRateFormatted(fee?.amountToReceive || "0")}
+          isLoading={isFeeLoading && !!amount && !errors["amount"]}
+          value={fee?.amountToReceive}
+          color="bg-gray-50 dark:bg-zinc-700"
+          isResponsive={isResponsive}
+          setIsResponsive={setIsToResponsive}
         />
         <div
           className={clsx(
@@ -141,14 +165,14 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           )}
         >
           <span>Network fees</span>
-          {fee === undefined ? (
+          {!amount || errors["amount"] ? null : fee === undefined ? (
             <Skeleton className="w-[70px] h-4 rounded-lg" />
           ) : (
             <span>{fromToken?.getTokenRateFormatted(fee.total)}</span>
           )}
         </div>
-        {btcError && (
-          <div className="mt-2 text-xs text-red-600">{btcError}</div>
+        {conversionError && (
+          <div className="mt-2 text-xs text-red-600">{conversionError}</div>
         )}
         <Button
           className="absolute bottom-5 left-5 right-5 !w-auto"
@@ -156,26 +180,21 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           id="swapTokensButton"
           block
           icon={
-            !amount ? null : fee === undefined && !btcError ? (
+            !amount || errors["amount"] ? null : fee === undefined &&
+              !conversionError ? (
               <Spinner className="w-5 h-5 text-white" />
             ) : (
               <IconCmpConvertWhite className="text-gray-400 !w-[18px] !h-[18px] text-white" />
             )
           }
-          disabled={
-            isFeeLoading ||
-            !amount ||
-            Boolean(errors["amount"]?.message) ||
-            !fee ||
-            Boolean(btcError)
-          }
+          disabled={isDisabled}
           onClick={submit}
         >
           {!amount
             ? "Enter an amount"
-            : fee === undefined && !btcError
-            ? "Calculating fee"
-            : "Convert"}
+            : fee === undefined && !conversionError && !errors["amount"]
+              ? "Calculating fee"
+              : "Convert"}
         </Button>
       </div>
     </div>

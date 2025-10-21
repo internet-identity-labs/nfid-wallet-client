@@ -62,15 +62,6 @@ export class KongSwapShroffImpl extends ShroffAbstract {
     return SwapName.Kongswap
   }
 
-  getTargets(): string[] {
-    return [
-      this.source.ledger,
-      this.target.ledger,
-      ROOT_CANISTER,
-      ...ShroffAbstract.getStaticTargets(),
-    ]
-  }
-
   //TODO improve
   async getQuote(amount: string): Promise<Quote> {
     const amountInDecimals = this.getAmountInDecimals(amount)

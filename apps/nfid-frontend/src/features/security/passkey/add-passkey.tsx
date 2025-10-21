@@ -6,9 +6,11 @@ import { useState, useCallback } from "react"
 import { BlurredLoader, Button, IconCmpPlus } from "@nfid-frontend/ui"
 
 import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
+import { useDarkTheme } from "frontend/hooks"
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/identity"
 
 import { IHandleWithLoading } from ".."
+import MultiPasskeyDark from "./multi-passkey-dark.png"
 import MultiPasskey from "./multi-passkey.webp"
 
 export const AddPasskey = ({
@@ -21,6 +23,7 @@ export const AddPasskey = ({
   isLoading: boolean
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const isDarkTheme = useDarkTheme()
 
   const handleOpenModal = useCallback(() => {
     setIsModalVisible(true)
@@ -71,7 +74,11 @@ export const AddPasskey = ({
           overlayClassnames="rounded-[24px]"
         />
         <p className="text-2xl font-bold">Create a Passkey</p>
-        <img src={MultiPasskey} alt="Passkey" className="w-full my-auto" />
+        <img
+          src={isDarkTheme ? MultiPasskeyDark : MultiPasskey}
+          alt="Passkey"
+          className="w-full my-auto"
+        />
         <div>
           <p className={clsx("text-sm leading-5", "text-center !mb-[20px]")}>
             Passkeys let you securely sign in to your NFID using your

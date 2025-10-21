@@ -82,7 +82,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
             setIsModalOpen(true)
           }}
           className={clsx(
-            "relative overflow-hidden bg-gray-50 rounded-[24px] aspect-square cursor-pointer",
+            "relative overflow-hidden bg-gray-50 dark:bg-zinc-700 rounded-[24px] aspect-square cursor-pointer",
             "lg:max-w-[445px] h-full lg:h-[445px] flex items-center justify-center",
           )}
         >
@@ -121,7 +121,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
           }
         >
           <p
-            className="text-[28px] leading-[40px] mb-[8px]"
+            className="text-[28px] leading-[40px] mb-[8px] dark:text-white"
             id={`nft_token_${nft.getTokenName()}_${nft.getCollectionId()}`}
           >
             #{nft.getTokenNumber()}
@@ -136,7 +136,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
           </A>
           <ProfileContainer
             title="Details"
-            className="!px-[20px] !pt-[20px] sm:!px-[30px] sm:!pt-[20px] !pb-[7px] !m-0 flex-[100%]"
+            className="!px-[20px] !pt-[20px] sm:!px-[30px] sm:!pt-[20px] !pb-[7px] !m-0 flex-[100%] dark:text-white"
             innerClassName="!p-0"
             titleClassName="!p-0 mb-[20px]"
           >
@@ -146,11 +146,11 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
               <>
                 <div
                   className={clsx(
-                    "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100",
-                    "block sm:flex items-center",
+                    "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100 dark:border-zinc-500",
+                    "block sm:flex items-center dark:text-white",
                   )}
                 >
-                  <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px] mb-[5px]">
+                  <p className="text-sm text-gray-400 dark:text-zinc-500 flex-shrink-0 flex-grow-0 basis-[160px] mb-[5px]">
                     Standard
                   </p>
                   <p className="text-sm" id={"token-standard"}>
@@ -159,11 +159,11 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                 </div>
                 <div
                   className={clsx(
-                    "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100",
-                    "block sm:flex items-center",
+                    "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100 dark:border-zinc-500",
+                    "block sm:flex items-center dark:text-white",
                   )}
                 >
-                  <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
+                  <p className="text-sm text-gray-400 dark:text-zinc-500 flex-shrink-0 flex-grow-0 basis-[160px]">
                     ID
                   </p>
                   <p
@@ -175,11 +175,11 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                 </div>
                 <div
                   className={clsx(
-                    "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100",
-                    "block sm:flex items-center",
+                    "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100 dark:border-zinc-500",
+                    "block sm:flex items-center dark:text-white",
                   )}
                 >
-                  <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
+                  <p className="text-sm text-gray-400 dark:text-zinc-500 flex-shrink-0 flex-grow-0 basis-[160px]">
                     Collection ID
                   </p>
                   <p className="text-sm" id={"collection-id"}>
@@ -188,11 +188,11 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                 </div>
                 <div
                   className={clsx(
-                    "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100",
-                    "block sm:flex items-center",
+                    "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100 dark:border-zinc-500",
+                    "block sm:flex items-center dark:text-white",
                   )}
                 >
-                  <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
+                  <p className="text-sm text-gray-400 dark:text-zinc-500 flex-shrink-0 flex-grow-0 basis-[160px]">
                     Floor price
                   </p>
                   <p>
@@ -203,7 +203,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                         <span className="block text-sm">
                           {nft.getTokenFloorPriceIcpFormatted()}
                         </span>
-                        <span className="block text-xs text-gray-400">
+                        <span className="block text-xs text-gray-400 dark:text-zinc-500">
                           {nft.getTokenFloorPriceUSDFormatted()}
                         </span>
                       </>
@@ -213,10 +213,10 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                 <div
                   className={clsx(
                     "min-h-[64px] sm:min-h-[54px]",
-                    "block sm:flex items-center",
+                    "block sm:flex items-center dark:text-white",
                   )}
                 >
-                  <p className="text-sm text-gray-400 flex-shrink-0 flex-grow-0 basis-[160px]">
+                  <p className="text-sm text-gray-400 dark:text-zinc-500 flex-shrink-0 flex-grow-0 basis-[160px]">
                     View on a marketplace
                   </p>
                   <A
@@ -237,7 +237,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
         <>
           <ProfileContainer
             className={clsx(
-              "!p-[20px] sm:!p-[30px] mb-[20px] sm:mb-[30px] relative",
+              "!p-[20px] sm:!p-[30px] mb-[20px] sm:mb-[30px] relative dark:text-white",
               !about && !isAboutLoading && "hidden",
             )}
             innerClassName="!p-0"
@@ -255,7 +255,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
           </ProfileContainer>
           <ProfileContainer
             className={clsx(
-              "!p-[20px] sm:!p-[30px] mb-[20px] sm:mb-[30px] min-h-[250px] relative",
+              "!p-[20px] sm:!p-[30px] mb-[20px] sm:mb-[30px] min-h-[250px] relative dark:text-white",
               (!properties.mappedValues || !properties.mappedValues.length) &&
                 !isPropertiesLoading &&
                 "hidden",
@@ -288,9 +288,9 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                   return (
                     <div
                       key={`${property.category}_${property.option}`}
-                      className="rounded-[12px] bg-gray-50 py-[9px] px-[20px] text-sm font-semibold"
+                      className="rounded-[12px] bg-gray-50 dark:bg-zinc-800 py-[9px] px-[20px] text-sm font-semibold"
                     >
-                      <p className="leading-[22px] text-xs text-gray-400">
+                      <p className="leading-[22px] text-xs text-gray-400 dark:text-zinc-500">
                         <span>{property.category}</span>
                       </p>
                       <p className="leading-[22px]">
@@ -304,7 +304,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
           </ProfileContainer>
           <ProfileContainer
             className={clsx(
-              "!p-[20px] sm:!p-[30px] mb-[20px] sm:mb-[30px] relative",
+              "!p-[20px] sm:!p-[30px] mb-[20px] sm:mb-[30px] relative dark:text-white",
               (!transactions.activity || !transactions.activity.length) &&
                 !isTransactionsLoading &&
                 "hidden",
@@ -322,7 +322,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                 theadClassName="!h-0 sm:!h-[40px]"
                 id="nft-table"
                 tableHeader={
-                  <tr className="text-sm font-bold text-gray-400">
+                  <tr className="text-sm font-bold text-gray-400 dark:text-zinc-500">
                     <th className="w-[120px]">Event type</th>
                     <th className="w-[220px]">Date and time</th>
                     <th>From</th>
@@ -351,7 +351,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                           .getTransactionView()
                           .getFormattedDate()}`}
                       >
-                        <tr className="text-sm h-[60px]">
+                        <tr className="text-sm h-[60px] dark:text-white">
                           <td className="pr-[20px]">
                             {activity.getTransactionView().getType()}
                           </td>
@@ -368,7 +368,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                             {price ? (
                               <>
                                 <span className="block">{price}</span>
-                                <span className="block text-xs text-gray-400">
+                                <span className="block text-xs text-gray-400 dark:text-zinc-500">
                                   {activity
                                     .getTransactionView()
                                     .getFormattedUsdPrice()}

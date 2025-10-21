@@ -38,6 +38,7 @@ export const ChooseNftModal = ({
   return (
     <>
       <ChooseTokenModal
+        id="choose-nft"
         tokens={tokens}
         title={title}
         filterTokensBySearchInput={filterTokensBySearchInput}

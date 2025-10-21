@@ -47,7 +47,7 @@ export const Dropdown = ({
           <motion.div
             className={clsx(
               "right-[-10px]",
-              "bg-white rounded-md mt-[1px] absolute z-[49]",
+              "bg-white dark:bg-zinc-800 rounded-md mt-[1px] absolute z-[49] overflow-hidden",
               className,
             )}
             style={{

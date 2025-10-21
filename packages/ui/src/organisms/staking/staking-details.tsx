@@ -4,6 +4,9 @@ import clsx from "clsx"
 import { FC, useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
 
+import { mutate } from "@nfid/swr"
+
+import { fetchStakedTokens } from "frontend/features/staking/utils"
 import { NeuronFormValues } from "frontend/features/transfer-modal/types"
 import { StakedToken } from "frontend/integration/staking/staked-token"
 import {
@@ -28,6 +31,7 @@ import {
   SidePanelOption,
   StakingSidePanel,
 } from "./components/staking-side-panel"
+import { FT } from "frontend/integration/ft/ft"
 
 export interface StakingDetailsProps {
   stakedToken?: StakedToken
@@ -38,6 +42,7 @@ export interface StakingDetailsProps {
   updateICPDelegates: (value: string, userNeuron?: bigint) => Promise<void>
   identity?: SignIdentity
   validateNeuron: (neuronId: string) => Promise<true | string>
+  initedTokens?: FT[]
 }
 
 export const StakingDetails: FC<StakingDetailsProps> = ({
@@ -49,10 +54,10 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
   updateICPDelegates,
   identity,
   validateNeuron,
+  initedTokens,
 }) => {
   const [sidePanelOption, setSidePanelOption] =
     useState<SidePanelOption | null>(null)
-  const [isStateLoading, setIsStateLoading] = useState(false)
   const [isDelegateLoading, setIsDelegateLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -99,7 +104,20 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
         : updateDelegates(neuron, id)
     }
 
-    update(userNeuron, stakeId).then(() => setIsDelegateLoading(false))
+    update(userNeuron, stakeId).then(async () => {
+      if (!initedTokens) return
+      await mutate(
+        initedTokens ? "stakedTokens" : null,
+        () => fetchStakedTokens(initedTokens, true),
+        {
+          revalidate: true,
+        },
+      )
+
+      setIsDelegateLoading(false)
+      setIsModalOpen(false)
+      setSidePanelOption(null)
+    })
   }
 
   if (!stakedToken && !isLoading) return <NotFound />
@@ -113,7 +131,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
         }}
         className="p-5 w-[95%] md:w-[540px] z-[100] !rounded-[24px]"
       >
-        <div className={clsx("flex flex-col")}>
+        <div className={clsx("flex flex-col dark:text-white")}>
           <div className="text-[20px] leading-[26px] mb-[18px] font-bold">
             Update delegate
           </div>
@@ -126,7 +144,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
             })}
             errorText={errors.userNeuron?.message}
             labelText="Neuron ID"
-            inputClassName="!border-black"
+            inputClassName="!border-black dark:!border-zinc-500"
           />
           <div className="flex gap-[10px] justify-end mt-[20px]">
             <Button
@@ -152,13 +170,12 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
         sidePanelOption={sidePanelOption}
         onRedeemOpen={onRedeemOpen}
         identity={identity}
-        setIsLoading={setIsStateLoading}
-        isLoading={isStateLoading}
         delegates={delegates}
         setIsModalOpen={setIsModalOpen}
         isDelegateLoading={isDelegateLoading}
+        initedTokens={initedTokens}
       />
-      {isLoading || isStateLoading || !stakedToken ? (
+      {isLoading || !stakedToken ? (
         <>
           <div className="flex gap-[10px] items-center mb-[30px]">
             <div className="px-[15px]">
@@ -178,9 +195,9 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
         <>
           <div className="flex gap-[10px] items-center mb-[30px]">
             <ArrowButton
-              buttonClassName="py-[7px]"
+              buttonClassName="py-[7px] dark:hover:bg-zinc-700"
               onClick={handleNavigateBack}
-              iconClassName="text-black"
+              iconClassName="text-black dark:text-white"
             />
             <ImageWithFallback
               alt={stakedToken.getToken().getTokenSymbol()}
@@ -189,10 +206,10 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
               className={clsx("w-[62px] h-[62px]", "rounded-full object-cover")}
             />
             <div>
-              <p className="text-[28px] leading-[36px]">
+              <p className="text-[28px] leading-[36px] dark:text-white">
                 {stakedToken.getToken().getTokenSymbol()}
               </p>
-              <p className="text-xs leading-5 text-secondary">
+              <p className="text-xs leading-5 text-secondary dark:text-zinc-500">
                 {stakedToken.getToken().getTokenName()}
               </p>
             </div>

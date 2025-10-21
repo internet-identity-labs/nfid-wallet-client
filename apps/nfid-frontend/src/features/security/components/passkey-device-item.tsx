@@ -6,6 +6,7 @@ import { IconCmpDots, IconCmpWarning, Tooltip } from "@nfid-frontend/ui"
 import { useClickOutside } from "@nfid-frontend/utils"
 import { Icon } from "@nfid/integration"
 
+import { useDarkTheme } from "frontend/hooks"
 import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon-decider"
 
 import { IHandleWithLoading } from ".."
@@ -24,38 +25,43 @@ export const PasskeyDeviceItem = ({
   device,
   handleWithLoading,
 }: PasskeyDeviceItemProps) => {
+  const isDarkTheme = useDarkTheme()
   const [isTooltipOpen, setIsTooltipOpen] = React.useState(false)
   const ref = useClickOutside(() => setIsTooltipOpen(false))
 
   return (
-    <tr className="items-center text-sm border-b border-gray-200">
+    <tr className="items-center text-sm border-b border-gray-200 dark:border-zinc-700">
       <td className="flex h-[61px] items-center">
         <div className="flex items-center w-[24px] h-[24px] shrink-0 ml-2 mr-[26px]">
           <DeviceIconDecider
-            color="#9CA3AF"
+            color={isDarkTheme ? "#71717A" : "#9CA3AF"}
             icon={device.isLegacyDevice ? Icon.unknown : device.icon}
           />
         </div>
         {device.label.length ? (
           <div>
-            <p className="leading-[26px]">{device.label}</p>
-            <p className="text-xs text-gray-400 leading-[16px]">
+            <p className="dark:text-white leading-[26px]">{device.label}</p>
+            <p className="text-xs text-gray-400 dark:text-zinc-500 leading-[16px]">
               {device.origin}
             </p>
           </div>
         ) : (
-          <span className="text-sm text-gray-400">
+          <span className="text-sm text-gray-400 dark:text-zinc-500">
             This is not an NFID device
           </span>
         )}
         {device.isMultiDevice && (
-          <span className="ml-2.5 px-2 py-1 text-gray-600 uppercase bg-gray-50 font-bold tracking-[0.2px] text-[10px]">
+          <span className="ml-2.5 px-2 py-1 text-gray-600 dark:text-white uppercase bg-gray-50 dark:bg-zinc-700 font-bold tracking-[0.2px] text-[10px] rounded-[6px] leading-4">
             Multi-device
           </span>
         )}
       </td>
-      <td className="hidden sm:table-cell">{device.created_at}</td>
-      <td className="hidden sm:table-cell">{device.last_used}</td>
+      <td className="hidden sm:table-cell dark:text-white">
+        {device.created_at}
+      </td>
+      <td className="hidden sm:table-cell dark:text-white">
+        {device.last_used}
+      </td>
       <td className="w-11 pr-[14px]">
         {device.isLegacyDevice && (
           <Tooltip
@@ -71,7 +77,7 @@ export const PasskeyDeviceItem = ({
       <td className="w-6">
         <div className="relative w-6 shrink-0" ref={ref}>
           <IconCmpDots
-            className="cursor-pointer text-secondary hover:text-black shrink-0"
+            className="cursor-pointer text-secondary dark:text-zinc-500 hover:text-black shrink-0"
             onClick={(e) => {
               e.preventDefault()
               setIsTooltipOpen(!isTooltipOpen)
@@ -83,7 +89,7 @@ export const PasskeyDeviceItem = ({
                 key="passkeys"
                 className={clsx(
                   "absolute top-6 right-0 w-[150px]",
-                  "bg-white rounded-[12px] shadow-md",
+                  "bg-white dark:bg-darkGray rounded-[12px] shadow-md",
                   "text-sm z-10",
                 )}
                 initial={{ opacity: 0 }}
@@ -94,11 +100,11 @@ export const PasskeyDeviceItem = ({
                 <DetailsPasskey device={device}>
                   <div
                     className={clsx(
-                      "pl-[10px] leading-10 hover:bg-gray-100 rounded-[12px]",
+                      "pl-[10px] leading-10 hover:bg-gray-100 dark:hover:bg-zinc-700 rounded-[12px]",
                       "flex items-center space-x-2 cursor-pointer",
                     )}
                   >
-                    <span>Details</span>
+                    <span className="dark:text-white">Details</span>
                   </div>
                 </DetailsPasskey>
                 <DeletePasskey
@@ -108,11 +114,11 @@ export const PasskeyDeviceItem = ({
                 >
                   <div
                     className={clsx(
-                      "pl-[10px] leading-10 hover:bg-gray-100 rounded-[12px]",
+                      "pl-[10px] leading-10 hover:bg-gray-100 dark:hover:bg-zinc-700 rounded-[12px]",
                       "flex items-center space-x-2 cursor-pointer",
                     )}
                   >
-                    <span>Remove</span>
+                    <span className="dark:text-white">Remove</span>
                   </div>
                 </DeletePasskey>
               </motion.div>

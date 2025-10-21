@@ -1,4 +1,3 @@
-import { SignIdentity } from "@dfinity/agent"
 import toaster from "packages/ui/src/atoms/toast"
 import { StakeUi } from "packages/ui/src/organisms/send-receive/components/stake"
 import { useCallback, useMemo, useState, useEffect } from "react"
@@ -10,18 +9,21 @@ import {
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
-import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
+import { mutate, mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
+import { fetchStakedTokens } from "frontend/features/staking/utils"
+import { useIdentity } from "frontend/hooks/identity"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
 import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
 
 import { FormValues, SendStatus } from "../types"
 import {
-  getIdentity,
   getAccurateDateForStakeInSeconds,
   getTokensWithUpdatedBalance,
+  updateCachedInitedTokens,
 } from "../utils"
+import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 const DEFAULT_STAKE_ERROR = "Something went wrong"
 
@@ -45,7 +47,7 @@ export const StakeFT = ({
   const [stakingParams, setStakingParams] = useState<StakeParamsCalculator>()
   const [isStakingParamsLoading, setIsStakingParamsLoading] = useState(false)
   const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
-  const [identity, setIdentity] = useState<SignIdentity>()
+  const { identity } = useIdentity()
 
   const isMaxLockTimeSelected =
     lockValue === stakingParams?.getMaximumLockTimeInMonths()
@@ -58,19 +60,22 @@ export const StakeFT = ({
     { revalidateOnFocus: false, revalidateOnMount: false },
   )
 
-  const tokensForStake = useMemo(() => {
-    return tokens.filter(
+  const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(tokens)
+
+  const filteredTokens = useMemo(() => {
+    if (!initedTokens) return []
+    return initedTokens.filter(
       (token) =>
         token.getTokenCategory() === Category.Sns ||
-        token.getTokenCategory() === Category.Native,
+        token.getTokenAddress() === ICP_CANISTER_ID,
     )
-  }, [tokens])
+  }, [initedTokens])
 
   const token = useMemo(() => {
-    return tokensForStake.find(
+    return filteredTokens.find(
       (token) => token.getTokenAddress() === tokenAddress,
     )
-  }, [tokenAddress, tokensForStake])
+  }, [tokenAddress, filteredTokens])
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -91,23 +96,7 @@ export const StakeFT = ({
     const getParams = async () => {
       setStakingParams(undefined)
       setIsStakingParamsLoading(true)
-      if (!token) return
-      const rootCanisterId = token.getRootSnsCanister()
-      if (!rootCanisterId) {
-        console.error(
-          `Root canister ID for ${token.getTokenSymbol()} token not found`,
-        )
-        return
-      }
-
-      const canister_ids = await stakingService.getTargets(rootCanisterId)
-      if (!canister_ids) return
-
-      const identity = await getIdentity([
-        canister_ids,
-        token.getTokenAddress(),
-      ])
-      setIdentity(identity)
+      if (!token || !identity) return
 
       const params = await stakingService.getStakeCalculator(token, identity)
       setStakingParams(params)
@@ -115,7 +104,7 @@ export const StakeFT = ({
     }
 
     getParams()
-  }, [token])
+  }, [token, identity])
 
   useEffect(() => {
     if (!preselectedTokenAddress) {
@@ -143,12 +132,16 @@ export const StakeFT = ({
           isMaxLockTimeSelected
             ? stakingParams?.getMaximumLockTime()
             : isMinLockTimeSelected
-            ? stakingParams?.getMinimumLockTime()
-            : getAccurateDateForStakeInSeconds(lockValue),
+              ? stakingParams?.getMinimumLockTime()
+              : getAccurateDateForStakeInSeconds(lockValue),
         )
         .then(() => {
+          if (!initedTokens) return
           setSuccessMessage(`Stake ${amount} ICP successful`)
           setStatus(SendStatus.COMPLETED)
+          mutate("stakedTokens", fetchStakedTokens(initedTokens, true), {
+            revalidate: true,
+          })
         })
         .catch((e) => {
           console.error("Stake error: ", e)
@@ -157,9 +150,11 @@ export const StakeFT = ({
           setErrorMessage(DEFAULT_STAKE_ERROR)
         })
         .finally(() => {
-          getTokensWithUpdatedBalance([ICP_CANISTER_ID], tokens).then(
+          if (!initedTokens) return
+          getTokensWithUpdatedBalance([ICP_CANISTER_ID], initedTokens).then(
             (updatedTokens) => {
               mutateWithTimestamp("tokens", updatedTokens, false)
+              updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
             },
           )
         })
@@ -175,14 +170,18 @@ export const StakeFT = ({
         isMaxLockTimeSelected
           ? stakingParams?.getMaximumLockTime()
           : isMinLockTimeSelected
-          ? stakingParams?.getMinimumLockTime()
-          : getAccurateDateForStakeInSeconds(lockValue),
+            ? stakingParams?.getMinimumLockTime()
+            : getAccurateDateForStakeInSeconds(lockValue),
       )
       .then(() => {
+        if (!initedTokens) return
         setSuccessMessage(
           `Stake ${amount} ${token.getTokenSymbol()} successful`,
         )
         setStatus(SendStatus.COMPLETED)
+        mutate("stakedTokens", () => fetchStakedTokens(initedTokens, true), {
+          revalidate: true,
+        })
       })
       .catch((e) => {
         console.error("Stake error: ", e)
@@ -191,30 +190,34 @@ export const StakeFT = ({
         setErrorMessage(DEFAULT_STAKE_ERROR)
       })
       .finally(() => {
-        getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
-          (updatedTokens) => {
-            mutateWithTimestamp("tokens", updatedTokens, false)
-          },
-        )
+        if (!initedTokens) return
+        getTokensWithUpdatedBalance(
+          [token.getTokenAddress()],
+          initedTokens,
+        ).then((updatedTokens) => {
+          mutateWithTimestamp("tokens", updatedTokens, false)
+          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
+        })
       })
   }, [
     token,
     amount,
     lockValue,
     identity,
-    tokens,
+    initedTokens,
     setErrorMessage,
     setSuccessMessage,
     stakingParams,
     isMaxLockTimeSelected,
     isMinLockTimeSelected,
+    mutateInitedTokens,
   ])
 
   return (
     <FormProvider {...formMethods}>
       <StakeUi
         token={token}
-        tokens={tokensForStake}
+        tokens={filteredTokens}
         setChosenToken={setTokenAddress}
         isLoading={isTokensLoading}
         submit={submit}

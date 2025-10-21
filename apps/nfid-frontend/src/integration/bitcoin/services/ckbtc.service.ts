@@ -21,10 +21,9 @@ class CkBtcService {
   ): Promise<BlockIndex> {
     const amountInSatoshis =
       satoshiService.getInSatoshis(amount) -
-      fee.conversionFee -
-      fee.interNetwokFee -
-      fee.identityLabsFee -
-      fee.conversionFee
+      fee.icpNetworkFee -
+      fee.identityLabsFee
+
     await this.approve(identity, amountInSatoshis)
     const blockIndex = await this.retrieveBtc(
       identity,
@@ -32,7 +31,6 @@ class CkBtcService {
       amountInSatoshis,
     )
 
-    await this.approve(identity, fee.identityLabsFee)
     await ckBtcService.send(identity, FEE_ADDRESS, fee.identityLabsFee)
 
     return blockIndex
@@ -42,26 +40,33 @@ class CkBtcService {
     identity: SignIdentity,
     amount: string,
   ): Promise<CkBtcToBtcFee> {
-    const interNetwokFee = satoshiService.getInSatoshis("0.000001")
-    const conversionFee = satoshiService.getInSatoshis("0.0000001")
+    const icpNetworkFee = satoshiService.getInSatoshis("0.0000001")
     const initialAmountInSatoshi = satoshiService.getInSatoshis(amount)
     const identityLabsFee: bigint = this.getIdentityLabsFee(
       initialAmountInSatoshi,
     )
     const amountInSatoshis: bigint =
-      satoshiService.getInSatoshis(amount) - identityLabsFee - conversionFee
+      satoshiService.getInSatoshis(amount) - identityLabsFee - icpNetworkFee
 
     const minter = await this.getMinter(identity)
     const fee = await minter.estimateWithdrawalFee({ amount: amountInSatoshis })
 
+    const btcNetworkFee = fee.bitcoin_fee + fee.minter_fee
+
+    const amountToReceive =
+      satoshiService.getInSatoshis(amount) -
+      icpNetworkFee * BigInt(2) -
+      identityLabsFee -
+      btcNetworkFee
+
     return {
       bitcointNetworkFee: {
-        fee_satoshis: fee.bitcoin_fee + fee.minter_fee,
+        fee_satoshis: btcNetworkFee,
         utxos: [],
       },
-      conversionFee,
-      interNetwokFee,
       identityLabsFee,
+      amountToReceive,
+      icpNetworkFee: icpNetworkFee * BigInt(2),
     }
   }
 

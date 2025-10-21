@@ -7,6 +7,7 @@ import {
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 import validate, { Network } from "bitcoin-address-validation"
+import { isAddress } from "ethers"
 import { PRINCIPAL_LENGTH } from "packages/constants"
 import { Shroff } from "src/integration/swap/shroff"
 
@@ -23,6 +24,9 @@ import {
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
+  ETH_NATIVE_ID,
+  ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 import { mutate } from "@nfid/swr"
@@ -37,6 +41,7 @@ import {
 } from "frontend/integration/wallet/utils"
 
 import { fetchVaultWalletsBalances } from "../fungible-token/fetch-balances"
+import { ftService } from "frontend/integration/ft/ft-service"
 
 type ITransferRequest = {
   to: string
@@ -63,12 +68,6 @@ interface ITransferResponse {
   url?: string
   hash?: string
   blockIndex?: Icrc1BlockIndex
-}
-
-export const getIdentity = async (
-  targetCanisters: string[],
-): Promise<DelegationIdentity> => {
-  return getWalletDelegationAdapter("nfid.one", "-1", targetCanisters)
 }
 
 export const getVaultsAccountsOptions = async (): Promise<
@@ -166,6 +165,11 @@ export const validateBTCAddress = (address: string): boolean | string => {
   return result || "Incorrect wallet address"
 }
 
+export const validateETHAddress = (address: string): boolean | string => {
+  const result = isAddress(address)
+  return result || "Incorrect wallet address"
+}
+
 export const getUserBalance = async (address: string): Promise<bigint> => {
   const addressVerified =
     address.length === PRINCIPAL_LENGTH
@@ -229,6 +233,22 @@ export const getQuoteData = async (
   }
 }
 
+export const updateCachedInitedTokens = async (
+  tokens: FT[],
+  mutateInitedTokens: any,
+) => {
+  const { publicKey } = authState.getUserIdData()
+  const principal = Principal.fromText(publicKey)
+  const freshInitedTokens = await ftService.getInitedTokens(
+    tokens,
+    principal,
+    true,
+  )
+  mutateInitedTokens(freshInitedTokens, false)
+  mutate("ftUsdValue")
+  mutate("fullUsdValue")
+}
+
 export const getTokensWithUpdatedBalance = async (
   ledgers: string[],
   allTokens: FT[],
@@ -257,6 +277,10 @@ export const getTokensWithUpdatedBalance = async (
 export const getConversionTokenAddress = (source: string): string => {
   if (source === BTC_NATIVE_ID) return CKBTC_CANISTER_ID
   if (source === CKBTC_CANISTER_ID) return BTC_NATIVE_ID
+
+  if (source === ETH_NATIVE_ID) return CKETH_LEDGER_CANISTER_ID
+  if (source === CKETH_LEDGER_CANISTER_ID) return ETH_NATIVE_ID
+
   return CKBTC_CANISTER_ID
 }
 
@@ -272,4 +296,13 @@ export const getAccurateDateForStakeInSeconds = (months: number): number => {
   future.setMilliseconds(now.getMilliseconds())
 
   return Math.floor((future.getTime() - now.getTime()) / 1000)
+}
+
+export const addressValidators: Record<
+  string,
+  (address: string) => boolean | string
+> = {
+  [ICP_CANISTER_ID]: validateICPAddress,
+  [BTC_NATIVE_ID]: validateBTCAddress,
+  [ETH_NATIVE_ID]: validateETHAddress,
 }

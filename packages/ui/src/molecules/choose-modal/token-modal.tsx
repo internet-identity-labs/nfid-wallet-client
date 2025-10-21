@@ -11,11 +11,17 @@ import {
 } from "react"
 import { IoIosSearch } from "react-icons/io"
 
-import { ChooseTokenSkeleton, IconInfo, Tooltip } from "@nfid-frontend/ui"
+import {
+  ChooseTokenSkeleton,
+  IconInfo,
+  IconInfoDark,
+  Tooltip,
+} from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"
 import { IconCmpArrow } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
 
+import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 import { FTImpl } from "frontend/integration/ft/impl/ft-impl"
@@ -26,7 +32,7 @@ import { useIntersectionObserver } from "../../organisms/send-receive/hooks/inte
 const INITED_TOKENS_LIMIT = 6
 
 export interface IChooseTokenModal<T> {
-  id: string,
+  id: string
   searchInputId?: string
   tokens: T[]
   onSelect: (value: T) => void
@@ -54,6 +60,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   isSwapTo,
   tokensAvailableToSwap,
 }: IChooseTokenModal<T>) => {
+  const isDarkTheme = useDarkTheme()
   const [searchInput, setSearchInput] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [tokensOptions, setTokensOptions] = useState<T[]>([])
@@ -66,13 +73,19 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   )
 
   useEffect(() => {
+    if (!isSwapTo) {
+      setTokensOptions(tokens)
+      setIsTokenOptionsLoading(false)
+      return
+    }
+
     const init = async () => {
       const { publicKey } = authState.getUserIdData()
 
       try {
         const tokenOptions = await Promise.all(
           tokens.map(async (token, index) => {
-            if (index < INITED_TOKENS_LIMIT && !token.isInited()) {
+            if (index < INITED_TOKENS_LIMIT) {
               try {
                 await token.init(Principal.fromText(publicKey))
                 return token
@@ -94,7 +107,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
     }
 
     init()
-  }, [tokens])
+  }, [tokens, isSwapTo])
 
   const filteredTokens = useMemo(() => {
     if (searchInput.length < 2) return tokensOptions
@@ -104,10 +117,10 @@ export const ChooseTokenModal = <T extends FT | NFT>({
     )
   }, [tokensOptions, searchInput])
 
-  useIntersectionObserver(itemRefs.current, async (index) => {
+  useIntersectionObserver(itemRefs.current, !!isSwapTo, async (index) => {
     const token = filteredTokens[index]
 
-    if (token && !token.isInited()) {
+    if (token) {
       const { publicKey } = authState.getUserIdData()
 
       const updatedToken = await token.init(Principal.fromText(publicKey))
@@ -125,27 +138,24 @@ export const ChooseTokenModal = <T extends FT | NFT>({
     }
   })
 
-  const handleSelect = useCallback(
-    (token: T) => {
-      if (token instanceof FTImpl) {
-        const isSwappable = isSwapTo
-          ? tokensAvailableToSwap?.to.includes(token.getTokenAddress())
-          : tokensAvailableToSwap?.from.includes(token.getTokenAddress())
+  const handleSelect = (token: T) => {
+    if (token instanceof FTImpl) {
+      const isSwappable = isSwapTo
+        ? tokensAvailableToSwap?.to.includes(token.getTokenAddress())
+        : tokensAvailableToSwap?.from.includes(token.getTokenAddress())
 
-        if (!isSwappable && tokensAvailableToSwap) return
-      }
-      onSelect?.(token)
-      setIsModalVisible(false)
-    },
-    [onSelect, tokensAvailableToSwap, isSwapTo],
-  )
+      if (!isSwappable && tokensAvailableToSwap) return
+    }
+    onSelect?.(token)
+    setIsModalVisible(false)
+  }
 
   return (
     <div id={"choose_modal"}>
       <div onClick={() => setIsModalVisible(true)}>{trigger}</div>
       <div
         className={clsx(
-          "p-5 absolute w-full h-full z-50 left-0 top-0 bg-frameBgColor",
+          "p-5 absolute w-full h-full z-50 left-0 top-0 bg-frameBgColor dark:bg-darkGray",
           "flex flex-col rounded-[24px]",
           !isModalVisible && "hidden",
         )}
@@ -159,7 +169,9 @@ export const ChooseTokenModal = <T extends FT | NFT>({
               <IconCmpArrow className="mr-2" />
             </div>
             <div className="flex items-center justify-between w-full">
-              <p id={id} className="text-xl font-bold leading-10">{title}</p>
+              <p id={id} className="text-xl font-bold leading-10">
+                {title}
+              </p>
               {tokensAvailableToSwap && (
                 <Tooltip
                   align="end"
@@ -172,7 +184,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
                   }
                 >
                   <img
-                    src={IconInfo}
+                    src={isDarkTheme ? IconInfoDark : IconInfo}
                     alt="icon"
                     className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
                   />
@@ -181,18 +193,30 @@ export const ChooseTokenModal = <T extends FT | NFT>({
             </div>
           </div>
         </div>
-        <Input
-          id={searchInputId}
-          type="text"
-          placeholder="Search by token name"
-          inputClassName="!border-black"
-          icon={<IoIosSearch size="20" className="text-gray-400" />}
-          onKeyUp={(e) => handleSearch((e.target as HTMLInputElement).value)}
-          className="mt-4 mb-5"
-        />
-        {isTokenOptionsLoading && <ChooseTokenSkeleton rows={6} />}
+        {searchInputId && (
+          <Input
+            id={searchInputId}
+            type="text"
+            placeholder="Search by token name"
+            inputClassName="!border-black dark:!border-zinc-500"
+            icon={
+              <IoIosSearch
+                size="20"
+                className="text-gray-400 dark:text-zinc-500"
+              />
+            }
+            onKeyUp={(e) => handleSearch((e.target as HTMLInputElement).value)}
+            className="mt-4 mb-5"
+          />
+        )}
+
+        {isTokenOptionsLoading && (
+          <div className={clsx(!searchInputId && "mt-4")}>
+            <ChooseTokenSkeleton rows={6} />
+          </div>
+        )}
         {!tokensOptions.length && !isTokenOptionsLoading ? (
-          <div className="flex items-center justify-center h-full text-sm text-gray-400">
+          <div className="flex items-center justify-center h-full text-sm text-gray-400 dark:text-zinc-500">
             No tokens available yet
           </div>
         ) : (
@@ -201,6 +225,8 @@ export const ChooseTokenModal = <T extends FT | NFT>({
               "flex-1 overflow-auto snap-end pr-[10px]",
               "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
               "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
+              "dark:scrollbar-thumb-zinc-600 dark:scrollbar-track-[#242427]",
+              !searchInputId && "mt-4",
             )}
           >
             {filteredTokens.map((token, index) => (

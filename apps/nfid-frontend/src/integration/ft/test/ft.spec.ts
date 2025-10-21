@@ -1,5 +1,3 @@
-import { Ed25519KeyIdentity } from "@dfinity/identity"
-import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { FT } from "src/integration/ft/ft"
@@ -10,6 +8,7 @@ import { mockGeekResponse } from "src/integration/nft/mock/mock"
 import { exchangeRateService } from "@nfid/integration"
 import {
   CKBTC_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
@@ -18,16 +17,10 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 import { nftService } from "frontend/integration/nft/nft-service"
 import { portfolioService } from "frontend/integration/portfolio-balance/portfolio-service"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
+import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
 const userId = "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae"
 const principal = Principal.fromText(userId)
-const pairPrincipal =
-  "ayigd-u23ly-o65by-pzgtm-udimh-ktcue-hyzwp-uqccr-t3vl4-b3mxe-bae"
-
-const identityJSON: JsonnableEd25519KeyIdentity = [
-  "302a300506032b6570032100131aeb46319e402bb2930889ab86caf1175efe71e9f313a4c5f91bb91153f63e",
-  "2803f8e8547e0ed4deced3c645c9758fc72b6e61f60aa7b46f7705925b8a28fe",
-]
 
 describe("ft test suite", () => {
   jest.setTimeout(35000)
@@ -88,11 +81,21 @@ describe("ft test suite", () => {
             fee: BigInt(1000),
             decimals: 8,
           },
+          {
+            ledger: CKETH_LEDGER_CANISTER_ID,
+            name: "ckETH",
+            symbol: "ckETH",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
+            fee: BigInt(2000000000000),
+            decimals: 18,
+          },
         ])
 
       const result: FT[] = await ftService.getTokens(userId)
 
-      expect(result.length).toEqual(6)
+      expect(result.length).toEqual(8)
       const icpResult = result.find(
         (r) => r.getTokenName() === "Internet Computer",
       )
@@ -115,10 +118,12 @@ describe("ft test suite", () => {
 
       expect(result[0].getTokenName()).toEqual("Internet Computer")
       expect(result[1].getTokenName()).toEqual("Bitcoin")
-      expect(result[2].getTokenName()).toEqual("NFID Wallet")
-      expect(result[3].getTokenName()).toEqual("ckBTC")
-      expect(result[4].getTokenName()).toEqual("A first letter")
-      expect(result[5].getTokenName()).toEqual("Chat")
+      expect(result[2].getTokenName()).toEqual("Ethereum")
+      expect(result[3].getTokenName()).toEqual("NFID Wallet")
+      expect(result[4].getTokenName()).toEqual("ckBTC")
+      expect(result[5].getTokenName()).toEqual("ckETH")
+      expect(result[6].getTokenName()).toEqual("A first letter")
+      expect(result[7].getTokenName()).toEqual("Chat")
     })
 
     it("should calculate no usd balance change", async () => {
@@ -154,6 +159,16 @@ describe("ft test suite", () => {
             category: "ChainFusion",
             fee: BigInt(1000),
             decimals: 8,
+          },
+          {
+            ledger: CKETH_LEDGER_CANISTER_ID,
+            name: "ckETH",
+            symbol: "ckETH",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
+            fee: BigInt(2000000000000),
+            decimals: 18,
           },
         ])
       jest
@@ -208,6 +223,16 @@ describe("ft test suite", () => {
             category: "ChainFusion",
             fee: BigInt(1000),
             decimals: 8,
+          },
+          {
+            ledger: CKETH_LEDGER_CANISTER_ID,
+            name: "ckETH",
+            symbol: "ckETH",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
+            fee: BigInt(2000000000000),
+            decimals: 18,
           },
         ])
       jest
@@ -265,6 +290,16 @@ describe("ft test suite", () => {
             fee: BigInt(1000),
             decimals: 8,
           },
+          {
+            ledger: CKETH_LEDGER_CANISTER_ID,
+            name: "ckETH",
+            symbol: "ckETH",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
+            fee: BigInt(2000000000000),
+            decimals: 18,
+          },
         ])
       const [result]: FT[] = await ftService.getTokens(userId)
       jest
@@ -307,6 +342,16 @@ describe("ft test suite", () => {
             category: "ChainFusion",
             fee: BigInt(1000),
             decimals: 8,
+          },
+          {
+            ledger: CKETH_LEDGER_CANISTER_ID,
+            name: "ckETH",
+            symbol: "ckETH",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
+            fee: BigInt(2000000000000),
+            decimals: 18,
           },
         ])
       jest
@@ -385,17 +430,29 @@ describe("ft test suite", () => {
             fee: BigInt(1000),
             decimals: 8,
           },
+          {
+            ledger: CKETH_LEDGER_CANISTER_ID,
+            name: "ckETH",
+            symbol: "ckETH",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
+            fee: BigInt(2000000000000),
+            decimals: 18,
+          },
         ])
 
       const result: FT[] = await ftService.getTokens(userId)
 
-      expect(result.length).toEqual(6)
+      expect(result.length).toEqual(8)
       expect(result[0].getTokenCategory()).toEqual(Category.Native)
       expect(result[1].getTokenCategory()).toEqual(Category.Native)
-      expect(result[2].getTokenCategory()).toEqual(Category.Community)
-      expect(result[3].getTokenCategory()).toEqual(Category.ChainFusion)
-      expect(result[4].getTokenCategory()).toEqual(Category.Sns)
-      expect(result[5].getTokenCategory()).toEqual(Category.Spam)
+      expect(result[2].getTokenCategory()).toEqual(Category.Native)
+      expect(result[3].getTokenCategory()).toEqual(Category.Community)
+      expect(result[4].getTokenCategory()).toEqual(Category.ChainFusion)
+      expect(result[5].getTokenCategory()).toEqual(Category.ChainFusion)
+      expect(result[6].getTokenCategory()).toEqual(Category.Sns)
+      expect(result[7].getTokenCategory()).toEqual(Category.Spam)
     })
 
     it("should calculate USD balance", async function () {
@@ -456,19 +513,35 @@ describe("ft test suite", () => {
             fee: BigInt(1000),
             decimals: 8,
           },
+          {
+            ledger: CKETH_LEDGER_CANISTER_ID,
+            name: "ckETH",
+            symbol: "ckETH",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
+            fee: BigInt(2000000000000),
+            decimals: 18,
+          },
         ])
+
+      // Mock getWalletDelegation to return a resolved promise
+      jest
+        .spyOn(
+          require("frontend/integration/facade/wallet"),
+          "getWalletDelegation",
+        )
+        .mockResolvedValue({
+          getPrincipal: () => principal,
+          sign: jest.fn(),
+        } as any)
+
       const nfts = await nftService.getNFTs(principal, 1, 10)
       const result: FT[] = await ftService.getTokens(userId)
-      let edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
 
-      const stakedTokens = await stakingService.getStakedTokens(
-        pairPrincipal,
-        pairPrincipal,
-        edId,
-      )
+      //const stakes = stakingService.getStakedTokens()
 
       const balance = await portfolioService.getPortfolioUSDBalance(
-        principal,
         nfts.items,
         result,
       )
@@ -529,6 +602,16 @@ describe("ft test suite", () => {
             category: "ChainFusion",
             fee: BigInt(1000),
             decimals: 8,
+          },
+          {
+            ledger: CKETH_LEDGER_CANISTER_ID,
+            name: "ckETH",
+            symbol: "ckETH",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
+            fee: BigInt(2000000000000),
+            decimals: 18,
           },
         ])
 
@@ -595,6 +678,16 @@ describe("ft test suite", () => {
             fee: BigInt(1000),
             decimals: 8,
           },
+          {
+            ledger: CKETH_LEDGER_CANISTER_ID,
+            name: "ckETH",
+            symbol: "ckETH",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
+            fee: BigInt(2000000000000),
+            decimals: 18,
+          },
         ])
 
       const result: FT[] = await ftService.getTokens(userId)
@@ -659,6 +752,16 @@ describe("ft test suite", () => {
             category: "ChainFusion",
             fee: BigInt(1000),
             decimals: 8,
+          },
+          {
+            ledger: CKETH_LEDGER_CANISTER_ID,
+            name: "ckETH",
+            symbol: "ckETH",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
+            fee: BigInt(2000000000000),
+            decimals: 18,
           },
         ])
 
@@ -726,6 +829,16 @@ describe("ft test suite", () => {
             fee: BigInt(1000),
             decimals: 8,
           },
+          {
+            ledger: CKETH_LEDGER_CANISTER_ID,
+            name: "ckETH",
+            symbol: "ckETH",
+            index: "",
+            state: "Active",
+            category: "ChainFusion",
+            fee: BigInt(2000000000000),
+            decimals: 18,
+          },
         ])
 
       const tokens: FT[] = await ftService.getTokens(userId)
@@ -742,6 +855,7 @@ describe("ft test suite", () => {
       const expectedResult = {
         to: [
           "2ouva-viaaa-aaaaq-aaamq-cai",
+          CKETH_LEDGER_CANISTER_ID,
           CKBTC_CANISTER_ID,
           "ryjl3-tyaaa-aaaaa-aaaba-cai",
           NFIDW_CANISTER_ID,

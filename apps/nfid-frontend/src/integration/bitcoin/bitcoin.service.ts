@@ -1,7 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
-import { Principal } from "@dfinity/principal"
 import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
-import { authStorage } from "packages/integration/src/lib/authentication/storage"
+import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
 import { Balance } from "@nfid/integration"
 
@@ -15,29 +14,40 @@ import { ckBtcService } from "./services/ckbtc.service"
 import { mempoolService } from "./services/mempool.service"
 import { patronService } from "./services/patron.service"
 import { satoshiService } from "./services/satoshi.service"
+import { EMPTY, expand, firstValueFrom, from, last } from "rxjs"
+import { KEY_BTC_ADDRESS } from "packages/integration/src/lib/authentication/storage"
 
 export type BlockIndex = bigint
 
 export type BitcointNetworkFeeAndUtxos = SelectedUtxosFeeResponse
 
 export type BtcToCkBtcFee = {
-  conversionFee: bigint
-  interNetwokFee: bigint
   bitcointNetworkFee: BitcointNetworkFeeAndUtxos
+  amountToReceive: bigint
+  icpNetworkFee: bigint
 }
 
 export type CkBtcToBtcFee = {
-  conversionFee: bigint
-  interNetwokFee: bigint
   bitcointNetworkFee: BitcointNetworkFeeAndUtxos
+  amountToReceive: bigint
+  icpNetworkFee: bigint
   identityLabsFee: bigint
 }
 
 export class BitcoinService {
+  public async getQuickAddress(): Promise<string> {
+    const { cachedValue } = this.getAddressFromCache()
+
+    if (cachedValue == null) {
+      let identity = await getWalletDelegation()
+      return this.getAddress(identity)
+    } else {
+      return cachedValue as string
+    }
+  }
+
   public async getAddress(identity: SignIdentity): Promise<Address> {
-    const { cachedValue, key } = await this.getAddressFromCache(
-      identity.getPrincipal().toText(),
-    )
+    const { cachedValue, key } = this.getAddressFromCache()
 
     if (cachedValue != null) {
       return cachedValue as string
@@ -45,7 +55,7 @@ export class BitcoinService {
 
     await patronService.askToPayFor(identity)
     const address: string = await chainFusionSignerService.getAddress(identity)
-    await authStorage.set(key, address)
+    localStorage.setItem(key, address)
     return address
   }
 
@@ -57,8 +67,8 @@ export class BitcoinService {
     return chainFusionSignerService.getBalance(identity, minConfirmations)
   }
 
-  public async getQuickBalance(principal: Principal): Promise<bigint> {
-    const { cachedValue } = await this.getAddressFromCache(principal.toText())
+  public async getQuickBalance(): Promise<bigint> {
+    const { cachedValue } = await this.getAddressFromCache()
 
     if (!cachedValue) {
       throw Error("No bitcoin address in a cache.")
@@ -71,31 +81,64 @@ export class BitcoinService {
     identity: SignIdentity,
     amount: string,
   ): Promise<BitcointNetworkFeeAndUtxos> {
-    const confirmationResult = await this.ensureWalletConfirmations(identity)
+    if (amount === "0") {
+      return { fee_satoshis: BigInt(0), utxos: [] }
+    }
+
+    const confirmationResult = await this.ensureWalletConfirmations()
     if (!confirmationResult.ok) {
       throw new Error(confirmationResult.error)
     }
     const amountInSatoshis = satoshiService.getInSatoshis(amount)
-    return patronService.askToCalcUtxosAndFee(identity, amountInSatoshis)
+    const balance = await this.getQuickBalance()
+
+    if (amountInSatoshis === balance) {
+      return patronService.askToCalcUtxosAndFee(identity, amountInSatoshis)
+    }
+
+    return firstValueFrom(
+      from(patronService.askToCalcUtxosAndFee(identity, amountInSatoshis)).pipe(
+        expand((fee) => {
+          const amountPlusFee = amountInSatoshis + fee.fee_satoshis
+          const utxosAmount = fee.utxos.reduce((a, v) => a + v.value, BigInt(0))
+
+          if (balance < amountPlusFee) {
+            return EMPTY
+          }
+
+          if (amountPlusFee <= utxosAmount) {
+            return EMPTY
+          }
+
+          return from(
+            patronService.askToCalcUtxosAndFee(identity, amountPlusFee),
+          )
+        }),
+        last(),
+      ),
+    )
   }
 
   public async getBtcToCkBtcFee(
     identity: SignIdentity,
     amount: string,
   ): Promise<BtcToCkBtcFee> {
-    const confirmationResult = await this.ensureWalletConfirmations(identity)
+    const confirmationResult = await this.ensureWalletConfirmations()
     if (!confirmationResult.ok) {
       throw new Error(confirmationResult.error)
     }
 
-    const interNetwokFee = satoshiService.getInSatoshis("0.000001")
+    const checkerFee = satoshiService.getInSatoshis("0.000001")
+    const icpNetworkFee = checkerFee
     const amountInSatoshis = satoshiService.getInSatoshis(amount)
     const bitcointNetworkFee: BitcointNetworkFeeAndUtxos =
       await patronService.askToCalcUtxosAndFee(identity, amountInSatoshis)
+
     return {
       bitcointNetworkFee,
-      conversionFee: BigInt(0),
-      interNetwokFee,
+      amountToReceive:
+        amountInSatoshis - icpNetworkFee - bitcointNetworkFee.fee_satoshis,
+      icpNetworkFee,
     }
   }
 
@@ -106,24 +149,22 @@ export class BitcoinService {
     return ckBtcService.getCkBtcToBtcFee(identity, amount)
   }
 
-  public async send(
+  private async transfer(
     identity: SignIdentity,
     destinationAddress: string,
-    amount: string,
+    amount: bigint,
     fee: BitcointNetworkFeeAndUtxos,
   ): Promise<TransactionId> {
-    const amountInSatoshis = satoshiService.getInSatoshis(amount)
     const transactionId = await chainFusionSignerService.sendBtc(
       identity,
       destinationAddress,
-      amountInSatoshis,
+      amount,
       fee.fee_satoshis,
       fee.utxos,
     )
 
-    const isOnMempool = await mempoolService.checkTransactionAppeared(
-      transactionId,
-    )
+    const isOnMempool =
+      await mempoolService.checkTransactionAppeared(transactionId)
 
     if (!isOnMempool) {
       throw new Error(
@@ -132,6 +173,17 @@ export class BitcoinService {
     }
 
     return transactionId
+  }
+
+  public async send(
+    identity: SignIdentity,
+    destinationAddress: string,
+    amount: string,
+    fee: BitcointNetworkFeeAndUtxos,
+  ): Promise<TransactionId> {
+    const amountInSatoshis = satoshiService.getInSatoshis(amount)
+
+    return this.transfer(identity, destinationAddress, amountInSatoshis, fee)
   }
 
   public async convertFromCkBtc(
@@ -154,21 +206,26 @@ export class BitcoinService {
     amount: string,
     fee: BtcToCkBtcFee,
   ): Promise<TransactionId> {
-    const address: Address = await ckBtcService.getBtcAddressToMintCkBtc(
-      identity,
-    )
-    const txId: TransactionId = await this.send(
+    const address: Address =
+      await ckBtcService.getBtcAddressToMintCkBtc(identity)
+
+    const amountWithoutFees =
+      satoshiService.getInSatoshis(amount) -
+      fee.icpNetworkFee -
+      fee.bitcointNetworkFee.fee_satoshis
+
+    const txId: TransactionId = await this.transfer(
       identity,
       address,
-      amount,
+      amountWithoutFees,
       fee.bitcointNetworkFee,
     )
     return txId
   }
 
-  private async getAddressFromCache(principal: string) {
-    const key = `bitcoin-address-${principal}`
-    const cachedValue = await authStorage.get(key)
+  private getAddressFromCache() {
+    const key = KEY_BTC_ADDRESS
+    const cachedValue = localStorage.getItem(key)
 
     return {
       cachedValue,
@@ -176,29 +233,36 @@ export class BitcoinService {
     }
   }
 
-  private async ensureWalletConfirmations(
-    identity: SignIdentity,
-  ): Promise<{ ok: boolean; error?: string }> {
-    const { cachedValue } = await this.getAddressFromCache(
-      identity.getPrincipal().toText(),
-    )
+  private async ensureWalletConfirmations(): Promise<{
+    ok: boolean
+    error?: string
+  }> {
+    const { cachedValue } = this.getAddressFromCache()
     if (!cachedValue) {
       return {
         ok: false,
         error: "No bitcoin address in cache for fee calculation.",
       }
     }
-    const hasConfirmations = await mempoolService.checkWalletConfirmations(
-      cachedValue as string,
-    )
-    if (!hasConfirmations) {
+    try {
+      const hasConfirmations = await mempoolService.checkWalletConfirmations(
+        cachedValue as string,
+      )
+      if (!hasConfirmations) {
+        return {
+          ok: false,
+          error:
+            "Your last BTC transaction is still going through confirmations. Once it hits all six, you will be able to send again.",
+        }
+      }
+      return { ok: true }
+    } catch (e) {
       return {
         ok: false,
         error:
-          "Your last BTC transaction is still going through confirmations. Once it hits all six, you will be able to send again.",
+          "The Bitcoin service is currently unreachable. Please try again in a few minutes.",
       }
     }
-    return { ok: true }
   }
 }
 

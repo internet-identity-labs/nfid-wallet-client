@@ -13,6 +13,7 @@ module.exports = {
     join(__dirname, "{src,public}/**/*!(*.stories|*.spec).{ts,tsx,html}"),
     ...dependencies,
   ],
+  darkMode: "class",
   plugins: [
     require("../../packages/ui-tailwind-core/src/forms"),
     require("../../packages/ui-tailwind-core"),

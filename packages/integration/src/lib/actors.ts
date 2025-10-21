@@ -35,7 +35,7 @@ import { idlFactory as vaultIDL } from "./_ic_api/vault"
 import { _SERVICE as Vault } from "./_ic_api/vault.d"
 import { idlFactory as verifierIDL } from "./_ic_api/verifier"
 import { _SERVICE as Verifier } from "./_ic_api/verifier.d"
-import { agent, AgentWithRetry } from "./agent"
+import { agent } from "./agent"
 
 /////////////
 // Config //
@@ -66,7 +66,7 @@ for (const [label, canister] of canisterConfig) {
     throw new Error(`Missing canister id for "${label}", please check envars.`)
 }
 
-export const agentBaseConfig = { host: "https://ic0.app" }
+export const agentBaseConfig = { host: "https://ic0.app", retryTimes: 10 }
 
 /**
  * Create an actor with shared identity from security device.
@@ -87,7 +87,7 @@ export function actorBuilder<T>(
 ): Agent.ActorSubclass<T> {
   return Agent.Actor.createActor(factory, {
     canisterId,
-    agent: new AgentWithRetry({ ...agentBaseConfig }),
+    agent: HttpAgent.createSync({ ...agentBaseConfig }),
     ...config,
   })
 }

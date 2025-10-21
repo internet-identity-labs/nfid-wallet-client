@@ -4,7 +4,7 @@ import DemoTransactions from "../pages/demoApp/demo-transactions.js"
 import DemoUpdateDelegation from "../pages/demoApp/demo-updateDelegation.js"
 import DemoAppPage from "../pages/demoApp/demoApp-page.js"
 
-Given(/^User opens the demoApp ?(.*)?$/, async function () {
+Given(/^User opens the demoApp ?(.*)?$/, async function() {
   await browser.url(DemoAppPage.demoAppBaseUrl)
 })
 
@@ -32,28 +32,28 @@ Then(
 
     expect(
       String(
-        (await (await usersData.get("principal")).firstAddressPart.getText()) +
-          "..." +
-          (await (
-            await usersData.get("principal")
-          ).secondAddressPart.getText()),
+        (usersData.get("principal").firstAddressPart.getText()) +
+        "..." +
+        ((
+          await usersData.get("principal")
+        ).secondAddressPart.getText()),
       ),
     ).toEqual(
       expectedData.principal.substring(0, 29) +
-        "..." +
-        expectedData.principal.substring(58, 63),
+      "..." +
+      expectedData.principal.substring(58, 63),
     )
 
     expect(
       String(
         (await (await usersData.get("address")).firstAddressPart.getText()) +
-          "..." +
-          (await (await usersData.get("address")).secondAddressPart.getText()),
+        "..." +
+        (await (await usersData.get("address")).secondAddressPart.getText()),
       ),
     ).toEqual(
       expectedData.address.substring(0, 29) +
-        "..." +
-        expectedData.address.substring(59, 64),
+      "..." +
+      expectedData.address.substring(59, 64),
     )
 
     await browser.waitUntil(
@@ -114,13 +114,11 @@ Then(
       timeoutMsg: "Approve Transfer modal windows isn't appeared",
     })
     expect(await DemoTransactions.getFTDetails(FT).getText()).toEqual(details)
-    await DemoTransactions.getApproveButton.then(async (it) => {
-      await it.waitForDisplayed({
+    await DemoTransactions.getApproveButton.waitForDisplayed({
         timeout: 10000,
         timeoutMsg: "ApproveButton is still not displayed after 10 sec",
       })
-      await it.click()
-    })
+    await DemoTransactions.getApproveButton.click()
 
     await screenModal.waitForDisplayed({
       reverse: true,

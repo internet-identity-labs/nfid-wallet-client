@@ -1,8 +1,14 @@
 import { motion } from "framer-motion"
-import { FC, useMemo, useState } from "react"
+import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
+import {
+  BTC_NATIVE_ID,
+  CKBTC_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
+  ETH_NATIVE_ID,
+} from "@nfid/integration/token/constants"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 import {
@@ -11,10 +17,14 @@ import {
 } from "frontend/integration/bitcoin/bitcoin.service"
 import { FT } from "frontend/integration/ft/ft"
 
-import { getConversionFee } from "../utils"
+import { getBtcConversionFee, getEthConversionFee } from "../utils"
 import { ConvertDetails } from "./convert-details"
 import { ConvertForm } from "./convert-form"
 import { ConvertSuccessUi } from "./convert-success"
+import {
+  CkEthToEthFee,
+  EthToCkEthFee,
+} from "frontend/integration/ethereum/ethereum.service"
 
 export enum ConvertModal {
   CONVERT = "convert",
@@ -31,11 +41,13 @@ export interface ConvertUiProps {
   isFeeLoading: boolean
   status: SendStatus
   error: string | undefined
-  btcError: string | undefined
+  conversionError: string | undefined
   isSuccessOpen: boolean
   onClose: () => void
   handleReverse: () => void
   btcFee?: BtcToCkBtcFee | CkBtcToBtcFee
+  ethFee?: EthToCkEthFee | CkEthToEthFee
+  tokens?: FT[]
 }
 
 export const ConvertUi: FC<ConvertUiProps> = ({
@@ -48,13 +60,16 @@ export const ConvertUi: FC<ConvertUiProps> = ({
   isFeeLoading,
   status,
   error,
-  btcError,
+  conversionError,
   isSuccessOpen,
   onClose,
   handleReverse,
   btcFee,
+  ethFee,
+  tokens,
 }) => {
   const [convertModal, setConvertModal] = useState(ConvertModal.CONVERT)
+  const [isResponsive, setIsResponsive] = useState(false)
 
   const {
     watch,
@@ -62,14 +77,11 @@ export const ConvertUi: FC<ConvertUiProps> = ({
   } = useFormContext()
 
   const amount = watch("amount")
-  const fee = getConversionFee(btcFee)
-
-  const targetAmount = useMemo(() => {
-    if (!amount || !fee?.total) return "0.00"
-    return (Number(amount) - Number(fee?.total)).toFixed(
-      toToken?.getTokenDecimals(),
-    )
-  }, [amount, fee])
+  const fee =
+    fromToken?.getTokenAddress() === ETH_NATIVE_ID ||
+    fromToken?.getTokenAddress() === CKETH_LEDGER_CANISTER_ID
+      ? getEthConversionFee(ethFee)
+      : getBtcConversionFee(btcFee)
 
   if (isTokenLoading || !fromToken || !toToken)
     return (
@@ -95,60 +107,75 @@ export const ConvertUi: FC<ConvertUiProps> = ({
             assetImgFrom={fromToken?.getTokenLogo() ?? ""}
             assetImgTo={toToken?.getTokenLogo() ?? ""}
             titleFrom={`${amount} ${fromToken!.getTokenSymbol()}`}
-            titleTo={`${targetAmount} ${toToken!.getTokenSymbol()}`}
+            titleTo={`${
+              typeof fee === "string" ? fee : fee?.amountToReceive
+            } ${toToken!.getTokenSymbol()}`}
             subTitleFrom={`${fromToken!.getTokenRateFormatted(amount || "0")}`}
-            subTitleTo={`${toToken!.getTokenRateFormatted(
-              targetAmount || "0",
-            )}`}
+            subTitleTo={
+              `${toToken!.getTokenRateFormatted(
+                typeof fee === "string" ? fee : fee!.amountToReceive,
+              )}` || "0"
+            }
             isOpen={isSuccessOpen}
             onClose={onClose}
             status={status}
             error={error}
+            tokenName={toToken.getTokenName()}
+            isBtc={
+              toToken.getTokenAddress() === BTC_NATIVE_ID ||
+              toToken.getTokenAddress() === CKBTC_CANISTER_ID
+            }
+            isResponsive={isResponsive}
           />
         </motion.div>
       )}
-      {convertModal === ConvertModal.DETAILS && (
-        <motion.div
-          key="convertModal"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25, ease: "easeInOut" }}
-        >
-          <ConvertDetails
-            token={fromToken}
-            isOpen={convertModal === ConvertModal.DETAILS}
-            setConvertModal={setConvertModal}
-            fee={fee}
-          />
-        </motion.div>
-      )}
-      {convertModal === ConvertModal.CONVERT && (
-        <motion.div
-          key="formModal"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25, ease: "easeInOut" }}
-        >
-          <ConvertForm
-            fromToken={fromToken}
-            toToken={toToken}
-            submit={submit}
-            setFromChosenToken={setFromChosenToken}
-            setToChosenToken={setToChosenToken}
-            isFeeLoading={isFeeLoading}
-            isOpen={convertModal === ConvertModal.CONVERT}
-            setConvertModal={setConvertModal}
-            amount={amount}
-            errors={errors}
-            btcError={btcError}
-            handleReverse={handleReverse}
-            fee={fee}
-            targetAmount={targetAmount}
-          />
-        </motion.div>
-      )}
+
+      <motion.div
+        key="convertModal"
+        initial={{ opacity: convertModal === ConvertModal.DETAILS ? 1 : 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25, ease: "easeInOut" }}
+      >
+        <ConvertDetails
+          token={fromToken}
+          isOpen={convertModal === ConvertModal.DETAILS}
+          setConvertModal={setConvertModal}
+          fee={fee}
+          amount={amount}
+        />
+      </motion.div>
+      <motion.div
+        key="formModal"
+        initial={{ opacity: convertModal === ConvertModal.CONVERT ? 1 : 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25, ease: "easeInOut" }}
+      >
+        <ConvertForm
+          setIsResponsive={setIsResponsive}
+          isResponsive={isResponsive}
+          fromToken={fromToken}
+          toToken={toToken}
+          submit={submit}
+          setFromChosenToken={setFromChosenToken}
+          setToChosenToken={setToChosenToken}
+          isFeeLoading={isFeeLoading}
+          isOpen={convertModal === ConvertModal.CONVERT}
+          setConvertModal={setConvertModal}
+          amount={amount}
+          errors={errors}
+          conversionError={conversionError}
+          handleReverse={handleReverse}
+          fee={fee}
+          tokens={tokens}
+          ethFee={
+            fromToken.getTokenAddress() === ETH_NATIVE_ID
+              ? (ethFee as EthToCkEthFee)
+              : undefined
+          }
+        />
+      </motion.div>
     </>
   )
 }

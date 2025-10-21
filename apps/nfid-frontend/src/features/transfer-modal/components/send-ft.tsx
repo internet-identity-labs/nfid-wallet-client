@@ -1,4 +1,3 @@
-import { SignIdentity } from "@dfinity/agent"
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
@@ -7,12 +6,13 @@ import debounce from "lodash/debounce"
 import { PRINCIPAL_LENGTH } from "packages/constants"
 import toaster from "packages/ui/src/atoms/toast"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
-import { useCallback, useMemo, useState, useEffect } from "react"
+import { useCallback, useMemo, useState, useEffect, useRef } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
 import { RootWallet, registerTransaction } from "@nfid/integration"
 import {
   BTC_NATIVE_ID,
+  ETH_NATIVE_ID,
   E8S,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -21,29 +21,33 @@ import {
   transfer as transferICP,
 } from "@nfid/integration/token/icp"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
-import { useBtcAddress } from "frontend/hooks"
+import { useBtcAddress, useEthAddress } from "frontend/hooks"
+import { useIdentity } from "frontend/hooks/identity"
 import {
   bitcoinService,
   BitcointNetworkFeeAndUtxos,
 } from "frontend/integration/bitcoin/bitcoin.service"
+import {
+  ethereumService,
+  SendEthFee,
+} from "frontend/integration/ethereum/ethereum.service"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
 import { FormValues, SendStatus } from "../types"
 import {
-  getIdentity,
   getTokensWithUpdatedBalance,
   getVaultsAccountsOptions,
-  validateBTCAddress,
-  validateICPAddress,
   validateICRC1Address,
+  addressValidators,
+  updateCachedInitedTokens,
 } from "../utils"
+import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 const DEFAULT_TRANSFER_ERROR = "Something went wrong"
 
@@ -71,19 +75,26 @@ export const TransferFT = ({
   const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
   const [status, setStatus] = useState(SendStatus.PENDING)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
-  const [identity, setIdentity] = useState<SignIdentity>()
-  const [isIdentityLoading, setIsIdentityLoading] = useState(false)
+  const { identity, isLoading: isIdentityLoading } = useIdentity()
   const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
     useState(preselectedAccountAddress)
   const [error, setError] = useState<string | undefined>()
   const [btcError, setBtcError] = useState<string | undefined>()
+  const [ethError, setEthError] = useState<string | undefined>()
   const { profile } = useProfile()
   const { balances } = useAllVaultsWallets()
   const { isBtcAddressLoading } = useBtcAddress()
+  const { isEthAddressLoading, ethAddress } = useEthAddress()
   const [btcFee, setBtcFee] = useState<BitcointNetworkFeeAndUtxos | undefined>(
     undefined,
   )
+  const [ethFee, setEthFee] = useState<SendEthFee | undefined>(undefined)
   const [isValidating, setIsValidating] = useState(false)
+  const skipFeeCalculation = useRef(false)
+
+  const triggerSkipCaclulation = useCallback(() => {
+    skipFeeCalculation.current = true
+  }, [])
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -106,7 +117,7 @@ export const TransferFT = ({
     () =>
       debounce((val: number) => {
         setDebouncedAmount(val)
-      }, 500),
+      }, 1000),
     [setDebouncedAmount],
   )
 
@@ -135,63 +146,34 @@ export const TransferFT = ({
     { revalidateOnFocus: false, revalidateOnMount: false },
   )
 
-  const activeTokens = useMemo(() => {
-    const activeTokens = tokens.filter(
-      (token) => token.getTokenState() === State.Active,
-    )
-    if (!hideZeroBalance) return activeTokens
-    const tokensWithBalance = activeTokens.filter(
+  const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(
+    tokens,
+    isBtcAddressLoading,
+    isEthAddressLoading,
+  )
+
+  const filteredTokens = useMemo(() => {
+    if (!initedTokens) return
+    if (!hideZeroBalance) return initedTokens
+    const tokensWithBalance = initedTokens.filter(
       (token) =>
         token.getTokenAddress() === ICP_CANISTER_ID ||
         token.getTokenBalance() !== BigInt(0),
     )
     return tokensWithBalance
-  }, [tokens, hideZeroBalance])
+  }, [initedTokens, hideZeroBalance])
 
   const token = useMemo(() => {
-    return tokens.find((token) => token.getTokenAddress() === tokenAddress)
-  }, [tokenAddress, tokens])
+    return filteredTokens?.find(
+      (token) => token.getTokenAddress() === tokenAddress,
+    )
+  }, [tokenAddress, filteredTokens])
 
   const balance = useMemo(() => {
     return balances?.find(
       (balance) => balance.address === selectedVaultsAccountAddress,
     )
   }, [selectedVaultsAccountAddress, balances])
-
-  useEffect(() => {
-    if (!token) return
-
-    let isMounted = true
-    setIdentity(undefined)
-    setIsIdentityLoading(true)
-
-    const targets =
-      token.getTokenAddress() !== BTC_NATIVE_ID
-        ? [token.getTokenAddress()]
-        : [PATRON_CANISTER_ID, CHAIN_FUSION_SIGNER_CANISTER_ID]
-
-    const getSignIdentity = async () => {
-      try {
-        const identity = await getIdentity(targets)
-        if (isMounted) {
-          setIdentity(identity)
-          setIsIdentityLoading(false)
-        }
-      } catch (e) {
-        if (isMounted) {
-          setIsIdentityLoading(false)
-          setIdentity(undefined)
-        }
-        console.error("Failed to get identity", e)
-      }
-    }
-
-    getSignIdentity()
-
-    return () => {
-      isMounted = false
-    }
-  }, [token])
 
   useEffect(() => {
     onError(Boolean(btcError))
@@ -210,20 +192,24 @@ export const TransferFT = ({
   useEffect(() => {
     let isCancelled = false
 
-    const fetchFee = async () => {
-      if (
-        token?.getTokenAddress() === BTC_NATIVE_ID &&
-        isAmountValid &&
-        !formMethods.formState.errors.amount &&
-        isIdentityReady
-      ) {
+    if (
+      !isAmountValid ||
+      !!formMethods.formState.errors.amount ||
+      !isIdentityReady
+    )
+      return
+
+    if (skipFeeCalculation.current) {
+      skipFeeCalculation.current = false
+      return
+    }
+
+    const fetchBtcFee = async () => {
+      if (token?.getTokenAddress() === BTC_NATIVE_ID) {
         setBtcFee(undefined)
         setIsValidating(true)
         try {
-          const fee = await token.getBTCFee(
-            identity!,
-            debouncedAmount.toString(),
-          )
+          const fee = await token.getBTCFee(identity!, debouncedAmount)
           if (!isCancelled) setBtcFee(fee)
         } catch (e) {
           console.error(`BTC error: ${e}`)
@@ -237,7 +223,27 @@ export const TransferFT = ({
       }
     }
 
-    fetchFee()
+    const fetchEthFee = async () => {
+      if (token?.getTokenAddress() === ETH_NATIVE_ID) {
+        setEthFee(undefined)
+        setIsValidating(true)
+        try {
+          const fee = await token.getETHFee(to, ethAddress, debouncedAmount)
+          if (!isCancelled) setEthFee(fee)
+        } catch (e) {
+          console.error(`ETH error: ${e}`)
+          setEthError((e as Error).message)
+          if (!isCancelled) setEthFee(undefined)
+        } finally {
+          if (!isCancelled) setIsValidating(false)
+        }
+      } else {
+        setBtcFee(undefined)
+      }
+    }
+
+    fetchBtcFee()
+    fetchEthFee()
 
     return () => {
       isCancelled = true
@@ -249,14 +255,53 @@ export const TransferFT = ({
     isAmountValid,
     formMethods.formState.errors.amount,
     isIdentityReady,
+    to,
+    ethAddress,
   ])
 
   useEffect(() => {
     setBtcError(undefined)
+    setEthError(undefined)
+    setDebouncedAmount(0)
   }, [token])
 
   const submit = useCallback(async () => {
     if (!token) return toaster.error("No selected token")
+
+    if (token.getTokenAddress() === ETH_NATIVE_ID) {
+      if (!identity || !ethFee) return
+
+      setIsSuccessOpen(true)
+      ethereumService
+        .sendEthTransaction(identity, to, amount, ethFee)
+        .then(() => {
+          setSuccessMessage(
+            `Transaction ${amount} ${token.getTokenSymbol()} successful`,
+          )
+          setStatus(SendStatus.COMPLETED)
+          if (!initedTokens) return
+
+          getTokensWithUpdatedBalance(
+            [token.getTokenAddress()],
+            initedTokens,
+          ).then((updatedTokens) => {
+            mutateWithTimestamp("tokens", updatedTokens, false)
+            updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
+          })
+        })
+        .catch((e) => {
+          console.error(
+            `Transfer error: ${
+              (e as Error).message ? (e as Error).message : e
+            }`,
+          )
+          setErrorMessage(DEFAULT_TRANSFER_ERROR)
+          setError(DEFAULT_TRANSFER_ERROR)
+          setStatus(SendStatus.FAILED)
+        })
+
+      return
+    }
 
     if (token.getTokenAddress() === BTC_NATIVE_ID) {
       if (!identity || !btcFee) return
@@ -269,11 +314,15 @@ export const TransferFT = ({
             `Transaction ${amount} ${token.getTokenSymbol()} successful`,
           )
           setStatus(SendStatus.COMPLETED)
-          getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
-            (updatedTokens) => {
-              mutateWithTimestamp("tokens", updatedTokens, false)
-            },
-          )
+          if (!initedTokens) return
+
+          getTokensWithUpdatedBalance(
+            [token.getTokenAddress()],
+            initedTokens,
+          ).then((updatedTokens) => {
+            mutateWithTimestamp("tokens", updatedTokens, false)
+            updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
+          })
         })
         .catch((e) => {
           console.error(
@@ -380,11 +429,15 @@ export const TransferFT = ({
           `Transaction ${amount} ${token.getTokenSymbol()} successful`,
         )
         setStatus(SendStatus.COMPLETED)
-        getTokensWithUpdatedBalance([token.getTokenAddress()], tokens).then(
-          (updatedTokens) => {
-            mutateWithTimestamp("tokens", updatedTokens, false)
-          },
-        )
+        if (!initedTokens) return
+
+        getTokensWithUpdatedBalance(
+          [token.getTokenAddress()],
+          initedTokens,
+        ).then((updatedTokens) => {
+          mutateWithTimestamp("tokens", updatedTokens, false)
+          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
+        })
       })
       .catch((e) => {
         console.error(
@@ -400,27 +453,28 @@ export const TransferFT = ({
     selectedVaultsAccountAddress,
     amount,
     to,
-    tokens,
+    initedTokens,
     setErrorMessage,
     setSuccessMessage,
     btcFee,
+    ethFee,
     identity,
+    mutateInitedTokens,
   ])
 
   return (
     <FormProvider {...formMethods}>
       <TransferFTUi
         token={token}
-        tokens={activeTokens}
+        tokens={filteredTokens || []}
         setChosenToken={setTokenAddress}
         validateAddress={
-          token?.getTokenAddress() === ICP_CANISTER_ID
-            ? validateICPAddress
-            : token?.getTokenAddress() === BTC_NATIVE_ID
-            ? validateBTCAddress
-            : validateICRC1Address
+          addressValidators[token?.getTokenAddress() ?? ""] ||
+          validateICRC1Address
         }
-        isLoading={isTokensLoading || isBtcAddressLoading}
+        isLoading={
+          isTokensLoading || isBtcAddressLoading || isEthAddressLoading
+        }
         isVault={isVault}
         selectedVaultsAccountAddress={selectedVaultsAccountAddress}
         submit={submit}
@@ -428,7 +482,9 @@ export const TransferFT = ({
         loadingMessage={"Fetching supported tokens..."}
         accountsOptions={vaultsAccountsOptions}
         optionGroups={
-          profile?.wallet === RootWallet.NFID ? [] : vaultsAccountsOptions ?? []
+          profile?.wallet === RootWallet.NFID
+            ? []
+            : (vaultsAccountsOptions ?? [])
         }
         vaultsBalance={balance?.balance["ICP"]}
         status={status}
@@ -436,8 +492,11 @@ export const TransferFT = ({
         onClose={onClose}
         error={error}
         btcError={btcError}
+        ethError={ethError}
         btcFee={btcFee?.fee_satoshis || undefined}
+        ethFee={ethFee?.ethereumNetworkFee || undefined}
         isFeeLoading={isValidating || isIdentityLoading || !identity}
+        setSkipFeeCalculation={triggerSkipCaclulation}
       />
     </FormProvider>
   )

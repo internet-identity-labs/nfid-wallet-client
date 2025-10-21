@@ -66,7 +66,7 @@ export const DeletePasskey: FC<IDeletePasskeyModal> = ({
         className="p-5 w-[95%] md:w-[500px] z-[100] lg:rounded-xl"
       >
         <p className="text-2xl font-bold">Remove Passkey</p>
-        <div className="p-5 mt-5 text-sm text-orange-900 bg-orange-50 rounded-xl">
+        <div className="p-5 mt-5 text-sm text-orange-900 dark:text-amber-600 bg-orange-50 dark:bg-[#F973161A] rounded-xl">
           <p className="font-bold">
             {showLastPasskeyWarning
               ? "Self-sovereign mode will be disabled"

@@ -145,75 +145,69 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
           <ErrorModal refresh={refreshProviders} />
         </motion.div>
       )}
-      {swapModal === SwapModal.SETTINGS && (
-        <motion.div
-          key="settingsModal"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25, ease: "easeInOut" }}
-        >
-          <SwapSettings
-            isOpen={swapModal === SwapModal.SETTINGS}
-            setSwapModal={setSwapModal}
-            setSelectedShroff={setSelectedShroff}
-            slippage={slippage}
-            setSlippage={setSlippage}
-            swapProviders={swapProviders}
-            amount={amount}
-            shroff={shroff}
-            setProvider={setProvider}
-          />
-        </motion.div>
-      )}
-      {swapModal === SwapModal.QUOTE && (
-        <motion.div
-          key="quoteModal"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25, ease: "easeInOut" }}
-        >
-          <QuoteModal
-            isOpen={swapModal === SwapModal.QUOTE}
-            setSwapModal={setSwapModal}
-            shroff={selectedShroff}
-            closeModal={() => setSelectedShroff(undefined)}
-            amount={amount}
-          />
-        </motion.div>
-      )}
-      {swapModal === SwapModal.SWAP && (
-        <motion.div
-          key="formModal"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25, ease: "easeInOut" }}
-        >
-          <SwapFTForm
-            setIsResponsive={setIsResponsive}
-            isResponsive={isResponsive}
-            tokens={tokens}
-            allTokens={allTokens}
-            fromToken={fromToken}
-            toToken={toToken}
-            submit={submit}
-            setFromChosenToken={setFromChosenToken}
-            setToChosenToken={setToChosenToken}
-            showLiquidityError={showLiquidityError}
-            slippageQuoteError={slippageQuoteError}
-            isQuoteLoading={isQuoteLoading}
-            quote={quote}
-            quoteTimer={quoteTimer}
-            isOpen={swapModal === SwapModal.SWAP}
-            setSwapModal={setSwapModal}
-            amount={amount}
-            errors={errors}
-            tokensAvailableToSwap={tokensAvailableToSwap}
-          />
-        </motion.div>
-      )}
+      <motion.div
+        key="settingsModal"
+        initial={{ opacity: swapModal === SwapModal.SETTINGS ? 1 : 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25, ease: "easeInOut" }}
+      >
+        <SwapSettings
+          isOpen={swapModal === SwapModal.SETTINGS}
+          setSwapModal={setSwapModal}
+          setSelectedShroff={setSelectedShroff}
+          slippage={slippage}
+          setSlippage={setSlippage}
+          swapProviders={swapProviders}
+          amount={amount}
+          shroff={shroff}
+          setProvider={setProvider}
+        />
+      </motion.div>
+      <motion.div
+        key="quoteModal"
+        initial={{ opacity: swapModal === SwapModal.QUOTE ? 1 : 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25, ease: "easeInOut" }}
+      >
+        <QuoteModal
+          isOpen={swapModal === SwapModal.QUOTE}
+          setSwapModal={setSwapModal}
+          shroff={selectedShroff}
+          closeModal={() => setSelectedShroff(undefined)}
+          amount={amount}
+        />
+      </motion.div>
+      <motion.div
+        key="formModal"
+        initial={{ opacity: swapModal === SwapModal.SWAP ? 1 : 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25, ease: "easeInOut" }}
+      >
+        <SwapFTForm
+          setIsResponsive={setIsResponsive}
+          isResponsive={isResponsive}
+          tokens={tokens}
+          allTokens={allTokens}
+          fromToken={fromToken}
+          toToken={toToken}
+          submit={submit}
+          setFromChosenToken={setFromChosenToken}
+          setToChosenToken={setToChosenToken}
+          showLiquidityError={showLiquidityError}
+          slippageQuoteError={slippageQuoteError}
+          isQuoteLoading={isQuoteLoading}
+          quote={quote}
+          quoteTimer={quoteTimer}
+          isOpen={swapModal === SwapModal.SWAP}
+          setSwapModal={setSwapModal}
+          amount={amount}
+          errors={errors}
+          tokensAvailableToSwap={tokensAvailableToSwap}
+        />
+      </motion.div>
     </>
   )
 }

@@ -1,18 +1,22 @@
 import clsx from "clsx"
 import { useClickOutside } from "packages/utils/src/index"
-import { useState } from "react"
+import { FC, FunctionComponent, SVGProps, useEffect, useState } from "react"
 
 import {
   IconCmpWarning,
   Loader,
   NFIDLogoMain,
   BurgerMenu,
+  NFIDLogo,
 } from "@nfid-frontend/ui"
+
+import { NFIDTheme } from "frontend/App"
+import { useDarkTheme } from "frontend/hooks"
 
 import AuthenticatedPopup from "../navigation-popup"
 
 export interface INavigationPopupLinks {
-  icon: string
+  icon: FC<{ strokeColor?: string }> & SVGProps<SVGSVGElement>
   title: string
   link: string
   id: string
@@ -33,6 +37,8 @@ export interface IProfileHeader extends React.HTMLAttributes<HTMLDivElement> {
     security: string
     vaults: string
   }
+  walletTheme?: NFIDTheme
+  setWalletTheme?: (theme: NFIDTheme) => void
 }
 
 export const ProfileHeader: React.FC<IProfileHeader> = ({
@@ -46,9 +52,12 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
   assetsLink,
   hasVaults,
   profileConstants,
+  walletTheme,
+  setWalletTheme,
 }) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false)
   const popupRef = useClickOutside(() => setIsMenuVisible(false))
+  const isDarkTheme = useDarkTheme()
 
   return (
     <>
@@ -60,11 +69,13 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
         )}
       >
         <Loader isLoading={isLoading} />
-        <NFIDLogoMain assetsLink={assetsLink} />
+        {isDarkTheme ? <NFIDLogo /> : <NFIDLogoMain assetsLink={assetsLink} />}
+
         <div className={clsx("relative")} ref={popupRef} id="profile">
           <BurgerMenu
             isOpened={isMenuVisible}
             onClick={() => setIsMenuVisible(!isMenuVisible)}
+            walletTheme={walletTheme!}
           />
           {isMenuVisible && (
             <AuthenticatedPopup
@@ -75,6 +86,8 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
               hasVaults={hasVaults}
               profileConstants={profileConstants}
               isOpen={isMenuVisible}
+              walletTheme={walletTheme!}
+              setWalletTheme={setWalletTheme!}
             />
           )}
         </div>

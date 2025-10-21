@@ -35,15 +35,15 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
           rows={rows}
           className={clsx(
             areaClassName,
-            "shadow-sm text-black block w-full text-sm border rounded-[12px] bg-transparent resize-none",
+            "shadow-sm text-black dark:text-white block w-full text-sm border rounded-[12px] bg-transparent resize-none dark:bg-[#FFFFFF0D]",
             errorText
               ? "active:bg-transparent active:border-red !border-red box-shadow-red focus:ring-red"
-              : "focus:ring-black focus:border-black border-black",
+              : "focus:ring-black focus:border-black border-black dark:border-zinc-500",
           )}
           {...props}
         />
         {errorText && (
-          <div className={clsx("text-sm py-1 text-re")}>{errorText}</div>
+          <div className={clsx("text-sm py-1 text-red-600 dark:text-red-500")}>{errorText}</div>
         )}
       </div>
     )

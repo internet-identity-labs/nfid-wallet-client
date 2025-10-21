@@ -2,13 +2,19 @@ import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { Cache } from "node-ts-cache"
 import { integrationCache } from "packages/integration/src/cache"
+import { storageWithTtl } from "@nfid/client-db"
 import BtcIcon from "packages/ui/src/organisms/tokens/assets/bitcoin.svg"
+import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
 import { FT } from "src/integration/ft/ft"
 import { FTImpl } from "src/integration/ft/impl/ft-impl"
 
 import {
+  BTC_DECIMALS,
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
+  ETH_DECIMALS,
+  ETH_NATIVE_ID,
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -18,6 +24,9 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 
 import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
 import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
+
+const InitedTokens = "InitedTokens"
+export const TOKENS_REFRESH_INTERVAL = 10000
 
 export interface TokensAvailableToSwap {
   to: string[]
@@ -30,8 +39,10 @@ const TOKENS_TO_REORDER: {
   ft?: FT | null
 }[] = [
   { canisterId: BTC_NATIVE_ID, index: 1 },
-  { canisterId: NFIDW_CANISTER_ID, index: 2 },
-  { canisterId: CKBTC_CANISTER_ID, index: 3 },
+  { canisterId: ETH_NATIVE_ID, index: 2 },
+  { canisterId: NFIDW_CANISTER_ID, index: 3 },
+  { canisterId: CKBTC_CANISTER_ID, index: 4 },
+  { canisterId: CKETH_LEDGER_CANISTER_ID, index: 5 },
 ]
 
 export class FtService {
@@ -49,6 +60,10 @@ export class FtService {
 
         const ckBtc = canisters.find(
           (canister) => canister.ledger === CKBTC_CANISTER_ID,
+        )
+
+        const ckEth = canisters.find(
+          (canister) => canister.ledger === CKETH_LEDGER_CANISTER_ID,
         )
 
         const updatePromises = []
@@ -80,6 +95,15 @@ export class FtService {
           )
         }
 
+        if (!ckEth || ckEth.state === State.Inactive) {
+          updatePromises.push(
+            icrc1RegistryService.storeICRC1Canister(
+              CKETH_LEDGER_CANISTER_ID,
+              State.Active,
+            ),
+          )
+        }
+
         await Promise.all(updatePromises)
 
         if (updatePromises.length > 0) {
@@ -89,8 +113,134 @@ export class FtService {
         const ft = canisters.map((canister) => new FTImpl(canister))
 
         ft.push(this.getNativeBtcToken())
+        ft.push(this.getNativeEthToken())
+
         return this.sortTokens(ft)
       })
+  }
+
+  public async getInitedTokens(
+    tokens: FT[],
+    principal: Principal,
+    refetch?: boolean,
+  ): Promise<FT[]> {
+    const cacheKey = this.getCacheKey(principal)
+    const cache = await storageWithTtl.getEvenExpired(cacheKey)
+
+    if (!cache || Boolean(refetch)) {
+      const initedTokens = await this.fetchInitedTokens(tokens, principal)
+
+      await storageWithTtl.set(
+        cacheKey,
+        this.serializeTokensData(initedTokens),
+        TOKENS_REFRESH_INTERVAL,
+      )
+
+      return initedTokens
+    }
+
+    if (cache && cache.expired) {
+      this.fetchInitedTokens(tokens, principal).then((initedTokens) => {
+        storageWithTtl.set(
+          cacheKey,
+          this.serializeTokensData(initedTokens),
+          TOKENS_REFRESH_INTERVAL,
+        )
+      })
+
+      return this.deserializeTokensData(cache.value as string, tokens)
+    }
+
+    return this.deserializeTokensData(cache?.value as string, tokens)
+  }
+
+  public async initializeBtcEthTokensWhenReady(
+    tokens: FT[],
+    principal: Principal,
+  ): Promise<FT[]> {
+    const btcEthTokens = tokens.filter(
+      (token) =>
+        (token.getTokenAddress() === BTC_NATIVE_ID ||
+          token.getTokenAddress() === ETH_NATIVE_ID) &&
+        !token.isInited(),
+    )
+
+    if (btcEthTokens.length === 0) return tokens
+
+    const reInited = await Promise.all(
+      btcEthTokens.map((token) => token.init(principal)),
+    )
+
+    const updatedTokens = tokens.map((token) => {
+      const refreshed = reInited.find(
+        (t) => t.getTokenAddress() === token.getTokenAddress(),
+      )
+      return refreshed ?? token
+    })
+
+    const cacheKey = this.getCacheKey(principal)
+    await storageWithTtl.set(
+      cacheKey,
+      this.serializeTokensData(updatedTokens),
+      TOKENS_REFRESH_INTERVAL,
+    )
+
+    return updatedTokens
+  }
+
+  private getCacheKey(principal: Principal): string {
+    return `${InitedTokens}_${principal.toText()}`
+  }
+
+  private async fetchInitedTokens(
+    tokens: FT[],
+    principal: Principal,
+  ): Promise<FT[]> {
+    return Promise.all(tokens.map((token) => token.init(principal)))
+  }
+
+  private serializeTokensData(tokens: FT[]): string {
+    return JSON.stringify(
+      tokens.map((token) => ({
+        tokenAddress: token.getTokenAddress(),
+        tokenBalance: token.getTokenBalance()?.toString(),
+        tokenRate: token.getTokenRate("1")?.toString(),
+        tokenRateDayChangePercent: token.getTokenRateDayChangePercent()?.value,
+        tokenRateDayChangePercentPositive:
+          token.getTokenRateDayChangePercent()?.positive,
+        inited: token.isInited(),
+      })),
+    )
+  }
+
+  private deserializeTokensData(serialized: string, tokens: FT[]): FT[] {
+    const cachedData = JSON.parse(serialized)
+    return tokens.map((token) => {
+      const data = cachedData.find(
+        (d: { tokenAddress: string }) =>
+          d.tokenAddress === token.getTokenAddress(),
+      )
+
+      const tokenImpl = token as any
+
+      if (data.tokenBalance) {
+        tokenImpl.tokenBalance = BigInt(data.tokenBalance)
+      }
+
+      if (data.tokenRate) {
+        tokenImpl.tokenRate = {
+          value: new BigNumber(data.tokenRate),
+          dayChangePercent: data.tokenRateDayChangePercent,
+          dayChangePercentPositive: data.tokenRateDayChangePercentPositive,
+        }
+      } else {
+        tokenImpl.tokenRate = null
+      }
+
+      tokenImpl.inited = data.inited
+
+      return token
+    })
   }
 
   private getNativeBtcToken(): FTImpl {
@@ -98,9 +248,24 @@ export class FtService {
       ledger: BTC_NATIVE_ID,
       symbol: "BTC",
       name: "Bitcoin",
-      decimals: 8,
+      decimals: BTC_DECIMALS,
       category: Category.Native,
       logo: BtcIcon,
+      state: State.Active,
+      fee: BigInt(0),
+      index: undefined,
+      rootCanisterId: undefined,
+    })
+  }
+
+  private getNativeEthToken(): FTImpl {
+    return new FTImpl({
+      ledger: ETH_NATIVE_ID,
+      symbol: "ETH",
+      name: "Ethereum",
+      decimals: ETH_DECIMALS,
+      category: Category.Native,
+      logo: EthIcon,
       state: State.Active,
       fee: BigInt(0),
       index: undefined,

@@ -47,6 +47,25 @@ export const PrimarySignInMethod: React.FC<PrimarySignInMethodProps> = ({
 
   const isGoogleUser = !!googleState?.hasRegisteredWithGoogle
 
+  if (
+    profile.accessPoints.find(
+      (p) => p.deviceType === DeviceType.InternetIdentity,
+    )
+  ) {
+    return (
+      <div className="flex space-x-2.5 items-center">
+        <div className="w-10 h-10 rounded-full">
+          <DeviceIconDecider icon={Icon.ii} className="!w-10 !h-10" />
+        </div>
+        <div>
+          <p className="text-sm leading-[23px]">{profile.principalId}</p>
+          <p className="text-xs leading-4 text-gray-400 dark:text-zinc-500">
+            Internet Identity sign in
+          </p>
+        </div>
+      </div>
+    )
+  }
   if (profile?.email)
     return (
       <div className="flex space-x-2.5 items-center">
@@ -55,7 +74,7 @@ export const PrimarySignInMethod: React.FC<PrimarySignInMethodProps> = ({
         </div>
         <div>
           <p className="text-sm leading-[23px]">{profile.email}</p>
-          <p className="text-xs leading-5 text-gray-400">
+          <p className="text-xs leading-4 text-gray-400 dark:text-zinc-500">
             {isGoogleUser ? "Google" : "Email"} sign in
           </p>
         </div>
@@ -73,7 +92,9 @@ export const PrimarySignInMethod: React.FC<PrimarySignInMethodProps> = ({
         </div>
         <div>
           <p className="text-sm leading-[23px]">{profile.name}</p>
-          <p className="text-xs leading-5 text-gray-400">Passkey sign in</p>
+          <p className="text-xs leading-4 text-gray-400 dark:text-zinc-500">
+            Passkey sign in
+          </p>
         </div>
       </div>
     )
@@ -86,7 +107,7 @@ export const PrimarySignInMethod: React.FC<PrimarySignInMethodProps> = ({
       </div>
       <div>
         <p className="text-sm leading-[23px]">No NFID Wallet name set</p>
-        <p className="text-xs leading-5 text-gray-400">
+        <p className="text-xs leading-4 text-gray-400 dark:text-zinc-500">
           Recovery phrase sign in
         </p>
       </div>

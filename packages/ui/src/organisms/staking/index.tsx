@@ -2,6 +2,7 @@ import clsx from "clsx"
 import { FC } from "react"
 import { NavigateFunction } from "react-router-dom"
 
+import { useDarkTheme } from "frontend/hooks"
 import { StakedToken } from "frontend/integration/staking/staked-token"
 import { TotalBalance } from "frontend/integration/staking/types"
 
@@ -19,7 +20,7 @@ import { Table } from "../../molecules/table"
 import { StakingHeader } from "./components/staking-header"
 
 export interface StakingProps {
-  stakedTokens: StakedToken[]
+  stakedTokens?: StakedToken[]
   isLoading: boolean
   links: {
     base: string
@@ -38,11 +39,14 @@ export const Staking: FC<StakingProps> = ({
   totalBalances,
   onStakeClick,
 }) => {
+  const isDarkTheme = useDarkTheme()
+
   return (
     <>
-      {isLoading ? (
+      {isLoading || !stakedTokens ? (
         <StakingHeaderSkeleton />
       ) : (
+        stakedTokens &&
         stakedTokens.length > 0 && (
           <StakingHeader
             total={totalBalances?.total}
@@ -52,18 +56,19 @@ export const Staking: FC<StakingProps> = ({
           />
         )
       )}
-
       <ProfileContainer innerClassName="!px-0">
-        <div className={clsx(isLoading && "pl-5 sm:pl-[30px]")}>
+        <div
+          className={clsx((isLoading || !stakedTokens) && "pl-5 sm:pl-[30px]")}
+        >
           <Table className="!min-w-0" id="staking-table">
-            {isLoading ? (
+            {isLoading || !stakedTokens ? (
               <TableActivitySkeleton tableRowsAmount={3} tableCellAmount={3} />
-            ) : stakedTokens.length ? (
+            ) : stakedTokens && stakedTokens.length ? (
               <>
-                <tr className="hidden md:table-row">
+                <tr className="hidden md:table-row dark:text-zinc-500">
                   <td
                     className={clsx(
-                      "pb-[10px] text-sm font-bold text-gray-400",
+                      "pb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500",
                       "px-0 md:px-[30px] min-w-[230px]",
                     )}
                   >
@@ -71,7 +76,7 @@ export const Staking: FC<StakingProps> = ({
                   </td>
                   <td
                     className={clsx(
-                      "pb-[10px] text-sm font-bold text-gray-400",
+                      "pb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500",
                       "w-[230px]",
                     )}
                   >
@@ -79,7 +84,7 @@ export const Staking: FC<StakingProps> = ({
                   </td>
                   <td
                     className={clsx(
-                      "pb-[10px] text-sm font-bold text-gray-400",
+                      "pb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500",
                       "px-0 md:px-[30px] w-[290px]",
                     )}
                   >
@@ -90,7 +95,7 @@ export const Staking: FC<StakingProps> = ({
                 {stakedTokens.map((stakedToken) => {
                   return (
                     <tr
-                      className="text-sm hover:bg-gray-50 h-[64px] transition-all group cursor-pointer"
+                      className="text-sm hover:bg-gray-50 dark:hover:bg-zinc-800 h-[64px] transition-all group cursor-pointer"
                       id={`stakedToken_${stakedToken
                         .getToken()
                         .getTokenName()
@@ -120,7 +125,7 @@ export const Staking: FC<StakingProps> = ({
                               <div
                                 className={clsx(
                                   "absolute bottom-0 right-0 rounded-full",
-                                  "flex items-center justify-center w-5 h-5 bg-white",
+                                  "flex items-center justify-center w-5 h-5 bg-white dark:bg-zinc-200",
                                 )}
                               >
                                 <img src={DiamondIcon} />
@@ -130,13 +135,13 @@ export const Staking: FC<StakingProps> = ({
                           <div>
                             <p
                               id={"tokenSymbol"}
-                              className="text-sm font-semibold leading-[25px]"
+                              className="text-sm font-semibold leading-[25px] dark:text-white"
                             >
                               {stakedToken.getToken().getTokenSymbol()}
                             </p>
                             <p
                               id={"tokenName"}
-                              className="text-secondary text-xs leading-[20px]"
+                              className="text-secondary dark:text-zinc-500 text-xs leading-[20px]"
                             >
                               {stakedToken.getToken().getTokenName()}
                             </p>
@@ -146,21 +151,24 @@ export const Staking: FC<StakingProps> = ({
                       <td className="flex flex-col ml-auto h-[64px] justify-center w-max md:table-cell text-right md:text-left">
                         <p
                           id={"tokenStakedAmount"}
-                          className="text-sm leading-6"
+                          className="text-sm leading-6 dark:text-white"
                         >
                           {stakedToken.getStakedFormatted().getTokenValue()}{" "}
                           {stakedToken.getToken().getTokenSymbol()}
                         </p>
-                        <p className="text-xs leading-5 text-secondary">
+                        <p className="text-xs leading-5 text-secondary dark:text-zinc-500">
                           {stakedToken.getStakedFormatted().getUSDValue()}
                         </p>
                       </td>
                       <td className="px-0 md:px-[30px] hidden md:table-cell">
-                        <p id={"tokenRewards"} className="text-sm leading-6">
+                        <p
+                          id={"tokenRewards"}
+                          className="text-sm leading-6 dark:text-white"
+                        >
                           {stakedToken.getRewardsFormatted().getTokenValue()}{" "}
                           {stakedToken.getToken().getTokenSymbol()}
                         </p>
-                        <p className="text-xs leading-5 text-secondary">
+                        <p className="text-xs leading-5 text-secondary dark:text-zinc-500">
                           {stakedToken.getRewardsFormatted().getUSDValue()}
                         </p>
                       </td>
@@ -169,7 +177,7 @@ export const Staking: FC<StakingProps> = ({
                           id={"tokenStakingDetailsButton"}
                           className="inline-flex items-center justify-between gap-1"
                         >
-                          <IconCaret />
+                          <IconCaret color={isDarkTheme ? "white" : "black"} />
                         </div>
                       </td>
                     </tr>
@@ -188,7 +196,7 @@ export const Staking: FC<StakingProps> = ({
                   )}
                   src={EmptyStaking}
                 />
-                <p className="leading-[18px] mb-[20px] text-sm md:max-w-[400px] lg:max-w-[460px]">
+                <p className="leading-[18px] mb-[20px] text-sm md:max-w-[400px] lg:max-w-[460px] dark:text-zinc-500">
                   Stake your tokens to collect rewards for participating in
                   governance and helping to decentralize Web3 ecosystems.
                 </p>

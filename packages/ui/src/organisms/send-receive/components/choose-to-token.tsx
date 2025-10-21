@@ -16,14 +16,13 @@ import { ChooseFtModal, Tooltip } from "@nfid-frontend/ui"
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
-import { useTokenInit } from "../hooks/token-init"
 import { BALANCE_EDGE_LENGTH } from "./swap-form"
 
 interface ChooseToTokenProps {
   token: FT | undefined
   tokens?: FT[]
   setToChosenToken: (value: string) => void
-  usdRate: string | undefined
+  usdRate: string | undefined | null
   isLoading: boolean
   value?: string
   priceImpact?: PriceImpact
@@ -44,25 +43,24 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   isResponsive,
   setIsResponsive,
   tokensAvailableToSwap,
-  color = "bg-gray-100",
+  color = "bg-gray-100 dark:bg-zinc-700",
 }) => {
   const { setValue, register } = useFormContext()
-  const initedToken = useTokenInit(token)
 
   useEffect(() => {
     setValue("to", value)
   }, [value])
 
   useEffect(() => {
-    if (!initedToken || !setIsResponsive) return
+    if (!token || !setIsResponsive) return
 
-    const balance = initedToken.getTokenBalanceFormatted()
+    const balance = token.getTokenBalanceFormatted()
     if (!balance || balance.length < BALANCE_EDGE_LENGTH) {
       setIsResponsive(false)
     } else {
       setIsResponsive(true)
     }
-  }, [initedToken])
+  }, [token])
 
   if (!token) return null
 
@@ -74,16 +72,18 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
       <div
         id={"targetSection"}
         className={clsx(
-          "rounded-[12px] p-4",
+          "rounded-[12px] p-4 dark:border-zinc-500 dark:border-0",
           isResponsive ? "h-[168px]" : "h-[102px]",
           color,
         )}
       >
         <div className="flex flex-wrap justify-between">
           <InputAmount
+            skeletonClassName="dark:!bg-zinc-600"
             className={clsx(
               isResponsive &&
                 "leading-[26px] h-[30px] !max-w-full flex-[0_0_100%]",
+              "dark:text-zinc-400 dark:placeholder:text-zinc-400",
             )}
             id={"choose-to-token-amount"}
             decimals={decimals}
@@ -94,7 +94,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
           />
           <div
             className={clsx(
-              "p-[6px] pr-[12px] bg-gray-300/40 rounded-[24px] inline-block",
+              "p-[6px] pr-[12px] bg-gray-300/40 dark:bg-[#E5E7EB1A] rounded-[24px] inline-block",
               isResponsive && "w-full flex-[0_0_100%] order-1 mt-2",
             )}
           >
@@ -140,7 +140,11 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
             )}
           </div>
           <div className="flex-[0_0_100%]"></div>
-          <p className={clsx("text-xs mt-2 text-gray-500 leading-5 text-left")}>
+          <p
+            className={clsx(
+              "text-xs mt-2 text-gray-500 dark:text-zinc-400 leading-5 text-left",
+            )}
+          >
             {!isLoading ? (
               <>
                 {usdRate || "0.00 USD"}&nbsp;
@@ -158,10 +162,10 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
                       className={clsx(
                         "inline-block cursor-pointer",
                         priceImpact?.status === PriceImpactStatus.LOW
-                          ? "text-green-700"
+                          ? "text-green-700 dark:text-teal-500"
                           : priceImpact?.status === PriceImpactStatus.MEDIUM
-                          ? "text-orange-600"
-                          : "text-red-700",
+                            ? "text-orange-600 dark:text-amber-500"
+                            : "text-red-700 dark:text-red-500",
                       )}
                     >
                       ({priceImpact?.priceImpact})
@@ -170,21 +174,21 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
                 </Tooltip>
               </>
             ) : (
-              <Skeleton className="w-20 h-1 !bg-gray-200 rounded-[4px]" />
+              <Skeleton className="w-20 h-1 !bg-gray-200 dark:!bg-zinc-600 rounded-[4px]" />
             )}
           </p>
           <div
             className={clsx(
-              "mt-2 text-xs leading-5 text-gray-500",
+              "mt-2 text-xs leading-5 text-gray-500 dark:text-zinc-400",
               isResponsive ? "flex-[0_0_100%] order-2" : "text-right",
             )}
           >
             Balance:&nbsp;
             <span id={"choose-to-token-balance"}>
-              {initedToken ? (
+              {token ? (
                 <>
-                  {initedToken.getTokenBalanceFormatted() || "0"}&nbsp;
-                  {initedToken.getTokenSymbol()}
+                  {token.getTokenBalanceFormatted() || "0"}&nbsp;
+                  {token.getTokenSymbol()}
                 </>
               ) : (
                 <Skeleton className="inline-block h-3 w-[80px]"></Skeleton>

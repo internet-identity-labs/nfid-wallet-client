@@ -9,18 +9,21 @@ interface INFTDisplaySwitch {
 
 export const NFTDisplaySwitch = ({ state, setState }: INFTDisplaySwitch) => {
   return (
-    <div className={clsx("gap-3 bg-white p-0.5 rounded-[10px]", "flex")}>
+    <div className={clsx("gap-3 p-0.5 rounded-[10px]", "flex")}>
       <div
         onClick={() => setState("grid")}
         className={clsx(
           "p-0 w-[36px] h-[36px] outline-none rounded-[10px]",
           "hover:text-gray-100 transition-all cursor-pointer",
           "flex justify-center items-center",
-          state === "grid" && "bg-gray-200",
+          state === "grid" && "border border-black dark:border-white",
         )}
       >
         <IconCmpGrid
-          className={clsx("text-black", state !== "grid" && "!text-secondary")}
+          className={clsx(
+            "text-black dark:text-white",
+            state !== "grid" && "!text-secondary dark:!text-zinc-500",
+          )}
         />
       </div>
       <div
@@ -30,11 +33,14 @@ export const NFTDisplaySwitch = ({ state, setState }: INFTDisplaySwitch) => {
           "p-0 w-[36px] h-[36px] outline-none rounded-[10px]",
           "hover:text-gray-100 transition-all cursor-pointer",
           "flex justify-center items-center",
-          state === "table" && "bg-gray-200",
+          state === "table" && "border border-black dark:border-white",
         )}
       >
         <IconCmpTable
-          className={clsx("text-black", state !== "table" && "!text-secondary")}
+          className={clsx(
+            "text-black dark:text-white",
+            state !== "table" && "!text-secondary dark:!text-zinc-500",
+          )}
         />
       </div>
     </div>

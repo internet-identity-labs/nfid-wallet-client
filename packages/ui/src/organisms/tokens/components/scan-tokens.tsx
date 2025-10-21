@@ -12,7 +12,9 @@ import {
   fetchTokens,
   filterNotActiveNotZeroBalancesTokens,
 } from "frontend/features/fungible-token/utils"
+import { useDarkTheme } from "frontend/hooks"
 
+import searchDarkImg from "./search-dark.png"
 import searchImg from "./search.png"
 
 export function ScanTokens({
@@ -22,6 +24,7 @@ export function ScanTokens({
   className?: string
   triggerClassName?: string
 }) {
+  const isDarkTheme = useDarkTheme()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isScanningTokens, setIsScanningTokens] = useState(true)
   const { data: allTokens } = useSWRWithTimestamp("tokens", fetchTokens, {
@@ -31,30 +34,40 @@ export function ScanTokens({
   const [scannedTokens, setScannedTokens] = useState<Array<FT> | undefined>()
 
   useEffect(() => {
-    if (allTokens && !scannedTokens && isModalOpen) {
-      filterNotActiveNotZeroBalancesTokens(allTokens).then((tokens) => {
-        setScannedTokens(tokens)
-        Promise.all(
-          tokens.map(async (t) => {
-            await t.showToken()
-            return t
-          }),
+    if (!isModalOpen || !allTokens) return
+
+    let cancelled = false
+    setIsScanningTokens(true)
+    ;(async () => {
+      const tokensSnapshot = [...allTokens]
+
+      const tokens = await filterNotActiveNotZeroBalancesTokens(tokensSnapshot)
+      if (cancelled) return
+      setScannedTokens(tokens)
+
+      const showedTokens = await Promise.all(
+        tokens.map(async (t) => {
+          await t.showToken()
+          return t
+        }),
+      )
+      if (cancelled) return
+
+      const newTokens = tokensSnapshot.map((aT) => {
+        const showedToken = showedTokens.find(
+          (t) => t.getTokenAddress() === aT.getTokenAddress(),
         )
-          .then((showedTokens) => {
-            const newTokens = allTokens.map((aT) => {
-              const showedToken = showedTokens.find(
-                (t) => t.getTokenAddress() === aT.getTokenAddress(),
-              )
-              return showedToken || aT
-            })
-            mutateWithTimestamp("tokens", newTokens, false)
-          })
-          .finally(() => {
-            setIsScanningTokens(false)
-          })
+        return showedToken || aT
       })
+
+      mutateWithTimestamp("tokens", newTokens, false)
+      setIsScanningTokens(false)
+    })()
+
+    return () => {
+      cancelled = true
     }
-  }, [allTokens, scannedTokens, isModalOpen])
+  }, [isModalOpen])
 
   return (
     <>
@@ -72,7 +85,7 @@ export function ScanTokens({
         }}
         className="p-5 w-[95%] md:w-[450px] z-[100] !rounded-[24px]"
       >
-        <div className={clsx("flex flex-col", className)}>
+        <div className={clsx("flex flex-col dark:text-white", className)}>
           <div className="flex items-center justify-between h-[40px]">
             <p className="text-[20px] leading-[24px] mb-[20px] font-bold">
               Scan for tokens
@@ -91,9 +104,9 @@ export function ScanTokens({
                   <div className="relative">
                     <Skeleton className="rounded-[12px] h-[40px] w-[40px] mr-[10px]" />
                     <div className="flex absolute top-[calc(50%-3px)] left-[calc(50%-18px)]">
-                      <div className="h-[6px] w-[6px] rounded-[1.5px] bg-[#D2D2D2] bg-opacity-20 mr-[4px]" />
-                      <div className="h-[6px] w-[6px] rounded-[1.5px] bg-[#D2D2D2] bg-opacity-20 mr-[4px]" />
-                      <div className="h-[6px] w-[6px] rounded-[1.5px] bg-[#D2D2D2] bg-opacity-20" />
+                      <div className="h-[6px] w-[6px] rounded-[1.5px] bg-[#D2D2D2] dark:bg-zinc-700 bg-opacity-20 mr-[4px]" />
+                      <div className="h-[6px] w-[6px] rounded-[1.5px] bg-[#D2D2D2] dark:bg-zinc-700 bg-opacity-20 mr-[4px]" />
+                      <div className="h-[6px] w-[6px] rounded-[1.5px] bg-[#D2D2D2] dark:bg-zinc-700 bg-opacity-20" />
                     </div>
                   </div>
                   <div className="flex flex-col">
@@ -106,7 +119,7 @@ export function ScanTokens({
               <Button
                 onClick={() => setIsModalOpen(false)}
                 type="stroke"
-                className="w-full mt-auto"
+                className="w-full mt-auto dark:text-white dark:border-white"
               >
                 Cancel
               </Button>
@@ -122,6 +135,7 @@ export function ScanTokens({
                   "overflow-auto",
                   "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
                   "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
+                  "dark:scrollbar-thumb-zinc-600 dark:scrollbar-track-[#242427]",
                 )}
               >
                 {scannedTokens.map((token) => (
@@ -139,16 +153,16 @@ export function ScanTokens({
                         />
                       </div>
                       <div>
-                        <p className="text-sm text-black leading-[20px] font-semibold">
+                        <p className="text-sm text-black dark:text-white leading-[20px] font-semibold">
                           {token.getTokenSymbol()}
                         </p>
-                        <p className="text-xs text-secondary leading-[20px]">
+                        <p className="text-xs text-secondary dark:text-zinc-400 leading-[20px]">
                           {token.getTokenName()}
                         </p>
                       </div>
                     </div>
                     <div className="ml-auto">
-                      <p className="flex text-sm text-black leading-[20px]">
+                      <p className="flex text-sm text-black leading-[20px] dark:text-white">
                         <span className="w-[150px] sm:w-auto truncate text-right">
                           {token.getTokenBalanceFormatted()}
                         </span>
@@ -171,7 +185,7 @@ export function ScanTokens({
               <p>No tokens with non-zero balances found.</p>
               <img
                 className="h-[400px] m-auto"
-                src={searchImg}
+                src={isDarkTheme ? searchDarkImg : searchImg}
                 alt="no tokens image"
               />
               <Button onClick={() => setIsModalOpen(false)} className="w-full">

@@ -3,8 +3,11 @@ import { motion } from "framer-motion"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { IoIosSearch } from "react-icons/io"
 
+import { useDarkTheme } from "frontend/hooks"
+
 import { Input } from "../../molecules/input"
 import useClickOutside from "../../utils/use-click-outside"
+import ArrowWhite from "./arrow-white.svg"
 import Arrow from "./arrow.svg"
 import { DropdownSelectOption } from "./option"
 
@@ -48,6 +51,7 @@ export const DropdownSelect = ({
   errorText,
   id,
 }: IDropdownSelect) => {
+  const isDarkTheme = useDarkTheme()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
 
@@ -92,7 +96,7 @@ export const DropdownSelect = ({
   return (
     <div
       className={clsx(
-        "relative w-full",
+        "relative w-full dark:bg-darkGray",
         disabled && "pointer-events-none cursor-default",
       )}
       ref={ref}
@@ -104,9 +108,10 @@ export const DropdownSelect = ({
       )}
       <div
         className={clsx(
-          "bg-white rounded-[12px] h-10 p-2.5 w-full flex justify-between items-center cursor-pointer select-none",
-          bordered && "border border-black",
-          isDropdownOpen && "border border-teal-600 bg-teal-50/40",
+          "bg-white dark:bg-zinc-900 rounded-[12px] h-10 p-2.5 w-full flex justify-between items-center cursor-pointer select-none",
+          bordered && "border border-black dark:border-zinc-500",
+          isDropdownOpen &&
+            "border border-teal-600 dark:border-teal-500 bg-teal-50/40",
           disabled && "!border-none !bg-gray-100 !text-black",
           errorText && "!border border-red-600 !ring-2 !ring-red-100",
         )}
@@ -137,7 +142,7 @@ export const DropdownSelect = ({
         <p className={clsx("text-sm leading-5", !isAllSelected && "hidden")}>
           All
         </p>
-        <img src={Arrow} alt="arrow" />
+        <img src={isDarkTheme ? ArrowWhite : Arrow} alt="arrow" />
       </div>
       {errorText && <p className="text-sm text-red-600">{errorText}</p>}
       {isDropdownOpen && (
@@ -146,7 +151,7 @@ export const DropdownSelect = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25, ease: "easeInOut" }}
-          className="w-full bg-white rounded-[12px] mt-[1px] absolute z-50 shadow-md"
+          className="w-full bg-white dark:bg-darkGray rounded-[12px] mt-[1px] absolute z-50 shadow-md"
         >
           {isSearch && (
             <Input

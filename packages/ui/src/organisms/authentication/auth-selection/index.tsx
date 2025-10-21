@@ -33,6 +33,7 @@ export interface AuthSelectionProps {
   onLoginWithPasskey: () => Promise<void>
   getAllWalletsFromThisDevice: () => Promise<ExistingWallet[]>
   googleButton: JSX.Element
+  iiButton?: JSX.Element
   isLoading: boolean
   passKeySupported?: boolean
   type?: "sign-in" | "sign-up"
@@ -47,6 +48,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
   onLoginWithPasskey,
   getAllWalletsFromThisDevice,
   googleButton,
+  iiButton,
   isLoading,
   type = "sign-in",
   onTypeChange,
@@ -90,8 +92,8 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
     formState.errors.email?.type === "required"
       ? "Please enter your email"
       : formState.errors.email?.type === "pattern"
-      ? "Email is not valid"
-      : undefined
+        ? "Email is not valid"
+        : undefined
 
   return (
     <BlurredLoader
@@ -108,7 +110,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
               isChooseWallet: true,
             }))
           }
-          className="absolute cursor-pointer top-5 left-5"
+          className="absolute cursor-pointer top-5 left-5 dark:text-white"
         />
       )}
       {walletState.isChooseWallet && isPasskeySupported ? (
@@ -185,11 +187,10 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
             </form>
             <Separator className="my-[10px]" />
             <div className={`mb-[${isSignIn ? "30px" : "50px"}]`}>
-              {googleButton}
               {isPasskeySupported && (
                 <Button
                   id="passkey-sign-button"
-                  className="h-12 !p-0 group mt-[10px]"
+                  className="h-12 !p-0 group mt-[10px] active:!text-black dark:active:!text-white mb-2"
                   type="stroke"
                   icon={<IconCmpPasskey />}
                   block
@@ -198,10 +199,12 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
                   Continue with a Passkey
                 </Button>
               )}
+              {googleButton}
+              {iiButton && <div className="mt-2">{iiButton}</div>}
               {isSignIn && (
                 <Button
                   id="other-sign-button"
-                  className="h-12 !p-0 mt-[10px]"
+                  className="h-12 !p-0 mt-2"
                   type="ghost"
                   block
                   onClick={onSelectOtherAuth}
@@ -213,7 +216,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           </div>
           <div className="flex justify-center mt-auto">
             {isSignIn ? (
-              <div className="text-sm">
+              <div className="text-sm dark:text-white">
                 Don’t have an NFID Wallet?{" "}
                 <A
                   href={window.location.href}
@@ -227,7 +230,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
                 </A>
               </div>
             ) : (
-              <div className="text-sm">
+              <div className="text-sm dark:text-white">
                 Already have an NFID Wallet?{" "}
                 <A
                   href={window.location.href}

@@ -1,5 +1,6 @@
 import {
   CKBTC_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -39,46 +40,27 @@ export const mockFt = [
     fee: BigInt(1000),
     decimals: 8,
   },
+  {
+    ledger: CKETH_LEDGER_CANISTER_ID,
+    name: "ckETH",
+    symbol: "ckETH",
+    index: "",
+    state: "Active",
+    category: "ChainFusion",
+    fee: BigInt(2000000000000),
+    decimals: 18,
+  },
 ]
 
 export const mockStake = [
   {
     id: [
       {
-        id: {
-          "0": 7,
-          "1": 219,
-          "2": 158,
-          "3": 203,
-          "4": 166,
-          "5": 229,
-          "6": 18,
-          "7": 122,
-          "8": 248,
-          "9": 169,
-          "10": 214,
-          "11": 64,
-          "12": 121,
-          "13": 235,
-          "14": 114,
-          "15": 123,
-          "16": 80,
-          "17": 4,
-          "18": 241,
-          "19": 133,
-          "20": 192,
-          "21": 70,
-          "22": 228,
-          "23": 250,
-          "24": 221,
-          "25": 111,
-          "26": 171,
-          "27": 251,
-          "28": 63,
-          "29": 203,
-          "30": 40,
-          "31": 165,
-        },
+        id: new Uint8Array([
+          7, 219, 158, 203, 166, 229, 18, 122, 248, 169, 214, 64, 121, 235, 114,
+          123, 80, 4, 241, 133, 192, 70, 228, 250, 221, 111, 171, 251, 63, 203,
+          40, 165,
+        ]),
       },
     ],
     staked_maturity_e8s_equivalent: [],
@@ -119,46 +101,33 @@ export const mockStake = [
     voting_power_percentage_multiplier: BigInt(100),
     vesting_period_seconds: [],
     disburse_maturity_in_progress: [],
-    followees: [1, 2],
+    followees: [
+      [
+        BigInt(1),
+        {
+          followees: [
+            { id: new Uint8Array([10]) },
+            { id: new Uint8Array([20]) },
+          ],
+        },
+      ],
+      [
+        BigInt(2),
+        {
+          followees: [{ id: new Uint8Array([30]) }],
+        },
+      ],
+    ],
     neuron_fees_e8s: BigInt(0),
   },
   {
     id: [
       {
-        id: {
-          "0": 3,
-          "1": 219,
-          "2": 158,
-          "3": 203,
-          "4": 166,
-          "5": 229,
-          "6": 18,
-          "7": 122,
-          "8": 248,
-          "9": 169,
-          "10": 214,
-          "11": 64,
-          "12": 121,
-          "13": 235,
-          "14": 114,
-          "15": 123,
-          "16": 80,
-          "17": 4,
-          "18": 241,
-          "19": 133,
-          "20": 192,
-          "21": 70,
-          "22": 228,
-          "23": 250,
-          "24": 221,
-          "25": 111,
-          "26": 171,
-          "27": 251,
-          "28": 63,
-          "29": 203,
-          "30": 40,
-          "31": 165,
-        },
+        id: new Uint8Array([
+          3, 219, 158, 203, 166, 229, 18, 122, 248, 169, 214, 64, 121, 235, 114,
+          123, 80, 4, 241, 133, 192, 70, 228, 250, 221, 111, 171, 251, 63, 203,
+          40, 165,
+        ]),
       },
     ],
     staked_maturity_e8s_equivalent: [],
@@ -193,52 +162,39 @@ export const mockStake = [
     aging_since_timestamp_seconds: BigInt(1742298125),
     dissolve_state: [
       {
-        WhenDissolvedTimestampSeconds: BigInt(1755675741),
+        WhenDissolvedTimestampSeconds: BigInt(1761043067),
       },
     ],
     voting_power_percentage_multiplier: BigInt(100),
     vesting_period_seconds: [],
     disburse_maturity_in_progress: [],
-    followees: [1, 2, 3],
+    followees: [
+      [
+        BigInt(1),
+        {
+          followees: [
+            { id: new Uint8Array([10]) },
+            { id: new Uint8Array([20]) },
+          ],
+        },
+      ],
+      [
+        BigInt(2),
+        {
+          followees: [{ id: new Uint8Array([30]) }],
+        },
+      ],
+    ],
     neuron_fees_e8s: BigInt(0),
   },
   {
     id: [
       {
-        id: {
-          "0": 4,
-          "1": 219,
-          "2": 158,
-          "3": 203,
-          "4": 166,
-          "5": 229,
-          "6": 18,
-          "7": 122,
-          "8": 248,
-          "9": 169,
-          "10": 214,
-          "11": 64,
-          "12": 121,
-          "13": 235,
-          "14": 114,
-          "15": 123,
-          "16": 80,
-          "17": 4,
-          "18": 241,
-          "19": 133,
-          "20": 192,
-          "21": 70,
-          "22": 228,
-          "23": 250,
-          "24": 221,
-          "25": 111,
-          "26": 171,
-          "27": 251,
-          "28": 63,
-          "29": 203,
-          "30": 40,
-          "31": 165,
-        },
+        id: new Uint8Array([
+          4, 219, 158, 203, 166, 229, 18, 122, 248, 169, 214, 64, 121, 235, 114,
+          123, 80, 4, 241, 133, 192, 70, 228, 250, 221, 111, 171, 251, 63, 203,
+          40, 165,
+        ]),
       },
     ],
     staked_maturity_e8s_equivalent: [BigInt(100000000)],
@@ -281,7 +237,23 @@ export const mockStake = [
     voting_power_percentage_multiplier: BigInt(100),
     vesting_period_seconds: [],
     disburse_maturity_in_progress: [],
-    followees: [1, 2, 3, 4],
+    followees: [
+      [
+        BigInt(1),
+        {
+          followees: [
+            { id: new Uint8Array([10]) },
+            { id: new Uint8Array([20]) },
+          ],
+        },
+      ],
+      [
+        BigInt(2),
+        {
+          followees: [{ id: new Uint8Array([30]) }],
+        },
+      ],
+    ],
     neuron_fees_e8s: BigInt(0),
   },
 ]

@@ -1,11 +1,13 @@
 import clsx from "clsx"
 import { FC } from "react"
 
-import { IconCmpArrow } from "@nfid-frontend/ui"
+import { IconCmpArrow, IconCmpArrowWhite } from "@nfid-frontend/ui"
 import { Button, H5 } from "@nfid-frontend/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
+import { useDarkTheme } from "frontend/hooks"
 
+import SwapArrowBoxDark from "../assets/swap-success-arrow-box-dark.png"
 import SwapArrowBox from "../assets/swap-success-arrow-box.png"
 import { ConvertAnimation } from "./convert-animation"
 
@@ -14,6 +16,8 @@ export interface ConvertSuccessUiProps {
   titleTo: string
   subTitleFrom: string
   subTitleTo: string
+  tokenName: string
+  isBtc: boolean
   onClose: () => void
   assetImgFrom: string
   assetImgTo: string
@@ -21,6 +25,7 @@ export interface ConvertSuccessUiProps {
   status: SendStatus
   duration?: number
   error?: string
+  isResponsive?: boolean
 }
 
 export const ConvertSuccessUi: FC<ConvertSuccessUiProps> = ({
@@ -28,6 +33,8 @@ export const ConvertSuccessUi: FC<ConvertSuccessUiProps> = ({
   titleTo,
   subTitleFrom,
   subTitleTo,
+  tokenName,
+  isBtc,
   onClose,
   assetImgFrom,
   assetImgTo,
@@ -35,19 +42,22 @@ export const ConvertSuccessUi: FC<ConvertSuccessUiProps> = ({
   status,
   duration = 90,
   error,
+  isResponsive,
 }) => {
+  const isDarkTheme = useDarkTheme()
+
   return (
     <div
       id={"convert_success_window"}
       className={clsx(
-        "text-black text-center w-full h-full",
+        "text-black dark:text-white text-center w-full h-full",
         "px-5 pb-5 pt-[18px] absolute left-0 top-0 z-[3]",
-        "flex flex-grow flex-col bg-white",
+        "flex flex-grow flex-col bg-white dark:bg-darkGray",
         !isOpen && "hidden",
       )}
     >
       <div id={"convert-success-title"}>
-        <H5 className="mt-5 text-xl !font-bold leading-6">
+        <H5 className="mt-5 text-xl !font-bold leading-6 dark:text-white">
           {status === SendStatus.FAILED
             ? "Transaction failed"
             : status === SendStatus.COMPLETED
@@ -58,8 +68,12 @@ export const ConvertSuccessUi: FC<ConvertSuccessUiProps> = ({
           {status === SendStatus.FAILED
             ? "Your assets are still in your wallet."
             : status === SendStatus.COMPLETED
-            ? `${titleFrom} will be on your address after 6 Bitcoin network confirmations. This usually takes about 90 minutes.`
-            : `Conversion usually takes around ${duration} minutes.`}
+            ? isBtc
+              ? `${tokenName} will be on your address after 6 Bitcoin network confirmations. This usually takes about 90 minutes.`
+              : `${tokenName} will be on your address after the transaction is confirmed on the network. This usually takes a few minutes, depending on network congestion.`
+            : isBtc
+            ? `Conversion usually takes around ${duration} minutes.`
+            : `Conversion usually takes a few minutes, depending on network congestion`}
         </p>
       </div>
       <div
@@ -76,13 +90,21 @@ export const ConvertSuccessUi: FC<ConvertSuccessUiProps> = ({
           />
         </div>
       </div>
-      <div className="relative z-20 mt-[10px]">
+      <div
+        className={clsx(
+          "relative z-20 ",
+          isResponsive ? "mt-[50px]" : "mt-[10px]",
+        )}
+      >
         <div>
           <div className="pt-[10px] pb-[40px] relative">
             <p className="text-sm leading-[25px] font-inter" id="title">
               {titleFrom}
             </p>
-            <p className="text-xs text-gray-500 leading-[18px]" id="subTitle">
+            <p
+              className="text-xs text-gray-500 dark:text-zinc-500 leading-[18px]"
+              id="subTitle"
+            >
               {subTitleFrom}
             </p>
             <div
@@ -91,20 +113,30 @@ export const ConvertSuccessUi: FC<ConvertSuccessUiProps> = ({
                 "flex justify-center items-end mx-auto text-black",
               )}
               style={{
-                backgroundImage: `url(${SwapArrowBox})`,
+                backgroundImage: `url(${
+                  isDarkTheme ? SwapArrowBoxDark : SwapArrowBox
+                })`,
+
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }}
             >
-              <IconCmpArrow className="rotate-[-90deg] h-5 w-5" />
+              {isDarkTheme ? (
+                <IconCmpArrowWhite className="rotate-[-90deg] h-5 w-5" />
+              ) : (
+                <IconCmpArrow className="rotate-[-90deg] h-5 w-5" />
+              )}
             </div>
           </div>
-          <div className="bg-gradient-to-b from-gray-50 to-white py-[10px] rounded-t-[12px]">
+          <div className="bg-gradient-to-b from-gray-50 dark:from-zinc-700 to-white dark:to-darkGray py-[10px] rounded-t-[12px]">
             <p className="text-sm leading-[25px] font-inter" id="title">
               {titleTo}
             </p>
-            <p className="text-xs text-gray-500 leading-[18px]" id="subTitle">
+            <p
+              className="text-xs text-gray-500 dark:text-zinc-500 leading-[18px]"
+              id="subTitle"
+            >
               {subTitleTo}
             </p>
           </div>

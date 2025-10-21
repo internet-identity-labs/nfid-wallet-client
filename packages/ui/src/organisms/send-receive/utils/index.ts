@@ -9,17 +9,41 @@ import {
 import { SwapStage } from "src/integration/swap/types/enums"
 
 import {
+  BTC_DECIMALS,
+  BTC_NATIVE_ID,
+  CKBTC_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
+  ETH_DECIMALS,
+  ETH_NATIVE_ID,
+  TRIM_ZEROS,
+} from "@nfid/integration/token/constants"
+
+import {
   BtcToCkBtcFee,
   CkBtcToBtcFee,
 } from "frontend/integration/bitcoin/bitcoin.service"
+import { FT } from "frontend/integration/ft/ft"
 import { e8s } from "frontend/integration/nft/constants/constants"
 import { ContactSupportError } from "frontend/integration/swap/errors/types/contact-support-error"
+import {
+  CkEthToEthFee,
+  EthToCkEthFee,
+} from "frontend/integration/ethereum/ethereum.service"
 
-export interface IConversionFee {
+export interface BtcFormattedFee {
   total: string
   btcNetworkFee: string
   icpNetworkFee: string
-  widgetFee: string
+  amountToReceive: string
+  widgetFee?: string
+}
+
+export interface EthFormattedFee {
+  total: string
+  ethNetworkFee: string
+  icpNetworkFee: string
+  amountToReceive: string
+  widgetFee?: string
 }
 
 export enum IModalType {
@@ -28,6 +52,8 @@ export enum IModalType {
   STAKE = "STAKE",
   CONVERT_TO_BTC = "CONVERT_TO_BTC",
   CONVERT_TO_CKBTC = "CONVERT_TO_CKBTC",
+  CONVERT_TO_ETH = "CONVERT_TO_ETH",
+  CONVERT_TO_CKETH = "CONVERT_TO_CKETH",
 }
 
 export const getTitleAndButtonText = (
@@ -74,28 +100,79 @@ const textStatusByStep: { [key in SwapStage]: string } = {
 export const getTextStatusByStep = (step: SwapStage) =>
   textStatusByStep[step] || ""
 
-export const getConversionFee = (fee?: BtcToCkBtcFee | CkBtcToBtcFee) => {
+export const getBtcConversionFee = (
+  fee?: BtcToCkBtcFee | CkBtcToBtcFee,
+): BtcFormattedFee | undefined => {
   if (!fee || fee.bitcointNetworkFee.fee_satoshis === BigInt(0)) return
 
   const {
     bitcointNetworkFee: { fee_satoshis },
-    interNetwokFee,
-    conversionFee,
+    icpNetworkFee,
+    amountToReceive,
   } = fee
 
   const identityLabsFee =
     "identityLabsFee" in fee ? fee.identityLabsFee : BigInt(0)
 
-  const totalFee =
-    fee_satoshis + interNetwokFee + conversionFee + identityLabsFee
+  const totalFee = fee_satoshis + icpNetworkFee + identityLabsFee
 
   return {
-    total: BigNumber(totalFee.toString()).div(e8s).toString(),
-    btcNetworkFee: BigNumber(fee_satoshis.toString()).div(e8s).toString(),
-    icpNetworkFee: BigNumber((interNetwokFee + conversionFee).toString())
+    btcNetworkFee: BigNumber(fee_satoshis.toString())
       .div(e8s)
-      .toString(),
-    widgetFee: BigNumber(identityLabsFee.toString()).div(e8s).toString(),
+      .toFixed(BTC_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+    icpNetworkFee: BigNumber(icpNetworkFee.toString())
+      .div(e8s)
+      .toFixed(BTC_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+    widgetFee: BigNumber(identityLabsFee.toString())
+      .div(e8s)
+      .toFixed(BTC_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+    amountToReceive: BigNumber(amountToReceive)
+      .div(e8s)
+      .toFixed(BTC_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+    total: BigNumber(totalFee.toString())
+      .div(e8s)
+      .toFixed(BTC_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+  }
+}
+
+export const getEthConversionFee = (
+  fee?: EthToCkEthFee | CkEthToEthFee,
+): EthFormattedFee | undefined => {
+  if (!fee) return
+
+  const { ethereumNetworkFee, icpNetworkFee, amountToReceive } = fee
+
+  const identityLabsFee =
+    "identityLabsFee" in fee ? fee.identityLabsFee : BigInt(0)
+
+  const totalFee = ethereumNetworkFee + icpNetworkFee + identityLabsFee
+
+  return {
+    ethNetworkFee: BigNumber(ethereumNetworkFee.toString())
+      .div(10 ** ETH_DECIMALS)
+      .toFixed(ETH_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+    icpNetworkFee: BigNumber(icpNetworkFee.toString())
+      .div(10 ** ETH_DECIMALS)
+      .toFixed(ETH_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+    widgetFee: BigNumber(identityLabsFee.toString())
+      .div(10 ** ETH_DECIMALS)
+      .toFixed(ETH_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+    amountToReceive: BigNumber(amountToReceive)
+      .div(10 ** ETH_DECIMALS)
+      .toFixed(ETH_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+    total: BigNumber(totalFee.toString())
+      .div(10 ** ETH_DECIMALS)
+      .toFixed(ETH_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
   }
 }
 
@@ -134,4 +211,27 @@ export const getMaxAmountFee = (
   const fee = amount.minus(tokenFee).dividedBy(divisor)
 
   return BigInt(amount.minus(fee).toFixed(0))
+}
+
+export const getModalType = (fromToken?: FT, toToken?: FT) => {
+  switch (true) {
+    case fromToken?.getTokenAddress() === BTC_NATIVE_ID &&
+      toToken?.getTokenAddress() === CKBTC_CANISTER_ID:
+      return IModalType.CONVERT_TO_CKBTC
+
+    case fromToken?.getTokenAddress() === CKBTC_CANISTER_ID &&
+      toToken?.getTokenAddress() === BTC_NATIVE_ID:
+      return IModalType.CONVERT_TO_BTC
+
+    case fromToken?.getTokenAddress() === ETH_NATIVE_ID &&
+      toToken?.getTokenAddress() === CKETH_LEDGER_CANISTER_ID:
+      return IModalType.CONVERT_TO_CKETH
+
+    case fromToken?.getTokenAddress() === CKETH_LEDGER_CANISTER_ID &&
+      toToken?.getTokenAddress() === ETH_NATIVE_ID:
+      return IModalType.CONVERT_TO_ETH
+
+    default:
+      return IModalType.CONVERT_TO_CKBTC
+  }
 }

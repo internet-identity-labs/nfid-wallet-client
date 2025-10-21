@@ -20,6 +20,7 @@ NFID Wallet is a simple, secure, browser-based, soon-to-be-DAO-controlled wallet
 ### Lowest barrier to entry
 
 NFID Wallet takes wallet creation down from minutes to seconds with:
+
 - Email onboarding
 - Browser-based accessibility
 - No need for a seed phrase
@@ -29,6 +30,7 @@ Users create an NFID Wallet on any browser from any device in seconds with just 
 ### Highest security guarantees
 
 In contrast to centrally-controlled browser extension or mobile app wallets, NFID Wallet requires only trust in the Internet Computer Protocol:
+
 - Fully on-chain
 - Fault-tolerant access
 - ICP network key custody
@@ -66,6 +68,7 @@ Currently, users managing liquidity in DeFi pools must visit each DEX separately
 #### Spending cap management
 
 Dapps like KongSwap and Waterneuron request spending approvals for tokens, leading to two key user needs:
+
 1. Adjusting the approved spending limit.
 2. Revoking permissions when needed.
 
@@ -74,6 +77,7 @@ This feature will allow users to easily modify or revoke token spending approval
 ---
 
 ## Navigating this repository
+
 - [What you'll find](#what-youll-find)
 - [Setup Development Environment](#setup-development-environment)
   - [Prerequisites](#prerequisites)
@@ -196,7 +200,7 @@ Each application, such as `nfid-wallet-client`, consists of `pages` that render 
 
 ⚠️ New packages **MUST** undergo security audits before installation. ⚠️
 
-- **State Management**:  
+- **State Management**:
   - [jotai](https://jotai.org/): for global state singletons
   - [xstate](https://xstate.js.org/): for managing complex flows
   - [rxjs](https://rxjs.dev/): to bridge vanilla JavaScript and React state

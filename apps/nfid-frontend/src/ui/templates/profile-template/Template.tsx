@@ -1,4 +1,3 @@
-import { Principal } from "@dfinity/principal"
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import { BtcBanner } from "packages/ui/src/molecules/btc-banner"
@@ -24,10 +23,11 @@ import { authState } from "@nfid/integration"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
+  ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
+import { NFIDTheme } from "frontend/App"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import {
   ProfileConstants,
@@ -37,14 +37,13 @@ import { fetchNFTs } from "frontend/features/collectibles/utils/util"
 import {
   fetchTokens,
   getFullUsdValue,
-  initTokens,
 } from "frontend/features/fungible-token/utils"
+import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { ModalType } from "frontend/features/transfer-modal/types"
 import { getAllVaults } from "frontend/features/vaults/services"
-import { useBtcAddress } from "frontend/hooks"
-import { FT } from "frontend/integration/ft/ft"
+import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
 
@@ -63,6 +62,8 @@ interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   isWallet?: boolean
   withPortfolio?: boolean
   titleClassNames?: string
+  walletTheme?: NFIDTheme
+  setWalletTheme?: (theme: NFIDTheme) => void
 }
 
 const ProfileTemplate: FC<IProfileTemplate> = ({
@@ -80,12 +81,13 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   iconId,
   isWallet,
   titleClassNames,
+  walletTheme,
+  setWalletTheme,
 }) => {
   const handleNavigateBack = useCallback(() => {
     window.history.back()
   }, [])
   const [hasUncompletedSwap, setHasUncompletedSwap] = useState(false)
-  const [btc, setBtc] = useState<FT>()
 
   const tabs = useMemo(() => {
     return [
@@ -138,6 +140,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const { profile } = useProfile()
   const { logout } = useAuthentication()
   const { isBtcAddressLoading } = useBtcAddress()
+  const { isEthAddressLoading } = useEthAddress()
 
   const hasVaults = useMemo(() => !!vaults?.length, [vaults])
 
@@ -145,79 +148,44 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     revalidateOnFocus: false,
   })
 
-  const activeTokens = useMemo(() => {
-    return tokens.filter((token) => token.getTokenState() === State.Active)
-  }, [tokens])
-
-  const { data: initedTokens = [], mutate: reinitTokens } = useSWR(
-    activeTokens.length > 0 && isWallet ? "initedTokens" : null,
-    () => initTokens(activeTokens, !!isBtcAddressLoading),
-    { revalidateOnFocus: false },
+  const { initedTokens } = useTokensInit(
+    tokens,
+    isBtcAddressLoading,
+    isEthAddressLoading,
   )
 
-  const { data: nfts, mutate: reinitNfts } = useSWR(
-    "nftList",
-    () => fetchNFTs(),
-    {
-      revalidateOnFocus: false,
-    },
-  )
+  const btc = useMemo(() => {
+    return initedTokens?.find(
+      (token) => token.getTokenAddress() === BTC_NATIVE_ID,
+    )
+  }, [initedTokens])
 
-  const balance = btc?.getTokenBalance()
-  const isBtcInited = btc?.isInited()
+  const eth = useMemo(() => {
+    return initedTokens?.find(
+      (token) => token.getTokenAddress() === ETH_NATIVE_ID,
+    )
+  }, [initedTokens])
 
-  useEffect(() => {
-    const btcToken = tokens.find((t) => t.getTokenAddress() === BTC_NATIVE_ID)
-    if (!btcToken) return
-
-    if (!btcToken.isInited() && !isBtcAddressLoading) {
-      btcToken
-        .init(Principal.fromText(authState.getUserIdData().publicKey))
-        .then(() => {
-          setBtc(btcToken)
-        })
-    }
-  }, [tokens, isBtcAddressLoading])
+  const { data: nfts } = useSWR("nftList", () => fetchNFTs(), {
+    revalidateOnFocus: false,
+  })
 
   const isReady = useMemo(() => {
     return (
+      nfts &&
       Array.isArray(nfts?.items) &&
-      initedTokens.length > 0 &&
+      initedTokens &&
       !!isWallet &&
-      btc &&
-      isBtcInited &&
-      balance !== undefined &&
-      !isBtcAddressLoading
+      eth &&
+      btc
     )
-  }, [
-    nfts?.items,
-    initedTokens.length,
-    isWallet,
-    btc,
-    isBtcAddressLoading,
-    balance,
-    isBtcInited,
-  ])
+  }, [nfts, initedTokens, isWallet, btc, eth])
 
-  const {
-    data: tokensUsdBalance,
-    isLoading: isUsdLoading,
-    isValidating,
-    mutate: refetchFullUsdBalance,
-  } = useSWR(
+  const { data: fullUsdBalance, isLoading: isUsdLoading } = useSWR(
     isReady ? "fullUsdValue" : null,
-    async () => getFullUsdValue(nfts?.items, initedTokens),
+    async () => getFullUsdValue(nfts?.items!, initedTokens!),
     { revalidateOnFocus: false },
   )
-
-  useEffect(() => {
-    reinitTokens()
-    reinitNfts()
-  }, [activeTokens, isWallet, isBtcAddressLoading, reinitTokens, reinitNfts])
-
-  useEffect(() => {
-    refetchFullUsdBalance()
-  }, [initedTokens, refetchFullUsdBalance, isBtcAddressLoading])
 
   const {
     data: isEmailDeviceOutOfSyncWithII,
@@ -284,13 +252,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     send("SHOW")
   }
 
-  const isUsdBalanceLoading =
-    isUsdLoading ||
-    !initedTokens.length ||
-    isValidating ||
-    isBtcAddressLoading ||
-    !btc?.isInited() ||
-    btc.getTokenBalance() === undefined
+  const isUsdBalanceLoading = isUsdLoading || !fullUsdBalance
 
   return (
     <div className={clsx("relative min-h-screen overflow-hidden", className)}>
@@ -305,6 +267,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         links={navigationPopupLinks}
         assetsLink={`${ProfileConstants.base}/${ProfileConstants.tokens}`}
         hasVaults={hasVaults}
+        walletTheme={walletTheme}
+        setWalletTheme={setWalletTheme}
       />
       <TransferModalCoordinator />
       <div
@@ -317,17 +281,25 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         )}
       >
         <section className={clsx("relative", className)}>
-          <div className="flex justify-between items-center leading-[40px] mb-[30px]">
+          <div
+            className={clsx(
+              "flex justify-between items-center leading-[40px]",
+              showBackButton && "mb-[30px]",
+            )}
+          >
             <div className="sticky left-0 flex items-center space-x-2">
               {showBackButton && (
                 <ArrowButton
-                  buttonClassName="py-[7px]"
+                  buttonClassName="py-[7px] dark:hover:bg-zinc-700"
                   onClick={handleNavigateBack}
-                  iconClassName="text-black"
+                  iconClassName="text-black dark:text-white"
                 />
               )}
               <p
-                className={clsx("text-[28px] block", titleClassNames)}
+                className={clsx(
+                  "text-[28px] leading-[32px] block",
+                  titleClassNames,
+                )}
                 id={"page_title"}
               >
                 {pageTitle}
@@ -349,7 +321,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
           {isWallet && (
             <>
               <ProfileInfo
-                usdBalance={isUsdBalanceLoading ? undefined : tokensUsdBalance}
+                usdBalance={isUsdBalanceLoading ? undefined : fullUsdBalance}
                 isUsdLoading={isUsdBalanceLoading}
                 onSendClick={onSendClick}
                 onReceiveClick={onReceiveClick}

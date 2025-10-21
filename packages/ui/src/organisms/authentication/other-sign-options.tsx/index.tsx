@@ -46,9 +46,9 @@ export const AuthOtherSignOptions = ({
   if (isLoading) return <BlurredLoader isLoading />
 
   return (
-    <div className="h-full flex-grow">
+    <div className="flex-grow h-full">
       <IconCmpArrow
-        className="absolute w-6 transition-opacity cursor-pointer hover:opacity-50 shrink-0 top-5 left-5"
+        className="absolute w-6 transition-opacity cursor-pointer hover:opacity-50 shrink-0 top-5 left-5 dark:text-white"
         onClick={onBack}
       />
       <AuthAppMeta
@@ -59,7 +59,7 @@ export const AuthOtherSignOptions = ({
       />
       <IconButton
         id={"continue-recovery-phrase"}
-        className="mt-[10px] mb-[20px]"
+        className="mt-[10px] mb-[20px] dark:text-white"
         title="Continue with recovery phrase"
         subtitle="Use your saved recovery phrase"
         img={<IconCmpUsb />}

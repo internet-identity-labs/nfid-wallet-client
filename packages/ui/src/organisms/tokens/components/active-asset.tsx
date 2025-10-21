@@ -14,6 +14,8 @@ import { ArrowPercentChange } from "@nfid-frontend/ui"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
+  ETH_NATIVE_ID,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
@@ -29,6 +31,8 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   onSwapClick: (value: string) => void
   onConvertToBtc: () => void
   onConvertToCkBtc: () => void
+  onConvertToEth: () => void
+  onConvertToCkEth: () => void
   onStakeClick: (value: string) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
@@ -45,6 +49,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   onSwapClick,
   onConvertToBtc,
   onConvertToCkBtc,
+  onConvertToEth,
+  onConvertToCkEth,
   onStakeClick,
   setToken,
   dropdownPosition,
@@ -87,7 +93,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         </div>
         <div className="sm:overflow-hidden sm:text-ellipsis sm:whitespace-nowrap">
           <p
-            className="text-sm font-semibold leading-[25px] flex items-center"
+            className="text-sm dark:text-white font-semibold leading-[25px] flex items-center"
             id={`token_${token.getTokenName().replace(/\s/g, "")}_currency`}
           >
             {token.getTokenSymbol()}
@@ -95,11 +101,23 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
               <>
                 <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
                 <span
-                  className="flex items-center text-xs cursor-pointer text-primaryButtonColor"
+                  className="flex items-center text-xs cursor-pointer text-primaryButtonColor dark:text-teal-500"
                   onClick={onConvertToCkBtc}
                 >
-                  <IconCmpConvert className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor" />
+                  <IconCmpConvert className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor dark:text-teal-500" />
                   Convert to ckBTC
+                </span>
+              </>
+            )}
+            {token.getTokenAddress() === ETH_NATIVE_ID && (
+              <>
+                <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+                <span
+                  className="flex items-center text-xs cursor-pointer text-primaryButtonColor dark:text-teal-500"
+                  onClick={onConvertToCkEth}
+                >
+                  <IconCmpConvert className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor dark:text-teal-500" />
+                  Convert to ckETH
                 </span>
               </>
             )}
@@ -107,11 +125,23 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
               <>
                 <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
                 <span
-                  className="flex items-center text-xs cursor-pointer text-primaryButtonColor"
+                  className="flex items-center text-xs cursor-pointer text-primaryButtonColor dark:text-teal-500"
                   onClick={onConvertToBtc}
                 >
-                  <IconCmpConvert className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor" />
+                  <IconCmpConvert className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor dark:text-teal-500" />
                   Convert to BTC
+                </span>
+              </>
+            )}
+            {token.getTokenAddress() === CKETH_LEDGER_CANISTER_ID && (
+              <>
+                <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+                <span
+                  className="flex items-center text-xs cursor-pointer text-primaryButtonColor dark:text-teal-500"
+                  onClick={onConvertToEth}
+                >
+                  <IconCmpConvert className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor dark:text-teal-500" />
+                  Convert to ETH
                 </span>
               </>
             )}
@@ -120,16 +150,16 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
               <>
                 <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
                 <span
-                  className="flex items-center text-xs cursor-pointer text-primaryButtonColor"
+                  className="flex items-center text-xs cursor-pointer text-primaryButtonColor dark:text-teal-500"
                   onClick={() => onStakeClick(token.getTokenAddress())}
                 >
-                  <IconCmpStakeAction className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor" />
+                  <IconCmpStakeAction className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor dark:text-teal-500" />
                   Stake
                 </span>
               </>
             )}
           </p>
-          <p className="text-secondary text-xs leading-[20px]">
+          <p className="text-secondary text-xs leading-[20px] dark:text-zinc-400">
             {token.getTokenName()}
           </p>
         </div>
@@ -138,14 +168,14 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`token_${token
           .getTokenCategoryFormatted()
           .replace(/\s/g, "")}_category`}
-        className="hidden md:table-cell pr-[10px] min-w-[120px]"
+        className="hidden md:table-cell pr-[10px] min-w-[120px] dark:text-white"
       >
         {token.getTokenCategoryFormatted()}
       </td>
-      <td className="pr-[10px] hidden md:table-cell min-w-[120px]">
-        {isIniting ? (
+      <td className="pr-[10px] hidden md:table-cell min-w-[120px] dark:text-white">
+        {isIniting || tokenPrice === undefined ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
-        ) : tokenPrice ? (
+        ) : tokenPrice !== null ? (
           <div>
             <div id={`token_${token.getTokenName().replace(/\s/g, "")}_price`}>
               {tokenPrice}
@@ -165,10 +195,10 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`token_${token.getTokenName().replace(/\s/g, "")}_balance`}
         className="pr-[10px] text-right md:text-left pr-[10px] flex-grow min-w-0 sm:w-auto min-w-[120px]"
       >
-        {isIniting ? (
+        {isIniting || usdBalance === undefined ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
         ) : (
-          <p className="flex items-center justify-end md:justify-start">
+          <p className="flex items-center justify-end md:justify-start dark:text-white">
             <span
               className="overflow-hidden text-right text-ellipsis whitespace-nowrap"
               style={{
@@ -185,13 +215,13 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
             <span>{token.getTokenSymbol()}</span>
           </p>
         )}
-        <p className="text-xs md:hidden text-secondary">
+        <p className="text-xs md:hidden text-secondary dark:text-white">
           &nbsp;
-          {isIniting ? (
+          {isIniting || usdBalance === undefined ? (
             <Skeleton
               className={clsx("max-w-full h-[10px] w-[50px] ml-auto")}
             />
-          ) : !usdBalance ? (
+          ) : usdBalance === null ? (
             "Not listed"
           ) : (
             usdBalance
@@ -200,11 +230,11 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
       </td>
       <td
         id={`token_${token.getTokenName().replace(/\s/g, "")}_usd`}
-        className="pr-[10px] hidden md:table-cell pr-[10px]"
+        className="pr-[10px] hidden md:table-cell pr-[10px] dark:text-white"
       >
-        {isIniting ? (
+        {isIniting || token.getUSDBalanceFormatted() === undefined ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
-        ) : token.getUSDBalanceFormatted() === undefined ? (
+        ) : token.getUSDBalanceFormatted() === null ? (
           "Not listed"
         ) : (
           token.getUSDBalanceFormatted()
@@ -222,6 +252,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           onSwapClick={onSwapClick}
           onConvertToBtc={onConvertToBtc}
           onConvertToCkBtc={onConvertToCkBtc}
+          onConvertToEth={onConvertToEth}
+          onConvertToCkEth={onConvertToCkEth}
           onStakeClick={onStakeClick}
           setToken={setToken}
           dropdownPosition={dropdownPosition}

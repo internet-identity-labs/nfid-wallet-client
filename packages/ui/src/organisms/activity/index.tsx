@@ -1,5 +1,6 @@
+import { SignIdentity } from "@dfinity/agent"
 import clsx from "clsx"
-import { FC, useMemo } from "react"
+import { FC } from "react"
 
 import {
   Button,
@@ -8,9 +9,9 @@ import {
   IconCmpFilters,
   Table,
 } from "@nfid-frontend/ui"
-import { CKBTC_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { IActivityRowGroup } from "frontend/features/activity/types"
+import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 
 import { TableActivitySkeleton } from "../../atoms/skeleton"
@@ -30,6 +31,7 @@ export interface ActivityProps {
     isFirstLoading: boolean
   }
   tokens: FT[]
+  identity?: SignIdentity
 }
 
 export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
@@ -44,14 +46,19 @@ export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
     resetHandler,
     isFirstLoading,
   } = activityData
-  const ckBTC = useMemo(
-    () => tokens.find((token) => token.getTokenAddress() === CKBTC_CANISTER_ID),
-    [tokens],
-  )
+  const { isBtcAddressLoading } = useBtcAddress()
+  const { isEthAddressLoading } = useEthAddress()
+
+  const showSkeleton =
+    isFirstLoading ||
+    (isValidating && !activities.length) ||
+    isBtcAddressLoading ||
+    isEthAddressLoading
+  const showEmpty = !showSkeleton && activities.length === 0
 
   return (
     <>
-      <div className={clsx("flex justify-end", isValidating && "hidden")}>
+      <div className={clsx("flex justify-end", showSkeleton && "hidden")}>
         <FilterPopover
           title="Assets"
           align="end"
@@ -59,9 +66,17 @@ export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
           trigger={
             <div
               id={"filter-ft"}
-              className="flex items-center justify-end p-[10px] rounded-md md:bg-white px-5 sm:px-[30px]"
+              className="flex items-center justify-end p-[10px] rounded-md md:bg-white dark:md:bg-[#141518] px-5 sm:px-[30px]"
             >
-              <IconCmpFilters className="w-[21px] h-[21px] transition-opacity cursor-pointer hover:opacity-60" />
+              <div className="relative">
+                <IconCmpFilters className="w-[21px] h-[21px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white" />
+                <div
+                  className={clsx(
+                    "absolute w-2.5 h-2.5 bg-teal-600 dark:bg-teal-500 right-0 bottom-0 rounded-full border-2 border-white dark:border-[#141518]",
+                    filter.length > 0 ? "block" : "hidden",
+                  )}
+                ></div>
+              </div>
             </div>
           }
           onReset={resetHandler}
@@ -80,18 +95,18 @@ export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
           />
         </FilterPopover>
       </div>
-      {!isFirstLoading && activities.length === 0 && !isValidating ? (
+      {showEmpty ? (
         <ActivityEmpty />
       ) : (
         <>
           <div
             className={clsx(
               "overflow-auto",
-              isValidating && !activities.length && "pl-5 sm:pl-[30px]",
+              showSkeleton && "pl-5 sm:pl-[30px]",
             )}
           >
             <Table className="!min-w-0 !sm:min-w-[720px] " id="activity-table">
-              {(isValidating && !activities.length) || isFirstLoading ? (
+              {showSkeleton ? (
                 <>
                   <TableActivitySkeleton
                     tableRowsAmount={10}
@@ -105,7 +120,6 @@ export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
                     date={group.date}
                     rows={group.rows}
                     key={`group_${group.date}`}
-                    token={ckBTC}
                   />
                 ))
               )}

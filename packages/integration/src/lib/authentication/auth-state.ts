@@ -18,7 +18,14 @@ import { Environment } from "../constant/env.constant"
 import { getPasskey, storePasskey } from "../lambda/passkey"
 import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
-import { authStorage, KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from "./storage"
+import {
+  authStorage,
+  walletStorage,
+  KEY_STORAGE_DELEGATION,
+  KEY_STORAGE_KEY,
+  KEY_BTC_ADDRESS,
+  KEY_ETH_ADDRESS,
+} from "./storage"
 import {
   createUserIdData,
   deserializeUserIdData,
@@ -127,7 +134,7 @@ function makeAuthState() {
       })
     }
 
-    const cachedUserIdData = await authStorage.get(
+    const cachedUserIdData = await walletStorage.get(
       getUserIdDataStorageKey(delegationIdentity),
     )
 
@@ -141,7 +148,7 @@ function makeAuthState() {
       (userIdData && userIdData.cacheVersion !== EXPECTED_CACHE_VERSION)
     ) {
       userIdData = await createUserIdData(delegationIdentity)
-      await authStorage.set(
+      await walletStorage.set(
         getUserIdDataStorageKey(delegationIdentity),
         serializeUserIdData(userIdData),
       )
@@ -181,6 +188,8 @@ function makeAuthState() {
   }
 
   async function _clearAuthSessionFromCache() {
+    localStorage.removeItem(KEY_BTC_ADDRESS)
+    localStorage.removeItem(KEY_ETH_ADDRESS)
     await authStorage.clear()
     return true
   }
@@ -207,7 +216,7 @@ function makeAuthState() {
     console.debug("makeAuthState set new auth state")
     const userIdData = await createUserIdData(delegationIdentity)
 
-    const current = await authStorage.get(
+    const current = await walletStorage.get(
       getUserIdDataStorageKey(delegationIdentity),
     )
     if (
@@ -219,7 +228,7 @@ function makeAuthState() {
       migratePasskeys(delegationIdentity)
     }
 
-    await authStorage.set(
+    await walletStorage.set(
       getUserIdDataStorageKey(delegationIdentity),
       serializeUserIdData(userIdData),
     )
@@ -324,11 +333,11 @@ function getUserIdDataStorageKey(delegationIdentity: DelegationIdentity) {
 }
 
 export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
-  const walletKeys = authStorage
+  const walletKeys = walletStorage
     .getAllKeys()
     .then((keys) => keys.filter((key) => key.startsWith("user_profile_data_")))
   const wallets = await walletKeys.then((keys) =>
-    Promise.all(keys.map((key) => authStorage.get(key))),
+    Promise.all(keys.map((key) => walletStorage.get(key))),
   )
   const profiles = wallets
     .map((wallet) => {
@@ -338,24 +347,32 @@ export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
 
   const profilesData = profiles
     .filter((profile) => profile.email || profile.name)
-    .reduce((acc, profile) => {
-      const newProfile = {
-        email: profile.email,
-        principal: profile.publicKey,
-        anchor: profile.anchor,
-        name: profile.name,
-      }
+    .reduce(
+      (acc, profile) => {
+        const newProfile = {
+          email: profile.email,
+          principal: profile.publicKey,
+          anchor: profile.anchor,
+          name: profile.name,
+        }
 
-      const isDuplicate = acc.some((p) => p.anchor === newProfile.anchor)
+        const isDuplicate = acc.some((p) => p.anchor === newProfile.anchor)
 
-      if (!isDuplicate) {
-        acc.push(newProfile)
-      }
+        if (!isDuplicate) {
+          acc.push(newProfile)
+        }
 
-      return acc
-    }, [] as { email: string | undefined; principal: string; anchor: bigint; name: string | undefined }[])
+        return acc
+      },
+      [] as {
+        email: string | undefined
+        principal: string
+        anchor: bigint
+        name: string | undefined
+      }[],
+    )
 
-  const parsedCredentialIds: string[] = await authStorage
+  const parsedCredentialIds: string[] = await walletStorage
     .get("credentialIds")
     .then((passkeysUsedOnThisDevice) =>
       passkeysUsedOnThisDevice

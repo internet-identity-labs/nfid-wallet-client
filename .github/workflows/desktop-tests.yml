@@ -48,7 +48,7 @@ jobs:
 
     steps:
       - name: Checkout CI repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
@@ -92,10 +92,10 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Checkout CI repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
@@ -177,10 +177,10 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Checkout CI repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
@@ -188,7 +188,7 @@ jobs:
           path: ci_libs
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: "22"
           cache: "yarn"
@@ -244,10 +244,10 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Checkout CI repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
@@ -389,10 +389,10 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Checkout CI repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
@@ -516,7 +516,7 @@ jobs:
           flags: --recursive
 
       - name: Load test results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: allure-results-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
           path: apps/nfid-frontend-e2e/src/reporter/desktop/allure-results
@@ -575,7 +575,7 @@ jobs:
           flags: --recursive
 
       - name: Load test results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: allure-results-mobile-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
           path: apps/nfid-frontend-e2e/src/reporter/mobile/allure-results

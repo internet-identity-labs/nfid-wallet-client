@@ -13,7 +13,7 @@ export const Skeleton = ({
   return (
     <div
       className={clsx(
-        "rounded-[12px] bg-skeletonColor",
+        "rounded-[12px] bg-skeletonColor dark:bg-[#3F3F4680]",
         isAnimated && "animate-pulse",
         className,
       )}

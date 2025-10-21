@@ -30,7 +30,7 @@ export async function getDelegationChainSignedByCanister(
     sessionKey: sessionPublicKey,
     maxTimeToLive: [BigInt(maxTimeToLive * 1000000)], //to nanoseconds
     targets:
-      targets !== undefined
+      targets !== undefined && targets.length > 0
         ? [targets.filter((t) => !!t).map((t) => Principal.fromText(t))]
         : [],
   }
@@ -43,7 +43,7 @@ export async function getDelegationChainSignedByCanister(
     sessionKey: sessionPublicKey,
     expiration: prepareDelegationResponse[1],
     targets:
-      targets !== undefined
+      targets !== undefined && targets.length > 0
         ? [targets.filter((t) => !!t).map((t) => Principal.fromText(t))]
         : [],
   }).then((r) => {

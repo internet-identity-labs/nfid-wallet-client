@@ -34,9 +34,9 @@ export const AuthSignUpCreatePasskey = ({
   }, [error])
 
   return (
-    <div className="h-full flex-grow flex flex-col">
+    <div className="flex flex-col flex-grow h-full">
       <IconCmpArrow
-        className="absolute w-6 transition-opacity cursor-pointer hover:opacity-50 shrink-0 top-5 left-5"
+        className="absolute w-6 transition-opacity cursor-pointer hover:opacity-50 shrink-0 top-5 left-5 dark:text-white"
         onClick={onBack}
       />
       <AuthAppMeta
@@ -48,7 +48,7 @@ export const AuthSignUpCreatePasskey = ({
       <div className="flex flex-col flex-1">
         <img src={Img} className="my-auto" alt="create passkey" />
         <div className="mt-auto">
-          <p className="text-center text-sm mb-[10px]">
+          <p className="text-center text-sm mb-[10px] dark:text-white">
             Give your wallet a name to easily identify it later (e.g., 'Main
             Wallet' or 'email@address.com’).
           </p>

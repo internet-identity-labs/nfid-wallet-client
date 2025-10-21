@@ -141,6 +141,7 @@ export type DeviceType =
   | { Recovery: null }
   | { Unknown: null }
   | { Password: null }
+  | { InternetIdentity: null }
 export type Error = string
 export interface GetLatestLogMessagesParameters {
   upToTimeNanos: [] | [Nanos]

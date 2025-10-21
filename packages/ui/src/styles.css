@@ -8,15 +8,17 @@
   --color-frameBgColor: 255 255 255;
   --color-frameBorderColor: 243 244 246;
   --color-primaryButtonColor: 20 111 104;
-  --color-skeletonColor: 210, 210, 210;
-  --color-buttonBorderColor: 209 213 219;
-  --color-secondaryButtonColor: 0 0 0;
+  --color-darkGray: 36 36 39;
+  --color-darkGrayHover: 63 63 70;
   --color-mainTextColor: 0 0 0;
   --color-secondaryTextColor: 156 163 175;
   --color-linkColor: 37 99 235;
   --color-checkMarkColor: 16 185 129;
   --color-warningBgColor: 255 247 237;
   --color-portfolioColor: 247 249 246;
+  --color-skeletonColor: 210, 210, 210;
+  --color-buttonBorderColor: 209 213 219;
+  --color-secondaryButtonColor: 0 0 0;
 }
 /* } */
 /*
@@ -55,6 +57,9 @@ body {
 body.fixed {
   overflow: hidden;
   overscroll-behavior: contain;
+}
+.dark body {
+  background: #141518;
 }
 /*
   6. Improve media defaults

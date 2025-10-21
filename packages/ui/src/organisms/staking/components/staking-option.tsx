@@ -1,6 +1,10 @@
 import clsx from "clsx"
 import { A } from "packages/ui/src/atoms/custom-link"
-import { IconInfo, IconNftPlaceholder } from "packages/ui/src/atoms/icons"
+import {
+  IconInfo,
+  IconInfoDark,
+  IconNftPlaceholder,
+} from "packages/ui/src/atoms/icons"
 import { IconCaret } from "packages/ui/src/atoms/icons/caret"
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
@@ -9,6 +13,7 @@ import { Table } from "packages/ui/src/molecules/table"
 import { Tooltip } from "packages/ui/src/molecules/tooltip"
 import { FC } from "react"
 
+import { useDarkTheme } from "frontend/hooks"
 import { NFIDNeuron } from "frontend/integration/staking/nfid-neuron"
 import { StakingState } from "frontend/integration/staking/types"
 
@@ -29,11 +34,13 @@ export const StakingOption: FC<StakingOptionProps> = ({
   symbol,
   setSidePanelOption,
 }) => {
+  const isDarkTheme = useDarkTheme()
+
   return (
     <ProfileContainer
       id={`stakingDetails-${stakingState}-table`}
       title={stakingState}
-      className="!py-[20px] md:!py-[30px] !mb-[20px] md:!mb-[30px]"
+      className="!py-[20px] md:!py-[30px] !mb-[20px] md:!mb-[30px] dark:text-white"
       titleClassName="!px-0 md:!px-[30px] mb-[10px] md:!mb-[30px]"
       innerClassName="!px-0"
     >
@@ -41,7 +48,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
         <tr className="hidden md:table-row">
           <td
             className={clsx(
-              "pb-[10px] text-sm font-bold text-gray-400",
+              "pb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500",
               "px-0 md:px-[30px]",
               "w-[35%]",
             )}
@@ -59,7 +66,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
                 }
               >
                 <img
-                  src={IconInfo}
+                  src={isDarkTheme ? IconInfoDark : IconInfo}
                   alt="icon"
                   className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
                 />
@@ -68,7 +75,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
           </td>
           <td
             className={clsx(
-              "pb-[10px] text-sm font-bold text-gray-400",
+              "pb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500",
               "w-[15%]",
             )}
           >
@@ -76,7 +83,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
           </td>
           <td
             className={clsx(
-              "pb-[10px] text-sm font-bold text-gray-400",
+              "pb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500",
               "px-0 md:px-[10px] w-[15%]",
             )}
           >
@@ -101,7 +108,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
                 }
               >
                 <img
-                  src={IconInfo}
+                  src={isDarkTheme ? IconInfoDark : IconInfo}
                   alt="icon"
                   className="w-[20px] h-[20px] transition-all cursor-pointer hover:opacity-70"
                 />
@@ -110,7 +117,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
           </td>
           <td
             className={clsx(
-              "pb-[10px] text-sm font-bold text-gray-400",
+              "pb-[10px] text-sm font-bold text-gray-400 dark:text-zinc-500",
               "px-0 md:px-[10px] w-[15%]",
               stakingState === StakingState.Available && "hidden",
             )}
@@ -128,7 +135,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
                 .getToken()
                 .getTokenName()
                 .replace(/\s+/g, "")}`}
-              className="text-sm md:hover:bg-gray-50 h-[64px] transition-all group cursor-pointer"
+              className="text-sm md:hover:bg-gray-50 dark:hover:bg-zinc-800 h-[64px] transition-all group cursor-pointer"
               key={stake.getStakeIdFormatted()}
               onClick={() =>
                 setSidePanelOption({ option: stake, state: stakingState })
@@ -150,7 +157,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
                       <div
                         className={clsx(
                           "absolute bottom-0 right-0 rounded-full",
-                          "flex items-center justify-center w-5 h-5 bg-white",
+                          "flex items-center justify-center w-5 h-5 bg-white dark:bg-zinc-200",
                         )}
                       >
                         <img src={DiamondIcon} />
@@ -164,6 +171,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
                       onClick={(e) => e.stopPropagation()}
                     >
                       <CopyAddress
+                        className="dark:text-white"
                         address={stake.getStakeIdFormatted()}
                         leadingChars={6}
                         trailingChars={4}
@@ -173,24 +181,30 @@ export const StakingOption: FC<StakingOptionProps> = ({
                 </div>
               </td>
               <td className="flex flex-col ml-auto h-[64px] justify-center w-max md:table-cell text-right md:text-left">
-                <p id={"tokenInitialStake"} className="text-sm leading-6">
+                <p
+                  id={"tokenInitialStake"}
+                  className="text-sm leading-6 dark:text-white"
+                >
                   {stake.getInitialStakeFormatted().getTokenValue()}
                 </p>
-                <p className="text-xs leading-5 text-secondary">
+                <p className="text-xs leading-5 text-secondary dark:zinc-500">
                   {stake.getInitialStakeFormatted().getUSDValue()}
                 </p>
               </td>
               <td className="px-0 md:px-[10px] hidden md:table-cell">
-                <p id={"tokenRewards"} className="text-sm leading-6">
+                <p
+                  id={"tokenRewards"}
+                  className="text-sm leading-6 dark:text-white"
+                >
                   {stake.getRewardsFormatted().getTokenValue()}
                 </p>
-                <p className="text-xs leading-5 text-secondary">
+                <p className="text-xs leading-5 text-secondary dark:zinc-500">
                   {stake.getRewardsFormatted().getUSDValue()}
                 </p>
               </td>
               <td className="px-0 md:px-[10px] hidden md:table-cell">
                 <p
-                  className="text-sm leading-5 opacity-80"
+                  className="text-sm leading-5 opacity-80 dark:text-white"
                   id={
                     stakingState === StakingState.Unlocking
                       ? "tokenUnlockTime"
@@ -211,7 +225,7 @@ export const StakingOption: FC<StakingOptionProps> = ({
                   id={"tokenTransactionDetailsButton"}
                   className="inline-flex items-center justify-between gap-1 cursor-pointer"
                 >
-                  <IconCaret />
+                  <IconCaret color={isDarkTheme ? "white" : "black"} />
                 </div>
               </td>
             </tr>

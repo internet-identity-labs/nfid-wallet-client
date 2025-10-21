@@ -3,7 +3,9 @@ import clsx from "clsx"
 import { HTMLAttributes, FC, useState, useMemo } from "react"
 import { FT } from "src/integration/ft/ft"
 
-import { BTC_NATIVE_ID } from "@nfid/integration/token/constants"
+import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
+
+import { useDarkTheme } from "frontend/hooks"
 
 import SortAscendingIcon from "./assets/sort-ascending.svg"
 import SortDefaultIcon from "./assets/sort-default.svg"
@@ -28,7 +30,7 @@ enum Sorting {
 }
 
 export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
-  activeTokens: FT[]
+  initedTokens: FT[]
   allTokens: FT[]
   isTokensLoading: boolean
   profileConstants: IProfileConstants
@@ -47,15 +49,16 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   onSwapClick: (value: string) => void
   onConvertToBtc: () => void
   onConvertToCkBtc: () => void
+  onConvertToEth: () => void
+  onConvertToCkEth: () => void
   onStakeClick: (value: string) => void
   hideZeroBalance: boolean
   onZeroBalanceToggle: () => void
   tokensIniting?: boolean
-  isBtcAddressLoading: boolean
 }
 
 export const Tokens: FC<TokensProps> = ({
-  activeTokens,
+  initedTokens,
   allTokens,
   isTokensLoading,
   profileConstants,
@@ -65,16 +68,18 @@ export const Tokens: FC<TokensProps> = ({
   onSwapClick,
   onConvertToBtc,
   onConvertToCkBtc,
+  onConvertToEth,
+  onConvertToCkEth,
   onStakeClick,
   hideZeroBalance,
   onZeroBalanceToggle,
   tokensIniting,
-  isBtcAddressLoading,
 }) => {
   const [token, setToken] = useState<FT | undefined>()
   const [sorting, setSorting] = useState<Sorting>(Sorting.DEFAULT)
   const [isHovered, setIsHovered] = useState(false)
   const [loadingToken, setLoadingToken] = useState<FT | null>(null)
+  const isDarkTheme = useDarkTheme()
 
   const handleSorting = () => {
     const nextSorting = {
@@ -87,7 +92,11 @@ export const Tokens: FC<TokensProps> = ({
   }
 
   const getSortingIcon = () => {
-    if (isHovered && sorting === Sorting.DEFAULT) return SortHoverIcon
+    if (sorting === Sorting.DEFAULT) {
+      if (isHovered || isDarkTheme) return SortHoverIcon
+      return SortDefaultIcon
+    }
+
     switch (sorting) {
       case Sorting.ASCENDING:
         return SortAscendingIcon
@@ -99,44 +108,44 @@ export const Tokens: FC<TokensProps> = ({
   }
 
   const sortedTokens = useMemo(() => {
-    const getUSDBalance = (token: typeof activeTokens[0]) => {
+    const getUSDBalance = (token: (typeof initedTokens)[0]) => {
       const balance = token.getUSDBalance()
       return balance ? new BigNumber(balance) : null
     }
 
     if (sorting === Sorting.ASCENDING) {
-      return [...activeTokens].sort((a, b) => {
+      return [...initedTokens].sort((a, b) => {
         const balanceA = getUSDBalance(a)
         const balanceB = getUSDBalance(b)
 
         if (balanceA === null) return 1
         if (balanceB === null) return -1
 
-        return balanceA.comparedTo(balanceB)
+        return balanceA.comparedTo(balanceB) || 0
       })
     }
 
     if (sorting === Sorting.DESCENDING) {
-      return [...activeTokens].sort((a, b) => {
+      return [...initedTokens].sort((a, b) => {
         const balanceA = getUSDBalance(a)
         const balanceB = getUSDBalance(b)
 
         if (balanceA === null) return 1
         if (balanceB === null) return -1
 
-        return balanceB.comparedTo(balanceA)
+        return balanceB.comparedTo(balanceA) || 0
       })
     }
 
-    return activeTokens
-  }, [activeTokens, sorting])
+    return initedTokens
+  }, [initedTokens, sorting])
 
   return (
     <>
       <div className="relative flex flex-col">
         <div className="mb-[20px] overflow-x-auto scrollbar scrollbar-w-4 scrollbar-thumb-gray-300 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
           <table className="w-full text-left">
-            <thead className="text-secondary h-[40px] hidden md:table-header-group">
+            <thead className="text-secondary dark:text-zinc-500 h-[40px] hidden md:table-header-group">
               <tr className="text-sm font-bold leading-5">
                 <th className="w-[25%] min-w-[100px] pr-[30px]">Name</th>
                 <th className="w-[25%] pr-[10px] min-w-[100px]">Category</th>
@@ -177,7 +186,9 @@ export const Tokens: FC<TokensProps> = ({
                     isIniting={
                       tokensIniting ||
                       (token.getTokenAddress() === BTC_NATIVE_ID &&
-                        isBtcAddressLoading)
+                        !token.isInited()) ||
+                      (token.getTokenAddress() === ETH_NATIVE_ID &&
+                        !token.isInited())
                     }
                     hideZeroBalance={hideZeroBalance}
                     key={`token_${token.getTokenAddress()}_${token.getTokenState()}`}
@@ -192,6 +203,8 @@ export const Tokens: FC<TokensProps> = ({
                     loadingToken={loadingToken}
                     onConvertToBtc={onConvertToBtc}
                     onConvertToCkBtc={onConvertToCkBtc}
+                    onConvertToEth={onConvertToEth}
+                    onConvertToCkEth={onConvertToCkEth}
                   />
                 ))
               )}

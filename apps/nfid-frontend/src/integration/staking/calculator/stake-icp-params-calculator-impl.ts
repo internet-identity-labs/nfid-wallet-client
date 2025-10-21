@@ -2,7 +2,7 @@ import { NetworkEconomics } from "@dfinity/nns"
 
 import { StakeParamsCalculatorImpl } from "./stake-params-calculator-impl"
 
-const NNS_NEURON_MAX_DISSOLVE_DELAY_SECONDS = 252460800
+export const NNS_NEURON_MAX_DISSOLVE_DELAY_SECONDS = 252460800
 
 export class StakeICPParamsCalculatorImpl extends StakeParamsCalculatorImpl<NetworkEconomics> {
   getFee(): bigint | undefined {
@@ -18,6 +18,7 @@ export class StakeICPParamsCalculatorImpl extends StakeParamsCalculatorImpl<Netw
 
   getMinimumLockTime(): number {
     return Number(
+      // @ts-ignore
       this.params.votingPowerEconomics!.neuronMinimumDissolveDelayToVoteSeconds,
     )
   }

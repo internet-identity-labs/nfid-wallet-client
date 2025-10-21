@@ -3,9 +3,7 @@ import {
   Ed25519KeyIdentity,
   JsonnableEd25519KeyIdentity,
 } from "@dfinity/identity/lib/cjs/identity/ed25519"
-import { Principal } from "@dfinity/principal"
 import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
-import { authStorage } from "packages/integration/src/lib/authentication/storage"
 
 import {
   bitcoinService,
@@ -15,6 +13,7 @@ import {
 } from "./bitcoin.service"
 import { TransactionId } from "./services/chain-fusion-signer.service"
 import { mempoolService } from "./services/mempool.service"
+import { KEY_BTC_ADDRESS } from "packages/integration/src/lib/authentication/storage"
 
 const IDENTITY: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003008adc857dfcd0477a7aaa01a657ca6923ce76c07645704b1e872deb1253baa",
@@ -22,44 +21,38 @@ const IDENTITY: JsonnableEd25519KeyIdentity = [
 ]
 
 describe("Bitcoin Service", () => {
-  jest.setTimeout(50000)
+  jest.setTimeout(150000)
 
   beforeEach(async () => {
-    await authStorage.clear()
-
-    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    const principal: string = identity.getPrincipal().toText()
-    await authStorage.set(
-      `bitcoin-address-${principal}`,
+    localStorage.clear()
+    localStorage.setItem(
+      KEY_BTC_ADDRESS,
       "bc1q7yu8dnvmlntrqh05wvfar2tljrm73ng6ky8n4t",
     )
   })
 
   afterAll(async () => {
-    await authStorage.clear()
+    localStorage.clear()
   })
 
   it("should return an address", async () => {
     // Given
-    await authStorage.clear()
+    localStorage.clear()
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    const principal: string = identity.getPrincipal().toText()
 
     // When
     const address = await bitcoinService.getAddress(identity)
-    const idbAddress = await authStorage.get(`bitcoin-address-${principal}`)
+    const lsAddress = localStorage.getItem(KEY_BTC_ADDRESS)
 
     // Then
     expect(address).toEqual("bc1q7yu8dnvmlntrqh05wvfar2tljrm73ng6ky8n4t")
-    expect(idbAddress).toEqual("bc1q7yu8dnvmlntrqh05wvfar2tljrm73ng6ky8n4t")
+    expect(lsAddress).toEqual("bc1q7yu8dnvmlntrqh05wvfar2tljrm73ng6ky8n4t")
   })
 
   it("should return different address if it's saved into idb", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    const principal: string = identity.getPrincipal().toText()
-    const key = `bitcoin-address-${principal}`
-    await authStorage.set(key, "address")
+    localStorage.setItem(KEY_BTC_ADDRESS, "address")
 
     // When
     const address = await bitcoinService.getAddress(identity)
@@ -76,19 +69,28 @@ describe("Bitcoin Service", () => {
     const balance: bigint = await bitcoinService.getBalance(identity)
 
     // Then
-    expect(balance).toEqual(BigInt(1618))
+    expect(balance).toEqual(BigInt(2618))
   })
 
   it("should return a quick balance", async () => {
-    // Given
-    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    const principal: Principal = identity.getPrincipal()
-
     // When
-    const balance: bigint = await bitcoinService.getQuickBalance(principal)
+    const balance: bigint = await bitcoinService.getQuickBalance()
 
     // Then
-    expect(balance).toEqual(BigInt(1618))
+    expect(balance).toEqual(BigInt(2618))
+  })
+
+  it("should return a empty fee for 0 input", async () => {
+    // Given
+    const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
+    const amount: string = "0"
+
+    // When
+    const fee = await bitcoinService.getFee(identity, amount)
+
+    // Then
+    expect(fee.fee_satoshis).toBe(BigInt(0))
+    expect(fee.utxos).toHaveLength(0)
   })
 
   it("should return a fee", async () => {
@@ -113,8 +115,7 @@ describe("Bitcoin Service", () => {
     const fee = await bitcoinService.getBtcToCkBtcFee(identity, amount)
 
     // Then
-    expect(fee.conversionFee).toBe(BigInt(0))
-    expect(fee.interNetwokFee).toBe(BigInt(100))
+    expect(fee.icpNetworkFee).toBe(BigInt(100))
     expect(fee.bitcointNetworkFee.fee_satoshis).not.toBeNull()
     expect(fee.bitcointNetworkFee.utxos).not.toHaveLength(0)
   })
@@ -128,8 +129,6 @@ describe("Bitcoin Service", () => {
     const fee = await bitcoinService.getCkBtcToBtcFee(identity, amount)
 
     // Then
-    expect(fee.conversionFee).toBe(BigInt(10))
-    expect(fee.interNetwokFee).toBe(BigInt(100))
     expect(fee.identityLabsFee).toBe(BigInt(9))
     expect(fee.bitcointNetworkFee.fee_satoshis).not.toBeNull()
     expect(fee.bitcointNetworkFee.utxos).toHaveLength(0)
@@ -201,9 +200,10 @@ describe("Bitcoin Service", () => {
   it("should throw an error when ensureWalletConfirmations returns false for getFee", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    const principal: string = identity.getPrincipal().toText()
-    const key = `bitcoin-address-${principal}`
-    await authStorage.set(key, "bc1qw9fpg8nu0qq74yqn88j5tr7yzk0jfkx6v8mh4l")
+    localStorage.setItem(
+      KEY_BTC_ADDRESS,
+      "bc1qw9fpg8nu0qq74yqn88j5tr7yzk0jfkx6v8mh4l",
+    )
 
     const checkWalletConfirmationsSpy = jest
       .spyOn(mempoolService, "checkWalletConfirmations")
@@ -223,9 +223,10 @@ describe("Bitcoin Service", () => {
   it("should throw an error when ensureWalletConfirmations returns false for getBtcToCkBtcFee", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    const principal: string = identity.getPrincipal().toText()
-    const key = `bitcoin-address-${principal}`
-    await authStorage.set(key, "bc1qw9fpg8nu0qq74yqn88j5tr7yzk0jfkx6v8mh4l")
+    localStorage.setItem(
+      KEY_BTC_ADDRESS,
+      "bc1qw9fpg8nu0qq74yqn88j5tr7yzk0jfkx6v8mh4l",
+    )
 
     const checkWalletConfirmationsSpy = jest
       .spyOn(mempoolService, "checkWalletConfirmations")

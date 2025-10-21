@@ -7,10 +7,7 @@ import { idlFactory as SwapPoolIDL } from "src/integration/swap/icpswap/idl/Swap
 import { SourceInputCalculatorIcpSwap } from "src/integration/swap/icpswap/impl/icp-swap-calculator"
 import { IcpSwapQuoteImpl } from "src/integration/swap/icpswap/impl/icp-swap-quote-impl"
 import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
-import {
-  icpSwapService,
-  SWAP_FACTORY_CANISTER,
-} from "src/integration/swap/icpswap/service/icpswap-service"
+import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-service"
 import { idlFactory as icrc1IDL } from "src/integration/swap/kong/idl/icrc1"
 import { _SERVICE as ICRC1ServiceIDL } from "src/integration/swap/kong/idl/icrc1.d"
 import { Quote } from "src/integration/swap/quote"
@@ -49,9 +46,8 @@ import {
   Result,
   SwapArgs,
   WithdrawArgs,
+  DepositAndSwapArgs,
 } from "../idl/SwapPool.d"
-
-const POOL_CANISTER = "dwahc-eyaaa-aaaag-qcgnq-cai"
 
 export class ShroffIcpSwapImpl extends ShroffAbstract {
   private readonly zeroForOne: boolean
@@ -111,23 +107,6 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
 
   getSwapTransaction(): SwapTransaction | undefined {
     return this.swapTransaction
-  }
-
-  static getStaticTargets(): string[] {
-    return [
-      exchangeRateService.getNodeCanister(),
-      SWAP_TRS_STORAGE,
-      SWAP_FACTORY_CANISTER,
-    ]
-  }
-
-  getTargets(): string[] {
-    return [
-      this.source.ledger,
-      this.target.ledger,
-      this.poolData.canisterId.toText(),
-      ...ShroffAbstract.getStaticTargets(),
-    ]
   }
 
   async getQuote(amount: string): Promise<Quote> {
@@ -198,14 +177,41 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
 
-      // const icrc2supported = await this.icrc2supported()
-      const icrc2supported = false
+      const icrc2supported = await this.icrc2supported()
 
       let icrcTransferId
 
       if (icrc2supported) {
-        await this.icrc2approve(POOL_CANISTER)
-        console.log("ICRC2 approve response", JSON.stringify(icrcTransferId))
+        icrcTransferId = await this.icrc2approve(
+          this.poolData.canisterId.toString(),
+        )
+        this.swapTransaction.setTransferId(icrcTransferId)
+        console.debug("ICRC2 approve response", JSON.stringify(icrcTransferId))
+        this.restoreTransaction()
+        const amountDecimals = this.requestedQuote
+          .getSourceSwapAmount()
+          .plus(Number(this.source.fee))
+        const args: DepositAndSwapArgs = {
+          tokenInFee: this.source.fee,
+          amountIn: this.requestedQuote!.getSourceSwapAmount().toFixed(),
+          zeroForOne: this.zeroForOne,
+          amountOutMinimum: this.requestedQuote!.getTargetAmount()
+            .toFixed(this.target.decimals)
+            .replace(TRIM_ZEROS, ""),
+          tokenOutFee: this.target.fee,
+        }
+        console.debug("Amount decimals: " + BigInt(amountDecimals.toFixed()))
+        const result = await this.swapPoolActor.depositFromAndSwap(args)
+        if (hasOwnProperty(result, "ok")) {
+          const id = result.ok as bigint
+          this.swapTransaction!.setSwap(id)
+        } else {
+          let err = JSON.stringify(
+            "Deposit and swap error: " + JSON.stringify(result.err),
+          )
+          console.error(err)
+          throw new DepositError(err)
+        }
       } else {
         try {
           await this.transferToSwap()
@@ -216,18 +222,18 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
         } catch (e) {
           throw new ContactSupportError("Deposit error: " + e)
         }
+        this.restoreTransaction()
+        console.debug("Transfer to swap done")
+        await this.deposit()
+        this.restoreTransaction()
+        console.debug("Deposit done")
+        await this.swapOnExchange()
+        this.restoreTransaction()
+        console.debug("Swap done")
+        await this.withdraw()
+        console.debug("Withdraw done")
+        this.restoreTransaction()
       }
-      this.restoreTransaction()
-      console.debug("Transfer to swap done")
-      await this.deposit()
-      this.restoreTransaction()
-      console.debug("Deposit done")
-      await this.swapOnExchange()
-      this.restoreTransaction()
-      console.debug("Swap done")
-      await this.withdraw()
-      console.debug("Withdraw done")
-      this.restoreTransaction()
       await this.transferToNFID()
       console.debug("Transfer to NFID done")
       await this.restoreTransaction()

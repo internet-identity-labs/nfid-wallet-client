@@ -124,7 +124,7 @@ jobs:
   #         dfx-version: 0.24.1
 
   #     - name: Setup Node
-  #       uses: actions/setup-node@v5
+  #       uses: actions/setup-node@v6
   #       with:
   #         node-version: "22"
   #         cache: "yarn"
@@ -203,7 +203,7 @@ jobs:
   #         dfx build --network "${NETWORK_NAME}" "${CANISTER_NAME}"
 
   #     - name: Save artifact
-  #       uses: actions/upload-artifact@v4
+  #       uses: actions/upload-artifact@v5
   #       with:
   #         retention-days: 1
   #         name: nfid-demo
@@ -350,7 +350,7 @@ jobs:
   #       failOnError: false
 
   #   - name: POST-DEPLOY => Save artifact.
-  #     uses: actions/upload-artifact@v4
+  #     uses: actions/upload-artifact@v5
   #     with:
   #       name: ${{github.sha}}-nfid-demo
   #       retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
@@ -402,7 +402,7 @@ jobs:
           dfx-version: 0.24.1
 
       - name: Setup Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: "22"
           cache: "yarn"
@@ -580,7 +580,7 @@ jobs:
           ci_echo_success "Canister '${CANISTER_NAME}' was installed to the network '${NETWORK_NAME}'" >&2
 
       - name: POST-DEPLOY => Save artifact.
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{github.sha}}-nfid-wallet-client
           retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}

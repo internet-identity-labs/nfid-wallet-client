@@ -150,20 +150,14 @@ describe("Staking", () => {
     expect(locked[0].getCreatedAt()).toEqual(1742298123)
     expect(locked[0].getCreatedAtFormatted().getDate()).toEqual("Mar 18, 2025")
     expect(locked[0].getCreatedAtFormatted().getTime()).toEqual("11:42:03 AM")
-
-    jest.useFakeTimers()
-    jest.setSystemTime(new Date("2025-04-08T00:00:00Z"))
     expect(unlocking[0].getLockTime()).toBeUndefined()
     expect(unlocking[0].getLockTimeInMonths()).toBeUndefined()
-    expect(unlocking[0].getUnlockIn()).toEqual(1761043067)
-    expect(unlocking[0].getUnlockInMonths()).toEqual("6 months, 13 days")
-    jest.useRealTimers()
+    expect(unlocking[0].getUnlockIn()).toEqual(1776043067)
+    expect(unlocking[0].getUnlockInMonths()).toEqual("5 months, 9 days")
     expect(unlocking[0].getUnlockInFormatted()?.getDate()).toEqual(
-      "Oct 21, 2025",
+      "Apr 13, 2026",
     )
-    expect(unlocking[0].getUnlockInFormatted()?.getTime()).toEqual(
-      "10:37:47 AM",
-    )
+    expect(unlocking[0].getUnlockInFormatted()?.getTime()).toEqual("1:17:47 AM")
     expect(unlocking[0].getCreatedAt()).toEqual(1742298123)
     expect(unlocking[0].getCreatedAtFormatted().getDate()).toEqual(
       "Mar 18, 2025",

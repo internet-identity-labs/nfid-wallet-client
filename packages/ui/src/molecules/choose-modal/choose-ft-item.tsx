@@ -8,21 +8,29 @@ import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 import { IconNftPlaceholder } from "../../atoms/icons"
 import ImageWithFallback from "../../atoms/image-with-fallback"
 import { Skeleton } from "../../atoms/skeleton"
+import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 
 interface IChooseFtItem {
   token: FT
   isSwapTo?: boolean
   tokensAvailableToSwap?: TokensAvailableToSwap
+  isBtcEthLoading?: boolean
 }
 
 export const ChooseFtItem = ({
   token,
   isSwapTo,
   tokensAvailableToSwap,
+  isBtcEthLoading,
 }: IChooseFtItem) => {
-  const isTokenAvailable = isSwapTo
-    ? tokensAvailableToSwap?.to.includes(token.getTokenAddress()) ?? false
-    : tokensAvailableToSwap?.from.includes(token.getTokenAddress()) ?? false
+  const isTokenAvailable =
+    (isSwapTo
+      ? tokensAvailableToSwap?.to.includes(token.getTokenAddress())
+      : tokensAvailableToSwap?.from.includes(token.getTokenAddress())) ??
+    (false ||
+      (!isSwapTo &&
+        isBtcEthLoading &&
+        [BTC_NATIVE_ID, ETH_NATIVE_ID].includes(token.getTokenAddress())))
 
   return (
     <div
@@ -31,9 +39,7 @@ export const ChooseFtItem = ({
         "hover:opacity-50 transition-opacity",
         "flex items-center justify-between",
         "py-2.5 h-[60px]",
-        !isTokenAvailable && tokensAvailableToSwap
-          ? "cursor-not-allowed"
-          : "cursor-pointer",
+        !isTokenAvailable ? "cursor-not-allowed" : "cursor-pointer",
       )}
     >
       <div className="flex items-center h-[28px]">
@@ -46,9 +52,7 @@ export const ChooseFtItem = ({
             src={token.getTokenLogo() || "#"}
             className={clsx(
               "mr-[18px] w-[28px] h-[28px] object-cover rounded-full",
-              !isTokenAvailable &&
-                tokensAvailableToSwap &&
-                "grayscale opacity-40",
+              !isTokenAvailable && "grayscale opacity-40",
             )}
           />
         )}
@@ -56,7 +60,7 @@ export const ChooseFtItem = ({
           <p
             className={clsx(
               "text-sm mb-0.5 flex items-center space-x-1",
-              !isTokenAvailable && tokensAvailableToSwap && "text-gray-400",
+              !isTokenAvailable && "text-gray-400",
             )}
           >
             <span className="font-semibold">{token.getTokenSymbol()}</span>
@@ -67,11 +71,7 @@ export const ChooseFtItem = ({
         </div>
       </div>
       {token.isInited() ? (
-        <div
-          className={clsx(
-            !isTokenAvailable && tokensAvailableToSwap && "text-gray-400",
-          )}
-        >
+        <div className={clsx(!isTokenAvailable && "text-gray-400")}>
           <p className="text-sm text-right">{`${
             token.getTokenBalanceFormatted() || "0"
           } ${token.getTokenSymbol()}`}</p>

@@ -15,6 +15,7 @@ export interface IChooseFtModal {
   trigger?: JSX.Element
   isSwapTo?: boolean
   tokensAvailableToSwap?: TokensAvailableToSwap
+  isBtcEthLoading?: boolean
 }
 
 export const ChooseFtModal = ({
@@ -26,6 +27,7 @@ export const ChooseFtModal = ({
   trigger,
   isSwapTo,
   tokensAvailableToSwap,
+  isBtcEthLoading,
 }: IChooseFtModal) => {
   const sortedTokens = useMemo(() => {
     if (!tokensAvailableToSwap) return tokens
@@ -74,6 +76,7 @@ export const ChooseFtModal = ({
         renderItem={ChooseFtItem}
         isSwapTo={isSwapTo}
         tokensAvailableToSwap={tokensAvailableToSwap}
+        isBtcEthLoading={isBtcEthLoading}
       />
     </>
   )

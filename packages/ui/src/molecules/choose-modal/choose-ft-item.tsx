@@ -28,9 +28,10 @@ export const ChooseFtItem = ({
       ? tokensAvailableToSwap?.to.includes(token.getTokenAddress())
       : tokensAvailableToSwap?.from.includes(token.getTokenAddress())) ??
     (false ||
-      (!isSwapTo &&
+      !(
         isBtcEthLoading &&
-        [BTC_NATIVE_ID, ETH_NATIVE_ID].includes(token.getTokenAddress())))
+        [BTC_NATIVE_ID, ETH_NATIVE_ID].includes(token.getTokenAddress())
+      ))
 
   return (
     <div
@@ -70,7 +71,14 @@ export const ChooseFtItem = ({
           </p>
         </div>
       </div>
-      {token.isInited() ? (
+      {!token.isInited() ||
+      (isBtcEthLoading &&
+        [BTC_NATIVE_ID, ETH_NATIVE_ID].includes(token.getTokenAddress())) ? (
+        <div>
+          <Skeleton className="rounded-[6px] h-[20px] w-[80px] mb-[5px]" />
+          <Skeleton className="rounded-[6px] h-[16px] w-[60px] ml-auto" />
+        </div>
+      ) : (
         <div className={clsx(!isTokenAvailable && "text-gray-400")}>
           <p className="text-sm text-right">{`${
             token.getTokenBalanceFormatted() || "0"
@@ -78,11 +86,6 @@ export const ChooseFtItem = ({
           <p className="text-xs text-right text-gray-400 dark:text-zinc-500">
             {token.getUSDBalanceFormatted() ?? "Not listed"}
           </p>
-        </div>
-      ) : (
-        <div>
-          <Skeleton className="rounded-[6px] h-[20px] w-[80px] mb-[5px]" />
-          <Skeleton className="rounded-[6px] h-[16px] w-[60px] ml-auto" />
         </div>
       )}
     </div>

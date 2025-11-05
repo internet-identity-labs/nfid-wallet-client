@@ -68,3 +68,10 @@ export interface TransactionData {
   canister?: string
   canisterTo?: string
 }
+
+export interface AllowanceDetailDTO {
+  from_account: string
+  to_spender: string
+  allowance: bigint
+  expires_at: bigint | undefined
+}

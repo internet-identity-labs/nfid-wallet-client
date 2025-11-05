@@ -15,7 +15,7 @@ import {
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
-import { ICRC1 } from "@nfid/integration/token/icrc1/types"
+import { ICRC1, AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 
 import {
   bitcoinService,
@@ -60,75 +60,6 @@ export class FTImpl implements FT {
     this.tokenState = icrc1Token.state
     this.inited = false
     this.rootSnsCanister = icrc1Token.rootCanisterId
-  }
-
-  private isNativeBtc(): boolean {
-    return this.tokenAddress === BTC_NATIVE_ID
-  }
-
-  private isNativeEth(): boolean {
-    return this.tokenAddress === ETH_NATIVE_ID
-  }
-
-  private async getNativeBtcBalance(): Promise<void> {
-    try {
-      this.tokenBalance = await bitcoinService.getQuickBalance()
-    } catch (e) {
-      console.debug("BitcoinService error: ", (e as Error).message)
-      return
-    }
-
-    try {
-      this.tokenRate =
-        await exchangeRateService.usdPriceForICRC1(CKBTC_CANISTER_ID)
-    } catch (e) {
-      console.debug("Bitcoin rate fetch error: ", (e as Error).message)
-    }
-  }
-
-  private async getNativeEthBalance(): Promise<void> {
-    try {
-      this.tokenBalance = await ethereumService.getQuickBalance()
-    } catch (e) {
-      console.debug("EthereumService error: ", (e as Error).message)
-      return
-    }
-
-    this.tokenRate = await exchangeRateService.usdPriceForICRC1(
-      CKETH_LEDGER_CANISTER_ID,
-    )
-  }
-
-  private async getIcrc1Balance(globalPrincipal: Principal): Promise<void> {
-    const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
-
-    try {
-      this.tokenBalance = await icrc1Pair.getBalance(globalPrincipal.toText())
-    } catch (e) {
-      console.error("Icrc1Pair error: " + (e as Error).message)
-      return
-    }
-
-    try {
-      this.tokenRate = await exchangeRateService.usdPriceForICRC1(
-        this.tokenAddress,
-      )
-    } catch (e) {
-      console.error("ICRC1 rate fetch error: ", (e as Error).message)
-    }
-  }
-
-  private async getBalance(globalPrincipal: Principal): Promise<void> {
-    if (this.isNativeBtc()) {
-      await this.getNativeBtcBalance()
-    } else if (this.isNativeEth()) {
-      await this.getNativeEthBalance()
-    } else {
-      await this.getIcrc1Balance(globalPrincipal)
-    }
-    if (this.tokenBalance !== undefined) {
-      this.inited = true
-    }
   }
 
   async init(globalPrincipal: Principal): Promise<FT> {
@@ -389,5 +320,90 @@ export class FTImpl implements FT {
     return this.rootSnsCanister
       ? Principal.fromText(this.rootSnsCanister)
       : undefined
+  }
+
+  async getIcrc2Allowances(
+    globalPrincipal: Principal,
+  ): Promise<Array<AllowanceDetailDTO>> {
+    const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
+    let icrc2Allowances = await icrc1Pair.getIcrc2Allowances(globalPrincipal)
+    return icrc2Allowances
+  }
+
+  async revokeAllowance(
+    identity: SignIdentity,
+    spenderPrincipal: Principal,
+  ): Promise<void> {
+    const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
+    await icrc1Pair.setAllowance(identity, spenderPrincipal, BigInt(0))
+  }
+
+  private isNativeBtc(): boolean {
+    return this.tokenAddress === BTC_NATIVE_ID
+  }
+
+  private isNativeEth(): boolean {
+    return this.tokenAddress === ETH_NATIVE_ID
+  }
+
+  private async getNativeBtcBalance(): Promise<void> {
+    try {
+      this.tokenBalance = await bitcoinService.getQuickBalance()
+    } catch (e) {
+      console.error("BitcoinService error: ", (e as Error).message)
+      return
+    }
+
+    try {
+      this.tokenRate =
+        await exchangeRateService.usdPriceForICRC1(CKBTC_CANISTER_ID)
+    } catch (e) {
+      console.error("Bitcoin rate fetch error: ", (e as Error).message)
+    }
+  }
+
+  private async getNativeEthBalance(): Promise<void> {
+    try {
+      this.tokenBalance = await ethereumService.getQuickBalance()
+    } catch (e) {
+      console.error("EthereumService error: ", (e as Error).message)
+      return
+    }
+
+    this.tokenRate = await exchangeRateService.usdPriceForICRC1(
+      CKETH_LEDGER_CANISTER_ID,
+    )
+  }
+
+  private async getIcrc1Balance(globalPrincipal: Principal): Promise<void> {
+    const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
+
+    try {
+      this.tokenBalance = await icrc1Pair.getBalance(globalPrincipal.toText())
+    } catch (e) {
+      console.error("Icrc1Pair error: " + (e as Error).message)
+      return
+    }
+
+    try {
+      this.tokenRate = await exchangeRateService.usdPriceForICRC1(
+        this.tokenAddress,
+      )
+    } catch (e) {
+      console.error("ICRC1 rate fetch error: ", (e as Error).message)
+    }
+  }
+
+  private async getBalance(globalPrincipal: Principal): Promise<void> {
+    if (this.isNativeBtc()) {
+      await this.getNativeBtcBalance()
+    } else if (this.isNativeEth()) {
+      await this.getNativeEthBalance()
+    } else {
+      await this.getIcrc1Balance(globalPrincipal)
+    }
+    if (this.tokenBalance !== undefined) {
+      this.inited = true
+    }
   }
 }

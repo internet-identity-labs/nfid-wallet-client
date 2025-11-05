@@ -12,9 +12,15 @@ export interface AccountBalanceArgsDfx {
   account: TextAccountIdentifier
 }
 export type AccountIdentifier = Uint8Array | number[]
-export interface Allowance {
+export interface Allowance_1 {
   allowance: Icrc1Tokens
   expires_at: [] | [TimeStamp]
+}
+export interface Allowance {
+  from_account_id: string
+  to_spender_id: string
+  allowance: Tokens
+  expires_at: [] | [bigint]
 }
 export interface AllowanceArgs {
   account: Account
@@ -244,6 +250,30 @@ export type Value =
   | { Nat: bigint }
   | { Blob: Uint8Array | number[] }
   | { Text: string }
+export interface GetAllowancesArgsICP {
+  prev_spender_id: [] | [string]
+  from_account_id: string
+  take: [] | [bigint]
+}
+export interface GetAllowancesArgs {
+  take: [] | [bigint]
+  prev_spender: [] | [Account]
+  from_account: [] | [Account]
+}
+export type GetAllowancesError =
+  | {
+      GenericError: { message: string; error_code: bigint }
+    }
+  | { AccessDenied: { reason: string } }
+export interface AllowanceDetail {
+  from_account: Account
+  to_spender: Account
+  allowance: bigint
+  expires_at: [] | [bigint]
+}
+export type AllowanceResult =
+  | { Ok: Array<AllowanceDetail> }
+  | { Err: GetAllowancesError }
 export interface _SERVICE {
   account_balance: ActorMethod<[AccountBalanceArgs], Tokens>
   account_balance_dfx: ActorMethod<[AccountBalanceArgsDfx], Tokens>
@@ -262,7 +292,7 @@ export interface _SERVICE {
   icrc1_symbol: ActorMethod<[], string>
   icrc1_total_supply: ActorMethod<[], Icrc1Tokens>
   icrc1_transfer: ActorMethod<[TransferArg], Icrc1TransferResult>
-  icrc2_allowance: ActorMethod<[AllowanceArgs], Allowance>
+  icrc2_allowance: ActorMethod<[AllowanceArgs], Allowance_1>
   icrc2_approve: ActorMethod<[ApproveArgs], ApproveResult>
   name: ActorMethod<[], { name: string }>
   query_blocks: ActorMethod<[GetBlocksArgs], QueryBlocksResponse>
@@ -271,4 +301,6 @@ export interface _SERVICE {
   symbol: ActorMethod<[], { symbol: string }>
   transfer: ActorMethod<[TransferArgs], TransferResult>
   transfer_fee: ActorMethod<[TransferFeeArg], TransferFee>
+  icrc103_get_allowances: ActorMethod<[GetAllowancesArgs], AllowanceResult>
+  get_allowances: ActorMethod<[GetAllowancesArgsICP], Array<Allowance>>
 }

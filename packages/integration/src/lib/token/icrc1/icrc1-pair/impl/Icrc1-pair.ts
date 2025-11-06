@@ -1,8 +1,12 @@
 import * as Agent from "@dfinity/agent"
-import { HttpAgent } from "@dfinity/agent"
+import { HttpAgent, SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 
-import { agentBaseConfig } from "@nfid/integration"
+import {
+  actorBuilder,
+  agentBaseConfig,
+  hasOwnProperty,
+} from "@nfid/integration"
 import { IIcrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/i-icrc-pair"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 
@@ -13,8 +17,8 @@ import { _SERVICE as ICRCIndex } from "../../../../_ic_api/index-icrc1.d"
 import { Category, State } from "../../enum/enums"
 import { icrc1OracleService } from "../../service/icrc1-oracle-service"
 import { icrc1StorageService } from "../../service/icrc1-storage-service"
-import { ICRC1Data, ICRC1Error } from "../../types"
-
+import { ICRC1Data, ICRC1Error, AllowanceDetailDTO } from "../../types"
+import { principalToAccountIdentifier } from "@dfinity/ledger-icp"
 export class Icrc1Pair implements IIcrc1Pair {
   private readonly ledger: string
   private readonly index: string | undefined
@@ -98,6 +102,88 @@ export class Icrc1Pair implements IIcrc1Pair {
       canisterId: this.ledger,
       ...metadata,
     }
+  }
+
+  async getIcrc2Allowances(
+    rootPrincipalId: Principal,
+  ): Promise<Array<AllowanceDetailDTO>> {
+    const actor = Agent.Actor.createActor<ICRC1ServiceIDL>(icrc1IDL, {
+      canisterId: this.ledger,
+      agent: new HttpAgent({ ...agentBaseConfig }),
+    })
+    if (this.ledger === "ryjl3-tyaaa-aaaaa-aaaba-cai") {
+      const allowances = await actor.get_allowances({
+        from_account_id: principalToAccountIdentifier(rootPrincipalId),
+        prev_spender_id: [],
+        take: [],
+      })
+      return allowances.map((allowance) => ({
+        from_account: allowance.from_account_id,
+        to_spender: allowance.to_spender_id,
+        allowance: allowance.allowance.e8s,
+        expires_at: allowance.expires_at ? allowance.expires_at[0] : undefined,
+      }))
+    }
+    try {
+      const allowances = await actor.icrc103_get_allowances({
+        from_account: [
+          {
+            owner: rootPrincipalId,
+            subaccount: [],
+          },
+        ],
+        take: [],
+        prev_spender: [],
+      })
+      if (hasOwnProperty(allowances, "Err")) {
+        console.debug(
+          "Failed to get allowances {} for token {}:",
+          JSON.stringify(allowances.Err),
+          this.ledger,
+        )
+        return []
+      }
+      return allowances.Ok.map((allowance) => ({
+        from_account: allowance.from_account.owner.toText(),
+        to_spender: allowance.to_spender.owner.toText(),
+        allowance: allowance.allowance,
+        expires_at:
+          allowance.expires_at.length > 0 ? allowance.expires_at[0] : undefined,
+      }))
+    } catch (e) {
+      console.debug("Failed to get allowances {} for token {}:", e, this.ledger)
+      return []
+    }
+  }
+
+  async setAllowance(
+    signIdentity: SignIdentity,
+    spenderPrincipalId: Principal,
+    amount: bigint,
+  ): Promise<bigint> {
+    const actor = actorBuilder<ICRC1ServiceIDL>(this.ledger, icrc1IDL, {
+      canisterId: this.ledger,
+      agent: new HttpAgent({ ...agentBaseConfig, identity: signIdentity }),
+    })
+    let result = await actor.icrc2_approve({
+      spender: {
+        owner: spenderPrincipalId,
+        subaccount: [],
+      },
+      amount,
+      expires_at: [],
+      created_at_time: [],
+      expected_allowance: [],
+      fee: [],
+      memo: [],
+      from_subaccount: [],
+    })
+    if (hasOwnProperty(result, "Err")) {
+      throw new ICRC1Error(
+        `Failed to set allowance. ${JSON.stringify(result.Err)} for token ${this.ledger}`,
+      )
+    }
+    return result.Ok
   }
 
   async storeSelf() {

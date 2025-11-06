@@ -1,4 +1,6 @@
-import { ICRC1Data } from "../types"
+import { SignIdentity } from "@dfinity/agent"
+import { ICRC1Data, AllowanceDetailDTO } from "../types"
+import { Principal } from "@dfinity/principal"
 
 export interface IIcrc1Pair {
   validateStandard(): Promise<void>
@@ -12,6 +14,16 @@ export interface IIcrc1Pair {
   storeSelf(): Promise<void>
 
   getBalance(principal: string): Promise<bigint>
+
+  getIcrc2Allowances(
+    rootPrincipalId: Principal,
+  ): Promise<Array<AllowanceDetailDTO>>
+
+  setAllowance(
+    signIdentity: SignIdentity,
+    spenderPrincipalId: Principal,
+    amount: bigint,
+  ): Promise<bigint>
 
   getMetadata(): Promise<{
     name: string

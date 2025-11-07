@@ -19,6 +19,7 @@ import { icrc1OracleService } from "../../service/icrc1-oracle-service"
 import { icrc1StorageService } from "../../service/icrc1-storage-service"
 import { ICRC1Data, ICRC1Error, AllowanceDetailDTO } from "../../types"
 import { principalToAccountIdentifier } from "@dfinity/ledger-icp"
+import { ICP_CANISTER_ID } from "../../../constants"
 export class Icrc1Pair implements IIcrc1Pair {
   private readonly ledger: string
   private readonly index: string | undefined
@@ -111,7 +112,7 @@ export class Icrc1Pair implements IIcrc1Pair {
       canisterId: this.ledger,
       agent: new HttpAgent({ ...agentBaseConfig }),
     })
-    if (this.ledger === "ryjl3-tyaaa-aaaaa-aaaba-cai") {
+    if (this.ledger === ICP_CANISTER_ID) {
       const allowances = await actor.get_allowances({
         from_account_id: principalToAccountIdentifier(rootPrincipalId),
         prev_spender_id: [],

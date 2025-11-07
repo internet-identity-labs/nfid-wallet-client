@@ -1,4 +1,5 @@
 import { Principal } from "@dfinity/principal"
+import { SignIdentity } from "@dfinity/agent"
 import BigNumber from "bignumber.js"
 import { Cache } from "node-ts-cache"
 import { integrationCache } from "packages/integration/src/cache"
@@ -24,6 +25,8 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 
 import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
 import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
+import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
+import { authState } from "packages/integration/src/lib/authentication/auth-state"
 
 const InitedTokens = "InitedTokens"
 export const TOKENS_REFRESH_INTERVAL = 10000
@@ -186,6 +189,48 @@ export class FtService {
     )
 
     return updatedTokens
+  }
+
+  async getIcrc2Allowances(principal: Principal): Promise<
+    Array<{
+      token: FT
+      allowances: AllowanceDetailDTO[]
+    }>
+  > {
+    const ft = await this.getTokens(principal.toText())
+    const chunkSize = 10
+    const allAllowances: {
+      token: FT
+      allowances: AllowanceDetailDTO[]
+    }[] = []
+
+    for (let i = 0; i < ft.length; i += chunkSize) {
+      const chunk = ft.slice(i, i + chunkSize)
+      const chunkAllowances = await Promise.all(
+        chunk.map((token) => token.getIcrc2Allowances(principal)),
+      )
+      allAllowances.push(
+        ...chunkAllowances.map(
+          (allowance: AllowanceDetailDTO[], index: number) => ({
+            token: chunk[index],
+            allowances: allowance,
+          }),
+        ),
+      )
+    }
+    return allAllowances.filter((allowance) => allowance.allowances.length > 0)
+  }
+
+  async revokeAllowance(
+    delegationIdentity: SignIdentity,
+    spenderPrincipal: Principal,
+  ): Promise<void> {
+    const ft = await this.getInitedTokens([], delegationIdentity.getPrincipal())
+    await Promise.all(
+      ft.map((token) =>
+        token.revokeAllowance(delegationIdentity, spenderPrincipal),
+      ),
+    )
   }
 
   private getCacheKey(principal: Principal): string {

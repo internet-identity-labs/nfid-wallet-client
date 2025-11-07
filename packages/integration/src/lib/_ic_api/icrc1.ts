@@ -1,7 +1,13 @@
 export const idlFactory = ({ IDL }: any) => {
+  const Tokens = IDL.Record({ e8s: IDL.Nat64 })
+  const Allowance = IDL.Record({
+    from_account_id: IDL.Text,
+    to_spender_id: IDL.Text,
+    allowance: Tokens,
+    expires_at: IDL.Opt(IDL.Nat64),
+  })
   const AccountIdentifier = IDL.Vec(IDL.Nat8)
   const AccountBalanceArgs = IDL.Record({ account: AccountIdentifier })
-  const Tokens = IDL.Record({ e8s: IDL.Nat64 })
   const TextAccountIdentifier = IDL.Text
   const AccountBalanceArgsDfx = IDL.Record({
     account: TextAccountIdentifier,
@@ -52,7 +58,7 @@ export const idlFactory = ({ IDL }: any) => {
     spender: Account,
   })
   const TimeStamp = IDL.Record({ timestamp_nanos: IDL.Nat64 })
-  const Allowance = IDL.Record({
+  const Allowance_1 = IDL.Record({
     allowance: Icrc1Tokens,
     expires_at: IDL.Opt(TimeStamp),
   })
@@ -212,6 +218,34 @@ export const idlFactory = ({ IDL }: any) => {
   })
   const TransferFeeArg = IDL.Record({})
   const TransferFee = IDL.Record({ transfer_fee: Tokens })
+  const AllowanceDetail = IDL.Record({
+    from_account: Account,
+    to_spender: Account,
+    allowance: IDL.Nat,
+    expires_at: IDL.Opt(IDL.Nat64),
+  })
+  const GetAllowancesError = IDL.Variant({
+    GenericError: IDL.Record({
+      message: IDL.Text,
+      error_code: IDL.Nat,
+    }),
+    AccessDenied: IDL.Record({ reason: IDL.Text }),
+  })
+  const GetAllowancesArgsICP = IDL.Record({
+    prev_spender_id: IDL.Opt(IDL.Text),
+    from_account_id: IDL.Text,
+    take: IDL.Opt(IDL.Nat64),
+  })
+
+  const GetAllowancesArgs = IDL.Record({
+    take: IDL.Opt(IDL.Nat),
+    prev_spender: IDL.Opt(Account),
+    from_account: IDL.Opt(Account),
+  })
+  const AllowanceResult = IDL.Variant({
+    Ok: IDL.Vec(AllowanceDetail),
+    Err: GetAllowancesError,
+  })
   return IDL.Service({
     account_balance: IDL.Func([AccountBalanceArgs], [Tokens], ["query"]),
     account_balance_dfx: IDL.Func([AccountBalanceArgsDfx], [Tokens], ["query"]),
@@ -235,8 +269,14 @@ export const idlFactory = ({ IDL }: any) => {
     icrc1_symbol: IDL.Func([], [IDL.Text], ["query"]),
     icrc1_total_supply: IDL.Func([], [Icrc1Tokens], ["query"]),
     icrc1_transfer: IDL.Func([TransferArg], [Icrc1TransferResult], []),
-    icrc2_allowance: IDL.Func([AllowanceArgs], [Allowance], ["query"]),
+    icrc2_allowance: IDL.Func([AllowanceArgs], [Allowance_1], ["query"]),
     icrc2_approve: IDL.Func([ApproveArgs], [ApproveResult], []),
+    icrc103_get_allowances: IDL.Func(
+      [GetAllowancesArgs],
+      [AllowanceResult],
+      ["query"],
+    ),
+
     name: IDL.Func([], [IDL.Record({ name: IDL.Text })], ["query"]),
     query_blocks: IDL.Func([GetBlocksArgs], [QueryBlocksResponse], ["query"]),
     query_encoded_blocks: IDL.Func(
@@ -248,6 +288,11 @@ export const idlFactory = ({ IDL }: any) => {
     symbol: IDL.Func([], [IDL.Record({ symbol: IDL.Text })], ["query"]),
     transfer: IDL.Func([TransferArgs], [TransferResult], []),
     transfer_fee: IDL.Func([TransferFeeArg], [TransferFee], ["query"]),
+    get_allowances: IDL.Func(
+      [GetAllowancesArgsICP],
+      [IDL.Vec(Allowance)],
+      ["query"],
+    ),
   })
 }
 export const init = ({ IDL }: any) => {

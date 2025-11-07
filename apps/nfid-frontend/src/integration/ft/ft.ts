@@ -6,6 +6,7 @@ import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { BitcointNetworkFeeAndUtxos } from "../bitcoin/bitcoin.service"
 import { SendEthFee } from "../ethereum/ethereum.service"
+import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 
 export interface FT {
   init(principal: Principal): Promise<FT>
@@ -87,4 +88,11 @@ export interface FT {
   isHideable(): boolean
 
   getRootSnsCanister(): Principal | undefined
+
+  getIcrc2Allowances(principal: Principal): Promise<Array<AllowanceDetailDTO>>
+
+  revokeAllowance(
+    identity: SignIdentity,
+    spenderPrincipal: Principal,
+  ): Promise<void>
 }

@@ -65,7 +65,6 @@ export class PasskeyConnector {
     const jsonData = JSON.stringify({
       ...data,
       credentialId: base64url.encode(Buffer.from(data.credentialId)),
-      //publicKey: toHexString(data.publicKey),
       publicKey: toHexString(data.publicKey.buffer as ArrayBuffer),
     })
 

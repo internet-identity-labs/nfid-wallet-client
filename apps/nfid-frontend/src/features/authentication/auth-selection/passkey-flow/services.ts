@@ -107,7 +107,9 @@ export class PasskeyConnector {
     const platform = getPlatformInfo()
     const os = platform.os
     const browser = getBrowser()
-    const isAppleOS = ["Mac OS", "iOS"].includes(os)
+    const isAppleOS = ["Mac OS", "macOS", "iOS", "iPadOS", "Darwin"].includes(
+      os,
+    )
     const isAndroid = os === "Android"
     const isWindows = os === "Windows"
 

@@ -192,6 +192,7 @@ export class FtService {
   }
 
   async getIcrc2Allowances(
+    ft: FT[],
     principal: Principal,
     offset = 0,
     limit = PAGE_SIZE,
@@ -202,7 +203,7 @@ export class FtService {
       allowance: AllowanceDetailDTO
     }>
   > {
-    const ft = (await this.getTokens(principal.toText())).filter(
+    const tokens = ft.filter(
       (token) =>
         token.getTokenAddress() !== BTC_NATIVE_ID &&
         token.getTokenAddress() !== ETH_NATIVE_ID,
@@ -210,8 +211,8 @@ export class FtService {
 
     const allFlattened: { token: FT; allowance: AllowanceDetailDTO }[] = []
 
-    for (let i = 0; i < ft.length; i += chunkSize) {
-      const chunk = ft.slice(i, i + chunkSize)
+    for (let i = 0; i < tokens.length; i += chunkSize) {
+      const chunk = tokens.slice(i, i + chunkSize)
       const chunkAllowances = await Promise.all(
         chunk.map((token) => token.getIcrc2Allowances(principal)),
       )

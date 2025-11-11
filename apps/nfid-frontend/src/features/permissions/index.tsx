@@ -1,4 +1,4 @@
-import { useMemo, useCallback, FC, useState, useEffect } from "react"
+import { useMemo, useCallback, FC, useEffect, useReducer } from "react"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 import { NFIDTheme } from "frontend/App"
 import { Permissions } from "packages/ui/src/organisms/permissions"
@@ -9,8 +9,7 @@ import { authState } from "@nfid/integration"
 import { fetchTokens } from "../fungible-token/utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
-import { FT } from "frontend/integration/ft/ft"
-import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
+import { permissionsReducer, permissionsInitialState } from "./utils"
 
 type PermissionsPageProps = {
   walletTheme: NFIDTheme
@@ -21,12 +20,10 @@ const PermissionsPage: FC<PermissionsPageProps> = ({
   walletTheme,
   setWalletTheme,
 }) => {
-  const [page, setPage] = useState(0)
-  const [isLoadingMore, setIsLoadingMore] = useState(false)
-  const [hasMore, setHasMore] = useState(false)
-  const [allowancesList, setAllowancesList] = useState<
-    { token: FT; allowance: AllowanceDetailDTO }[]
-  >([])
+  const [state, dispatch] = useReducer(
+    permissionsReducer,
+    permissionsInitialState,
+  )
   const publicKey = authState.getUserIdData().publicKey
 
   const { data: tokens } = useSWRWithTimestamp("tokens", fetchTokens, {
@@ -37,57 +34,53 @@ const PermissionsPage: FC<PermissionsPageProps> = ({
   const { initedTokens } = useTokensInit(tokens)
 
   const { data: initialPage, isLoading } = useSWR(
-    ["allowances", 0],
-    () => ftService.getIcrc2Allowances(Principal.from(publicKey), 0, PAGE_SIZE),
+    initedTokens ? ["allowances", 0] : null,
+    () =>
+      ftService.getIcrc2Allowances(
+        initedTokens!,
+        Principal.from(publicKey),
+        0,
+        PAGE_SIZE,
+      ),
     { revalidateOnFocus: false },
   )
 
   useEffect(() => {
     if (initialPage) {
-      setAllowancesList(initialPage)
-      setPage(1)
-      setHasMore(initialPage.length === PAGE_SIZE)
+      dispatch({ type: "RESET", payload: { list: initialPage } })
     }
   }, [initialPage])
 
   const loadMore = useCallback(async () => {
-    if (!hasMore) return
+    if (!state.hasMore || !initedTokens) return
 
-    setIsLoadingMore(true)
+    dispatch({ type: "LOAD_MORE_START" })
     try {
       const nextBatch = await ftService.getIcrc2Allowances(
+        initedTokens,
         Principal.from(publicKey),
-        page * PAGE_SIZE,
+        state.page * PAGE_SIZE,
         PAGE_SIZE,
       )
 
-      setAllowancesList((prev) => [...prev, ...nextBatch])
-      setPage((p) => p + 1)
-
-      setHasMore(nextBatch.length === PAGE_SIZE)
-    } finally {
-      setIsLoadingMore(false)
+      dispatch({ type: "LOAD_MORE_SUCCESS", payload: { list: nextBatch } })
+    } catch (e) {
+      dispatch({ type: "LOAD_MORE_SUCCESS", payload: { list: [] } })
     }
-  }, [page, hasMore, publicKey])
+  }, [state.page, state.hasMore, publicKey])
 
   const flattenedAllowances = useMemo(() => {
-    if (!initedTokens) return []
-
-    return allowancesList.map(({ token, allowance: a }) => {
-      const initedToken = initedTokens.find(
-        (t) => t.getTokenAddress() === token.getTokenAddress(),
-      )
-
+    return state.allowancesList.map(({ token, allowance: a }) => {
       const amountNum = Number(a.allowance) / 10 ** token.getTokenDecimals()
       const amountStr = amountNum
         .toFixed(token.getTokenDecimals())
         .replace(TRIM_ZEROS, "")
 
       const usdAmount = (() => {
-        if (!initedToken) return null
+        if (!token) return null
 
         try {
-          const rate = initedToken.getTokenRate(amountStr)
+          const rate = token.getTokenRate(amountStr)
           return rate
             ? rate.toFixed(token.getTokenDecimals()).replace(TRIM_ZEROS, "")
             : null
@@ -104,7 +97,7 @@ const PermissionsPage: FC<PermissionsPageProps> = ({
         usdAmount,
       }
     })
-  }, [allowancesList, initedTokens])
+  }, [state.allowancesList])
 
   return (
     <ProfileTemplate
@@ -118,8 +111,8 @@ const PermissionsPage: FC<PermissionsPageProps> = ({
         allowances={flattenedAllowances}
         isLoading={isLoading}
         loadMore={loadMore}
-        isLoadingMore={isLoadingMore}
-        hasMore={hasMore}
+        isLoadingMore={state.isLoadingMore}
+        hasMore={state.hasMore}
       />
     </ProfileTemplate>
   )

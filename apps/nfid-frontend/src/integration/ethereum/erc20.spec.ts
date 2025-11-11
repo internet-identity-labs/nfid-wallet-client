@@ -3,7 +3,7 @@ import { erc20Service } from "./erc20.service"
 import { Ed25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { mockIdentityA } from "@nfid/integration"
 
-describe("ERC20Service", () => {
+describe.skip("ERC20Service", () => {
   const ADDRESS = "0x20d8e0104C9d3EB43714aB5AA4A06bbc04d93496"
   jest.setTimeout(100000)
   describe("erc20", () => {

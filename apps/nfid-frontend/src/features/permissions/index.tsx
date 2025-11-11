@@ -67,7 +67,7 @@ const PermissionsPage: FC<PermissionsPageProps> = ({
     } catch (e) {
       dispatch({ type: "LOAD_MORE_SUCCESS", payload: { list: [] } })
     }
-  }, [state.page, state.hasMore, publicKey])
+  }, [state.page, state.hasMore, publicKey, initedTokens])
 
   const flattenedAllowances = useMemo(() => {
     return state.allowancesList.map(({ token, allowance: a }) => {

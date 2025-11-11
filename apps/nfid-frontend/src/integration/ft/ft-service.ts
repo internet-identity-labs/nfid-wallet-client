@@ -26,10 +26,10 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
 import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
-import { authState } from "packages/integration/src/lib/authentication/auth-state"
 
 const InitedTokens = "InitedTokens"
 export const TOKENS_REFRESH_INTERVAL = 10000
+export const PAGE_SIZE = 10
 
 export interface TokensAvailableToSwap {
   to: string[]
@@ -191,34 +191,41 @@ export class FtService {
     return updatedTokens
   }
 
-  async getIcrc2Allowances(principal: Principal): Promise<
+  async getIcrc2Allowances(
+    principal: Principal,
+    offset = 0,
+    limit = PAGE_SIZE,
+    chunkSize = PAGE_SIZE,
+  ): Promise<
     Array<{
       token: FT
-      allowances: AllowanceDetailDTO[]
+      allowance: AllowanceDetailDTO
     }>
   > {
-    const ft = await this.getTokens(principal.toText())
-    const chunkSize = 10
-    const allAllowances: {
-      token: FT
-      allowances: AllowanceDetailDTO[]
-    }[] = []
+    const ft = (await this.getTokens(principal.toText())).filter(
+      (token) =>
+        token.getTokenAddress() !== BTC_NATIVE_ID &&
+        token.getTokenAddress() !== ETH_NATIVE_ID,
+    )
+
+    const allFlattened: { token: FT; allowance: AllowanceDetailDTO }[] = []
 
     for (let i = 0; i < ft.length; i += chunkSize) {
       const chunk = ft.slice(i, i + chunkSize)
       const chunkAllowances = await Promise.all(
         chunk.map((token) => token.getIcrc2Allowances(principal)),
       )
-      allAllowances.push(
-        ...chunkAllowances.map(
-          (allowance: AllowanceDetailDTO[], index: number) => ({
+      chunkAllowances.forEach((allowances, index) => {
+        allowances.forEach((a) => {
+          allFlattened.push({
             token: chunk[index],
-            allowances: allowance,
-          }),
-        ),
-      )
+            allowance: a,
+          })
+        })
+      })
     }
-    return allAllowances.filter((allowance) => allowance.allowances.length > 0)
+
+    return allFlattened.slice(offset, offset + limit)
   }
 
   async revokeAllowance(

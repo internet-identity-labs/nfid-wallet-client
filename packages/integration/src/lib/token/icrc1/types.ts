@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 
-import { Category, State } from "./enum/enums"
+import { Category, State, SupportedChain } from "./enum/enums"
 
 export enum IActivityAction {
   SENT = "Sent",

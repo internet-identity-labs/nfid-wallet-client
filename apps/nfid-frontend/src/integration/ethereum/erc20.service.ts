@@ -7,6 +7,8 @@ import { SignIdentity } from "@dfinity/agent"
 import { Contract } from "ethers"
 import { TransactionResponse } from "ethers"
 import { ethereumService } from "./ethereum.service"
+import { storageWithTtl } from "@nfid/client-db"
+import { SupportedChain } from "@nfid/integration/token/icrc1/enum/enums"
 
 export const ERC20_ABI = [
   "function transfer(address to, uint256 amount) external returns (bool)",
@@ -24,6 +26,18 @@ const MULTICALL3_ABI = [
 ]
 
 export const ZERO = BigInt(0)
+
+const ERC20_TOKENS_LIST_CACHE_KEY = "ERC20_TokensList"
+const ERC20_TOKENS_LIST_CACHE_TTL = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
+
+export interface ERC20TokenInfo {
+  address: string
+  name: string
+  symbol: string
+  decimals: number
+  logoURI?: string
+  chainId: number
+}
 
 export class Erc20Service {
   private provider: InfuraProvider
@@ -47,6 +61,7 @@ export class Erc20Service {
     address: string,
     contractAddresses: string[],
   ) {
+    //TODO: add cache for balances (get all users tokens and cache balances for them once)
     if (contractAddresses.length === 0) {
       return []
     }
@@ -272,6 +287,85 @@ export class Erc20Service {
     } catch (e) {
       throw e
     }
+  }
+
+  /**
+   * Get list of all known ERC20 tokens with logos and metadata
+   * Uses Uniswap Token Lists (standard format)
+   * Results are cached for 24 hours
+   *
+   * @returns Array of token information with logos
+   */
+  public async getKnownTokensList(): Promise<ERC20TokenInfo[]> {
+    // Check cache first
+    const cache = await storageWithTtl.getEvenExpired(
+      ERC20_TOKENS_LIST_CACHE_KEY,
+    )
+
+    // If no cache, fetch and wait for result
+    if (!cache) {
+      return await this.fetchAndCacheTokensList()
+    }
+
+    // If cache exists and not expired, return it
+    if (cache && !cache.expired) {
+      return cache.value as ERC20TokenInfo[]
+    }
+
+    // If cache exists but expired, return it immediately and refresh in background
+    if (cache && cache.expired) {
+      // Refresh in background without waiting
+      this.fetchAndCacheTokensList().catch((error) => {
+        console.error("Failed to refresh token list in background:", error)
+      })
+
+      // Return expired cache immediately
+      return cache.value as ERC20TokenInfo[]
+    }
+
+    // Fallback (should not reach here)
+    return await this.fetchAndCacheTokensList()
+  }
+
+  /**
+   * Fetch tokens list from Uniswap API and cache it
+   * @private
+   */
+  private async fetchAndCacheTokensList(): Promise<ERC20TokenInfo[]> {
+    // Uniswap Token Lists - most comprehensive and maintained
+    const tokenListUrl = `https://tokens.uniswap.org`
+
+    const response = await fetch(tokenListUrl)
+    if (!response.ok) {
+      throw new Error(`Failed to fetch token list: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    // Token List format: { tokens: [...] }
+    const tokens = data.tokens || []
+
+    const result = tokens
+      .filter((token: any) => token.chainId)
+      .map((token: any) => ({
+        address: token.address?.toLowerCase() || "",
+        name: token.name || "",
+        symbol: token.symbol || "",
+        decimals: token.decimals || 18,
+        logoURI: token.logoURI,
+        chainId: token.chainId,
+      }))
+      .filter((token: ERC20TokenInfo) => token.chainId === SupportedChain.ETH)
+      .filter((token: ERC20TokenInfo) => token.address) // Remove invalid entries
+
+    // Cache the result for 24 hours
+    await storageWithTtl.set(
+      ERC20_TOKENS_LIST_CACHE_KEY,
+      result,
+      ERC20_TOKENS_LIST_CACHE_TTL,
+    )
+
+    return result
   }
 }
 

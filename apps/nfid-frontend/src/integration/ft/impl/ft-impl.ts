@@ -34,7 +34,8 @@ export class FTImpl implements FT {
   private readonly tokenCategory: Category
   private readonly logo: string | undefined
   private readonly tokenName: string
-  private tokenBalance: bigint | undefined
+  protected tokenChainId: number
+  protected tokenBalance: bigint | undefined
   private tokenState: State
   private tokenRate?: {
     value: BigNumber
@@ -60,6 +61,7 @@ export class FTImpl implements FT {
     this.tokenState = icrc1Token.state
     this.inited = false
     this.rootSnsCanister = icrc1Token.rootCanisterId
+    this.tokenChainId = 0
   }
 
   async init(globalPrincipal: Principal): Promise<FT> {
@@ -394,7 +396,7 @@ export class FTImpl implements FT {
     }
   }
 
-  private async getBalance(globalPrincipal: Principal): Promise<void> {
+  protected async getBalance(globalPrincipal: Principal): Promise<void> {
     if (this.isNativeBtc()) {
       await this.getNativeBtcBalance()
     } else if (this.isNativeEth()) {

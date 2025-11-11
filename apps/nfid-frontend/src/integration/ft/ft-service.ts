@@ -26,6 +26,8 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
 import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
+import { erc20Service } from "../ethereum/erc20.service"
+import { FTERC20Impl } from "./impl/ft-erc20-impl"
 
 const InitedTokens = "InitedTokens"
 export const TOKENS_REFRESH_INTERVAL = 10000
@@ -49,7 +51,7 @@ const TOKENS_TO_REORDER: {
 
 export class FtService {
   async getTokens(userId: string): Promise<Array<FT>> {
-    return icrc1StorageService
+    let icrc1Tokens = await icrc1StorageService
       .getICRC1Canisters(userId)
       .then(async (canisters) => {
         const icp = canisters.find(
@@ -117,8 +119,17 @@ export class FtService {
         ft.push(this.getNativeBtcToken())
         ft.push(this.getNativeEthToken())
 
-        return this.sortTokens(ft)
+        return ft
       })
+
+    const erc20Tokens = await erc20Service.getKnownTokensList()
+
+    const erc20TokensFts = erc20Tokens.map((token) => new FTERC20Impl(token))
+    return this.sortTokens([
+      ...icrc1Tokens,
+      //@vitalii: enable when needed
+      // , ...erc20TokensFts
+    ])
   }
 
   public async getInitedTokens(
@@ -418,9 +429,10 @@ export class FtService {
       [Category.ChainFusion]: 2,
       [Category.Known]: 4,
       [Category.Native]: 1,
+      [Category.ERC20]: 6,
       [Category.Community]: 5,
-      [Category.Spam]: 7,
-      [Category.ChainFusionTestnet]: 6,
+      [Category.Spam]: 8,
+      [Category.ChainFusionTestnet]: 7,
     }
 
     TOKENS_TO_REORDER.forEach((token) => {

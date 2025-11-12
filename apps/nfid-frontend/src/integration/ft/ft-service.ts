@@ -26,10 +26,12 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
 import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
-import { authState } from "packages/integration/src/lib/authentication/auth-state"
+import { erc20Service } from "../ethereum/erc20.service"
+import { FTERC20Impl } from "./impl/ft-erc20-impl"
 
 const InitedTokens = "InitedTokens"
 export const TOKENS_REFRESH_INTERVAL = 10000
+export const PAGE_SIZE = 10
 
 export interface TokensAvailableToSwap {
   to: string[]
@@ -50,7 +52,7 @@ const TOKENS_TO_REORDER: {
 
 export class FtService {
   async getTokens(userId: string): Promise<Array<FT>> {
-    return icrc1StorageService
+    let icrc1Tokens = await icrc1StorageService
       .getICRC1Canisters(userId)
       .then(async (canisters) => {
         const icp = canisters.find(
@@ -118,8 +120,17 @@ export class FtService {
         ft.push(this.getNativeBtcToken())
         ft.push(this.getNativeEthToken())
 
-        return this.sortTokens(ft)
+        return ft
       })
+
+    const erc20Tokens = await erc20Service.getKnownTokensList()
+
+    const erc20TokensFts = erc20Tokens.map((token) => new FTERC20Impl(token))
+    return this.sortTokens([
+      ...icrc1Tokens,
+      //@vitalii: enable when needed
+      // , ...erc20TokensFts
+    ])
   }
 
   public async getInitedTokens(
@@ -191,34 +202,42 @@ export class FtService {
     return updatedTokens
   }
 
-  async getIcrc2Allowances(principal: Principal): Promise<
+  async getIcrc2Allowances(
+    ft: FT[],
+    principal: Principal,
+    offset = 0,
+    limit = PAGE_SIZE,
+    chunkSize = PAGE_SIZE,
+  ): Promise<
     Array<{
       token: FT
-      allowances: AllowanceDetailDTO[]
+      allowance: AllowanceDetailDTO
     }>
   > {
-    const ft = await this.getTokens(principal.toText())
-    const chunkSize = 10
-    const allAllowances: {
-      token: FT
-      allowances: AllowanceDetailDTO[]
-    }[] = []
+    const tokens = ft.filter(
+      (token) =>
+        token.getTokenAddress() !== BTC_NATIVE_ID &&
+        token.getTokenAddress() !== ETH_NATIVE_ID,
+    )
 
-    for (let i = 0; i < ft.length; i += chunkSize) {
-      const chunk = ft.slice(i, i + chunkSize)
+    const allFlattened: { token: FT; allowance: AllowanceDetailDTO }[] = []
+
+    for (let i = 0; i < tokens.length; i += chunkSize) {
+      const chunk = tokens.slice(i, i + chunkSize)
       const chunkAllowances = await Promise.all(
         chunk.map((token) => token.getIcrc2Allowances(principal)),
       )
-      allAllowances.push(
-        ...chunkAllowances.map(
-          (allowance: AllowanceDetailDTO[], index: number) => ({
+      chunkAllowances.forEach((allowances, index) => {
+        allowances.forEach((a) => {
+          allFlattened.push({
             token: chunk[index],
-            allowances: allowance,
-          }),
-        ),
-      )
+            allowance: a,
+          })
+        })
+      })
     }
-    return allAllowances.filter((allowance) => allowance.allowances.length > 0)
+
+    return allFlattened.slice(offset, offset + limit)
   }
 
   async revokeAllowance(
@@ -419,9 +438,10 @@ export class FtService {
       [Category.ChainFusion]: 2,
       [Category.Known]: 4,
       [Category.Native]: 1,
+      [Category.ERC20]: 6,
       [Category.Community]: 5,
-      [Category.Spam]: 7,
-      [Category.ChainFusionTestnet]: 6,
+      [Category.Spam]: 8,
+      [Category.ChainFusionTestnet]: 7,
     }
 
     TOKENS_TO_REORDER.forEach((token) => {

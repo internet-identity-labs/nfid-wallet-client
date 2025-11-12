@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, FC, useState } from "react"
+import { useMemo, useCallback, FC, useState } from "react"
 import { useSWR } from "@nfid/swr"
 import { Loader, PasskeySkeleton, Toggle } from "@nfid-frontend/ui"
 import { Icon } from "@nfid/integration"

@@ -28,6 +28,7 @@ import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 import { erc20Service } from "../ethereum/erc20.service"
 import { FTERC20Impl } from "./impl/ft-erc20-impl"
+import { mapState } from "@nfid/integration/token/icrc1/util"
 
 const InitedTokens = "InitedTokens"
 export const TOKENS_REFRESH_INTERVAL = 10000
@@ -124,12 +125,21 @@ export class FtService {
       })
 
     const erc20Tokens = await erc20Service.getKnownTokensList()
+    let userCanisters = await icrc1RegistryService.getCanistersByRoot(userId)
 
-    const erc20TokensFts = erc20Tokens.map((token) => new FTERC20Impl(token))
+    const storedErc20Tokens: FT[] = erc20Tokens.map((token) => {
+      const userCanister = userCanisters.find(
+        (t) => t.ledger === token.address && t.network === token.chainId,
+      )
+      return new FTERC20Impl({
+        ...token,
+        state: userCanister ? mapState(userCanister.state) : token.state,
+      })
+    })
+
     return this.sortTokens([
       ...icrc1Tokens,
-      //@vitalii: enable when needed
-      // , ...erc20TokensFts
+      // ...storedErc20Tokens,
     ])
   }
 

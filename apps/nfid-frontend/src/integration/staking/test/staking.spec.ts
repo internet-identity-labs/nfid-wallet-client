@@ -12,6 +12,7 @@ import { NFIDW_CANISTER_ID } from "@nfid/integration/token/constants"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
 import { mockFt, mockStake } from "./mock"
+import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 
 const NFIDW_ROOT_CANISTER = "m2blf-zqaaa-aaaaq-aaejq-cai"
 
@@ -25,6 +26,13 @@ const identityJSON: JsonnableEd25519KeyIdentity = [
 
 describe("Staking", () => {
   jest.setTimeout(90000)
+
+  beforeEach(() => {
+    jest
+      .spyOn(icrc1RegistryService as any, "getCanistersByRoot")
+      .mockResolvedValue([])
+  })
+
   it.skip("should stake neuron", async () => {
     let edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
     jest

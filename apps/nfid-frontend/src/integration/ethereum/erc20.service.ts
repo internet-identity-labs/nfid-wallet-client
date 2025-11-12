@@ -9,6 +9,7 @@ import { TransactionResponse } from "ethers"
 import { ethereumService } from "./ethereum.service"
 import { storageWithTtl } from "@nfid/client-db"
 import { SupportedChain } from "@nfid/integration/token/icrc1/enum/enums"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
 
 export const ERC20_ABI = [
   "function transfer(address to, uint256 amount) external returns (bool)",
@@ -30,6 +31,8 @@ export const ZERO = BigInt(0)
 const ERC20_TOKENS_LIST_CACHE_KEY = "ERC20_TokensList"
 const ERC20_TOKENS_LIST_CACHE_TTL = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
 
+const ERC20_BALANCES_CACHE_TTL = 1 * 60 * 1000 // 1 minute in milliseconds
+
 export interface ERC20TokenInfo {
   address: string
   name: string
@@ -37,6 +40,7 @@ export interface ERC20TokenInfo {
   decimals: number
   logoURI?: string
   chainId: number
+  state: State
 }
 
 export class Erc20Service {
@@ -52,6 +56,7 @@ export class Erc20Service {
    *
    * This method uses Multicall3 to fetch all balances in a single request,
    * which is much faster and more cost-efficient than individual calls.
+   * Results are cached per address.
    *
    * @param address - Wallet address to check balances for
    * @param contractAddresses - Array of ERC20 token contract addresses
@@ -61,11 +66,105 @@ export class Erc20Service {
     address: string,
     contractAddresses: string[],
   ) {
-    //TODO: add cache for balances (get all users tokens and cache balances for them once)
     if (contractAddresses.length === 0) {
       return []
     }
 
+    // Single cache key per address (not per token list)
+    const cacheKey = `ERC20_Balances_${address.toLowerCase()}`
+    const normalizedAddress = address.toLowerCase()
+    const normalizedContracts = contractAddresses.map((addr) =>
+      addr.toLowerCase(),
+    )
+
+    // Check cache first
+    const cache = await storageWithTtl.getEvenExpired(cacheKey)
+
+    // Cache structure: Map<contractAddress, { balance: string, address: string, error?: string }>
+    let cachedBalances: Map<
+      string,
+      { balance: string; address: string; error?: string }
+    > = new Map()
+
+    if (cache) {
+      // Restore cached balances from array to Map for easier lookup
+      const cachedArray = cache.value as Array<{
+        contractAddress: string
+        balance: string
+        address: string
+        error?: string
+      }>
+      cachedArray.forEach((item) => {
+        cachedBalances.set(item.contractAddress.toLowerCase(), {
+          balance: item.balance,
+          address: item.address,
+          error: item.error,
+        })
+      })
+    }
+
+    // Check which contracts are missing from cache
+    const missingContracts = normalizedContracts.filter(
+      (contract) => !cachedBalances.has(contract),
+    )
+
+    // If all contracts are in cache and cache is not expired, return cached values
+    if (missingContracts.length === 0 && cache && !cache.expired) {
+      return normalizedContracts.map((contract) => ({
+        contractAddress: contract,
+        ...cachedBalances.get(contract)!,
+      }))
+    }
+
+    // If cache exists but expired, return it immediately and refresh in background
+    if (cache && cache.expired && missingContracts.length === 0) {
+      // Refresh all requested contracts in background
+      this.fetchAndUpdateCacheBalances(
+        normalizedAddress,
+        normalizedContracts,
+        cacheKey,
+      ).catch((error) => {
+        console.error("Failed to refresh balances in background:", error)
+      })
+
+      // Return expired cache immediately
+      return normalizedContracts.map((contract) => ({
+        contractAddress: contract,
+        ...cachedBalances.get(contract)!,
+      }))
+    }
+
+    // Fetch all requested contracts (replace cache with new data)
+    const fetchedBalances = await this.fetchAndUpdateCacheBalances(
+      normalizedAddress,
+      normalizedContracts,
+      cacheKey,
+    )
+
+    // Return requested contracts
+    return normalizedContracts.map((contract) => {
+      const balance = fetchedBalances.get(contract)
+      return {
+        contractAddress: contract,
+        balance: balance?.balance || "0",
+        address: normalizedAddress,
+        error: balance?.error,
+      }
+    })
+  }
+
+  /**
+   * Fetch token balances and update cache
+   * Replaces cache with new balances
+   * @private
+   */
+  private async fetchAndUpdateCacheBalances(
+    address: string,
+    contractAddresses: string[],
+    cacheKey: string,
+  ): Promise<
+    Map<string, { balance: string; address: string; error?: string }>
+  > {
     try {
       // Use Multicall3 to get all balances in a single request
       const multicallInterface = new Interface(MULTICALL3_ABI)
@@ -102,32 +201,100 @@ export class Erc20Service {
 
       // Decode results
       const abiCoder = new AbiCoder()
-      return contractAddresses.map((contractAddress, index) => {
+      const fetchedBalances = new Map<
+        string,
+        { balance: string; address: string; error?: string }
+      >()
+
+      contractAddresses.forEach((contractAddress, index) => {
         try {
+          // Check if return data exists and is not empty
+          const returnDataItem = returnData[index]
+          if (
+            !returnDataItem ||
+            returnDataItem === "0x" ||
+            returnDataItem.length === 0
+          ) {
+            fetchedBalances.set(contractAddress.toLowerCase(), {
+              balance: "0",
+              address,
+              error: "Empty response from contract",
+            })
+            return
+          }
+
           // Decode the uint256 balance from the return data
-          const balance = abiCoder.decode(["uint256"], returnData[index])[0]
-          return {
-            contractAddress,
+          const balance = abiCoder.decode(["uint256"], returnDataItem)[0]
+          fetchedBalances.set(contractAddress.toLowerCase(), {
             balance: balance.toString(),
             address,
-          }
+          })
         } catch (error) {
           console.error(
             `Error decoding balance for contract ${contractAddress}:`,
             error,
           )
-          return {
-            contractAddress,
+          fetchedBalances.set(contractAddress.toLowerCase(), {
             balance: "0",
             address,
             error: error instanceof Error ? error.message : "Decode error",
-          }
+          })
         }
       })
+
+      // Convert Map to array for storage (replace cache, don't merge)
+      const balancesArray = Array.from(fetchedBalances.entries()).map(
+        ([contractAddress, balance]) => ({
+          contractAddress,
+          ...balance,
+        }),
+      )
+
+      // Cache the result for 10 minutes (replace existing cache)
+      await storageWithTtl.set(
+        cacheKey,
+        balancesArray,
+        ERC20_BALANCES_CACHE_TTL,
+      )
+
+      return fetchedBalances
     } catch (error) {
       console.error("Multicall error, falling back to individual calls:", error)
       // Fallback to individual calls if multicall fails
-      return this.getMultipleTokenBalancesFallback(address, contractAddresses)
+      const fallbackBalances = await this.getMultipleTokenBalancesFallback(
+        address,
+        contractAddresses,
+      )
+
+      // Convert fallback to Map
+      const fallbackMap = new Map<
+        string,
+        { balance: string; address: string; error?: string }
+      >()
+      fallbackBalances.forEach((item) => {
+        fallbackMap.set(item.contractAddress.toLowerCase(), {
+          balance: item.balance,
+          address: item.address,
+          error: item.error,
+        })
+      })
+
+      // Convert Map to array for storage (replace cache, don't merge)
+      const balancesArray = Array.from(fallbackMap.entries()).map(
+        ([contractAddress, balance]) => ({
+          contractAddress,
+          ...balance,
+        }),
+      )
+
+      // Cache the result (replace existing cache)
+      await storageWithTtl.set(
+        cacheKey,
+        balancesArray,
+        ERC20_BALANCES_CACHE_TTL,
+      )
+
+      return fallbackMap
     }
   }
 
@@ -354,6 +521,7 @@ export class Erc20Service {
         decimals: token.decimals || 18,
         logoURI: token.logoURI,
         chainId: token.chainId,
+        state: State.Inactive,
       }))
       .filter((token: ERC20TokenInfo) => token.chainId === SupportedChain.ETH)
       .filter((token: ERC20TokenInfo) => token.address) // Remove invalid entries

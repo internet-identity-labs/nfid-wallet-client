@@ -23,6 +23,7 @@ import {
 } from "@nfid/integration/token/constants"
 import { fetchBtcAddress } from "frontend/util/fetch-btc-address"
 import { fetchEthAddress } from "frontend/util/fetch-eth-address"
+import { getErc20ActivitiesRows } from "frontend/integration/ethereum/erc20-transaction.service"
 
 export const getAllActivity = async ({
   ...params
@@ -32,19 +33,26 @@ export const getAllActivity = async ({
   let btcAddress = await fetchBtcAddress()
   let ethAddress = await fetchEthAddress()
 
-  const [icrc1Activities, swapActivities, btcActivities, ethActivities] =
-    await Promise.all([
-      getIcrc1ActivitiesRows(filteredContracts, limit),
-      getSwapActivitiesRows(filteredContracts),
-      getBtcActivitiesRows(btcAddress),
-      getEthActivitiesRows(ethAddress),
-    ])
+  const [
+    icrc1Activities,
+    swapActivities,
+    btcActivities,
+    ethActivities,
+    erc20Activities,
+  ] = await Promise.all([
+    getIcrc1ActivitiesRows(filteredContracts, limit),
+    getSwapActivitiesRows(filteredContracts),
+    getBtcActivitiesRows(btcAddress),
+    getEthActivitiesRows(ethAddress),
+    getErc20ActivitiesRows(ethAddress),
+  ])
 
   const activitiesArray = [
     ...icrc1Activities,
     ...swapActivities,
     ...btcActivities,
     ...ethActivities,
+    ...erc20Activities,
   ]
 
   const groupedRowsByDate = groupActivityRowsByDate(

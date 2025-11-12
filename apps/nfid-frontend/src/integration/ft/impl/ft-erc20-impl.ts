@@ -36,6 +36,7 @@ export class FTERC20Impl extends FTImpl {
   }
 
   public async getBalance(globalPrincipal: Principal): Promise<void> {
+    console.debug("getBalance", globalPrincipal.toText())
     const ethAddress = await ethereumService.getQuickAddress()
     const balance = await icrc1RegistryService
       .getCanistersByRoot(globalPrincipal.toText())

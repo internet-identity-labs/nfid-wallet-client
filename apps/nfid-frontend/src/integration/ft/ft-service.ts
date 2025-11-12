@@ -31,6 +31,7 @@ import { FTERC20Impl } from "./impl/ft-erc20-impl"
 
 const InitedTokens = "InitedTokens"
 export const TOKENS_REFRESH_INTERVAL = 10000
+export const PAGE_SIZE = 10
 
 export interface TokensAvailableToSwap {
   to: string[]
@@ -201,34 +202,42 @@ export class FtService {
     return updatedTokens
   }
 
-  async getIcrc2Allowances(principal: Principal): Promise<
+  async getIcrc2Allowances(
+    ft: FT[],
+    principal: Principal,
+    offset = 0,
+    limit = PAGE_SIZE,
+    chunkSize = PAGE_SIZE,
+  ): Promise<
     Array<{
       token: FT
-      allowances: AllowanceDetailDTO[]
+      allowance: AllowanceDetailDTO
     }>
   > {
-    const ft = await this.getTokens(principal.toText())
-    const chunkSize = 10
-    const allAllowances: {
-      token: FT
-      allowances: AllowanceDetailDTO[]
-    }[] = []
+    const tokens = ft.filter(
+      (token) =>
+        token.getTokenAddress() !== BTC_NATIVE_ID &&
+        token.getTokenAddress() !== ETH_NATIVE_ID,
+    )
 
-    for (let i = 0; i < ft.length; i += chunkSize) {
-      const chunk = ft.slice(i, i + chunkSize)
+    const allFlattened: { token: FT; allowance: AllowanceDetailDTO }[] = []
+
+    for (let i = 0; i < tokens.length; i += chunkSize) {
+      const chunk = tokens.slice(i, i + chunkSize)
       const chunkAllowances = await Promise.all(
         chunk.map((token) => token.getIcrc2Allowances(principal)),
       )
-      allAllowances.push(
-        ...chunkAllowances.map(
-          (allowance: AllowanceDetailDTO[], index: number) => ({
+      chunkAllowances.forEach((allowances, index) => {
+        allowances.forEach((a) => {
+          allFlattened.push({
             token: chunk[index],
-            allowances: allowance,
-          }),
-        ),
-      )
+            allowance: a,
+          })
+        })
+      })
     }
-    return allAllowances.filter((allowance) => allowance.allowances.length > 0)
+
+    return allFlattened.slice(offset, offset + limit)
   }
 
   async revokeAllowance(

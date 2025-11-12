@@ -19,7 +19,7 @@ import { icrc1OracleService } from "../../service/icrc1-oracle-service"
 import { icrc1StorageService } from "../../service/icrc1-storage-service"
 import { ICRC1Data, ICRC1Error, AllowanceDetailDTO } from "../../types"
 import { principalToAccountIdentifier } from "@dfinity/ledger-icp"
-import { ICP_CANISTER_ID } from "../../../constants"
+import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 export class Icrc1Pair implements IIcrc1Pair {
   private readonly ledger: string
   private readonly index: string | undefined

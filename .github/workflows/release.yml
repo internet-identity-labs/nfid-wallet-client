@@ -9,16 +9,16 @@ on:
   workflow_dispatch:
     inputs:
       network_name:
-        description: 'Choose applicable network'
+        description: "Choose applicable network"
         required: true
-        default: 'dev'
+        default: "dev"
         type: choice
         options:
           - dev
           - stage
       force_deploy:
-        description: 'Force deploy'
-        default: 'false'
+        description: "Force deploy"
+        default: "false"
         type: choice
         options:
           - false
@@ -510,7 +510,7 @@ jobs:
 
       - name: PRE-DEPLOY => Populate env vars
         env:
-            DFX_ID_NAME: ${{ vars.DFX_ID_NAME }}
+          DFX_ID_NAME: ${{ vars.DFX_ID_NAME }}
         run: |
           source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
 
@@ -585,5 +585,5 @@ jobs:
           name: ${{github.sha}}-nfid-wallet-client
           retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
           path: |
-              build/
-              dist/
+            build/
+            dist/

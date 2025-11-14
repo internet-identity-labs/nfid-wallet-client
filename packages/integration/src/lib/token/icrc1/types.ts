@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 
-import { Category, State } from "./enum/enums"
+import { Category, State, SupportedChain } from "./enum/enums"
 
 export enum IActivityAction {
   SENT = "Sent",
@@ -67,4 +67,11 @@ export interface TransactionData {
   iconTo?: string
   canister?: string
   canisterTo?: string
+}
+
+export interface AllowanceDetailDTO {
+  from_account: string
+  to_spender: string
+  allowance: bigint
+  expires_at: bigint | undefined
 }

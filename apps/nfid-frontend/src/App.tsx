@@ -34,6 +34,9 @@ const IframeTrustDeviceCoordinator = lazy(
   () => import("./features/iframe/iframe-trust-device/coordinator"),
 )
 const ProfileSecurity = lazy(() => import("../src/features/security"))
+
+const ProfilePermissions = lazy(() => import("../src/features/permissions"))
+
 const CopyRecoveryPhrase = lazy(
   () => import("../src/apps/identity-manager/profile/copy-recovery-phrase"),
 )
@@ -218,6 +221,17 @@ export const App = () => {
                     element={
                       <AuthWrapper>
                         <ProfileSecurity
+                          walletTheme={walletTheme}
+                          setWalletTheme={setWalletTheme}
+                        />
+                      </AuthWrapper>
+                    }
+                  />
+                  <Route
+                    path={ProfileConstants.permissions}
+                    element={
+                      <AuthWrapper>
+                        <ProfilePermissions
                           walletTheme={walletTheme}
                           setWalletTheme={setWalletTheme}
                         />

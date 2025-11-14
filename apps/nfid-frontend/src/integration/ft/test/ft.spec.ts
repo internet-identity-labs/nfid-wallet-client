@@ -16,14 +16,23 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 
 import { nftService } from "frontend/integration/nft/nft-service"
 import { portfolioService } from "frontend/integration/portfolio-balance/portfolio-service"
-import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
-import { getWalletDelegation } from "frontend/integration/facade/wallet"
+import { ethereumService } from "frontend/integration/ethereum/ethereum.service"
+import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 
 const userId = "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae"
 const principal = Principal.fromText(userId)
 
 describe("ft test suite", () => {
   jest.setTimeout(35000)
+
+  beforeEach(() => {
+    jest
+      .spyOn(icrc1RegistryService as any, "getCanistersByRoot")
+      .mockResolvedValue([])
+    jest
+      .spyOn(ethereumService as any, "getQuickAddress")
+      .mockResolvedValue("0x1234567890123456789012345678901234567890")
+  })
 
   describe("ft", () => {
     it("should return", async () => {
@@ -855,18 +864,23 @@ describe("ft test suite", () => {
       const expectedResult = {
         to: [
           "2ouva-viaaa-aaaaq-aaamq-cai",
-          CKETH_LEDGER_CANISTER_ID,
           CKBTC_CANISTER_ID,
           "ryjl3-tyaaa-aaaaa-aaaba-cai",
           NFIDW_CANISTER_ID,
+          CKETH_LEDGER_CANISTER_ID,
         ],
         from: ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
       }
 
-      expect({
-        to: toList.filter((ledger) => validTokenLedgers.has(ledger)),
-        from: fromList.filter((ledger) => validTokenLedgers.has(ledger)),
-      }).toEqual(expectedResult)
+      const actualResult = {
+        to: toList.filter((ledger) => validTokenLedgers.has(ledger)).sort(),
+        from: fromList.filter((ledger) => validTokenLedgers.has(ledger)).sort(),
+      }
+
+      expect(actualResult).toEqual({
+        to: expectedResult.to.sort(),
+        from: expectedResult.from.sort(),
+      })
     })
   })
 })

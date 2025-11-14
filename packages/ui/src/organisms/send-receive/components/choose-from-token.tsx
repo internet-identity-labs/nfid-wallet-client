@@ -44,6 +44,7 @@ interface ChooseFromTokenProps {
   minAmount?: number
   isLoading?: boolean
   setSkipFeeCalculation?: () => void
+  isBtcEthLoading?: boolean
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -64,6 +65,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   minAmount,
   isLoading,
   setSkipFeeCalculation,
+  isBtcEthLoading,
 }) => {
   const [inputAmountValue, setInputAmountValue] = useState(value || "")
   const [isMaxClicked, setIsMaxClicked] = useState(false)
@@ -294,6 +296,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
                 </div>
               }
               tokensAvailableToSwap={tokensAvailableToSwap}
+              isBtcEthLoading={isBtcEthLoading}
             />
           ) : (
             <div className="flex items-center w-full gap-1.5">

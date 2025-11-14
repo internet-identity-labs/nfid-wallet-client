@@ -28,6 +28,7 @@ import { FTImpl } from "frontend/integration/ft/impl/ft-impl"
 import { NFT } from "frontend/integration/nft/nft"
 
 import { useIntersectionObserver } from "../../organisms/send-receive/hooks/intersection-observer"
+import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 
 const INITED_TOKENS_LIMIT = 6
 
@@ -43,9 +44,11 @@ export interface IChooseTokenModal<T> {
     token: T
     isSwapTo?: boolean
     tokensAvailableToSwap?: TokensAvailableToSwap
+    isBtcEthLoading?: boolean
   }>
   isSwapTo?: boolean
   tokensAvailableToSwap?: TokensAvailableToSwap
+  isBtcEthLoading?: boolean
 }
 
 export const ChooseTokenModal = <T extends FT | NFT>({
@@ -59,6 +62,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   renderItem: ChooseItem,
   isSwapTo,
   tokensAvailableToSwap,
+  isBtcEthLoading,
 }: IChooseTokenModal<T>) => {
   const isDarkTheme = useDarkTheme()
   const [searchInput, setSearchInput] = useState("")
@@ -145,6 +149,12 @@ export const ChooseTokenModal = <T extends FT | NFT>({
         : tokensAvailableToSwap?.from.includes(token.getTokenAddress())
 
       if (!isSwappable && tokensAvailableToSwap) return
+      if (
+        isBtcEthLoading &&
+        (token.getTokenAddress() === BTC_NATIVE_ID ||
+          token.getTokenAddress() === ETH_NATIVE_ID)
+      )
+        return
     }
     onSelect?.(token)
     setIsModalVisible(false)
@@ -239,6 +249,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
                   token={token}
                   isSwapTo={isSwapTo}
                   tokensAvailableToSwap={tokensAvailableToSwap}
+                  isBtcEthLoading={isBtcEthLoading}
                 />
               </div>
             ))}

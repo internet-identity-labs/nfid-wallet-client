@@ -42,6 +42,7 @@ import {
 
 import { fetchVaultWalletsBalances } from "../fungible-token/fetch-balances"
 import { ftService } from "frontend/integration/ft/ft-service"
+import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 
 type ITransferRequest = {
   to: string
@@ -272,6 +273,21 @@ export const getTokensWithUpdatedBalance = async (
   }
 
   return updatedTokens
+}
+
+export function updateAllowancesAfterRevoke(
+  current: { token: FT; allowances: AllowanceDetailDTO[] }[] = [],
+  token: FT,
+  address: string,
+) {
+  return current.map((entry) =>
+    entry.token.getTokenAddress() === token.getTokenAddress()
+      ? {
+          ...entry,
+          allowances: entry.allowances.filter((a) => a.to_spender !== address),
+        }
+      : entry,
+  )
 }
 
 export const getConversionTokenAddress = (source: string): string => {

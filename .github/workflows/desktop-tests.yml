@@ -188,7 +188,7 @@ jobs:
           path: ci_libs
 
       - name: Set up Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: "22"
           cache: "yarn"
@@ -222,7 +222,7 @@ jobs:
           npx env-cmd -f .env.test nx run-many --target=test --skip-nx-cache --maxAttempts=2 --maxParallel=1 --runInBand
 
       - name: Upload build artefacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ ! cancelled() }}
         with:
           retention-days: 1
@@ -359,14 +359,14 @@ jobs:
 
       - name: Save test results
         if: ${{ ! cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           retention-days: 1
           path: apps/nfid-frontend-e2e/src/reporter/desktop/allure-results
           name: allure-results-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ ! cancelled() }}
         with:
           retention-days: 1
@@ -478,14 +478,14 @@ jobs:
 
       - name: Save test results
         if: ${{ ! cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           retention-days: 1
           path: apps/nfid-frontend-e2e/src/reporter/mobile/allure-results
           name: allure-results-mobile-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ ! cancelled() }}
         with:
           retention-days: 1
@@ -516,7 +516,7 @@ jobs:
           flags: --recursive
 
       - name: Load test results
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: allure-results-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
           path: apps/nfid-frontend-e2e/src/reporter/desktop/allure-results
@@ -546,7 +546,7 @@ jobs:
         run: echo "$TARGET_URL" > "report_url_desktop.txt"
 
       - name: Upload report_url.txt artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           retention-days: 1
           name: ReportUrlDesktop
@@ -575,7 +575,7 @@ jobs:
           flags: --recursive
 
       - name: Load test results
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: allure-results-mobile-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
           path: apps/nfid-frontend-e2e/src/reporter/mobile/allure-results
@@ -605,7 +605,7 @@ jobs:
         run: echo "$TARGET_URL" > "report_url_mobile.txt"
 
       - name: Upload report_url.txt artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           retention-days: 1
           name: ReportUrlMobile

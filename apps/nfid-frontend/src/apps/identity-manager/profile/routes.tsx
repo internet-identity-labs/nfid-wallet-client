@@ -1,4 +1,5 @@
 import { NavSecurityIcon } from "packages/ui/src/atoms/icons/nav-security"
+import { NavPermissionsIcon } from "packages/ui/src/atoms/icons/nav-permissions"
 import { NavVaultsIcon } from "packages/ui/src/atoms/icons/nav-vaults"
 import { NavWalletIcon } from "packages/ui/src/atoms/icons/nav-wallet"
 
@@ -10,6 +11,7 @@ export const ProfileConstants = {
   staking: "staking",
   activity: "activity",
   security: "/security",
+  permissions: "/permissions",
   copyRecoveryPhrase: "/copy-recovery-phrase",
   addPhoneNumber: "/add-phone-number",
   vaults: "/vaults",
@@ -37,5 +39,12 @@ export const navigationPopupLinks = [
     title: "Security",
     link: ProfileConstants.security,
     id: "nav-security",
+  },
+  {
+    icon: NavPermissionsIcon,
+    title: "Permissions",
+    link: ProfileConstants.permissions,
+    id: "nav-permissions",
+    separator: true,
   },
 ]

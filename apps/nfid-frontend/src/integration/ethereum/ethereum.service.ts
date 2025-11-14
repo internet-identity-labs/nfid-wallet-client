@@ -368,9 +368,9 @@ export class EthereumService {
       baseFeePerGas: bigint
     },
   ): Promise<TransactionResponse> {
-    const address = await this.getAddress(identity)
+    const address = await ethereumService.getAddress(identity)
 
-    const nonce = await this.getTransactionCount(address)
+    const nonce = await ethereumService.getTransactionCount(address)
 
     let request: EthSignTransactionRequest = {
       chain_id: CHAIN_ID,

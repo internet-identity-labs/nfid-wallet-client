@@ -30,9 +30,17 @@ export class Icrc1RegistryService {
     }
   }
 
-  async storeICRC1Canister(ledger: string, state: State): Promise<void> {
+  async storeICRC1Canister(
+    ledger: string,
+    state: State,
+    network?: number,
+  ): Promise<void> {
     await Promise.all([
-      iCRC1Registry.store_icrc1_canister(ledger, mapStateTS(state)),
+      iCRC1Registry.store_icrc1_canister(
+        ledger,
+        mapStateTS(state),
+        network ? [network] : [],
+      ),
       storageWithTtl.remove(await this.getRegistryCacheName()),
     ])
   }
@@ -41,9 +49,8 @@ export class Icrc1RegistryService {
     principal: string,
     ledgerCanisterId: string,
   ): Promise<void> {
-    const allUsersCanisters = await iCRC1Registry.get_canisters_by_root(
-      principal,
-    )
+    const allUsersCanisters =
+      await iCRC1Registry.get_canisters_by_root(principal)
     if (!allUsersCanisters.map((c) => c.ledger).includes(ledgerCanisterId)) {
       throw new Error("Canister not found.")
     }

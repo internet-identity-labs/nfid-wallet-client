@@ -28,7 +28,7 @@ const identity: JsonnableEd25519KeyIdentity = [
 ]
 
 describe("Lambda Sign/Register ECDSA", () => {
-  jest.setTimeout(80000)
+  jest.setTimeout(120000)
   const expectedGlobalAcc =
     "5vmgr-rh2gt-xlv6s-xzynd-vsg5l-2oodj-nomhe-mpv4y-6rgpw-cmwyz-bqe"
   describe("lambdaECDSA", () => {

@@ -30,6 +30,7 @@ export interface TransferFTUiProps {
   setChosenToken: (value: string) => void
   validateAddress: (address: string) => boolean | string
   isLoading: boolean
+  isBtcEthLoading: boolean
   loadingMessage: string | undefined
   isVault: boolean
   accountsOptions: IGroupedOptions[] | undefined
@@ -56,6 +57,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   setChosenToken,
   validateAddress,
   isLoading,
+  isBtcEthLoading,
   loadingMessage,
   isVault,
   accountsOptions,
@@ -128,6 +130,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         tokens={tokens}
         title="Token to send"
         setSkipFeeCalculation={setSkipFeeCalculation}
+        isBtcEthLoading={isBtcEthLoading}
       />
       <div className="h-4 mt-1 text-xs leading-4 text-red-600 dark:text-red-500">
         {errors["amount"]?.message as string}

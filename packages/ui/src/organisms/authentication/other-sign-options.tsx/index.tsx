@@ -8,7 +8,6 @@ import {
   IconCmpArrow,
   IconCmpTouchId,
   IconCmpUsb,
-  IconSvgText,
   Input,
 } from "@nfid-frontend/ui"
 
@@ -35,7 +34,12 @@ export const AuthOtherSignOptions = ({
   subTitle,
   onAuthWithRecoveryPhrase,
 }: AuthOtherSignOptionsProps) => {
-  const { register, handleSubmit, setValue } = useForm<{
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<{
     userNumber: number
   }>()
 
@@ -69,9 +73,12 @@ export const AuthOtherSignOptions = ({
         or
       </p>
       <Input
-        {...register("userNumber")}
+        {...register("userNumber", {
+          required: "Please enter your NFID number",
+        })}
         labelText="Your NFID number"
         className="mb-[20px]"
+        errorText={errors.userNumber?.message}
       />
       <div className="space-y-2.5">
         <IconButton

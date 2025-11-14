@@ -12,6 +12,7 @@ import { NFIDW_CANISTER_ID } from "@nfid/integration/token/constants"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
 import { mockFt, mockStake } from "./mock"
+import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 
 const NFIDW_ROOT_CANISTER = "m2blf-zqaaa-aaaaq-aaejq-cai"
 
@@ -25,6 +26,13 @@ const identityJSON: JsonnableEd25519KeyIdentity = [
 
 describe("Staking", () => {
   jest.setTimeout(90000)
+
+  beforeEach(() => {
+    jest
+      .spyOn(icrc1RegistryService as any, "getCanistersByRoot")
+      .mockResolvedValue([])
+  })
+
   it.skip("should stake neuron", async () => {
     let edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
     jest
@@ -152,18 +160,16 @@ describe("Staking", () => {
     expect(locked[0].getCreatedAtFormatted().getTime()).toEqual("11:42:03 AM")
 
     jest.useFakeTimers()
-    jest.setSystemTime(new Date("2025-04-08T00:00:00Z"))
+    jest.setSystemTime(new Date("2025-11-04T00:00:00Z"))
     expect(unlocking[0].getLockTime()).toBeUndefined()
     expect(unlocking[0].getLockTimeInMonths()).toBeUndefined()
-    expect(unlocking[0].getUnlockIn()).toEqual(1761043067)
-    expect(unlocking[0].getUnlockInMonths()).toEqual("6 months, 13 days")
+    expect(unlocking[0].getUnlockIn()).toEqual(1776043067)
+    expect(unlocking[0].getUnlockInMonths()).toEqual("5 months, 9 days")
     jest.useRealTimers()
     expect(unlocking[0].getUnlockInFormatted()?.getDate()).toEqual(
-      "Oct 21, 2025",
+      "Apr 13, 2026",
     )
-    expect(unlocking[0].getUnlockInFormatted()?.getTime()).toEqual(
-      "10:37:47 AM",
-    )
+    expect(unlocking[0].getUnlockInFormatted()?.getTime()).toEqual("1:17:47 AM")
     expect(unlocking[0].getCreatedAt()).toEqual(1742298123)
     expect(unlocking[0].getCreatedAtFormatted().getDate()).toEqual(
       "Mar 18, 2025",

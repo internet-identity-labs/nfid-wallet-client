@@ -65,7 +65,7 @@ export class PasskeyConnector {
     const jsonData = JSON.stringify({
       ...data,
       credentialId: base64url.encode(Buffer.from(data.credentialId)),
-      publicKey: toHexString(data.publicKey),
+      publicKey: toHexString(data.publicKey.buffer as ArrayBuffer),
     })
 
     const identity = WebAuthnIdentity.fromJSON(
@@ -104,6 +104,15 @@ export class PasskeyConnector {
     let icon
     let device
 
+    const platform = getPlatformInfo()
+    const os = platform.os
+    const browser = getBrowser()
+    const isAppleOS = ["Mac OS", "macOS", "iOS", "iPadOS", "Darwin"].includes(
+      os,
+    )
+    const isAndroid = os === "Android"
+    const isWindows = os === "Windows"
+
     if (
       transports.some((item) =>
         ["usb", "nfc", "ble", "smart-card"].includes(item),
@@ -115,16 +124,30 @@ export class PasskeyConnector {
       transports.includes("hybrid") &&
       transports.includes("internal")
     ) {
-      if (getPlatformInfo().os === "Android") {
-        icon = getIsMobileDeviceMatch() ? Icon.mobile : Icon.desktop
-        device = `${getBrowser()} on ${getPlatformInfo().device}`
-      } else {
+      if (isAppleOS) {
         icon = Icon.apple
         device = "iCloud keychain"
+      } else if (isAndroid) {
+        icon = getIsMobileDeviceMatch() ? Icon.mobile : Icon.desktop
+        device = `${browser} on ${platform.device}`
+      } else if (isWindows) {
+        icon = Icon.desktop
+        device = `${browser} on ${platform.device}`
+      } else {
+        icon = getIsMobileDeviceMatch() ? Icon.mobile : Icon.desktop
+        device = `${browser} on ${platform.device}`
       }
     } else if (transports.includes("internal")) {
-      icon = getIsMobileDeviceMatch() ? Icon.mobile : Icon.desktop
-      device = `${getBrowser()} on ${getPlatformInfo().device}`
+      if (isWindows) {
+        icon = Icon.desktop
+        device = `${browser} on ${platform.device}`
+      } else if (isAppleOS) {
+        icon = Icon.apple
+        device = platform.authenticator
+      } else {
+        icon = getIsMobileDeviceMatch() ? Icon.mobile : Icon.desktop
+        device = `${browser} on ${platform.device}`
+      }
     } else {
       icon = Icon.passkey
       device = "Unknown passkey"
@@ -193,7 +216,7 @@ export class PasskeyConnector {
     },
   ) {
     let credential: PublicKeyCredential
-    const nextBorrowedAnchor = randomBytes(16)
+    const nextBorrowedAnchor = randomBytes(16) as BufferSource
     try {
       credential = await this.createNavigatorCredential(
         nextBorrowedAnchor,
@@ -237,7 +260,7 @@ export class PasskeyConnector {
     const jsonData = JSON.stringify({
       ...data,
       credentialId: base64url.encode(Buffer.from(data.credentialId)),
-      publicKey: toHexString(data.publicKey),
+      publicKey: toHexString(data.publicKey.buffer as ArrayBuffer),
       user: nextBorrowedAnchor,
     })
 
@@ -425,7 +448,7 @@ export class PasskeyConnector {
       undefined,
       passkeysMetadata.map((p) => ({
         credentialId: p.credentialId,
-        pubkey: wrapDER(p.publicKey, DER_COSE_OID) as any,
+        pubkey: wrapDER(p.publicKey.buffer as ArrayBuffer, DER_COSE_OID) as any,
       })),
     )
   }
@@ -512,7 +535,7 @@ export class PasskeyConnector {
     return (await navigator.credentials.create({
       publicKey: {
         attestation: "direct",
-        challenge: this._createChallengeBuffer(),
+        challenge: this._createChallengeBuffer() as BufferSource,
         pubKeyCredParams: [
           {
             type: "public-key",

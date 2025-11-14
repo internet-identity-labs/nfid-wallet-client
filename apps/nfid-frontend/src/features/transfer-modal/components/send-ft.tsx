@@ -472,9 +472,8 @@ export const TransferFT = ({
           addressValidators[token?.getTokenAddress() ?? ""] ||
           validateICRC1Address
         }
-        isLoading={
-          isTokensLoading || isBtcAddressLoading || isEthAddressLoading
-        }
+        isLoading={isTokensLoading}
+        isBtcEthLoading={isBtcAddressLoading || isEthAddressLoading}
         isVault={isVault}
         selectedVaultsAccountAddress={selectedVaultsAccountAddress}
         submit={submit}

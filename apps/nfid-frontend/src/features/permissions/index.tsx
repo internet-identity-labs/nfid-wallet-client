@@ -61,7 +61,6 @@ const PermissionsPage: FC<PermissionsPageProps> = ({
       toaster.success("All token approvals have been successfully revoked")
     } catch (e) {
       toaster.error(`Revoke error. ${(e as Error).message}`)
-      console.log("asdad", e)
     } finally {
       setIsLoadingRevoke(false)
       setIsModalOpen(false)

@@ -1,4 +1,11 @@
-import { useMemo, useCallback, FC, useEffect, useReducer } from "react"
+import {
+  useMemo,
+  useCallback,
+  FC,
+  useEffect,
+  useReducer,
+  useState,
+} from "react"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 import { NFIDTheme } from "frontend/App"
 import { Permissions } from "packages/ui/src/organisms/permissions"
@@ -10,6 +17,11 @@ import { fetchTokens } from "../fungible-token/utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 import { permissionsReducer, permissionsInitialState } from "./utils"
+import { useIdentity } from "frontend/hooks/identity"
+import { Button } from "@nfid-frontend/ui"
+import toaster from "packages/ui/src/atoms/toast"
+import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
+import { Spinner } from "packages/ui/src/atoms/spinner"
 
 type PermissionsPageProps = {
   walletTheme: NFIDTheme
@@ -24,14 +36,37 @@ const PermissionsPage: FC<PermissionsPageProps> = ({
     permissionsReducer,
     permissionsInitialState,
   )
+  const { identity, isLoading: identityLoading } = useIdentity()
   const publicKey = authState.getUserIdData().publicKey
+  const [isLoadingRevoke, setIsLoadingRevoke] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const { data: tokens } = useSWRWithTimestamp("tokens", fetchTokens, {
     revalidateOnFocus: false,
     revalidateOnMount: false,
   })
-
   const { initedTokens } = useTokensInit(tokens)
+
+  const revokeAll = async () => {
+    try {
+      if (!identity) return
+      setIsLoadingRevoke(true)
+
+      await ftService.revokeAllowance(identity, state.allowancesList)
+
+      dispatch({
+        type: "RESET",
+        payload: { list: [] },
+      })
+      toaster.success("All token approvals have been successfully revoked")
+    } catch (e) {
+      toaster.error(`Revoke error. ${(e as Error).message}`)
+      console.log("asdad", e)
+    } finally {
+      setIsLoadingRevoke(false)
+      setIsModalOpen(false)
+    }
+  }
 
   const { data: initialPage, isLoading } = useSWR(
     initedTokens ? ["allowances", 0] : null,
@@ -106,6 +141,23 @@ const PermissionsPage: FC<PermissionsPageProps> = ({
       className="dark:text-white"
       walletTheme={walletTheme}
       setWalletTheme={setWalletTheme}
+      headerMenu={
+        flattenedAllowances.length === 0 ? null : (
+          <Button
+            disabled={
+              state.isLoadingMore ||
+              isLoadingRevoke ||
+              flattenedAllowances.length === 0
+            }
+            className="ml-auto"
+            onClick={() => setIsModalOpen(true)}
+            type="stroke"
+            isSmall
+          >
+            {isLoadingRevoke ? "Loading..." : "Revoke all"}
+          </Button>
+        )
+      }
     >
       <Permissions
         allowances={flattenedAllowances}
@@ -113,7 +165,45 @@ const PermissionsPage: FC<PermissionsPageProps> = ({
         loadMore={loadMore}
         isLoadingMore={state.isLoadingMore}
         hasMore={state.hasMore}
+        identity={identity}
+        identityLoading={identityLoading}
+        dispatch={dispatch}
       />
+      <ModalComponent
+        isVisible={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false)
+        }}
+        className="p-5 w-[95%] md:w-[540px] z-[100] !rounded-[24px]"
+      >
+        <p className="text-[20px] leading-[26px] font-bold dark:text-white mb-[18px]">
+          Revoke all approvals
+        </p>
+        <p className="leading-[22px] dark:text-white">
+          You are about to revoke all token approvals previously granted to
+          other services.
+        </p>
+        <div className="mt-5 flex justify-end gap-2.5">
+          <Button
+            type="stroke"
+            isSmall
+            className="w-[115px]"
+            onClick={() => setIsModalOpen(false)}
+          >
+            Cancel
+          </Button>
+
+          <Button
+            isSmall
+            className="w-[115px]"
+            onClick={revokeAll}
+            disabled={identityLoading || !identity || isLoadingRevoke}
+            icon={isLoadingRevoke ? <Spinner /> : null}
+          >
+            Revoke
+          </Button>
+        </div>
+      </ModalComponent>
     </ProfileTemplate>
   )
 }

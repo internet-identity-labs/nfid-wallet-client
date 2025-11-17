@@ -26,9 +26,9 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
 import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
-import { erc20Service } from "../ethereum/erc20.service"
-import { FTERC20Impl } from "./impl/ft-erc20-impl"
-import { mapState } from "@nfid/integration/token/icrc1/util"
+//import { erc20Service } from "../ethereum/erc20.service"
+// import { FTERC20Impl } from "./impl/ft-erc20-impl"
+// import { mapState } from "@nfid/integration/token/icrc1/util"
 
 const InitedTokens = "InitedTokens"
 export const TOKENS_REFRESH_INTERVAL = 10000
@@ -124,18 +124,18 @@ export class FtService {
         return ft
       })
 
-    const erc20Tokens = await erc20Service.getKnownTokensList()
-    let userCanisters = await icrc1RegistryService.getCanistersByRoot(userId)
+    // const erc20Tokens = await erc20Service.getKnownTokensList()
+    // let userCanisters = await icrc1RegistryService.getCanistersByRoot(userId)
 
-    const storedErc20Tokens: FT[] = erc20Tokens.map((token) => {
-      const userCanister = userCanisters.find(
-        (t) => t.ledger === token.address && t.network === token.chainId,
-      )
-      return new FTERC20Impl({
-        ...token,
-        state: userCanister ? mapState(userCanister.state) : token.state,
-      })
-    })
+    // const storedErc20Tokens: FT[] = erc20Tokens.map((token) => {
+    //   const userCanister = userCanisters.find(
+    //     (t) => t.ledger === token.address && t.network === token.chainId,
+    //   )
+    //   return new FTERC20Impl({
+    //     ...token,
+    //     state: userCanister ? mapState(userCanister.state) : token.state,
+    //   })
+    // })
 
     return this.sortTokens([
       ...icrc1Tokens,
@@ -252,13 +252,21 @@ export class FtService {
 
   async revokeAllowance(
     delegationIdentity: SignIdentity,
-    spenderPrincipal: Principal,
+    allowances: {
+      token: FT
+      allowance: AllowanceDetailDTO
+    }[],
   ): Promise<void> {
-    const ft = await this.getInitedTokens([], delegationIdentity.getPrincipal())
     await Promise.all(
-      ft.map((token) =>
-        token.revokeAllowance(delegationIdentity, spenderPrincipal),
-      ),
+      allowances
+        // adjust the Revoke logics for ICP, then remove this filter
+        .filter(({ token }) => token.getTokenAddress() !== ICP_CANISTER_ID)
+        .map(({ allowance, token }) =>
+          token.revokeAllowance(
+            delegationIdentity,
+            Principal.fromText(allowance.to_spender),
+          ),
+        ),
     )
   }
 

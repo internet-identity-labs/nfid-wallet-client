@@ -9,7 +9,7 @@ type PermissionsState = {
   allowancesList: { token: FT; allowance: AllowanceDetailDTO }[]
 }
 
-type PermissionsStateAction =
+export type PermissionsStateAction =
   | {
       type: "RESET"
       payload: { list: { token: FT; allowance: AllowanceDetailDTO }[] }
@@ -18,6 +18,10 @@ type PermissionsStateAction =
   | {
       type: "LOAD_MORE_SUCCESS"
       payload: { list: { token: FT; allowance: AllowanceDetailDTO }[] }
+    }
+  | {
+      type: "REMOVE_ALLOWANCE"
+      payload: { token: FT; address: string }
     }
 
 export const permissionsInitialState: PermissionsState = {
@@ -51,6 +55,21 @@ export const permissionsReducer = (
         hasMore: action.payload.list.length === PAGE_SIZE,
         isLoadingMore: false,
         allowancesList: list,
+      }
+    }
+
+    case "REMOVE_ALLOWANCE": {
+      const { token, address } = action.payload
+
+      return {
+        ...state,
+        allowancesList: state.allowancesList.filter(
+          (item) =>
+            !(
+              item.token.getTokenAddress() === token.getTokenAddress() &&
+              item.allowance.to_spender === address
+            ),
+        ),
       }
     }
 

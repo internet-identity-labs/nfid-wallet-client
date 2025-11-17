@@ -52,7 +52,7 @@ const PermissionsPage: FC<PermissionsPageProps> = ({
       if (!identity) return
       setIsLoadingRevoke(true)
 
-      await ftService.revokeAllowance(identity, state.allowancesList)
+      await ftService.revokeAllAllowances(identity, state.allowancesList)
 
       dispatch({
         type: "RESET",

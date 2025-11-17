@@ -250,7 +250,7 @@ export class FtService {
     return allFlattened.slice(offset, offset + limit)
   }
 
-  async revokeAllowance(
+  async revokeAllAllowances(
     delegationIdentity: SignIdentity,
     allowances: {
       token: FT

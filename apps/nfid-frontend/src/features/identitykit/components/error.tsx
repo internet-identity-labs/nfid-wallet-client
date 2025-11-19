@@ -60,11 +60,13 @@ export const RPCComponentError = ({
       {request?.data.method !== RPCComponentsUI.icrc49_call_canister ? (
         <div className="flex bg-orange-50 dark:bg-orange-500/10 p-[15px] text-orange-900 dark:text-amber-600 gap-2.5 rounded-xl overflow-y-auto h-[240px]">
           <div className="w-[22px] shrink-0">
-            <IconCmpWarning className="!text-orange-900 dark:!text-amber-600" />
+            <IconCmpWarning className="!text-orange-900 dark:!text-red-500" />
           </div>
           <div className="flex-1 min-w-0 text-sm">
-            <p className="mb-1 font-bold">Request failed</p>
-            <p>{error?.message ?? "Unknown error"}</p>
+            <p className="mb-1 font-bold dark:text-red-500">Request failed</p>
+            <p className="dark:text-red-500">
+              {error?.message ?? "Unknown error"}
+            </p>
           </div>
         </div>
       ) : (
@@ -79,11 +81,15 @@ export const RPCComponentError = ({
           {isResponseTab ? (
             <div className="flex border border-gray-200 dark:border-zinc-500 p-[15px] text-orange-900 gap-2.5 rounded-xl overflow-y-auto h-[240px]">
               <div className="w-[22px] shrink-0">
-                <IconCmpWarning className="!text-orange-900" />
+                <IconCmpWarning className="!text-orange-900 dark:!text-red-500" />
               </div>
               <div className="flex-1 min-w-0 text-sm">
-                <p className="mb-1 font-bold">Request failed</p>
-                <p>{error?.message ?? "Unknown error"}</p>
+                <p className="mb-1 font-bold dark:text-red-500">
+                  Request failed
+                </p>
+                <p className="dark:text-red-500">
+                  {error?.message ?? "Unknown error"}
+                </p>
               </div>
             </div>
           ) : (

@@ -248,15 +248,23 @@ export class FtService {
     return allFlattened.slice(offset, offset + limit)
   }
 
-  async revokeAllowance(
+  async revokeAllAllowances(
     delegationIdentity: SignIdentity,
-    spenderPrincipal: Principal,
+    allowances: {
+      token: FT
+      allowance: AllowanceDetailDTO
+    }[],
   ): Promise<void> {
-    const ft = await this.getInitedTokens([], delegationIdentity.getPrincipal())
     await Promise.all(
-      ft.map((token) =>
-        token.revokeAllowance(delegationIdentity, spenderPrincipal),
-      ),
+      allowances
+        // adjust the Revoke logics for ICP, then remove this filter
+        .filter(({ token }) => token.getTokenAddress() !== ICP_CANISTER_ID)
+        .map(({ allowance, token }) =>
+          token.revokeAllowance(
+            delegationIdentity,
+            Principal.fromText(allowance.to_spender),
+          ),
+        ),
     )
   }
 

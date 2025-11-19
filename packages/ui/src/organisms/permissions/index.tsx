@@ -13,6 +13,12 @@ import { TableTokenSkeleton } from "../../atoms/skeleton"
 import { getIsMobileDeviceMatch } from "../../utils/is-mobile"
 import { PermissionsToken } from "./PermissionsRow"
 import { Button } from "../../molecules/button"
+import { ModalComponent } from "../../molecules/modal/index-v0"
+import toaster from "../../atoms/toast"
+import { Spinner } from "../../atoms/spinner"
+import { SignIdentity } from "@dfinity/agent"
+import { PermissionsStateAction } from "frontend/features/permissions/utils"
+import { Principal } from "@dfinity/principal"
 
 enum Sorting {
   DEFAULT = "DEFAULT",
@@ -35,6 +41,9 @@ export interface PermissionsProps {
   isLoadingMore: boolean
   loadMore: () => Promise<void>
   hasMore: boolean
+  identity?: SignIdentity
+  identityLoading: boolean
+  dispatch: React.Dispatch<PermissionsStateAction>
 }
 
 export const Permissions: FC<PermissionsProps> = ({
@@ -43,11 +52,39 @@ export const Permissions: FC<PermissionsProps> = ({
   isLoadingMore,
   loadMore,
   hasMore,
+  identity,
+  identityLoading,
+  dispatch,
 }) => {
   const isDarkTheme = useDarkTheme()
   const [sorting, setSorting] = useState<Sorting>(Sorting.DEFAULT)
   const [isHovered, setIsHovered] = useState(false)
   const [isHoveredAddress, setIsHoveredAddress] = useState(false)
+  const [isRevokeLoading, setIsRevokeLoading] = useState(false)
+  const [chosenAllowance, setChosenAllowance] = useState<Allowance | null>(null)
+
+  const handleRevoke = async () => {
+    if (!chosenAllowance || !identity) return
+
+    const { token, address, amountFormatted } = chosenAllowance
+    setIsRevokeLoading(true)
+
+    try {
+      await token.revokeAllowance(identity, Principal.fromText(address))
+      toaster.success(
+        `Approval for ${amountFormatted} has been successfully revoked`,
+      )
+      dispatch({
+        type: "REMOVE_ALLOWANCE",
+        payload: { token, address },
+      })
+    } catch (e) {
+      toaster.error(`Revoke error. ${(e as Error).message}`)
+    } finally {
+      setIsRevokeLoading(false)
+      setChosenAllowance(null)
+    }
+  }
 
   const handleUsdSorting = () => {
     let nextSorting: Sorting
@@ -172,7 +209,7 @@ export const Permissions: FC<PermissionsProps> = ({
               strokeColor={isDarkTheme ? "#71717A" : "#9CA3AF"}
             />
             <div className="text-secondary dark:text-zinc-500">
-              You didn’t get access to your tokens to anyone.
+              You haven’t granted token access to anyone yet.
             </div>
           </div>
         ) : (
@@ -228,17 +265,13 @@ export const Permissions: FC<PermissionsProps> = ({
                   </tr>
                 </thead>
                 <tbody className="h-16 text-sm text-black">
-                  {sortedAllowances.map(
-                    ({ token, address, amountFormatted, usdAmount }, index) => (
-                      <PermissionsToken
-                        key={`${token.getTokenName()}_${index}`}
-                        token={token}
-                        address={address}
-                        usdAmount={usdAmount}
-                        amountFormatted={amountFormatted}
-                      />
-                    ),
-                  )}
+                  {sortedAllowances.map((allowance, index) => (
+                    <PermissionsToken
+                      key={`${allowance.token.getTokenName()}_${index}`}
+                      allowance={allowance}
+                      onChooseAllowance={setChosenAllowance}
+                    />
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -254,6 +287,41 @@ export const Permissions: FC<PermissionsProps> = ({
             {isLoadingMore ? "Loading..." : "Load more"}
           </Button>
         )}
+        <ModalComponent
+          isVisible={Boolean(chosenAllowance)}
+          onClose={() => {
+            setChosenAllowance(null)
+          }}
+          className="p-5 w-[95%] md:w-[540px] z-[100] !rounded-[24px]"
+        >
+          <p className="text-[20px] leading-[26px] font-bold dark:text-white mb-[18px]">
+            Revoke approval
+          </p>
+          <p className="leading-[22px] dark:text-white">
+            You are about to revoke the approval for{" "}
+            {chosenAllowance?.amountFormatted} previously granted to{" "}
+            {chosenAllowance?.address}.
+          </p>
+          <div className="mt-5 flex justify-end gap-2.5">
+            <Button
+              type="stroke"
+              isSmall
+              className="w-[115px]"
+              onClick={() => setChosenAllowance(null)}
+            >
+              Cancel
+            </Button>
+            <Button
+              isSmall
+              className="w-[115px]"
+              onClick={handleRevoke}
+              disabled={identityLoading || !identity || isRevokeLoading}
+              icon={isRevokeLoading ? <Spinner /> : null}
+            >
+              Revoke
+            </Button>
+          </div>
+        </ModalComponent>
       </ProfileContainer>
     </>
   )

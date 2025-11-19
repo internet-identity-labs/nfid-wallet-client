@@ -143,7 +143,7 @@ export class PasskeyConnector {
         device = `${browser} on ${platform.device}`
       } else if (isAppleOS) {
         icon = Icon.apple
-        device = platform.authenticator
+        device = "iCloud keychain"
       } else {
         icon = getIsMobileDeviceMatch() ? Icon.mobile : Icon.desktop
         device = `${browser} on ${platform.device}`

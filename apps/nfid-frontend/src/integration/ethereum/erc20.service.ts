@@ -273,7 +273,7 @@ export class Erc20Service {
       })
 
       // Decode the result
-      const [_, returnData] = multicallInterface.decodeFunctionResult(
+      const [, returnData] = multicallInterface.decodeFunctionResult(
         "aggregate",
         result,
       )

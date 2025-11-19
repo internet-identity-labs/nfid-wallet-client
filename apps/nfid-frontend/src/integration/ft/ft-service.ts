@@ -4,17 +4,13 @@ import BigNumber from "bignumber.js"
 import { Cache } from "node-ts-cache"
 import { integrationCache } from "packages/integration/src/cache"
 import { storageWithTtl } from "@nfid/client-db"
-import BtcIcon from "packages/ui/src/organisms/tokens/assets/bitcoin.svg"
-import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
 import { FT } from "src/integration/ft/ft"
 import { FTImpl } from "src/integration/ft/impl/ft-impl"
 
 import {
-  BTC_DECIMALS,
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
-  ETH_DECIMALS,
   ETH_NATIVE_ID,
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
@@ -26,9 +22,11 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
 import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
-import { erc20Service } from "../ethereum/erc20.service"
-import { FTERC20Impl } from "./impl/ft-erc20-impl"
-import { mapState } from "@nfid/integration/token/icrc1/util"
+// import { erc20Service } from "../ethereum/erc20.service"
+// import { FTERC20Impl } from "./impl/ft-erc20-impl"
+// import { mapState } from "@nfid/integration/token/icrc1/util"
+import { FTETHImpl } from "./impl/ft-eth-native-impl"
+import { FTBTCImpl } from "./impl/ft-btc-native-impl"
 
 const InitedTokens = "InitedTokens"
 export const TOKENS_REFRESH_INTERVAL = 10000
@@ -117,28 +115,28 @@ export class FtService {
         }
 
         const ft = canisters.map((canister) => new FTImpl(canister))
-
-        ft.push(this.getNativeBtcToken())
-        ft.push(this.getNativeEthToken())
-
         return ft
       })
 
-    const erc20Tokens = await erc20Service.getKnownTokensList()
-    let userCanisters = await icrc1RegistryService.getCanistersByRoot(userId)
+    const ethNativeToken = new FTETHImpl()
+    const btcNativeToken = new FTBTCImpl()
+    // const erc20Tokens = await erc20Service.getKnownTokensList()
+    // let userCanisters = await icrc1RegistryService.getCanistersByRoot(userId)
 
-    const storedErc20Tokens: FT[] = erc20Tokens.map((token) => {
-      const userCanister = userCanisters.find(
-        (t) => t.ledger === token.address && t.network === token.chainId,
-      )
-      return new FTERC20Impl({
-        ...token,
-        state: userCanister ? mapState(userCanister.state) : token.state,
-      })
-    })
+    // const storedErc20Tokens: FT[] = erc20Tokens.map((token) => {
+    //   const userCanister = userCanisters.find(
+    //     (t) => t.ledger === token.address && t.network === token.chainId,
+    //   )
+    //   return new FTERC20Impl({
+    //     ...token,
+    //     state: userCanister ? mapState(userCanister.state) : token.state,
+    //   })
+    // })
 
     return this.sortTokens([
       ...icrc1Tokens,
+      ethNativeToken,
+      btcNativeToken,
       // ...storedErc20Tokens,
     ])
   }
@@ -314,36 +312,6 @@ export class FtService {
       tokenImpl.inited = data.inited
 
       return token
-    })
-  }
-
-  private getNativeBtcToken(): FTImpl {
-    return new FTImpl({
-      ledger: BTC_NATIVE_ID,
-      symbol: "BTC",
-      name: "Bitcoin",
-      decimals: BTC_DECIMALS,
-      category: Category.Native,
-      logo: BtcIcon,
-      state: State.Active,
-      fee: BigInt(0),
-      index: undefined,
-      rootCanisterId: undefined,
-    })
-  }
-
-  private getNativeEthToken(): FTImpl {
-    return new FTImpl({
-      ledger: ETH_NATIVE_ID,
-      symbol: "ETH",
-      name: "Ethereum",
-      decimals: ETH_DECIMALS,
-      category: Category.Native,
-      logo: EthIcon,
-      state: State.Active,
-      fee: BigInt(0),
-      index: undefined,
-      rootCanisterId: undefined,
     })
   }
 

@@ -53,5 +53,9 @@ export class FTERC20Impl extends FTImpl {
             ?.balance,
       )
     this.tokenBalance = balance ? BigInt(balance) : BigInt(0)
+
+    if (this.tokenBalance !== undefined) {
+      this.inited = true
+    }
   }
 }

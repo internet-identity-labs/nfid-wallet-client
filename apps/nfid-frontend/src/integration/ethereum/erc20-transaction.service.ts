@@ -2,7 +2,6 @@ import { ETHERSCAN_API_KEY } from "@nfid/integration/token/constants"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
-import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
 import { erc20Service } from "./erc20.service"
 
 interface EtherscanTokenTransaction {

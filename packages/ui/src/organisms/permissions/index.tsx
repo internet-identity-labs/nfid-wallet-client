@@ -209,7 +209,7 @@ export const Permissions: FC<PermissionsProps> = ({
               strokeColor={isDarkTheme ? "#71717A" : "#9CA3AF"}
             />
             <div className="text-secondary dark:text-zinc-500">
-              You didn’t get access to your tokens to anyone.
+              You haven’t granted token access to anyone yet.
             </div>
           </div>
         ) : (

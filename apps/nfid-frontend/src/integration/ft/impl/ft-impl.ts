@@ -9,6 +9,7 @@ import {
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
+  ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
@@ -334,10 +335,24 @@ export class FTImpl implements FT {
 
   async revokeAllowance(
     identity: SignIdentity,
-    spenderPrincipal: Principal,
+    spenderPrincipal: Principal | string,
   ): Promise<void> {
     const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
-    await icrc1Pair.setAllowance(identity, spenderPrincipal, BigInt(0))
+    if (this.tokenAddress === ICP_CANISTER_ID) {
+      await icrc1Pair.removeApprovalICPLedger(
+        identity,
+        spenderPrincipal as string,
+      )
+    } else {
+      if (typeof spenderPrincipal === "string") {
+        throw new Error("SPender principal is a string for non-ICP token")
+      }
+      await icrc1Pair.setAllowance(
+        identity,
+        spenderPrincipal as Principal,
+        BigInt(0),
+      )
+    }
   }
 
   private isNativeBtc(): boolean {

@@ -271,9 +271,15 @@ export interface AllowanceDetail {
   allowance: bigint
   expires_at: [] | [bigint]
 }
+export type Result_2 = { Ok: bigint } | { Err: ApproveError }
 export type AllowanceResult =
   | { Ok: Array<AllowanceDetail> }
   | { Err: GetAllowancesError }
+export interface RemoveApprovalArgs {
+  fee: [] | [bigint]
+  from_subaccount: [] | [Uint8Array | number[]]
+  spender: Uint8Array | number[]
+}
 export interface _SERVICE {
   account_balance: ActorMethod<[AccountBalanceArgs], Tokens>
   account_balance_dfx: ActorMethod<[AccountBalanceArgsDfx], Tokens>
@@ -303,4 +309,5 @@ export interface _SERVICE {
   transfer_fee: ActorMethod<[TransferFeeArg], TransferFee>
   icrc103_get_allowances: ActorMethod<[GetAllowancesArgs], AllowanceResult>
   get_allowances: ActorMethod<[GetAllowancesArgsICP], Array<Allowance>>
+  remove_approval: ActorMethod<[RemoveApprovalArgs], Result_2>
 }

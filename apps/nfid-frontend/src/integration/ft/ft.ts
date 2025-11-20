@@ -93,6 +93,6 @@ export interface FT {
 
   revokeAllowance(
     identity: SignIdentity,
-    spenderPrincipal: Principal,
+    spender: Principal | string,
   ): Promise<void>
 }

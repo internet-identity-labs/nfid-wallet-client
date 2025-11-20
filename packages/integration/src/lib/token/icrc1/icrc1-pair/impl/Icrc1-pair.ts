@@ -18,7 +18,10 @@ import { Category, State } from "../../enum/enums"
 import { icrc1OracleService } from "../../service/icrc1-oracle-service"
 import { icrc1StorageService } from "../../service/icrc1-storage-service"
 import { ICRC1Data, ICRC1Error, AllowanceDetailDTO } from "../../types"
-import { principalToAccountIdentifier } from "@dfinity/ledger-icp"
+import {
+  AccountIdentifier,
+  principalToAccountIdentifier,
+} from "@dfinity/ledger-icp"
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 export class Icrc1Pair implements IIcrc1Pair {
   private readonly ledger: string
@@ -155,6 +158,27 @@ export class Icrc1Pair implements IIcrc1Pair {
       console.debug("Failed to get allowances {} for token {}:", e, this.ledger)
       return []
     }
+  }
+
+  async removeApprovalICPLedger(
+    signIdentity: SignIdentity,
+    spenderPrincipalId: string,
+  ): Promise<bigint> {
+    const actor = actorBuilder<ICRC1ServiceIDL>(this.ledger, icrc1IDL, {
+      canisterId: this.ledger,
+      agent: new HttpAgent({ ...agentBaseConfig, identity: signIdentity }),
+    })
+    let result = await actor.remove_approval({
+      fee: [],
+      from_subaccount: [],
+      spender: AccountIdentifier.fromHex(spenderPrincipalId).toUint8Array(),
+    })
+    if (hasOwnProperty(result, "Err")) {
+      throw new ICRC1Error(
+        `Failed to remove approval. ${JSON.stringify(result.Err)} for token ${this.ledger}`,
+      )
+    }
+    return result.Ok
   }
 
   async setAllowance(

@@ -2,6 +2,7 @@ import { Principal } from "@dfinity/principal"
 import { Icrc1Pair } from "./Icrc1-pair"
 import { mockIdentityA } from "@nfid/integration"
 import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { AccountIdentifier } from "@dfinity/ledger-icp"
 
 describe.skip("ICRC1 pair suite", () => {
   jest.setTimeout(200000)
@@ -39,30 +40,19 @@ describe.skip("ICRC1 pair suite", () => {
     let icpAllowances = await icpPair.getIcrc2Allowances(
       identity.getPrincipal(),
     )
+    let accId = AccountIdentifier.fromPrincipal({
+      principal: identity.getPrincipal(),
+    }).toHex()
+    console.log("accId", accId)
     console.log("icpAllowances", icpAllowances)
-    let allowedBlock2 = await icpPair.setAllowance(
+    let allowedBlock2 = await icpPair.removeApprovalICPLedger(
       identity,
-      Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"),
-      BigInt(1000000000000000000),
+      "069dbf62315b6241d488e4f31eece5dda7ca5be9f0b897e1bde9b18bcfe24a4c",
     )
     expect(allowedBlock2).toBeGreaterThan(0)
     let icpAllowances2 = await icpPair.getIcrc2Allowances(
       identity.getPrincipal(),
     )
     console.log("icpAllowances2", icpAllowances2)
-    expect(icpAllowances2.length).toEqual(1)
-    expect(icpAllowances2[0].allowance).toEqual(BigInt(1000000000000000000))
-    expect(icpAllowances2[0].expires_at).toBeUndefined()
-    let revokedBlock2 = await icpPair.setAllowance(
-      identity,
-      Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai"),
-      BigInt(0),
-    )
-    expect(revokedBlock2).toBeGreaterThan(0)
-    let icpAllowances3 = await icpPair.getIcrc2Allowances(
-      identity.getPrincipal(),
-    )
-    console.log("icpAllowances3", icpAllowances3)
-    expect(icpAllowances3.length).toEqual(0)
   })
 })

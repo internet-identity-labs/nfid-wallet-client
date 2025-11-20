@@ -246,6 +246,12 @@ export const idlFactory = ({ IDL }: any) => {
     Ok: IDL.Vec(AllowanceDetail),
     Err: GetAllowancesError,
   })
+  const RemoveApprovalArgs = IDL.Record({
+    fee: IDL.Opt(IDL.Nat),
+    from_subaccount: IDL.Opt(IDL.Vec(IDL.Nat8)),
+    spender: IDL.Vec(IDL.Nat8),
+  })
+  const Result_2 = IDL.Variant({ Ok: IDL.Nat, Err: ApproveError })
   return IDL.Service({
     account_balance: IDL.Func([AccountBalanceArgs], [Tokens], ["query"]),
     account_balance_dfx: IDL.Func([AccountBalanceArgsDfx], [Tokens], ["query"]),
@@ -293,6 +299,7 @@ export const idlFactory = ({ IDL }: any) => {
       [IDL.Vec(Allowance)],
       ["query"],
     ),
+    remove_approval: IDL.Func([RemoveApprovalArgs], [Result_2], []),
   })
 }
 export const init = ({ IDL }: any) => {

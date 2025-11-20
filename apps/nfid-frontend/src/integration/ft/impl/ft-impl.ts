@@ -7,6 +7,7 @@ import { exchangeRateService } from "@nfid/integration"
 import {
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
+  ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
@@ -306,10 +307,18 @@ export class FTImpl implements FT {
 
   async revokeAllowance(
     identity: SignIdentity,
-    spenderPrincipal: Principal,
+    spender: string,
   ): Promise<void> {
     const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
-    await icrc1Pair.setAllowance(identity, spenderPrincipal, BigInt(0))
+    if (this.tokenAddress === ICP_CANISTER_ID) {
+      await icrc1Pair.removeApprovalICPLedger(identity, spender)
+    } else {
+      await icrc1Pair.setAllowance(
+        identity,
+        Principal.fromText(spender),
+        BigInt(0),
+      )
+    }
   }
 
   protected async getBalance(globalPrincipal: Principal): Promise<void> {

@@ -335,23 +335,16 @@ export class FTImpl implements FT {
 
   async revokeAllowance(
     identity: SignIdentity,
-    spenderPrincipal: Principal | string,
+    spender: Principal | string,
   ): Promise<void> {
     const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
     if (this.tokenAddress === ICP_CANISTER_ID) {
-      await icrc1Pair.removeApprovalICPLedger(
-        identity,
-        spenderPrincipal as string,
-      )
+      await icrc1Pair.removeApprovalICPLedger(identity, spender as string)
     } else {
-      if (typeof spenderPrincipal === "string") {
-        throw new Error("SPender principal is a string for non-ICP token")
+      if (typeof spender === "string") {
+        throw new Error("Spender principal is a string for non-ICP token")
       }
-      await icrc1Pair.setAllowance(
-        identity,
-        spenderPrincipal as Principal,
-        BigInt(0),
-      )
+      await icrc1Pair.setAllowance(identity, spender as Principal, BigInt(0))
     }
   }
 

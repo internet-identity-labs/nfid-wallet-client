@@ -18,7 +18,6 @@ import toaster from "../../atoms/toast"
 import { Spinner } from "../../atoms/spinner"
 import { SignIdentity } from "@dfinity/agent"
 import { PermissionsStateAction } from "frontend/features/permissions/utils"
-import { Principal } from "@dfinity/principal"
 
 enum Sorting {
   DEFAULT = "DEFAULT",
@@ -70,7 +69,7 @@ export const Permissions: FC<PermissionsProps> = ({
     setIsRevokeLoading(true)
 
     try {
-      await token.revokeAllowance(identity, Principal.fromText(address))
+      await token.revokeAllowance(identity, address)
       toaster.success(
         `Approval for ${amountFormatted} has been successfully revoked`,
       )

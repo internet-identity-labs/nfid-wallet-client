@@ -258,15 +258,9 @@ export class FtService {
     }[],
   ): Promise<void> {
     await Promise.all(
-      allowances
-        // adjust the Revoke logics for ICP, then remove this filter
-        .filter(({ token }) => token.getTokenAddress() !== ICP_CANISTER_ID)
-        .map(({ allowance, token }) =>
-          token.revokeAllowance(
-            delegationIdentity,
-            Principal.fromText(allowance.to_spender),
-          ),
-        ),
+      allowances.map(({ allowance, token }) =>
+        token.revokeAllowance(delegationIdentity, allowance.to_spender),
+      ),
     )
   }
 

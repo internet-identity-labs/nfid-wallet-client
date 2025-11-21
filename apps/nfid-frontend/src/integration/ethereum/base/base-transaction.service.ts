@@ -6,10 +6,6 @@ import { EVMTransactionService } from "../evm-transaction.service"
 import { BASE_CHAIN_ID } from "./base.service"
 
 export class BaseTransactionService extends EVMTransactionService {
-  constructor() {
-    super()
-  }
-
   protected getChainId(): number {
     return BASE_CHAIN_ID
   }

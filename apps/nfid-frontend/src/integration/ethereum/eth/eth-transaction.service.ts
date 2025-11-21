@@ -5,10 +5,6 @@ import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
 import { EVMTransactionService } from "../evm-transaction.service"
 
 export class EthTransactionService extends EVMTransactionService {
-  constructor() {
-    super()
-  }
-
   protected getChainId(): number {
     return 1
   }

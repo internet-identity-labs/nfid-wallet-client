@@ -9,10 +9,6 @@ import { EVMTransactionService } from "../evm-transaction.service"
 import { ARBITRUM_CHAIN_ID } from "./arbitrum.service"
 
 export class ArbitrumTransactionService extends EVMTransactionService {
-  constructor() {
-    super()
-  }
-
   protected getChainId(): number {
     return ARBITRUM_CHAIN_ID
   }

@@ -9,10 +9,6 @@ import { EVMTransactionService } from "../evm-transaction.service"
 import { POLYGON_CHAIN_ID } from "./polygon.service"
 
 export class PolygonTransactionService extends EVMTransactionService {
-  constructor() {
-    super()
-  }
-
   protected getChainId(): number {
     return POLYGON_CHAIN_ID
   }

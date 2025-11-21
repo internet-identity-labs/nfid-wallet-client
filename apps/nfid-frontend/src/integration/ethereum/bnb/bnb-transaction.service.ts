@@ -6,10 +6,6 @@ import { EVMTransactionService } from "../evm-transaction.service"
 import { BNB_CHAIN_ID } from "./bnb.service"
 
 export class BnbTransactionService extends EVMTransactionService {
-  constructor() {
-    super()
-  }
-
   protected getChainId(): number {
     return BNB_CHAIN_ID
   }

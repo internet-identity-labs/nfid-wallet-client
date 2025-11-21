@@ -5,7 +5,7 @@ import BigNumber from "bignumber.js"
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { BitcointNetworkFeeAndUtxos } from "../bitcoin/bitcoin.service"
-import { SendEthFee } from "../ethereum/eth/ethereum.service"
+import { SendEthFee } from "../ethereum/evm.service"
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 
 export interface FT {

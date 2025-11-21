@@ -14,17 +14,14 @@ import {
   Skeleton,
 } from "@nfid-frontend/ui"
 import { validateTransferAmountField } from "@nfid-frontend/utils"
-import {
-  BTC_NATIVE_ID,
-  E8S,
-  ETH_NATIVE_ID,
-} from "@nfid/integration/token/constants"
+import { E8S } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
 import { getMaxAmountFee, IModalType } from "../utils"
 import { BALANCE_EDGE_LENGTH } from "./swap-form"
+import { ChainId } from "frontend/integration/ft/utils"
 
 interface ChooseFromTokenProps {
   modalType: IModalType
@@ -39,8 +36,7 @@ interface ChooseFromTokenProps {
   isResponsive?: boolean
   setIsResponsive?: (v: boolean) => void
   tokensAvailableToSwap?: TokensAvailableToSwap
-  btcFee?: bigint
-  ethFee?: bigint
+  fee?: bigint
   minAmount?: number
   isLoading?: boolean
   setSkipFeeCalculation?: () => void
@@ -60,8 +56,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   isResponsive,
   setIsResponsive,
   tokensAvailableToSwap,
-  btcFee,
-  ethFee,
+  fee,
   minAmount,
   isLoading,
   setSkipFeeCalculation,
@@ -94,48 +89,47 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     }, 500)
   }, [token, setValue, clearErrors])
 
-  const fee = useMemo(() => {
+  const feeFormatted = useMemo(() => {
     if (!token || userBalance === undefined) return
-    return modalType === IModalType.SWAP
-      ? getMaxAmountFee(userBalance, token.getTokenFee())
-      : modalType === IModalType.SEND &&
-          token.getTokenAddress() === BTC_NATIVE_ID
-        ? btcFee
-        : (modalType === IModalType.SEND ||
-              modalType === IModalType.CONVERT_TO_CKETH) &&
-            token.getTokenAddress() === ETH_NATIVE_ID
-          ? ethFee
-          : token.getTokenFee()
-  }, [token, userBalance, btcFee, ethFee])
+
+    switch (modalType) {
+      case IModalType.SWAP:
+        return fee === undefined ? undefined : getMaxAmountFee(userBalance, fee)
+
+      case IModalType.SEND:
+      case IModalType.CONVERT_TO_CKETH:
+        return fee
+
+      default:
+        return fee
+    }
+  }, [token, userBalance, modalType, fee])
 
   useEffect(() => {
     if (
-      fee !== undefined &&
+      feeFormatted !== undefined &&
       inputAmountValue.trim() &&
       !isChangingToken.current
     ) {
       trigger("amount")
     }
-  }, [fee, trigger, inputAmountValue])
+  }, [feeFormatted, trigger, inputAmountValue])
 
   const isMaxAvailable = useMemo(() => {
     if (userBalance === undefined) return false
 
-    if (
-      token?.getTokenAddress() === BTC_NATIVE_ID ||
-      token?.getTokenAddress() === ETH_NATIVE_ID
-    ) {
-      if (userBalance === BigInt(0)) {
-        return false
-      } else {
-        return true
-      }
-    } else {
-      const balanceNum = new BigNumber(userBalance.toString())
-      const feeNum = new BigNumber(fee!.toString())
-      return balanceNum.minus(feeNum).isGreaterThanOrEqualTo(0)
+    const isBTC = token?.getChainId() === ChainId.BTC
+    const isETH = token?.getChainId() === ChainId.ETH
+
+    if (isBTC || isETH) {
+      return userBalance > BigInt(0)
     }
-  }, [userBalance, fee, token])
+    if (feeFormatted === undefined) return false
+
+    const balanceNum = new BigNumber(userBalance.toString())
+    const feeNum = new BigNumber(feeFormatted.toString())
+    return balanceNum.minus(feeNum).isGreaterThanOrEqualTo(0)
+  }, [userBalance, feeFormatted, token])
 
   const maxHandler = useCallback(() => {
     if (!token || userBalance === undefined || !isMaxAvailable) return
@@ -145,10 +139,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
     const balanceNum = new BigNumber(userBalance.toString())
 
-    if (
-      token.getTokenAddress() === ETH_NATIVE_ID ||
-      modalType === IModalType.SEND
-    ) {
+    if (token.getChainId() === ChainId.ETH || modalType === IModalType.SEND) {
       const formattedValue = formatAssetAmountRaw(balanceNum, decimals)
       setValue("amount", formattedValue, { shouldValidate: true })
 
@@ -157,23 +148,23 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       return
     }
 
-    if (fee === undefined) return
+    if (feeFormatted === undefined) return
 
-    const feeNum = new BigNumber(fee.toString())
+    const feeNum = new BigNumber(feeFormatted.toString())
     const maxAmount =
       modalType === IModalType.SWAP ? balanceNum : balanceNum.minus(feeNum)
     const formattedValue = formatAssetAmountRaw(maxAmount, decimals)
 
     setInputAmountValue(formattedValue)
     setValue("amount", formattedValue, { shouldValidate: true })
-  }, [token, fee, userBalance, isMaxAvailable, setValue])
+  }, [token, feeFormatted, userBalance, isMaxAvailable, setValue])
 
   useEffect(() => {
     if (
       !isMaxClicked ||
       !token ||
-      fee === undefined ||
-      fee === BigInt(0) ||
+      feeFormatted === undefined ||
+      feeFormatted === BigInt(0) ||
       userBalance === undefined
     )
       return
@@ -182,7 +173,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     if (!decimals) return
 
     const balanceNum = new BigNumber(userBalance.toString())
-    const feeNum = new BigNumber(fee.toString())
+    const feeNum = new BigNumber(feeFormatted.toString())
     const formattedValue = formatAssetAmountRaw(
       balanceNum.minus(feeNum),
       decimals,
@@ -194,7 +185,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
     setIsFeeLoading(false)
     setIsMaxClicked(false)
-  }, [fee, isMaxClicked, token, userBalance])
+  }, [feeFormatted, isMaxClicked, token, userBalance])
 
   useEffect(() => {
     if (!token || !setIsResponsive) return
@@ -246,7 +237,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
                 const amountValidationError = validateTransferAmountField(
                   balance || token.getTokenBalance(),
-                  modalType === IModalType.SWAP ? BigInt(0) : fee,
+                  modalType === IModalType.SWAP ? BigInt(0) : feeFormatted,
                   decimals,
                   modalType === IModalType.CONVERT_TO_BTC,
                   modalType === IModalType.CONVERT_TO_ETH,

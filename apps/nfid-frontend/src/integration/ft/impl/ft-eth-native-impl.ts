@@ -14,6 +14,8 @@ import {
 } from "@nfid/integration/token/constants"
 import { exchangeRateService } from "@nfid/integration"
 import { FT } from "../ft"
+import { ChainId, FeeResponseETH } from "../utils"
+import { SignIdentity } from "@dfinity/agent"
 
 export class FTETHImpl extends FTImpl {
   constructor() {
@@ -29,7 +31,7 @@ export class FTETHImpl extends FTImpl {
       fee: BigInt(0),
       rootCanisterId: undefined,
     })
-    this.tokenChainId = 0
+    this.tokenChainId = ChainId.ETH
   }
 
   async init(): Promise<FT> {
@@ -58,29 +60,20 @@ export class FTETHImpl extends FTImpl {
     }
   }
 
-  async getETHFee(
-    to: string,
-    from: string,
-    value: number,
-  ): Promise<SendEthFee> {
-    const amount = value.toFixed(this.decimals).replace(TRIM_ZEROS, "")
-    return await ethereumService.getSendEthFee(to, from, amount)
-  }
+  async getTokenFee(
+    _value: number,
+    _identity: SignIdentity,
+    _to?: string,
+    _from?: string,
+  ): Promise<FeeResponseETH> {
+    const amount = _value.toFixed(this.decimals).replace(TRIM_ZEROS, "")
 
-  getETHFeeFormatted(fee: bigint): string {
-    return `${(Number(fee) / 10 ** this.decimals).toLocaleString("en", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: this.decimals,
-    })} ${this.symbol}`
-  }
-
-  getETHFeeFormattedUsd(fee: bigint): string | undefined {
-    const feeInUsd = this.getTokenRateFormatted(
-      (Number(fee) / 10 ** this.decimals).toString(),
+    const ethFeeData: SendEthFee = await ethereumService.getSendEthFee(
+      _to!,
+      _from!,
+      amount,
     )
 
-    if (!feeInUsd) return
-
-    return feeInUsd
+    return new FeeResponseETH(ethFeeData)
   }
 }

@@ -9,13 +9,10 @@ import {
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
 import { exchangeRateService } from "@nfid/integration"
-import {
-  bitcoinService,
-  BitcointNetworkFeeAndUtxos,
-} from "frontend/integration/bitcoin/bitcoin.service"
+import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
 import { FT } from "../ft"
 import { SignIdentity } from "@dfinity/agent"
-import { satoshiService } from "frontend/integration/bitcoin/services/satoshi.service"
+import { ChainId, FeeResponseBTC } from "../utils"
 
 export class FTBTCImpl extends FTImpl {
   constructor() {
@@ -31,7 +28,7 @@ export class FTBTCImpl extends FTImpl {
       index: undefined,
       rootCanisterId: undefined,
     })
-    this.tokenChainId = 0
+    this.tokenChainId = ChainId.BTC
   }
 
   async init(): Promise<FT> {
@@ -59,26 +56,15 @@ export class FTBTCImpl extends FTImpl {
     }
   }
 
-  async getBTCFee(
-    identity: SignIdentity,
-    value: number,
-  ): Promise<BitcointNetworkFeeAndUtxos> {
-    const amount = value.toFixed(this.decimals).replace(TRIM_ZEROS, "")
-    return await bitcoinService.getFee(identity, amount)
-  }
-
-  getBTCFeeFormatted(fee: bigint): string {
-    return `${Number(satoshiService.getFromSatoshis(fee)).toLocaleString("en", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: this.decimals,
-    })} ${this.symbol}`
-  }
-
-  getBTCFeeFormattedUsd(fee: bigint): string | undefined {
-    return (
-      this.getTokenRateFormatted(
-        Number(satoshiService.getFromSatoshis(fee)).toString(),
-      ) || undefined
+  async getTokenFee(
+    _value: number,
+    _identity: SignIdentity,
+  ): Promise<FeeResponseBTC> {
+    const amount = _value.toFixed(this.decimals).replace(TRIM_ZEROS, "")
+    const { fee_satoshis, utxos } = await bitcoinService.getFee(
+      _identity,
+      amount,
     )
+    return new FeeResponseBTC(fee_satoshis, utxos)
   }
 }

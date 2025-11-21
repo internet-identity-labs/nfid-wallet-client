@@ -15,17 +15,15 @@ import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-p
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { ICRC1, AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 
-import { BitcointNetworkFeeAndUtxos } from "frontend/integration/bitcoin/bitcoin.service"
-import { SendEthFee } from "frontend/integration/ethereum/ethereum.service"
-
 import { formatUsdAmount } from "../../../util/format-usd-amount"
+import { ChainId, FeeResponse, FeeResponseICP } from "../utils"
 
 export class FTImpl implements FT {
-  private readonly tokenAddress: string
+  protected readonly tokenAddress: string
   private readonly tokenCategory: Category
   private readonly logo: string | undefined
   private readonly tokenName: string
-  protected tokenChainId: number
+  protected tokenChainId: ChainId
   protected tokenBalance: bigint | undefined
   private tokenState: State
   protected tokenRate?: {
@@ -52,12 +50,16 @@ export class FTImpl implements FT {
     this.tokenState = icrc1Token.state
     this.inited = false
     this.rootSnsCanister = icrc1Token.rootCanisterId
-    this.tokenChainId = 0
+    this.tokenChainId = ChainId.ICP
   }
 
   async init(globalPrincipal: Principal): Promise<FT> {
     await this.getBalance(globalPrincipal)
     return this
+  }
+
+  getChainId(): ChainId {
+    return this.tokenChainId
   }
 
   isInited(): boolean {
@@ -241,51 +243,25 @@ export class FTImpl implements FT {
     return this.decimals
   }
 
-  getTokenFee(): bigint {
-    return this.fee
+  async getTokenFee(
+    _value?: number,
+    _identity?: SignIdentity,
+    _to?: string,
+    _from?: string,
+  ): Promise<FeeResponse> {
+    return new FeeResponseICP(this.fee)
   }
 
-  async getBTCFee(
-    _identity: SignIdentity,
-    _value: number,
-  ): Promise<BitcointNetworkFeeAndUtxos> {
-    throw new Error("Method is implemented for native FTBTCImpl only.")
-  }
-
-  getBTCFeeFormatted(_fee: bigint): string {
-    throw new Error("Method is implemented for native FTBTCImpl only.")
-  }
-
-  getBTCFeeFormattedUsd(_fee: bigint): string | undefined {
-    throw new Error("Method is implemented for native FTBTCImpl only.")
-  }
-
-  async getETHFee(
-    _to: string,
-    _from: string,
-    _value: number,
-  ): Promise<SendEthFee> {
-    throw new Error("Method is implemented for native FTETHImpl only.")
-  }
-
-  getETHFeeFormatted(_fee: bigint): string {
-    throw new Error("Method is implemented for native FTETHImpl only.")
-  }
-
-  getETHFeeFormattedUsd(_fee: bigint): string | undefined {
-    throw new Error("Method is implemented for native FTETHImpl only.")
-  }
-
-  getTokenFeeFormatted(): string {
-    return `${(Number(this.fee) / 10 ** this.decimals).toLocaleString("en", {
+  getTokenFeeFormatted(fee: bigint): string {
+    return `${(Number(fee) / 10 ** this.decimals).toLocaleString("en", {
       minimumFractionDigits: 0,
       maximumFractionDigits: this.decimals,
     })} ${this.symbol}`
   }
 
-  getTokenFeeFormattedUsd(): string | undefined {
+  getTokenFeeFormattedUsd(fee: bigint): string | undefined {
     const feeInUsd = this.getTokenRateFormatted(
-      (Number(this.fee) / 10 ** this.decimals).toString(),
+      (Number(fee) / 10 ** this.decimals).toString(),
     )
 
     return feeInUsd || undefined

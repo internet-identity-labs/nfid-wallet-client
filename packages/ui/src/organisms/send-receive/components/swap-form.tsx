@@ -48,6 +48,7 @@ export interface SwapFTFormProps {
   tokensAvailableToSwap: TokensAvailableToSwap
   isResponsive?: boolean
   setIsResponsive?: (value: boolean) => void
+  fee?: bigint
 }
 
 export const SwapFTForm: FC<SwapFTFormProps> = ({
@@ -70,6 +71,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
   tokensAvailableToSwap,
   isResponsive,
   setIsResponsive,
+  fee,
 }) => {
   const isDarkTheme = useDarkTheme()
   const [isChecked, setIsChecked] = useState(false)
@@ -134,6 +136,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           isResponsive={isResponsive}
           setIsResponsive={setIsFromResponsive}
           tokensAvailableToSwap={tokensAvailableToSwap}
+          fee={fee}
         />
         {showLiquidityError ? (
           <div className="h-4 mt-1 text-xs leading-4 text-red-600 dark:text-red-500">

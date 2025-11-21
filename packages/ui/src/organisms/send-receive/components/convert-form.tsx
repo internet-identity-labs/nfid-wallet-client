@@ -121,7 +121,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           title="Convert from"
           isResponsive={isResponsive}
           setIsResponsive={setIsFromResponsive}
-          ethFee={ethFee?.ethereumNetworkFee}
+          fee={ethFee?.ethereumNetworkFee}
         />
         {errors["amount"] && (
           <div className="h-4 mt-1 text-xs leading-4 text-red-600">

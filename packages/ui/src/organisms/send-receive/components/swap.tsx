@@ -57,6 +57,7 @@ export interface SwapFTUiProps {
   shroff: Shroff | undefined
   setProvider: (value: Shroff) => void
   tokensAvailableToSwap: TokensAvailableToSwap
+  fee?: bigint
 }
 
 export const SwapFTUi: FC<SwapFTUiProps> = ({
@@ -86,6 +87,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   shroff,
   setProvider,
   tokensAvailableToSwap,
+  fee,
 }) => {
   const [isResponsive, setIsResponsive] = useState(false)
   const [selectedShroff, setSelectedShroff] = useState<Shroff | undefined>()
@@ -206,6 +208,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
           amount={amount}
           errors={errors}
           tokensAvailableToSwap={tokensAvailableToSwap}
+          fee={fee}
         />
       </motion.div>
     </>

@@ -4,9 +4,8 @@ import BigNumber from "bignumber.js"
 
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 
-import { BitcointNetworkFeeAndUtxos } from "../bitcoin/bitcoin.service"
-import { SendEthFee } from "../ethereum/ethereum.service"
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
+import { ChainId, FeeResponse } from "./utils"
 
 export interface FT {
   init(principal: Principal): Promise<FT>
@@ -60,30 +59,22 @@ export interface FT {
 
   getIndexBlockExplorerLink(): string
 
+  getChainId(): ChainId
+
   hideToken(): Promise<void>
 
   showToken(): Promise<void>
 
-  getTokenFee(): bigint
+  getTokenFee(
+    value?: number,
+    identity?: SignIdentity,
+    to?: string,
+    from?: string,
+  ): Promise<FeeResponse>
 
-  getTokenFeeFormatted(): string
+  getTokenFeeFormatted(fee: bigint): string
 
-  getBTCFee(
-    identity: SignIdentity,
-    value: number,
-  ): Promise<BitcointNetworkFeeAndUtxos>
-
-  getETHFee(to: string, from: string, value: number): Promise<SendEthFee>
-
-  getBTCFeeFormatted(fee: bigint): string
-
-  getBTCFeeFormattedUsd(fee: bigint): string | undefined
-
-  getETHFeeFormatted(fee: bigint): string
-
-  getETHFeeFormattedUsd(fee: bigint): string | undefined
-
-  getTokenFeeFormattedUsd(): string | undefined
+  getTokenFeeFormattedUsd(fee: bigint): string | undefined
 
   isHideable(): boolean
 

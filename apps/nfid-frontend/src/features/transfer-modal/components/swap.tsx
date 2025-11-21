@@ -38,6 +38,7 @@ import {
   updateCachedInitedTokens,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
+import { FeeResponse } from "frontend/integration/ft/utils"
 
 const QUOTE_REFETCH_TIMER = 30
 
@@ -84,6 +85,7 @@ export const SwapFT = ({
   const [providerError, setProviderError] = useState<
     ServiceUnavailableError | undefined
   >()
+  const [fee, setFee] = useState<FeeResponse | undefined>()
   const previousFromTokenAddress = useRef(fromTokenAddress)
   const { identity } = useIdentity()
 
@@ -162,6 +164,16 @@ export const SwapFT = ({
         token.getTokenAddress() !== ETH_NATIVE_ID,
     )
   }, [fromTokenAddress, tokens])
+
+  useEffect(() => {
+    const fetchIcrc1Fee = async () => {
+      setFee(undefined)
+      const fee = await fromToken?.getTokenFee()
+      setFee(fee)
+    }
+
+    fetchIcrc1Fee()
+  }, [fromToken])
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -403,6 +415,7 @@ export const SwapFT = ({
         shroff={shroff}
         setProvider={setShroff}
         tokensAvailableToSwap={tokensAvailableToSwap}
+        fee={fee?.getFee()}
       />
     </FormProvider>
   )

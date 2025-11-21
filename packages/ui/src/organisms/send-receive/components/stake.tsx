@@ -154,6 +154,7 @@ export const StakeUi: FC<StakeUiProps> = ({
         title="Amount to stake"
         minAmount={stakingParams?.getMinimumToStake()}
         isLoading={isParamsLoading || !stakingParams}
+        fee={stakingParams?.getFee()}
       />
       {Boolean(errors["amount"]?.message) && (
         <div className="h-4 mt-1 text-xs leading-4 text-red-600 dark:text-red-500">

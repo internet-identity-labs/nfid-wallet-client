@@ -32,10 +32,8 @@ import {
   bitcoinService,
   BitcointNetworkFeeAndUtxos,
 } from "frontend/integration/bitcoin/bitcoin.service"
-import {
-  ethereumService,
-  SendEthFee,
-} from "frontend/integration/ethereum/ethereum.service"
+import { SendEthFee } from "frontend/integration/ethereum/evm.service"
+import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 

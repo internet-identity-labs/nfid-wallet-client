@@ -21,11 +21,12 @@ import {
   BtcToCkBtcFee,
   CkBtcToBtcFee,
 } from "frontend/integration/bitcoin/bitcoin.service"
+import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
 import {
   CkEthToEthFee,
-  ethereumService,
   EthToCkEthFee,
-} from "frontend/integration/ethereum/ethereum.service"
+} from "frontend/integration/ethereum/evm.service"
+
 import { FT } from "frontend/integration/ft/ft"
 
 import { FormValues, SendStatus } from "../types"

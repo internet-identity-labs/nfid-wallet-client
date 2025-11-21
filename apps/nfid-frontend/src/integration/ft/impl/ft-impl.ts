@@ -23,10 +23,8 @@ import {
   BitcointNetworkFeeAndUtxos,
 } from "frontend/integration/bitcoin/bitcoin.service"
 import { satoshiService } from "frontend/integration/bitcoin/services/satoshi.service"
-import {
-  ethereumService,
-  SendEthFee,
-} from "frontend/integration/ethereum/ethereum.service"
+import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
+import { SendEthFee } from "frontend/integration/ethereum/evm.service"
 
 import { formatUsdAmount } from "../../../util/format-usd-amount"
 

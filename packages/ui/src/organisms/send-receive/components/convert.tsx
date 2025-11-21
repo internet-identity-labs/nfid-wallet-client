@@ -24,7 +24,7 @@ import { ConvertSuccessUi } from "./convert-success"
 import {
   CkEthToEthFee,
   EthToCkEthFee,
-} from "frontend/integration/ethereum/ethereum.service"
+} from "frontend/integration/ethereum/evm.service"
 
 export enum ConvertModal {
   CONVERT = "convert",

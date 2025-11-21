@@ -28,8 +28,7 @@ import { ContactSupportError } from "frontend/integration/swap/errors/types/cont
 import {
   CkEthToEthFee,
   EthToCkEthFee,
-} from "frontend/integration/ethereum/ethereum.service"
-
+} from "frontend/integration/ethereum/evm.service"
 export interface BtcFormattedFee {
   total: string
   btcNetworkFee: string

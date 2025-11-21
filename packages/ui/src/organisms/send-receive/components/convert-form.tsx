@@ -22,7 +22,7 @@ import { getModalType, EthFormattedFee, BtcFormattedFee } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { ChooseToToken } from "./choose-to-token"
 import { ConvertModal } from "./convert"
-import { EthToCkEthFee } from "frontend/integration/ethereum/ethereum.service"
+import { EthToCkEthFee } from "frontend/integration/ethereum/eth/ethereum.service"
 
 export const BALANCE_EDGE_LENGTH = 20
 

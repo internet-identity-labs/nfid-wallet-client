@@ -1,0 +1,99 @@
+import {
+  ETH_DECIMALS,
+  ETH_NATIVE_ID,
+  ETHERSCAN_API_KEY,
+} from "@nfid/integration/token/constants"
+import { IActivityAction } from "@nfid/integration/token/icrc1/types"
+
+import { IActivityRow } from "frontend/features/activity/types"
+
+interface EtherscanTransaction {
+  blockNumber: string
+  timeStamp: string
+  hash: string
+  nonce: string
+  blockHash: string
+  transactionIndex: string
+  from: string
+  to: string
+  value: string
+  gas: string
+  gasPrice: string
+  isError: string
+  txreceipt_status: string
+  input: string
+  contractAddress: string
+  cumulativeGasUsed: string
+  gasUsed: string
+  confirmations: string
+}
+
+interface EtherscanResponse {
+  status: string
+  message: string
+  result: EtherscanTransaction[]
+}
+
+export abstract class EVMTransactionService {
+  public async getActivitiesRows(address: string): Promise<IActivityRow[]> {
+    try {
+      const url = `https://api.etherscan.io/v2/api?chainid=${this.getChainId()}&module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${this.getApiKey()}`
+
+      console.debug(
+        "Fetching ETH transactions from Etherscan for address:",
+        address,
+      )
+      const response = await fetch(url)
+      const data: EtherscanResponse = await response.json()
+
+      console.debug("Etherscan response:", data)
+
+      if (data.status !== "1") {
+        console.error("Etherscan API error:", data.message)
+        return []
+      }
+
+      if (!data.result || data.result.length === 0) {
+        console.debug("No ETH transactions found for address:", address)
+        return []
+      }
+
+      const activities: IActivityRow[] = data.result.map((tx) => {
+        const isSent = tx.from.toLowerCase() === address.toLowerCase()
+
+        return {
+          id: tx.hash,
+          action: isSent ? IActivityAction.SENT : IActivityAction.RECEIVED,
+          timestamp: new Date(Number(tx.timeStamp) * 1000), // Convert from seconds to milliseconds
+          asset: {
+            type: "ft",
+            currency: this.getCurrency(),
+            amount: Number(tx.value),
+            icon: this.getIcon(),
+            rate: 0,
+            decimals: ETH_DECIMALS,
+            canister: ETH_NATIVE_ID,
+          },
+          from: tx.from,
+          to: tx.to,
+        }
+      })
+
+      console.debug("Processed ETH activities:", activities)
+      return activities
+    } catch (error) {
+      console.error("Error fetching ETH transactions from Etherscan:", error)
+      return []
+    }
+  }
+
+  protected getApiKey(): string {
+    return ETHERSCAN_API_KEY
+  }
+
+  protected abstract getChainId(): number
+  protected abstract getCurrency(): string
+  protected abstract getIcon(): string
+  protected abstract getDecimals(): number
+  protected abstract getCanister(): string
+}

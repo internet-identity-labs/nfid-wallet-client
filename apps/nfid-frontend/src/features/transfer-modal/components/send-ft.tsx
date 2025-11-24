@@ -267,20 +267,15 @@ export const TransferFT = ({
     if (token.getChainId() === ChainId.ETH) {
       if (!identity || !fee) return
 
-      const {
-        getBaseFeePerGas,
-        getMaxFeePerGas,
-        getGasUsed,
-        getMaxPriorityFeePerGas,
-      } = fee as FeeResponseETH
+      const ethFee = fee as FeeResponseETH
 
       setIsSuccessOpen(true)
       ethereumService
         .sendEthTransaction(identity, to, amount, {
-          gasUsed: getGasUsed(),
-          maxFeePerGas: getMaxFeePerGas(),
-          maxPriorityFeePerGas: getMaxPriorityFeePerGas(),
-          baseFeePerGas: getBaseFeePerGas(),
+          gasUsed: ethFee.getGasUsed(),
+          maxFeePerGas: ethFee.getMaxFeePerGas(),
+          maxPriorityFeePerGas: ethFee.getMaxPriorityFeePerGas(),
+          baseFeePerGas: ethFee.getBaseFeePerGas(),
         })
         .then(() => {
           setSuccessMessage(
@@ -314,13 +309,13 @@ export const TransferFT = ({
     if (token.getChainId() === ChainId.BTC) {
       if (!identity || !fee) return
 
-      const { getFee, getUtxos } = fee as FeeResponseBTC
+      const btcFee = fee as FeeResponseBTC
 
       setIsSuccessOpen(true)
       bitcoinService
         .send(identity, to, amount, {
-          fee_satoshis: getFee(),
-          utxos: getUtxos(),
+          fee_satoshis: btcFee.getFee(),
+          utxos: btcFee.getUtxos(),
         })
         .then(() => {
           setSuccessMessage(

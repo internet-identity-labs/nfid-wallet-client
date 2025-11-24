@@ -93,6 +93,13 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     if (!token || userBalance === undefined) return
 
     switch (modalType) {
+      case IModalType.CONVERT_TO_CKBTC:
+        return BigInt(0)
+      case IModalType.CONVERT_TO_BTC:
+        return BigInt(10)
+      case IModalType.CONVERT_TO_ETH:
+        return BigInt(10000000000)
+
       case IModalType.SWAP:
         return fee === undefined ? undefined : getMaxAmountFee(userBalance, fee)
 

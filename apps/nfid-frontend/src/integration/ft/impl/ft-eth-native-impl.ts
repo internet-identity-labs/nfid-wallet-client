@@ -3,10 +3,6 @@ import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
 
 import { FTImpl } from "./ft-impl"
 import {
-  ethereumService,
-  SendEthFee,
-} from "frontend/integration/ethereum/ethereum.service"
-import {
   CKETH_LEDGER_CANISTER_ID,
   ETH_DECIMALS,
   ETH_NATIVE_ID,
@@ -16,6 +12,8 @@ import { exchangeRateService } from "@nfid/integration"
 import { FT } from "../ft"
 import { ChainId, FeeResponseETH } from "../utils"
 import { SignIdentity } from "@dfinity/agent"
+import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
+import { SendEthFee } from "frontend/integration/ethereum/evm.service"
 
 export class FTETHImpl extends FTImpl {
   constructor() {

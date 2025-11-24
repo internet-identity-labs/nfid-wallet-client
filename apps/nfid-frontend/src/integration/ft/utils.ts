@@ -1,5 +1,5 @@
 import { Utxo } from "@dfinity/ckbtc"
-import { SendEthFee } from "../ethereum/ethereum.service"
+import { SendEthFee } from "../ethereum/evm.service"
 
 export enum ChainId {
   BTC = -1,

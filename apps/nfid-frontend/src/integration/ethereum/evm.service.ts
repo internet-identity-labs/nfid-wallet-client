@@ -142,7 +142,6 @@ export abstract class EVMTransactionService {
       baseFeePerGas: bigint
     },
   ) {
-    debugger
     const ckEthContract = new Contract(MINTER_ADDRESS, CKETH_ABI, this.provider)
 
     let address = await this.getAddress(identity)

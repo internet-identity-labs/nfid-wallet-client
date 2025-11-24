@@ -6,12 +6,13 @@ import {
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
 import CopyAddress from "packages/ui/src/molecules/copy-address"
 import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
-import { FC } from "react"
+import { FC, useEffect, useState } from "react"
 import { FT } from "src/integration/ft/ft"
 
 import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 
 import { useDarkTheme } from "frontend/hooks"
+import { Skeleton } from "packages/ui/src/atoms/skeleton"
 
 export interface TokenInfoModalProps {
   token: FT | undefined
@@ -22,6 +23,17 @@ export const TokenInfoModal: FC<TokenInfoModalProps> = ({ token, onClose }) => {
   const ledger = token?.getTokenAddress()
   const index = token?.getTokenIndex()
   const isDarkTheme = useDarkTheme()
+  const [fee, setFee] = useState<bigint | undefined>()
+
+  useEffect(() => {
+    const getFee = async () => {
+      const fee = await token?.getTokenFee()
+      const rawFee = fee?.getFee()
+      setFee(rawFee)
+    }
+
+    getFee()
+  }, [token])
 
   return (
     <>
@@ -118,10 +130,18 @@ export const TokenInfoModal: FC<TokenInfoModalProps> = ({ token, onClose }) => {
             </div>
             <div>
               <div className="text-sm dark:text-white">
-                {token?.getTokenFeeFormatted()}
+                {fee === undefined ? (
+                  <Skeleton className="w-[70px] h-4 mb-1" />
+                ) : (
+                  token?.getTokenFeeFormatted(fee)
+                )}
               </div>
               <div className="text-xs text-gray-400 dark:text-zinc-400">
-                {token?.getTokenFeeFormattedUsd()}
+                {fee === undefined ? (
+                  <Skeleton className="w-[50px] h-4" />
+                ) : (
+                  token?.getTokenFeeFormattedUsd(fee)
+                )}
               </div>
             </div>
           </div>

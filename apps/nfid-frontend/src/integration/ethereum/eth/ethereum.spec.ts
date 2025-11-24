@@ -2,7 +2,6 @@ import { Ed25519KeyIdentity } from "@dfinity/identity"
 
 import { mockIdentityA } from "@nfid/integration"
 
-import { getEthActivitiesRows } from "./eth-transaction.service"
 import { ethereumService } from "./ethereum.service"
 
 // const principal = Principal.fromText(

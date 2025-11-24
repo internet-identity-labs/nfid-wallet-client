@@ -6,7 +6,7 @@ import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { FTImpl } from "./ft-impl"
 import { ERC20TokenInfo } from "frontend/integration/ethereum/erc20.service"
 import { erc20Service } from "frontend/integration/ethereum/erc20.service"
-import { ethereumService } from "frontend/integration/ethereum/ethereum.service"
+import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 
 export class FTERC20Impl extends FTImpl {

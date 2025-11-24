@@ -16,7 +16,7 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 
 import { nftService } from "frontend/integration/nft/nft-service"
 import { portfolioService } from "frontend/integration/portfolio-balance/portfolio-service"
-import { ethereumService } from "frontend/integration/ethereum/ethereum.service"
+import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 
 const userId = "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae"

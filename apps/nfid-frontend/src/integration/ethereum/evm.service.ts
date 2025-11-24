@@ -63,8 +63,8 @@ export type EthToCkEthFee = {
   icpNetworkFee: bigint
 }
 
-export class EthereumService {
-  private provider: InfuraProvider
+export abstract class EVMTransactionService {
+  protected provider: InfuraProvider
 
   constructor() {
     this.provider = new InfuraProvider(CHAIN_ID, INFURA_API_KEY)
@@ -368,9 +368,9 @@ export class EthereumService {
       baseFeePerGas: bigint
     },
   ): Promise<TransactionResponse> {
-    const address = await ethereumService.getAddress(identity)
+    const address = await this.getAddress(identity)
 
-    const nonce = await ethereumService.getTransactionCount(address)
+    const nonce = await this.getTransactionCount(address)
 
     let request: EthSignTransactionRequest = {
       chain_id: CHAIN_ID,
@@ -449,5 +449,3 @@ export class EthereumService {
     }
   }
 }
-
-export const ethereumService = new EthereumService()

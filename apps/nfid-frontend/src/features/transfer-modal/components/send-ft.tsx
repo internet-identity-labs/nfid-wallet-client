@@ -24,7 +24,7 @@ import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { useIdentity } from "frontend/hooks/identity"
 import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
-import { ethereumService } from "frontend/integration/ethereum/ethereum.service"
+import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 

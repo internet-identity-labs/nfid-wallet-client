@@ -15,8 +15,11 @@ import { ChooseFtModal, Tooltip } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
-
-import { BALANCE_EDGE_LENGTH } from "./swap-form"
+import { BALANCE_EDGE_LENGTH } from "./convert-form"
+import {
+  BALANCE_MOMILE_EDGE_LENGTH,
+  getIsMobileDeviceMatch,
+} from "packages/ui/src/utils/is-mobile"
 
 interface ChooseToTokenProps {
   token: FT | undefined
@@ -55,7 +58,13 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
     if (!token || !setIsResponsive) return
 
     const balance = token.getTokenBalanceFormatted()
-    if (!balance || balance.length < BALANCE_EDGE_LENGTH) {
+    if (
+      !balance ||
+      balance.length <
+        (getIsMobileDeviceMatch()
+          ? BALANCE_MOMILE_EDGE_LENGTH
+          : BALANCE_EDGE_LENGTH)
+    ) {
       setIsResponsive(false)
     } else {
       setIsResponsive(true)

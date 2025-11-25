@@ -17,7 +17,7 @@ import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 import { BALANCE_EDGE_LENGTH } from "./convert-form"
 import {
-  BALANCE_MOMILE_EDGE_LENGTH,
+  BALANCE_MOBILE_EDGE_LENGTH,
   getIsMobileDeviceMatch,
 } from "packages/ui/src/utils/is-mobile"
 
@@ -62,7 +62,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
       !balance ||
       balance.length <
         (getIsMobileDeviceMatch()
-          ? BALANCE_MOMILE_EDGE_LENGTH
+          ? BALANCE_MOBILE_EDGE_LENGTH
           : BALANCE_EDGE_LENGTH)
     ) {
       setIsResponsive(false)

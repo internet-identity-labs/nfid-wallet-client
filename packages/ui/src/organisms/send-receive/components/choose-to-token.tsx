@@ -15,8 +15,8 @@ import { ChooseFtModal, Tooltip } from "@nfid-frontend/ui"
 
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
-import { BALANCE_EDGE_LENGTH } from "./convert-form"
 import {
+  BALANCE_EDGE_LENGTH,
   BALANCE_MOBILE_EDGE_LENGTH,
   getIsMobileDeviceMatch,
 } from "packages/ui/src/utils/is-mobile"

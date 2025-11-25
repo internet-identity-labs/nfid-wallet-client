@@ -22,10 +22,10 @@ import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 import { getMaxAmountFee, IModalType } from "../utils"
 import { ChainId } from "frontend/integration/ft/utils"
 import {
-  BALANCE_MOMILE_EDGE_LENGTH,
+  BALANCE_EDGE_LENGTH,
+  BALANCE_MOBILE_EDGE_LENGTH,
   getIsMobileDeviceMatch,
 } from "packages/ui/src/utils/is-mobile"
-import { BALANCE_EDGE_LENGTH } from "./convert-form"
 
 interface ChooseFromTokenProps {
   modalType: IModalType
@@ -209,7 +209,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         (token.getChainId() === ChainId.BTC ||
           token.getChainId() === ChainId.ETH ||
           modalType === IModalType.STAKE)
-          ? BALANCE_MOMILE_EDGE_LENGTH
+          ? BALANCE_MOBILE_EDGE_LENGTH
           : BALANCE_EDGE_LENGTH)
     ) {
       setIsResponsive(false)

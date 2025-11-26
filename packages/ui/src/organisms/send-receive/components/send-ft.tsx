@@ -1,5 +1,5 @@
 import { Spinner } from "packages/ui/src/atoms/spinner"
-import { Dispatch, FC, SetStateAction, useEffect } from "react"
+import { Dispatch, FC, SetStateAction, useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 
@@ -74,6 +74,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   isFeeLoading,
   setSkipFeeCalculation,
 }) => {
+  const [isFromResponsive, setIsFromResponsive] = useState(false)
   const {
     resetField,
     watch,
@@ -130,6 +131,8 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         title="Token to send"
         setSkipFeeCalculation={setSkipFeeCalculation}
         isBtcEthLoading={isBtcEthLoading}
+        isResponsive={isFromResponsive}
+        setIsResponsive={setIsFromResponsive}
       />
       <div className="h-4 mt-1 text-xs leading-4 text-red-600 dark:text-red-500">
         {errors["amount"]?.message as string}

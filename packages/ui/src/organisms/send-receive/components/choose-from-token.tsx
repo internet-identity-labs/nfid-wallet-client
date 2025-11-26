@@ -20,7 +20,11 @@ import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
 import { getMaxAmountFee, IModalType } from "../utils"
-import { BALANCE_EDGE_LENGTH } from "./swap-form"
+import {
+  BALANCE_EDGE_LENGTH,
+  BALANCE_MOBILE_EDGE_LENGTH,
+  getIsMobileDeviceMatch,
+} from "packages/ui/src/utils/is-mobile"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 interface ChooseFromTokenProps {
@@ -198,7 +202,16 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     if (!token || !setIsResponsive) return
 
     const balance = token.getTokenBalanceFormatted()
-    if (!balance || balance.length < BALANCE_EDGE_LENGTH) {
+    if (
+      !balance ||
+      balance.length <
+        (getIsMobileDeviceMatch() &&
+        (token.getChainId() === ChainId.BTC ||
+          token.getChainId() === ChainId.ETH ||
+          modalType === IModalType.STAKE)
+          ? BALANCE_MOBILE_EDGE_LENGTH
+          : BALANCE_EDGE_LENGTH)
+    ) {
       setIsResponsive(false)
     } else {
       setIsResponsive(true)

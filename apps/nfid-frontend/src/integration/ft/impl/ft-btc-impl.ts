@@ -1,4 +1,8 @@
-import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
+import {
+  Category,
+  ChainId,
+  State,
+} from "@nfid/integration/token/icrc1/enum/enums"
 import BtcIcon from "packages/ui/src/organisms/tokens/assets/bitcoin.svg"
 
 import { FTImpl } from "./ft-impl"
@@ -12,9 +16,9 @@ import { exchangeRateService } from "@nfid/integration"
 import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
 import { FT } from "../ft"
 import { SignIdentity } from "@dfinity/agent"
-import { ChainId, FeeResponseBTC } from "../utils"
+import { FeeResponseBTC } from "../utils"
 
-export class FTBTCImpl extends FTImpl {
+export class FTBitcoinImpl extends FTImpl {
   constructor() {
     super({
       ledger: BTC_NATIVE_ID,

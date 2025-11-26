@@ -14,8 +14,22 @@ export enum State {
   Inactive = "Inactive",
 }
 
-export enum SupportedChain {
+export enum ChainId {
   BTC = -1,
-  ICP = 0,
   ETH = 1,
+  ICP = 0,
+  POL = 137,
+  BNB = 56,
+  BASE = 8453,
+  ARB = 42161,
+}
+
+export const CHAIN_NAME: Record<ChainId, string> = {
+  [ChainId.BTC]: "Bitcoin",
+  [ChainId.ETH]: "Ethereum",
+  [ChainId.ICP]: "Internet Computer",
+  [ChainId.POL]: "Polygon",
+  [ChainId.BNB]: "BNB Smart Chain",
+  [ChainId.BASE]: "Base",
+  [ChainId.ARB]: "Arbitrum One",
 }

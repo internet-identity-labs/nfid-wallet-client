@@ -14,8 +14,8 @@ import {
 } from "frontend/features/fungible-token/utils"
 import { useDarkTheme } from "frontend/hooks"
 
-import searchDarkImg from "./search-dark.png"
-import searchImg from "./search.png"
+import searchDarkImg from "../assets/search-dark.png"
+import searchImg from "../assets/search.png"
 
 export function ScanTokens({
   className,

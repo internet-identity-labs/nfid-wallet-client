@@ -21,7 +21,7 @@ import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
 import { getMaxAmountFee, IModalType } from "../utils"
 import { BALANCE_EDGE_LENGTH } from "./swap-form"
-import { ChainId } from "frontend/integration/ft/utils"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 interface ChooseFromTokenProps {
   modalType: IModalType

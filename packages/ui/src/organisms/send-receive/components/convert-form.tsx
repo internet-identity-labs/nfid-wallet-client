@@ -24,8 +24,6 @@ import { ChooseToToken } from "./choose-to-token"
 import { ConvertModal } from "./convert"
 import { EthToCkEthFee } from "frontend/integration/ethereum/evm.service"
 
-export const BALANCE_EDGE_LENGTH = 20
-
 export interface ConvertFormProps {
   fromToken: FT | undefined
   toToken: FT | undefined

@@ -5,18 +5,24 @@ import { FT } from "src/integration/ft/ft"
 
 import { exchangeRateService } from "@nfid/integration"
 import {
+  BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
+  ETH_NATIVE_ID,
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
-import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
+import {
+  Category,
+  ChainId,
+  State,
+} from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { ICRC1, AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 
 import { formatUsdAmount } from "../../../util/format-usd-amount"
-import { ChainId, FeeResponse, FeeResponseICP } from "../utils"
+import { FeeResponse, FeeResponseICP } from "../utils"
 
 export class FTImpl implements FT {
   protected readonly tokenAddress: string
@@ -183,7 +189,9 @@ export class FTImpl implements FT {
 
   isHideable(): boolean {
     return !(
-      this.tokenCategory === Category.Native ||
+      this.tokenAddress === ICP_CANISTER_ID ||
+      this.tokenAddress === BTC_NATIVE_ID ||
+      this.tokenAddress === ETH_NATIVE_ID ||
       this.tokenAddress === NFIDW_CANISTER_ID ||
       this.tokenAddress === CKBTC_CANISTER_ID ||
       this.tokenAddress === CKETH_LEDGER_CANISTER_ID

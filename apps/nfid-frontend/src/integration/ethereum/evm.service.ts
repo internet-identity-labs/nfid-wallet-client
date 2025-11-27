@@ -63,7 +63,7 @@ export type EthToCkEthFee = {
   icpNetworkFee: bigint
 }
 
-export abstract class EVMTransactionService {
+export abstract class EVMService {
   protected provider: InfuraProvider
 
   constructor() {
@@ -71,7 +71,7 @@ export abstract class EVMTransactionService {
   }
 
   public async getQuickAddress() {
-    const { cachedValue } = await this.getAddressFromCache()
+    const { cachedValue } = this.getAddressFromCache()
 
     if (cachedValue == null) {
       let identity = await getWalletDelegation()
@@ -101,7 +101,7 @@ export abstract class EVMTransactionService {
   }
 
   public async getQuickBalance(): Promise<Balance> {
-    const { cachedValue } = await this.getAddressFromCache()
+    const { cachedValue } = this.getAddressFromCache()
 
     if (!cachedValue) {
       throw Error("No ethereum address in a cache.")

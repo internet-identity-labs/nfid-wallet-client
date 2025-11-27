@@ -28,7 +28,7 @@ import {
   ETH_NATIVE_ID,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
-import { Category } from "@nfid/integration/token/icrc1/enum/enums"
+import { Category, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp } from "@nfid/swr"
 
 import { useDarkTheme } from "frontend/hooks"
@@ -100,14 +100,13 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
           iconClassName="rotate-[135deg] dark:text-white"
           handler={() => onSendClick(token.getTokenAddress())}
         />
-        {token.getTokenAddress() !== BTC_NATIVE_ID &&
-          token.getTokenAddress() !== ETH_NATIVE_ID && (
-            <DropdownOption
-              label="Swap"
-              icon={isDarkTheme ? IconSvgSwapActionWhite : IconSvgSwapAction}
-              handler={() => onSwapClick(token.getTokenAddress())}
-            />
-          )}
+        {token.getChainId() === ChainId.ICP && (
+          <DropdownOption
+            label="Swap"
+            icon={isDarkTheme ? IconSvgSwapActionWhite : IconSvgSwapAction}
+            handler={() => onSwapClick(token.getTokenAddress())}
+          />
+        )}
         {token.getTokenAddress() === CKBTC_CANISTER_ID && (
           <DropdownOption
             label="Convert"

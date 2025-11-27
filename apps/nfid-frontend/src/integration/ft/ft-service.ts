@@ -15,7 +15,11 @@ import {
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
-import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
+import {
+  Category,
+  ChainId,
+  State,
+} from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
@@ -25,8 +29,13 @@ import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 // import { erc20Service } from "../ethereum/erc20.service"
 // import { FTERC20Impl } from "./impl/ft-erc20-impl"
 // import { mapState } from "@nfid/integration/token/icrc1/util"
-import { FTETHImpl } from "./impl/ft-eth-native-impl"
-import { FTBTCImpl } from "./impl/ft-btc-native-impl"
+
+import { FTBitcoinImpl } from "./impl/ft-btc-impl"
+import { FTEthereumImpl } from "./impl/ft-eth-impl"
+import { FTPolygonImpl } from "./impl/ft-pol-impl"
+import { FTArbitrumImpl } from "./impl/ft-arb-impl"
+import { FTBaseImpl } from "./impl/ft-base-impl"
+import { FTBnbImpl } from "./impl/ft-bnb-impl"
 
 const InitedTokens = "InitedTokens"
 export const TOKENS_REFRESH_INTERVAL = 10000
@@ -118,8 +127,13 @@ export class FtService {
         return ft
       })
 
-    const ethNativeToken = new FTETHImpl()
-    const btcNativeToken = new FTBTCImpl()
+    const ethNativeToken = new FTEthereumImpl()
+    const btcNativeToken = new FTBitcoinImpl()
+    const polNativeToken = new FTPolygonImpl()
+    const arbNativeToken = new FTArbitrumImpl()
+    const baseNativeToken = new FTBaseImpl()
+    const bnbNativeToken = new FTBnbImpl()
+
     // const erc20Tokens = await erc20Service.getKnownTokensList()
     // let userCanisters = await icrc1RegistryService.getCanistersByRoot(userId)
 
@@ -137,7 +151,11 @@ export class FtService {
       ...icrc1Tokens,
       ethNativeToken,
       btcNativeToken,
-      // ...storedErc20Tokens,
+      polNativeToken,
+      arbNativeToken,
+      baseNativeToken,
+      bnbNativeToken,
+      //...storedErc20Tokens,
     ])
   }
 
@@ -222,11 +240,7 @@ export class FtService {
       allowance: AllowanceDetailDTO
     }>
   > {
-    const tokens = ft.filter(
-      (token) =>
-        token.getTokenAddress() !== BTC_NATIVE_ID &&
-        token.getTokenAddress() !== ETH_NATIVE_ID,
-    )
+    const tokens = ft.filter((token) => token.getChainId() === ChainId.ICP)
 
     const allFlattened: { token: FT; allowance: AllowanceDetailDTO }[] = []
 

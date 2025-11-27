@@ -38,11 +38,11 @@ import {
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import {
-  ChainId,
   FeeResponse,
   FeeResponseBTC,
   FeeResponseETH,
 } from "frontend/integration/ft/utils"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 const DEFAULT_TRANSFER_ERROR = "Something went wrong"
 

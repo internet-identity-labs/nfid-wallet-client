@@ -20,12 +20,12 @@ import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
 import { getMaxAmountFee, IModalType } from "../utils"
-import { ChainId } from "frontend/integration/ft/utils"
 import {
   BALANCE_EDGE_LENGTH,
   BALANCE_MOBILE_EDGE_LENGTH,
   getIsMobileDeviceMatch,
 } from "packages/ui/src/utils/is-mobile"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 interface ChooseFromTokenProps {
   modalType: IModalType

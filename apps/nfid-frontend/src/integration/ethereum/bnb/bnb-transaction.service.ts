@@ -3,11 +3,11 @@ import { ETH_DECIMALS, BNB_NATIVE_ID } from "@nfid/integration/token/constants"
 import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
 
 import { EVMTransactionService } from "../evm-transaction.service"
-import { BNB_CHAIN_ID } from "./bnb.service"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 export class BnbTransactionService extends EVMTransactionService {
   protected getChainId(): number {
-    return BNB_CHAIN_ID
+    return ChainId.BNB
   }
 
   protected getCurrency(): string {

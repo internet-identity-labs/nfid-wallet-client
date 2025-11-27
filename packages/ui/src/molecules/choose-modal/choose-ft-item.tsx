@@ -5,10 +5,9 @@ import { trimConcat } from "@nfid-frontend/utils"
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
-import { IconNftPlaceholder } from "../../atoms/icons"
-import ImageWithFallback from "../../atoms/image-with-fallback"
 import { Skeleton } from "../../atoms/skeleton"
 import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
+import { TokenIdentity } from "../../organisms/tokens/components/token-identity"
 
 interface IChooseFtItem {
   token: FT
@@ -43,34 +42,7 @@ export const ChooseFtItem = ({
         !isTokenAvailable ? "cursor-not-allowed" : "cursor-pointer",
       )}
     >
-      <div className="flex items-center h-[28px]">
-        {token.getTokenLogo() === null ? (
-          <Skeleton className="w-12 h-12 mr-[18px] rounded-[12px]" />
-        ) : (
-          <ImageWithFallback
-            alt={token.getTokenSymbol()}
-            fallbackSrc={IconNftPlaceholder}
-            src={token.getTokenLogo() || "#"}
-            className={clsx(
-              "mr-[18px] w-[28px] h-[28px] object-cover rounded-full",
-              !isTokenAvailable && "grayscale opacity-40",
-            )}
-          />
-        )}
-        <div>
-          <p
-            className={clsx(
-              "text-sm mb-0.5 flex items-center space-x-1",
-              !isTokenAvailable && "text-gray-400",
-            )}
-          >
-            <span className="font-semibold">{token.getTokenSymbol()}</span>
-          </p>
-          <p className="text-xs text-left text-gray-400 dark:text-zinc-500">
-            {token.getTokenName()}
-          </p>
-        </div>
-      </div>
+      <TokenIdentity token={token} disabled={!isTokenAvailable} />
       {!token.isInited() ||
       (isBtcEthLoading &&
         [BTC_NATIVE_ID, ETH_NATIVE_ID].includes(token.getTokenAddress())) ? (

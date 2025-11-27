@@ -8,8 +8,7 @@ import { Contract } from "ethers"
 import { TransactionResponse } from "ethers"
 import { ethereumService } from "./eth/ethereum.service"
 import { storageWithTtl } from "@nfid/client-db"
-import { SupportedChain } from "@nfid/integration/token/icrc1/enum/enums"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
+import { ChainId, State } from "@nfid/integration/token/icrc1/enum/enums"
 
 export const ERC20_ABI = [
   "function transfer(address to, uint256 amount) external returns (bool)",
@@ -601,8 +600,10 @@ export class Erc20Service {
         chainId: token.chainId,
         state: State.Inactive,
       }))
-      .filter((token: ERC20TokenInfo) => token.chainId === SupportedChain.ETH)
+      .filter((token: ERC20TokenInfo) => token.chainId === ChainId.ETH) // remove this filter later
       .filter((token: ERC20TokenInfo) => token.address) // Remove invalid entries
+    // get only needed chains!
+    // .filter(...)
 
     // Cache the result for 24 hours
     await storageWithTtl.set(

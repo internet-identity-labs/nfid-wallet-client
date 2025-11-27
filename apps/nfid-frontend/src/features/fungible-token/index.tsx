@@ -11,7 +11,6 @@ import { Skeleton } from "@nfid-frontend/ui"
 import { storageWithTtl } from "@nfid/client-db"
 import { authState } from "@nfid/integration"
 import {
-  BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
@@ -28,6 +27,7 @@ import { ProfileContext } from "frontend/provider"
 import { ModalType } from "../transfer-modal/types"
 import { fetchTokens } from "./utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 const TokensPage = () => {
   const [hideZeroBalance, setHideZeroBalance] = useState(false)
@@ -117,8 +117,7 @@ const TokensPage = () => {
     return initedTokens?.filter(
       (token) =>
         token.getUSDBalance() === undefined &&
-        token.getTokenAddress() !== BTC_NATIVE_ID &&
-        token.getTokenAddress() !== ETH_NATIVE_ID,
+        token.getChainId() === ChainId.ICP,
     ).length
   }, [initedTokens])
 

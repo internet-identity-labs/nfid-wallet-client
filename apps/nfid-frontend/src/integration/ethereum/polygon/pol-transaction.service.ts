@@ -6,11 +6,11 @@ import {
 import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
 
 import { EVMTransactionService } from "../evm-transaction.service"
-import { POLYGON_CHAIN_ID } from "./polygon.service"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 export class PolygonTransactionService extends EVMTransactionService {
   protected getChainId(): number {
-    return POLYGON_CHAIN_ID
+    return ChainId.POL
   }
 
   protected getCurrency(): string {

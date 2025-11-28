@@ -1,5 +1,5 @@
 import { parseEther } from "ethers"
-import { erc20Service } from "./erc20.service"
+import { erc20Service } from "./erc20-abstract.service"
 import { Ed25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { mockIdentityA } from "@nfid/integration"
 

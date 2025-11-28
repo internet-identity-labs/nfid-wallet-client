@@ -2,7 +2,7 @@ import { ETHERSCAN_API_KEY } from "@nfid/integration/token/constants"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
-import { erc20Service } from "./erc20.service"
+import { ethereumErc20Service } from "./eth/eth-erc20.service"
 
 interface EtherscanTokenTransaction {
   blockNumber: string
@@ -66,7 +66,7 @@ export const getErc20ActivitiesRows = async (
       return []
     }
 
-    let tokenList = await erc20Service.getKnownTokensList()
+    let tokenList = await ethereumErc20Service.getKnownTokensList()
 
     let iconURLS: Map<string, string | undefined> = tokenList.reduce(
       (acc, token) => {

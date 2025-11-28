@@ -47,6 +47,7 @@ const setupCSP = () => {
         "https://etherscan.io/",
         "https://api.etherscan.io/",
         "https://api-sepolia.etherscan.io/",
+        "https://api.polygonscan.com/",
       ],
       "worker-src": "'self' blob:",
       "img-src": ["'self' blob: data: content: https:"],

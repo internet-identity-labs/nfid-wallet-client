@@ -1,14 +1,14 @@
-import { CHAIN_ID, INFURA_API_KEY } from "@nfid/integration/token/constants"
+import { CHAIN_ID } from "@nfid/integration/token/constants"
 import { InfuraProvider, parseEther, Interface, AbiCoder } from "ethers"
 import { Address } from "../bitcoin/services/chain-fusion-signer.service"
 import { chainFusionSignerService } from "../bitcoin/services/chain-fusion-signer.service"
-import { EthSignTransactionRequest } from "../bitcoin/idl/chain-fusion-signer.d"
 import { SignIdentity } from "@dfinity/agent"
 import { Contract } from "ethers"
 import { TransactionResponse } from "ethers"
 import { ethereumService } from "./eth/ethereum.service"
 import { storageWithTtl } from "@nfid/client-db"
 import { ChainId, State } from "@nfid/integration/token/icrc1/enum/enums"
+import { EthSignTransactionRequest } from "../bitcoin/idl/chain-fusion-signer.d"
 
 export const ERC20_ABI = [
   "function transfer(address to, uint256 amount) external returns (bool)",
@@ -47,11 +47,17 @@ export interface ERC20TokenWithBalance extends ERC20TokenInfo {
   error?: string
 }
 
-export class Erc20Service {
-  private provider: InfuraProvider
+export abstract class Erc20Service {
+  protected abstract provider: InfuraProvider
+  protected abstract chainId: ChainId
 
-  constructor() {
-    this.provider = new InfuraProvider(CHAIN_ID, INFURA_API_KEY)
+  public abstract getTokensWithNonZeroBalance(
+    normalizedAddress: string,
+  ): Promise<ERC20TokenWithBalance[]>
+
+  public async getTokensList(): Promise<ERC20TokenInfo[]> {
+    let allTokens = await this.getKnownTokensList()
+    return allTokens.filter((token) => token.chainId === this.chainId)
   }
 
   /**
@@ -155,80 +161,6 @@ export class Erc20Service {
         error: balance?.error,
       }
     })
-  }
-
-  /**
-   * Get tokens with balance using Ethplorer API
-   * Free API, no key required for basic usage
-   * Supports mainnet and Sepolia testnet
-   * USE IT ONLY FOR SCAN FEATURE
-   */
-  public async getTokensWithNonZeroBalance(
-    normalizedAddress: string,
-  ): Promise<ERC20TokenWithBalance[]> {
-    // Use different base URL for mainnet vs Sepolia
-    const baseUrl =
-      CHAIN_ID === BigInt(1)
-        ? "https://api.ethplorer.io"
-        : "https://sepolia-api.ethplorer.io"
-
-    const url = `${baseUrl}/getAddressInfo/${normalizedAddress.toLowerCase()}?apiKey=freekey`
-
-    console.debug("Ethplorer API URL:", url)
-
-    const response = await fetch(url)
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-
-    const data = await response.json()
-
-    console.debug("Ethplorer API response:", data)
-
-    // Ethplorer returns: { address, ETH: {...}, tokens: [{ tokenInfo, balance, totalIn, totalOut }] }
-    if (!data.tokens || !Array.isArray(data.tokens)) {
-      return []
-    }
-
-    // Get known tokens list for metadata (logoURI, etc.)
-    const knownTokens = await this.getKnownTokensList()
-    const knownTokensMap = new Map(
-      knownTokens.map((token) => [token.address.toLowerCase(), token]),
-    )
-
-    // Filter tokens with non-zero balance and combine with metadata
-    const tokensWithBalance: ERC20TokenWithBalance[] = data.tokens
-      .filter((token: any) => {
-        // Balance is in token units (not wei), so we need to check if it's > 0
-        const balance = parseFloat(token.balance || "0")
-        return balance > 0
-      })
-      .map((token: any) => {
-        const tokenAddress = token.tokenInfo?.address?.toLowerCase() || ""
-        const knownToken = knownTokensMap.get(tokenAddress)
-
-        // Ethplorer returns balance in token units (not wei)
-        // We need to convert to wei format: balance * 10^decimals
-        const decimals = token.tokenInfo?.decimals || knownToken?.decimals || 18
-        const balanceInTokenUnits = parseFloat(token.balance || "0")
-        const balanceInWei = BigInt(
-          Math.floor(balanceInTokenUnits * 10 ** decimals),
-        ).toString()
-
-        return {
-          address: tokenAddress,
-          name: knownToken?.name || token.tokenInfo?.name || "Unknown Token",
-          symbol: knownToken?.symbol || token.tokenInfo?.symbol || "UNKNOWN",
-          decimals: decimals,
-          logoURI: knownToken?.logoURI || token.tokenInfo?.image,
-          chainId: CHAIN_ID,
-          state: knownToken?.state || State.Inactive,
-          balance: balanceInWei,
-        }
-      })
-
-    return tokensWithBalance
   }
 
   /**
@@ -540,7 +472,7 @@ export class Erc20Service {
    *
    * @returns Array of token information with logos
    */
-  public async getKnownTokensList(): Promise<ERC20TokenInfo[]> {
+  protected async getKnownTokensList(): Promise<ERC20TokenInfo[]> {
     // Check cache first
     const cache = await storageWithTtl.getEvenExpired(
       ERC20_TOKENS_LIST_CACHE_KEY,
@@ -600,10 +532,7 @@ export class Erc20Service {
         chainId: token.chainId,
         state: State.Inactive,
       }))
-      .filter((token: ERC20TokenInfo) => token.chainId === ChainId.ETH) // remove this filter later
       .filter((token: ERC20TokenInfo) => token.address) // Remove invalid entries
-    // get only needed chains!
-    // .filter(...)
 
     // Cache the result for 24 hours
     await storageWithTtl.set(
@@ -615,5 +544,3 @@ export class Erc20Service {
     return result
   }
 }
-
-export const erc20Service = new Erc20Service()

@@ -2,9 +2,9 @@ import { ETH_DECIMALS, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 
 import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
 
-import { EVMTransactionService } from "../evm-transaction.service"
+import { EVMNativeTransactionService } from "../evm-transaction.service"
 
-export class EthTransactionService extends EVMTransactionService {
+export class EthTransactionService extends EVMNativeTransactionService {
   protected getChainId(): number {
     return 1
   }

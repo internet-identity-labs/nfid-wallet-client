@@ -23,11 +23,15 @@ import {
 } from "@nfid/integration/token/constants"
 import { fetchBtcAddress } from "frontend/util/fetch-btc-address"
 import { fetchEthAddress } from "frontend/util/fetch-eth-address"
-import { getErc20ActivitiesRows } from "frontend/integration/ethereum/erc20-transaction.service"
 import { polygonTransactionService } from "frontend/integration/ethereum/polygon/pol-transaction.service"
 import { arbitrumTransactionService } from "frontend/integration/ethereum/arbitrum/arbitrum-transaction.service"
 import { baseTransactionService } from "frontend/integration/ethereum/base/base-transaction.service"
 import { bnbTransactionService } from "frontend/integration/ethereum/bnb/bnb-transaction.service"
+import { ethErc20TransactionService } from "frontend/integration/ethereum/eth/eth-erc20-transaction.service"
+import { baseErc20TransactionService } from "frontend/integration/ethereum/base/base-erc20-transaction.service"
+import { arbitrumErc20TransactionService } from "frontend/integration/ethereum/arbitrum/arbitrum-erc20-transaction.service"
+import { bnbErc20TransactionService } from "frontend/integration/ethereum/bnb/bnb-erc20-transaction.service"
+import { polygonErc20TransactionService } from "frontend/integration/ethereum/polygon/pol-erc20-transaction.service"
 
 export const getAllActivity = async ({
   ...params
@@ -56,7 +60,11 @@ export const getAllActivity = async ({
     arbitrumTransactionService.getActivitiesRows(evmAddress),
     baseTransactionService.getActivitiesRows(evmAddress),
     bnbTransactionService.getActivitiesRows(evmAddress),
-    getErc20ActivitiesRows(evmAddress),
+    ethErc20TransactionService.getActivitiesRows(evmAddress),
+    arbitrumErc20TransactionService.getActivitiesRows(evmAddress),
+    baseErc20TransactionService.getActivitiesRows(evmAddress),
+    bnbErc20TransactionService.getActivitiesRows(evmAddress),
+    polygonErc20TransactionService.getActivitiesRows(evmAddress),
   ])
 
   const activitiesArray = [

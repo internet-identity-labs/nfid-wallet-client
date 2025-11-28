@@ -5,10 +5,10 @@ import {
 
 import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
 
-import { EVMTransactionService } from "../evm-transaction.service"
+import { EVMNativeTransactionService } from "../evm-transaction.service"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
-export class PolygonTransactionService extends EVMTransactionService {
+export class PolygonTransactionService extends EVMNativeTransactionService {
   protected getChainId(): number {
     return ChainId.POL
   }

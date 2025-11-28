@@ -1,4 +1,3 @@
-/* eslint-disable no-duplicate-case */
 import { useActor } from "@xstate/react"
 import { AuthEmailVerified } from "packages/ui/src/organisms/authentication/email-verified"
 import { AuthEmailError } from "packages/ui/src/organisms/authentication/error"

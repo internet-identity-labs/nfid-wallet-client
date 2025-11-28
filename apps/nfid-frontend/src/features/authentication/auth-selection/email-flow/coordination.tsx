@@ -18,9 +18,9 @@ export function AuthEmailFlowCoordinator({
   const [state, send] = useActor(actor)
 
   switch (true) {
-    case state.matches("Authenticated"):
+    case state.matches("SendVerificationEmail"):
       return <BlurredLoader isLoading />
-    case state.matches("Authenticated"):
+    case state.matches("PendingEmailVerification"):
       return (
         <AuthEmailPending
           isIdentityKit={isIdentityKit}
@@ -31,7 +31,7 @@ export function AuthEmailFlowCoordinator({
           }}
         />
       )
-    case true:
+    case state.matches("Error"):
       return (
         <AuthEmailError
           onBack={() => send({ type: "BACK" })}

@@ -1,4 +1,3 @@
-/* eslint-disable no-duplicate-case */
 import { useActor } from "@xstate/react"
 import { AuthEmailVerified } from "packages/ui/src/organisms/authentication/email-verified"
 import { AuthEmailError } from "packages/ui/src/organisms/authentication/error"
@@ -19,9 +18,9 @@ export function AuthEmailFlowCoordinator({
   const [state, send] = useActor(actor)
 
   switch (true) {
-    case state.matches("Authenticated"):
+    case state.matches("SendVerificationEmail"):
       return <BlurredLoader isLoading />
-    case state.matches("Authenticated"):
+    case state.matches("PendingEmailVerification"):
       return (
         <AuthEmailPending
           isIdentityKit={isIdentityKit}
@@ -32,7 +31,7 @@ export function AuthEmailFlowCoordinator({
           }}
         />
       )
-    case true:
+    case state.matches("Error"):
       return (
         <AuthEmailError
           onBack={() => send({ type: "BACK" })}

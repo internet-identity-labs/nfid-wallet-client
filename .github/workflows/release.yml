@@ -44,7 +44,7 @@ jobs:
 
     steps:
       - name: Checkout CI repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
@@ -90,10 +90,10 @@ jobs:
 
   #   steps:
   #     - name: Checkout repo
-  #       uses: actions/checkout@v5
+  #       uses: actions/checkout@v6
 
   #     - name: Checkout CI repo
-  #       uses: actions/checkout@v5
+  #       uses: actions/checkout@v6
   #       with:
   #         token: ${{ secrets.PAT }}
   #         repository: internet-identity-labs/ci_libs
@@ -233,10 +233,10 @@ jobs:
   #       exit 1
 
   #   - name: Checkout repo
-  #     uses: actions/checkout@v5
+  #     uses: actions/checkout@v6
 
   #   - name: Checkout CI repo
-  #     uses: actions/checkout@v5
+  #     uses: actions/checkout@v6
   #     with:
   #       token: ${{ secrets.PAT }}
   #       repository: internet-identity-labs/ci_libs
@@ -368,10 +368,10 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Checkout CI repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs

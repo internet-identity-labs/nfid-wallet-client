@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { A } from "packages/ui/src/atoms/custom-link"
 import { RangeSlider } from "packages/ui/src/atoms/range-slider"
-import { FC } from "react"
+import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 
@@ -61,6 +61,7 @@ export const StakeUi: FC<StakeUiProps> = ({
   stakingParams,
   isParamsLoading,
 }) => {
+  const [isFromResponsive, setIsFromResponsive] = useState(false)
   const isDarkTheme = useDarkTheme()
   const {
     watch,
@@ -155,6 +156,8 @@ export const StakeUi: FC<StakeUiProps> = ({
         minAmount={stakingParams?.getMinimumToStake()}
         isLoading={isParamsLoading || !stakingParams}
         fee={stakingParams?.getFee()}
+        isResponsive={isFromResponsive}
+        setIsResponsive={setIsFromResponsive}
       />
       {Boolean(errors["amount"]?.message) && (
         <div className="h-4 mt-1 text-xs leading-4 text-red-600 dark:text-red-500">

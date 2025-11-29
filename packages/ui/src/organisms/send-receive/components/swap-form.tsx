@@ -26,8 +26,6 @@ import { ChooseFromToken } from "./choose-from-token"
 import { ChooseToToken } from "./choose-to-token"
 import { SwapModal } from "./swap"
 
-export const BALANCE_EDGE_LENGTH = 20
-
 export interface SwapFTFormProps {
   tokens: FT[]
   allTokens: FT[]

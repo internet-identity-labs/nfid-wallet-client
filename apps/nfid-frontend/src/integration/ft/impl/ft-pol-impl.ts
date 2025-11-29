@@ -1,0 +1,38 @@
+import {
+  Category,
+  ChainId,
+  State,
+} from "@nfid/integration/token/icrc1/enum/enums"
+import PolygonIcon from "packages/ui/src/organisms/tokens/assets/polygon.svg"
+
+import {
+  ETH_DECIMALS,
+  POLYGON_NATIVE_ID,
+} from "@nfid/integration/token/constants"
+import { FTEvmAbstractImpl } from "./ft-evm-abstract-impl"
+import {
+  PolygonService,
+  polygonService,
+} from "frontend/integration/ethereum/polygon/polygon.service"
+
+export class FTPolygonImpl extends FTEvmAbstractImpl {
+  constructor() {
+    super({
+      ledger: POLYGON_NATIVE_ID,
+      symbol: "POL",
+      name: "Polygon",
+      decimals: ETH_DECIMALS,
+      category: Category.Native,
+      logo: PolygonIcon,
+      index: undefined,
+      state: State.Active,
+      fee: BigInt(0),
+      rootCanisterId: undefined,
+    })
+    this.tokenChainId = ChainId.POL
+  }
+
+  protected getProvider(): PolygonService {
+    return polygonService
+  }
+}

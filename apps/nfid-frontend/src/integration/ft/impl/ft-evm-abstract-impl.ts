@@ -1,45 +1,29 @@
-import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
-import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
-
 import { FTImpl } from "./ft-impl"
 import {
   CKETH_LEDGER_CANISTER_ID,
-  ETH_DECIMALS,
-  ETH_NATIVE_ID,
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
 import { exchangeRateService } from "@nfid/integration"
 import { FT } from "../ft"
-import { ChainId, FeeResponseETH } from "../utils"
+import { FeeResponseETH } from "../utils"
 import { SignIdentity } from "@dfinity/agent"
 import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
-import { SendEthFee } from "frontend/integration/ethereum/evm.service"
+import {
+  EVMService,
+  SendEthFee,
+} from "frontend/integration/ethereum/evm.service"
 
-export class FTETHImpl extends FTImpl {
-  constructor() {
-    super({
-      ledger: ETH_NATIVE_ID,
-      symbol: "ETH",
-      name: "Ethereum",
-      decimals: ETH_DECIMALS,
-      category: Category.Native,
-      logo: EthIcon,
-      index: undefined,
-      state: State.Active,
-      fee: BigInt(0),
-      rootCanisterId: undefined,
-    })
-    this.tokenChainId = ChainId.ETH
-  }
-
+export abstract class FTEvmAbstractImpl extends FTImpl {
   async init(): Promise<FT> {
     await this.getBalance()
     return this
   }
 
+  protected abstract getProvider(): EVMService
+
   public async getBalance(): Promise<void> {
     try {
-      this.tokenBalance = await ethereumService.getQuickBalance()
+      this.tokenBalance = await this.getProvider().getQuickBalance()
     } catch (e) {
       console.error("EthereumService error: ", (e as Error).message)
       return

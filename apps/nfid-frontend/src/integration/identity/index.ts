@@ -27,6 +27,7 @@ export const ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST = [
   "The user attempted to register an authenticator that contains one of the credentials already registered with the relying party.",
   "At least one credential matches an entry of the excludeCredentials list in the platform attached authenticator.",
   "An attempt was made to use an object that is not, or is no longer, usable",
+  "The object is in an invalid state.",
 ]
 
 /**

@@ -50,7 +50,7 @@ const SecurityPage: FC<SecurityPageProps> = ({
         await action()
         callback?.()
       } catch (e) {
-        console.error(e)
+        console.debug(e)
       } finally {
         setIsLoading(false)
         refetchDevices()

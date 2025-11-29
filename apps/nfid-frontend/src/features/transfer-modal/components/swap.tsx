@@ -14,8 +14,6 @@ import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 import {
-  BTC_NATIVE_ID,
-  ETH_NATIVE_ID,
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -39,6 +37,7 @@ import {
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { FeeResponse } from "frontend/integration/ft/utils"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 const QUOTE_REFETCH_TIMER = 30
 
@@ -122,9 +121,7 @@ export const SwapFT = ({
   const filteredTokens = useMemo(() => {
     if (!initedTokens) return
     const filtered = initedTokens.filter(
-      (token: FT) =>
-        token.getTokenAddress() !== BTC_NATIVE_ID &&
-        token.getTokenAddress() !== ETH_NATIVE_ID,
+      (token: FT) => token.getChainId() === ChainId.ICP,
     )
 
     if (!hideZeroBalance) return filtered
@@ -152,7 +149,7 @@ export const SwapFT = ({
     return filteredTokens?.find(
       (token: FT) =>
         token.getTokenAddress() === toTokenAddress &&
-        token.getTokenAddress() !== BTC_NATIVE_ID,
+        token.getChainId() === ChainId.ICP,
     )
   }, [toTokenAddress, filteredTokens])
 
@@ -160,8 +157,7 @@ export const SwapFT = ({
     return tokens?.filter(
       (token) =>
         token.getTokenAddress() !== fromTokenAddress &&
-        token.getTokenAddress() !== BTC_NATIVE_ID &&
-        token.getTokenAddress() !== ETH_NATIVE_ID,
+        token.getChainId() === ChainId.ICP,
     )
   }, [fromTokenAddress, tokens])
 

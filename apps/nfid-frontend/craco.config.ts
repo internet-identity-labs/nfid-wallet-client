@@ -45,6 +45,7 @@ const setupCSP = () => {
         "https://sepolia.infura.io/",
         "https://mainnet.infura.io/",
         "https://etherscan.io/",
+        "https://sepolia.etherscan.io/",
         "https://api.etherscan.io/",
         "https://api-sepolia.etherscan.io/",
       ],

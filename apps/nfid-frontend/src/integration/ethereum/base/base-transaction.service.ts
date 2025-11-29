@@ -3,11 +3,11 @@ import { ETH_DECIMALS, BASE_NATIVE_ID } from "@nfid/integration/token/constants"
 import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
 
 import { EVMTransactionService } from "../evm-transaction.service"
-import { BASE_CHAIN_ID } from "./base.service"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 export class BaseTransactionService extends EVMTransactionService {
   protected getChainId(): number {
-    return BASE_CHAIN_ID
+    return ChainId.BASE
   }
 
   protected getCurrency(): string {

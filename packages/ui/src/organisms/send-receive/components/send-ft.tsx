@@ -23,7 +23,7 @@ import { FT } from "frontend/integration/ft/ft"
 import { IModalType } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { SendSuccessUi } from "./send-success"
-import { ChainId } from "frontend/integration/ft/utils"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 export interface TransferFTUiProps {
   tokens: FT[]

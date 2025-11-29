@@ -13,6 +13,7 @@ import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 
 import { useDarkTheme } from "frontend/hooks"
 import { Skeleton } from "packages/ui/src/atoms/skeleton"
+import { CHAIN_NAME, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 export interface TokenInfoModalProps {
   token: FT | undefined
@@ -21,12 +22,15 @@ export interface TokenInfoModalProps {
 
 export const TokenInfoModal: FC<TokenInfoModalProps> = ({ token, onClose }) => {
   const ledger = token?.getTokenAddress()
+  const chainId = token?.getChainId()
   const index = token?.getTokenIndex()
   const isDarkTheme = useDarkTheme()
   const [fee, setFee] = useState<bigint | undefined>()
 
   useEffect(() => {
     const getFee = async () => {
+      if (chainId !== ChainId.ICP) return
+
       const fee = await token?.getTokenFee()
       const rawFee = fee?.getFee()
       setFee(rawFee)
@@ -73,7 +77,7 @@ export const TokenInfoModal: FC<TokenInfoModalProps> = ({ token, onClose }) => {
           </div>
           <div className="text-sm dark:text-white">{token?.getTokenName()}</div>
         </div>
-        {ledger && ledger !== BTC_NATIVE_ID && ledger !== ETH_NATIVE_ID && (
+        {chainId === ChainId.ICP && (
           <div className="flex items-center border-b border-gray-100 dark:border-zinc-700 h-[54px]">
             <div className="text-sm text-gray-400 dark:text-zinc-400 w-[150px]">
               Ledger canister ID
@@ -81,7 +85,7 @@ export const TokenInfoModal: FC<TokenInfoModalProps> = ({ token, onClose }) => {
             <div className="text-sm">
               <CopyAddress
                 className="dark:text-white"
-                address={ledger}
+                address={ledger!}
                 leadingChars={6}
                 trailingChars={4}
               />
@@ -123,7 +127,7 @@ export const TokenInfoModal: FC<TokenInfoModalProps> = ({ token, onClose }) => {
             </a>
           </div>
         )}
-        {ledger !== BTC_NATIVE_ID && ledger !== ETH_NATIVE_ID ? (
+        {chainId === ChainId.ICP ? (
           <div className="flex items-center border-b border-gray-100 dark:border-zinc-700 h-[54px]">
             <div className="text-sm text-gray-400 dark:text-zinc-400 w-[150px]">
               Transaction fee
@@ -151,7 +155,7 @@ export const TokenInfoModal: FC<TokenInfoModalProps> = ({ token, onClose }) => {
               Network
             </div>
             <div className="text-sm dark:text-white">
-              {ledger === BTC_NATIVE_ID ? "Bitcoin" : "Ethereum"}
+              {CHAIN_NAME[chainId!]}
             </div>
           </div>
         )}

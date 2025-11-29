@@ -17,6 +17,7 @@ import { mutateWithTimestamp } from "@nfid/swr"
 import { getUserPrincipalId } from "frontend/features/fungible-token/utils"
 import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
+import { TokenIdentity } from "./token-identity"
 
 interface FilteredTokenProps {
   token: FT
@@ -73,30 +74,11 @@ export const FilteredToken: FC<FilteredTokenProps> = ({
 
   return (
     <div className="flex items-center h-[60px]">
-      <div className="flex items-center gap-[12px] flex-0 w-[210px]">
-        <div className="w-[28px] h-[28px] rounded-full bg-zinc-50">
-          <ImageWithFallback
-            alt={`${token.getTokenSymbol()}`}
-            className="object-cover w-full h-full rounded-full"
-            fallbackSrc={IconNftPlaceholder}
-            src={`${token.getTokenLogo()}`}
-          />
-        </div>
-        <div>
-          <p
-            className={clsx(
-              "text-sm text-black leading-[20px] font-semibold",
-              token.getTokenState() === State.Active
-                ? "text-black dark:text-white"
-                : "text-secondary dark:text-zinc-400",
-            )}
-          >
-            {token.getTokenSymbol()}
-          </p>
-          <p className="text-xs text-secondary dark:text-zinc-400 leading-[20px]">
-            {token.getTokenName()}
-          </p>
-        </div>
+      <div className="w-[210px]">
+        <TokenIdentity
+          token={token}
+          isActive={token.getTokenState() === State.Active}
+        />
       </div>
       <div className="text-sm dark:text-white">
         {token.getTokenCategoryFormatted()}

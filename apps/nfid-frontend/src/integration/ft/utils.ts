@@ -1,12 +1,6 @@
 import { Utxo } from "@dfinity/ckbtc"
 import { SendEthFee } from "../ethereum/evm.service"
 
-export enum ChainId {
-  BTC = -1,
-  ETH = 1,
-  ICP = 0,
-}
-
 export interface FeeResponse {
   getFee(): bigint
 }

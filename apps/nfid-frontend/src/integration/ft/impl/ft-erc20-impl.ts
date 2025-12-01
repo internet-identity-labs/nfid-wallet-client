@@ -4,10 +4,10 @@ import { FT } from "src/integration/ft/ft"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { FTImpl } from "./ft-impl"
-import { ERC20TokenInfo } from "frontend/integration/ethereum/erc20.service"
-import { erc20Service } from "frontend/integration/ethereum/erc20.service"
+import { ERC20TokenInfo } from "frontend/integration/ethereum/erc20-abstract.service"
 import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
+import { ethErc20Service } from "frontend/integration/ethereum/eth/eth-erc20.service"
 
 export class FTERC20Impl extends FTImpl {
   constructor(erc20TokenInfo: ERC20TokenInfo) {
@@ -45,7 +45,7 @@ export class FTERC20Impl extends FTImpl {
       )
       .then((contracts) => contracts.map((c) => c.ledger))
       .then((addresses) =>
-        erc20Service.getMultipleTokenBalances(ethAddress, addresses),
+        ethErc20Service.getMultipleTokenBalances(ethAddress, addresses),
       )
       .then(
         (balances) =>

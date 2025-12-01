@@ -4,10 +4,11 @@ import {
   ETHERSCAN_API_KEY,
 } from "@nfid/integration/token/constants"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
-
+import { Erc20Service } from "./erc20-abstract.service"
+import { ERC20TokenInfo } from "./erc20-abstract.service"
 import { IActivityRow } from "frontend/features/activity/types"
 
-interface EtherscanTransaction {
+export interface EtherscanTransaction {
   blockNumber: string
   timeStamp: string
   hash: string
@@ -28,16 +29,133 @@ interface EtherscanTransaction {
   confirmations: string
 }
 
-interface EtherscanResponse {
+export interface EtherscanResponse {
   status: string
   message: string
   result: EtherscanTransaction[]
 }
 
-export abstract class EVMTransactionService {
+export interface EtherscanTokenResponse {
+  status: string
+  message: string
+  result: EtherscanTokenTransaction[]
+}
+
+export interface EtherscanTokenTransaction {
+  blockNumber: string
+  timeStamp: string
+  hash: string
+  nonce: string
+  blockHash: string
+  from: string
+  contractAddress: string
+  to: string
+  value: string
+  tokenName: string
+  tokenSymbol: string
+  tokenDecimal: string
+  transactionIndex: string
+  gas: string
+  gasPrice: string
+  gasUsed: string
+  cumulativeGasUsed: string
+  input: string
+  confirmations: string
+}
+
+export interface EVMTransactionService {
+  getActivitiesRows(address: string): Promise<IActivityRow[]>
+}
+
+export abstract class EVMTokenTransactionService
+  implements EVMTransactionService
+{
+  protected abstract getChainId(): number
+
+  protected abstract getService(): Erc20Service
+
+  protected getUrl(address: string): string {
+    return `https://api.etherscan.io/v2/api?chainid=${this.getChainId()}&module=account&action=tokentx&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${ETHERSCAN_API_KEY}`
+  }
+
   public async getActivitiesRows(address: string): Promise<IActivityRow[]> {
     try {
-      const url = `https://api.etherscan.io/v2/api?chainid=${this.getChainId()}&module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${this.getApiKey()}`
+      // Get ERC20 token transactions
+      const tokenUrl = this.getUrl(address)
+
+      console.debug(
+        "Fetching ERC20 token transactions from Etherscan for address:",
+        address,
+      )
+      const tokenResponse = await fetch(tokenUrl)
+      const tokenData: EtherscanTokenResponse = await tokenResponse.json()
+
+      console.debug("Etherscan ERC20 response:", tokenData)
+
+      if (
+        tokenData.status !== "1" ||
+        !tokenData.result ||
+        tokenData.result.length === 0
+      ) {
+        console.debug("No ERC20 token transactions found for address:", address)
+        return []
+      }
+
+      let tokenList = await this.getService().getTokensList()
+
+      let iconURLS: Map<string, string | undefined> = tokenList.reduce(
+        (acc: Map<string, string | undefined>, token: ERC20TokenInfo) => {
+          acc.set(token.address.toLowerCase(), token.logoURI)
+          return acc
+        },
+        new Map<string, string | undefined>(),
+      )
+
+      // Process ERC20 token transactions
+      const tokenActivities: IActivityRow[] = tokenData.result.map((tx) => {
+        const isSent = tx.from.toLowerCase() === address.toLowerCase()
+        const decimals = parseInt(tx.tokenDecimal || "18", 10)
+        const amount = Number(tx.value) / 10 ** decimals
+
+        return {
+          id: `${tx.hash}`,
+          action: isSent ? IActivityAction.SENT : IActivityAction.RECEIVED,
+          timestamp: new Date(Number(tx.timeStamp) * 1000),
+          asset: {
+            type: "ft" as const,
+            currency: tx.tokenSymbol,
+            amount: amount,
+            icon: iconURLS.get(tx.contractAddress.toLowerCase()),
+            rate: 0,
+            decimals: decimals,
+            canister: tx.contractAddress.toLowerCase(),
+          },
+          from: tx.from,
+          to: tx.to,
+        }
+      })
+
+      console.debug("Processed ERC20 activities:", tokenActivities)
+      return tokenActivities
+    } catch (error) {
+      console.error(
+        "Error fetching ERC20 token transactions from Etherscan:",
+        error,
+      )
+      return []
+    }
+  }
+}
+
+export abstract class EVMNativeTransactionService
+  implements EVMTransactionService
+{
+  protected getUrl(address: string): string {
+    return `https://api.etherscan.io/v2/api?chainid=${this.getChainId()}&module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${ETHERSCAN_API_KEY}`
+  }
+  public async getActivitiesRows(address: string): Promise<IActivityRow[]> {
+    try {
+      const url = this.getUrl(address)
 
       console.debug(
         "Fetching ETH transactions from Etherscan for address:",

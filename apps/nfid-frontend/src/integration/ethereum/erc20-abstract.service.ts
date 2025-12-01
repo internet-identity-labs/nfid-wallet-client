@@ -58,10 +58,7 @@ export abstract class Erc20Service {
   public async getTokensWithNonZeroBalance(
     normalizedAddress: string,
   ): Promise<ERC20TokenWithBalance[]> {
-    // Arbiscan API V2 endpoint for token transactions
-    // Using Etherscan unified API with chainid for Arbitrum (42161)
     // Same format as used in evm-transaction.service.ts
-    // Note: Using ETHERSCAN_API_KEY as fallback, but ideally should use ARBISCAN_API_KEY
     const apiKey = ETHERSCAN_API_KEY
     const url = `https://api.etherscan.io/v2/api?chainid=${this.chainId}&module=account&action=tokentx&address=${normalizedAddress.toLowerCase()}&startblock=0&endblock=99999999&sort=desc&apikey=${apiKey}`
 

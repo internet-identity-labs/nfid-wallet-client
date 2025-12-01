@@ -58,65 +58,29 @@ export abstract class Erc20Service {
   public async getTokensWithNonZeroBalance(
     normalizedAddress: string,
   ): Promise<ERC20TokenWithBalance[]> {
-    // Same format as used in evm-transaction.service.ts
-    const apiKey = ETHERSCAN_API_KEY
-    const url = `https://api.etherscan.io/v2/api?chainid=${this.chainId}&module=account&action=tokentx&address=${normalizedAddress.toLowerCase()}&startblock=0&endblock=99999999&sort=desc&apikey=${apiKey}`
+    // Get known tokens list for current chain
+    const knownTokens = await this.getKnownTokensList()
+    const chainTokens = knownTokens.filter(
+      (token) => token.chainId === this.chainId,
+    )
 
-    console.debug("Arbiscan API URL:", url)
-
-    const response = await fetch(url)
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-
-    const data = await response.json()
-
-    console.debug("Arbiscan API response:", data)
-
-    // Arbiscan returns: { status: "1", message: "OK", result: [{...}] }
-    if (data.status !== "1" || !data.result || !Array.isArray(data.result)) {
+    if (chainTokens.length === 0) {
       return []
     }
 
-    // Extract unique token addresses from transactions
-    const uniqueTokenAddresses = new Set<string>()
-    data.result.forEach((tx: any) => {
-      const tokenAddress = (tx.contractAddress || "").toLowerCase()
-      if (tokenAddress) {
-        uniqueTokenAddresses.add(tokenAddress)
-      }
-    })
+    // Extract token addresses
+    const tokenAddresses = chainTokens.map((token) => token.address)
 
-    if (uniqueTokenAddresses.size === 0) {
-      return []
-    }
-
-    // Get balances for all unique tokens using Multicall3
-    const tokenAddressesArray = Array.from(uniqueTokenAddresses)
+    // Get balances for all known tokens using Multicall3
     const balances = await this.getMultipleTokenBalances(
       normalizedAddress,
-      tokenAddressesArray,
+      tokenAddresses,
     )
 
-    // Get known tokens list for metadata (logoURI, etc.)
-    const knownTokens = await this.getKnownTokensList()
+    // Create a map of known tokens for metadata lookup
     const knownTokensMap = new Map(
-      knownTokens.map((token) => [token.address.toLowerCase(), token]),
+      chainTokens.map((token) => [token.address.toLowerCase(), token]),
     )
-
-    // Create a map of token info from transactions (for tokens not in known list)
-    const txTokenMap = new Map<string, any>()
-    data.result.forEach((tx: any) => {
-      const tokenAddress = (tx.contractAddress || "").toLowerCase()
-      if (tokenAddress && !txTokenMap.has(tokenAddress)) {
-        txTokenMap.set(tokenAddress, {
-          name: tx.tokenName,
-          symbol: tx.tokenSymbol,
-          decimals: tx.tokenDecimal || "18",
-        })
-      }
-    })
 
     // Filter tokens with non-zero balance and combine with metadata
     const tokensWithBalance: ERC20TokenWithBalance[] = balances
@@ -127,24 +91,25 @@ export abstract class Erc20Service {
       .map((balance) => {
         const tokenAddress = balance.contractAddress.toLowerCase()
         const knownToken = knownTokensMap.get(tokenAddress)
-        const txToken = txTokenMap.get(tokenAddress)
 
-        const decimals = parseInt(
-          knownToken?.decimals?.toString() || txToken?.decimals || "18",
-        )
+        if (!knownToken) {
+          // Skip tokens not found in known list (should not happen)
+          return null
+        }
 
         return {
           address: tokenAddress,
-          name: knownToken?.name || txToken?.name || "Unknown Token",
-          symbol: knownToken?.symbol || txToken?.symbol || "UNKNOWN",
-          decimals: decimals,
-          logoURI: knownToken?.logoURI,
+          name: knownToken.name || "Unknown Token",
+          symbol: knownToken.symbol || "UNKNOWN",
+          decimals: knownToken.decimals || 18,
+          logoURI: knownToken.logoURI,
           chainId: this.chainId,
-          state: knownToken?.state || State.Inactive,
+          state: knownToken.state || State.Inactive,
           balance: balance.balance,
           error: balance.error,
         } as ERC20TokenWithBalance
       })
+      .filter((token): token is ERC20TokenWithBalance => token !== null)
 
     return tokensWithBalance
   }

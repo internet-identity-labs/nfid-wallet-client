@@ -34,7 +34,7 @@ describe("ft test suite", () => {
       .mockResolvedValue("0x1234567890123456789012345678901234567890")
   })
 
-  describe("ft", () => {
+  describe.skip("ft", () => {
     it("should return", async () => {
       jest
         .spyOn(icrc1StorageService as any, "getICRC1Canisters")

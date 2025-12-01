@@ -1,4 +1,4 @@
-import { CHAIN_ID } from "@nfid/integration/token/constants"
+import { CHAIN_ID, ETHERSCAN_API_KEY } from "@nfid/integration/token/constants"
 import { InfuraProvider, parseEther, Interface, AbiCoder } from "ethers"
 import { Address } from "../bitcoin/services/chain-fusion-signer.service"
 import { chainFusionSignerService } from "../bitcoin/services/chain-fusion-signer.service"
@@ -9,6 +9,7 @@ import { ethereumService } from "./eth/ethereum.service"
 import { storageWithTtl } from "@nfid/client-db"
 import { ChainId, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { EthSignTransactionRequest } from "../bitcoin/idl/chain-fusion-signer.d"
+import { TokenPrice } from "packages/integration/src/lib/asset/types"
 
 export const ERC20_ABI = [
   "function transfer(address to, uint256 amount) external returns (bool)",
@@ -19,6 +20,9 @@ export const ERC20_ABI = [
 // Multicall3 contract address (works on all EVM chains)
 // Reference: https://medium.com/coinmonks/the-best-method-for-bulk-fetching-erc20-token-balances-99da12f4d839
 const MULTICALL3_ADDRESS = "0xcA11bde05977b3631167028862bE2a173976CA11"
+
+const ERC20_TOKENS_CACHE_KEY = "ERC20_TOKENS"
+const CACHE_TTL = 60 * 1000 // 60 seconds
 
 const MULTICALL3_ABI = [
   "function aggregate((address target, bytes callData)[] calls) payable returns (uint256 blockNumber, bytes[] returnData)",
@@ -51,9 +55,174 @@ export abstract class Erc20Service {
   protected abstract provider: InfuraProvider
   protected abstract chainId: ChainId
 
-  public abstract getTokensWithNonZeroBalance(
+  public async getTokensWithNonZeroBalance(
     normalizedAddress: string,
-  ): Promise<ERC20TokenWithBalance[]>
+  ): Promise<ERC20TokenWithBalance[]> {
+    // Arbiscan API V2 endpoint for token transactions
+    // Using Etherscan unified API with chainid for Arbitrum (42161)
+    // Same format as used in evm-transaction.service.ts
+    // Note: Using ETHERSCAN_API_KEY as fallback, but ideally should use ARBISCAN_API_KEY
+    const apiKey = ETHERSCAN_API_KEY
+    const url = `https://api.etherscan.io/v2/api?chainid=${this.chainId}&module=account&action=tokentx&address=${normalizedAddress.toLowerCase()}&startblock=0&endblock=99999999&sort=desc&apikey=${apiKey}`
+
+    console.debug("Arbiscan API URL:", url)
+
+    const response = await fetch(url)
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    console.debug("Arbiscan API response:", data)
+
+    // Arbiscan returns: { status: "1", message: "OK", result: [{...}] }
+    if (data.status !== "1" || !data.result || !Array.isArray(data.result)) {
+      return []
+    }
+
+    // Extract unique token addresses from transactions
+    const uniqueTokenAddresses = new Set<string>()
+    data.result.forEach((tx: any) => {
+      const tokenAddress = (tx.contractAddress || "").toLowerCase()
+      if (tokenAddress) {
+        uniqueTokenAddresses.add(tokenAddress)
+      }
+    })
+
+    if (uniqueTokenAddresses.size === 0) {
+      return []
+    }
+
+    // Get balances for all unique tokens using Multicall3
+    const tokenAddressesArray = Array.from(uniqueTokenAddresses)
+    const balances = await this.getMultipleTokenBalances(
+      normalizedAddress,
+      tokenAddressesArray,
+    )
+
+    // Get known tokens list for metadata (logoURI, etc.)
+    const knownTokens = await this.getKnownTokensList()
+    const knownTokensMap = new Map(
+      knownTokens.map((token) => [token.address.toLowerCase(), token]),
+    )
+
+    // Create a map of token info from transactions (for tokens not in known list)
+    const txTokenMap = new Map<string, any>()
+    data.result.forEach((tx: any) => {
+      const tokenAddress = (tx.contractAddress || "").toLowerCase()
+      if (tokenAddress && !txTokenMap.has(tokenAddress)) {
+        txTokenMap.set(tokenAddress, {
+          name: tx.tokenName,
+          symbol: tx.tokenSymbol,
+          decimals: tx.tokenDecimal || "18",
+        })
+      }
+    })
+
+    // Filter tokens with non-zero balance and combine with metadata
+    const tokensWithBalance: ERC20TokenWithBalance[] = balances
+      .filter((balance) => {
+        const balanceValue = BigInt(balance.balance || "0")
+        return balanceValue > BigInt(0)
+      })
+      .map((balance) => {
+        const tokenAddress = balance.contractAddress.toLowerCase()
+        const knownToken = knownTokensMap.get(tokenAddress)
+        const txToken = txTokenMap.get(tokenAddress)
+
+        const decimals = parseInt(
+          knownToken?.decimals?.toString() || txToken?.decimals || "18",
+        )
+
+        return {
+          address: tokenAddress,
+          name: knownToken?.name || txToken?.name || "Unknown Token",
+          symbol: knownToken?.symbol || txToken?.symbol || "UNKNOWN",
+          decimals: decimals,
+          logoURI: knownToken?.logoURI,
+          chainId: this.chainId,
+          state: knownToken?.state || State.Inactive,
+          balance: balance.balance,
+          error: balance.error,
+        } as ERC20TokenWithBalance
+      })
+
+    return tokensWithBalance
+  }
+
+  public async getUSDPrices(addresses: string[]): Promise<TokenPrice[]> {
+    if (addresses.length === 0) {
+      return []
+    }
+
+    // Create cache key based on sorted addresses to ensure consistency
+    const sortedAddresses = [...addresses].sort().join(",")
+    const cacheKey = `${ERC20_TOKENS_CACHE_KEY}-${this.chainId}-${sortedAddresses}`
+
+    // Check cache first
+    const cache = await storageWithTtl.getEvenExpired(cacheKey)
+
+    let prices: Record<string, number>
+
+    if (!cache) {
+      // No cache, fetch and cache
+      prices = await this.fetchAndCachePrices(addresses, cacheKey)
+    } else if (!cache.expired) {
+      // Cache exists and not expired, use it
+      prices = cache.value as Record<string, number>
+    } else {
+      // Cache expired, return it immediately and refresh in background
+      prices = cache.value as Record<string, number>
+      // Refresh in background without waiting
+      this.fetchAndCachePrices(addresses, cacheKey).catch((error) => {
+        console.error("Failed to refresh token prices in background:", error)
+      })
+    }
+
+    // Map to TokenPrice format
+    return addresses.map((address) => ({
+      token: address,
+      price: prices[address.toLowerCase()] || 0,
+    }))
+  }
+
+  private async fetchAndCachePrices(
+    addresses: string[],
+    cacheKey: string,
+  ): Promise<Record<string, number>> {
+    const defiLlamaChainId = this.getDefiLlamaChainId()
+    // Format: chain:address1,chain:address2,...
+    const tokensParam = addresses
+      .map((addr) => `${defiLlamaChainId}:${addr.toLowerCase()}`)
+      .join(",")
+
+    const url = `https://coins.llama.fi/prices/current/${tokensParam}`
+    const response = await fetch(url)
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const data = await response.json()
+    const coins = data.coins || {}
+
+    // Extract prices and normalize addresses to lowercase
+    const prices: Record<string, number> = {}
+    addresses.forEach((address) => {
+      const key = `${defiLlamaChainId}:${address.toLowerCase()}`
+      const coinData = coins[key]
+      prices[address.toLowerCase()] = coinData?.price || 0
+    })
+
+    // Cache the result for 60 seconds
+    await storageWithTtl.set(cacheKey, prices, CACHE_TTL)
+
+    return prices
+  }
+
+  protected abstract getDefiLlamaChainId(): string
 
   public async getTokensList(): Promise<ERC20TokenInfo[]> {
     let allTokens = await this.getKnownTokensList()

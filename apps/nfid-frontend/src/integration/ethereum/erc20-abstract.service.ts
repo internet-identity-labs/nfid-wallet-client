@@ -1,4 +1,4 @@
-import { CHAIN_ID, ETHERSCAN_API_KEY } from "@nfid/integration/token/constants"
+import { CHAIN_ID } from "@nfid/integration/token/constants"
 import { InfuraProvider, parseEther, Interface, AbiCoder } from "ethers"
 import { Address } from "../bitcoin/services/chain-fusion-signer.service"
 import { chainFusionSignerService } from "../bitcoin/services/chain-fusion-signer.service"

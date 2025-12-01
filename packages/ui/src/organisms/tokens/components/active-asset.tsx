@@ -144,12 +144,12 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`token_${token.getTokenName().replace(/\s/g, "")}_usd`}
         className="pr-[10px] hidden md:table-cell pr-[10px] dark:text-white"
       >
-        {isIniting || token.getUSDBalanceFormatted() === undefined ? (
+        {isIniting || usdBalance === undefined ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
-        ) : token.getUSDBalanceFormatted() === null ? (
+        ) : usdBalance === null ? (
           "Not listed"
         ) : (
-          token.getUSDBalanceFormatted()
+          usdBalance
         )}
       </td>
       <td

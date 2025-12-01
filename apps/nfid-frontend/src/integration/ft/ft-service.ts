@@ -8,6 +8,10 @@ import { FT } from "src/integration/ft/ft"
 import { FTImpl } from "src/integration/ft/impl/ft-impl"
 
 import {
+  ARBITRUM_NATIVE_ID,
+  BASE_NATIVE_ID,
+  BNB_NATIVE_ID,
+  POLYGON_NATIVE_ID,
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
@@ -46,18 +50,6 @@ export interface TokensAvailableToSwap {
   from: string[]
 }
 
-const TOKENS_TO_REORDER: {
-  canisterId: string
-  index: number
-  ft?: FT | null
-}[] = [
-  { canisterId: BTC_NATIVE_ID, index: 1 },
-  { canisterId: ETH_NATIVE_ID, index: 2 },
-  { canisterId: NFIDW_CANISTER_ID, index: 3 },
-  { canisterId: CKBTC_CANISTER_ID, index: 4 },
-  { canisterId: CKETH_LEDGER_CANISTER_ID, index: 5 },
-]
-
 export class FtService {
   async getTokens(userId: string): Promise<Array<FT>> {
     let icrc1Tokens = await icrc1StorageService
@@ -77,6 +69,22 @@ export class FtService {
 
         const ckEth = canisters.find(
           (canister) => canister.ledger === CKETH_LEDGER_CANISTER_ID,
+        )
+
+        const arb = canisters.find(
+          (canister) => canister.ledger === ARBITRUM_NATIVE_ID,
+        )
+
+        const pol = canisters.find(
+          (canister) => canister.ledger === POLYGON_NATIVE_ID,
+        )
+
+        const bnb = canisters.find(
+          (canister) => canister.ledger === BNB_NATIVE_ID,
+        )
+
+        const base = canisters.find(
+          (canister) => canister.ledger === BASE_NATIVE_ID,
         )
 
         const updatePromises = []
@@ -117,6 +125,46 @@ export class FtService {
           )
         }
 
+        if (!arb || arb.state === State.Inactive) {
+          updatePromises.push(
+            icrc1RegistryService.storeICRC1Canister(
+              ARBITRUM_NATIVE_ID,
+              State.Active,
+              ChainId.ARB,
+            ),
+          )
+        }
+
+        if (!pol || pol.state === State.Inactive) {
+          updatePromises.push(
+            icrc1RegistryService.storeICRC1Canister(
+              POLYGON_NATIVE_ID,
+              State.Active,
+              ChainId.ARB,
+            ),
+          )
+        }
+
+        if (!bnb || bnb.state === State.Inactive) {
+          updatePromises.push(
+            icrc1RegistryService.storeICRC1Canister(
+              BNB_NATIVE_ID,
+              State.Active,
+              ChainId.ARB,
+            ),
+          )
+        }
+
+        if (!base || base.state === State.Inactive) {
+          updatePromises.push(
+            icrc1RegistryService.storeICRC1Canister(
+              BASE_NATIVE_ID,
+              State.Active,
+              ChainId.ARB,
+            ),
+          )
+        }
+
         await Promise.all(updatePromises)
 
         if (updatePromises.length > 0) {
@@ -127,6 +175,24 @@ export class FtService {
         return ft
       })
 
+    // TODO: Fix an issue with a lot of rerenders when changing State
+    // Try to implement setState method in FTPolygonImpl instead of FTEvmAbstractImpl
+    // const baseState = userCanisters.find(
+    //   (uc) => uc.ledger === BASE_NATIVE_ID,
+    // )?.state
+
+    // const bnbState = userCanisters.find(
+    //   (uc) => uc.ledger === BNB_NATIVE_ID,
+    // )?.state
+
+    // const polState = userCanisters.find(
+    //   (uc) => uc.ledger === POLYGON_NATIVE_ID,
+    // )?.state
+
+    // const arbState = userCanisters.find(
+    //   (uc) => uc.ledger === ARBITRUM_NATIVE_ID,
+    // )?.state
+
     const ethNativeToken = new FTEthereumImpl()
     const btcNativeToken = new FTBitcoinImpl()
     const polNativeToken = new FTPolygonImpl()
@@ -134,6 +200,7 @@ export class FtService {
     const baseNativeToken = new FTBaseImpl()
     const bnbNativeToken = new FTBnbImpl()
 
+    // Use this for ERC-20 tokens
     // const erc20Tokens = await erc20Service.getKnownTokensList()
     // let userCanisters = await icrc1RegistryService.getCanistersByRoot(userId)
 
@@ -297,6 +364,7 @@ export class FtService {
         tokenRateDayChangePercentPositive:
           token.getTokenRateDayChangePercent()?.positive,
         inited: token.isInited(),
+        state: token.getTokenState(),
       })),
     )
   }
@@ -326,6 +394,7 @@ export class FtService {
       }
 
       tokenImpl.inited = data.inited
+      tokenImpl.tokenState = data.state
 
       return token
     })
@@ -438,30 +507,39 @@ export class FtService {
       [Category.ChainFusionTestnet]: 7,
     }
 
-    TOKENS_TO_REORDER.forEach((token) => {
-      const index = tokens.findIndex(
-        (t) => t.getTokenAddress() === token.canisterId,
-      )
-      if (index !== -1) {
-        token.ft = tokens.splice(index, 1)[0]
-      }
+    const topNativeIds = [ICP_CANISTER_ID, BTC_NATIVE_ID, ETH_NATIVE_ID]
+    const nfIdTokens = [
+      NFIDW_CANISTER_ID,
+      CKBTC_CANISTER_ID,
+      CKETH_LEDGER_CANISTER_ID,
+    ]
+
+    const topNative: FT[] = topNativeIds
+      .map((id) => tokens.find((t) => t.getTokenAddress() === id))
+      .filter(Boolean) as FT[]
+    topNative.forEach((t) => tokens.splice(tokens.indexOf(t), 1))
+
+    const afterNative: FT[] = nfIdTokens
+      .map((id) => tokens.find((t) => t.getTokenAddress() === id))
+      .filter(Boolean) as FT[]
+    afterNative.forEach((t) => tokens.splice(tokens.indexOf(t), 1))
+
+    const remainingNative = tokens.filter(
+      (t) => t.getTokenCategory() === Category.Native,
+    )
+    const others = tokens.filter(
+      (t) => t.getTokenCategory() !== Category.Native,
+    )
+
+    others.sort((a, b) => {
+      const aCat =
+        categoryOrder[a.getTokenCategory()] ?? Number.MAX_SAFE_INTEGER
+      const bCat =
+        categoryOrder[b.getTokenCategory()] ?? Number.MAX_SAFE_INTEGER
+      return aCat - bCat
     })
 
-    tokens.sort((a, b) => {
-      const aCategory =
-        categoryOrder[a.getTokenCategory()] || Number.MAX_SAFE_INTEGER
-      const bCategory =
-        categoryOrder[b.getTokenCategory()] || Number.MAX_SAFE_INTEGER
-      return aCategory - bCategory
-    })
-
-    TOKENS_TO_REORDER.forEach((specific) => {
-      if (specific.ft) {
-        tokens.splice(specific.index, 0, specific.ft)
-      }
-    })
-
-    return tokens
+    return [...topNative, ...remainingNative, ...afterNative, ...others]
   }
 }
 

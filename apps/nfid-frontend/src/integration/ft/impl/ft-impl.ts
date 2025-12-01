@@ -5,12 +5,16 @@ import { FT } from "src/integration/ft/ft"
 
 import { exchangeRateService } from "@nfid/integration"
 import {
+  ARBITRUM_NATIVE_ID,
+  BASE_NATIVE_ID,
+  BNB_NATIVE_ID,
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
+  POLYGON_NATIVE_ID,
 } from "@nfid/integration/token/constants"
 import {
   Category,
@@ -31,7 +35,7 @@ export class FTImpl implements FT {
   private readonly tokenName: string
   protected tokenChainId: ChainId
   protected tokenBalance: bigint | undefined
-  private tokenState: State
+  protected tokenState: State
   protected tokenRate?: {
     value: BigNumber
     dayChangePercent?: string
@@ -192,6 +196,10 @@ export class FTImpl implements FT {
       this.tokenAddress === ICP_CANISTER_ID ||
       this.tokenAddress === BTC_NATIVE_ID ||
       this.tokenAddress === ETH_NATIVE_ID ||
+      this.tokenAddress === ARBITRUM_NATIVE_ID ||
+      this.tokenAddress === BASE_NATIVE_ID ||
+      this.tokenAddress === BNB_NATIVE_ID ||
+      this.tokenAddress === POLYGON_NATIVE_ID ||
       this.tokenAddress === NFIDW_CANISTER_ID ||
       this.tokenAddress === CKBTC_CANISTER_ID ||
       this.tokenAddress === CKETH_LEDGER_CANISTER_ID

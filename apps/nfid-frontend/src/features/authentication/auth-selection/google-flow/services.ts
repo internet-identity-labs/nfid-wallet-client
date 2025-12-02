@@ -53,10 +53,14 @@ export const signWithGoogleService = async (
     })
   }
 
-  await authState.set({
-    delegationIdentity: delegation,
-    identity: identity,
-  })
+  // Only set auth state if 2FA is NOT enabled
+  // If 2FA is enabled, checkIf2FAEnabled will handle it after verification
+  if (!profile.is2fa) {
+    await authState.set({
+      delegationIdentity: delegation,
+      identity: identity,
+    })
+  }
 
   if (!profile?.email?.length)
     await im.update_account({ name: [], email: [email] })

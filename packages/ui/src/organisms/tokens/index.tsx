@@ -17,6 +17,7 @@ import { getIsMobileDeviceMatch } from "../../utils/is-mobile"
 import { ActiveToken } from "./components/active-asset"
 import { ManageTokens } from "./components/manage-tokens"
 import { TokenInfoModal } from "./components/token-info-modal"
+import { ChainFilter } from "./components/chain-filter"
 
 export interface IProfileConstants {
   base: string
@@ -80,6 +81,7 @@ export const Tokens: FC<TokensProps> = ({
   const [isHovered, setIsHovered] = useState(false)
   const [loadingToken, setLoadingToken] = useState<FT | null>(null)
   const isDarkTheme = useDarkTheme()
+  const [filter, setFilter] = useState<string[]>([])
 
   const handleSorting = () => {
     const nextSorting = {
@@ -140,9 +142,19 @@ export const Tokens: FC<TokensProps> = ({
     return initedTokens
   }, [initedTokens, sorting])
 
+  const filteredTokens = useMemo(() => {
+    if (filter.length === 0) return sortedTokens
+    return sortedTokens.filter((token) =>
+      filter.includes(`${token.getChainId()}`),
+    )
+  }, [sortedTokens, filter])
+
   return (
     <>
       <div className="relative flex flex-col">
+        <div className={clsx("flex justify-end", isTokensLoading && "hidden")}>
+          <ChainFilter filter={filter} setFilter={setFilter} />
+        </div>
         <div className="mb-[20px] overflow-x-auto scrollbar scrollbar-w-4 scrollbar-thumb-gray-300 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
           <table className="w-full text-left">
             <thead className="text-secondary dark:text-zinc-500 h-[40px] hidden md:table-header-group">
@@ -162,7 +174,7 @@ export const Tokens: FC<TokensProps> = ({
                   onMouseEnter={() => setIsHovered(true)}
                   onMouseLeave={() => setIsHovered(false)}
                 >
-                  <span className="flex whitespace-nowrap">
+                  <span className="flex items-center whitespace-nowrap">
                     USD balance{" "}
                     <img
                       className="w-[18px] h-[18px] ms-[5px]"
@@ -181,7 +193,7 @@ export const Tokens: FC<TokensProps> = ({
                   tableCellAmount={getIsMobileDeviceMatch() ? 2 : 6}
                 />
               ) : (
-                sortedTokens.map((token, index, arr) => (
+                filteredTokens.map((token, index, arr) => (
                   <ActiveToken
                     isIniting={
                       tokensIniting ||

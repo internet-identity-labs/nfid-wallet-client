@@ -29,6 +29,8 @@ import { NFT } from "frontend/integration/nft/nft"
 
 import { useIntersectionObserver } from "../../organisms/send-receive/hooks/intersection-observer"
 import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
+import { IModalType } from "../../organisms/send-receive/utils"
+import { ChainFilter } from "../../organisms/tokens/components/chain-filter"
 
 const INITED_TOKENS_LIMIT = 6
 
@@ -49,6 +51,7 @@ export interface IChooseTokenModal<T> {
   isSwapTo?: boolean
   tokensAvailableToSwap?: TokensAvailableToSwap
   isBtcEthLoading?: boolean
+  modalType?: IModalType
 }
 
 export const ChooseTokenModal = <T extends FT | NFT>({
@@ -63,12 +66,14 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   isSwapTo,
   tokensAvailableToSwap,
   isBtcEthLoading,
+  modalType,
 }: IChooseTokenModal<T>) => {
   const isDarkTheme = useDarkTheme()
   const [searchInput, setSearchInput] = useState("")
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [tokensOptions, setTokensOptions] = useState<T[]>([])
   const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(true)
+  const [filter, setFilter] = useState<string[]>([])
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
 
   const handleSearch = useCallback(
@@ -114,12 +119,27 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   }, [tokens, isSwapTo])
 
   const filteredTokens = useMemo(() => {
-    if (searchInput.length < 2) return tokensOptions
+    let result = tokensOptions
 
-    return tokensOptions.filter((token) =>
-      filterTokensBySearchInput(token, searchInput),
-    )
-  }, [tokensOptions, searchInput])
+    if (filter.length > 0) {
+      result = result.filter((token) => {
+        const chainId =
+          token instanceof FTImpl ? String(token.getChainId()) : null
+
+        if (!chainId) return false
+
+        return filter.includes(chainId)
+      })
+    }
+
+    if (searchInput.length >= 2) {
+      result = result.filter((token) =>
+        filterTokensBySearchInput(token, searchInput),
+      )
+    }
+
+    return result
+  }, [tokensOptions, searchInput, filter])
 
   useIntersectionObserver(itemRefs.current, !!isSwapTo, async (index) => {
     const token = filteredTokens[index]
@@ -204,20 +224,29 @@ export const ChooseTokenModal = <T extends FT | NFT>({
           </div>
         </div>
         {searchInputId && (
-          <Input
-            id={searchInputId}
-            type="text"
-            placeholder="Search by token name"
-            inputClassName="!border-black dark:!border-zinc-500"
-            icon={
-              <IoIosSearch
-                size="20"
-                className="text-gray-400 dark:text-zinc-500"
-              />
-            }
-            onKeyUp={(e) => handleSearch((e.target as HTMLInputElement).value)}
-            className="mt-4 mb-5"
-          />
+          <div className="relative">
+            <Input
+              id={searchInputId}
+              type="text"
+              placeholder="Search by token name"
+              inputClassName="!border-black dark:!border-zinc-500"
+              icon={
+                <IoIosSearch
+                  size="20"
+                  className="text-gray-400 dark:text-zinc-500"
+                />
+              }
+              onKeyUp={(e) =>
+                handleSearch((e.target as HTMLInputElement).value)
+              }
+              className="mt-4 mb-5"
+            />
+            {modalType === IModalType.SEND && (
+              <div className="absolute right-[10px] top-0 bottom-0 my-auto w-5 h-5">
+                <ChainFilter filter={filter} setFilter={setFilter} />
+              </div>
+            )}
+          </div>
         )}
 
         {isTokenOptionsLoading && (

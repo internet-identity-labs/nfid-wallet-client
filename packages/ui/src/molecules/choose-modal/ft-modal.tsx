@@ -5,6 +5,7 @@ import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
 import { ChooseFtItem } from "./choose-ft-item"
 import { ChooseTokenModal } from "./token-modal"
+import { IModalType } from "../../organisms/send-receive/utils"
 
 export interface IChooseFtModal {
   id: string
@@ -16,6 +17,7 @@ export interface IChooseFtModal {
   isSwapTo?: boolean
   tokensAvailableToSwap?: TokensAvailableToSwap
   isBtcEthLoading?: boolean
+  modalType?: IModalType
 }
 
 export const ChooseFtModal = ({
@@ -28,6 +30,7 @@ export const ChooseFtModal = ({
   isSwapTo,
   tokensAvailableToSwap,
   isBtcEthLoading,
+  modalType,
 }: IChooseFtModal) => {
   const sortedTokens = useMemo(() => {
     if (!tokensAvailableToSwap) return tokens
@@ -77,6 +80,7 @@ export const ChooseFtModal = ({
         isSwapTo={isSwapTo}
         tokensAvailableToSwap={tokensAvailableToSwap}
         isBtcEthLoading={isBtcEthLoading}
+        modalType={modalType}
       />
     </>
   )

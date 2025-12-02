@@ -1,14 +1,16 @@
 type BnbNetworkIconProps = {
   color?: string
+  size?: number
 }
 
 export const BnbNetworkIcon: React.FC<BnbNetworkIconProps> = ({
   color = "white",
+  size = 18,
 }) => {
   return (
     <svg
-      width="18"
-      height="18"
+      width={size}
+      height={size}
       viewBox="0 0 18 18"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

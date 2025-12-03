@@ -34,7 +34,7 @@ describe("ft test suite", () => {
       .mockResolvedValue("0x1234567890123456789012345678901234567890")
   })
 
-  describe.skip("ft", () => {
+  describe("ft", () => {
     it("should return", async () => {
       jest
         .spyOn(icrc1StorageService as any, "getICRC1Canisters")
@@ -128,14 +128,14 @@ describe("ft test suite", () => {
       expect(result[0].getTokenName()).toEqual("Internet Computer")
       expect(result[1].getTokenName()).toEqual("Bitcoin")
       expect(result[2].getTokenName()).toEqual("Ethereum")
-      expect(result[3].getTokenName()).toEqual("NFID Wallet")
-      expect(result[4].getTokenName()).toEqual("ckBTC")
-      expect(result[5].getTokenName()).toEqual("ckETH")
-      expect(result[6].getTokenName()).toEqual("A first letter")
-      expect(result[7].getTokenName()).toEqual("Polygon")
-      expect(result[8].getTokenName()).toEqual("Ethereum")
-      expect(result[9].getTokenName()).toEqual("Ethereum")
-      expect(result[10].getTokenName()).toEqual("BNB")
+      expect(result[3].getTokenName()).toEqual("A first letter")
+      expect(result[4].getTokenName()).toEqual("Polygon")
+      expect(result[5].getTokenName()).toEqual("Ethereum")
+      expect(result[6].getTokenName()).toEqual("Ethereum")
+      expect(result[7].getTokenName()).toEqual("BNB")
+      expect(result[8].getTokenName()).toEqual("NFID Wallet")
+      expect(result[9].getTokenName()).toEqual("ckBTC")
+      expect(result[10].getTokenName()).toEqual("ckETH")
       expect(result[11].getTokenName()).toEqual("Chat")
     })
 
@@ -388,7 +388,7 @@ describe("ft test suite", () => {
       })
     })
 
-    it("shoult get all sorted tokens", async function () {
+    it("should get all sorted tokens", async function () {
       jest
         .spyOn(icrc1StorageService as any, "getICRC1Canisters")
         .mockResolvedValue([
@@ -461,13 +461,13 @@ describe("ft test suite", () => {
       expect(result[0].getTokenCategory()).toEqual(Category.Native)
       expect(result[1].getTokenCategory()).toEqual(Category.Native)
       expect(result[2].getTokenCategory()).toEqual(Category.Native)
-      expect(result[3].getTokenCategory()).toEqual(Category.Community)
-      expect(result[4].getTokenCategory()).toEqual(Category.ChainFusion)
-      expect(result[5].getTokenCategory()).toEqual(Category.ChainFusion)
+      expect(result[3].getTokenCategory()).toEqual(Category.Native)
+      expect(result[4].getTokenCategory()).toEqual(Category.Native)
+      expect(result[5].getTokenCategory()).toEqual(Category.Native)
       expect(result[6].getTokenCategory()).toEqual(Category.Native)
-      expect(result[7].getTokenCategory()).toEqual(Category.Native)
-      expect(result[8].getTokenCategory()).toEqual(Category.Native)
-      expect(result[9].getTokenCategory()).toEqual(Category.Native)
+      expect(result[7].getTokenCategory()).toEqual(Category.Community)
+      expect(result[8].getTokenCategory()).toEqual(Category.ChainFusion)
+      expect(result[9].getTokenCategory()).toEqual(Category.ChainFusion)
       expect(result[10].getTokenCategory()).toEqual(Category.Sns)
       expect(result[11].getTokenCategory()).toEqual(Category.Spam)
     })
@@ -783,7 +783,7 @@ describe("ft test suite", () => {
         ])
 
       const result: FT[] = await ftService.getTokens(userId)
-      jest.spyOn(result[3], "getTokenBalance").mockReturnValue(undefined)
+      jest.spyOn(result[4], "getTokenBalance").mockReturnValue(undefined)
       let filteredTokens = await ftService.filterNotActiveNotZeroBalancesTokens(
         result,
         principal,

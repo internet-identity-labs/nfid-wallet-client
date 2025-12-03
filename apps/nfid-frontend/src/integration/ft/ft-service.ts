@@ -125,46 +125,6 @@ export class FtService {
           )
         }
 
-        if (!arb || arb.state === State.Inactive) {
-          updatePromises.push(
-            icrc1RegistryService.storeICRC1Canister(
-              ARBITRUM_NATIVE_ID,
-              State.Active,
-              ChainId.ARB,
-            ),
-          )
-        }
-
-        if (!pol || pol.state === State.Inactive) {
-          updatePromises.push(
-            icrc1RegistryService.storeICRC1Canister(
-              POLYGON_NATIVE_ID,
-              State.Active,
-              ChainId.ARB,
-            ),
-          )
-        }
-
-        if (!bnb || bnb.state === State.Inactive) {
-          updatePromises.push(
-            icrc1RegistryService.storeICRC1Canister(
-              BNB_NATIVE_ID,
-              State.Active,
-              ChainId.ARB,
-            ),
-          )
-        }
-
-        if (!base || base.state === State.Inactive) {
-          updatePromises.push(
-            icrc1RegistryService.storeICRC1Canister(
-              BASE_NATIVE_ID,
-              State.Active,
-              ChainId.ARB,
-            ),
-          )
-        }
-
         await Promise.all(updatePromises)
 
         if (updatePromises.length > 0) {

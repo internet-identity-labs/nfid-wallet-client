@@ -62,10 +62,14 @@ export async function signWithIIService(): Promise<IIAuthSession> {
                 throw new Error("Profile anchor is undefined")
               }
 
-              await authState.set({
-                identity: identity,
-                delegationIdentity: identity as DelegationIdentity,
-              })
+              // Only set auth state if 2FA is NOT enabled
+              // If 2FA is enabled, checkIf2FAEnabled will handle it after verification
+              if (!profile.is2fa) {
+                await authState.set({
+                  identity: identity,
+                  delegationIdentity: identity as DelegationIdentity,
+                })
+              }
 
               resolve(session)
             } catch (e) {

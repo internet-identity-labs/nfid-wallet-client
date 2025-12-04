@@ -12,7 +12,7 @@ import { InfuraProvider } from "ethers"
 import { INFURA_API_KEY, CHAIN_ID } from "@nfid/integration/token/constants"
 import { EthSignTransactionRequest } from "frontend/integration/bitcoin/idl/chain-fusion-signer.d"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
-
+import { EthereumTransactionParams } from "./components/walletconnect-request"
 /**
  * WalletConnect Modal Component
  *
@@ -200,7 +200,25 @@ export const WalletConnectModal: React.FC = () => {
           break
         }
         case "eth_signTransaction": {
-          const [tx] = params as [any]
+          const [tx] = params as [EthereumTransactionParams]
+
+          if (!tx.to) {
+            throw new Error("Transaction 'to' address is required")
+          }
+          if (tx.gas === undefined && tx.gasLimit === undefined) {
+            throw new Error("Transaction 'gas' or 'gasLimit' is required")
+          }
+          if (tx.maxFeePerGas === undefined && tx.gasPrice === undefined) {
+            throw new Error(
+              "Transaction 'maxFeePerGas' or 'gasPrice' is required",
+            )
+          }
+          if (tx.chainId === undefined) {
+            throw new Error("Transaction 'chainId' is required")
+          }
+          if (tx.nonce === undefined) {
+            throw new Error("Transaction 'nonce' is required")
+          }
 
           // Helper functions to parse hex values
           const parseValue = (val: string | undefined): bigint => {
@@ -210,7 +228,9 @@ export const WalletConnectModal: React.FC = () => {
           }
 
           const parseGas = (gas: string | number | undefined): bigint => {
-            if (!gas) return BigInt(0)
+            if (gas === undefined) {
+              throw new Error("Gas value is required")
+            }
             if (typeof gas === "number") return BigInt(gas)
             if (gas.startsWith("0x")) return BigInt(gas)
             return BigInt(gas)
@@ -231,8 +251,8 @@ export const WalletConnectModal: React.FC = () => {
             gas: parseGas(tx.gas || tx.gasLimit),
             max_priority_fee_per_gas: parseGas(tx.maxPriorityFeePerGas),
             max_fee_per_gas: parseGas(tx.maxFeePerGas || tx.gasPrice),
-            chain_id: BigInt(tx.chainId || 1),
-            nonce: BigInt(tx.nonce || 0),
+            chain_id: BigInt(tx.chainId),
+            nonce: BigInt(tx.nonce),
             data: processedData,
           }
 
@@ -243,7 +263,23 @@ export const WalletConnectModal: React.FC = () => {
           break
         }
         case "eth_sendTransaction": {
-          const [tx] = params as [any]
+          const [tx] = params as [EthereumTransactionParams]
+
+          if (!tx.to) {
+            throw new Error("Transaction 'to' address is required")
+          }
+          if (tx.gas === undefined && tx.gasLimit === undefined) {
+            throw new Error("Transaction 'gas' or 'gasLimit' is required")
+          }
+          if (tx.maxFeePerGas === undefined && tx.gasPrice === undefined) {
+            throw new Error(
+              "Transaction 'maxFeePerGas' or 'gasPrice' is required",
+            )
+          }
+          if (tx.chainId === undefined) {
+            throw new Error("Transaction 'chainId' is required")
+          }
+
           const fromAddress = await ethereumService.getAddress(identity)
           let nonce: bigint
           if (tx.nonce !== undefined && tx.nonce !== null) {
@@ -259,7 +295,9 @@ export const WalletConnectModal: React.FC = () => {
             return BigInt(val)
           }
           const parseGas = (gas: string | number | undefined): bigint => {
-            if (!gas) return BigInt(0)
+            if (gas === undefined) {
+              throw new Error("Gas value is required")
+            }
             if (typeof gas === "number") return BigInt(gas)
             if (gas.startsWith("0x")) return BigInt(gas)
             return BigInt(gas)
@@ -270,7 +308,7 @@ export const WalletConnectModal: React.FC = () => {
             gas: parseGas(tx.gas || tx.gasLimit),
             max_priority_fee_per_gas: parseGas(tx.maxPriorityFeePerGas),
             max_fee_per_gas: parseGas(tx.maxFeePerGas || tx.gasPrice),
-            chain_id: BigInt(tx.chainId || 1),
+            chain_id: BigInt(tx.chainId),
             nonce: nonce,
             data: tx.data ? [tx.data] : [],
           }

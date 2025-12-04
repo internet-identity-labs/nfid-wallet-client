@@ -11,6 +11,23 @@ interface WalletConnectRequestProps {
   onReject: () => void
 }
 
+/**
+ * Ethereum transaction parameters as received from WalletConnect
+ */
+export interface EthereumTransactionParams {
+  to?: string
+  from?: string
+  value?: string
+  gas?: string | number
+  gasLimit?: string | number
+  gasPrice?: string | number
+  maxFeePerGas?: string | number
+  maxPriorityFeePerGas?: string | number
+  nonce?: string | number
+  data?: string
+  chainId?: string | number
+}
+
 export const WalletConnectRequest: React.FC<WalletConnectRequestProps> = ({
   request,
   dAppOrigin,
@@ -84,7 +101,7 @@ export const WalletConnectRequest: React.FC<WalletConnectRequestProps> = ({
       }
       case "eth_signTransaction":
       case "eth_sendTransaction": {
-        const [tx] = params as [any]
+        const [tx] = params as [EthereumTransactionParams]
         return (
           <div className="space-y-3">
             <div>

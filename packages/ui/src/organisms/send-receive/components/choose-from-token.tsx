@@ -286,6 +286,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
                   ? "sourceTokenSearchInput"
                   : undefined
               }
+              modalType={modalType}
               tokens={tokens}
               title={title}
               onSelect={setFromChosenToken}

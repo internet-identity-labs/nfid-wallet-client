@@ -1,32 +1,35 @@
 type EthNetworkIconProps = {
   color?: string
+  size?: number
 }
 
 export const EthNetworkIcon: React.FC<EthNetworkIconProps> = ({
   color = "white",
+  size = 18,
 }) => {
   return (
     <svg
-      width="18"
-      height="18"
+      width={size}
+      height={size}
       viewBox="0 0 18 18"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clipPath="url(#clip0_90635_100373)">
+      <g clipPath="url(#eth_clip)">
         <mask
-          id="mask0_90635_100373"
+          id="eth_mask0"
           maskUnits="userSpaceOnUse"
           x="0"
           y="0"
-          width="18"
-          height="18"
+          width={size}
+          height={size}
         >
-          <path d="M18 0H0V18H18V0Z" fill={color} />
+          <path d="M18 0H0V18H18V0Z" fill="white" />
         </mask>
-        <g mask="url(#mask0_90635_100373)">
+
+        <g mask="url(#eth_mask0)">
           <mask
-            id="mask1_90635_100373"
+            id="eth_mask1"
             maskUnits="userSpaceOnUse"
             x="4"
             y="2"
@@ -35,10 +38,11 @@ export const EthNetworkIcon: React.FC<EthNetworkIconProps> = ({
           >
             <path
               d="M13.2765 2.04883H4.66406V16.0747H13.2765V2.04883Z"
-              fill={color}
+              fill="white"
             />
           </mask>
-          <g mask="url(#mask1_90635_100373)">
+
+          <g mask="url(#eth_mask1)">
             <path
               d="M8.9691 2.04883L8.875 2.36846V11.6426L8.9691 11.7365L13.2739 9.19182L8.9691 2.04883Z"
               fill={color}
@@ -66,9 +70,10 @@ export const EthNetworkIcon: React.FC<EthNetworkIconProps> = ({
           </g>
         </g>
       </g>
+
       <defs>
-        <clipPath id="clip0_90635_100373">
-          <rect width="18" height="18" rx="6" fill={color} />
+        <clipPath id="eth_clip">
+          <rect width={size} height={size} rx="6" fill="white" />
         </clipPath>
       </defs>
     </svg>

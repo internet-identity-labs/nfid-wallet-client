@@ -137,7 +137,7 @@ export class Assets extends Page {
 
   async getTokenByNameFromList(tokenRole: string, token: string) {
     return $(
-      `//input[@id='${tokenRole}TokenSearchInput']/../../..//div[@id='choose_option_${token}']/div[1]`,
+      `//input[@id='${tokenRole}TokenSearchInput']/../../../..//div[@id='choose_option_${token}']/div[1]`,
     )
   }
 

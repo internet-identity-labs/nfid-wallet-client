@@ -5,6 +5,11 @@ import { Authentication } from "./new/examples/authentication"
 import { RequestFungibleTransfer } from "./new/examples/request-transfer/request-fungible"
 import { RequestNonFungibleTransfer } from "./new/examples/request-transfer/request-non-fungible"
 import { UpdateDelegation } from "./new/examples/updated-delegation"
+import { WalletConnectConnect } from "./new/examples/walletconnect/connect"
+import { WalletConnectPersonalSign } from "./new/examples/walletconnect/personal-sign"
+import { WalletConnectEthSign } from "./new/examples/walletconnect/eth-sign"
+import { WalletConnectEthSignTransaction } from "./new/examples/walletconnect/eth-sign-transaction"
+import { WalletConnectEthSendTransaction } from "./new/examples/walletconnect/eth-send-transaction"
 import UserNavigation from "./new/header/user-navigation"
 import SideNav, { Section } from "./new/sidebar"
 import { Warning } from "./new/warning"
@@ -21,6 +26,26 @@ const sections: Section[] = [
   {
     id: "requestEXTTransfer",
     name: "4. Request NFT transfer",
+  },
+  {
+    id: "walletconnect-connect",
+    name: "5.0. WalletConnect - Connect",
+  },
+  {
+    id: "walletconnect-personal-sign",
+    name: "5.1. WalletConnect - personal_sign",
+  },
+  {
+    id: "walletconnect-eth-sign",
+    name: "5.2. WalletConnect - eth_sign",
+  },
+  {
+    id: "walletconnect-eth-sign-transaction",
+    name: "5.3. WalletConnect - eth_signTransaction",
+  },
+  {
+    id: "walletconnect-eth-send-transaction",
+    name: "5.4. WalletConnect - eth_sendTransaction",
   },
 ]
 
@@ -87,6 +112,16 @@ export const RouteHome: React.FC = () => {
             <RequestFungibleTransfer />
             <hr />
             <RequestNonFungibleTransfer />
+            <hr />
+            <WalletConnectConnect />
+            <hr />
+            <WalletConnectPersonalSign />
+            <hr />
+            <WalletConnectEthSign />
+            <hr />
+            <WalletConnectEthSignTransaction />
+            <hr />
+            <WalletConnectEthSendTransaction />
           </div>
         </div>
       </main>

@@ -5,7 +5,7 @@ import { CANISTER_ID_LENGTH } from "packages/constants"
 import { PlusIcon } from "packages/ui/src/atoms/icons/plus"
 import toaster from "packages/ui/src/atoms/toast"
 import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
-import { FC, useCallback, useEffect, useState } from "react"
+import { FC, useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { IoIosSearch } from "react-icons/io"
 
@@ -27,8 +27,8 @@ import { ICRC1Error } from "@nfid/integration/token/icrc1/types"
 import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
-
 import { FilteredToken } from "./filtered-asset"
+import { ChainFilter } from "./chain-filter"
 
 export interface ICRC1Metadata {
   name: string
@@ -71,6 +71,7 @@ export const ManageTokens: FC<ManageTokensProps> = ({
   const isDarkTheme = useDarkTheme()
   const [modalStep, setModalStep] = useState<"manage" | "import" | null>(null)
   const [tokenInfo, setTokenInfo] = useState<ICRC1Metadata | null>(null)
+  const [filter, setFilter] = useState<string[]>([])
   const [isImportLoading, setIsImportLoading] = useState(false)
   const [search, setSearch] = useState("")
 
@@ -140,6 +141,16 @@ export const ManageTokens: FC<ManageTokensProps> = ({
     },
     validate: fetchICRCToken,
   }
+
+  const filteredTokens = useMemo(() => {
+    let result = ftService.filterTokens(tokens, search)
+    if (filter.length > 0) {
+      result = result.filter((token) =>
+        filter.includes(`${token.getChainId()}`),
+      )
+    }
+    return result
+  }, [tokens, search, filter])
 
   return (
     <>
@@ -221,14 +232,19 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                 </div>
               </div>
               <div className="flex gap-[10px] mb-[10px]">
-                <Input
-                  inputClassName="!border-black dark:!border-zinc-500"
-                  className="h-[40px] w-full "
-                  id="search"
-                  placeholder="Search by token name"
-                  icon={<IoIosSearch size="20" className="text-gray-400" />}
-                  onChange={(e) => debouncedSearch(e.target.value)}
-                />
+                <div className="relative w-full">
+                  <Input
+                    inputClassName="!border-black dark:!border-zinc-500"
+                    className="h-[40px] w-full"
+                    id="search"
+                    placeholder="Search by token name"
+                    icon={<IoIosSearch size="20" className="text-gray-400" />}
+                    onChange={(e) => debouncedSearch(e.target.value)}
+                  />
+                  <div className="absolute right-[10px] top-0 bottom-0 my-auto w-5 h-5">
+                    <ChainFilter filter={filter} setFilter={setFilter} />
+                  </div>
+                </div>
                 <Button
                   isSmall
                   icon={<PlusIcon className="w-[18px]" />}
@@ -245,7 +261,7 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                   "dark:scrollbar-thumb-zinc-600 dark:scrollbar-track-[#242427]",
                 )}
               >
-                {ftService.filterTokens(tokens, search).map((token) => {
+                {filteredTokens.map((token) => {
                   if (!token.isHideable()) return
                   return (
                     <FilteredToken

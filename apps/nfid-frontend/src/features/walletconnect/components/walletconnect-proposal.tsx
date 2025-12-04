@@ -2,11 +2,13 @@ import React from "react"
 import { SignClientTypes } from "@walletconnect/types"
 
 import { Button } from "@nfid-frontend/ui"
+import { Spinner } from "packages/ui/src/atoms/spinner"
 
 interface WalletConnectProposalProps {
   proposal: SignClientTypes.EventArguments["session_proposal"]
   ethAddress: string | null
   isLoading: boolean
+  isLoadingAddress: boolean
   onApprove: () => void
   onReject: () => void
 }
@@ -15,6 +17,7 @@ export const WalletConnectProposal: React.FC<WalletConnectProposalProps> = ({
   proposal,
   ethAddress,
   isLoading,
+  isLoadingAddress,
   onApprove,
   onReject,
 }) => {
@@ -100,9 +103,18 @@ export const WalletConnectProposal: React.FC<WalletConnectProposalProps> = ({
 
       {!ethAddress && (
         <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <p className="text-sm text-yellow-800">
-            Please login to your wallet first to connect.
-          </p>
+          {isLoadingAddress ? (
+            <div className="flex items-center gap-2">
+              <Spinner className="w-4 h-4 text-yellow-800" />
+              <p className="text-sm text-yellow-800">
+                Loading wallet address...
+              </p>
+            </div>
+          ) : (
+            <p className="text-sm text-yellow-800">
+              Please login to your wallet first to connect.
+            </p>
+          )}
         </div>
       )}
 

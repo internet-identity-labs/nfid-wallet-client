@@ -35,6 +35,17 @@ export const WalletConnectExample = ({
   } | null>(null)
   const providerRef = useRef<InstanceType<typeof EthereumProvider> | null>(null)
 
+  // Helper function to get provider (from ref, global, or state)
+  const getProvider = useCallback((): InstanceType<
+    typeof EthereumProvider
+  > | null => {
+    return (
+      providerRef.current ||
+      (window as any).walletconnect_shared_provider ||
+      provider
+    )
+  }, [provider])
+
   // Helper function to get accounts from provider
   const getAccountsFromProvider = useCallback(
     (ethProvider: InstanceType<typeof EthereumProvider>): string[] => {
@@ -200,7 +211,8 @@ export const WalletConnectExample = ({
   }, [error, onError])
 
   const handleConnect = async () => {
-    if (!provider) {
+    const providerToConnect = getProvider()
+    if (!providerToConnect) {
       handleError("Provider not initialized")
       return
     }
@@ -210,7 +222,7 @@ export const WalletConnectExample = ({
       setError(null)
       setConnectionUri(null)
 
-      const connectedAccounts = await provider.enable()
+      const connectedAccounts = await providerToConnect.enable()
       setAccounts(connectedAccounts)
 
       if (onResponse) {
@@ -245,15 +257,16 @@ export const WalletConnectExample = ({
   }
 
   const handlePersonalSign = async () => {
-    if (!provider) {
+    const providerToUse = getProvider()
+    if (!providerToUse) {
       handleError("Provider not initialized")
       return
     }
 
     // Ensure provider is connected
-    if (!provider.session || !provider.connected) {
+    if (!providerToUse.session || !providerToUse.connected) {
       try {
-        const connectedAccounts = await provider.enable()
+        const connectedAccounts = await providerToUse.enable()
         setAccounts(connectedAccounts)
       } catch (reconnectError) {
         handleError("Please connect wallet first. Failed to reconnect.")
@@ -261,7 +274,7 @@ export const WalletConnectExample = ({
       }
     }
 
-    const providerAccounts = getAccountsFromProvider(provider)
+    const providerAccounts = getAccountsFromProvider(providerToUse)
     if (providerAccounts.length === 0) {
       handleError("No accounts available. Please connect wallet first.")
       return
@@ -279,7 +292,7 @@ export const WalletConnectExample = ({
 
       setPendingRequest({ method: "personal_sign", params: requestParams })
 
-      const signature = await provider.request({
+      const signature = await providerToUse.request({
         method: "personal_sign",
         params: requestParams,
       })
@@ -306,15 +319,16 @@ export const WalletConnectExample = ({
   }
 
   const handleEthSign = async () => {
-    if (!provider) {
+    const providerToUse = getProvider()
+    if (!providerToUse) {
       handleError("Provider not initialized")
       return
     }
 
     // Ensure provider is connected
-    if (!provider.session || !provider.connected) {
+    if (!providerToUse.session || !providerToUse.connected) {
       try {
-        const connectedAccounts = await provider.enable()
+        const connectedAccounts = await providerToUse.enable()
         setAccounts(connectedAccounts)
       } catch (reconnectError) {
         handleError("Please connect wallet first. Failed to reconnect.")
@@ -322,7 +336,7 @@ export const WalletConnectExample = ({
       }
     }
 
-    const providerAccounts = getAccountsFromProvider(provider)
+    const providerAccounts = getAccountsFromProvider(providerToUse)
     if (providerAccounts.length === 0) {
       handleError("No accounts available. Please connect wallet first.")
       return
@@ -339,7 +353,7 @@ export const WalletConnectExample = ({
       const requestParams = [address, hash]
       setPendingRequest({ method: "eth_sign", params: requestParams })
 
-      const signature = await provider.request({
+      const signature = await providerToUse.request({
         method: "eth_sign",
         params: requestParams,
       })

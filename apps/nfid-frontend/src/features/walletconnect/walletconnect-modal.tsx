@@ -28,10 +28,12 @@ export const WalletConnectModal: React.FC = () => {
   >(null)
   const [ethAddress, setEthAddress] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingAddress, setIsLoadingAddress] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const loadEthAddress = useCallback(async () => {
     try {
+      setIsLoadingAddress(true)
       const { delegationIdentity } = authState.get()
       if (delegationIdentity) {
         const address = await walletConnectService.getEthereumAddress()
@@ -39,6 +41,8 @@ export const WalletConnectModal: React.FC = () => {
       }
     } catch (err) {
       console.debug("Failed to get Ethereum address:", err)
+    } finally {
+      setIsLoadingAddress(false)
     }
   }, [])
 
@@ -169,7 +173,7 @@ export const WalletConnectModal: React.FC = () => {
 
       switch (method) {
         case "personal_sign": {
-          const [messageHex, address] = params as [string, string]
+          const [messageHex] = params as [string, string]
           // Canister expects hex string, so we need to convert message to hex if it's not already
           let message: string
           if (messageHex.startsWith("0x")) {
@@ -386,6 +390,7 @@ export const WalletConnectModal: React.FC = () => {
           proposal={proposal}
           ethAddress={ethAddress}
           isLoading={isLoading}
+          isLoadingAddress={isLoadingAddress}
           onApprove={handleProposalApprove}
           onReject={handleProposalReject}
         />

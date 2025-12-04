@@ -32,7 +32,7 @@ import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 // import { erc20Service } from "../ethereum/erc20.service"
 // import { FTERC20Impl } from "./impl/ft-erc20-impl"
-// import { mapState } from "@nfid/integration/token/icrc1/util"
+import { mapState } from "@nfid/integration/token/icrc1/util"
 
 import { FTBitcoinImpl } from "./impl/ft-btc-impl"
 import { FTEthereumImpl } from "./impl/ft-eth-impl"
@@ -69,22 +69,6 @@ export class FtService {
 
         const ckEth = canisters.find(
           (canister) => canister.ledger === CKETH_LEDGER_CANISTER_ID,
-        )
-
-        const arb = canisters.find(
-          (canister) => canister.ledger === ARBITRUM_NATIVE_ID,
-        )
-
-        const pol = canisters.find(
-          (canister) => canister.ledger === POLYGON_NATIVE_ID,
-        )
-
-        const bnb = canisters.find(
-          (canister) => canister.ledger === BNB_NATIVE_ID,
-        )
-
-        const base = canisters.find(
-          (canister) => canister.ledger === BASE_NATIVE_ID,
         )
 
         const updatePromises = []
@@ -135,34 +119,41 @@ export class FtService {
         return ft
       })
 
-    // TODO: Fix an issue with a lot of rerenders when changing State
-    // Try to implement setState method in FTPolygonImpl instead of FTEvmAbstractImpl
-    // const baseState = userCanisters.find(
-    //   (uc) => uc.ledger === BASE_NATIVE_ID,
-    // )?.state
+    let userCanisters = await icrc1RegistryService.getCanistersByRoot(userId)
 
-    // const bnbState = userCanisters.find(
-    //   (uc) => uc.ledger === BNB_NATIVE_ID,
-    // )?.state
+    const baseState = userCanisters.find(
+      (uc) => uc.ledger === BASE_NATIVE_ID,
+    )?.state
 
-    // const polState = userCanisters.find(
-    //   (uc) => uc.ledger === POLYGON_NATIVE_ID,
-    // )?.state
+    const bnbState = userCanisters.find(
+      (uc) => uc.ledger === BNB_NATIVE_ID,
+    )?.state
 
-    // const arbState = userCanisters.find(
-    //   (uc) => uc.ledger === ARBITRUM_NATIVE_ID,
-    // )?.state
+    const polState = userCanisters.find(
+      (uc) => uc.ledger === POLYGON_NATIVE_ID,
+    )?.state
+
+    const arbState = userCanisters.find(
+      (uc) => uc.ledger === ARBITRUM_NATIVE_ID,
+    )?.state
 
     const ethNativeToken = new FTEthereumImpl()
     const btcNativeToken = new FTBitcoinImpl()
-    const polNativeToken = new FTPolygonImpl()
-    const arbNativeToken = new FTArbitrumImpl()
-    const baseNativeToken = new FTBaseImpl()
-    const bnbNativeToken = new FTBnbImpl()
+    const polNativeToken = new FTPolygonImpl(
+      polState ? mapState(polState) : State.Inactive,
+    )
+    const arbNativeToken = new FTArbitrumImpl(
+      arbState ? mapState(arbState) : State.Inactive,
+    )
+    const baseNativeToken = new FTBaseImpl(
+      baseState ? mapState(baseState) : State.Inactive,
+    )
+    const bnbNativeToken = new FTBnbImpl(
+      bnbState ? mapState(bnbState) : State.Inactive,
+    )
 
     // Use this for ERC-20 tokens
     // const erc20Tokens = await erc20Service.getKnownTokensList()
-    // let userCanisters = await icrc1RegistryService.getCanistersByRoot(userId)
 
     // const storedErc20Tokens: FT[] = erc20Tokens.map((token) => {
     //   const userCanister = userCanisters.find(
@@ -331,11 +322,12 @@ export class FtService {
 
   private deserializeTokensData(serialized: string, tokens: FT[]): FT[] {
     const cachedData = JSON.parse(serialized)
-    return tokens.map((token) => {
+    tokens.forEach((token) => {
       const data = cachedData.find(
         (d: { tokenAddress: string }) =>
           d.tokenAddress === token.getTokenAddress(),
       )
+      if (!data) return
 
       const tokenImpl = token as any
 
@@ -354,10 +346,8 @@ export class FtService {
       }
 
       tokenImpl.inited = data.inited
-      tokenImpl.tokenState = data.state
-
-      return token
     })
+    return tokens
   }
 
   @Cache(integrationCache, { ttl: 300 })

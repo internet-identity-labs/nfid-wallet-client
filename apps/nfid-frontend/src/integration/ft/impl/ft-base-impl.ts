@@ -13,7 +13,7 @@ import {
 } from "frontend/integration/ethereum/base/base.service"
 
 export class FTBaseImpl extends FTEvmAbstractImpl {
-  constructor() {
+  constructor(state: State) {
     super({
       ledger: BASE_NATIVE_ID,
       symbol: "ETH",
@@ -22,7 +22,7 @@ export class FTBaseImpl extends FTEvmAbstractImpl {
       category: Category.Native,
       logo: EthIcon,
       index: undefined,
-      state: State.Active,
+      state,
       fee: BigInt(0),
       rootCanisterId: undefined,
     })

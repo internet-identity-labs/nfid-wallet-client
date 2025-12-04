@@ -16,7 +16,7 @@ import {
 } from "frontend/integration/ethereum/arbitrum/arbitrum.service"
 
 export class FTArbitrumImpl extends FTEvmAbstractImpl {
-  constructor() {
+  constructor(state: State) {
     super({
       ledger: ARBITRUM_NATIVE_ID,
       symbol: "ETH",
@@ -25,7 +25,7 @@ export class FTArbitrumImpl extends FTEvmAbstractImpl {
       category: Category.Native,
       logo: EthIcon,
       index: undefined,
-      state: State.Active,
+      state,
       fee: BigInt(0),
       rootCanisterId: undefined,
     })

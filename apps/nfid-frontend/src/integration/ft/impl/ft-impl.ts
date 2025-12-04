@@ -196,10 +196,6 @@ export class FTImpl implements FT {
       this.tokenAddress === ICP_CANISTER_ID ||
       this.tokenAddress === BTC_NATIVE_ID ||
       this.tokenAddress === ETH_NATIVE_ID ||
-      this.tokenAddress === ARBITRUM_NATIVE_ID ||
-      this.tokenAddress === BASE_NATIVE_ID ||
-      this.tokenAddress === BNB_NATIVE_ID ||
-      this.tokenAddress === POLYGON_NATIVE_ID ||
       this.tokenAddress === NFIDW_CANISTER_ID ||
       this.tokenAddress === CKBTC_CANISTER_ID ||
       this.tokenAddress === CKETH_LEDGER_CANISTER_ID

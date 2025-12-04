@@ -11,6 +11,7 @@ import { useSWR } from "@nfid/swr"
 
 import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
 import { VaultGuard } from "frontend/ui/pages/vault-guard"
+import { walletConnectService } from "frontend/integration/walletconnect"
 
 import { ProfileConstants } from "./apps/identity-manager/profile/routes"
 import { BtcAddressProvider } from "./contexts"
@@ -19,6 +20,8 @@ import ThirdPartyAuthCoordinator from "./features/authentication/3rd-party/coord
 import { AuthEmailMagicLink } from "./features/authentication/auth-selection/email-flow/magic-link-flow"
 import IdentityKitRPCCoordinator from "./features/identitykit/coordinator"
 import { WalletRouter } from "./features/wallet"
+import { WalletConnectHandler } from "./features/walletconnect/walletconnect-handler"
+import { WalletConnectModal } from "./features/walletconnect/walletconnect-modal"
 import { NotFound } from "./ui/pages/404"
 import ProfileTemplate from "./ui/templates/profile-template/Template"
 
@@ -123,6 +126,28 @@ export const App = () => {
     },
   })
 
+  // Initialize WalletConnect on app startup
+  useEffect(() => {
+    const initWalletConnect = async () => {
+      try {
+        if (!walletConnectService.getInitialized()) {
+          await walletConnectService.initialize()
+        }
+      } catch (error) {
+        console.error("Failed to initialize WalletConnect:", error)
+      }
+    }
+
+    initWalletConnect()
+
+    // Cleanup on unmount
+    return () => {
+      walletConnectService.cleanup().catch((error) => {
+        console.error("Failed to cleanup WalletConnect:", error)
+      })
+    }
+  }, [])
+
   const location = useLocation()
   const isExcludedFromAnimation = location.pathname.startsWith(
     ProfileConstants.base,
@@ -130,6 +155,8 @@ export const App = () => {
 
   return (
     <Suspense fallback={<BlurredLoader isLoading />}>
+      <WalletConnectHandler />
+      <WalletConnectModal />
       <AnimatePresence mode="wait">
         <BtcAddressProvider>
           <EthAddressProvider>

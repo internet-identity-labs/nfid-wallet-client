@@ -52,10 +52,9 @@ export class ChainFusionSignerService {
 
     const paymentType: PaymentType = patronService.getPaymentType()
 
-    const response = await chainFusionSignerActor.eth_address(
-      request,
-      [paymentType],
-    )
+    const response = await chainFusionSignerActor.eth_address(request, [
+      paymentType,
+    ])
 
     if ("Err" in response) {
       console.error(response)
@@ -65,12 +64,15 @@ export class ChainFusionSignerService {
     return response.Ok.address
   }
 
-  public async ethSignTransaction(identity: SignIdentity, transaction: EthSignTransactionRequest): Promise<string> {
+  public async ethSignTransaction(
+    identity: SignIdentity,
+    transaction: EthSignTransactionRequest,
+  ): Promise<string> {
     const chainFusionSignerActor = this.getChainFusionSignerActor(identity)
-
-    
-
-    const response = await chainFusionSignerActor.eth_sign_transaction(transaction, [patronService.getPaymentType()])
+    const response = await chainFusionSignerActor.eth_sign_transaction(
+      transaction,
+      [patronService.getPaymentType()],
+    )
 
     if ("Err" in response) {
       console.error(response)
@@ -139,6 +141,41 @@ export class ChainFusionSignerService {
     }
 
     return response.Ok.txid
+  }
+
+  public async ethPersonalSign(
+    identity: SignIdentity,
+    message: string,
+  ): Promise<string> {
+    const chainFusionSignerActor = this.getChainFusionSignerActor(identity)
+    const response = await chainFusionSignerActor.eth_personal_sign(
+      { message },
+      [patronService.getPaymentType()],
+    )
+
+    if ("Err" in response) {
+      console.error(response)
+      throw Error("Unable to sign personal message.")
+    }
+
+    return response.Ok.signature
+  }
+
+  public async ethSignPrehash(
+    identity: SignIdentity,
+    hash: string,
+  ): Promise<string> {
+    const chainFusionSignerActor = this.getChainFusionSignerActor(identity)
+    const response = await chainFusionSignerActor.eth_sign_prehash({ hash }, [
+      patronService.getPaymentType(),
+    ])
+
+    if ("Err" in response) {
+      console.error(response)
+      throw Error("Unable to sign prehash.")
+    }
+
+    return response.Ok.signature
   }
 
   private getChainFusionSignerActor(

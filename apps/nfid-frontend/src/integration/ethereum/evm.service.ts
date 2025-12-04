@@ -430,6 +430,13 @@ export abstract class EVMService {
     return transactionCount
   }
 
+  public async ethPersonalSign(
+    identity: SignIdentity,
+    message: string,
+  ): Promise<string> {
+    return await chainFusionSignerService.ethPersonalSign(identity, message)
+  }
+
   private async getBaseFee() {
     const block = await this.provider.getBlock("latest")
     return block?.baseFeePerGas ?? BigInt(0)

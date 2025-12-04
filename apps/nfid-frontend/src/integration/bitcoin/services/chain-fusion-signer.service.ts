@@ -148,7 +148,6 @@ export class ChainFusionSignerService {
     message: string,
   ): Promise<string> {
     const chainFusionSignerActor = this.getChainFusionSignerActor(identity)
-    debugger
     const response = await chainFusionSignerActor.eth_personal_sign(
       { message },
       [patronService.getPaymentType()],

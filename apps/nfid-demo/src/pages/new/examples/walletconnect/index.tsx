@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react"
+import { useCallback, useState } from "react"
 
 import { ExampleMethod } from "../../method"
 import { SectionTemplate } from "../../section"

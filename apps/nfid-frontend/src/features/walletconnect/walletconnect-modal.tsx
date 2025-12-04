@@ -38,7 +38,7 @@ export const WalletConnectModal: React.FC = () => {
         setEthAddress(address)
       }
     } catch (err) {
-      console.error("Failed to get Ethereum address:", err)
+      console.debug("Failed to get Ethereum address:", err)
     }
   }, [])
 
@@ -126,6 +126,7 @@ export const WalletConnectModal: React.FC = () => {
       setIsLoading(true)
       const accounts = [`eip155:1:${ethAddress}`]
       await walletConnectService.approveSession(proposal.params.id, accounts)
+      console.log("WalletConnectModal: Proposal approved and session created")
       handleClose()
     } catch (err) {
       console.error("Failed to approve proposal:", err)
@@ -297,6 +298,10 @@ export const WalletConnectModal: React.FC = () => {
           result,
         },
       })
+
+      console.log(
+        `WalletConnectModal: Request ${method} approved and sent successfully`,
+      )
 
       // Remove pending request
       walletConnectService.removePendingRequest(request.id)

@@ -2,8 +2,6 @@ import React from "react"
 import { SignClientTypes } from "@walletconnect/types"
 
 import { Button } from "@nfid-frontend/ui"
-import { authState } from "@nfid/integration"
-import { walletConnectService } from "frontend/integration/walletconnect"
 
 interface WalletConnectProposalProps {
   proposal: SignClientTypes.EventArguments["session_proposal"]

@@ -25,10 +25,3 @@ export const ETH_METHODS = [
 
 // Supported events
 export const ETH_EVENTS = ["chainChanged", "accountsChanged"] as const
-
-// Supported Ethereum chains
-export const ETH_CHAINS = [
-  "eip155:1", // Ethereum Mainnet
-  "eip155:5", // Goerli Testnet
-  "eip155:11155111", // Sepolia Testnet
-] as const

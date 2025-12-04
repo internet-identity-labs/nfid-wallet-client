@@ -133,26 +133,30 @@ export const authorizeWithEmail = async (
     })
   }
 
-  await authState.set({
-    delegationIdentity,
-    identity: context.emailDelegation,
-  })
+  // Only set auth state if 2FA is NOT enabled
+  // If 2FA is enabled, checkIf2FAEnabled will handle it after verification
+  if (!profile.is2fa) {
+    await authState.set({
+      delegationIdentity,
+      identity: context.emailDelegation,
+    })
+
+    try {
+      await authStorage.set(
+        KEY_STORAGE_KEY,
+        JSON.stringify(context.emailDelegation.toJSON()),
+      )
+      await authStorage.set(
+        KEY_STORAGE_DELEGATION,
+        JSON.stringify(context.chainRoot?.toJSON()),
+      )
+    } catch (e) {
+      console.error("authStorage.set", { e })
+    }
+  }
 
   if (!profile?.email?.length)
     await im.update_account({ name: [], email: [context.verificationEmail] })
-
-  try {
-    await authStorage.set(
-      KEY_STORAGE_KEY,
-      JSON.stringify(context.emailDelegation.toJSON()),
-    )
-    await authStorage.set(
-      KEY_STORAGE_DELEGATION,
-      JSON.stringify(context.chainRoot?.toJSON()),
-    )
-  } catch (e) {
-    console.error("authStorage.set", { e })
-  }
 
   const session = {
     sessionSource: "email",

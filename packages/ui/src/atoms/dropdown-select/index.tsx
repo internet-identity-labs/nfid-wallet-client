@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { motion } from "framer-motion"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { FC, useCallback, useEffect, useMemo, useState } from "react"
 import { IoIosSearch } from "react-icons/io"
 
 import { useDarkTheme } from "frontend/hooks"
@@ -14,7 +14,7 @@ import { DropdownSelectOption } from "./option"
 export interface IOption {
   label: string
   afterLabel?: string | number
-  icon?: string
+  icon?: string | React.ComponentType<{ color?: string; size?: number }>
   value: string
   disabled?: boolean
   symbol?: string
@@ -28,6 +28,7 @@ export interface IDropdownSelect {
   selectedValues: string[]
   setSelectedValues: (value: string[]) => void
   placeholder?: string
+  placeholderIcon?: React.ComponentType<{ color?: string; size?: number }>
   isMultiselect?: boolean
   firstSelected?: boolean
   disabled?: boolean
@@ -44,6 +45,7 @@ export const DropdownSelect = ({
   selectedValues,
   setSelectedValues,
   placeholder = "All",
+  placeholderIcon,
   isMultiselect = true,
   firstSelected = false,
   disabled = false,
@@ -125,9 +127,31 @@ export const DropdownSelect = ({
             (!isMultiselect || isAllSelected) && "hidden",
           )}
         >
-          {selectedValues?.length
-            ? `${selectedValues.length} selected`
-            : placeholder}
+          {selectedValues?.length ? (
+            `${selectedValues.length} selected`
+          ) : placeholderIcon ? (
+            <div className="flex items-center gap-2.5">
+              <div
+                className={clsx(
+                  "w-6 h-6 rounded-[8px]",
+                  isDarkTheme ? "bg-[#141518]" : "white",
+                )}
+              >
+                {(() => {
+                  const Placeholder = placeholderIcon
+                  return (
+                    <Placeholder
+                      color={isDarkTheme ? "white" : "black"}
+                      size={24}
+                    />
+                  )
+                })()}
+              </div>
+              {placeholder}
+            </div>
+          ) : (
+            placeholder
+          )}
         </p>
         <p
           className={clsx(

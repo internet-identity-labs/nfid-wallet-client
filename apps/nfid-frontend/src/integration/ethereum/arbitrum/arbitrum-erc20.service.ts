@@ -1,5 +1,5 @@
 import { InfuraProvider } from "ethers"
-import { Erc20Service, ERC20TokenWithBalance } from "../erc20-abstract.service"
+import { Erc20Service } from "../erc20-abstract.service"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { INFURA_API_KEY } from "@nfid/integration/token/constants"
 
@@ -12,10 +12,8 @@ export class ArbitrumErc20Service extends Erc20Service {
     this.provider = new InfuraProvider(BigInt(ChainId.ARB), INFURA_API_KEY)
   }
 
-  public async getTokensWithNonZeroBalance(
-    normalizedAddress: string,
-  ): Promise<ERC20TokenWithBalance[]> {
-    return []
+  protected getDefiLlamaChainId(): string {
+    return "arbitrum"
   }
 }
 

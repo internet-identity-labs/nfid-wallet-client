@@ -5,16 +5,12 @@ import { FT } from "src/integration/ft/ft"
 
 import { exchangeRateService } from "@nfid/integration"
 import {
-  ARBITRUM_NATIVE_ID,
-  BASE_NATIVE_ID,
-  BNB_NATIVE_ID,
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
-  POLYGON_NATIVE_ID,
 } from "@nfid/integration/token/constants"
 import {
   Category,

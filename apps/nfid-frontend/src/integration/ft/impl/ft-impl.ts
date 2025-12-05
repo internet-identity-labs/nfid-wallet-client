@@ -31,7 +31,7 @@ export class FTImpl implements FT {
   private readonly tokenName: string
   protected tokenChainId: ChainId
   protected tokenBalance: bigint | undefined
-  private tokenState: State
+  protected tokenState: State
   protected tokenRate?: {
     value: BigNumber
     dayChangePercent?: string

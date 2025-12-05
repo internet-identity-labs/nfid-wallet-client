@@ -13,7 +13,7 @@ import {
 } from "frontend/integration/ethereum/bnb/bnb.service"
 
 export class FTBnbImpl extends FTEvmAbstractImpl {
-  constructor() {
+  constructor(state: State) {
     super({
       ledger: BNB_NATIVE_ID,
       symbol: "BNB",
@@ -22,7 +22,7 @@ export class FTBnbImpl extends FTEvmAbstractImpl {
       category: Category.Native,
       logo: BnbIcon,
       index: undefined,
-      state: State.Active,
+      state,
       fee: BigInt(0),
       rootCanisterId: undefined,
     })

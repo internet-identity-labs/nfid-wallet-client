@@ -12,6 +12,8 @@ import {
   EVMService,
   SendEthFee,
 } from "frontend/integration/ethereum/evm.service"
+import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
 
 export abstract class FTEvmAbstractImpl extends FTImpl {
   async init(): Promise<FT> {
@@ -57,5 +59,23 @@ export abstract class FTEvmAbstractImpl extends FTImpl {
     )
 
     return new FeeResponseETH(ethFeeData)
+  }
+
+  hideToken(): Promise<void> {
+    this.tokenState = State.Inactive
+    return icrc1RegistryService.storeICRC1Canister(
+      this.tokenAddress,
+      State.Inactive,
+      this.tokenChainId,
+    )
+  }
+
+  showToken(): Promise<void> {
+    this.tokenState = State.Active
+    return icrc1RegistryService.storeICRC1Canister(
+      this.tokenAddress,
+      State.Active,
+      this.tokenChainId,
+    )
   }
 }

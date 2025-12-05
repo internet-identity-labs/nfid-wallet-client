@@ -30,8 +30,7 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
 import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
-// import { erc20Service } from "../ethereum/erc20.service"
-// import { FTERC20Impl } from "./impl/ft-erc20-impl"
+
 import { mapState } from "@nfid/integration/token/icrc1/util"
 
 import { FTBitcoinImpl } from "./impl/ft-btc-impl"
@@ -40,6 +39,16 @@ import { FTPolygonImpl } from "./impl/ft-pol-impl"
 import { FTArbitrumImpl } from "./impl/ft-arb-impl"
 import { FTBaseImpl } from "./impl/ft-base-impl"
 import { FTBnbImpl } from "./impl/ft-bnb-impl"
+import { ethErc20Service } from "../ethereum/eth/eth-erc20.service"
+import { polygonErc20Service } from "../ethereum/polygon/pol-erc20.service"
+import { baseErc20Service } from "../ethereum/base/base-erc20.service"
+import { arbitrumErc20Service } from "../ethereum/arbitrum/arbitrum-erc20.service"
+import { bnbErc20Service } from "../ethereum/bnb/bnb-erc20.service"
+import { FTERC20EthImpl } from "./impl/ft-erc20-eth-impl"
+import { FTERC20BaseImpl } from "./impl/ft-erc20-base-impl"
+import { FTERC20PolImpl } from "./impl/ft-erc20-pol-impl"
+import { FTERC20ArbImpl } from "./impl/ft-erc20-arb-impl"
+import { FTERC20BnbImpl } from "./impl/ft-erc20-bnb-impl"
 
 const InitedTokens = "InitedTokens"
 export const TOKENS_REFRESH_INTERVAL = 10000
@@ -121,6 +130,33 @@ export class FtService {
 
     let userCanisters = await icrc1RegistryService.getCanistersByRoot(userId)
 
+    const [
+      ethErc20Tokens,
+      polErc20Tokens,
+      baseErc20Tokens,
+      arbErc20Tokens,
+      bnbErc20Tokens,
+    ] = await Promise.all([
+      ethErc20Service.getTokensList(),
+      polygonErc20Service.getTokensList(),
+      baseErc20Service.getTokensList(),
+      arbitrumErc20Service.getTokensList(),
+      bnbErc20Service.getTokensList(),
+    ])
+
+    const allErc20Tokens = [
+      ...ethErc20Tokens,
+      ...polErc20Tokens,
+      ...baseErc20Tokens,
+      ...arbErc20Tokens,
+      ...bnbErc20Tokens,
+    ]
+    // const ethErc20Tokens = await ethErc20Service.getTokensList()
+    // const polErc20Tokens = await polygonErc20Service.getTokensList()
+    // const baseErc20Tokens = await baseErc20Service.getTokensList()
+    // const arbErc20Tokens = await arbitrumErc20Service.getTokensList()
+    // const bnbErc20Tokens = await bnbErc20Service.getTokensList()
+
     const baseState = userCanisters.find(
       (uc) => uc.ledger === BASE_NATIVE_ID,
     )?.state
@@ -152,18 +188,52 @@ export class FtService {
       bnbState ? mapState(bnbState) : State.Inactive,
     )
 
-    // Use this for ERC-20 tokens
-    // const erc20Tokens = await erc20Service.getKnownTokensList()
+    const storedErc20Tokens: FT[] = allErc20Tokens.map((token) => {
+      const userCanister = userCanisters.find(
+        (c) =>
+          c.network === token.chainId &&
+          c.ledger === token.address &&
+          c.network !== ChainId.ICP &&
+          c.network !== ChainId.BTC,
+      )
 
-    // const storedErc20Tokens: FT[] = erc20Tokens.map((token) => {
-    //   const userCanister = userCanisters.find(
-    //     (t) => t.ledger === token.address && t.network === token.chainId,
-    //   )
-    //   return new FTERC20Impl({
-    //     ...token,
-    //     state: userCanister ? mapState(userCanister.state) : token.state,
-    //   })
-    // })
+      if (token.chainId === ChainId.ETH) {
+        return new FTERC20EthImpl({
+          ...token,
+          state: userCanister ? mapState(userCanister.state) : token.state,
+        })
+      }
+
+      if (token.chainId === ChainId.BASE) {
+        return new FTERC20BaseImpl({
+          ...token,
+          state: userCanister ? mapState(userCanister.state) : token.state,
+        })
+      }
+
+      if (token.chainId === ChainId.POL) {
+        return new FTERC20PolImpl({
+          ...token,
+          state: userCanister ? mapState(userCanister.state) : token.state,
+        })
+      }
+
+      if (token.chainId === ChainId.ARB) {
+        return new FTERC20ArbImpl({
+          ...token,
+          state: userCanister ? mapState(userCanister.state) : token.state,
+        })
+      }
+
+      if (token.chainId === ChainId.BNB) {
+        return new FTERC20BnbImpl({
+          ...token,
+          state: userCanister ? mapState(userCanister.state) : token.state,
+        })
+      }
+
+      throw new Error(`Unknown ERC20 chainId: ${token.chainId}`)
+    })
 
     return this.sortTokens([
       ...icrc1Tokens,
@@ -173,7 +243,7 @@ export class FtService {
       arbNativeToken,
       baseNativeToken,
       bnbNativeToken,
-      //...storedErc20Tokens,
+      ...storedErc20Tokens,
     ])
   }
 

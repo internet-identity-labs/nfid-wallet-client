@@ -14,6 +14,7 @@ import {
   PolygonService,
   polygonService,
 } from "frontend/integration/ethereum/polygon/polygon.service"
+import { exchangeRateService } from "@nfid/integration"
 
 export class FTPolygonImpl extends FTEvmAbstractImpl {
   constructor(state: State) {
@@ -34,5 +35,24 @@ export class FTPolygonImpl extends FTEvmAbstractImpl {
 
   protected getProvider(): PolygonService {
     return polygonService
+  }
+
+  public async getBalance(): Promise<void> {
+    try {
+      this.tokenBalance = await this.getProvider().getQuickBalance()
+    } catch (e) {
+      console.error("PolygonService error: ", (e as Error).message)
+      return
+    }
+
+    try {
+      this.tokenRate = await exchangeRateService.usdPriceForERC20("POL")
+    } catch (e) {
+      console.error("Polygon rate fetch error: ", (e as Error).message)
+    }
+
+    if (this.tokenBalance !== undefined) {
+      this.inited = true
+    }
   }
 }

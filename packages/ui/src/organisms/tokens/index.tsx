@@ -62,7 +62,6 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   onStakeClick: (value: string) => void
   hideZeroBalance: boolean
   onZeroBalanceToggle: () => void
-  tokensIniting?: boolean
 }
 
 export const Tokens: FC<TokensProps> = ({
@@ -81,7 +80,6 @@ export const Tokens: FC<TokensProps> = ({
   onStakeClick,
   hideZeroBalance,
   onZeroBalanceToggle,
-  tokensIniting,
 }) => {
   const [token, setToken] = useState<FT | undefined>()
   const [sorting, setSorting] = useState<Sorting>(Sorting.DEFAULT)
@@ -203,7 +201,7 @@ export const Tokens: FC<TokensProps> = ({
                 filteredTokens.map((token, index, arr) => (
                   <ActiveToken
                     isIniting={
-                      tokensIniting ||
+                      isTokensLoading ||
                       (token.getTokenAddress() === BTC_NATIVE_ID &&
                         !token.isInited()) ||
                       (token.getTokenAddress() === ETH_NATIVE_ID &&
@@ -246,7 +244,7 @@ export const Tokens: FC<TokensProps> = ({
           setLoadingToken={setLoadingToken}
           hideZeroBalance={hideZeroBalance}
           onZeroBalanceToggle={onZeroBalanceToggle}
-          manageBtnDisabled={tokensIniting}
+          manageBtnDisabled={isTokensLoading}
         />
       </div>
       <TokenInfoModal token={token} onClose={() => setToken(undefined)} />

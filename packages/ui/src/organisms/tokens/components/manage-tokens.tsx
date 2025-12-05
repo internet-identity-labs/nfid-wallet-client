@@ -265,7 +265,7 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                   if (!token.isHideable()) return
                   return (
                     <FilteredToken
-                      key={`${token.getTokenName()}_${token.getTokenAddress()}`}
+                      key={`${token.getTokenName()}_${token.getTokenAddress()}_${token.getChainId()}`}
                       token={token}
                       tokens={tokens}
                       setLoadingToken={setLoadingToken}

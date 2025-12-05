@@ -188,6 +188,7 @@ export abstract class Erc20Service {
 
   public async getTokensList(): Promise<ERC20TokenInfo[]> {
     let allTokens = await this.getKnownTokensList()
+    console.log("this.chainId", this.chainId, this)
     return allTokens.filter((token) => token.chainId === this.chainId)
   }
 

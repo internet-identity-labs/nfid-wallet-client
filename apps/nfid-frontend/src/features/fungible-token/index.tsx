@@ -172,6 +172,12 @@ const TokensPage = () => {
       })
   }
 
+  console.log(
+    "tokenzzz",
+    tokens?.filter((t) => t.getChainId() > 1),
+    initedTokens,
+  )
+
   return (
     <>
       <div className="p-[20px] md:p-[30px] border-gray-200 dark:border-zinc-700 border rounded-[24px] mb-[20px] md:mb-[30px] flex flex-col md:flex-row">
@@ -222,7 +228,6 @@ const TokensPage = () => {
       </div>
       <ProfileContainer>
         <Tokens
-          tokensIniting={!initedTokens}
           initedTokens={initedTokens || []}
           allTokens={tokens || []}
           isTokensLoading={!initedTokens}

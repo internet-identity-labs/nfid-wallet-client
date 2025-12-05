@@ -30,7 +30,6 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
 import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
-
 import { mapState } from "@nfid/integration/token/icrc1/util"
 
 import { FTBitcoinImpl } from "./impl/ft-btc-impl"

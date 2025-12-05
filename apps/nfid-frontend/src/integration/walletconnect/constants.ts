@@ -24,4 +24,25 @@ export const ETH_METHODS = [
 ] as const
 
 // Supported events
-export const ETH_EVENTS = ["chainChanged", "accountsChanged"] as const
+export const ETH_EVENTS = [
+  "chainChanged",
+  "accountsChanged",
+  "message",
+  "disconnect",
+  "connect",
+] as const
+
+export const NAMESPACES = {
+  eip155: {
+    chains: [
+      "eip155:1",
+      "eip155:137",
+      "eip155:56",
+      "eip155:8453",
+      "eip155:42161",
+      "eip155:11155111",
+    ],
+    methods: ETH_METHODS,
+    events: ETH_EVENTS,
+  },
+}

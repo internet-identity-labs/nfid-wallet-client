@@ -1,8 +1,10 @@
 import { useEffect, useState, useRef, useCallback } from "react"
 import { ImSpinner } from "react-icons/im"
+import { isAddress } from "ethers"
 
 import { Button } from "@nfid-frontend/ui"
 import { EthereumProvider } from "@walletconnect/ethereum-provider"
+import { EthereumTransactionParams } from "frontend/features/walletconnect/components/walletconnect-request"
 
 // WalletConnect Project ID
 const PROJECT_ID = "951ec7b9914a35c2f62e2514c408ab8f"
@@ -15,7 +17,12 @@ export const WalletConnectExample = ({
 }: {
   onError: (error: { error: string }) => void
   onResponse?: (data: any) => void
-  testMethod?: "connect" | "personal_sign" | "eth_sign"
+  testMethod?:
+    | "connect"
+    | "personal_sign"
+    | "eth_sign"
+    | "eth_signTransaction"
+    | "eth_sendTransaction"
   isConnected?: boolean
 }) => {
   const [provider, setProvider] = useState<InstanceType<
@@ -33,6 +40,17 @@ export const WalletConnectExample = ({
     method: string
     params: any[]
   } | null>(null)
+  const [showTransactionInput, setShowTransactionInput] =
+    useState<boolean>(false)
+  const [toAddress, setToAddress] = useState<string>(
+    "0xb1107f4141fb56b07d15b65f1629451443ff8f8e",
+  )
+  const [txValue, setTxValue] = useState<string>("0")
+  const [txGas, setTxGas] = useState<string>("21000")
+  const [txGasPrice, setTxGasPrice] = useState<string>("1000000000")
+  const [txNonce, setTxNonce] = useState<string>("1")
+  const [txData, setTxData] = useState<string>("0x")
+  const [txChainId, setTxChainId] = useState<string>("1")
   const providerRef = useRef<InstanceType<typeof EthereumProvider> | null>(null)
 
   // Helper function to get provider (from ref, global, or state)
@@ -123,7 +141,7 @@ export const WalletConnectExample = ({
       })
 
       ethProvider.on("chainChanged", () => {
-        // Chain changed
+        console.log("chainChanged:", ethProvider.session)
       })
     }
 
@@ -202,7 +220,7 @@ export const WalletConnectExample = ({
         providerRef.current = null
       }
     }
-  }, [handleError, getAccountsFromProvider])
+  }, [handleError, getAccountsFromProvider, testMethod, provider])
 
   useEffect(() => {
     if (error) {
@@ -380,6 +398,219 @@ export const WalletConnectExample = ({
     }
   }
 
+  const handleSignTransactionClick = () => {
+    if (!isConnected) {
+      handleError("Please connect wallet first")
+      return
+    }
+    setShowTransactionInput(true)
+  }
+
+  // Helper function to normalize hex strings for data/addresses (ensure even length)
+  const normalizeHexData = (value: string | undefined): string | undefined => {
+    if (!value) return value
+    let hex = value.trim()
+
+    // Remove 0x prefix if present
+    if (hex.startsWith("0x") || hex.startsWith("0X")) {
+      hex = hex.slice(2)
+    }
+
+    // If empty after removing prefix, return "0x"
+    if (!hex) return "0x"
+
+    // Ensure even length by adding leading zero if needed
+    if (hex.length % 2 !== 0) {
+      hex = "0" + hex
+    }
+
+    return "0x" + hex
+  }
+
+  // Helper function to convert integer to hex string
+  const integerToHex = (integer: string | undefined): string => {
+    if (!integer || integer === "") return "0x0"
+    try {
+      const value = BigInt(integer)
+      return "0x" + value.toString(16)
+    } catch {
+      return "0x0"
+    }
+  }
+
+  const handleSignTransaction = async () => {
+    const providerToUse = getProvider()
+    if (!providerToUse) {
+      handleError("Provider not initialized")
+      return
+    }
+
+    // Ensure provider is connected
+    if (!providerToUse.session || !providerToUse.connected) {
+      try {
+        const connectedAccounts = await providerToUse.enable()
+        setAccounts(connectedAccounts)
+      } catch (reconnectError) {
+        handleError("Please connect wallet first. Failed to reconnect.")
+        return
+      }
+    }
+
+    const providerAccounts = getAccountsFromProvider(providerToUse)
+    if (providerAccounts.length === 0) {
+      handleError("No accounts available. Please connect wallet first.")
+      return
+    }
+
+    if (!toAddress.trim()) {
+      handleError("Please enter 'to' address")
+      return
+    }
+
+    // Validate and normalize 'to' address
+    const normalizedToAddress = toAddress.trim()
+    if (!isAddress(normalizedToAddress)) {
+      handleError("Invalid 'to' address format")
+      return
+    }
+
+    try {
+      setError(null)
+      const address = providerAccounts[0]
+
+      const transaction: EthereumTransactionParams = {
+        from: address,
+        to: normalizedToAddress,
+        value: integerToHex(txValue),
+        gas: integerToHex(txGas),
+        gasPrice: integerToHex(txGasPrice),
+        nonce: integerToHex(txNonce),
+        data: normalizeHexData(txData) || "0x",
+        chainId: integerToHex(txChainId) || "0x1",
+      }
+
+      setPendingRequest({
+        method: "eth_signTransaction",
+        params: [transaction],
+      })
+
+      const signature = await providerToUse.request({
+        method: "eth_signTransaction",
+        params: [transaction],
+      })
+
+      setPendingRequest(null)
+
+      if (onResponse) {
+        onResponse({
+          method: "eth_signTransaction",
+          signature,
+          transaction,
+        })
+      }
+
+      setShowTransactionInput(false)
+      alert(`Transaction signed successfully!\n\nSignature: ${signature}`)
+    } catch (err) {
+      setPendingRequest(null)
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : `Failed to sign transaction ${JSON.stringify(err)}`
+      handleError(errorMessage)
+    }
+  }
+
+  const handleSendTransactionClick = () => {
+    if (!isConnected) {
+      handleError("Please connect wallet first")
+      return
+    }
+    setShowTransactionInput(true)
+  }
+
+  const handleSendTransaction = async () => {
+    const providerToUse = getProvider()
+    if (!providerToUse) {
+      handleError("Provider not initialized")
+      return
+    }
+
+    // Ensure provider is connected
+    if (!providerToUse.session || !providerToUse.connected) {
+      try {
+        const connectedAccounts = await providerToUse.enable()
+        setAccounts(connectedAccounts)
+      } catch (reconnectError) {
+        handleError("Please connect wallet first. Failed to reconnect.")
+        return
+      }
+    }
+
+    const providerAccounts = getAccountsFromProvider(providerToUse)
+    if (providerAccounts.length === 0) {
+      handleError("No accounts available. Please connect wallet first.")
+      return
+    }
+
+    if (!toAddress.trim()) {
+      handleError("Please enter 'to' address")
+      return
+    }
+
+    // Validate and normalize 'to' address
+    const normalizedToAddress = toAddress.trim()
+    if (!isAddress(normalizedToAddress)) {
+      handleError("Invalid 'to' address format")
+      return
+    }
+
+    try {
+      setError(null)
+      const address = providerAccounts[0]
+
+      const transaction: EthereumTransactionParams = {
+        from: address,
+        to: normalizedToAddress,
+        value: integerToHex(txValue),
+        gas: integerToHex(txGas),
+        gasPrice: integerToHex(txGasPrice),
+        data: normalizeHexData(txData) || "0x",
+        chainId: integerToHex(txChainId) || "0x1",
+      }
+
+      setPendingRequest({
+        method: "eth_sendTransaction",
+        params: [transaction],
+      })
+
+      const txHash = await providerToUse.request({
+        method: "eth_sendTransaction",
+        params: [transaction],
+      })
+
+      setPendingRequest(null)
+
+      if (onResponse) {
+        onResponse({
+          method: "eth_sendTransaction",
+          txHash,
+          transaction,
+        })
+      }
+
+      setShowTransactionInput(false)
+      alert(
+        `Transaction sent successfully!\n\nTransaction Hash: ${txHash}\n\nWARNING: This transaction has been broadcast to the network!`,
+      )
+    } catch (err) {
+      setPendingRequest(null)
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to send transaction"
+      handleError(errorMessage)
+    }
+  }
+
   const handleDisconnect = async () => {
     if (!provider) return
 
@@ -543,6 +774,178 @@ export const WalletConnectExample = ({
                 Sign Hash
               </Button>
             )}
+            {(testMethod === "eth_signTransaction" ||
+              testMethod === "eth_sendTransaction") && (
+              <>
+                {!showTransactionInput ? (
+                  <Button
+                    className="h-10 w-full"
+                    isSmall
+                    onClick={
+                      testMethod === "eth_signTransaction"
+                        ? handleSignTransactionClick
+                        : handleSendTransactionClick
+                    }
+                    disabled={
+                      !isConnected ||
+                      (externalIsConnected !== undefined &&
+                        !externalIsConnected)
+                    }
+                  >
+                    {testMethod === "eth_signTransaction"
+                      ? "Sign Transaction"
+                      : "Send Transaction"}
+                  </Button>
+                ) : (
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold text-gray-700">
+                      Transaction Parameters:
+                    </p>
+                    <div className="space-y-2">
+                      <div>
+                        <label className="text-xs font-semibold text-gray-600 block mb-1">
+                          From Address:
+                        </label>
+                        <input
+                          type="text"
+                          value={accounts[0] || ""}
+                          disabled
+                          className="w-full px-2 py-1 text-xs bg-gray-100 border border-gray-300 rounded font-mono"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-semibold text-gray-600 block mb-1">
+                          To Address:
+                        </label>
+                        <input
+                          type="text"
+                          value={toAddress}
+                          onChange={(e) => setToAddress(e.target.value)}
+                          placeholder="0x..."
+                          className="w-full px-2 py-1 text-xs bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-semibold text-gray-600 block mb-1">
+                          Value (wei, integer):
+                        </label>
+                        <input
+                          type="text"
+                          value={txValue}
+                          onChange={(e) => setTxValue(e.target.value)}
+                          placeholder="0"
+                          className="w-full px-2 py-1 text-xs bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <p className="text-xs text-gray-500 mt-1 font-mono">
+                          Hex: {integerToHex(txValue)}
+                        </p>
+                      </div>
+                      <div>
+                        <label className="text-xs font-semibold text-gray-600 block mb-1">
+                          Gas Limit (integer):
+                        </label>
+                        <input
+                          type="text"
+                          value={txGas}
+                          onChange={(e) => setTxGas(e.target.value)}
+                          placeholder="21000"
+                          className="w-full px-2 py-1 text-xs bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <p className="text-xs text-gray-500 mt-1 font-mono">
+                          Hex: {integerToHex(txGas)}
+                        </p>
+                      </div>
+                      <div>
+                        <label className="text-xs font-semibold text-gray-600 block mb-1">
+                          Gas Price (wei, integer):
+                        </label>
+                        <input
+                          type="text"
+                          value={txGasPrice}
+                          onChange={(e) => setTxGasPrice(e.target.value)}
+                          placeholder="1000000000"
+                          className="w-full px-2 py-1 text-xs bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <p className="text-xs text-gray-500 mt-1 font-mono">
+                          Hex: {integerToHex(txGasPrice)}
+                        </p>
+                      </div>
+                      <div>
+                        <label className="text-xs font-semibold text-gray-600 block mb-1">
+                          Nonce (integer, optional for send):
+                        </label>
+                        <input
+                          type="text"
+                          value={txNonce}
+                          onChange={(e) => setTxNonce(e.target.value)}
+                          placeholder="1"
+                          className="w-full px-2 py-1 text-xs bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <p className="text-xs text-gray-500 mt-1 font-mono">
+                          Hex: {integerToHex(txNonce)}
+                        </p>
+                      </div>
+                      <div>
+                        <label className="text-xs font-semibold text-gray-600 block mb-1">
+                          Data (hex):
+                        </label>
+                        <input
+                          type="text"
+                          value={txData}
+                          onChange={(e) => setTxData(e.target.value)}
+                          placeholder="0x"
+                          className="w-full px-2 py-1 text-xs bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-semibold text-gray-600 block mb-1">
+                          Chain ID:
+                        </label>
+                        <input
+                          type="text"
+                          value={txChainId}
+                          onChange={(e) => setTxChainId(e.target.value)}
+                          placeholder="1"
+                          className="w-full px-2 py-1 text-xs bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-2 pt-2">
+                      <Button
+                        className="h-10 flex-1"
+                        isSmall
+                        onClick={
+                          testMethod === "eth_signTransaction"
+                            ? handleSignTransaction
+                            : handleSendTransaction
+                        }
+                        disabled={!toAddress.trim()}
+                      >
+                        {testMethod === "eth_signTransaction" ? "Sign" : "Send"}
+                      </Button>
+                      <Button
+                        className="h-10"
+                        isSmall
+                        onClick={() => {
+                          setShowTransactionInput(false)
+                          setToAddress(
+                            "0xff14E6e1DE9762929F7d2431482bfC2E63bd9d50",
+                          )
+                          setTxValue("0")
+                          setTxGas("21000")
+                          setTxGasPrice("1000000000")
+                          setTxNonce("1")
+                          setTxData("0x")
+                          setTxChainId("1")
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
             {testMethod === "connect" && (
               <Button
                 className="h-10"
@@ -596,7 +999,10 @@ export const WalletConnectExample = ({
       )}
 
       {pendingRequest &&
-        (testMethod === "personal_sign" || testMethod === "eth_sign") && (
+        (testMethod === "personal_sign" ||
+          testMethod === "eth_sign" ||
+          testMethod === "eth_signTransaction" ||
+          testMethod === "eth_sendTransaction") && (
           <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-3">
             <p className="text-sm font-semibold text-blue-900">
               Sign Request Sent:
@@ -624,13 +1030,28 @@ export const WalletConnectExample = ({
                       Address: {pendingRequest.params[1]}
                     </p>
                   </>
-                ) : (
+                ) : testMethod === "eth_sign" ? (
                   <>
                     <p className="font-mono break-all mt-1">
                       Address: {pendingRequest.params[0]}
                     </p>
                     <p className="font-mono break-all mt-1">
                       Hash: {pendingRequest.params[1]}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="font-mono break-all mt-1">
+                      To: {pendingRequest.params[0]?.to || "N/A"}
+                    </p>
+                    <p className="font-mono break-all mt-1">
+                      Value: {pendingRequest.params[0]?.value || "0x0"}
+                    </p>
+                    <p className="font-mono break-all mt-1">
+                      Gas: {pendingRequest.params[0]?.gas || "N/A"}
+                    </p>
+                    <p className="font-mono break-all mt-1">
+                      Chain ID: {pendingRequest.params[0]?.chainId || "N/A"}
                     </p>
                   </>
                 )}

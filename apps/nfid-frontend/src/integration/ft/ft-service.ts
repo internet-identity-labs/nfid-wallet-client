@@ -8,6 +8,10 @@ import { FT } from "src/integration/ft/ft"
 import { FTImpl } from "src/integration/ft/impl/ft-impl"
 
 import {
+  ARBITRUM_NATIVE_ID,
+  BASE_NATIVE_ID,
+  BNB_NATIVE_ID,
+  POLYGON_NATIVE_ID,
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
@@ -28,7 +32,7 @@ import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 // import { erc20Service } from "../ethereum/erc20.service"
 // import { FTERC20Impl } from "./impl/ft-erc20-impl"
-// import { mapState } from "@nfid/integration/token/icrc1/util"
+import { mapState } from "@nfid/integration/token/icrc1/util"
 
 import { FTBitcoinImpl } from "./impl/ft-btc-impl"
 import { FTEthereumImpl } from "./impl/ft-eth-impl"
@@ -45,18 +49,6 @@ export interface TokensAvailableToSwap {
   to: string[]
   from: string[]
 }
-
-const TOKENS_TO_REORDER: {
-  canisterId: string
-  index: number
-  ft?: FT | null
-}[] = [
-  { canisterId: BTC_NATIVE_ID, index: 1 },
-  { canisterId: ETH_NATIVE_ID, index: 2 },
-  { canisterId: NFIDW_CANISTER_ID, index: 3 },
-  { canisterId: CKBTC_CANISTER_ID, index: 4 },
-  { canisterId: CKETH_LEDGER_CANISTER_ID, index: 5 },
-]
 
 export class FtService {
   async getTokens(userId: string): Promise<Array<FT>> {
@@ -127,15 +119,41 @@ export class FtService {
         return ft
       })
 
+    let userCanisters = await icrc1RegistryService.getCanistersByRoot(userId)
+
+    const baseState = userCanisters.find(
+      (uc) => uc.ledger === BASE_NATIVE_ID,
+    )?.state
+
+    const bnbState = userCanisters.find(
+      (uc) => uc.ledger === BNB_NATIVE_ID,
+    )?.state
+
+    const polState = userCanisters.find(
+      (uc) => uc.ledger === POLYGON_NATIVE_ID,
+    )?.state
+
+    const arbState = userCanisters.find(
+      (uc) => uc.ledger === ARBITRUM_NATIVE_ID,
+    )?.state
+
     const ethNativeToken = new FTEthereumImpl()
     const btcNativeToken = new FTBitcoinImpl()
-    const polNativeToken = new FTPolygonImpl()
-    const arbNativeToken = new FTArbitrumImpl()
-    const baseNativeToken = new FTBaseImpl()
-    const bnbNativeToken = new FTBnbImpl()
+    const polNativeToken = new FTPolygonImpl(
+      polState ? mapState(polState) : State.Inactive,
+    )
+    const arbNativeToken = new FTArbitrumImpl(
+      arbState ? mapState(arbState) : State.Inactive,
+    )
+    const baseNativeToken = new FTBaseImpl(
+      baseState ? mapState(baseState) : State.Inactive,
+    )
+    const bnbNativeToken = new FTBnbImpl(
+      bnbState ? mapState(bnbState) : State.Inactive,
+    )
 
+    // Use this for ERC-20 tokens
     // const erc20Tokens = await erc20Service.getKnownTokensList()
-    // let userCanisters = await icrc1RegistryService.getCanistersByRoot(userId)
 
     // const storedErc20Tokens: FT[] = erc20Tokens.map((token) => {
     //   const userCanister = userCanisters.find(
@@ -297,17 +315,19 @@ export class FtService {
         tokenRateDayChangePercentPositive:
           token.getTokenRateDayChangePercent()?.positive,
         inited: token.isInited(),
+        state: token.getTokenState(),
       })),
     )
   }
 
   private deserializeTokensData(serialized: string, tokens: FT[]): FT[] {
     const cachedData = JSON.parse(serialized)
-    return tokens.map((token) => {
+    tokens.forEach((token) => {
       const data = cachedData.find(
         (d: { tokenAddress: string }) =>
           d.tokenAddress === token.getTokenAddress(),
       )
+      if (!data) return
 
       const tokenImpl = token as any
 
@@ -326,9 +346,9 @@ export class FtService {
       }
 
       tokenImpl.inited = data.inited
-
-      return token
+      tokenImpl.tokenState = data.state
     })
+    return tokens
   }
 
   @Cache(integrationCache, { ttl: 300 })
@@ -438,30 +458,39 @@ export class FtService {
       [Category.ChainFusionTestnet]: 7,
     }
 
-    TOKENS_TO_REORDER.forEach((token) => {
-      const index = tokens.findIndex(
-        (t) => t.getTokenAddress() === token.canisterId,
-      )
-      if (index !== -1) {
-        token.ft = tokens.splice(index, 1)[0]
-      }
+    const topNativeIds = [ICP_CANISTER_ID, BTC_NATIVE_ID, ETH_NATIVE_ID]
+    const nfIdTokens = [
+      NFIDW_CANISTER_ID,
+      CKBTC_CANISTER_ID,
+      CKETH_LEDGER_CANISTER_ID,
+    ]
+
+    const topNative: FT[] = topNativeIds
+      .map((id) => tokens.find((t) => t.getTokenAddress() === id))
+      .filter(Boolean) as FT[]
+    topNative.forEach((t) => tokens.splice(tokens.indexOf(t), 1))
+
+    const afterNative: FT[] = nfIdTokens
+      .map((id) => tokens.find((t) => t.getTokenAddress() === id))
+      .filter(Boolean) as FT[]
+    afterNative.forEach((t) => tokens.splice(tokens.indexOf(t), 1))
+
+    const remainingNative = tokens.filter(
+      (t) => t.getTokenCategory() === Category.Native,
+    )
+    const others = tokens.filter(
+      (t) => t.getTokenCategory() !== Category.Native,
+    )
+
+    others.sort((a, b) => {
+      const aCat =
+        categoryOrder[a.getTokenCategory()] ?? Number.MAX_SAFE_INTEGER
+      const bCat =
+        categoryOrder[b.getTokenCategory()] ?? Number.MAX_SAFE_INTEGER
+      return aCat - bCat
     })
 
-    tokens.sort((a, b) => {
-      const aCategory =
-        categoryOrder[a.getTokenCategory()] || Number.MAX_SAFE_INTEGER
-      const bCategory =
-        categoryOrder[b.getTokenCategory()] || Number.MAX_SAFE_INTEGER
-      return aCategory - bCategory
-    })
-
-    TOKENS_TO_REORDER.forEach((specific) => {
-      if (specific.ft) {
-        tokens.splice(specific.index, 0, specific.ft)
-      }
-    })
-
-    return tokens
+    return [...topNative, ...remainingNative, ...afterNative, ...others]
   }
 }
 

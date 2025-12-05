@@ -3,7 +3,14 @@ import clsx from "clsx"
 import { HTMLAttributes, FC, useState, useMemo } from "react"
 import { FT } from "src/integration/ft/ft"
 
-import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
+import {
+  ARBITRUM_NATIVE_ID,
+  BASE_NATIVE_ID,
+  BNB_NATIVE_ID,
+  BTC_NATIVE_ID,
+  ETH_NATIVE_ID,
+  POLYGON_NATIVE_ID,
+} from "@nfid/integration/token/constants"
 
 import { useDarkTheme } from "frontend/hooks"
 
@@ -200,6 +207,14 @@ export const Tokens: FC<TokensProps> = ({
                       (token.getTokenAddress() === BTC_NATIVE_ID &&
                         !token.isInited()) ||
                       (token.getTokenAddress() === ETH_NATIVE_ID &&
+                        !token.isInited()) ||
+                      (token.getTokenAddress() === ARBITRUM_NATIVE_ID &&
+                        !token.isInited()) ||
+                      (token.getTokenAddress() === POLYGON_NATIVE_ID &&
+                        !token.isInited()) ||
+                      (token.getTokenAddress() === BASE_NATIVE_ID &&
+                        !token.isInited()) ||
+                      (token.getTokenAddress() === BNB_NATIVE_ID &&
                         !token.isInited())
                     }
                     hideZeroBalance={hideZeroBalance}

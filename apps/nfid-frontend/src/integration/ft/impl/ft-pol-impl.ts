@@ -16,7 +16,7 @@ import {
 } from "frontend/integration/ethereum/polygon/polygon.service"
 
 export class FTPolygonImpl extends FTEvmAbstractImpl {
-  constructor() {
+  constructor(state: State) {
     super({
       ledger: POLYGON_NATIVE_ID,
       symbol: "POL",
@@ -25,7 +25,7 @@ export class FTPolygonImpl extends FTEvmAbstractImpl {
       category: Category.Native,
       logo: PolygonIcon,
       index: undefined,
-      state: State.Active,
+      state,
       fee: BigInt(0),
       rootCanisterId: undefined,
     })

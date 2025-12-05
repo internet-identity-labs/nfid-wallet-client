@@ -3,7 +3,7 @@ import { WalletKit } from "@reown/walletkit"
 import { SessionTypes, SignClientTypes } from "@walletconnect/types"
 import { getSdkError } from "@walletconnect/utils"
 import { SignIdentity } from "@dfinity/agent"
-import { InfuraProvider } from "ethers"
+import { InfuraProvider, TypedDataEncoder } from "ethers"
 import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
 import { chainFusionSignerService } from "frontend/integration/bitcoin/services/chain-fusion-signer.service"
 import { EthSignTransactionRequest } from "frontend/integration/bitcoin/idl/chain-fusion-signer.d"
@@ -422,6 +422,14 @@ export class WalletConnectService {
         )
         break
       }
+      case "eth_signTypedData":
+      case "eth_signTypedData_v4": {
+        result = await this.handleEthSignTypedData(
+          identity,
+          params as [string, any],
+        )
+        break
+      }
       default:
         throw new Error(`Unsupported method: ${method}`)
     }
@@ -470,6 +478,37 @@ export class WalletConnectService {
     const [, hash] = params
     // Canister expects hex string without 0x prefix
     const hashHex = hash.startsWith("0x") ? hash.slice(2) : hash
+    return await chainFusionSignerService.ethSignPrehash(identity, hashHex)
+  }
+
+  /**
+   * Handle eth_signTypedData_v4 request
+   */
+  private async handleEthSignTypedData(
+    identity: SignIdentity,
+    params: [string, any],
+  ): Promise<string> {
+    const [address, typedData] = params
+
+    // Validate address matches identity
+    const fromAddressQuick = await ethereumService.getQuickAddress()
+    if (address.toLowerCase() !== fromAddressQuick.toLowerCase()) {
+      throw new Error(
+        "Typed data 'from' address is not the same as the identity address",
+      )
+    }
+
+    // Compute EIP-712 hash using ethers TypedDataEncoder
+    const hash = TypedDataEncoder.hash(
+      typedData.domain,
+      typedData.types,
+      typedData.message,
+    )
+
+    // Canister expects hex string without 0x prefix
+    const hashHex = hash.startsWith("0x") ? hash.slice(2) : hash
+
+    // Sign the hash using ethSignPrehash
     return await chainFusionSignerService.ethSignPrehash(identity, hashHex)
   }
 

@@ -23,6 +23,7 @@ export const WalletConnectExample = ({
     | "eth_sign"
     | "eth_signTransaction"
     | "eth_sendTransaction"
+    | "eth_signTypedData_v4"
   isConnected?: boolean
 }) => {
   const [provider, setProvider] = useState<InstanceType<
@@ -51,6 +52,44 @@ export const WalletConnectExample = ({
   const [txNonce, setTxNonce] = useState<string>("1")
   const [txData, setTxData] = useState<string>("0x")
   const [txChainId, setTxChainId] = useState<string>("1")
+  const [typedData, setTypedData] = useState<string>(
+    JSON.stringify(
+      {
+        domain: {
+          name: "Example DApp",
+          version: "1",
+          chainId: 1,
+          verifyingContract: "0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC",
+        },
+        types: {
+          Person: [
+            { name: "name", type: "string" },
+            { name: "wallet", type: "address" },
+          ],
+          Mail: [
+            { name: "from", type: "Person" },
+            { name: "to", type: "Person" },
+            { name: "contents", type: "string" },
+          ],
+        },
+        primaryType: "Mail",
+        message: {
+          from: {
+            name: "Alice",
+            wallet: "0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826",
+          },
+          to: {
+            name: "Bob",
+            wallet: "0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB",
+          },
+          contents: "Hello, Bob!",
+        },
+      },
+      null,
+      2,
+    ),
+  )
+  const [showTypedDataInput, setShowTypedDataInput] = useState<boolean>(false)
   const providerRef = useRef<InstanceType<typeof EthereumProvider> | null>(null)
 
   // Helper function to get provider (from ref, global, or state)
@@ -611,6 +650,88 @@ export const WalletConnectExample = ({
     }
   }
 
+  const handleSignTypedDataClick = () => {
+    if (!isConnected) {
+      handleError("Please connect wallet first")
+      return
+    }
+    setShowTypedDataInput(true)
+  }
+
+  const handleSignTypedData = async () => {
+    const providerToUse = getProvider()
+    if (!providerToUse) {
+      handleError("Provider not initialized")
+      return
+    }
+
+    // Ensure provider is connected
+    if (!providerToUse.session || !providerToUse.connected) {
+      try {
+        const connectedAccounts = await providerToUse.enable()
+        setAccounts(connectedAccounts)
+      } catch (reconnectError) {
+        handleError("Please connect wallet first. Failed to reconnect.")
+        return
+      }
+    }
+
+    const providerAccounts = getAccountsFromProvider(providerToUse)
+    if (providerAccounts.length === 0) {
+      handleError("No accounts available. Please connect wallet first.")
+      return
+    }
+
+    if (!typedData.trim()) {
+      handleError("Please enter typed data")
+      return
+    }
+
+    try {
+      setError(null)
+      const address = providerAccounts[0]
+
+      // Parse typed data JSON
+      let parsedTypedData: any
+      try {
+        parsedTypedData = JSON.parse(typedData)
+      } catch (parseError) {
+        handleError("Invalid JSON format for typed data")
+        return
+      }
+
+      const requestParams = [address, parsedTypedData]
+      setPendingRequest({
+        method: "eth_signTypedData_v4",
+        params: requestParams,
+      })
+
+      const signature = await providerToUse.request({
+        method: "eth_signTypedData_v4",
+        params: requestParams,
+      })
+
+      setPendingRequest(null)
+
+      if (onResponse) {
+        onResponse({
+          method: "eth_signTypedData_v4",
+          signature,
+          typedData: parsedTypedData,
+          address,
+        })
+      }
+
+      setShowTypedDataInput(false)
+      alert(`Typed data signed successfully!\n\nSignature: ${signature}`)
+    } catch (err) {
+      setPendingRequest(null)
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to sign typed data"
+      handleError(errorMessage)
+    }
+  }
+
   const handleDisconnect = async () => {
     if (!provider) return
 
@@ -773,6 +894,96 @@ export const WalletConnectExample = ({
               >
                 Sign Hash
               </Button>
+            )}
+            {testMethod === "eth_signTypedData_v4" && (
+              <>
+                {!showTypedDataInput ? (
+                  <Button
+                    className="h-10 w-full"
+                    isSmall
+                    onClick={handleSignTypedDataClick}
+                    disabled={
+                      !isConnected ||
+                      (externalIsConnected !== undefined &&
+                        !externalIsConnected)
+                    }
+                  >
+                    Sign Typed Data
+                  </Button>
+                ) : (
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-gray-700 block">
+                      Typed Data (EIP-712 JSON):
+                    </label>
+                    <textarea
+                      value={typedData}
+                      onChange={(e) => setTypedData(e.target.value)}
+                      placeholder='{"domain": {...}, "types": {...}, "message": {...}}'
+                      className="w-full px-2 py-1 text-xs bg-white border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                      rows={15}
+                    />
+                    <div className="flex gap-2">
+                      <Button
+                        className="h-10 flex-1"
+                        isSmall
+                        onClick={handleSignTypedData}
+                        disabled={!typedData.trim()}
+                      >
+                        Sign
+                      </Button>
+                      <Button
+                        className="h-10"
+                        isSmall
+                        onClick={() => {
+                          setShowTypedDataInput(false)
+                          setTypedData(
+                            JSON.stringify(
+                              {
+                                domain: {
+                                  name: "Example DApp",
+                                  version: "1",
+                                  chainId: 1,
+                                  verifyingContract:
+                                    "0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC",
+                                },
+                                types: {
+                                  Person: [
+                                    { name: "name", type: "string" },
+                                    { name: "wallet", type: "address" },
+                                  ],
+                                  Mail: [
+                                    { name: "from", type: "Person" },
+                                    { name: "to", type: "Person" },
+                                    { name: "contents", type: "string" },
+                                  ],
+                                },
+                                primaryType: "Mail",
+                                message: {
+                                  from: {
+                                    name: "Alice",
+                                    wallet:
+                                      "0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826",
+                                  },
+                                  to: {
+                                    name: "Bob",
+                                    wallet:
+                                      "0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB",
+                                  },
+                                  contents: "Hello, Bob!",
+                                },
+                              },
+                              null,
+                              2,
+                            ),
+                          )
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
             {(testMethod === "eth_signTransaction" ||
               testMethod === "eth_sendTransaction") && (
@@ -1002,7 +1213,8 @@ export const WalletConnectExample = ({
         (testMethod === "personal_sign" ||
           testMethod === "eth_sign" ||
           testMethod === "eth_signTransaction" ||
-          testMethod === "eth_sendTransaction") && (
+          testMethod === "eth_sendTransaction" ||
+          testMethod === "eth_signTypedData_v4") && (
           <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-3">
             <p className="text-sm font-semibold text-blue-900">
               Sign Request Sent:
@@ -1037,6 +1249,16 @@ export const WalletConnectExample = ({
                     </p>
                     <p className="font-mono break-all mt-1">
                       Hash: {pendingRequest.params[1]}
+                    </p>
+                  </>
+                ) : testMethod === "eth_signTypedData_v4" ? (
+                  <>
+                    <p className="font-mono break-all mt-1">
+                      Address: {pendingRequest.params[0]}
+                    </p>
+                    <p className="font-mono break-all mt-1 text-xs whitespace-pre-wrap">
+                      Typed Data:{" "}
+                      {JSON.stringify(pendingRequest.params[1], null, 2)}
                     </p>
                   </>
                 ) : (

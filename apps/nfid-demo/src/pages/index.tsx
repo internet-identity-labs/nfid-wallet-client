@@ -10,6 +10,7 @@ import { WalletConnectPersonalSign } from "./new/examples/walletconnect/personal
 import { WalletConnectEthSign } from "./new/examples/walletconnect/eth-sign"
 import { WalletConnectEthSignTransaction } from "./new/examples/walletconnect/eth-sign-transaction"
 import { WalletConnectEthSendTransaction } from "./new/examples/walletconnect/eth-send-transaction"
+import { WalletConnectEthSignTypedDataV4 } from "./new/examples/walletconnect/eth-sign-typed-data-v4"
 import UserNavigation from "./new/header/user-navigation"
 import SideNav, { Section } from "./new/sidebar"
 import { Warning } from "./new/warning"
@@ -46,6 +47,10 @@ const sections: Section[] = [
   {
     id: "walletconnect-eth-send-transaction",
     name: "5.4. WalletConnect - eth_sendTransaction",
+  },
+  {
+    id: "walletconnect-eth-sign-typed-data-v4",
+    name: "5.5. WalletConnect - eth_signTypedData_v4",
   },
 ]
 
@@ -122,6 +127,8 @@ export const RouteHome: React.FC = () => {
             <WalletConnectEthSignTransaction />
             <hr />
             <WalletConnectEthSendTransaction />
+            <hr />
+            <WalletConnectEthSignTypedDataV4 />
           </div>
         </div>
       </main>

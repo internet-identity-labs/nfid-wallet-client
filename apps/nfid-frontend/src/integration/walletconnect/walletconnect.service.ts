@@ -117,8 +117,8 @@ export class WalletConnectService {
           const allSessions = this.walletKit.getActiveSessions()
           // getActiveSessions returns Record<string, SessionTypes.Struct>
           const foundSession = Object.values(allSessions).find(
-            (s: SessionTypes.Struct) => s.topic === request.topic,
-          )
+            (s) => (s as SessionTypes.Struct).topic === request.topic,
+          ) as SessionTypes.Struct | undefined
           if (foundSession) {
             this.activeSessions.set(foundSession.topic, foundSession)
           } else {
@@ -161,8 +161,9 @@ export class WalletConnectService {
 
     const sessions = this.walletKit.getActiveSessions()
     // getActiveSessions returns Record<string, SessionTypes.Struct>
-    Object.values(sessions).forEach((session: SessionTypes.Struct) => {
-      this.activeSessions.set(session.topic, session)
+    Object.values(sessions).forEach((session) => {
+      const typedSession = session as SessionTypes.Struct
+      this.activeSessions.set(typedSession.topic, typedSession)
     })
   }
 
@@ -270,9 +271,10 @@ export class WalletConnectService {
     if (this.walletKit) {
       const allSessions = this.walletKit.getActiveSessions()
       // getActiveSessions returns Record<string, SessionTypes.Struct>
-      Object.values(allSessions).forEach((session: SessionTypes.Struct) => {
-        if (!this.activeSessions.has(session.topic)) {
-          this.activeSessions.set(session.topic, session)
+      Object.values(allSessions).forEach((session) => {
+        const typedSession = session as SessionTypes.Struct
+        if (!this.activeSessions.has(typedSession.topic)) {
+          this.activeSessions.set(typedSession.topic, typedSession)
         }
       })
     }
@@ -288,7 +290,7 @@ export class WalletConnectService {
     const allSessions = this.walletKit.getActiveSessions()
     // getActiveSessions returns Record<string, SessionTypes.Struct>
     return Object.values(allSessions).some(
-      (s: SessionTypes.Struct) => s.topic === topic,
+      (s) => (s as SessionTypes.Struct).topic === topic,
     )
   }
 

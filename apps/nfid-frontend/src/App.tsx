@@ -24,6 +24,7 @@ import { WalletConnectHandler } from "./features/walletconnect/walletconnect-han
 import { WalletConnectModal } from "./features/walletconnect/walletconnect-modal"
 import { NotFound } from "./ui/pages/404"
 import ProfileTemplate from "./ui/templates/profile-template/Template"
+import { useAuthentication } from "./apps/authentication/use-authentication"
 
 const LandingHomePage = lazy(() =>
   import("./apps/marketing/landing-page").then((components) => ({
@@ -68,6 +69,8 @@ export enum NFIDTheme {
 
 export const App = () => {
   const [walletTheme, setWalletTheme] = useState<NFIDTheme>(NFIDTheme.SYSTEM)
+
+  const { isAuthenticated } = useAuthentication()
 
   useEffect(() => {
     const sub = authState.subscribe(({ cacheLoaded }) => {
@@ -125,12 +128,11 @@ export const App = () => {
       console.debug("cacheUsdIcpRate", exchangeRateService.getICP2USD())
     },
   })
-
   // Initialize WalletConnect on app startup
   useEffect(() => {
     const initWalletConnect = async () => {
       try {
-        if (!walletConnectService.getInitialized()) {
+        if (!walletConnectService.getInitialized() && isAuthenticated) {
           await walletConnectService.initialize()
         }
       } catch (error) {
@@ -140,13 +142,18 @@ export const App = () => {
 
     initWalletConnect()
 
+    if (!isAuthenticated) {
+      walletConnectService.cleanup().catch((error) => {
+        console.error("Failed to cleanup WalletConnect:", error)
+      })
+    }
     // Cleanup on unmount
     return () => {
       walletConnectService.cleanup().catch((error) => {
         console.error("Failed to cleanup WalletConnect:", error)
       })
     }
-  }, [])
+  }, [isAuthenticated])
 
   const location = useLocation()
   const isExcludedFromAnimation = location.pathname.startsWith(

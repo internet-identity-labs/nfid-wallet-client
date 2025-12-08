@@ -4391,6 +4391,19 @@
   optionalDependencies:
     "@lit/react" "1.0.8"
 
+"@reown/walletkit@1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@reown/walletkit/-/walletkit-1.4.1.tgz#092194e637bc9a7df3b0da98eee1ec128b99167a"
+  integrity sha512-ne0nnGDZ0vIYAT2HUwVKDHxTd8qsBBVqK7R1/AeJp8hVk+2QlnMgtXcEH+QecvSdjopi3hT49JqkuzleqmpXLw==
+  dependencies:
+    "@walletconnect/core" "2.23.0"
+    "@walletconnect/jsonrpc-provider" "1.0.14"
+    "@walletconnect/jsonrpc-utils" "1.0.8"
+    "@walletconnect/logger" "3.0.0"
+    "@walletconnect/sign-client" "2.23.0"
+    "@walletconnect/types" "2.23.0"
+    "@walletconnect/utils" "2.23.0"
+
 "@rollup/plugin-babel@^5.2.0":
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/@rollup/plugin-babel/-/plugin-babel-5.3.1.tgz#04bc0608f4aa4b2e4b1aebf284344d0f68fda283"

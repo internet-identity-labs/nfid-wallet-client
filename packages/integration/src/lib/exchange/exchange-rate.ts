@@ -101,24 +101,6 @@ export class ExchangeRateService {
     }
   }
 
-  @Cache(integrationCache, { ttl: 120 })
-  async usdPriceForERC20(symbol: string): Promise<{
-    value: BigNumber
-    dayChangePercent?: string
-    dayChangePercentPositive?: boolean
-  } | null> {
-    try {
-      return {
-        value: new BigNumber("1"),
-        dayChangePercent: "10",
-        dayChangePercentPositive: true,
-      }
-    } catch (e) {
-      console.error("usdPriceForERC20 error: ", e)
-      return null
-    }
-  }
-
   @Cache(integrationCache, { ttl: 60 * 60 * 24 })
   private async getTokenStorageCanister(
     ledger: string,

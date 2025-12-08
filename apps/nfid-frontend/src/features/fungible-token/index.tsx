@@ -172,11 +172,7 @@ const TokensPage = () => {
       })
   }
 
-  console.log(
-    "tokenzzz",
-    tokens?.filter((t) => t.getChainId() > 1),
-    initedTokens,
-  )
+  console.log("tokenzzz", tokens, initedTokens)
 
   return (
     <>

@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
 import { FT } from "src/integration/ft/ft"
-
+import BigNumber from "bignumber.js"
 import { FTImpl } from "./ft-impl"
 import {
   Erc20Service,
@@ -8,7 +8,6 @@ import {
 } from "frontend/integration/ethereum/erc20-abstract.service"
 import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
-import { exchangeRateService } from "@nfid/integration"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 
 export abstract class FTERC20AbstractImpl extends FTImpl {
@@ -42,30 +41,37 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
   public async getBalance(globalPrincipal: Principal): Promise<void> {
     const ethAddress = await ethereumService.getQuickAddress()
 
-    const balance = await icrc1RegistryService
-      .getCanistersByRoot(globalPrincipal.toText())
-      .then((contracts) =>
-        contracts.filter((c) => c.network === this.tokenChainId),
-      )
-      .then((contracts) => contracts.map((c) => c.ledger))
-      .then((addresses) =>
-        this.getProvider().getMultipleTokenBalances(ethAddress, addresses),
-      )
-      .then(
-        (balances) =>
-          balances.find((b) => b.contractAddress === super.getTokenAddress())
-            ?.balance,
-      )
+    const contracts = await icrc1RegistryService.getCanistersByRoot(
+      globalPrincipal.toText(),
+    )
+
+    const ledgers = contracts
+      .filter((c) => c.network === this.tokenChainId)
+      .map((c) => c.ledger)
+
+    const [balances, usdBalances] = await Promise.all([
+      this.getProvider().getMultipleTokenBalances(ethAddress, ledgers),
+      this.getProvider().getUSDPrices(ledgers),
+    ])
+
+    const balance = balances.find(
+      (b) => b.contractAddress === super.getTokenAddress(),
+    )?.balance
+
+    const usdPrice = usdBalances.find(
+      (u) => u.token === super.getTokenAddress(),
+    )?.price
 
     this.tokenBalance = balance ? BigInt(balance) : undefined
 
-    try {
-      this.tokenRate = await exchangeRateService.usdPriceForERC20(
-        this.tokenAddress,
-      )
-    } catch (e) {
-      console.error("Polygon rate fetch error: ", (e as Error).message)
-    }
+    this.tokenRate = usdPrice
+      ? {
+          value: new BigNumber(usdPrice),
+          // TODO: implement day change percent fetch instead of undefined
+          dayChangePercent: undefined,
+          dayChangePercentPositive: undefined,
+        }
+      : undefined
 
     if (this.tokenBalance !== undefined) {
       this.inited = true

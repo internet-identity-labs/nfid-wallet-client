@@ -11,7 +11,6 @@ import {
   BnbService,
   bnbService,
 } from "frontend/integration/ethereum/bnb/bnb.service"
-import { exchangeRateService } from "@nfid/integration"
 
 export class FTBnbImpl extends FTEvmAbstractImpl {
   constructor(state: State) {
@@ -42,13 +41,8 @@ export class FTBnbImpl extends FTEvmAbstractImpl {
       return
     }
 
-    try {
-      this.tokenRate = await exchangeRateService.usdPriceForERC20(
-        "0x455e53cbb86018ac2b8092fdcd39d8444affc3f6",
-      )
-    } catch (e) {
-      console.error("BNB rate fetch error: ", (e as Error).message)
-    }
+    // TODO: implement Bnb rate fetch
+    // this.tokenRate =
 
     if (this.tokenBalance !== undefined) {
       this.inited = true

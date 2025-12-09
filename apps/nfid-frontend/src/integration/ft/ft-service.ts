@@ -36,7 +36,7 @@ import { polygonErc20Service } from "../ethereum/polygon/pol-erc20.service"
 import { baseErc20Service } from "../ethereum/base/base-erc20.service"
 import { arbitrumErc20Service } from "../ethereum/arbitrum/arbitrum-erc20.service"
 import { bnbErc20Service } from "../ethereum/bnb/bnb-erc20.service"
-import { FTCreator } from "./ft-creator"
+import { tokenFactory } from "./token-creator/token-factory.service"
 
 const InitedTokens = "InitedTokens"
 export const TOKENS_REFRESH_INTERVAL = 10000
@@ -113,7 +113,7 @@ export class FtService {
         }
 
         const ft = canisters.map((canister) =>
-          FTCreator.createToken({ type: "icrc1", canister }),
+          tokenFactory.getCreatorByChainID(ChainId.ICP).buildTokens(canister),
         )
 
         return ft
@@ -144,57 +144,53 @@ export class FtService {
     ]
 
     const nativeTokens: FT[] = [
-      FTCreator.createToken({ type: "native", chainId: ChainId.ETH }),
-      FTCreator.createToken({ type: "native", chainId: ChainId.BTC }),
-      FTCreator.createToken({
-        type: "native",
-        chainId: ChainId.POL,
-        state: mapState(
+      tokenFactory.getCreatorByChainID(ChainId.ETH).buildNative(),
+      tokenFactory.getCreatorByChainID(ChainId.BTC).buildNative(),
+
+      tokenFactory.getCreatorByChainID(ChainId.POL).buildNative(
+        mapState(
           userCanisters.find((c) => c.ledger === POLYGON_NATIVE_ID)?.state ?? {
             Inactive: null,
           },
         ),
-      }),
-      FTCreator.createToken({
-        type: "native",
-        chainId: ChainId.ARB,
-        state: mapState(
+      ),
+
+      tokenFactory.getCreatorByChainID(ChainId.ARB).buildNative(
+        mapState(
           userCanisters.find((c) => c.ledger === ARBITRUM_NATIVE_ID)?.state ?? {
             Inactive: null,
           },
         ),
-      }),
-      FTCreator.createToken({
-        type: "native",
-        chainId: ChainId.BASE,
-        state: mapState(
+      ),
+
+      tokenFactory.getCreatorByChainID(ChainId.BASE).buildNative(
+        mapState(
           userCanisters.find((c) => c.ledger === BASE_NATIVE_ID)?.state ?? {
             Inactive: null,
           },
         ),
-      }),
-      FTCreator.createToken({
-        type: "native",
-        chainId: ChainId.BNB,
-        state: mapState(
+      ),
+
+      tokenFactory.getCreatorByChainID(ChainId.BNB).buildNative(
+        mapState(
           userCanisters.find((c) => c.ledger === BNB_NATIVE_ID)?.state ?? {
             Inactive: null,
           },
         ),
-      }),
+      ),
     ]
 
     const erc20Tokens: FT[] = allErc20Tokens.map((token) =>
-      FTCreator.createToken({
-        type: "erc20",
-        chainId: token.chainId,
-        tokenData: token,
-        state: mapState(
-          userCanisters.find(
-            (c) => c.network === token.chainId && c.ledger === token.address,
-          )?.state ?? { Inactive: null },
+      tokenFactory
+        .getCreatorByChainID(token.chainId)
+        .buildTokens(
+          token,
+          mapState(
+            userCanisters.find(
+              (c) => c.network === token.chainId && c.ledger === token.address,
+            )?.state ?? { Inactive: null },
+          ),
         ),
-      }),
     )
 
     return this.sortTokens([...icrc1Tokens, ...nativeTokens, ...erc20Tokens])

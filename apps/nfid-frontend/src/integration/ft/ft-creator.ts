@@ -12,14 +12,18 @@ import { FTERC20BaseImpl } from "./impl/ft-erc20-base-impl"
 import { FTERC20BnbImpl } from "./impl/ft-erc20-bnb-impl"
 import { FTImpl } from "./impl/ft-impl"
 import { FT } from "./ft"
+import { ERC20TokenInfo } from "../ethereum/erc20-abstract.service"
+import { ICRC1 } from "@nfid/integration/token/icrc1/types"
 
-type TokenParams = {
-  type: "native" | "erc20" | "icrc1"
-  chainId?: ChainId
-  canister?: any
-  tokenData?: any
-  state?: State
-}
+type TokenParams =
+  | { type: "native"; chainId: ChainId; state?: State }
+  | {
+      type: "erc20"
+      chainId: ChainId
+      tokenData: ERC20TokenInfo
+      state?: State
+    }
+  | { type: "icrc1"; canister: ICRC1 }
 
 export class FTCreator {
   static createToken(params: TokenParams): FT {
@@ -75,9 +79,6 @@ export class FTCreator {
 
       case "icrc1":
         return new FTImpl(params.canister)
-
-      default:
-        throw new Error(`Unknown token type: ${params.type}`)
     }
   }
 }

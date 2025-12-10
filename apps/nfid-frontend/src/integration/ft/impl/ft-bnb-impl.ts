@@ -32,4 +32,20 @@ export class FTBnbImpl extends FTEvmAbstractImpl {
   protected getProvider(): BnbService {
     return bnbService
   }
+
+  public async getBalance(): Promise<void> {
+    try {
+      this.tokenBalance = await this.getProvider().getQuickBalance()
+    } catch (e) {
+      console.error("BnbService error: ", (e as Error).message)
+      return
+    }
+
+    // TODO: implement Bnb rate fetch
+    // this.tokenRate =
+
+    if (this.tokenBalance !== undefined) {
+      this.inited = true
+    }
+  }
 }

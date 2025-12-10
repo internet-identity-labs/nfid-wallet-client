@@ -35,4 +35,20 @@ export class FTPolygonImpl extends FTEvmAbstractImpl {
   protected getProvider(): PolygonService {
     return polygonService
   }
+
+  public async getBalance(): Promise<void> {
+    try {
+      this.tokenBalance = await this.getProvider().getQuickBalance()
+    } catch (e) {
+      console.error("PolygonService error: ", (e as Error).message)
+      return
+    }
+
+    // TODO: implement Polygon rate fetch
+    // this.tokenRate =
+
+    if (this.tokenBalance !== undefined) {
+      this.inited = true
+    }
+  }
 }

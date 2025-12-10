@@ -18,6 +18,11 @@ import { nftService } from "frontend/integration/nft/nft-service"
 import { portfolioService } from "frontend/integration/portfolio-balance/portfolio-service"
 import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
+import { ethErc20Service } from "frontend/integration/ethereum/eth/eth-erc20.service"
+import { polygonErc20Service } from "frontend/integration/ethereum/polygon/pol-erc20.service"
+import { baseErc20Service } from "frontend/integration/ethereum/base/base-erc20.service"
+import { arbitrumErc20Service } from "frontend/integration/ethereum/arbitrum/arbitrum-erc20.service"
+import { bnbErc20Service } from "frontend/integration/ethereum/bnb/bnb-erc20.service"
 
 const userId = "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae"
 const principal = Principal.fromText(userId)
@@ -36,6 +41,16 @@ describe("ft test suite", () => {
 
   describe("ft", () => {
     it("should return", async () => {
+      jest.spyOn(ethErc20Service as any, "getTokensList").mockResolvedValue([])
+      jest
+        .spyOn(polygonErc20Service as any, "getTokensList")
+        .mockResolvedValue([])
+      jest.spyOn(baseErc20Service as any, "getTokensList").mockResolvedValue([])
+      jest
+        .spyOn(arbitrumErc20Service as any, "getTokensList")
+        .mockResolvedValue([])
+      jest.spyOn(bnbErc20Service as any, "getTokensList").mockResolvedValue([])
+
       jest
         .spyOn(icrc1StorageService as any, "getICRC1Canisters")
         .mockResolvedValue([

@@ -5,7 +5,6 @@ import { Cache } from "node-ts-cache"
 import { integrationCache } from "packages/integration/src/cache"
 import { storageWithTtl } from "@nfid/client-db"
 import { FT } from "src/integration/ft/ft"
-import { FTImpl } from "src/integration/ft/impl/ft-impl"
 
 import {
   ARBITRUM_NATIVE_ID,
@@ -30,16 +29,14 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
 import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
-// import { erc20Service } from "../ethereum/erc20.service"
-// import { FTERC20Impl } from "./impl/ft-erc20-impl"
 import { mapState } from "@nfid/integration/token/icrc1/util"
 
-import { FTBitcoinImpl } from "./impl/ft-btc-impl"
-import { FTEthereumImpl } from "./impl/ft-eth-impl"
-import { FTPolygonImpl } from "./impl/ft-pol-impl"
-import { FTArbitrumImpl } from "./impl/ft-arb-impl"
-import { FTBaseImpl } from "./impl/ft-base-impl"
-import { FTBnbImpl } from "./impl/ft-bnb-impl"
+import { ethErc20Service } from "../ethereum/eth/eth-erc20.service"
+import { polygonErc20Service } from "../ethereum/polygon/pol-erc20.service"
+import { baseErc20Service } from "../ethereum/base/base-erc20.service"
+import { arbitrumErc20Service } from "../ethereum/arbitrum/arbitrum-erc20.service"
+import { bnbErc20Service } from "../ethereum/bnb/bnb-erc20.service"
+import { tokenFactory } from "./token-creator/token-factory.service"
 
 const InitedTokens = "InitedTokens"
 export const TOKENS_REFRESH_INTERVAL = 10000
@@ -115,66 +112,88 @@ export class FtService {
           canisters = await icrc1StorageService.getICRC1Canisters(userId)
         }
 
-        const ft = canisters.map((canister) => new FTImpl(canister))
+        const ft = canisters.map((canister) =>
+          tokenFactory.getCreatorByChainID(ChainId.ICP).buildTokens(canister),
+        )
+
         return ft
       })
 
     let userCanisters = await icrc1RegistryService.getCanistersByRoot(userId)
 
-    const baseState = userCanisters.find(
-      (uc) => uc.ledger === BASE_NATIVE_ID,
-    )?.state
-
-    const bnbState = userCanisters.find(
-      (uc) => uc.ledger === BNB_NATIVE_ID,
-    )?.state
-
-    const polState = userCanisters.find(
-      (uc) => uc.ledger === POLYGON_NATIVE_ID,
-    )?.state
-
-    const arbState = userCanisters.find(
-      (uc) => uc.ledger === ARBITRUM_NATIVE_ID,
-    )?.state
-
-    const ethNativeToken = new FTEthereumImpl()
-    const btcNativeToken = new FTBitcoinImpl()
-    const polNativeToken = new FTPolygonImpl(
-      polState ? mapState(polState) : State.Inactive,
-    )
-    const arbNativeToken = new FTArbitrumImpl(
-      arbState ? mapState(arbState) : State.Inactive,
-    )
-    const baseNativeToken = new FTBaseImpl(
-      baseState ? mapState(baseState) : State.Inactive,
-    )
-    const bnbNativeToken = new FTBnbImpl(
-      bnbState ? mapState(bnbState) : State.Inactive,
-    )
-
-    // Use this for ERC-20 tokens
-    // const erc20Tokens = await erc20Service.getKnownTokensList()
-
-    // const storedErc20Tokens: FT[] = erc20Tokens.map((token) => {
-    //   const userCanister = userCanisters.find(
-    //     (t) => t.ledger === token.address && t.network === token.chainId,
-    //   )
-    //   return new FTERC20Impl({
-    //     ...token,
-    //     state: userCanister ? mapState(userCanister.state) : token.state,
-    //   })
-    // })
-
-    return this.sortTokens([
-      ...icrc1Tokens,
-      ethNativeToken,
-      btcNativeToken,
-      polNativeToken,
-      arbNativeToken,
-      baseNativeToken,
-      bnbNativeToken,
-      //...storedErc20Tokens,
+    const [
+      ethErc20Tokens,
+      polErc20Tokens,
+      baseErc20Tokens,
+      arbErc20Tokens,
+      bnbErc20Tokens,
+    ] = await Promise.all([
+      ethErc20Service.getTokensList(),
+      polygonErc20Service.getTokensList(),
+      baseErc20Service.getTokensList(),
+      arbitrumErc20Service.getTokensList(),
+      bnbErc20Service.getTokensList(),
     ])
+
+    const allErc20Tokens = [
+      ...ethErc20Tokens,
+      ...polErc20Tokens,
+      ...baseErc20Tokens,
+      ...arbErc20Tokens,
+      ...bnbErc20Tokens,
+    ]
+
+    const nativeTokens: FT[] = [
+      tokenFactory.getCreatorByChainID(ChainId.ETH).buildNative(),
+      tokenFactory.getCreatorByChainID(ChainId.BTC).buildNative(),
+
+      tokenFactory.getCreatorByChainID(ChainId.POL).buildNative(
+        mapState(
+          userCanisters.find((c) => c.ledger === POLYGON_NATIVE_ID)?.state ?? {
+            Inactive: null,
+          },
+        ),
+      ),
+
+      tokenFactory.getCreatorByChainID(ChainId.ARB).buildNative(
+        mapState(
+          userCanisters.find((c) => c.ledger === ARBITRUM_NATIVE_ID)?.state ?? {
+            Inactive: null,
+          },
+        ),
+      ),
+
+      tokenFactory.getCreatorByChainID(ChainId.BASE).buildNative(
+        mapState(
+          userCanisters.find((c) => c.ledger === BASE_NATIVE_ID)?.state ?? {
+            Inactive: null,
+          },
+        ),
+      ),
+
+      tokenFactory.getCreatorByChainID(ChainId.BNB).buildNative(
+        mapState(
+          userCanisters.find((c) => c.ledger === BNB_NATIVE_ID)?.state ?? {
+            Inactive: null,
+          },
+        ),
+      ),
+    ]
+
+    const erc20Tokens: FT[] = allErc20Tokens.map((token) =>
+      tokenFactory
+        .getCreatorByChainID(token.chainId)
+        .buildTokens(
+          token,
+          mapState(
+            userCanisters.find(
+              (c) => c.network === token.chainId && c.ledger === token.address,
+            )?.state ?? { Inactive: null },
+          ),
+        ),
+    )
+
+    return this.sortTokens([...icrc1Tokens, ...nativeTokens, ...erc20Tokens])
   }
 
   public async getInitedTokens(

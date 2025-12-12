@@ -203,6 +203,7 @@ export class FTImpl implements FT {
     return icrc1RegistryService.storeICRC1Canister(
       this.tokenAddress,
       State.Inactive,
+      this.tokenChainId > 0 ? this.tokenChainId : undefined,
     )
   }
 
@@ -211,6 +212,7 @@ export class FTImpl implements FT {
     return icrc1RegistryService.storeICRC1Canister(
       this.tokenAddress,
       State.Active,
+      this.tokenChainId > 0 ? this.tokenChainId : undefined,
     )
   }
 

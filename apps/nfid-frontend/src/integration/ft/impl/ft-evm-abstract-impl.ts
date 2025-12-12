@@ -16,12 +16,12 @@ import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 
 export abstract class FTEvmAbstractImpl extends FTImpl {
+  protected abstract getProvider(): EVMService
+
   async init(): Promise<FT> {
     await this.getBalance()
     return this
   }
-
-  protected abstract getProvider(): EVMService
 
   public async getBalance(): Promise<void> {
     try {

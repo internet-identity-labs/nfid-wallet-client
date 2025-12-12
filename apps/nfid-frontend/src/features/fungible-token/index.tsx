@@ -222,7 +222,6 @@ const TokensPage = () => {
       </div>
       <ProfileContainer>
         <Tokens
-          tokensIniting={!initedTokens}
           initedTokens={initedTokens || []}
           allTokens={tokens || []}
           isTokensLoading={!initedTokens}

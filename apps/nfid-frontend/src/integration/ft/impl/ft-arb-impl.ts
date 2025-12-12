@@ -32,7 +32,7 @@ export class FTArbitrumImpl extends FTEvmAbstractImpl {
     this.tokenChainId = ChainId.ARB
   }
 
-  protected getProvider(): ArbitrumService {
+  public getProvider(): ArbitrumService {
     return arbitrumService
   }
 }

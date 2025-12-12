@@ -32,7 +32,7 @@ export class FTPolygonImpl extends FTEvmAbstractImpl {
     this.tokenChainId = ChainId.POL
   }
 
-  protected getProvider(): PolygonService {
+  public getProvider(): PolygonService {
     return polygonService
   }
 

@@ -29,7 +29,7 @@ export class FTBaseImpl extends FTEvmAbstractImpl {
     this.tokenChainId = ChainId.BASE
   }
 
-  protected getProvider(): BaseService {
+  public getProvider(): BaseService {
     return baseService
   }
 }

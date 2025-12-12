@@ -22,14 +22,18 @@ import {
   vault,
 } from "@nfid/integration"
 import {
+  ARBITRUM_NATIVE_ID,
+  BASE_NATIVE_ID,
+  BNB_NATIVE_ID,
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
   ICP_CANISTER_ID,
+  POLYGON_NATIVE_ID,
 } from "@nfid/integration/token/constants"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
-import { mutate } from "@nfid/swr"
+import { mutate, mutateWithTimestamp } from "@nfid/swr"
 
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { transferEXT } from "frontend/integration/entrepot/ext"
@@ -42,6 +46,7 @@ import {
 
 import { fetchVaultWalletsBalances } from "../fungible-token/fetch-balances"
 import { ftService } from "frontend/integration/ft/ft-service"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
 
 type ITransferRequest = {
   to: string
@@ -274,6 +279,27 @@ export const getTokensWithUpdatedBalance = async (
   return updatedTokens
 }
 
+export const getUpdatedInitedTokens = async (tokens: FT[]) => {
+  const { publicKey } = authState.getUserIdData()
+  const principal = Principal.fromText(publicKey)
+  const updatedTokens = [...tokens]
+
+  const activeTokens = updatedTokens.filter(
+    (t) => t.getTokenState() === State.Active,
+  )
+
+  const freshInitedTokens = await ftService.getInitedTokens(
+    activeTokens,
+    principal,
+    true,
+  )
+
+  await Promise.all([
+    mutateWithTimestamp("tokens", updatedTokens, false),
+    mutateWithTimestamp("initedTokens", freshInitedTokens, false),
+  ])
+}
+
 export const getConversionTokenAddress = (source: string): string => {
   if (source === BTC_NATIVE_ID) return CKBTC_CANISTER_ID
   if (source === CKBTC_CANISTER_ID) return BTC_NATIVE_ID
@@ -305,4 +331,8 @@ export const addressValidators: Record<
   [ICP_CANISTER_ID]: validateICPAddress,
   [BTC_NATIVE_ID]: validateBTCAddress,
   [ETH_NATIVE_ID]: validateETHAddress,
+  [POLYGON_NATIVE_ID]: validateETHAddress,
+  [ARBITRUM_NATIVE_ID]: validateETHAddress,
+  [BASE_NATIVE_ID]: validateETHAddress,
+  [BNB_NATIVE_ID]: validateETHAddress,
 }

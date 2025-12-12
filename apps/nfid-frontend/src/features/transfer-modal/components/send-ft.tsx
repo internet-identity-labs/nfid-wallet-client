@@ -24,7 +24,6 @@ import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { useIdentity } from "frontend/hooks/identity"
 import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
-import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
@@ -35,6 +34,7 @@ import {
   validateICRC1Address,
   addressValidators,
   updateCachedInitedTokens,
+  validateETHAddress,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import {
@@ -42,7 +42,14 @@ import {
   FeeResponseBTC,
   FeeResponseETH,
 } from "frontend/integration/ft/utils"
-import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import {
+  Category,
+  ChainId,
+  isEvm,
+} from "@nfid/integration/token/icrc1/enum/enums"
+import { FTEvmAbstractImpl } from "frontend/integration/ft/impl/ft-evm-abstract-impl"
+import { FTERC20AbstractImpl } from "frontend/integration/ft/impl/ft-erc20-abstract-impl"
+import { TransactionResponse } from "ethers"
 
 const DEFAULT_TRANSFER_ERROR = "Something went wrong"
 
@@ -182,7 +189,6 @@ export const TransferFT = ({
 
   useEffect(() => {
     const fetchIcrc1Fee = async () => {
-      setFee(undefined)
       setIsFeeLoading(true)
 
       const fee = await token?.getTokenFee()
@@ -213,7 +219,7 @@ export const TransferFT = ({
     const fetchNonIcrc1Fee = async () => {
       if (
         token?.getChainId() === ChainId.BTC ||
-        token?.getChainId() === ChainId.ETH
+        (token && isEvm(token.getChainId()))
       ) {
         setFee(undefined)
         setIsFeeLoading(true)
@@ -226,6 +232,7 @@ export const TransferFT = ({
                   undefined,
                   to,
                   ethAddress,
+                  token.getTokenDecimals(),
                 )
 
           if (!isCancelled) setFee(fee)
@@ -264,19 +271,46 @@ export const TransferFT = ({
   const submit = useCallback(async () => {
     if (!token) return toaster.error("No selected token")
 
-    if (token.getChainId() === ChainId.ETH) {
+    if (isEvm(token.getChainId())) {
       if (!identity || !fee) return
 
       const ethFee = fee as FeeResponseETH
+      const nativeProvider = (token as FTEvmAbstractImpl).getProvider()
+      const erc20Provider = (token as FTERC20AbstractImpl).getProvider()
+      let sendEvmPromise: Promise<TransactionResponse>
 
       setIsSuccessOpen(true)
-      ethereumService
-        .sendEthTransaction(identity, to, amount, {
-          gasUsed: ethFee.getGasUsed(),
-          maxFeePerGas: ethFee.getMaxFeePerGas(),
-          maxPriorityFeePerGas: ethFee.getMaxPriorityFeePerGas(),
-          baseFeePerGas: ethFee.getBaseFeePerGas(),
-        })
+
+      if (token.getTokenCategory() === Category.ERC20) {
+        sendEvmPromise = erc20Provider.sendErc20Transaction(
+          identity,
+          token.getTokenAddress(),
+          to,
+          amount,
+          token.getTokenDecimals(),
+          {
+            gasUsed: ethFee.getGasUsed(),
+            maxFeePerGas: ethFee.getMaxFeePerGas(),
+            maxPriorityFeePerGas: ethFee.getMaxPriorityFeePerGas(),
+            baseFeePerGas: ethFee.getBaseFeePerGas(),
+          },
+        )
+      } else {
+        sendEvmPromise = nativeProvider.sendEthTransaction(
+          identity,
+          to,
+          amount,
+          {
+            gasUsed: ethFee.getGasUsed(),
+            maxFeePerGas: ethFee.getMaxFeePerGas(),
+            maxPriorityFeePerGas: ethFee.getMaxPriorityFeePerGas(),
+            baseFeePerGas: ethFee.getBaseFeePerGas(),
+          },
+          token.getChainId(),
+        )
+      }
+
+      sendEvmPromise
         .then(() => {
           setSuccessMessage(
             `Transaction ${amount} ${token.getTokenSymbol()} successful`,
@@ -480,8 +514,10 @@ export const TransferFT = ({
         tokens={filteredTokens || []}
         setChosenToken={setTokenAddress}
         validateAddress={
-          addressValidators[token?.getTokenAddress() ?? ""] ||
-          validateICRC1Address
+          token?.getTokenAddress().startsWith("0x")
+            ? validateETHAddress
+            : addressValidators[token?.getTokenAddress() ?? ""] ||
+              validateICRC1Address
         }
         isLoading={isTokensLoading}
         isBtcEthLoading={isBtcAddressLoading || isEthAddressLoading}

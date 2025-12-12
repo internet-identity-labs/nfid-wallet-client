@@ -29,7 +29,7 @@ export class FTBnbImpl extends FTEvmAbstractImpl {
     this.tokenChainId = ChainId.BNB
   }
 
-  protected getProvider(): BnbService {
+  public getProvider(): BnbService {
     return bnbService
   }
 

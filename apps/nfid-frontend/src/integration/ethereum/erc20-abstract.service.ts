@@ -1,5 +1,4 @@
-import { CHAIN_ID } from "@nfid/integration/token/constants"
-import { InfuraProvider, parseEther, Interface, AbiCoder } from "ethers"
+import { InfuraProvider, Interface, AbiCoder } from "ethers"
 import { Address } from "../bitcoin/services/chain-fusion-signer.service"
 import { chainFusionSignerService } from "../bitcoin/services/chain-fusion-signer.service"
 import { SignIdentity } from "@dfinity/agent"
@@ -511,13 +510,15 @@ export abstract class Erc20Service {
 
   public async estimateERC20Gas(
     contractAddress: Address,
-    to: Address,
-    amount: bigint,
+    from: Address,
+    amount: string,
+    decimals: number,
   ): Promise<{
     gasUsed: bigint
     maxPriorityFeePerGas: bigint
     maxFeePerGas: bigint
     baseFeePerGas: bigint
+    ethereumNetworkFee: bigint
   }> {
     const erc20Contract = new Contract(
       contractAddress,
@@ -525,12 +526,17 @@ export abstract class Erc20Service {
       this.provider,
     )
 
-    const gas = erc20Contract.transfer.estimateGas(to, amount)
+    const value = BigInt(Number(amount) * 10 ** decimals)
+
+    const gas = erc20Contract.transfer.estimateGas(from, value, { from })
     const feeData = this.provider.getFeeData()
     const block = this.provider.getBlock("latest")
 
     return Promise.all([gas, feeData, block]).then(([gas, feeData, block]) => {
-      if (!feeData.maxFeePerGas || !feeData.maxPriorityFeePerGas) {
+      if (
+        feeData.maxFeePerGas === null ||
+        feeData.maxPriorityFeePerGas === null
+      ) {
         throw new Error("estimateERC20Gas: Gas fee data is missing")
       }
       return {
@@ -538,6 +544,7 @@ export abstract class Erc20Service {
         maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
         maxFeePerGas: feeData.maxFeePerGas,
         baseFeePerGas: block?.baseFeePerGas ?? BigInt(0),
+        ethereumNetworkFee: gas * feeData.maxFeePerGas,
       }
     })
   }
@@ -547,6 +554,7 @@ export abstract class Erc20Service {
     contractAddress: Address,
     to: Address,
     value: string,
+    decimals: number,
     gas: {
       gasUsed: bigint
       maxPriorityFeePerGas: bigint
@@ -560,20 +568,31 @@ export abstract class Erc20Service {
       this.provider,
     )
     const fromAddress = await ethereumService.getAddress(identity)
-    const nonce = await ethereumService.getTransactionCount(fromAddress)
-    const valueBigInt = parseEther(value)
+    const nonce = await this.provider.getTransactionCount(fromAddress)
+
+    const valueBigInt = BigInt(Number(value) * 10 ** decimals)
     let trs = await erc20Contract.transfer.populateTransaction(to, valueBigInt)
 
     let trs_request: EthSignTransactionRequest = {
-      to: trs.to,
+      //to: trs.to,
+      to,
       value: valueBigInt,
       data: [trs.data],
       nonce: BigInt(nonce),
       gas: gas.gasUsed,
       max_priority_fee_per_gas: gas.maxPriorityFeePerGas,
       max_fee_per_gas: gas.maxFeePerGas,
-      chain_id: CHAIN_ID,
+      chain_id: BigInt(this.chainId),
     }
+    debugger
+    console.log(
+      "this.chainId",
+      this.chainId,
+      this.provider,
+      value,
+      valueBigInt,
+      gas,
+    )
     let signedTransaction = await chainFusionSignerService.ethSignTransaction(
       identity,
       trs_request,

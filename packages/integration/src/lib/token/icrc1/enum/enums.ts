@@ -24,6 +24,16 @@ export enum ChainId {
   ARB = 42161,
 }
 
+export const isEvm = (chainId: ChainId): boolean => {
+  return (
+    chainId === ChainId.ETH ||
+    chainId === ChainId.POL ||
+    chainId === ChainId.BNB ||
+    chainId === ChainId.BASE ||
+    chainId === ChainId.ARB
+  )
+}
+
 export const CHAIN_NAME: Record<ChainId, string> = {
   [ChainId.BTC]: "Bitcoin",
   [ChainId.ETH]: "Ethereum",

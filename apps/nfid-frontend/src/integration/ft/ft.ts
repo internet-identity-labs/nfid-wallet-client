@@ -74,6 +74,7 @@ export interface FT {
     identity?: SignIdentity,
     to?: string,
     from?: string,
+    decimals?: number,
   ): Promise<FeeResponse>
 
   getTokenFeeFormatted(fee: bigint): string

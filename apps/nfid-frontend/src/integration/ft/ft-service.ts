@@ -7,10 +7,6 @@ import { storageWithTtl } from "@nfid/client-db"
 import { FT } from "src/integration/ft/ft"
 
 import {
-  ARBITRUM_NATIVE_ID,
-  BASE_NATIVE_ID,
-  BNB_NATIVE_ID,
-  POLYGON_NATIVE_ID,
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
@@ -35,11 +31,10 @@ import { ethErc20Service } from "../ethereum/eth/eth-erc20.service"
 import { polygonErc20Service } from "../ethereum/polygon/pol-erc20.service"
 import { baseErc20Service } from "../ethereum/base/base-erc20.service"
 import { arbitrumErc20Service } from "../ethereum/arbitrum/arbitrum-erc20.service"
-import { bnbErc20Service } from "../ethereum/bnb/bnb-erc20.service"
 import { tokenFactory } from "./token-creator/token-factory.service"
 
 const InitedTokens = "InitedTokens"
-export const TOKENS_REFRESH_INTERVAL = 10000
+export const TOKENS_REFRESH_INTERVAL = 30000
 export const PAGE_SIZE = 10
 
 export interface TokensAvailableToSwap {
@@ -121,26 +116,19 @@ export class FtService {
 
     let userCanisters = await icrc1RegistryService.getCanistersByRoot(userId)
 
-    const [
-      ethErc20Tokens,
-      polErc20Tokens,
-      baseErc20Tokens,
-      arbErc20Tokens,
-      bnbErc20Tokens,
-    ] = await Promise.all([
-      ethErc20Service.getTokensList(),
-      polygonErc20Service.getTokensList(),
-      baseErc20Service.getTokensList(),
-      arbitrumErc20Service.getTokensList(),
-      bnbErc20Service.getTokensList(),
-    ])
+    const [ethErc20Tokens, polErc20Tokens, baseErc20Tokens, arbErc20Tokens] =
+      await Promise.all([
+        ethErc20Service.getTokensList(),
+        polygonErc20Service.getTokensList(),
+        baseErc20Service.getTokensList(),
+        arbitrumErc20Service.getTokensList(),
+      ])
 
     const allErc20Tokens = [
       ...ethErc20Tokens,
       ...polErc20Tokens,
       ...baseErc20Tokens,
       ...arbErc20Tokens,
-      ...bnbErc20Tokens,
     ]
 
     const nativeTokens: FT[] = [
@@ -149,7 +137,7 @@ export class FtService {
 
       tokenFactory.getCreatorByChainID(ChainId.POL).buildNative(
         mapState(
-          userCanisters.find((c) => c.ledger === POLYGON_NATIVE_ID)?.state ?? {
+          userCanisters.find((c) => c.network === ChainId.POL)?.state ?? {
             Inactive: null,
           },
         ),
@@ -157,7 +145,7 @@ export class FtService {
 
       tokenFactory.getCreatorByChainID(ChainId.ARB).buildNative(
         mapState(
-          userCanisters.find((c) => c.ledger === ARBITRUM_NATIVE_ID)?.state ?? {
+          userCanisters.find((c) => c.network === ChainId.ARB)?.state ?? {
             Inactive: null,
           },
         ),
@@ -165,15 +153,7 @@ export class FtService {
 
       tokenFactory.getCreatorByChainID(ChainId.BASE).buildNative(
         mapState(
-          userCanisters.find((c) => c.ledger === BASE_NATIVE_ID)?.state ?? {
-            Inactive: null,
-          },
-        ),
-      ),
-
-      tokenFactory.getCreatorByChainID(ChainId.BNB).buildNative(
-        mapState(
-          userCanisters.find((c) => c.ledger === BNB_NATIVE_ID)?.state ?? {
+          userCanisters.find((c) => c.network === ChainId.BASE)?.state ?? {
             Inactive: null,
           },
         ),

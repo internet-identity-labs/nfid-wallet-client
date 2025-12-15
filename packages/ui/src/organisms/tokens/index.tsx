@@ -4,12 +4,9 @@ import { HTMLAttributes, FC, useState, useMemo } from "react"
 import { FT } from "src/integration/ft/ft"
 
 import {
-  ARBITRUM_NATIVE_ID,
-  BASE_NATIVE_ID,
-  BNB_NATIVE_ID,
+  EVM_NATIVE,
   BTC_NATIVE_ID,
   ETH_NATIVE_ID,
-  POLYGON_NATIVE_ID,
 } from "@nfid/integration/token/constants"
 
 import { useDarkTheme } from "frontend/hooks"
@@ -206,13 +203,7 @@ export const Tokens: FC<TokensProps> = ({
                         !token.isInited()) ||
                       (token.getTokenAddress() === ETH_NATIVE_ID &&
                         !token.isInited()) ||
-                      (token.getTokenAddress() === ARBITRUM_NATIVE_ID &&
-                        !token.isInited()) ||
-                      (token.getTokenAddress() === POLYGON_NATIVE_ID &&
-                        !token.isInited()) ||
-                      (token.getTokenAddress() === BASE_NATIVE_ID &&
-                        !token.isInited()) ||
-                      (token.getTokenAddress() === BNB_NATIVE_ID &&
+                      (token.getTokenAddress() === EVM_NATIVE &&
                         !token.isInited())
                     }
                     hideZeroBalance={hideZeroBalance}

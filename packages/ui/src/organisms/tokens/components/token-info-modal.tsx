@@ -13,7 +13,11 @@ import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 
 import { useDarkTheme } from "frontend/hooks"
 import { Skeleton } from "packages/ui/src/atoms/skeleton"
-import { CHAIN_NAME, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import {
+  Category,
+  CHAIN_NAME,
+  ChainId,
+} from "@nfid/integration/token/icrc1/enum/enums"
 
 export interface TokenInfoModalProps {
   token: FT | undefined
@@ -81,6 +85,32 @@ export const TokenInfoModal: FC<TokenInfoModalProps> = ({ token, onClose }) => {
           <div className="flex items-center border-b border-gray-100 dark:border-zinc-700 h-[54px]">
             <div className="text-sm text-gray-400 dark:text-zinc-400 w-[150px]">
               Ledger canister ID
+            </div>
+            <div className="text-sm">
+              <CopyAddress
+                className="dark:text-white"
+                address={ledger!}
+                leadingChars={6}
+                trailingChars={4}
+              />
+            </div>
+            <a
+              target="_blank"
+              href={token?.getBlockExplorerLink()}
+              className="ml-auto"
+            >
+              <img
+                width={24}
+                src={isDarkTheme ? IconSvgExternalWhite : IconSvgExternal}
+              />
+            </a>
+          </div>
+        )}
+        {token?.getTokenCategory() === Category.ERC20 && (
+          <div className="flex items-center border-b border-gray-100 dark:border-zinc-700 h-[54px]">
+            <div className="text-sm text-gray-400 dark:text-zinc-400 w-[150px]">
+              Smart Contract <br />
+              Address
             </div>
             <div className="text-sm">
               <CopyAddress

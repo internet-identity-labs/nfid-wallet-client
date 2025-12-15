@@ -1,4 +1,4 @@
-import { ETH_DECIMALS, BASE_NATIVE_ID } from "@nfid/integration/token/constants"
+import { ETH_DECIMALS, EVM_NATIVE } from "@nfid/integration/token/constants"
 
 import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
 
@@ -23,7 +23,7 @@ export class BaseTransactionService extends EVMNativeTransactionService {
   }
 
   protected getCanister(): string {
-    return BASE_NATIVE_ID
+    return EVM_NATIVE
   }
 }
 

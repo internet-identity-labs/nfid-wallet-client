@@ -31,6 +31,7 @@ import { useIntersectionObserver } from "../../organisms/send-receive/hooks/inte
 import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 import { IModalType } from "../../organisms/send-receive/utils"
 import { ChainFilter } from "../../organisms/tokens/components/chain-filter"
+import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 
 const INITED_TOKENS_LIMIT = 6
 
@@ -172,7 +173,8 @@ export const ChooseTokenModal = <T extends FT | NFT>({
       if (
         isBtcEthLoading &&
         (token.getTokenAddress() === BTC_NATIVE_ID ||
-          token.getTokenAddress() === ETH_NATIVE_ID)
+          token.getTokenAddress() === ETH_NATIVE_ID ||
+          token.getTokenCategory() === Category.ERC20)
       )
         return
     }

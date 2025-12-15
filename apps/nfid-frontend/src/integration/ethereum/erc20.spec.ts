@@ -2,6 +2,7 @@ import { parseEther } from "ethers"
 import { Ed25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { mockIdentityA } from "@nfid/integration"
 import { ethErc20Service } from "./eth/eth-erc20.service"
+import { ETH_DECIMALS } from "@nfid/integration/token/constants"
 
 describe.skip("ERC20Service", () => {
   const ADDRESS = "0x20d8e0104C9d3EB43714aB5AA4A06bbc04d93496"
@@ -9,12 +10,13 @@ describe.skip("ERC20Service", () => {
   describe("erc20", () => {
     it.skip("should estimate ERC20 gas", async () => {
       const contractAddress = "0xdAC17F958D2ee523a2206206994597C13D831ec7"
-      const amount = parseEther("1")
+      const amount = "1"
       // estimateGas requires 'from' address
       const gas = await ethErc20Service.estimateERC20Gas(
         contractAddress,
         ADDRESS,
         amount,
+        ETH_DECIMALS,
       )
       console.debug("gas", gas)
       expect(gas).toBeDefined()
@@ -28,11 +30,12 @@ describe.skip("ERC20Service", () => {
       ])
       console.debug("balance", balance)
       expect(balance).toBeDefined()
-      const amount = parseEther("1")
+      const amount = "1"
       const gas = await ethErc20Service.estimateERC20Gas(
         contractAddress,
         ADDRESS,
         amount,
+        ETH_DECIMALS,
       )
       console.debug("gas", gas)
       const response = await ethErc20Service.sendErc20Transaction(
@@ -40,6 +43,7 @@ describe.skip("ERC20Service", () => {
         contractAddress,
         ADDRESS,
         amount.toString(),
+        ETH_DECIMALS,
         gas,
       )
       console.debug("response", response)

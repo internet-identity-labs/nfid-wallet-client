@@ -29,7 +29,7 @@ export class FTEthereumImpl extends FTEvmAbstractImpl {
     this.tokenChainId = ChainId.ETH
   }
 
-  protected getProvider(): EthereumService {
+  public getProvider(): EthereumService {
     return ethereumService
   }
 }

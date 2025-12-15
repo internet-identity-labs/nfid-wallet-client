@@ -11,7 +11,11 @@ import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc
 import { Category, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { SignIdentity } from "@dfinity/agent"
 import { FeeResponseETH } from "../utils"
-import { ETH_DECIMALS, TRIM_ZEROS } from "@nfid/integration/token/constants"
+import {
+  ETH_DECIMALS,
+  EVM_NATIVE,
+  TRIM_ZEROS,
+} from "@nfid/integration/token/constants"
 
 export abstract class FTERC20AbstractImpl extends FTImpl {
   constructor(erc20TokenInfo: ERC20TokenInfo) {
@@ -47,13 +51,7 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
     )
 
     return contracts
-      .filter(
-        (c) =>
-          c.network === this.tokenChainId &&
-          // TODO: fix ledger check for ERC20 tokens
-          !c.ledger.toLowerCase().includes("native") &&
-          c.ledger.startsWith("0x"),
-      )
+      .filter((c) => c.network === this.tokenChainId && c.ledger !== EVM_NATIVE)
       .map((c) => c.ledger)
   }
 

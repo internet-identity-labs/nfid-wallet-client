@@ -584,15 +584,6 @@ export abstract class Erc20Service {
       max_fee_per_gas: gas.maxFeePerGas,
       chain_id: BigInt(this.chainId),
     }
-    debugger
-    console.log(
-      "this.chainId",
-      this.chainId,
-      this.provider,
-      value,
-      valueBigInt,
-      gas,
-    )
     let signedTransaction = await chainFusionSignerService.ethSignTransaction(
       identity,
       trs_request,

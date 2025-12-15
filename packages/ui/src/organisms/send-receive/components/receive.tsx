@@ -30,9 +30,9 @@ export const Receive: FC<ReceiveProps> = ({
         Receive
       </div>
       <p className="text-sm mb-[18px]">
-        NFID Wallet currently supports ICP, ICRC-1 EXT NFTs, and{" "}
+        NFID Wallet currently supports ICP, ICRC-1 EXT NFTs,
         <br className="hidden sm:block" />
-        Bitcoin, with more support coming soon.
+        Ethereum, and Bitcoin, with more support coming soon.
       </p>
       <div className="mb-2.5">
         <p className="mb-1 text-xs text-gray-500 dark:text-zinc-400">
@@ -64,26 +64,6 @@ export const Receive: FC<ReceiveProps> = ({
       </div>
       <div className="mb-2.5">
         <p className="mb-1 text-xs text-gray-500 dark:text-zinc-400">
-          ETH wallet address
-        </p>
-        <div className="rounded-[12px] bg-gray-100 dark:bg-[#FFFFFF0D] text-gray-500 dark:text-zinc-400 flex items-center justify-between px-2.5 h-[56px] text-sm">
-          {ethAddress ? (
-            <>
-              <CenterEllipsis
-                value={ethAddress ?? ""}
-                leadingChars={29}
-                trailingChars={5}
-                id={"ethAddress"}
-              />
-              <Copy value={ethAddress ?? ""} />
-            </>
-          ) : (
-            <Spinner className="w-5 h-5 mx-auto text-black dark:text-white" />
-          )}
-        </div>
-      </div>
-      <div className="mb-2.5">
-        <p className="mb-1 text-xs text-gray-500 dark:text-zinc-400">
           BTC wallet address
         </p>
         <div className="rounded-[12px] bg-gray-100 dark:bg-[#FFFFFF0D] text-gray-500 dark:text-zinc-400 flex items-center justify-between px-2.5 h-[56px] text-sm">
@@ -102,7 +82,7 @@ export const Receive: FC<ReceiveProps> = ({
           )}
         </div>
       </div>
-      <div>
+      <div className="mb-2.5">
         <p className="mb-1 text-xs text-gray-500 dark:text-zinc-400">
           BTC wallet address for auto-conversion to ckBTC
         </p>
@@ -121,10 +101,35 @@ export const Receive: FC<ReceiveProps> = ({
             <Spinner className="w-5 h-5 mx-auto text-black dark:text-white" />
           )}
         </div>
-        <p className="text-xs tracking-[0.16px] text-gray-400 dark:text-zinc-500 mt-1">
+        <p className="text-xs tracking-[0.16px] text-gray-400 dark:text-zinc-500 mt-1 font-inter">
           ckBTC will be received by your wallet after 6 Bitcoin network{" "}
           <br className="hidden sm:block" />
           confirmations. This usually takes about 90 minutes.
+        </p>
+      </div>
+      <div>
+        <p className="mb-1 text-xs text-gray-500 dark:text-zinc-400">
+          EVM wallet address
+        </p>
+        <div className="rounded-[12px] bg-gray-100 dark:bg-[#FFFFFF0D] text-gray-500 dark:text-zinc-400 flex items-center justify-between px-2.5 h-[56px] text-sm">
+          {ethAddress ? (
+            <>
+              <CenterEllipsis
+                value={ethAddress ?? ""}
+                leadingChars={29}
+                trailingChars={5}
+                id={"ethAddress"}
+              />
+              <Copy value={ethAddress ?? ""} />
+            </>
+          ) : (
+            <Spinner className="w-5 h-5 mx-auto text-black dark:text-white" />
+          )}
+        </div>
+        <p className="text-xs tracking-[0.16px] text-gray-400 dark:text-zinc-500 mt-1 font-inter">
+          Use this address for transactions on Ethereum, Base, Arbitrum, BNB,
+          <br className="hidden sm:block" />
+          and Polygon networks.
         </p>
       </div>
     </>

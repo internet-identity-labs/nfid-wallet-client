@@ -1,5 +1,4 @@
 import { Principal } from "@dfinity/principal"
-import clsx from "clsx"
 import { Spinner } from "packages/ui/src/atoms/spinner"
 import toaster from "packages/ui/src/atoms/toast"
 import { FC, useCallback, useState } from "react"
@@ -8,16 +7,14 @@ import {
   IconSvgEyeClosed,
   IconSvgEyeShown,
   IconSvgEyeShownWhite,
-  ImageWithFallback,
-  IconNftPlaceholder,
 } from "@nfid-frontend/ui"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
-import { mutateWithTimestamp } from "@nfid/swr"
 
 import { getUserPrincipalId } from "frontend/features/fungible-token/utils"
 import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 import { TokenIdentity } from "./token-identity"
+import { getUpdatedInitedTokens } from "frontend/features/transfer-modal/utils"
 
 interface FilteredTokenProps {
   token: FT
@@ -40,8 +37,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({
         setHideTokenLoading(true)
         setLoadingToken(token)
         await token.hideToken()
-        const updatedTokens = [...tokens]
-        await mutateWithTimestamp("tokens", updatedTokens, false)
+        await getUpdatedInitedTokens(tokens)
       } catch (e) {
         toaster.error("Token hiding failed: " + (e as Error).message)
       } finally {
@@ -61,8 +57,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({
 
         await token.init(Principal.fromText(publicKey))
 
-        const updatedTokens = [...tokens]
-        await mutateWithTimestamp("tokens", updatedTokens, false)
+        await getUpdatedInitedTokens(tokens)
       } catch (e) {
         toaster.error("Token shhowing failed: " + (e as Error).message)
       } finally {

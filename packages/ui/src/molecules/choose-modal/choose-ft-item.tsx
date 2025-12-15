@@ -8,6 +8,7 @@ import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 import { Skeleton } from "../../atoms/skeleton"
 import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 import { TokenIdentity } from "../../organisms/tokens/components/token-identity"
+import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 
 interface IChooseFtItem {
   token: FT
@@ -29,7 +30,8 @@ export const ChooseFtItem = ({
     (false ||
       !(
         isBtcEthLoading &&
-        [BTC_NATIVE_ID, ETH_NATIVE_ID].includes(token.getTokenAddress())
+        ([BTC_NATIVE_ID, ETH_NATIVE_ID].includes(token.getTokenAddress()) ||
+          token.getTokenCategory() === Category.ERC20)
       ))
 
   return (
@@ -45,7 +47,8 @@ export const ChooseFtItem = ({
       <TokenIdentity token={token} disabled={!isTokenAvailable} />
       {!token.isInited() ||
       (isBtcEthLoading &&
-        [BTC_NATIVE_ID, ETH_NATIVE_ID].includes(token.getTokenAddress())) ? (
+        ([BTC_NATIVE_ID, ETH_NATIVE_ID].includes(token.getTokenAddress()) ||
+          token.getTokenCategory() === Category.ERC20)) ? (
         <div>
           <Skeleton className="rounded-[6px] h-[20px] w-[80px] mb-[5px]" />
           <Skeleton className="rounded-[6px] h-[16px] w-[60px] ml-auto" />

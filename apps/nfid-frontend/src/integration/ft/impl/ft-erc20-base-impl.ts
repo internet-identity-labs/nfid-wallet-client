@@ -6,4 +6,8 @@ export class FTERC20BaseImpl extends FTERC20AbstractImpl {
   getProvider(): Erc20Service {
     return baseErc20Service
   }
+
+  getBlockExplorerLink(): string {
+    return `https://basescan.org/address/${this.tokenAddress}`
+  }
 }

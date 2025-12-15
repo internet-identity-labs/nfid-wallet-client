@@ -119,7 +119,7 @@ describe("ft test suite", () => {
 
       const result: FT[] = await ftService.getTokens(userId)
 
-      expect(result.length).toEqual(12)
+      expect(result.length).toEqual(11)
       const icpResult = result.find(
         (r) => r.getTokenName() === "Internet Computer",
       )
@@ -147,11 +147,10 @@ describe("ft test suite", () => {
       expect(result[4].getTokenName()).toEqual("Polygon")
       expect(result[5].getTokenName()).toEqual("Ethereum")
       expect(result[6].getTokenName()).toEqual("Ethereum")
-      expect(result[7].getTokenName()).toEqual("BNB")
-      expect(result[8].getTokenName()).toEqual("NFID Wallet")
-      expect(result[9].getTokenName()).toEqual("ckBTC")
-      expect(result[10].getTokenName()).toEqual("ckETH")
-      expect(result[11].getTokenName()).toEqual("Chat")
+      expect(result[7].getTokenName()).toEqual("NFID Wallet")
+      expect(result[8].getTokenName()).toEqual("ckBTC")
+      expect(result[9].getTokenName()).toEqual("ckETH")
+      expect(result[10].getTokenName()).toEqual("Chat")
     })
 
     it("should calculate no usd balance change", async () => {
@@ -472,19 +471,18 @@ describe("ft test suite", () => {
 
       const result: FT[] = await ftService.getTokens(userId)
 
-      expect(result.length).toEqual(12)
+      expect(result.length).toEqual(11)
       expect(result[0].getTokenCategory()).toEqual(Category.Native)
       expect(result[1].getTokenCategory()).toEqual(Category.Native)
       expect(result[2].getTokenCategory()).toEqual(Category.Native)
       expect(result[3].getTokenCategory()).toEqual(Category.Native)
       expect(result[4].getTokenCategory()).toEqual(Category.Native)
       expect(result[5].getTokenCategory()).toEqual(Category.Native)
-      expect(result[6].getTokenCategory()).toEqual(Category.Native)
-      expect(result[7].getTokenCategory()).toEqual(Category.Community)
+      expect(result[6].getTokenCategory()).toEqual(Category.Community)
+      expect(result[7].getTokenCategory()).toEqual(Category.ChainFusion)
       expect(result[8].getTokenCategory()).toEqual(Category.ChainFusion)
-      expect(result[9].getTokenCategory()).toEqual(Category.ChainFusion)
-      expect(result[10].getTokenCategory()).toEqual(Category.Sns)
-      expect(result[11].getTokenCategory()).toEqual(Category.Spam)
+      expect(result[9].getTokenCategory()).toEqual(Category.Sns)
+      expect(result[10].getTokenCategory()).toEqual(Category.Spam)
     })
 
     it("should calculate USD balance", async function () {

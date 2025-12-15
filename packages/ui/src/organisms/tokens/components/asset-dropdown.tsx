@@ -29,12 +29,12 @@ import {
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { Category, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
-import { mutateWithTimestamp } from "@nfid/swr"
 
 import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 
 import { IProfileConstants } from ".."
+import { getUpdatedInitedTokens } from "frontend/features/transfer-modal/utils"
 
 type AssetDropdownProps = {
   token: FT
@@ -168,10 +168,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             handler={async () => {
               setIsTokenProcessed(true)
               await token.hideToken()
-
-              const updatedTokens = [...tokens]
-
-              await mutateWithTimestamp("tokens", updatedTokens, false)
+              await getUpdatedInitedTokens(tokens)
               setIsTokenProcessed(false)
             }}
           />

@@ -24,6 +24,7 @@ import { IModalType } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { SendSuccessUi } from "./send-success"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import clsx from "clsx"
 
 export interface TransferFTUiProps {
   tokens: FT[]
@@ -177,18 +178,35 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           setValue("to", value)
         }}
       />
-      <div className="flex justify-between">
-        <div className="text-xs text-gray-500 dark:text-zinc-400">
-          Network fee
-        </div>
-        <div>
-          <div className="text-right">
-            <p
-              className="text-xs leading-5 text-gray-600 dark:text-zinc-400"
-              id="fee"
-            >
-              {isBtc || isEth ? (
-                !amount || errors?.["amount"] ? null : !fee || isFeeLoading ? (
+      <div className={clsx(isFromResponsive && "mb-[60px]")}>
+        <div className="flex justify-between">
+          <div className="text-xs text-gray-500 dark:text-zinc-400">
+            Network fee
+          </div>
+          <div>
+            <div className="text-right">
+              <p
+                className="text-xs leading-5 text-gray-600 dark:text-zinc-400"
+                id="fee"
+              >
+                {isBtc || isEth ? (
+                  !amount || errors?.["amount"] ? null : !fee ||
+                    isFeeLoading ? (
+                    <>
+                      <Skeleton className="w-[80px] h-5" />
+                      <span className="block mt-1 text-xs">
+                        <Skeleton className="w-[60px] h-4 ml-auto" />
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      {token.getTokenFeeFormatted(fee)}
+                      <span className="block mt-1 text-xs">
+                        {token.getTokenFeeFormattedUsd(fee)}
+                      </span>
+                    </>
+                  )
+                ) : !fee || isFeeLoading ? (
                   <>
                     <Skeleton className="w-[80px] h-5" />
                     <span className="block mt-1 text-xs">
@@ -202,31 +220,17 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
                       {token.getTokenFeeFormattedUsd(fee)}
                     </span>
                   </>
-                )
-              ) : !fee || isFeeLoading ? (
-                <>
-                  <Skeleton className="w-[80px] h-5" />
-                  <span className="block mt-1 text-xs">
-                    <Skeleton className="w-[60px] h-4 ml-auto" />
-                  </span>
-                </>
-              ) : (
-                <>
-                  {token.getTokenFeeFormatted(fee)}
-                  <span className="block mt-1 text-xs">
-                    {token.getTokenFeeFormattedUsd(fee)}
-                  </span>
-                </>
-              )}
-            </p>
+                )}
+              </p>
+            </div>
           </div>
         </div>
+        {feeError && (
+          <div className="mt-2 text-xs text-red-600 dark:text-red-500">
+            {feeError}
+          </div>
+        )}
       </div>
-      {feeError && (
-        <div className="mt-2 text-xs text-red-600 dark:text-red-500">
-          {feeError}
-        </div>
-      )}
       <Button
         className="absolute bottom-5 left-5 right-5 !w-auto"
         disabled={

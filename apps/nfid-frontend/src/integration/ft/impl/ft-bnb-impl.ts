@@ -5,7 +5,7 @@ import {
 } from "@nfid/integration/token/icrc1/enum/enums"
 import BnbIcon from "packages/ui/src/organisms/tokens/assets/bnb.svg"
 
-import { BNB_NATIVE_ID, ETH_DECIMALS } from "@nfid/integration/token/constants"
+import { EVM_NATIVE, ETH_DECIMALS } from "@nfid/integration/token/constants"
 import { FTEvmAbstractImpl } from "./ft-evm-abstract-impl"
 import {
   BnbService,
@@ -15,7 +15,7 @@ import {
 export class FTBnbImpl extends FTEvmAbstractImpl {
   constructor(state: State) {
     super({
-      ledger: BNB_NATIVE_ID,
+      ledger: EVM_NATIVE,
       symbol: "BNB",
       name: "BNB",
       decimals: ETH_DECIMALS,
@@ -29,7 +29,7 @@ export class FTBnbImpl extends FTEvmAbstractImpl {
     this.tokenChainId = ChainId.BNB
   }
 
-  protected getProvider(): BnbService {
+  public getProvider(): BnbService {
     return bnbService
   }
 

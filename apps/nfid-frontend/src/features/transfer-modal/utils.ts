@@ -23,13 +23,14 @@ import {
 } from "@nfid/integration"
 import {
   BTC_NATIVE_ID,
+  ETH_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
-  ETH_NATIVE_ID,
   ICP_CANISTER_ID,
+  EVM_NATIVE,
 } from "@nfid/integration/token/constants"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
-import { mutate } from "@nfid/swr"
+import { mutate, mutateWithTimestamp } from "@nfid/swr"
 
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { transferEXT } from "frontend/integration/entrepot/ext"
@@ -42,6 +43,7 @@ import {
 
 import { fetchVaultWalletsBalances } from "../fungible-token/fetch-balances"
 import { ftService } from "frontend/integration/ft/ft-service"
+import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 
 type ITransferRequest = {
   to: string
@@ -274,6 +276,27 @@ export const getTokensWithUpdatedBalance = async (
   return updatedTokens
 }
 
+export const getUpdatedInitedTokens = async (tokens: FT[]) => {
+  const { publicKey } = authState.getUserIdData()
+  const principal = Principal.fromText(publicKey)
+  const updatedTokens = [...tokens]
+
+  const activeTokens = updatedTokens.filter(
+    (t) => t.getTokenState() === State.Active,
+  )
+
+  const freshInitedTokens = await ftService.getInitedTokens(
+    activeTokens,
+    principal,
+    true,
+  )
+
+  await Promise.all([
+    mutateWithTimestamp("tokens", updatedTokens, false),
+    mutateWithTimestamp("initedTokens", freshInitedTokens, false),
+  ])
+}
+
 export const getConversionTokenAddress = (source: string): string => {
   if (source === BTC_NATIVE_ID) return CKBTC_CANISTER_ID
   if (source === CKBTC_CANISTER_ID) return BTC_NATIVE_ID
@@ -298,11 +321,25 @@ export const getAccurateDateForStakeInSeconds = (months: number): number => {
   return Math.floor((future.getTime() - now.getTime()) / 1000)
 }
 
-export const addressValidators: Record<
-  string,
-  (address: string) => boolean | string
-> = {
-  [ICP_CANISTER_ID]: validateICPAddress,
-  [BTC_NATIVE_ID]: validateBTCAddress,
-  [ETH_NATIVE_ID]: validateETHAddress,
+export const getValidatorByTokenAddress = (
+  address?: string,
+  category?: Category,
+) => {
+  if (
+    address === ETH_NATIVE_ID ||
+    address === EVM_NATIVE ||
+    category === Category.ERC20
+  ) {
+    return validateETHAddress
+  }
+
+  if (address === BTC_NATIVE_ID) {
+    return validateBTCAddress
+  }
+
+  if (address === ICP_CANISTER_ID) {
+    return validateICPAddress
+  }
+
+  return validateICRC1Address
 }

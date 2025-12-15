@@ -37,6 +37,7 @@ import {
   CKETH_LEDGER_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { KEY_ETH_ADDRESS } from "packages/integration/src/lib/authentication/storage"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 export type SendEthFee = {
   gasUsed: bigint
@@ -246,7 +247,10 @@ export abstract class EVMService {
     })
 
     const feeData = await this.getFeeData()
-    if (!feeData.maxFeePerGas || !feeData.maxPriorityFeePerGas) {
+    if (
+      feeData.maxFeePerGas === null ||
+      feeData.maxPriorityFeePerGas === null
+    ) {
       throw new Error("getApproximateEthFee: Gas fee data is missing")
     }
 
@@ -366,13 +370,14 @@ export abstract class EVMService {
       maxFeePerGas: bigint
       baseFeePerGas: bigint
     },
+    chainId: ChainId,
   ): Promise<TransactionResponse> {
     const address = await this.getAddress(identity)
 
     const nonce = await this.getTransactionCount(address)
 
     let request: EthSignTransactionRequest = {
-      chain_id: CHAIN_ID,
+      chain_id: BigInt(chainId),
       to: to,
       value: parseEther(value),
       data: [],

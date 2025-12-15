@@ -137,7 +137,7 @@ export const validateICPAddress = (address: string): boolean | string => {
       decodeIcrcAccount(address)
       return true
     } catch (e) {
-      return "Incorrect wallet address or accound ID"
+      return "Invalid wallet address or accound ID"
     }
   } else return true
 }
@@ -148,7 +148,7 @@ export const validateNftAddress = (address: string): boolean | string => {
     addressValidationService.isValidAccountIdentifier(address)
 
   if (!isPrincipal && !isAccountIdentifier) {
-    return "Incorrect wallet address or accound ID"
+    return "Invalid wallet address or accound ID"
   } else return true
 }
 
@@ -157,19 +157,19 @@ export const validateICRC1Address = (address: string): boolean | string => {
     decodeIcrcAccount(address)
     return true
   } catch (e) {
-    return "Incorrect wallet address"
+    return "Invalid wallet address"
   }
 }
 
 export const validateBTCAddress = (address: string): boolean | string => {
   const result = validate(address, Network.mainnet)
 
-  return result || "Incorrect wallet address"
+  return result || "Invalid wallet address"
 }
 
 export const validateETHAddress = (address: string): boolean | string => {
   const result = isAddress(address)
-  return result || "Incorrect wallet address"
+  return result || "Invalid wallet address"
 }
 
 export const getUserBalance = async (address: string): Promise<bigint> => {

@@ -9,26 +9,12 @@ import {
   TOKENS_REFRESH_INTERVAL,
 } from "frontend/integration/ft/ft-service"
 import {
-  ARBITRUM_NATIVE_ID,
-  BASE_NATIVE_ID,
-  BNB_NATIVE_ID,
-  BTC_NATIVE_ID,
-  ETH_NATIVE_ID,
-  POLYGON_NATIVE_ID,
-} from "@nfid/integration/token/constants"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
+  isNonIcrc1Token,
+  State,
+} from "@nfid/integration/token/icrc1/enum/enums"
 import { useContext, useMemo, useEffect } from "react"
 import { useActor } from "@xstate/react"
 import { ProfileContext } from "frontend/provider"
-
-const NATIVE_IDS = [
-  BTC_NATIVE_ID,
-  ETH_NATIVE_ID,
-  BASE_NATIVE_ID,
-  ARBITRUM_NATIVE_ID,
-  POLYGON_NATIVE_ID,
-  BNB_NATIVE_ID,
-]
 
 export const useTokensInit = (
   tokens: FT[] | undefined,
@@ -78,10 +64,11 @@ export const useTokensInit = (
   const areNativeInited = useMemo(() => {
     if (!initedTokens) return false
 
-    return NATIVE_IDS.every((id) => {
-      const token = initedTokens.find((t) => t.getTokenAddress() === id)
-      return token?.isInited()
-    })
+    const nonIcrc1Tokens = initedTokens.filter((t) =>
+      isNonIcrc1Token(t.getChainId()),
+    )
+
+    return nonIcrc1Tokens.every((token) => token?.isInited())
   }, [initedTokens])
 
   useEffect(() => {

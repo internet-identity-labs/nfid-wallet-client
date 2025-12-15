@@ -7,9 +7,6 @@ import { storageWithTtl } from "@nfid/client-db"
 import { FT } from "src/integration/ft/ft"
 
 import {
-  ARBITRUM_NATIVE_ID,
-  BASE_NATIVE_ID,
-  POLYGON_NATIVE_ID,
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
@@ -140,7 +137,7 @@ export class FtService {
 
       tokenFactory.getCreatorByChainID(ChainId.POL).buildNative(
         mapState(
-          userCanisters.find((c) => c.ledger === POLYGON_NATIVE_ID)?.state ?? {
+          userCanisters.find((c) => c.network === ChainId.POL)?.state ?? {
             Inactive: null,
           },
         ),
@@ -148,7 +145,7 @@ export class FtService {
 
       tokenFactory.getCreatorByChainID(ChainId.ARB).buildNative(
         mapState(
-          userCanisters.find((c) => c.ledger === ARBITRUM_NATIVE_ID)?.state ?? {
+          userCanisters.find((c) => c.network === ChainId.ARB)?.state ?? {
             Inactive: null,
           },
         ),
@@ -156,7 +153,7 @@ export class FtService {
 
       tokenFactory.getCreatorByChainID(ChainId.BASE).buildNative(
         mapState(
-          userCanisters.find((c) => c.ledger === BASE_NATIVE_ID)?.state ?? {
+          userCanisters.find((c) => c.network === ChainId.BASE)?.state ?? {
             Inactive: null,
           },
         ),

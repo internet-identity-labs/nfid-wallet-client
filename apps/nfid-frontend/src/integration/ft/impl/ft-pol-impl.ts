@@ -5,10 +5,7 @@ import {
 } from "@nfid/integration/token/icrc1/enum/enums"
 import PolygonIcon from "packages/ui/src/organisms/tokens/assets/polygon.svg"
 
-import {
-  ETH_DECIMALS,
-  POLYGON_NATIVE_ID,
-} from "@nfid/integration/token/constants"
+import { ETH_DECIMALS, EVM_NATIVE } from "@nfid/integration/token/constants"
 import { FTEvmAbstractImpl } from "./ft-evm-abstract-impl"
 import {
   PolygonService,
@@ -18,7 +15,7 @@ import {
 export class FTPolygonImpl extends FTEvmAbstractImpl {
   constructor(state: State) {
     super({
-      ledger: POLYGON_NATIVE_ID,
+      ledger: EVM_NATIVE,
       symbol: "POL",
       name: "Polygon",
       decimals: ETH_DECIMALS,

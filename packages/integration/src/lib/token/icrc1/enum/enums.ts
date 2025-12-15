@@ -24,8 +24,19 @@ export enum ChainId {
   ARB = 42161,
 }
 
-export const isEvm = (chainId: ChainId): boolean => {
+export const isEvmNativeToken = (chainId: ChainId): boolean => {
   return (
+    chainId === ChainId.ETH ||
+    chainId === ChainId.POL ||
+    chainId === ChainId.BNB ||
+    chainId === ChainId.BASE ||
+    chainId === ChainId.ARB
+  )
+}
+
+export const isNonIcrc1Token = (chainId: ChainId): boolean => {
+  return (
+    chainId === ChainId.BTC ||
     chainId === ChainId.ETH ||
     chainId === ChainId.POL ||
     chainId === ChainId.BNB ||

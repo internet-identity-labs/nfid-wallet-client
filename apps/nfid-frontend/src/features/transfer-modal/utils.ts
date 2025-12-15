@@ -22,15 +22,12 @@ import {
   vault,
 } from "@nfid/integration"
 import {
-  ARBITRUM_NATIVE_ID,
-  BASE_NATIVE_ID,
-  BNB_NATIVE_ID,
   BTC_NATIVE_ID,
+  ETH_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
-  ETH_NATIVE_ID,
   ICP_CANISTER_ID,
-  POLYGON_NATIVE_ID,
+  EVM_NATIVE,
 } from "@nfid/integration/token/constants"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 import { mutate, mutateWithTimestamp } from "@nfid/swr"
@@ -46,7 +43,7 @@ import {
 
 import { fetchVaultWalletsBalances } from "../fungible-token/fetch-balances"
 import { ftService } from "frontend/integration/ft/ft-service"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
+import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
 
 type ITransferRequest = {
   to: string
@@ -324,15 +321,25 @@ export const getAccurateDateForStakeInSeconds = (months: number): number => {
   return Math.floor((future.getTime() - now.getTime()) / 1000)
 }
 
-export const addressValidators: Record<
-  string,
-  (address: string) => boolean | string
-> = {
-  [ICP_CANISTER_ID]: validateICPAddress,
-  [BTC_NATIVE_ID]: validateBTCAddress,
-  [ETH_NATIVE_ID]: validateETHAddress,
-  [POLYGON_NATIVE_ID]: validateETHAddress,
-  [ARBITRUM_NATIVE_ID]: validateETHAddress,
-  [BASE_NATIVE_ID]: validateETHAddress,
-  [BNB_NATIVE_ID]: validateETHAddress,
+export const getValidatorByTokenAddress = (
+  address?: string,
+  category?: Category,
+) => {
+  if (
+    address === ETH_NATIVE_ID ||
+    address === EVM_NATIVE ||
+    category === Category.ERC20
+  ) {
+    return validateETHAddress
+  }
+
+  if (address === BTC_NATIVE_ID) {
+    return validateBTCAddress
+  }
+
+  if (address === ICP_CANISTER_ID) {
+    return validateICPAddress
+  }
+
+  return validateICRC1Address
 }

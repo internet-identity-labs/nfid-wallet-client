@@ -1,7 +1,4 @@
-import {
-  ETH_DECIMALS,
-  POLYGON_NATIVE_ID,
-} from "@nfid/integration/token/constants"
+import { ETH_DECIMALS, EVM_NATIVE } from "@nfid/integration/token/constants"
 
 import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
 
@@ -26,7 +23,7 @@ export class PolygonTransactionService extends EVMNativeTransactionService {
   }
 
   protected getCanister(): string {
-    return POLYGON_NATIVE_ID
+    return EVM_NATIVE
   }
 }
 

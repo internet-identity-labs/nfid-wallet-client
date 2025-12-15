@@ -5,10 +5,7 @@ import {
 } from "@nfid/integration/token/icrc1/enum/enums"
 import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
 
-import {
-  ARBITRUM_NATIVE_ID,
-  ETH_DECIMALS,
-} from "@nfid/integration/token/constants"
+import { ETH_DECIMALS, EVM_NATIVE } from "@nfid/integration/token/constants"
 import { FTEvmAbstractImpl } from "./ft-evm-abstract-impl"
 import {
   arbitrumService,
@@ -18,7 +15,7 @@ import {
 export class FTArbitrumImpl extends FTEvmAbstractImpl {
   constructor(state: State) {
     super({
-      ledger: ARBITRUM_NATIVE_ID,
+      ledger: EVM_NATIVE,
       symbol: "ETH",
       name: "Ethereum",
       decimals: ETH_DECIMALS,

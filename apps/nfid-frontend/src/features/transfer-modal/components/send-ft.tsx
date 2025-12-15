@@ -31,10 +31,8 @@ import { FormValues, SendStatus } from "../types"
 import {
   getTokensWithUpdatedBalance,
   getVaultsAccountsOptions,
-  validateICRC1Address,
-  addressValidators,
+  getValidatorByTokenAddress,
   updateCachedInitedTokens,
-  validateETHAddress,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import {
@@ -45,7 +43,7 @@ import {
 import {
   Category,
   ChainId,
-  isEvm,
+  isEvmNativeToken,
 } from "@nfid/integration/token/icrc1/enum/enums"
 import { FTEvmAbstractImpl } from "frontend/integration/ft/impl/ft-evm-abstract-impl"
 import { FTERC20AbstractImpl } from "frontend/integration/ft/impl/ft-erc20-abstract-impl"
@@ -219,7 +217,7 @@ export const TransferFT = ({
     const fetchNonIcrc1Fee = async () => {
       if (
         token?.getChainId() === ChainId.BTC ||
-        (token && isEvm(token.getChainId()))
+        (token && isEvmNativeToken(token.getChainId()))
       ) {
         setFee(undefined)
         setIsFeeLoading(true)
@@ -271,7 +269,7 @@ export const TransferFT = ({
   const submit = useCallback(async () => {
     if (!token) return toaster.error("No selected token")
 
-    if (isEvm(token.getChainId())) {
+    if (isEvmNativeToken(token.getChainId())) {
       if (!identity || !fee) return
 
       const ethFee = fee as FeeResponseETH
@@ -513,12 +511,10 @@ export const TransferFT = ({
         token={token}
         tokens={filteredTokens || []}
         setChosenToken={setTokenAddress}
-        validateAddress={
-          token?.getTokenAddress().startsWith("0x")
-            ? validateETHAddress
-            : addressValidators[token?.getTokenAddress() ?? ""] ||
-              validateICRC1Address
-        }
+        validateAddress={getValidatorByTokenAddress(
+          token?.getTokenAddress(),
+          token?.getTokenCategory(),
+        )}
         isLoading={isTokensLoading}
         isBtcEthLoading={isBtcAddressLoading || isEthAddressLoading}
         isVault={isVault}

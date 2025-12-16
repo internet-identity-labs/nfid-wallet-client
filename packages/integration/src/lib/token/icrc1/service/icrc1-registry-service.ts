@@ -17,7 +17,7 @@ export class Icrc1RegistryService {
     if (!cache) {
       const root = authState.getUserIdData().userId
       const response = await iCRC1Registry.get_canisters_by_root(root)
-      storageWithTtl.set(registryCacheName, JSON.stringify(response), 10 * 1000)
+      storageWithTtl.set(registryCacheName, JSON.stringify(response), 30 * 1000)
       return response
     } else if (cache && cache.expired && !this.getCanistersByRootLock) {
       const root = authState.getUserIdData().userId
@@ -27,7 +27,7 @@ export class Icrc1RegistryService {
           storageWithTtl.set(
             registryCacheName,
             JSON.stringify(response),
-            10 * 1000,
+            30 * 1000,
           )
         })
         .finally(() => {

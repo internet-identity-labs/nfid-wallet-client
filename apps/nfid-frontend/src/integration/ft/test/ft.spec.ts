@@ -32,7 +32,7 @@ describe("ft test suite", () => {
 
   beforeEach(() => {
     jest
-      .spyOn(icrc1RegistryService as any, "getCanistersByRoot")
+      .spyOn(icrc1RegistryService as any, "getStoredUserTokens")
       .mockResolvedValue([])
     jest
       .spyOn(ethereumService as any, "getQuickAddress")

@@ -44,8 +44,7 @@ describe("ICRC1 suite", () => {
       edId.getPrincipal().toText(),
       State.Inactive,
     )
-    const inactiveCanisters =
-      await icrc1RegistryService.getStoredUserTokens(root)
+    const inactiveCanisters = await icrc1RegistryService.getStoredUserTokens()
     expect(
       inactiveCanisters.find((l) => l.ledger === edId.getPrincipal().toText())!
         .state,

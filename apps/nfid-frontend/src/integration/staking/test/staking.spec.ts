@@ -29,7 +29,7 @@ describe("Staking", () => {
 
   beforeEach(() => {
     jest
-      .spyOn(icrc1RegistryService as any, "getCanistersByRoot")
+      .spyOn(icrc1RegistryService as any, "getStoredUserTokens")
       .mockResolvedValue([])
   })
 

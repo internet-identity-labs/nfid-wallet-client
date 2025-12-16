@@ -34,7 +34,7 @@ import { arbitrumErc20Service } from "../ethereum/arbitrum/arbitrum-erc20.servic
 import { tokenFactory } from "./token-creator/token-factory.service"
 
 const InitedTokens = "InitedTokens"
-export const TOKENS_REFRESH_INTERVAL = 10000
+export const TOKENS_REFRESH_INTERVAL = 30000
 export const PAGE_SIZE = 10
 
 export interface TokensAvailableToSwap {

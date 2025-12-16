@@ -12,10 +12,12 @@ import {
   fetchTokens,
   filterNotActiveNotZeroBalancesTokens,
 } from "frontend/features/fungible-token/utils"
-import { useDarkTheme } from "frontend/hooks"
+import { useDarkTheme, useEthAddress } from "frontend/hooks"
 
 import searchDarkImg from "../assets/search-dark.png"
 import searchImg from "../assets/search.png"
+import { TokenIdentity } from "./token-identity"
+import { getUpdatedInitedTokens } from "frontend/features/transfer-modal/utils"
 
 export function ScanTokens({
   className,
@@ -32,6 +34,7 @@ export function ScanTokens({
     revalidateOnFocus: false,
   })
   const [scannedTokens, setScannedTokens] = useState<Array<FT> | undefined>()
+  const { ethAddress, isEthAddressLoading } = useEthAddress()
 
   useEffect(() => {
     if (!isModalOpen || !allTokens) return
@@ -41,8 +44,12 @@ export function ScanTokens({
     ;(async () => {
       const tokensSnapshot = [...allTokens]
 
-      const tokens = await filterNotActiveNotZeroBalancesTokens(tokensSnapshot)
-      if (cancelled) return
+      const tokens = await filterNotActiveNotZeroBalancesTokens(
+        tokensSnapshot,
+        ethAddress,
+        isEthAddressLoading,
+      )
+      if (cancelled || !tokens) return
       setScannedTokens(tokens)
 
       const showedTokens = await Promise.all(
@@ -60,14 +67,14 @@ export function ScanTokens({
         return showedToken || aT
       })
 
-      mutateWithTimestamp("tokens", newTokens, false)
+      await getUpdatedInitedTokens(newTokens)
       setIsScanningTokens(false)
     })()
 
     return () => {
       cancelled = true
     }
-  }, [isModalOpen])
+  }, [isModalOpen, ethAddress, isEthAddressLoading])
 
   return (
     <>
@@ -143,24 +150,7 @@ export function ScanTokens({
                     key={`${token.getTokenName()}_${token.getTokenAddress()}`}
                     className="flex items-center h-[60px]"
                   >
-                    <div className="flex items-center gap-[12px] flex-0">
-                      <div className="w-[28px] h-[28px] rounded-full bg-zinc-50">
-                        <ImageWithFallback
-                          alt={`${token.getTokenSymbol()}`}
-                          className="object-cover w-full h-full rounded-full"
-                          fallbackSrc={IconNftPlaceholder}
-                          src={`${token.getTokenLogo()}`}
-                        />
-                      </div>
-                      <div>
-                        <p className="text-sm text-black dark:text-white leading-[20px] font-semibold">
-                          {token.getTokenSymbol()}
-                        </p>
-                        <p className="text-xs text-secondary dark:text-zinc-400 leading-[20px]">
-                          {token.getTokenName()}
-                        </p>
-                      </div>
-                    </div>
+                    <TokenIdentity token={token} />
                     <div className="ml-auto">
                       <p className="flex text-sm text-black leading-[20px] dark:text-white">
                         <span className="w-[150px] sm:w-auto truncate text-right">

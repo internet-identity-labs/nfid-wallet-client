@@ -626,8 +626,7 @@ export abstract class Erc20Service {
 
     let trs_request: EthSignTransactionRequest = {
       to: trs.to,
-      // to,
-      value: valueBigInt,
+      value: ZERO,
       data: [trs.data],
       nonce: BigInt(nonce),
       gas: gas.gasUsed,

@@ -30,6 +30,39 @@ export const fetchTokens = async () => {
   return await ftService.getTokens(userPrincipal)
 }
 
+const fetchErc20TokensSequentially = async (
+  ethAddress: string,
+): Promise<
+  [
+    Awaited<
+      ReturnType<typeof arbitrumErc20Service.getTokensWithNonZeroBalance>
+    >,
+    Awaited<ReturnType<typeof polygonErc20Service.getTokensWithNonZeroBalance>>,
+    Awaited<ReturnType<typeof baseErc20Service.getTokensWithNonZeroBalance>>,
+    Awaited<ReturnType<typeof ethErc20Service.getTokensWithNonZeroBalance>>,
+  ]
+> => {
+  const delay = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms))
+
+  const arbTokens =
+    await arbitrumErc20Service.getTokensWithNonZeroBalance(ethAddress)
+  await delay(500)
+
+  const polTokens =
+    await polygonErc20Service.getTokensWithNonZeroBalance(ethAddress)
+  await delay(500)
+
+  const baseTokens =
+    await baseErc20Service.getTokensWithNonZeroBalance(ethAddress)
+  await delay(500)
+
+  const ethTokens =
+    await ethErc20Service.getTokensWithNonZeroBalance(ethAddress)
+
+  return [arbTokens, polTokens, baseTokens, ethTokens]
+}
+
 export const filterNotActiveNotZeroBalancesTokens = async (
   allTokens: Array<FT>,
   ethAddress: string,
@@ -38,17 +71,15 @@ export const filterNotActiveNotZeroBalancesTokens = async (
   if (isEthAddressLoading) return
   const { publicKey } = await getUserPrincipalId()
 
-  const [icrc1Tokens, arbTokens, polTokens, baseTokens, ethTokens] =
-    await Promise.all([
-      ftService.filterNotActiveNotZeroBalancesTokens(
-        allTokens,
-        Principal.fromText(publicKey),
-      ),
-      arbitrumErc20Service.getTokensWithNonZeroBalance(ethAddress),
-      polygonErc20Service.getTokensWithNonZeroBalance(ethAddress),
-      baseErc20Service.getTokensWithNonZeroBalance(ethAddress),
-      ethErc20Service.getTokensWithNonZeroBalance(ethAddress),
-    ])
+  const [icrc1Tokens, erc20Tokens] = await Promise.all([
+    ftService.filterNotActiveNotZeroBalancesTokens(
+      allTokens,
+      Principal.fromText(publicKey),
+    ),
+    fetchErc20TokensSequentially(ethAddress),
+  ])
+
+  const [arbTokens, polTokens, baseTokens, ethTokens] = erc20Tokens
 
   const arbTokensErc20 = arbTokens.map((canister) =>
     tokenFactory.getCreatorByChainID(ChainId.ARB).buildTokens(canister),

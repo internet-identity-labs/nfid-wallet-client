@@ -6,4 +6,8 @@ export class FTERC20PolImpl extends FTERC20AbstractImpl {
   getProvider(): Erc20Service {
     return polygonErc20Service
   }
+
+  getBlockExplorerLink(): string {
+    return `https://polygonscan.com/address/${this.tokenAddress}`
+  }
 }

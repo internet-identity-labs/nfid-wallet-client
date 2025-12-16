@@ -6,4 +6,8 @@ export class FTERC20ArbImpl extends FTERC20AbstractImpl {
   getProvider(): Erc20Service {
     return arbitrumErc20Service
   }
+
+  getBlockExplorerLink(): string {
+    return `https://arbiscan.io/address/${this.tokenAddress}`
+  }
 }

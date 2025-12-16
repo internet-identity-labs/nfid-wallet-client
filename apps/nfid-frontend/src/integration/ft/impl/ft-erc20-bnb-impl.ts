@@ -6,4 +6,8 @@ export class FTERC20BnbImpl extends FTERC20AbstractImpl {
   getProvider(): Erc20Service {
     return bnbErc20Service
   }
+
+  getBlockExplorerLink(): string {
+    return `https://bscscan.com/address/${this.tokenAddress}`
+  }
 }

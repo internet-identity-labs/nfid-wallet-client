@@ -9,21 +9,30 @@ import { mapStateTS } from "../util"
 const icrc1RegistryCacheName = "ICRC1RegistryService.getCanistersByRoot"
 
 export class Icrc1RegistryService {
-  async getCanistersByRoot(root: string): Promise<Array<ICRC1>> {
+  private getCanistersByRootLock: Promise<void> | null = null
+
+  public async getStoredUserTokens(): Promise<Array<ICRC1>> {
     const registryCacheName = await this.getRegistryCacheName()
     const cache = await storageWithTtl.getEvenExpired(registryCacheName)
     if (!cache) {
+      const root = authState.getUserIdData().userId
       const response = await iCRC1Registry.get_canisters_by_root(root)
-      storageWithTtl.set(registryCacheName, JSON.stringify(response), 30 * 1000)
+      storageWithTtl.set(registryCacheName, JSON.stringify(response), 10 * 1000)
       return response
-    } else if (cache && cache.expired) {
-      iCRC1Registry.get_canisters_by_root(root).then((response) => {
-        storageWithTtl.set(
-          registryCacheName,
-          JSON.stringify(response),
-          30 * 1000,
-        )
-      })
+    } else if (cache && cache.expired && !this.getCanistersByRootLock) {
+      const root = authState.getUserIdData().userId
+      this.getCanistersByRootLock = iCRC1Registry
+        .get_canisters_by_root(root)
+        .then((response) => {
+          storageWithTtl.set(
+            registryCacheName,
+            JSON.stringify(response),
+            10 * 1000,
+          )
+        })
+        .finally(() => {
+          this.getCanistersByRootLock = null
+        })
       return JSON.parse(cache.value as string) as ICRC1[]
     } else {
       return JSON.parse(cache.value as string) as ICRC1[]

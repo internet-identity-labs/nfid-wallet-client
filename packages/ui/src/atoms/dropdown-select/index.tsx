@@ -56,6 +56,7 @@ export const DropdownSelect = ({
   const isDarkTheme = useDarkTheme()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [searchInput, setSearchInput] = useState("")
+  const [openDirection, setOpenDirection] = useState<"top" | "bottom">("bottom")
 
   const ref = useClickOutside(() => setIsDropdownOpen(false))
 
@@ -94,6 +95,23 @@ export const DropdownSelect = ({
     const allValues = filteredOptions.map((option) => option.value)
     setSelectedValues(allValues)
   }, [filteredOptions, setSelectedValues, isAllSelected])
+
+  useEffect(() => {
+    if (!isDropdownOpen) return
+
+    const triggerRect = ref.current?.getBoundingClientRect()
+    if (!triggerRect) return
+
+    const dropdownHeight = 300
+    const spaceBelow = window.innerHeight - triggerRect.bottom
+    const spaceAbove = triggerRect.top
+
+    if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
+      setOpenDirection("top")
+    } else {
+      setOpenDirection("bottom")
+    }
+  }, [isDropdownOpen])
 
   return (
     <div
@@ -175,7 +193,12 @@ export const DropdownSelect = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25, ease: "easeInOut" }}
-          className="w-full bg-white dark:bg-darkGray rounded-[12px] mt-[1px] absolute z-50 shadow-md"
+          className={clsx(
+            "w-full bg-white dark:bg-darkGray rounded-[12px] absolute z-50 shadow-md",
+            openDirection === "bottom"
+              ? "top-full mt-[1px]"
+              : "bottom-full mb-[1px]",
+          )}
         >
           {isSearch && (
             <Input

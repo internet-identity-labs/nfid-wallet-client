@@ -55,15 +55,15 @@ export const filterNotActiveNotZeroBalancesTokens = async (
   )
 
   const polTokensErc20 = polTokens.map((canister) =>
-    tokenFactory.getCreatorByChainID(ChainId.ARB).buildTokens(canister),
+    tokenFactory.getCreatorByChainID(ChainId.POL).buildTokens(canister),
   )
 
   const baseTokensErc20 = baseTokens.map((canister) =>
-    tokenFactory.getCreatorByChainID(ChainId.ARB).buildTokens(canister),
+    tokenFactory.getCreatorByChainID(ChainId.BASE).buildTokens(canister),
   )
 
   const ethTokensErc20 = ethTokens.map((canister) =>
-    tokenFactory.getCreatorByChainID(ChainId.ARB).buildTokens(canister),
+    tokenFactory.getCreatorByChainID(ChainId.ETH).buildTokens(canister),
   )
 
   const nativeTokens: FT[] = [

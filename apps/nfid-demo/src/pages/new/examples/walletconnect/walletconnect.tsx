@@ -210,10 +210,11 @@ export const WalletConnectExample = ({
         // Mark initialization as in progress
         ;(window as any)[initFlagKey] = true
 
-        // Create new provider
+        // Create new provider with all supported methods
         const ethProvider = await EthereumProvider.init({
           projectId: PROJECT_ID,
-          chains: [1], // Ethereum Mainnet
+          chains: [1, 137, 56, 8453, 42161, 11155111], // Ethereum Mainnet
+          optionalChains: [137, 56, 8453, 42161, 11155111],
           showQrModal: false,
           metadata: {
             name: "WalletConnect Test dApp",
@@ -221,6 +222,22 @@ export const WalletConnectExample = ({
             url: window.location.origin,
             icons: ["https://nfid.one/assets/nfid-wallet-og.png"],
           },
+          methods: [
+            "eth_sendTransaction",
+            "eth_signTransaction",
+            "eth_sign",
+            "personal_sign",
+            "eth_signTypedData",
+            "eth_signTypedData_v4",
+          ],
+          optionalMethods: [
+            "eth_sendTransaction",
+            "eth_signTransaction",
+            "eth_sign",
+            "personal_sign",
+            "eth_signTypedData",
+            "eth_signTypedData_v4",
+          ],
         })
 
         // Store provider globally for reuse

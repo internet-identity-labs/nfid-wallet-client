@@ -16,6 +16,7 @@ import {
   EVM_NATIVE,
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
+import { authState } from "packages/integration/src/lib/authentication"
 
 export abstract class FTERC20AbstractImpl extends FTImpl {
   constructor(erc20TokenInfo: ERC20TokenInfo) {
@@ -36,8 +37,8 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
 
   public abstract getProvider(): Erc20Service
 
-  async init(globalPrincipal: Principal): Promise<FT> {
-    await this.getBalance(globalPrincipal)
+  async init(_: Principal): Promise<FT> {
+    await this.getBalance()
     return this
   }
 
@@ -45,19 +46,17 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
     return super.isInited()
   }
 
-  private async getTokens(globalPrincipal: Principal): Promise<Array<string>> {
-    const contracts = await icrc1RegistryService.getCanistersByRoot(
-      globalPrincipal.toText(),
-    )
+  private async getTokens(): Promise<Array<string>> {
+    const contracts = await icrc1RegistryService.getStoredUserTokens()
 
     return contracts
       .filter((c) => c.network === this.tokenChainId && c.ledger !== EVM_NATIVE)
       .map((c) => c.ledger)
   }
 
-  public async getBalance(globalPrincipal: Principal): Promise<void> {
+  public async getBalance(): Promise<void> {
     const ethAddress = await ethereumService.getQuickAddress()
-    const ledgers = await this.getTokens(globalPrincipal)
+    const ledgers = await this.getTokens()
 
     const [balances, usdBalances] = await Promise.all([
       this.getProvider().getMultipleTokenBalances(ethAddress, ledgers),

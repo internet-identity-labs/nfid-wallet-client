@@ -627,8 +627,6 @@ export class WalletConnectService {
     const [tx] = params
     const txRequest = await this.prepareTransactionRequest(identity, tx)
 
-    debugger
-
     // SIGN
     const signedTx = await chainFusionSignerService.ethSignTransaction(
       identity,

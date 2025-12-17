@@ -54,6 +54,19 @@ export abstract class Erc20Service {
   protected abstract provider: InfuraProvider
   protected abstract chainId: ChainId
 
+  // Request queue: Map<key, Promise<result>> - same parameters share the same promise
+  private getMultipleTokenBalancesQueue = new Map<
+    string,
+    Promise<
+      Array<{
+        contractAddress: string
+        balance: string
+        address: string
+        error?: string
+      }>
+    >
+  >()
+
   public async getTokensWithNonZeroBalance(
     normalizedAddress: string,
   ): Promise<ERC20TokenWithBalance[]> {
@@ -198,6 +211,9 @@ export abstract class Erc20Service {
    * which is much faster and more cost-efficient than individual calls.
    * Results are cached per address.
    *
+   * If multiple requests with the same parameters are made simultaneously,
+   * they will share the same promise and receive the same result.
+   *
    * @param address - Wallet address to check balances for
    * @param contractAddresses - Array of ERC20 token contract addresses
    * @returns Array of balance objects with contractAddress, balance, and address
@@ -210,12 +226,47 @@ export abstract class Erc20Service {
       return []
     }
 
-    // Single cache key per address (not per token list)
-    const cacheKey = `ERC20_Balances_${address.toLowerCase()}`
     const normalizedAddress = address.toLowerCase()
     const normalizedContracts = contractAddresses.map((addr) =>
       addr.toLowerCase(),
     )
+
+    // Create queue key: address + sorted contractAddresses
+    const sortedContracts = [...normalizedContracts].sort().join(",")
+    const queueKey = `${normalizedAddress}:${sortedContracts}`
+
+    // Check if there's already an in-flight request with the same parameters
+    const existingPromise = this.getMultipleTokenBalancesQueue.get(queueKey)
+    if (existingPromise) {
+      // Return the result of the existing request
+      return existingPromise
+    }
+
+    // Create a new promise for this request
+    const promise = this._getMultipleTokenBalancesInternal(
+      normalizedAddress,
+      normalizedContracts,
+    ).finally(() => {
+      // Remove from queue after completion (success or error)
+      this.getMultipleTokenBalancesQueue.delete(queueKey)
+    })
+
+    // Save the promise in the queue
+    this.getMultipleTokenBalancesQueue.set(queueKey, promise)
+
+    return promise
+  }
+
+  /**
+   * Internal implementation of getMultipleTokenBalances
+   * @private
+   */
+  private async _getMultipleTokenBalancesInternal(
+    normalizedAddress: string,
+    normalizedContracts: string[],
+  ) {
+    // Single cache key per address (not per token list)
+    const cacheKey = `ERC20_Balances_${normalizedAddress}_` + this.chainId
 
     // Check cache first
     const cache = await storageWithTtl.getEvenExpired(cacheKey)
@@ -574,9 +625,8 @@ export abstract class Erc20Service {
     let trs = await erc20Contract.transfer.populateTransaction(to, valueBigInt)
 
     let trs_request: EthSignTransactionRequest = {
-      //to: trs.to,
-      to,
-      value: valueBigInt,
+      to: trs.to,
+      value: ZERO,
       data: [trs.data],
       nonce: BigInt(nonce),
       gas: gas.gasUsed,

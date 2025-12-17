@@ -114,7 +114,7 @@ export class FtService {
         return ft
       })
 
-    let userCanisters = await icrc1RegistryService.getCanistersByRoot(userId)
+    let userCanisters = await icrc1RegistryService.getStoredUserTokens()
 
     const [ethErc20Tokens, polErc20Tokens, baseErc20Tokens, arbErc20Tokens] =
       await Promise.all([

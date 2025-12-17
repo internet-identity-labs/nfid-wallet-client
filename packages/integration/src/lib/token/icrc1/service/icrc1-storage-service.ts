@@ -29,9 +29,9 @@ export class Icrc1StorageService {
     })
   }
 
-  async getICRC1Canisters(principal: string): Promise<Array<ICRC1UserData>> {
+  async getICRC1Canisters(_: string): Promise<Array<ICRC1UserData>> {
     const [icrc1StateData, icrc1OracleData] = await Promise.all([
-      icrc1RegistryService.getCanistersByRoot(principal),
+      icrc1RegistryService.getStoredUserTokens(),
       icrc1OracleService.getICRC1Canisters(),
     ])
     return icrc1OracleData.map((icrc1) => {

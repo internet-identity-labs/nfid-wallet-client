@@ -16,9 +16,8 @@ describe("ICRC1 suite", () => {
   let root: string
   it("Store/retrieve canister id", async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
-    const { delegationIdentity } = await generateDelegationIdentity(
-      mockedIdentity,
-    )
+    const { delegationIdentity } =
+      await generateDelegationIdentity(mockedIdentity)
     await authState.set({
       identity: delegationIdentity,
       delegationIdentity: delegationIdentity,
@@ -32,11 +31,11 @@ describe("ICRC1 suite", () => {
     )
     const account = (await im.get_account()) as HTTPAccountResponse
     root = account.data[0]!.principal_id
-    const canisters = await icrc1RegistryService.getCanistersByRoot(root)
+    const canisters = await icrc1RegistryService.getStoredUserTokens()
     expect(canisters.map((l) => l.ledger)).toContain(
       edId.getPrincipal().toText(),
     )
-    const activeCanisters = await icrc1RegistryService.getCanistersByRoot(root)
+    const activeCanisters = await icrc1RegistryService.getStoredUserTokens()
     expect(
       activeCanisters.find((l) => l.ledger === edId.getPrincipal().toText())!
         .state,
@@ -45,9 +44,7 @@ describe("ICRC1 suite", () => {
       edId.getPrincipal().toText(),
       State.Inactive,
     )
-    const inactiveCanisters = await icrc1RegistryService.getCanistersByRoot(
-      root,
-    )
+    const inactiveCanisters = await icrc1RegistryService.getStoredUserTokens()
     expect(
       inactiveCanisters.find((l) => l.ledger === edId.getPrincipal().toText())!
         .state,

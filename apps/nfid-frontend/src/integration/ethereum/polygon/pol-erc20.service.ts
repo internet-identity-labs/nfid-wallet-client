@@ -9,7 +9,7 @@ export class PolygonErc20Service extends Erc20Service {
 
   constructor() {
     super()
-    this.provider = new InfuraProvider(BigInt(ChainId.ETH), INFURA_API_KEY)
+    this.provider = new InfuraProvider(BigInt(ChainId.POL), INFURA_API_KEY)
   }
 
   protected getDefiLlamaChainId(): string {

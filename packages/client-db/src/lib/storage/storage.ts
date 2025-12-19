@@ -17,9 +17,13 @@ export class Storage<T> {
   get _db(): Promise<KeyValueStore> {
     const db = new Promise<KeyValueStore>((resolve) => {
       if (this.initializedDb) {
-        this.initializedDb.set("test", "test")
-        this.initializedDb.get("test")
-        resolve(this.initializedDb)
+        this.initializedDb.set("test", "test").then(() => {
+          this.initializedDb!.get("test").then(() => {
+            this.initializedDb!.remove("test").then(() => {
+              resolve(this.initializedDb!)
+            })
+          })
+        })
         return
       }
       IdbKeyVal.create({
@@ -29,9 +33,16 @@ export class Storage<T> {
       })
         .then((db) => {
           this.initializedDb = db
-          this.initializedDb.set("test", "test")
-          this.initializedDb.get("test")
-          resolve(db)
+          return this.initializedDb.set("test", "test")
+        })
+        .then(() => {
+          return this.initializedDb!.get("test")
+        })
+        .then(() => {
+          return this.initializedDb!.remove("test")
+        })
+        .then(() => {
+          resolve(this.initializedDb!)
         })
         .catch(() => {
           return resolve(MemoryKeyVal.create())
@@ -58,6 +69,11 @@ export class Storage<T> {
   public async getAllKeys(): Promise<string[]> {
     const db = await this._db
     return await db.getAllKeys()
+  }
+
+  public async getAll(): Promise<Array<{ key: string; value: T }>> {
+    const db = await this._db
+    return await db.getAll<T>()
   }
 
   public async clear(): Promise<void> {

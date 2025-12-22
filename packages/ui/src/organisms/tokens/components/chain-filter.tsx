@@ -5,14 +5,13 @@ import {
   IconCmpFilters,
   DropdownSelect,
 } from "@nfid-frontend/ui"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { AllNetworksIcon } from "packages/ui/src/atoms/icons/AllNetworksIcon"
-import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { BtcNetworkIcon } from "packages/ui/src/atoms/icons/BtcNetworkIcon"
 import { EthNetworkIcon } from "packages/ui/src/atoms/icons/EthNetworkIcon"
 import { IcpNetworkIcon } from "packages/ui/src/atoms/icons/IcpNetworkIcon"
 import { PolNetworkIcon } from "packages/ui/src/atoms/icons/PolNetworkIcon"
-import { BnbNetworkIcon } from "packages/ui/src/atoms/icons/BnbNetworkIcon"
 import { BaseNetworkIcon } from "packages/ui/src/atoms/icons/BaseNetworkIcon"
 import { ArbNetworkIcon } from "packages/ui/src/atoms/icons/ArbNetworkIcon"
 
@@ -21,7 +20,6 @@ const chainOptions = [
   { label: "Ethereum", value: `${ChainId.ETH}`, icon: EthNetworkIcon },
   { label: "Internet Computer", value: `${ChainId.ICP}`, icon: IcpNetworkIcon },
   { label: "Polygon", value: `${ChainId.POL}`, icon: PolNetworkIcon },
-  { label: "BNB Chain", value: `${ChainId.BNB}`, icon: BnbNetworkIcon },
   { label: "Base", value: `${ChainId.BASE}`, icon: BaseNetworkIcon },
   { label: "Arbitrum", value: `${ChainId.ARB}`, icon: ArbNetworkIcon },
 ]

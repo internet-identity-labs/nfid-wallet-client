@@ -24,7 +24,7 @@ export abstract class FTEvmAbstractImpl extends FTImpl {
     try {
       this.tokenBalance = await this.getProvider().getQuickBalance()
     } catch (e) {
-      console.error("EthereumService error: ", (e as Error).message)
+      console.error("Ethereum balance fetch error: ", (e as Error).message)
       return
     }
 
@@ -33,6 +33,7 @@ export abstract class FTEvmAbstractImpl extends FTImpl {
         CKETH_LEDGER_CANISTER_ID,
       )
     } catch (e) {
+      this.tokenRate = null
       console.error("Ethereum rate fetch error: ", (e as Error).message)
     }
 

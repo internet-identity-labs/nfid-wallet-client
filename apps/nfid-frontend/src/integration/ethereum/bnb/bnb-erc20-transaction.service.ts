@@ -11,6 +11,10 @@ export class BnbErc20TransactionService extends EVMTokenTransactionService {
   protected getService(): Erc20Service {
     return bnbErc20Service
   }
+
+  public getExplorerLink(txId: string): string {
+    return `https://bscscan.com/tx/${txId}`
+  }
 }
 
 export const bnbErc20TransactionService = new BnbErc20TransactionService()

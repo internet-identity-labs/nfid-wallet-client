@@ -6,7 +6,7 @@ import { Popover, PopoverProps } from "."
 import { Button } from "../../molecules/button"
 
 interface IFilterPopover extends PopoverProps {
-  title: string
+  title?: string
   className?: string
   onReset: () => void
   onApply?: () => void
@@ -34,7 +34,7 @@ export const FilterPopover = ({
             className,
           )}
         >
-          <p className="mb-1 text-xs leading-4">{title}</p>
+          {title && <p className="mb-1 text-xs leading-4">{title}</p>}
           {children}
           <div className={onApply ? "grid grid-cols-2 gap-5 mt-5" : "mt-5"}>
             <RadixPopover.Close className="w-full">

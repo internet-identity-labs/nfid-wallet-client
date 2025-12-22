@@ -47,19 +47,16 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
 }) => {
   const [isTokenProcessed, setIsTokenProcessed] = useState(false)
   const tokenRateDayChange = token.getTokenRateDayChangePercent()
+  const balance = token.getTokenBalance()
   const usdBalance = token.getUSDBalanceFormatted(false)
   const tokenPrice = token.getTokenRateFormatted("1", false)
 
-  if (
-    hideZeroBalance &&
-    token.getTokenBalance() === BigInt(0) &&
-    token.isHideable()
-  )
+  if (hideZeroBalance && balance === BigInt(0) && token.isHideable())
     return null
 
   return (
     <tr
-      id={`token_${token.getTokenName().replace(/\s+/g, "")}`}
+      id={`token_${token.getTokenName().replace(/\s+/g, "")}_${token.getChainId()}`}
       {...props}
       className={clsx({
         "opacity-30": isTokenProcessed || loadingToken === token,
@@ -79,7 +76,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
       <td
         id={`token_${token
           .getTokenCategoryFormatted()
-          .replace(/\s/g, "")}_category`}
+          .replace(/\s/g, "")}_${token.getChainId()}_category`}
         className="hidden md:table-cell pr-[10px] min-w-[120px] dark:text-white"
       >
         {token.getTokenCategoryFormatted()}
@@ -89,7 +86,9 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
         ) : tokenPrice !== null ? (
           <div>
-            <div id={`token_${token.getTokenName().replace(/\s/g, "")}_price`}>
+            <div
+              id={`token_${token.getTokenName().replace(/\s/g, "")}_${token.getChainId()}_price`}
+            >
               {tokenPrice}
             </div>
             {tokenRateDayChange && (
@@ -104,10 +103,10 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         )}
       </td>
       <td
-        id={`token_${token.getTokenName().replace(/\s/g, "")}_balance`}
+        id={`token_${token.getTokenName().replace(/\s/g, "")}_${token.getChainId()}_balance`}
         className="pr-[10px] text-right md:text-left pr-[10px] flex-grow min-w-0 sm:w-auto min-w-[120px]"
       >
-        {isIniting || usdBalance === undefined ? (
+        {isIniting || balance === undefined ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
         ) : (
           <p className="flex items-center justify-end md:justify-start dark:text-white">

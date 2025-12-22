@@ -1,4 +1,7 @@
-import { Activity } from "packages/integration/src/lib/asset/types"
+import {
+  Activity,
+  ActivityAssetFT,
+} from "packages/integration/src/lib/asset/types"
 
 import { authState } from "@nfid/integration"
 import { getICRC1HistoryDataForUser } from "@nfid/integration/token/icrc1"
@@ -9,28 +12,44 @@ import {
 
 import { IActivityRow } from "../types"
 import { nanoSecondsToDate } from "./activity"
+import { Category, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import {
+  CKBTC_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
+  ICP_EXPLORER,
+} from "@nfid/integration/token/constants"
+import { FT } from "frontend/integration/ft/ft"
 
-const filterActivitiesByCanisterId = (
-  canisterIds: string[] = [],
-  allCanistersActivities: ICRC1IndexData[],
-): TransactionData[] => {
-  let activities: TransactionData[]
-  if (!canisterIds.length) {
-    activities = allCanistersActivities.flatMap(
-      (activity) => activity.transactions,
-    )
+const getChainFusionTokenName = (address: string) => {
+  if (address === CKBTC_CANISTER_ID) {
+    return "bitcoin"
+  } else if (address === CKETH_LEDGER_CANISTER_ID) {
+    return "ethereum"
   } else {
-    activities = allCanistersActivities
-      .filter((activity) => canisterIds.includes(activity.canisterId!))
-      .flatMap((activity) => activity.transactions)
+    return `ethereum/${address}`
   }
-
-  return activities
 }
 
+export const getExplorerLink = (id: string, token: ActivityAssetFT) => {
+  if (token.category === Category.Native) {
+    return `${ICP_EXPLORER}/transaction/${id}`
+  } else if (token.category === Category.Sns) {
+    return `${ICP_EXPLORER}/sns/${token.rootCanister}/transaction/${id}`
+  } else if (token.category === Category.ChainFusion) {
+    return `${ICP_EXPLORER}/${getChainFusionTokenName(
+      token.canister,
+    )}/transaction/${id}`
+  }
+}
+
+const getAllTransactions = (
+  allCanistersActivities: ICRC1IndexData[],
+): TransactionData[] =>
+  allCanistersActivities.flatMap((activity) => activity.transactions)
+
 const getActivities = async (
-  canisterIds: string[],
   limit: number,
+  activeTokens: FT[],
 ): Promise<Activity[]> => {
   const { userId, publicKey } = authState.getUserIdData()
   const allCanistersActivities = await getICRC1HistoryDataForUser(
@@ -39,9 +58,13 @@ const getActivities = async (
     BigInt(limit),
   )
 
-  return filterActivitiesByCanisterId(canisterIds, allCanistersActivities).map(
-    (tx: TransactionData) =>
-      ({
+  return getAllTransactions(allCanistersActivities).map(
+    (tx: TransactionData) => {
+      const token = activeTokens.find(
+        (t) => t.getTokenAddress() === tx.canister,
+      )
+
+      return {
         id: tx.transactionId.toString(),
         date: new Date(nanoSecondsToDate(tx.timestamp)),
         from: tx.from,
@@ -54,13 +77,17 @@ const getActivities = async (
           decimals: tx.decimals,
           amount: Number(tx.amount),
           canister: tx.canister,
+          chainId: ChainId.ICP,
+          category: token?.getTokenCategory(),
+          rootCanister: token?.getRootSnsCanister(),
         },
-      } as Activity),
+      } as Activity
+    },
   )
 }
 
-const mapActivitiesToRows = (activities: Activity[]): IActivityRow[] => {
-  return activities.map((activity) => ({
+const mapActivitiesToRows = (activities: Activity[]): IActivityRow[] =>
+  activities.map((activity) => ({
     id: activity.id,
     action: activity.action,
     asset: activity.asset,
@@ -68,15 +95,13 @@ const mapActivitiesToRows = (activities: Activity[]): IActivityRow[] => {
     timestamp: activity.date,
     from: activity.from,
     to: activity.to,
+    scanLink: getExplorerLink(activity.id, activity.asset as ActivityAssetFT),
   }))
-}
 
 export const getIcrc1ActivitiesRows = async (
-  filteredContracts: string[] = [],
   limit: number,
+  activeTokens: FT[],
 ): Promise<IActivityRow[]> => {
-  const activities = await getActivities(filteredContracts, limit)
-  const activitiesRows = mapActivitiesToRows(activities)
-
-  return activitiesRows
+  const activities = await getActivities(limit, activeTokens)
+  return mapActivitiesToRows(activities)
 }

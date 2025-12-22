@@ -1,6 +1,5 @@
 import {
   ETH_DECIMALS,
-  ETH_NATIVE_ID,
   ETHERSCAN_API_KEY,
 } from "@nfid/integration/token/constants"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
@@ -75,6 +74,8 @@ export abstract class EVMTokenTransactionService
 
   protected abstract getService(): Erc20Service
 
+  protected abstract getExplorerLink(txId: string): string
+
   protected getUrl(address: string): string {
     return `https://api.etherscan.io/v2/api?chainid=${this.getChainId()}&module=account&action=tokentx&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${ETHERSCAN_API_KEY}`
   }
@@ -82,7 +83,7 @@ export abstract class EVMTokenTransactionService
   public async getActivitiesRows(address: string): Promise<IActivityRow[]> {
     const chainId = this.getChainId()
     const normalizedAddress = address.toLowerCase()
-    const cacheKey = `EVM_ACTIVITIES_${chainId}_${normalizedAddress}`
+    const cacheKey = `EVM_ERC20_ACTIVITIES_${chainId}_${normalizedAddress}`
 
     // Check cache first
     const cache = await storageWithTtl.getEvenExpired(cacheKey)
@@ -147,7 +148,7 @@ export abstract class EVMTokenTransactionService
       const tokenActivities: IActivityRow[] = tokenData.result.map((tx) => {
         const isSent = tx.from.toLowerCase() === address.toLowerCase()
         const decimals = parseInt(tx.tokenDecimal || "18", 10)
-        const amount = Number(tx.value) / 10 ** decimals
+        const amount = Number(tx.value)
 
         return {
           id: `${tx.hash}`,
@@ -156,14 +157,16 @@ export abstract class EVMTokenTransactionService
           asset: {
             type: "ft" as const,
             currency: tx.tokenSymbol,
-            amount: amount,
+            amount,
             icon: iconURLS.get(tx.contractAddress.toLowerCase()),
             rate: 0,
             decimals: decimals,
             canister: tx.contractAddress.toLowerCase(),
+            chainId: this.getChainId(),
           },
           from: tx.from,
           to: tx.to,
+          scanLink: this.getExplorerLink(tx.hash),
         }
       })
 
@@ -262,10 +265,12 @@ export abstract class EVMNativeTransactionService
             icon: this.getIcon(),
             rate: 0,
             decimals: ETH_DECIMALS,
-            canister: ETH_NATIVE_ID,
+            canister: this.getCanister(),
+            chainId: this.getChainId(),
           },
           from: tx.from,
           to: tx.to,
+          scanLink: this.getExplorerLink(tx.hash),
         }
       })
 
@@ -287,6 +292,7 @@ export abstract class EVMNativeTransactionService
   }
 
   protected abstract getChainId(): number
+  protected abstract getExplorerLink(txId: string): string
   protected abstract getCurrency(): string
   protected abstract getIcon(): string
   protected abstract getDecimals(): number

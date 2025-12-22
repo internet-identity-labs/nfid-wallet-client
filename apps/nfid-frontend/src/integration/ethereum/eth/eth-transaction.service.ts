@@ -24,6 +24,10 @@ export class EthTransactionService extends EVMNativeTransactionService {
   protected getCanister(): string {
     return ETH_NATIVE_ID
   }
+
+  public getExplorerLink(txId: string): string {
+    return `https://etherscan.io/tx/${txId}`
+  }
 }
 
 export const ethTransactionService = new EthTransactionService()

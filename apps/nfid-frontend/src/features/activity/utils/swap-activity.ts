@@ -1,4 +1,7 @@
-import { Activity } from "packages/integration/src/lib/asset/types"
+import {
+  Activity,
+  ActivityAssetFT,
+} from "packages/integration/src/lib/asset/types"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
 
@@ -11,25 +14,18 @@ import {
 } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "../types"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { FT } from "frontend/integration/ft/ft"
+import { getExplorerLink } from "./icrc1-activity"
 
 interface TransactionDataExtended extends TransactionData {
   transaction: SwapTransaction
 }
 
-const filterTransaction = (
-  filteredContracts: string[] = [],
+const getAllTransactions = (
   allCanistersActivities: ICRC1IndexData[],
-): TransactionData[] => {
-  return allCanistersActivities.flatMap((activity) =>
-    filteredContracts.length === 0
-      ? activity.transactions
-      : activity.transactions.filter(
-          (transaction) =>
-            filteredContracts.includes(transaction.canister!) ||
-            filteredContracts.includes(transaction.canisterTo!),
-        ),
-  )
-}
+): TransactionData[] =>
+  allCanistersActivities.flatMap((activity) => activity.transactions)
 
 const formatTransaction = async (
   tx: SwapTransaction,
@@ -78,44 +74,44 @@ const getFormattedTransactions = async (): Promise<ICRC1IndexData[]> => {
   ]
 }
 
-const getActivities = async (
-  filteredContracts: string[],
-): Promise<Activity[]> => {
+const getActivities = async (activeTokens: FT[]): Promise<Activity[]> => {
   const txsFormatted = await getFormattedTransactions()
 
-  return filterTransaction(filteredContracts, txsFormatted).map(
-    (xt: TransactionData) => {
-      let tx = xt as TransactionDataExtended
+  return getAllTransactions(txsFormatted).map((xt: TransactionData) => {
+    let tx = xt as TransactionDataExtended
+    const token = activeTokens.find((t) => t.getTokenAddress() === tx.canister)
 
-      return {
-        id: tx.transactionId.toString(),
-        date: new Date(Number(tx.timestamp)),
-        from: tx.from,
-        to: tx.to,
-        transactionHash: tx.transactionId.toString(),
-        action: tx.type,
-        transaction: tx.transaction,
-        asset: {
-          type: "ft",
-          currency: tx.symbol,
-          currencyTo: tx.symbolTo,
-          icon: tx.icon,
-          iconTo: tx.iconTo,
-          decimals: tx.decimals,
-          decimalsTo: tx.decimalsTo,
-          amount: Number(tx.amount),
-          amountTo: Number(tx.amountTo),
-          canister: tx.canister,
-          canisterTo: tx.canisterTo,
-          rate: undefined,
-        },
-      } as Activity
-    },
-  )
+    return {
+      id: tx.transactionId.toString(),
+      date: new Date(Number(tx.timestamp)),
+      from: tx.from,
+      to: tx.to,
+      transactionHash: tx.transactionId.toString(),
+      action: tx.type,
+      transaction: tx.transaction,
+      asset: {
+        type: "ft",
+        currency: tx.symbol,
+        currencyTo: tx.symbolTo,
+        icon: tx.icon,
+        iconTo: tx.iconTo,
+        decimals: tx.decimals,
+        decimalsTo: tx.decimalsTo,
+        amount: Number(tx.amount),
+        amountTo: Number(tx.amountTo),
+        canister: tx.canister,
+        canisterTo: tx.canisterTo,
+        rate: undefined,
+        chainId: ChainId.ICP,
+        category: token?.getTokenCategory(),
+        rootCanister: token?.getRootSnsCanister(),
+      },
+    } as Activity
+  })
 }
 
-const mapActivitiesToRows = (activities: Activity[]): IActivityRow[] => {
-  return activities.map((activity) => ({
+const mapActivitiesToRows = (activities: Activity[]): IActivityRow[] =>
+  activities.map((activity) => ({
     id: activity.id,
     action: activity.action,
     asset: activity.asset,
@@ -124,12 +120,15 @@ const mapActivitiesToRows = (activities: Activity[]): IActivityRow[] => {
     from: activity.from,
     to: activity.to,
     transaction: activity.transaction,
+    scanLink: getExplorerLink(
+      activity.transaction.transferId,
+      activity.asset as ActivityAssetFT,
+    ),
   }))
-}
 
 export const getSwapActivitiesRows = async (
-  filteredContracts: string[] = [],
+  activeTokens: FT[],
 ): Promise<IActivityRow[]> => {
-  const activities = await getActivities(filteredContracts)
+  const activities = await getActivities(activeTokens)
   return mapActivitiesToRows(activities)
 }

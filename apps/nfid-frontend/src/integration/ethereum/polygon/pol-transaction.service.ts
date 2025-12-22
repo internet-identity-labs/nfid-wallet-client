@@ -25,6 +25,10 @@ export class PolygonTransactionService extends EVMNativeTransactionService {
   protected getCanister(): string {
     return EVM_NATIVE
   }
+
+  public getExplorerLink(txId: string): string {
+    return `https://polygonscan.com/tx/${txId}`
+  }
 }
 
 export const polygonTransactionService = new PolygonTransactionService()

@@ -5,6 +5,7 @@ import { Checkbox } from "../checkbox"
 import { IconNftPlaceholder } from "../icons"
 import ImageWithFallback from "../image-with-fallback"
 import { useDarkTheme } from "frontend/hooks"
+import { getNetworkIcon } from "../../utils/network-icon"
 
 export interface IDropdownSelectOption {
   option: IOption
@@ -20,12 +21,13 @@ export const DropdownSelectOption = ({
   isCheckbox,
 }: IDropdownSelectOption) => {
   const isDarkTheme = useDarkTheme()
+  const checkboxId = `option_cbx_${option.value.replace(/[^a-zA-Z0-9]/g, "_")}`
 
   return (
     <label
       key={`option_${option.value}`}
-      id={`option_${option.label.replace(/\s/g, "")}`}
-      htmlFor={`option_cbx_${option.label.replace(/\s/g, "")}`}
+      id={`option_${option.value.replace(/[^a-zA-Z0-9]/g, "_")}`}
+      htmlFor={checkboxId}
       className={clsx(
         "py-2.5 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700 cursor-pointer px-[13px]",
         "flex items-center text-sm text-black",
@@ -43,16 +45,21 @@ export const DropdownSelectOption = ({
           "hover:border-teal-600 dark:hover:border-teal-600 hover:outline-[#0D948833] hover:outline outline-2",
           isChecked && "dark:!bg-teal-600 dark:!border-teal-600",
         )}
-        id={`option_cbx_${option.label.replace(/\s/g, "")}`}
+        id={checkboxId}
       />
       {option.icon !== undefined &&
         (typeof option.icon === "string" ? (
-          <ImageWithFallback
-            alt={option.label}
-            fallbackSrc={IconNftPlaceholder}
-            src={`${option.icon}`}
-            className="mr-[10px] w-10 h-10 object-cover rounded-full bg-gray-50"
-          />
+          <div className="relative mr-[10px]">
+            <ImageWithFallback
+              alt={option.label}
+              fallbackSrc={IconNftPlaceholder}
+              src={`${option.icon}`}
+              className="object-cover w-10 h-10 rounded-full bg-gray-50"
+            />
+            <div className="absolute bottom-[-5px] right-[-5px] sm:bottom-0 sm:right-0 w-[18px] h-[18px] rounded-[6px] bg-white dark:bg-zinc-800">
+              {getNetworkIcon(option.chainId!)}
+            </div>
+          </div>
         ) : (
           <div
             className={clsx(

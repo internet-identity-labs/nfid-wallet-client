@@ -1,4 +1,4 @@
-import { BTC_NATIVE_ID } from "@nfid/integration/token/constants"
+import { BTC_EXPLORER, BTC_NATIVE_ID } from "@nfid/integration/token/constants"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
@@ -9,6 +9,7 @@ import {
   FungibleActivityRecord,
 } from "../../../../../../packages/integration/src/lib/asset/types"
 import { BLOCK_HEIGHT_URL, REQUIRED_CONFIRMATIONS } from "./mempool.service"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 const mainnet = "https://mempool.space/api/address/"
 
@@ -32,11 +33,13 @@ export const getBtcActivitiesRows = async (
       decimals: 8,
       decimalsTo: 8,
       canister: BTC_NATIVE_ID,
+      chainId: ChainId.BTC,
     },
     type: activity.from === address ? "Sent" : "Received",
     timestamp: new Date(Number(activity.date) * 1000),
     from: activity.from,
     to: activity.to,
+    scanLink: `${BTC_EXPLORER}/${activity.id}`,
   }))
 }
 

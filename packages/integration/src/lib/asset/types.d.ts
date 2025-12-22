@@ -1,6 +1,7 @@
 import { DelegationIdentity } from "@dfinity/identity"
 
 import { Asset } from "./asset"
+import { Category, ChainId } from "../token/icrc1/enum/enums"
 
 declare type Address = string
 declare type Identity = DelegationIdentity | Address
@@ -243,6 +244,9 @@ declare interface ActivityAssetFT {
   decimals: number
   decimalsTo?: number
   canister: string
+  chainId: ChainId
+  category?: Category
+  rootCanister?: string
 }
 
 declare type Content = {

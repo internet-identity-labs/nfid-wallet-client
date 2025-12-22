@@ -11,11 +11,11 @@ export class ArbitrumTransactionService extends EVMNativeTransactionService {
   }
 
   protected getCurrency(): string {
-    return "ARB"
+    return "ETH"
   }
 
   protected getIcon(): string {
-    return EthIcon //TODO: Add Arbitrum icon
+    return EthIcon
   }
 
   protected getDecimals(): number {
@@ -24,6 +24,10 @@ export class ArbitrumTransactionService extends EVMNativeTransactionService {
 
   protected getCanister(): string {
     return EVM_NATIVE
+  }
+
+  public getExplorerLink(txId: string): string {
+    return `https://arbiscan.io/tx/${txId}`
   }
 }
 

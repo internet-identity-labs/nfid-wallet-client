@@ -11,6 +11,10 @@ export class PolygonErc20TransactionService extends EVMTokenTransactionService {
   protected getService(): Erc20Service {
     return polygonErc20Service
   }
+
+  public getExplorerLink(txId: string): string {
+    return `https://polygonscan.com/tx/${txId}`
+  }
 }
 
 export const polygonErc20TransactionService =

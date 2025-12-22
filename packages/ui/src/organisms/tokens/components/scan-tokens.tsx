@@ -4,9 +4,8 @@ import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import { useEffect, useState } from "react"
 import { FT } from "src/integration/ft/ft"
 
-import { ImageWithFallback, IconNftPlaceholder } from "@nfid-frontend/ui"
 import { Skeleton } from "@nfid-frontend/ui"
-import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
+import { useSWRWithTimestamp } from "@nfid/swr"
 
 import {
   fetchTokens,
@@ -62,7 +61,9 @@ export function ScanTokens({
 
       const newTokens = tokensSnapshot.map((aT) => {
         const showedToken = showedTokens.find(
-          (t) => t.getTokenAddress() === aT.getTokenAddress(),
+          (t) =>
+            t.getTokenAddress() === aT.getTokenAddress() &&
+            t.getChainId() === aT.getChainId(),
         )
         return showedToken || aT
       })
@@ -139,7 +140,7 @@ export function ScanTokens({
               </p>
               <div
                 className={clsx(
-                  "overflow-auto",
+                  "overflow-auto max-h-[50vh]",
                   "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
                   "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
                   "dark:scrollbar-thumb-zinc-600 dark:scrollbar-track-[#242427]",
@@ -165,7 +166,7 @@ export function ScanTokens({
               </div>
               <Button
                 onClick={() => setIsModalOpen(false)}
-                className="w-full mt-auto"
+                className="w-full mt-[20px]"
               >
                 OK
               </Button>

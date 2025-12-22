@@ -15,6 +15,7 @@ import {
   type FeeData,
   type TransactionResponse,
 } from "ethers"
+import { storageWithTtl } from "@nfid/client-db"
 import { agentBaseConfig } from "packages/integration/src/lib/actors"
 
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
@@ -98,7 +99,31 @@ export abstract class EVMService {
 
   //get balance of eth address
   public async getBalance(address: Address): Promise<Balance> {
-    return await this.provider.getBalance(address)
+    const cacheKey = `EVM_BALANCE_${CHAIN_ID}_${address.toLowerCase()}`
+
+    const fetchAndCache = async (): Promise<Balance> => {
+      const balance = await this.provider.getBalance(address)
+      // Random TTL between 20s and 30s to avoid thundering herd on expiry
+      const randomTtlMs = 20000 + Math.floor(Math.random() * 10000)
+      await storageWithTtl.set(cacheKey, balance.toString(), randomTtlMs)
+      return balance
+    }
+
+    const cache = await storageWithTtl.getEvenExpired(cacheKey)
+
+    if (cache) {
+      const cachedBalance = BigInt(cache.value as string) as Balance
+      if (!cache.expired) {
+        return cachedBalance
+      }
+      // Refresh in background, return cached value immediately
+      fetchAndCache().catch((error) =>
+        console.error("Failed to refresh balance cache:", error),
+      )
+      return cachedBalance
+    }
+
+    return await fetchAndCache()
   }
 
   public async getQuickBalance(): Promise<Balance> {

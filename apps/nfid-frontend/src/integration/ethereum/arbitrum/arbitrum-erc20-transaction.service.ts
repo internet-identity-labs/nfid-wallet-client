@@ -11,6 +11,10 @@ export class ArbitrumErc20TransactionService extends EVMTokenTransactionService 
   protected getService(): Erc20Service {
     return arbitrumErc20Service
   }
+
+  public getExplorerLink(txId: string): string {
+    return `https://arbiscan.io/tx/${txId}`
+  }
 }
 
 export const arbitrumErc20TransactionService =

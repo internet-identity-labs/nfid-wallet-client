@@ -1,18 +1,21 @@
 import { Activity } from "packages/ui/src/organisms/activity"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { useSWRWithTimestamp } from "@nfid/swr"
 
-import { useActivityPagination } from "./hooks/pagination"
+import { useActivityFilter } from "./hooks/filter"
 
 import { fetchTokens } from "../fungible-token/utils"
 
 const ActivityPage = () => {
   const { state } = useLocation()
   const initialFilter = state && state.canisterId ? [state.canisterId] : []
-  const data = useActivityPagination(initialFilter)
+  const [tokenFilter, setTokenFilter] = useState<string[]>(initialFilter)
+  const [chainFilter, setChainFilter] = useState<string[]>([])
+  const [txFilter, setTxFilter] = useState<string[]>([])
+
   const { data: tokens = [] } = useSWRWithTimestamp("tokens", fetchTokens, {
     revalidateOnFocus: false,
     revalidateOnMount: false,
@@ -22,7 +25,28 @@ const ActivityPage = () => {
     return tokens.filter((token) => token.getTokenState() === State.Active)
   }, [tokens])
 
-  return <Activity activityData={data} tokens={activeTokens} />
+  const data = useActivityFilter({
+    activeTokens,
+    tokenFilter,
+    chainFilter,
+    txFilter,
+  })
+
+  return (
+    <Activity
+      tokens={activeTokens}
+      activityData={{
+        ...data,
+        activities: data.activities ?? [],
+      }}
+      tokenFilter={tokenFilter}
+      setTokenFilter={setTokenFilter}
+      chainFilter={chainFilter}
+      setChainFilter={setChainFilter}
+      txFilter={txFilter}
+      setTxFilter={setTxFilter}
+    />
+  )
 }
 
 export default ActivityPage

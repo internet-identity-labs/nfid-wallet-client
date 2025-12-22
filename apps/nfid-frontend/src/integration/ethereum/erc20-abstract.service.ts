@@ -33,8 +33,6 @@ export const ZERO = BigInt(0)
 const ERC20_TOKENS_LIST_CACHE_KEY = "ERC20_TokensList"
 const ERC20_TOKENS_LIST_CACHE_TTL = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
 
-const ERC20_BALANCES_CACHE_TTL = 1 * 60 * 1000 // 1 minute in milliseconds
-
 export interface ERC20TokenInfo {
   address: string
   name: string
@@ -357,6 +355,14 @@ export abstract class Erc20Service {
     Map<string, { balance: string; address: string; error?: string }>
   > {
     try {
+      const cache = await storageWithTtl.getEvenExpired(cacheKey)
+      if (cache && !cache.expired) {
+        return cache.value as Map<
+          string,
+          { balance: string; address: string; error?: string }
+        >
+      }
+
       // Use Multicall3 to get all balances in a single request
       const multicallInterface = new Interface(MULTICALL3_ABI)
       const erc20Interface = new Interface(ERC20_ABI)
@@ -441,102 +447,16 @@ export abstract class Erc20Service {
         }),
       )
 
-      // Cache the result for 10 minutes (replace existing cache)
-      await storageWithTtl.set(
-        cacheKey,
-        balancesArray,
-        ERC20_BALANCES_CACHE_TTL,
-      )
+      const randomTtlMs = 20000 + Math.floor(Math.random() * 10000)
+
+      // Cache the result for random TTL between 20s and 30s to avoid thundering herd on expiry
+      await storageWithTtl.set(cacheKey, balancesArray, randomTtlMs)
 
       return fetchedBalances
     } catch (error) {
       console.error("Multicall error, falling back to individual calls:", error)
-      // Fallback to individual calls if multicall fails
-      const fallbackBalances = await this.getMultipleTokenBalancesFallback(
-        address,
-        contractAddresses,
-      )
-
-      // Convert fallback to Map
-      const fallbackMap = new Map<
-        string,
-        { balance: string; address: string; error?: string }
-      >()
-      fallbackBalances.forEach((item) => {
-        fallbackMap.set(item.contractAddress.toLowerCase(), {
-          balance: item.balance,
-          address: item.address,
-          error: item.error,
-        })
-      })
-
-      // Convert Map to array for storage (replace cache, don't merge)
-      const balancesArray = Array.from(fallbackMap.entries()).map(
-        ([contractAddress, balance]) => ({
-          contractAddress,
-          ...balance,
-        }),
-      )
-
-      // Cache the result (replace existing cache)
-      await storageWithTtl.set(
-        cacheKey,
-        balancesArray,
-        ERC20_BALANCES_CACHE_TTL,
-      )
-
-      return fallbackMap
+      throw error
     }
-  }
-
-  /**
-   * Fallback method: Get balances using individual calls
-   * Used when Multicall3 fails or is unavailable
-   */
-  private async getMultipleTokenBalancesFallback(
-    address: string,
-    contractAddresses: string[],
-  ) {
-    const balancePromises = contractAddresses.map(async (contractAddress) => {
-      try {
-        const erc20Contract = new Contract(
-          contractAddress,
-          ERC20_ABI,
-          this.provider,
-        )
-        const balance = await erc20Contract.balanceOf(address)
-        return {
-          contractAddress,
-          balance: balance.toString(),
-          address,
-        }
-      } catch (error) {
-        console.error(
-          `Error getting balance for contract ${contractAddress}:`,
-          error,
-        )
-        return {
-          contractAddress,
-          balance: "0",
-          address,
-          error: error instanceof Error ? error.message : "Unknown error",
-        }
-      }
-    })
-
-    const results = await Promise.allSettled(balancePromises)
-    return results.map((result, index) => {
-      if (result.status === "fulfilled") {
-        return result.value
-      } else {
-        return {
-          contractAddress: contractAddresses[index],
-          balance: "0",
-          address,
-          error: result.reason?.message || "Failed to fetch balance",
-        }
-      }
-    })
   }
 
   getFeeData = async ({

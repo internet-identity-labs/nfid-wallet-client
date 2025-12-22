@@ -15,7 +15,7 @@ import { PolNetworkIcon } from "packages/ui/src/atoms/icons/PolNetworkIcon"
 import { BaseNetworkIcon } from "packages/ui/src/atoms/icons/BaseNetworkIcon"
 import { ArbNetworkIcon } from "packages/ui/src/atoms/icons/ArbNetworkIcon"
 
-export const chainOptions = [
+const chainOptions = [
   { label: "Bitcoin", value: `${ChainId.BTC}`, icon: BtcNetworkIcon },
   { label: "Ethereum", value: `${ChainId.ETH}`, icon: EthNetworkIcon },
   { label: "Internet Computer", value: `${ChainId.ICP}`, icon: IcpNetworkIcon },

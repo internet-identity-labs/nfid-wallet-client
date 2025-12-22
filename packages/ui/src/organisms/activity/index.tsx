@@ -18,15 +18,29 @@ import { EVM_NATIVE, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 import { TableActivitySkeleton } from "../../atoms/skeleton"
 import { ActivityEmpty } from "./components/activity-empty"
 import { ActivityTableGroup } from "./components/activity-table-group"
-import { chainOptions } from "../tokens/components/chain-filter"
+
 import { AllNetworksIcon } from "packages/ui/src/atoms/icons/AllNetworksIcon"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { BtcNetworkIcon } from "../../atoms/icons/BtcNetworkIcon"
+import { EthNetworkIcon } from "../../atoms/icons/EthNetworkIcon"
+import { IcpNetworkIcon } from "../../atoms/icons/IcpNetworkIcon"
+import { PolNetworkIcon } from "../../atoms/icons/PolNetworkIcon"
+import { ArbNetworkIcon } from "../../atoms/icons/ArbNetworkIcon"
 
 type IFilter = {
   tx: string[]
   chain: string[]
   token: string[]
 }
+
+const chainOptions = [
+  { label: "Bitcoin", value: `${ChainId.BTC}`, icon: BtcNetworkIcon },
+  { label: "Ethereum", value: `${ChainId.ETH}`, icon: EthNetworkIcon },
+  { label: "Internet Computer", value: `${ChainId.ICP}`, icon: IcpNetworkIcon },
+  { label: "Polygon", value: `${ChainId.POL}`, icon: PolNetworkIcon },
+  { label: "Arbitrum", value: `${ChainId.ARB}`, icon: ArbNetworkIcon },
+]
 
 export const txOptions = [
   { label: "Receive", value: `${IActivityAction.RECEIVED}` },

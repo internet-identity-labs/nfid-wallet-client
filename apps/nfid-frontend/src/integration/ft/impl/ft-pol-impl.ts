@@ -11,6 +11,7 @@ import {
   PolygonService,
   polygonService,
 } from "frontend/integration/ethereum/polygon/polygon.service"
+import { polygonErc20Service } from "frontend/integration/ethereum/polygon/pol-erc20.service"
 
 export class FTPolygonImpl extends FTEvmAbstractImpl {
   constructor(state: State) {
@@ -41,8 +42,16 @@ export class FTPolygonImpl extends FTEvmAbstractImpl {
       return
     }
 
-    // TODO: implement Polygon rate fetch
-    // this.tokenRate =
+    const prices = await polygonErc20Service.getUSDPrices([
+      "0x0000000000000000000000000000000000001010",
+    ])
+    if (prices.length > 0) {
+      this.tokenRate = {
+        value: new BigNumber(prices[0].price),
+        dayChangePercent: undefined,
+        dayChangePercentPositive: undefined,
+      }
+    }
 
     if (this.tokenBalance !== undefined) {
       this.inited = true

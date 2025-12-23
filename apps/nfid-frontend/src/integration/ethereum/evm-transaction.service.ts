@@ -4,6 +4,7 @@ import {
   ETHERSCAN_API_KEY,
 } from "@nfid/integration/token/constants"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
+import { storageWithTtl } from "@nfid/client-db"
 import { Erc20Service } from "./erc20-abstract.service"
 import { ERC20TokenInfo } from "./erc20-abstract.service"
 import { IActivityRow } from "frontend/features/activity/types"
@@ -79,6 +80,33 @@ export abstract class EVMTokenTransactionService
   }
 
   public async getActivitiesRows(address: string): Promise<IActivityRow[]> {
+    const chainId = this.getChainId()
+    const normalizedAddress = address.toLowerCase()
+    const cacheKey = `EVM_ACTIVITIES_${chainId}_${normalizedAddress}`
+
+    // Check cache first
+    const cache = await storageWithTtl.getEvenExpired(cacheKey)
+
+    if (cache && !cache.expired) {
+      return cache.value as IActivityRow[]
+    }
+
+    // If cache expired, return it immediately and refresh in background
+    if (cache && cache.expired) {
+      this.fetchAndCacheActivities(address, cacheKey).catch((error) => {
+        console.error("Failed to refresh activities in background:", error)
+      })
+      return cache.value as IActivityRow[]
+    }
+
+    // No cache, fetch and cache
+    return await this.fetchAndCacheActivities(address, cacheKey)
+  }
+
+  private async fetchAndCacheActivities(
+    address: string,
+    cacheKey: string,
+  ): Promise<IActivityRow[]> {
     try {
       // Get ERC20 token transactions
       const tokenUrl = this.getUrl(address)
@@ -98,7 +126,11 @@ export abstract class EVMTokenTransactionService
         tokenData.result.length === 0
       ) {
         console.debug("No ERC20 token transactions found for address:", address)
-        return []
+        const emptyResult: IActivityRow[] = []
+        // Cache empty result with random TTL between 15-25 seconds
+        const randomTtl = 15000 + Math.floor(Math.random() * 10000)
+        await storageWithTtl.set(cacheKey, emptyResult, randomTtl)
+        return emptyResult
       }
 
       let tokenList = await this.getService().getTokensList()
@@ -136,6 +168,11 @@ export abstract class EVMTokenTransactionService
       })
 
       console.debug("Processed ERC20 activities:", tokenActivities)
+
+      // Cache result with random TTL between 15-25 seconds
+      const randomTtl = 15000 + Math.floor(Math.random() * 10000)
+      await storageWithTtl.set(cacheKey, tokenActivities, randomTtl)
+
       return tokenActivities
     } catch (error) {
       console.error(
@@ -154,6 +191,33 @@ export abstract class EVMNativeTransactionService
     return `https://api.etherscan.io/v2/api?chainid=${this.getChainId()}&module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${ETHERSCAN_API_KEY}`
   }
   public async getActivitiesRows(address: string): Promise<IActivityRow[]> {
+    const chainId = this.getChainId()
+    const normalizedAddress = address.toLowerCase()
+    const cacheKey = `EVM_ACTIVITIES_${chainId}_${normalizedAddress}`
+
+    // Check cache first
+    const cache = await storageWithTtl.getEvenExpired(cacheKey)
+
+    if (cache && !cache.expired) {
+      return cache.value as IActivityRow[]
+    }
+
+    // If cache expired, return it immediately and refresh in background
+    if (cache && cache.expired) {
+      this.fetchAndCacheActivities(address, cacheKey).catch((error) => {
+        console.error("Failed to refresh activities in background:", error)
+      })
+      return cache.value as IActivityRow[]
+    }
+
+    // No cache, fetch and cache
+    return await this.fetchAndCacheActivities(address, cacheKey)
+  }
+
+  private async fetchAndCacheActivities(
+    address: string,
+    cacheKey: string,
+  ): Promise<IActivityRow[]> {
     try {
       const url = this.getUrl(address)
 
@@ -168,12 +232,20 @@ export abstract class EVMNativeTransactionService
 
       if (data.status !== "1") {
         console.error("Etherscan API error:", data.message)
-        return []
+        const emptyResult: IActivityRow[] = []
+        // Cache empty result with random TTL between 15-25 seconds
+        const randomTtl = 15000 + Math.floor(Math.random() * 10000)
+        await storageWithTtl.set(cacheKey, emptyResult, randomTtl)
+        return emptyResult
       }
 
       if (!data.result || data.result.length === 0) {
         console.debug("No ETH transactions found for address:", address)
-        return []
+        const emptyResult: IActivityRow[] = []
+        // Cache empty result with random TTL between 15-25 seconds
+        const randomTtl = 15000 + Math.floor(Math.random() * 10000)
+        await storageWithTtl.set(cacheKey, emptyResult, randomTtl)
+        return emptyResult
       }
 
       const activities: IActivityRow[] = data.result.map((tx) => {
@@ -198,6 +270,11 @@ export abstract class EVMNativeTransactionService
       })
 
       console.debug("Processed ETH activities:", activities)
+
+      // Cache result with random TTL between 15-25 seconds
+      const randomTtl = 15000 + Math.floor(Math.random() * 10000)
+      await storageWithTtl.set(cacheKey, activities, randomTtl)
+
       return activities
     } catch (error) {
       console.error("Error fetching ETH transactions from Etherscan:", error)

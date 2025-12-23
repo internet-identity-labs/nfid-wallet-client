@@ -77,7 +77,10 @@ export class IdbKeyVal implements KeyValueStore {
   }
 
   // Do not use - instead prefer create
-  private constructor(private _db: Database, private _storeName: string) {}
+  private constructor(
+    private _db: Database,
+    private _storeName: string,
+  ) {}
 
   /**
    * Basic setter
@@ -129,5 +132,19 @@ export class IdbKeyVal implements KeyValueStore {
     }
 
     return keys
+  }
+
+  public async getAll<T>(): Promise<Array<{ key: string; value: T }>> {
+    const tx = this._db.transaction(this._storeName, "readonly")
+    const store = tx.objectStore(this._storeName)
+    const results: Array<{ key: string; value: T }> = []
+    let cursor = await store.openCursor()
+
+    while (cursor) {
+      results.push({ key: cursor.key as string, value: cursor.value as T })
+      cursor = await cursor.continue()
+    }
+
+    return results
   }
 }

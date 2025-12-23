@@ -4,4 +4,5 @@ export interface KeyValueStore {
   remove(key: IDBValidKey): Promise<void>
   clear(): Promise<void>
   getAllKeys(): Promise<string[]>
+  getAll<T>(): Promise<Array<{ key: string; value: T }>>
 }

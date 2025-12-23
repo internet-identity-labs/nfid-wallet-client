@@ -23,14 +23,8 @@ import {
 } from "@nfid/integration/token/constants"
 import { fetchBtcAddress } from "frontend/util/fetch-btc-address"
 import { fetchEthAddress } from "frontend/util/fetch-eth-address"
-import { polygonTransactionService } from "frontend/integration/ethereum/polygon/pol-transaction.service"
-import { arbitrumTransactionService } from "frontend/integration/ethereum/arbitrum/arbitrum-transaction.service"
-import { baseTransactionService } from "frontend/integration/ethereum/base/base-transaction.service"
-import { bnbTransactionService } from "frontend/integration/ethereum/bnb/bnb-transaction.service"
 import { ethErc20TransactionService } from "frontend/integration/ethereum/eth/eth-erc20-transaction.service"
-import { baseErc20TransactionService } from "frontend/integration/ethereum/base/base-erc20-transaction.service"
 import { arbitrumErc20TransactionService } from "frontend/integration/ethereum/arbitrum/arbitrum-erc20-transaction.service"
-import { bnbErc20TransactionService } from "frontend/integration/ethereum/bnb/bnb-erc20-transaction.service"
 import { polygonErc20TransactionService } from "frontend/integration/ethereum/polygon/pol-erc20-transaction.service"
 
 export const getAllActivity = async ({
@@ -41,42 +35,29 @@ export const getAllActivity = async ({
   let btcAddress = await fetchBtcAddress()
   let evmAddress = await fetchEthAddress()
 
+  const [icrc1Activities, swapActivities, btcActivities, evmActivities] =
+    await Promise.all([
+      getIcrc1ActivitiesRows(filteredContracts, limit),
+      getSwapActivitiesRows(filteredContracts),
+      getBtcActivitiesRows(btcAddress),
+      fetchEvmActivitiesSequentially(evmAddress),
+    ])
+
   const [
-    icrc1Activities,
-    swapActivities,
-    btcActivities,
     ethActivities,
-    polygonActivities,
-    arbitrumActivities,
-    baseActivities,
-    bnbActivities,
-    erc20Activities,
-  ] = await Promise.all([
-    getIcrc1ActivitiesRows(filteredContracts, limit),
-    getSwapActivitiesRows(filteredContracts),
-    getBtcActivitiesRows(btcAddress),
-    ethTransactionService.getActivitiesRows(evmAddress),
-    polygonTransactionService.getActivitiesRows(evmAddress),
-    arbitrumTransactionService.getActivitiesRows(evmAddress),
-    baseTransactionService.getActivitiesRows(evmAddress),
-    bnbTransactionService.getActivitiesRows(evmAddress),
-    ethErc20TransactionService.getActivitiesRows(evmAddress),
-    arbitrumErc20TransactionService.getActivitiesRows(evmAddress),
-    baseErc20TransactionService.getActivitiesRows(evmAddress),
-    bnbErc20TransactionService.getActivitiesRows(evmAddress),
-    polygonErc20TransactionService.getActivitiesRows(evmAddress),
-  ])
+    ethErc20Activities,
+    arbitrumErc20Activities,
+    polygonErc20Activities,
+  ] = evmActivities
 
   const activitiesArray = [
     ...icrc1Activities,
     ...swapActivities,
     ...btcActivities,
     ...ethActivities,
-    ...polygonActivities,
-    ...arbitrumActivities,
-    ...baseActivities,
-    ...bnbActivities,
-    ...erc20Activities,
+    ...ethErc20Activities,
+    ...arbitrumErc20Activities,
+    ...polygonErc20Activities,
   ]
 
   const groupedRowsByDate = groupActivityRowsByDate(
@@ -141,4 +122,44 @@ export const getAllActivity = async ({
 export const nanoSecondsToDate = (nanoSeconds: bigint): Date => {
   const milliseconds = Number(nanoSeconds / BigInt(1000000))
   return new Date(milliseconds)
+}
+
+const fetchEvmActivitiesSequentially = async (
+  evmAddress: string,
+): Promise<
+  [
+    Awaited<ReturnType<typeof ethTransactionService.getActivitiesRows>>,
+    Awaited<ReturnType<typeof ethErc20TransactionService.getActivitiesRows>>,
+    Awaited<
+      ReturnType<typeof arbitrumErc20TransactionService.getActivitiesRows>
+    >,
+    Awaited<
+      ReturnType<typeof polygonErc20TransactionService.getActivitiesRows>
+    >,
+  ]
+> => {
+  const delay = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms))
+
+  const ethActivities =
+    await ethTransactionService.getActivitiesRows(evmAddress)
+  await delay(350)
+
+  const ethErc20Activities =
+    await ethErc20TransactionService.getActivitiesRows(evmAddress)
+  await delay(350)
+
+  const arbitrumErc20Activities =
+    await arbitrumErc20TransactionService.getActivitiesRows(evmAddress)
+  await delay(350)
+
+  const polygonErc20Activities =
+    await polygonErc20TransactionService.getActivitiesRows(evmAddress)
+
+  return [
+    ethActivities,
+    ethErc20Activities,
+    arbitrumErc20Activities,
+    polygonErc20Activities,
+  ]
 }

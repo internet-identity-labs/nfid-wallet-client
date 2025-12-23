@@ -16,7 +16,6 @@ import {
   EVM_NATIVE,
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
-import { authState } from "packages/integration/src/lib/authentication"
 
 export abstract class FTERC20AbstractImpl extends FTImpl {
   constructor(erc20TokenInfo: ERC20TokenInfo) {

@@ -4,6 +4,7 @@ import {
   State,
 } from "@nfid/integration/token/icrc1/enum/enums"
 import PolygonIcon from "packages/ui/src/organisms/tokens/assets/polygon.svg"
+import BigNumber from "bignumber.js"
 
 import { ETH_DECIMALS, EVM_NATIVE } from "@nfid/integration/token/constants"
 import { FTEvmAbstractImpl } from "./ft-evm-abstract-impl"

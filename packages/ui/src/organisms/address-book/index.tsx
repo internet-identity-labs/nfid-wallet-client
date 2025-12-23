@@ -16,7 +16,7 @@ import {
   UserAddressUpdateRequest,
 } from "frontend/integration/address-book"
 import { getIsMobileDeviceMatch } from "../../utils/is-mobile"
-import { AddressBookAddress } from "./AddressBookAddress"
+import { AddressBookRow } from "./AddressBookRow"
 import { AddressBookModal } from "./AddressBookModal"
 import { ModalComponent } from "../../molecules/modal/index-v0"
 import { Spinner } from "../../atoms/spinner"
@@ -255,7 +255,7 @@ export const AddressBook: FC<AddressBookProps> = ({
                 ) : (
                   <tbody className="h-16 text-sm text-black">
                     {filteredAddresses.map((address, index, arr) => (
-                      <AddressBookAddress
+                      <AddressBookRow
                         key={`${address.id}`}
                         address={address}
                         dropdownPosition={

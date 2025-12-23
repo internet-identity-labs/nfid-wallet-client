@@ -9,14 +9,14 @@ import { EthNetworkIcon } from "packages/ui/src/atoms/icons/EthNetworkIcon"
 import { AddressBookDropdown } from "./AddressBookDropdown"
 import { useDarkTheme } from "frontend/hooks"
 
-interface AddressBookAddressProps {
+interface AddressBookRowProps {
   address: UserAddress
   dropdownPosition: IDropdownPosition
   setAddressToEdit: (id: string) => void
   setAddressToRemove: (id: string) => void
 }
 
-export const AddressBookAddress: FC<AddressBookAddressProps> = ({
+export const AddressBookRow: FC<AddressBookRowProps> = ({
   address,
   dropdownPosition,
   setAddressToEdit,

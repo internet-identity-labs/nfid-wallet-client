@@ -1,4 +1,3 @@
-import { useCallback } from "react"
 import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 import { AddressBook } from "packages/ui/src/organisms/address-book"
 import { useSWR } from "@nfid/swr"
@@ -9,21 +8,16 @@ import {
 } from "frontend/integration/address-book"
 
 const AddressBookPage = () => {
-  const create = useCallback(async (request: UserAddressSaveRequest) => {
-    await addressBookFacade.save(request)
-  }, [])
+  const create = (request: UserAddressSaveRequest) =>
+    addressBookFacade.save(request)
 
-  const update = useCallback(async (request: UserAddressUpdateRequest) => {
-    await addressBookFacade.update(request)
-  }, [])
+  const update = (request: UserAddressUpdateRequest) =>
+    addressBookFacade.update(request)
 
-  const remove = useCallback(async (id: string) => {
-    await addressBookFacade.delete(id)
-  }, [])
+  const remove = (id: string) => addressBookFacade.delete(id)
 
-  const { data: addresses, isLoading } = useSWR(
-    "addressBook",
-    async () => await addressBookFacade.findAll(),
+  const { data: addresses, isLoading } = useSWR("addressBook", async () =>
+    addressBookFacade.findAll(),
   )
 
   return (

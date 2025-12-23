@@ -500,11 +500,60 @@ export class WalletConnectService {
       )
     }
 
+    // Parse typedData if it's a string
+    let parsedTypedData: any = typedData
+    if (typeof typedData === "string") {
+      try {
+        parsedTypedData = JSON.parse(typedData)
+      } catch (parseError) {
+        throw new Error(
+          `Invalid JSON format for typed data: ${parseError instanceof Error ? parseError.message : "Unknown error"}`,
+        )
+      }
+    }
+
+    // Validate typedData structure
+    if (!parsedTypedData) {
+      throw new Error("Typed data is required")
+    }
+
+    if (!parsedTypedData.domain) {
+      throw new Error("Typed data domain is required")
+    }
+
+    if (!parsedTypedData.types) {
+      throw new Error("Typed data types are required")
+    }
+
+    if (!parsedTypedData.message) {
+      throw new Error("Typed data message is required")
+    }
+
+    // Normalize chainId to number if it's a string
+    if (
+      parsedTypedData.domain.chainId !== undefined &&
+      typeof parsedTypedData.domain.chainId === "string"
+    ) {
+      parsedTypedData.domain.chainId = parseInt(
+        parsedTypedData.domain.chainId,
+        10,
+      )
+    }
+
+    // Remove EIP712Domain from types - it's added automatically by ethers
+    const typesWithoutDomain = { ...parsedTypedData.types }
+    delete typesWithoutDomain.EIP712Domain
+
+    // Validate primaryType exists
+    if (!parsedTypedData.primaryType) {
+      throw new Error("Typed data primaryType is required")
+    }
+
     // Compute EIP-712 hash using ethers TypedDataEncoder
     const hash = TypedDataEncoder.hash(
-      typedData.domain,
-      typedData.types,
-      typedData.message,
+      parsedTypedData.domain,
+      typesWithoutDomain,
+      parsedTypedData.message,
     )
 
     // Canister expects hex string without 0x prefix

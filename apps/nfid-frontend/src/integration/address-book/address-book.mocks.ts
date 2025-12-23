@@ -4,7 +4,7 @@ import { UserAddressEntity } from "./interfaces"
 export const ALICE_SAVE_REQUEST: UserAddressSaveRequest = {
   name: "Alice",
   icpPrincipal: "aaaaa-aa",
-  icpAcoountId:
+  icpAccountId:
     "d4685b31b51450508aff0cd71cda68ec6f6b7b9c9a4e7c3d8d1b8e3d9f5e7c2a",
   btc: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
   evm: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1",
@@ -13,7 +13,7 @@ export const ALICE_SAVE_REQUEST: UserAddressSaveRequest = {
 export const BOB_SAVE_REQUEST: UserAddressSaveRequest = {
   name: "Bob",
   icpPrincipal: "bbbbb-bb",
-  icpAcoountId:
+  icpAccountId:
     "e5796c42c62561619bgg1de82deb79fd7g7c8c0a5b5f8d4e9e2c9f4e0a6f8d3b",
 }
 

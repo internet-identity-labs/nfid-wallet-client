@@ -2,6 +2,7 @@ import { NavSecurityIcon } from "packages/ui/src/atoms/icons/nav-security"
 import { NavPermissionsIcon } from "packages/ui/src/atoms/icons/nav-permissions"
 import { NavVaultsIcon } from "packages/ui/src/atoms/icons/nav-vaults"
 import { NavWalletIcon } from "packages/ui/src/atoms/icons/nav-wallet"
+import { NavAddressBookIcon } from "packages/ui/src/atoms/icons/nav-book"
 
 export const ProfileConstants = {
   base: "/wallet",
@@ -12,6 +13,7 @@ export const ProfileConstants = {
   activity: "activity",
   security: "/security",
   permissions: "/permissions",
+  addressBook: "/address-book",
   copyRecoveryPhrase: "/copy-recovery-phrase",
   addPhoneNumber: "/add-phone-number",
   vaults: "/vaults",
@@ -33,6 +35,12 @@ export const navigationPopupLinks = [
     link: `${ProfileConstants.base}/${ProfileConstants.tokens}`,
     id: "nav-assets",
     separator: true,
+  },
+  {
+    icon: NavAddressBookIcon,
+    title: "Address book",
+    link: ProfileConstants.addressBook,
+    id: "nav-address-book",
   },
   {
     icon: NavSecurityIcon,

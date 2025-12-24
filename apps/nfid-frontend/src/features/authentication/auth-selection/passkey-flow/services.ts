@@ -416,7 +416,7 @@ export class PasskeyConnector {
         identity: multiIdent._actualIdentity!,
       }
     } catch (e) {
-      authState.reset()
+      authState.reset(false)
       throw e
     } finally {
       callback?.()

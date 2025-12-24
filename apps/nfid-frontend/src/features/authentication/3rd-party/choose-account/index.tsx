@@ -84,7 +84,7 @@ export const AuthChooseAccount = ({
       ([authRequest]) => fetchAccountsService({ authRequest }),
       {
         onError: async () => {
-          await authState.reset()
+          await authState.reset(false)
           onReset()
         },
       },
@@ -145,7 +145,7 @@ export const AuthChooseAccount = ({
 
         const domain = useHostName
           ? authRequest.hostname
-          : authRequest.derivationOrigin ?? authRequest.hostname
+          : (authRequest.derivationOrigin ?? authRequest.hostname)
 
         const anonymousDelegation = await getAnonymousDelegate(
           authRequest.sessionPublicKey,
@@ -319,7 +319,7 @@ export const AuthChooseAccount = ({
               setSelectedProfile={(value) => setSelectedProfile(value)}
               isAvailable={!!authRequest.targets?.length}
               onError={async () => {
-                await authState.reset()
+                await authState.reset(false)
                 onReset()
               }}
             />

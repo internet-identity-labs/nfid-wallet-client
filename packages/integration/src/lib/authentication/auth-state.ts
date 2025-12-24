@@ -32,6 +32,8 @@ import {
   serializeUserIdData,
   UserIdData,
 } from "./user-id-data"
+import { domainKeyStorage } from "../lambda/domain-key-storage"
+import { storageWithTtl } from "@nfid/client-db"
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -87,7 +89,7 @@ function makeAuthState() {
     window.setAuthState = _setAuthSession
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    window.resetAuthState = _clearAuthSessionFromCache
+    window.resetAuthState = (hard = false) => _clearAuthSessionFromCache(hard)
   }
 
   async function _loadAuthSessionFromCache() {
@@ -156,7 +158,7 @@ function makeAuthState() {
     }
 
     replaceIdentity(delegationIdentity, "_loadAuthSessionFromCache")
-    setupSessionManager({ onIdle: invalidateIdentity })
+    setupSessionManager({ onIdle: (hard = false) => invalidateIdentity(hard) })
 
     observableAuthState$.next({
       cacheLoaded: true,
@@ -187,9 +189,14 @@ function makeAuthState() {
     return true
   }
 
-  async function _clearAuthSessionFromCache() {
-    localStorage.removeItem(KEY_BTC_ADDRESS)
-    localStorage.removeItem(KEY_ETH_ADDRESS)
+  async function _clearAuthSessionFromCache(hard: boolean) {
+    if (hard) {
+      localStorage.removeItem(KEY_BTC_ADDRESS)
+      localStorage.removeItem(KEY_ETH_ADDRESS)
+      storageWithTtl.clear()
+      domainKeyStorage.clear()
+      walletStorage.clear()
+    }
     await authStorage.clear()
     return true
   }
@@ -243,7 +250,7 @@ function makeAuthState() {
       userIdData,
     })
     replaceIdentity(delegationIdentity, "authState.set")
-    setupSessionManager({ onIdle: invalidateIdentity })
+    setupSessionManager({ onIdle: (hard = false) => invalidateIdentity(hard) })
   }
 
   function get() {
@@ -251,8 +258,8 @@ function makeAuthState() {
     return observableAuthState$.getValue()
   }
 
-  async function reset() {
-    await _clearAuthSessionFromCache()
+  async function reset(hard: boolean) {
+    await _clearAuthSessionFromCache(hard)
     console.debug("invalidateIdentity")
     agent.invalidateIdentity()
     agent.replaceIdentity(new AnonymousIdentity())
@@ -282,7 +289,7 @@ function makeAuthState() {
             sessionKey: result.sessionKey,
           })
         })
-        .catch(invalidateIdentity)
+        .catch((hard = false) => invalidateIdentity(hard))
         .finally(() => {
           console.debug("checkAndRenewFEDelegation requestFEDelegation done")
           pendingRenewDelegation = false
@@ -294,9 +301,9 @@ function makeAuthState() {
   /**
    * When user disconnects an identity, we update our agent.
    */
-  async function invalidateIdentity(hard = true) {
+  async function invalidateIdentity(hard: boolean) {
     console.debug("makeAuthState invalidateIdentity")
-    await reset()
+    await reset(hard)
     hard && window.location.reload()
   }
 
@@ -307,7 +314,7 @@ function makeAuthState() {
     subscribe,
     fromCache,
     checkAndRenewFEDelegation,
-    logout: invalidateIdentity,
+    logout: (hard = true) => invalidateIdentity(hard),
     getUserIdData: () => {
       const state = get()
       if (!state.userIdData) throw new Error("No user data")

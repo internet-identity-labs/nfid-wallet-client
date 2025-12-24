@@ -18,7 +18,7 @@ export interface UserAddress {
   id: UserAddressId
   name: string
   icpPrincipal?: string
-  icpAcoountId?: string
+  icpAccountId?: string
   btc?: string
   evm?: string
 }

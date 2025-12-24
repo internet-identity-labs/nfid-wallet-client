@@ -44,6 +44,17 @@ import {
 import { fetchVaultWalletsBalances } from "../fungible-token/fetch-balances"
 import { ftService } from "frontend/integration/ft/ft-service"
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
+import {
+  UserAddress,
+  UserAddressSaveRequest,
+  UserAddressUpdateRequest,
+} from "frontend/integration/address-book"
+
+export enum AddressBookAction {
+  CREATE = "CREATE",
+  EDIT = "EDIT",
+  REMOVE = "REMOVE",
+}
 
 type ITransferRequest = {
   to: string
@@ -125,6 +136,15 @@ const addressValidationService = {
       return false
     }
   },
+}
+
+export const validateAccountId = (address: string): boolean | string => {
+  const isAccountIdentifier =
+    addressValidationService.isValidAccountIdentifier(address)
+
+  if (!isAccountIdentifier) {
+    return "Invalid accound ID"
+  } else return true
 }
 
 export const validateICPAddress = (address: string): boolean | string => {
@@ -295,6 +315,33 @@ export const getUpdatedInitedTokens = async (tokens: FT[]) => {
     mutateWithTimestamp("tokens", updatedTokens, false),
     mutateWithTimestamp("initedTokens", freshInitedTokens, false),
   ])
+}
+
+export const getUpdatedAddressBook = async (
+  data: UserAddress[] | undefined,
+  request: UserAddressSaveRequest | UserAddressUpdateRequest | { id: string },
+  mode: AddressBookAction,
+) => {
+  if (!data) return
+
+  let updated: UserAddress[]
+
+  if (mode === AddressBookAction.CREATE) {
+    const tempId = `tmp-${Date.now()}` as string
+    updated = [...data, { id: tempId, ...request } as UserAddress]
+  } else if (mode === AddressBookAction.EDIT) {
+    updated = data.map((addr) =>
+      addr.id === (request as UserAddressUpdateRequest).id
+        ? { ...addr, ...request }
+        : addr,
+    )
+  } else if (mode === AddressBookAction.REMOVE) {
+    updated = data.filter((addr) => addr.id !== (request as { id: string }).id)
+  } else {
+    updated = data
+  }
+
+  await mutate("addressBook", updated, false)
 }
 
 export const getConversionTokenAddress = (source: string): string => {

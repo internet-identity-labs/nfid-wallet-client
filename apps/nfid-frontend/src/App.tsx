@@ -41,6 +41,8 @@ const ProfileSecurity = lazy(() => import("../src/features/security"))
 
 const ProfilePermissions = lazy(() => import("../src/features/permissions"))
 
+const AddressBookPage = lazy(() => import("../src/features/address-book"))
+
 const CopyRecoveryPhrase = lazy(
   () => import("../src/apps/identity-manager/profile/copy-recovery-phrase"),
 )
@@ -269,6 +271,14 @@ export const App = () => {
                           walletTheme={walletTheme}
                           setWalletTheme={setWalletTheme}
                         />
+                      </AuthWrapper>
+                    }
+                  />
+                  <Route
+                    path={ProfileConstants.addressBook}
+                    element={
+                      <AuthWrapper>
+                        <AddressBookPage />
                       </AuthWrapper>
                     }
                   />

@@ -23,12 +23,14 @@ import {
 } from "./address-book.mocks"
 import { getIdentity } from "../test-util"
 
-describe("Address Book Service test suite", () => {
+describe("Address Book", () => {
   jest.setTimeout(50000)
+
+  let getWalletDelegationSpy: jest.SpyInstance
 
   beforeEach(async () => {
     const identity = getIdentity("12345678123456781234567812345678")
-    jest
+    getWalletDelegationSpy = jest
       .spyOn(
         require("frontend/integration/facade/wallet"),
         "getWalletDelegation",
@@ -37,6 +39,10 @@ describe("Address Book Service test suite", () => {
 
     await addressBookCanisterClient.deleteAll()
     addressBookCache.reset()
+  })
+
+  afterEach(() => {
+    getWalletDelegationSpy.mockRestore()
   })
 
   describe("findAll", () => {

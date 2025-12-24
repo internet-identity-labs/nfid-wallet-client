@@ -5,7 +5,6 @@ import {
   UserAddressPreview,
   UserAddress,
   UserAddressSaveRequest,
-  UserAddressId,
 } from "../types"
 import { UserAddressEntity } from "../interfaces"
 

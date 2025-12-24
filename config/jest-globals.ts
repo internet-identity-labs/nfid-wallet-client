@@ -25,6 +25,7 @@ export const JEST_GLOBALS = {
   VERIFIER_CANISTER_ID: "rdmx6-jaaaa-aaaaa-aaadq-cai",
   LEDGER_CANISTER_ID: "ryjl3-tyaaa-aaaaa-aaaba-cai",
   CYCLES_MINTER_CANISTER_ID: "rkp4c-7iaaa-aaaaa-aaaca-cai",
+  ADDRESS_BOOK_CANISTER_ID: "zsjjs-7aaaa-aaaak-apgyq-cai",
   CANISTER_WITH_AT_LEAST_ONE_PASSKEY:
     "https://appqm-xiaaa-aaaak-akwaa-cai.icp0.io",
   VERIFY_PHONE_NUMBER:

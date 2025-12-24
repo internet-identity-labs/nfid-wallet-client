@@ -4,33 +4,36 @@
 import {
   addressBookCache,
   addressBookFacade,
-  addressBookStorage,
+  addressBookCanisterClient,
 } from "./address-book.container"
 import { ChainId, Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { AddressType, UserAddress } from "./types"
 import {
-  ALICE,
-  BOB,
-  CHARLIE,
-  ALICE_ENTITY,
-  BOB_ENTITY,
-  CHARLIE_ENTITY,
   ALICE_SAVE_REQUEST,
   BOB_SAVE_REQUEST,
   CHARLIE_SAVE_REQUEST,
 } from "./address-book.mocks"
+import { getIdentity } from "../test-util"
 
 describe("Address Book Service test suite", () => {
-  jest.setTimeout(35000)
+  jest.setTimeout(50000)
 
   beforeEach(async () => {
-    await addressBookStorage.clear()
+    const identity = getIdentity("12345678123456781234567812345678")
+    jest
+      .spyOn(
+        require("frontend/integration/facade/wallet"),
+        "getWalletDelegation",
+      )
+      .mockResolvedValue(identity)
+
+    await addressBookCanisterClient.deleteAll()
     addressBookCache.reset()
   })
 
   describe("findAll", () => {
     it("should return empty array when no addresses stored", async () => {
-      // Given: empty storage
+      // Given: empty backend
       // When: findAll is called
       const result = await addressBookFacade.findAll()
 
@@ -39,19 +42,19 @@ describe("Address Book Service test suite", () => {
     })
 
     it("should return all addresses sorted alphabetically", async () => {
-      // Given: three addresses saved directly in storage with individual keys
-      await addressBookStorage.set(CHARLIE_ENTITY.id, CHARLIE_ENTITY)
-      await addressBookStorage.set(ALICE_ENTITY.id, ALICE_ENTITY)
-      await addressBookStorage.set(BOB_ENTITY.id, BOB_ENTITY)
+      // Given: three addresses saved via facade
+      await addressBookFacade.save(CHARLIE_SAVE_REQUEST)
+      await addressBookFacade.save(ALICE_SAVE_REQUEST)
+      await addressBookFacade.save(BOB_SAVE_REQUEST)
 
       // When: findAll is called
       const result = await addressBookFacade.findAll()
 
       // Then: should return addresses sorted alphabetically
       expect(result).toHaveLength(3)
-      expect(result[0]).toEqual(ALICE)
-      expect(result[1]).toEqual(BOB)
-      expect(result[2]).toEqual(CHARLIE)
+      expect(result[0].name).toBe("Alice")
+      expect(result[1].name).toBe("Bob")
+      expect(result[2].name).toBe("Charlie")
     })
   })
 
@@ -85,11 +88,13 @@ describe("Address Book Service test suite", () => {
   describe("update", () => {
     it("should update existing address", async () => {
       // Given: an existing saved address
-      await addressBookStorage.set(ALICE_ENTITY.id, ALICE_ENTITY)
+      await addressBookFacade.save(ALICE_SAVE_REQUEST)
+      const addresses = await addressBookFacade.findAll()
+      const alice = addresses.find((a) => a.name === "Alice")!
 
       // When: update is called with modified address
       const updated: UserAddress = {
-        ...ALICE,
+        ...alice,
         name: "Alice Updated",
       }
       await addressBookFacade.update(updated)
@@ -98,7 +103,7 @@ describe("Address Book Service test suite", () => {
       const all = await addressBookFacade.findAll()
       expect(all).toHaveLength(1)
       expect(all[0].name).toBe("Alice Updated")
-      expect(all[0].id).toBe(ALICE.id)
+      expect(all[0].id).toBe(alice.id)
     })
 
     it("should throw error when updating without id", async () => {
@@ -119,29 +124,34 @@ describe("Address Book Service test suite", () => {
   describe("delete", () => {
     it("should delete address by id", async () => {
       // Given: two saved addresses
-      await addressBookStorage.set(ALICE_ENTITY.id, ALICE_ENTITY)
-      await addressBookStorage.set(BOB_ENTITY.id, BOB_ENTITY)
+      await addressBookFacade.save(ALICE_SAVE_REQUEST)
+      await addressBookFacade.save(BOB_SAVE_REQUEST)
+      const addresses = await addressBookFacade.findAll()
+      const alice = addresses.find((a) => a.name === "Alice")!
 
       // When: delete is called for Alice's id
-      await addressBookFacade.delete(ALICE.id)
+      await addressBookFacade.delete(alice.id)
 
       // Then: should remove Alice and keep Bob
       const all = await addressBookFacade.findAll()
       expect(all).toHaveLength(1)
-      expect(all[0]).toEqual(BOB)
+      expect(all[0].name).toBe("Bob")
     })
   })
 
   describe("get", () => {
     it("should return full UserAddress object", async () => {
       // Given: a saved address
-      await addressBookStorage.set(ALICE_ENTITY.id, ALICE_ENTITY)
+      await addressBookFacade.save(ALICE_SAVE_REQUEST)
+      const addresses = await addressBookFacade.findAll()
+      const alice = addresses.find((a) => a.name === "Alice")!
 
       // When: get is called with the id
-      const address = await addressBookFacade.get(ALICE.id)
+      const address = await addressBookFacade.get(alice.id)
 
       // Then: should return the complete UserAddress object
-      expect(address).toEqual(ALICE)
+      expect(address.name).toBe("Alice")
+      expect(address.id).toBe(alice.id)
     })
 
     it("should throw error when address not found", async () => {
@@ -157,8 +167,8 @@ describe("Address Book Service test suite", () => {
   describe("ftSearch", () => {
     beforeEach(async () => {
       // Given: two addresses with ICP addresses
-      await addressBookStorage.set(ALICE_ENTITY.id, ALICE_ENTITY)
-      await addressBookStorage.set(BOB_ENTITY.id, BOB_ENTITY)
+      await addressBookFacade.save(ALICE_SAVE_REQUEST)
+      await addressBookFacade.save(BOB_SAVE_REQUEST)
     })
 
     it("should filter by ICP Native (Account ID)", async () => {
@@ -191,7 +201,7 @@ describe("Address Book Service test suite", () => {
 
     it("should filter by BTC", async () => {
       // Given: an additional address with BTC
-      await addressBookStorage.set(CHARLIE_ENTITY.id, CHARLIE_ENTITY)
+      await addressBookFacade.save(CHARLIE_SAVE_REQUEST)
 
       // When: searching for BTC addresses
       const result = await addressBookFacade.ftSearch({
@@ -206,7 +216,7 @@ describe("Address Book Service test suite", () => {
 
     it("should filter by EVM", async () => {
       // Given: an additional address with EVM
-      await addressBookStorage.set(CHARLIE_ENTITY.id, CHARLIE_ENTITY)
+      await addressBookFacade.save(CHARLIE_SAVE_REQUEST)
 
       // When: searching for EVM addresses
       const result = await addressBookFacade.ftSearch({
@@ -248,10 +258,10 @@ describe("Address Book Service test suite", () => {
 
   describe("nftSearch", () => {
     beforeEach(async () => {
-      // Given: three addresses (Alice and Bob have ICP Principal, Charlie doesn't)
-      await addressBookStorage.set(ALICE_ENTITY.id, ALICE_ENTITY)
-      await addressBookStorage.set(BOB_ENTITY.id, BOB_ENTITY)
-      await addressBookStorage.set(CHARLIE_ENTITY.id, CHARLIE_ENTITY)
+      // Given: three addresses
+      await addressBookFacade.save(ALICE_SAVE_REQUEST)
+      await addressBookFacade.save(BOB_SAVE_REQUEST)
+      await addressBookFacade.save(CHARLIE_SAVE_REQUEST)
     })
 
     it("should return all addresses with ICP Principal", async () => {
@@ -291,8 +301,8 @@ describe("Address Book Service test suite", () => {
   describe("search", () => {
     beforeEach(async () => {
       // Given: two saved addresses
-      await addressBookStorage.set(ALICE_ENTITY.id, ALICE_ENTITY)
-      await addressBookStorage.set(BOB_ENTITY.id, BOB_ENTITY)
+      await addressBookFacade.save(ALICE_SAVE_REQUEST)
+      await addressBookFacade.save(BOB_SAVE_REQUEST)
     })
 
     it("should filter by address substring (case-insensitive)", async () => {
@@ -308,7 +318,7 @@ describe("Address Book Service test suite", () => {
 
     it("should match across all address types", async () => {
       // Given: an additional address with BTC
-      await addressBookStorage.set(CHARLIE_ENTITY.id, CHARLIE_ENTITY)
+      await addressBookFacade.save(CHARLIE_SAVE_REQUEST)
 
       // When: searching by BTC address prefix
       const result = await addressBookFacade.search({

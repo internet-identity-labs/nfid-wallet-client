@@ -7,11 +7,19 @@ import {
   addressBookCanisterClient,
 } from "./address-book.container"
 import { ChainId, Category } from "@nfid/integration/token/icrc1/enum/enums"
-import { AddressType, UserAddress } from "./types"
+import { UserAddress } from "./types"
 import {
   ALICE_SAVE_REQUEST,
   BOB_SAVE_REQUEST,
   CHARLIE_SAVE_REQUEST,
+  ALICE_ICP_ADDRESS_PREVIEW,
+  ALICE_ICP_PRINCIPAL_PREVIEW,
+  ALICE_BTC_PREVIEW,
+  ALICE_EVM_PREVIEW,
+  BOB_ICP_ADDRESS_PREVIEW,
+  BOB_ICP_PRINCIPAL_PREVIEW,
+  CHARLIE_BTC_PREVIEW,
+  CHARLIE_EVM_PREVIEW,
 } from "./address-book.mocks"
 import { getIdentity } from "../test-util"
 
@@ -52,9 +60,9 @@ describe("Address Book Service test suite", () => {
 
       // Then: should return addresses sorted alphabetically
       expect(result).toHaveLength(3)
-      expect(result[0].name).toBe("Alice")
-      expect(result[1].name).toBe("Bob")
-      expect(result[2].name).toBe("Charlie")
+      expect(result[0]).toMatchObject(ALICE_SAVE_REQUEST)
+      expect(result[1]).toMatchObject(BOB_SAVE_REQUEST)
+      expect(result[2]).toMatchObject(CHARLIE_SAVE_REQUEST)
     })
   })
 
@@ -67,7 +75,7 @@ describe("Address Book Service test suite", () => {
       // Then: should save with auto-generated UUID
       const all = await addressBookFacade.findAll()
       expect(all).toHaveLength(1)
-      expect(all[0].name).toBe("Charlie")
+      expect(all[0]).toMatchObject(CHARLIE_SAVE_REQUEST)
       expect(all[0].id).toBeTruthy()
       expect(all[0].id).toMatch(/^[0-9a-f-]{36}$/)
     })
@@ -102,7 +110,10 @@ describe("Address Book Service test suite", () => {
       // Then: should update the address keeping the same id
       const all = await addressBookFacade.findAll()
       expect(all).toHaveLength(1)
-      expect(all[0].name).toBe("Alice Updated")
+      expect(all[0]).toMatchObject({
+        ...ALICE_SAVE_REQUEST,
+        name: "Alice Updated",
+      })
       expect(all[0].id).toBe(alice.id)
     })
 
@@ -135,7 +146,7 @@ describe("Address Book Service test suite", () => {
       // Then: should remove Alice and keep Bob
       const all = await addressBookFacade.findAll()
       expect(all).toHaveLength(1)
-      expect(all[0].name).toBe("Bob")
+      expect(all[0]).toMatchObject(BOB_SAVE_REQUEST)
     })
   })
 
@@ -150,7 +161,7 @@ describe("Address Book Service test suite", () => {
       const address = await addressBookFacade.get(alice.id)
 
       // Then: should return the complete UserAddress object
-      expect(address.name).toBe("Alice")
+      expect(address).toMatchObject(ALICE_SAVE_REQUEST)
       expect(address.id).toBe(alice.id)
     })
 
@@ -180,9 +191,12 @@ describe("Address Book Service test suite", () => {
 
       // Then: should return ICP Account ID addresses only
       expect(result).toHaveLength(2)
-      expect(
-        result.every((r) => r.address.type === AddressType.ICP_ADDRESS),
-      ).toBe(true)
+      expect(result).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining(ALICE_ICP_ADDRESS_PREVIEW),
+          expect.objectContaining(BOB_ICP_ADDRESS_PREVIEW),
+        ]),
+      )
     })
 
     it("should filter by ICP non-Native (Principal)", async () => {
@@ -194,9 +208,12 @@ describe("Address Book Service test suite", () => {
 
       // Then: should return ICP Principal addresses only
       expect(result).toHaveLength(2)
-      expect(
-        result.every((r) => r.address.type === AddressType.ICP_PRINCIPAL),
-      ).toBe(true)
+      expect(result).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining(ALICE_ICP_PRINCIPAL_PREVIEW),
+          expect.objectContaining(BOB_ICP_PRINCIPAL_PREVIEW),
+        ]),
+      )
     })
 
     it("should filter by BTC", async () => {
@@ -211,7 +228,12 @@ describe("Address Book Service test suite", () => {
 
       // Then: should return BTC addresses only
       expect(result).toHaveLength(2)
-      expect(result.every((r) => r.address.type === AddressType.BTC)).toBe(true)
+      expect(result).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining(ALICE_BTC_PREVIEW),
+          expect.objectContaining(CHARLIE_BTC_PREVIEW),
+        ]),
+      )
     })
 
     it("should filter by EVM", async () => {
@@ -226,7 +248,12 @@ describe("Address Book Service test suite", () => {
 
       // Then: should return EVM addresses only
       expect(result).toHaveLength(2)
-      expect(result.every((r) => r.address.type === AddressType.ETH)).toBe(true)
+      expect(result).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining(ALICE_EVM_PREVIEW),
+          expect.objectContaining(CHARLIE_EVM_PREVIEW),
+        ]),
+      )
     })
 
     it("should filter by nameOrAddressLike (case-insensitive)", async () => {
@@ -239,7 +266,7 @@ describe("Address Book Service test suite", () => {
 
       // Then: should find Alice (case-insensitive)
       expect(result).toHaveLength(1)
-      expect(result[0].name).toBe("Alice")
+      expect(result[0]).toMatchObject({ name: "Alice" })
     })
 
     it("should filter by addressLike (case-insensitive)", async () => {
@@ -252,7 +279,7 @@ describe("Address Book Service test suite", () => {
 
       // Then: should find Alice's address
       expect(result).toHaveLength(1)
-      expect(result[0].name).toBe("Alice")
+      expect(result[0]).toMatchObject({ name: "Alice" })
     })
   })
 
@@ -270,9 +297,12 @@ describe("Address Book Service test suite", () => {
 
       // Then: should return only addresses with ICP Principal
       expect(result).toHaveLength(2)
-      expect(
-        result.every((r) => r.address.type === AddressType.ICP_PRINCIPAL),
-      ).toBe(true)
+      expect(result).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining(ALICE_ICP_PRINCIPAL_PREVIEW),
+          expect.objectContaining(BOB_ICP_PRINCIPAL_PREVIEW),
+        ]),
+      )
     })
 
     it("should filter by nameOrAddressLike", async () => {
@@ -283,7 +313,7 @@ describe("Address Book Service test suite", () => {
 
       // Then: should find Bob only (case-insensitive)
       expect(result).toHaveLength(1)
-      expect(result[0].name).toBe("Bob")
+      expect(result[0]).toMatchObject({ name: "Bob" })
     })
 
     it("should filter by addressLike", async () => {
@@ -294,7 +324,7 @@ describe("Address Book Service test suite", () => {
 
       // Then: should find Alice's ICP Principal
       expect(result).toHaveLength(1)
-      expect(result[0].name).toBe("Alice")
+      expect(result[0]).toMatchObject({ name: "Alice" })
     })
   })
 
@@ -313,7 +343,9 @@ describe("Address Book Service test suite", () => {
 
       // Then: should find Alice's ICP Principal
       expect(result.length).toBeGreaterThan(0)
-      expect(result.some((r) => r.name === "Alice")).toBe(true)
+      const aliceResult = result.find((r) => r.name === "Alice")
+      expect(aliceResult).toBeDefined()
+      expect(aliceResult?.address.value.toLowerCase()).toContain("aaaaa")
     })
 
     it("should match across all address types", async () => {
@@ -327,9 +359,12 @@ describe("Address Book Service test suite", () => {
 
       // Then: should find all BTC addresses
       expect(result).toHaveLength(2)
-      expect(
-        result.every((r) => r.address.value.toLowerCase().includes("bc1q")),
-      ).toBe(true)
+      expect(result).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining(ALICE_BTC_PREVIEW),
+          expect.objectContaining(CHARLIE_BTC_PREVIEW),
+        ]),
+      )
     })
   })
 })

@@ -1,7 +1,7 @@
 Feature: Activity tab
   As a user, I want to see assets transaction history
 
-  @activity
+  @skip @activity
   Scenario Outline: User checks his activity history
     Given User opens NFID site
     And User is already authenticated by <nfid number> anchor

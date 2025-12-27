@@ -24,13 +24,17 @@ export class Assets extends Page {
   }
 
   async getCurrency(label: string) {
-    let locator = $(this.assetLabel + `${label.replace(/\s/g, "")}_currency`)
+    const locator = $(
+      `[id*="token_${label.replace(/\s/g, "")}_"][id$="_currency"]`,
+    )
     await locator.waitForDisplayed({ timeout: 10000 })
     return locator
   }
 
   async getBlockchain(label: string) {
-    let locator = $(this.assetLabel + `${label.replace(/\s/g, "")}_category`)
+    let locator = $(
+      `[id^="token_${label.replace(/\s/g, "")}_"][id$="_category"]`,
+    )
     await locator.waitForDisplayed({ timeout: 10000 })
     return locator
   }
@@ -90,14 +94,16 @@ export class Assets extends Page {
   }
 
   async tokenUSDPrice(tokenName: string) {
-    let locator = $(`#token_${tokenName.replace(/\s/g, "")}_price`)
+    let locator = $(
+      `[id^="token_${tokenName.replace(/\s/g, "")}_"][id$="_price"]`,
+    )
     await locator.waitForDisplayed()
     return locator
   }
 
   async tokenBalance(tokenName: string) {
     let locator = $(
-      `(//*[@id="token_${tokenName.replace(/\s/g, "")}_balance"]/p)[1]`,
+      `(//td[starts-with(@id,"token_${tokenName.replace(/\s/g, "")}_") and contains(@id,"_balance")]/p)[1]`,
     )
     await locator.waitForDisplayed()
     await browser.waitUntil(
@@ -116,7 +122,7 @@ export class Assets extends Page {
   }
 
   async tokenLabel(label: string) {
-    return $(`#token_${label.replace(/\s/g, "")}`)
+    return $(`[id^="token_${label.replace(/\s/g, "")}_"]`)
   }
 
   async currencyOption(currency: string) {

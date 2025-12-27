@@ -23,7 +23,9 @@ export class Activity extends Page {
   }
 
   async filterName(filterName: string) {
-    return $(`#option_${filterName.replace(/\s+/g, "")}`)
+    return $(
+      `//label[.//span[@id="option_txs_${filterName.replace(/\s+/g, "")}"]]`,
+    )
   }
 
   async rowDate(row: ChainablePromiseElement) {
@@ -36,7 +38,7 @@ export class Activity extends Page {
 
   async getActivitiesLength() {
     await browser.waitUntil(
-      async () => await (this.activityTableRows).length > 0,
+      async () => (await this.activityTableRows.length) > 0,
       {
         timeout: 15000,
         timeoutMsg: "No activities found",

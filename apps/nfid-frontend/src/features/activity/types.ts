@@ -14,17 +14,12 @@ export interface IActivityRow {
   from: string
   to: string
   transaction?: SwapTransaction
+  scanLink?: string
 }
 
 export interface IActivityRowGroup {
   date: string
   rows: IActivityRow[]
-}
-
-export interface GetAllActivityParams {
-  filteredContracts: string[]
-  offset?: number
-  limit?: number
 }
 
 export interface GetAllActivityResult {

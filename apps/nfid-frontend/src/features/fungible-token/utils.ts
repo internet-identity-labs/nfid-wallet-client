@@ -1,7 +1,13 @@
 import { Principal } from "@dfinity/principal"
 
 import { authState } from "@nfid/integration"
-import { ChainId, State } from "@nfid/integration/token/icrc1/enum/enums"
+import {
+  Category,
+  ChainId,
+  State,
+} from "@nfid/integration/token/icrc1/enum/enums"
+import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
+import { mapState } from "@nfid/integration/token/icrc1/util"
 import { arbitrumErc20Service } from "frontend/integration/ethereum/arbitrum/arbitrum-erc20.service"
 import { baseErc20Service } from "frontend/integration/ethereum/base/base-erc20.service"
 import { ethErc20Service } from "frontend/integration/ethereum/eth/eth-erc20.service"
@@ -25,6 +31,9 @@ export const getUserPrincipalId = async (): Promise<{
   }
 }
 
+export const delay = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms))
+
 export const fetchTokens = async () => {
   const { userPrincipal } = await getUserPrincipalId()
   return await ftService.getTokens(userPrincipal)
@@ -42,9 +51,6 @@ const fetchErc20TokensSequentially = async (
     Awaited<ReturnType<typeof ethErc20Service.getTokensWithNonZeroBalance>>,
   ]
 > => {
-  const delay = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms))
-
   const arbTokens =
     await arbitrumErc20Service.getTokensWithNonZeroBalance(ethAddress)
   await delay(500)
@@ -71,46 +77,81 @@ export const filterNotActiveNotZeroBalancesTokens = async (
   if (isEthAddressLoading) return
   const { publicKey } = await getUserPrincipalId()
 
-  const [icrc1Tokens, erc20Tokens] = await Promise.all([
+  const filteredTokens = allTokens.filter(
+    (t) => t.getTokenCategory() !== Category.ERC20,
+  )
+
+  const [icrc1Tokens, erc20Tokens, userCanisters] = await Promise.all([
     ftService.filterNotActiveNotZeroBalancesTokens(
-      allTokens,
+      filteredTokens,
       Principal.fromText(publicKey),
     ),
     fetchErc20TokensSequentially(ethAddress),
+    icrc1RegistryService.getStoredUserTokens(),
   ])
 
   const [arbTokens, polTokens, baseTokens, ethTokens] = erc20Tokens
 
   const arbTokensErc20 = arbTokens.map((canister) =>
-    tokenFactory.getCreatorByChainID(ChainId.ARB).buildTokens(canister),
+    tokenFactory
+      .getCreatorByChainID(ChainId.ARB)
+      .buildTokens(
+        canister,
+        mapState(
+          userCanisters.find(
+            (c) => c.network === ChainId.ARB && c.ledger === canister.address,
+          )?.state ?? { Inactive: null },
+        ),
+      ),
   )
 
   const polTokensErc20 = polTokens.map((canister) =>
-    tokenFactory.getCreatorByChainID(ChainId.POL).buildTokens(canister),
+    tokenFactory
+      .getCreatorByChainID(ChainId.POL)
+      .buildTokens(
+        canister,
+        mapState(
+          userCanisters.find(
+            (c) => c.network === ChainId.POL && c.ledger === canister.address,
+          )?.state ?? { Inactive: null },
+        ),
+      ),
   )
 
   const baseTokensErc20 = baseTokens.map((canister) =>
-    tokenFactory.getCreatorByChainID(ChainId.BASE).buildTokens(canister),
+    tokenFactory
+      .getCreatorByChainID(ChainId.BASE)
+      .buildTokens(
+        canister,
+        mapState(
+          userCanisters.find(
+            (c) => c.network === ChainId.BASE && c.ledger === canister.address,
+          )?.state ?? { Inactive: null },
+        ),
+      ),
   )
 
   const ethTokensErc20 = ethTokens.map((canister) =>
-    tokenFactory.getCreatorByChainID(ChainId.ETH).buildTokens(canister),
+    tokenFactory
+      .getCreatorByChainID(ChainId.ETH)
+      .buildTokens(
+        canister,
+        mapState(
+          userCanisters.find(
+            (c) => c.network === ChainId.ETH && c.ledger === canister.address,
+          )?.state ?? { Inactive: null },
+        ),
+      ),
   )
 
-  const nativeTokens: FT[] = [
-    tokenFactory.getCreatorByChainID(ChainId.POL).buildNative(State.Active),
-    tokenFactory.getCreatorByChainID(ChainId.ARB).buildNative(State.Active),
-    tokenFactory.getCreatorByChainID(ChainId.BASE).buildNative(State.Active),
-  ]
-
-  return [
-    ...icrc1Tokens,
+  const allErc20Tokens = [
     ...arbTokensErc20,
     ...polTokensErc20,
     ...baseTokensErc20,
     ...ethTokensErc20,
-    ...nativeTokens,
-  ]
+  ].filter((t) => t.getTokenState() !== State.Active)
+
+  return [...icrc1Tokens, ...allErc20Tokens]
 }
 
 export const getFullUsdValue = async (nfts: NFT[], ft: FT[]) => {

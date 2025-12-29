@@ -1,4 +1,6 @@
 #!/bin/sh
-
 echo "✨ Running Prettier on staged files..."
 npx lint-staged
+
+echo "✨ Running ESLint on all projects..."
+yarn nx run-many --target=lint --all --fix

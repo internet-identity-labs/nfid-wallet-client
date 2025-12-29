@@ -29,9 +29,8 @@ describe("Identity Manager suite", () => {
   describe("Identity Manager Service Test", () => {
     it("Should create NFID profile", async function () {
       const identityDevice = getIdentity("87654321876543218765432187654318")
-      const identityDeviceDelegationIdentity = await getDelegationIdentity(
-        identityDevice,
-      )
+      const identityDeviceDelegationIdentity =
+        await getDelegationIdentity(identityDevice)
 
       const mockedIdentity = getIdentity("87654321876543218765432187654311")
       const delegationIdentity = await getDelegationIdentity(mockedIdentity)
@@ -92,7 +91,7 @@ describe("Identity Manager suite", () => {
         Promise.resolve({ data: [true] }),
       )
       await processApplicationOrigin("domain", "appName")
-      expect(imMock.update_application_alias).toBeCalled()
+      expect(imMock.update_application_alias).toHaveBeenCalled()
     })
     it("Should update origin", async function () {
       const application: Application = {
@@ -114,7 +113,7 @@ describe("Identity Manager suite", () => {
         Promise.resolve({ data: [true] }),
       )
       await processApplicationOrigin("domain", "appAliasAnother", "test")
-      expect(imMock.update_application_alias).toBeCalled()
+      expect(imMock.update_application_alias).toHaveBeenCalled()
     })
     it("Should skip", async function () {
       const application: Application = {
@@ -136,7 +135,7 @@ describe("Identity Manager suite", () => {
         Promise.resolve({ data: [true] }),
       )
       await processApplicationOrigin("domain", "appAlias")
-      expect(imMock.update_application_alias).toBeCalledTimes(0)
+      expect(imMock.update_application_alias).toHaveBeenCalledTimes(0)
     })
   })
 })

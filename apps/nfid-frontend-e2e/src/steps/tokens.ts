@@ -50,6 +50,7 @@ When(
         tokenName,
       ).waitForDisplayed({ timeout: 20000 })
 
+      await browser.refresh()
       await (
         await Assets.tokenLabel(tokenName)
       ).waitForDisplayed({

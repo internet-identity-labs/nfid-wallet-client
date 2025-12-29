@@ -105,7 +105,6 @@
     "@chromatic-com/storybook": "1",
     "@craco/craco": "6.4.3",
     "@melloware/csp-webpack-plugin": "6.0.4",
-    "@nrwl/tao": "19.8.4",
     "@nx/cypress": "21.4.1",
     "@nx/eslint": "22.3.3",
     "@nx/eslint-plugin": "22.3.3",

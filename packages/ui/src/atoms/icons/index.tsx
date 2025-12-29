@@ -47,7 +47,8 @@ import IconNftPlaceholderDark from "./nft-placeholder-dark.svg"
 import IconNftPlaceholder from "./nft-placeholder.svg"
 import IconSvgNFTPreview from "./nft-preview.svg"
 import IconSvgPasskey from "./passkey.svg"
-import IconSvgPencil from "./pencil.svg"
+import IconSvgPencil from "./edit.svg"
+import IconSvgPencilWhite from "./edit-white.svg"
 import IconSvgPlus from "./plus.svg"
 import IconSvgRecovery from "./recovery.svg"
 import IconSvgRefresh from "./refresh.svg"
@@ -67,6 +68,7 @@ import IconSvgTouchId from "./touch-id.svg"
 import IconSvgTransactions from "./transactions.svg"
 import IconSvgTransfer from "./transfer.svg"
 import IconSvgTrash from "./trash.svg"
+import IconSvgTrashWhite from "./trash-white.svg"
 import IconSvgUnknown from "./unknown.svg"
 import IconSvgUsb from "./usb.svg"
 import IconSvgWarning from "./warning.svg"
@@ -98,6 +100,7 @@ export {
   IconSvgMapPin,
   IconSvgMobile,
   IconSvgPencil,
+  IconSvgPencilWhite,
   IconSvgPlus,
   IconSvgRecovery,
   IconSvgRefresh,
@@ -106,6 +109,7 @@ export {
   IconSvgTablet,
   IconSvgTouchId,
   IconSvgTrash,
+  IconSvgTrashWhite,
   IconSvgUnknown,
   IconSvgUsb,
   IconSvgWarning,

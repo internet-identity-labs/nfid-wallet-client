@@ -5,7 +5,6 @@ import {
   UserAddressPreview,
   UserAddress,
   UserAddressSaveRequest,
-  UserAddressId,
 } from "../types"
 import { UserAddressEntity } from "../interfaces"
 
@@ -13,7 +12,7 @@ export class AddressBookMapper {
   toUserAddressEntity(userAddress: UserAddress): UserAddressEntity {
     const addressMappings: Array<[AddressType, keyof UserAddress]> = [
       [AddressType.ICP_PRINCIPAL, "icpPrincipal"],
-      [AddressType.ICP_ADDRESS, "icpAcoountId"],
+      [AddressType.ICP_ADDRESS, "icpAccountId"],
       [AddressType.BTC, "btc"],
       [AddressType.ETH, "evm"],
     ]
@@ -37,7 +36,7 @@ export class AddressBookMapper {
             acc.icpPrincipal = addr.value
             break
           case AddressType.ICP_ADDRESS:
-            acc.icpAcoountId = addr.value
+            acc.icpAccountId = addr.value
             break
           case AddressType.BTC:
             acc.btc = addr.value
@@ -48,7 +47,7 @@ export class AddressBookMapper {
         }
         return acc
       },
-      {} as Pick<UserAddress, "icpPrincipal" | "icpAcoountId" | "btc" | "evm">,
+      {} as Pick<UserAddress, "icpPrincipal" | "icpAccountId" | "btc" | "evm">,
     )
 
     return {

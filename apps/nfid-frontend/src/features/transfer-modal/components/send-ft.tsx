@@ -9,7 +9,7 @@ import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/
 import { useCallback, useMemo, useState, useEffect, useRef } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
-import { RootWallet, registerTransaction } from "@nfid/integration"
+import { registerTransaction } from "@nfid/integration"
 import { E8S, ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import {
   getAccountIdentifier,
@@ -24,7 +24,6 @@ import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { useIdentity } from "frontend/hooks/identity"
 import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
-import { useProfile } from "frontend/integration/identity-manager/queries"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
 import { FormValues, SendStatus } from "../types"
@@ -33,6 +32,7 @@ import {
   getVaultsAccountsOptions,
   getValidatorByTokenAddress,
   updateCachedInitedTokens,
+  getAddressBookFtOptions,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import {
@@ -48,6 +48,10 @@ import {
 import { FTEvmAbstractImpl } from "frontend/integration/ft/impl/ft-evm-abstract-impl"
 import { FTERC20AbstractImpl } from "frontend/integration/ft/impl/ft-erc20-abstract-impl"
 import { TransactionResponse } from "ethers"
+import {
+  addressBookFacade,
+  FtSearchRequest,
+} from "frontend/integration/address-book"
 
 const DEFAULT_TRANSFER_ERROR = "Something went wrong"
 
@@ -80,7 +84,6 @@ export const TransferFT = ({
     useState(preselectedAccountAddress)
   const [error, setError] = useState<string | undefined>()
   const [feeError, setFeeError] = useState<string | undefined>()
-  const { profile } = useProfile()
   const { balances } = useAllVaultsWallets()
   const { isBtcAddressLoading } = useBtcAddress()
   const { isEthAddressLoading, ethAddress } = useEthAddress()
@@ -170,6 +173,18 @@ export const TransferFT = ({
       (balance) => balance.address === selectedVaultsAccountAddress,
     )
   }, [selectedVaultsAccountAddress, balances])
+
+  const { data: addresses } = useSWR("addressBook", async () =>
+    addressBookFacade.findAll(),
+  )
+
+  const addressesOptions = useMemo(() => {
+    return getAddressBookFtOptions(addresses, token)
+  }, [addresses, token])
+
+  const searchFtAddress = async (req: FtSearchRequest) => {
+    return addressBookFacade.ftSearch(req)
+  }
 
   useEffect(() => {
     onError(Boolean(feeError))
@@ -523,11 +538,6 @@ export const TransferFT = ({
         setSelectedVaultsAccountAddress={setSelectedVaultsAccountAddress}
         loadingMessage={"Fetching supported tokens..."}
         accountsOptions={vaultsAccountsOptions}
-        optionGroups={
-          profile?.wallet === RootWallet.NFID
-            ? []
-            : (vaultsAccountsOptions ?? [])
-        }
         vaultsBalance={balance?.balance["ICP"]}
         status={status}
         isSuccessOpen={isSuccessOpen}
@@ -537,6 +547,8 @@ export const TransferFT = ({
         fee={fee?.getFee()}
         isFeeLoading={isFeeLoading || isIdentityLoading || !identity}
         setSkipFeeCalculation={triggerSkipCaclulation}
+        addresses={addressesOptions}
+        searchAddress={searchFtAddress}
       />
     </FormProvider>
   )

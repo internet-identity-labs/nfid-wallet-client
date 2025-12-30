@@ -10,6 +10,7 @@ import {
   IGroupedOptions,
   ChooseAccountModal,
   Skeleton,
+  IGroupedSendAddress,
 } from "@nfid-frontend/ui"
 import {
   BTC_NATIVE_ID,
@@ -25,6 +26,11 @@ import { ChooseFromToken } from "./choose-from-token"
 import { SendSuccessUi } from "./send-success"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import clsx from "clsx"
+import {
+  FtSearchRequest,
+  UserAddressPreview,
+} from "frontend/integration/address-book"
+import { ChooseAddressModal } from "packages/ui/src/molecules/choose-modal/address-modal"
 
 export interface TransferFTUiProps {
   tokens: FT[]
@@ -36,7 +42,6 @@ export interface TransferFTUiProps {
   loadingMessage: string | undefined
   isVault: boolean
   accountsOptions: IGroupedOptions[] | undefined
-  optionGroups: IGroupedOptions[]
   selectedVaultsAccountAddress: string
   submit: () => Promise<void | Id>
   setSelectedVaultsAccountAddress: Dispatch<SetStateAction<string>>
@@ -49,6 +54,8 @@ export interface TransferFTUiProps {
   fee?: bigint
   isFeeLoading: boolean
   setSkipFeeCalculation: () => void
+  addresses: IGroupedSendAddress[] | undefined
+  searchAddress: (req: FtSearchRequest) => Promise<UserAddressPreview[]>
 }
 
 export const TransferFTUi: FC<TransferFTUiProps> = ({
@@ -61,7 +68,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   loadingMessage,
   isVault,
   accountsOptions,
-  optionGroups,
   selectedVaultsAccountAddress,
   submit,
   setSelectedVaultsAccountAddress,
@@ -74,24 +80,18 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   fee,
   isFeeLoading,
   setSkipFeeCalculation,
+  addresses,
+  searchAddress,
 }) => {
   const [isFromResponsive, setIsFromResponsive] = useState(false)
   const {
-    resetField,
     watch,
-    setValue,
     register,
     formState: { errors },
-    trigger,
   } = useFormContext()
 
   const amount = watch("amount")
   const to = watch("to")
-
-  useEffect(() => {
-    if (to.length) trigger("to")
-  }, [token, to])
-
   const isBtc = token?.getChainId() === ChainId.BTC
   const isEth = token?.getChainId() === ChainId.ETH
 
@@ -157,12 +157,9 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           }
         />
       )}
-      <ChooseAccountModal
-        type="input"
-        label="To"
-        title={"Choose an account"}
-        optionGroups={optionGroups}
-        isFirstPreselected={false}
+      <ChooseAddressModal<FtSearchRequest>
+        title="Send to"
+        addresses={addresses}
         placeholder={
           token.getTokenAddress() === ICP_CANISTER_ID
             ? "Recipient wallet address or account ID"
@@ -173,10 +170,8 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           required: "This field cannot be empty",
           validate: (value) => validateAddress(value),
         })}
-        onSelect={(value) => {
-          resetField("to")
-          setValue("to", value)
-        }}
+        searchAddress={searchAddress}
+        token={token}
       />
       <div className={clsx(isFromResponsive && "mb-[60px]")}>
         <div className="flex justify-between">

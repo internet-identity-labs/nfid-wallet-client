@@ -1,4 +1,5 @@
 import { FC, useEffect, useState } from "react"
+import clsx from "clsx"
 import { ModalComponent } from "../../molecules/modal/index-v0"
 import { Spinner } from "../../atoms/spinner"
 import { Button, Input } from "@nfid-frontend/ui"
@@ -20,6 +21,11 @@ import {
 import { IcpNetworkIcon } from "packages/ui/src/atoms/icons/IcpNetworkIcon"
 import { BtcNetworkIcon } from "packages/ui/src/atoms/icons/BtcNetworkIcon"
 import { EthNetworkIcon } from "packages/ui/src/atoms/icons/EthNetworkIcon"
+import {
+  AddressBookFormValues,
+  chainValidate,
+  validateAddressBook,
+} from "./utils"
 
 type AddressBookModalProps =
   | {
@@ -38,14 +44,6 @@ type AddressBookModalProps =
       onSubmit: (request: UserAddressUpdateRequest) => Promise<void>
       addresses?: UserAddress[]
     }
-
-type AddressBookFormValues = {
-  name: string
-  accountId: string
-  icpWallet: string
-  btcWallet: string
-  ethWallet: string
-}
 
 export const AddressBookModal: FC<AddressBookModalProps> = ({
   isOpen,
@@ -142,17 +140,21 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
     <ModalComponent
       isVisible={isOpen}
       onClose={onClose}
-      className="p-5 w-[95%] md:w-[540px] z-[100] !rounded-[24px] !max-h-[90vh] !min-h-[90vh] !h-[90vh] overflow-auto"
+      className={clsx(
+        "p-5 w-[95%] md:w-[540px] z-[100] !rounded-[24px] !max-h-[90vh] !min-h-1 overflow-auto",
+        "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300 snap-end",
+        "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
+        "dark:scrollbar-thumb-zinc-600 dark:scrollbar-track-darkGray",
+      )}
     >
       <p className="text-[20px] leading-[26px] font-bold dark:text-white mb-5">
-        Add new contact
+        {mode === AddressBookAction.CREATE ? "Add new contact" : "Edit contact"}
       </p>
       <div>
         <Input
-          inputClassName="!border-black dark:!border-zinc-500 h-[56px]"
+          inputClassName="h-[60px]"
           id="name"
           labelText="Name"
-          className="mb-2.5"
           placeholder="Enter name"
           {...register("name", {
             required: "Name is required",
@@ -160,53 +162,89 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
               value: 2,
               message: "Name must be at least 2 characters",
             },
+            validate: validateAddressBook(
+              addresses,
+              "name",
+              "This name already exists",
+              (v) => v.trim().toLowerCase(),
+              address?.id,
+            ),
           })}
           errorText={errors.name?.message}
         />
         <Input
-          inputClassName="!border-black dark:!border-zinc-500 h-[56px] pl-[44px]"
+          inputClassName="h-[60px]"
           id="accountId"
           labelText="ICP Account ID"
           icon={<IcpNetworkIcon size={24} />}
-          className="mb-2.5"
-          placeholder="Enter account ID"
           {...register("accountId", {
-            validate: (value) => !value || validateAccountId(value),
+            validate: chainValidate(
+              (v) => !v || validateAccountId(v),
+              validateAddressBook(
+                addresses,
+                "icpAccountId",
+                "This Account ID already exists",
+                (v) => v.trim(),
+                address?.id,
+              ),
+            ),
           })}
           errorText={errors.accountId?.message}
         />
         <Input
-          inputClassName="!border-black dark:!border-zinc-500 h-[56px] pl-[44px]"
+          inputClassName="h-[60px]"
           id="icpWallet"
           labelText="ICP wallet address"
           icon={<IcpNetworkIcon size={24} />}
-          className="mb-2.5"
-          placeholder="Enter ICP wallet address"
           {...register("icpWallet", {
-            validate: (value) => !value || validateICRC1Address(value),
+            validate: chainValidate(
+              (v) => !v || validateICRC1Address(v),
+              validateAddressBook(
+                addresses,
+                "icpPrincipal",
+                "This ICP wallet already exists",
+                (v) => v.trim(),
+                address?.id,
+              ),
+            ),
           })}
           errorText={errors.icpWallet?.message}
         />
         <Input
-          inputClassName="!border-black dark:!border-zinc-500 h-[56px] pl-[44px]"
+          inputClassName="h-[60px]"
           id="btcWallet"
           labelText="BTC wallet address"
           icon={<BtcNetworkIcon size={24} />}
-          className="mb-2.5"
-          placeholder="Enter BTC wallet address"
           {...register("btcWallet", {
-            validate: (value) => !value || validateBTCAddress(value),
+            validate: chainValidate(
+              (v) => !v || validateBTCAddress(v),
+              validateAddressBook(
+                addresses,
+                "btc",
+                "This BTC wallet already exists",
+                (v) => v.trim(),
+                address?.id,
+              ),
+            ),
           })}
           errorText={errors.btcWallet?.message}
         />
         <Input
-          inputClassName="!border-black dark:!border-zinc-500 h-[56px] pl-[44px]"
+          inputClassName="h-[60px]"
           id="ethWallet"
           labelText="ETH wallet address"
           icon={<EthNetworkIcon size={24} />}
-          placeholder="Enter ETH wallet address"
           {...register("ethWallet", {
-            validate: (value) => !value || validateETHAddress(value),
+            validate: chainValidate(
+              (v) => !v || validateETHAddress(v),
+              validateAddressBook(
+                addresses,
+                "evm",
+                "This ETH wallet already exists",
+                (v) => v.toLowerCase(),
+                address?.id,
+              ),
+            ),
           })}
           errorText={errors.ethWallet?.message}
         />

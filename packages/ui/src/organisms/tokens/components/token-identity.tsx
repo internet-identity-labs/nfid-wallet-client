@@ -73,7 +73,7 @@ export const TokenIdentity: FC<TokenIdentityProps> = ({
               ? "text-black dark:text-white"
               : "text-secondary dark:text-zinc-400",
           )}
-          id={`token_${token.getTokenName().replace(/\s/g, "")}_currency`}
+          id={`token_${token.getTokenName().replace(/\s/g, "")}_${token.getChainId()}_currency`}
         >
           {token.getTokenSymbol()}
           {withActions && (

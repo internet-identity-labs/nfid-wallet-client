@@ -15,7 +15,7 @@ export class BnbTransactionService extends EVMNativeTransactionService {
   }
 
   protected getIcon(): string {
-    return EthIcon //TODO: Add Arbitrum icon
+    return EthIcon //TODO: Add BNB icon
   }
 
   protected getDecimals(): number {
@@ -24,6 +24,10 @@ export class BnbTransactionService extends EVMNativeTransactionService {
 
   protected getCanister(): string {
     return EVM_NATIVE
+  }
+
+  public getExplorerLink(txId: string): string {
+    return `https://bscscan.com/tx/${txId}`
   }
 }
 

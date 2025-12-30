@@ -1,5 +1,4 @@
 import { JEST_GLOBALS } from "../../config/jest-globals"
-
 const config = {
   displayName: "nfid-frontend",
   preset: "../../jest.preset.js",
@@ -12,6 +11,7 @@ const config = {
   transform: {
     "^.+\\.(ts|tsx|js|jsx)$": "ts-jest",
   },
+  transformIgnorePatterns: ["/node_modules/(?!(uuid)/)"],
   collectCoverage: false,
   coverageThreshold: {
     global: {

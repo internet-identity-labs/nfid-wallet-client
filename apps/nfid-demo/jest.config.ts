@@ -1,6 +1,6 @@
-const { JEST_GLOBALS } = require("../../config/jest-globals")
+import { JEST_GLOBALS } from "../../config/jest-globals"
 
-module.exports = {
+export default {
   displayName: "nfid-demo",
   preset: "../../jest.preset.js",
   transform: {

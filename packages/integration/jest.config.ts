@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { JEST_GLOBALS } from "../../config/jest-globals"
 
 export default {

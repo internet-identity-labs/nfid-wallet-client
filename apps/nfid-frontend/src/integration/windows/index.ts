@@ -94,7 +94,7 @@ export const isIdentityClientAuthEvent = (
   }
 
   // Some extra conversions to take typescript by the hand
-  // eslint-disable-next-line
+
   const tmp: {} = msg
   const obj: Record<string, unknown> = tmp
 

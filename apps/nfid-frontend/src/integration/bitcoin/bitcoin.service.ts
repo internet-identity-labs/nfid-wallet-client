@@ -256,7 +256,7 @@ export class BitcoinService {
         }
       }
       return { ok: true }
-    } catch (e) {
+    } catch (_e) {
       return {
         ok: false,
         error:

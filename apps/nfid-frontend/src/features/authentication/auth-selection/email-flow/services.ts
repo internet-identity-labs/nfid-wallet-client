@@ -123,7 +123,7 @@ export const authorizeWithEmail = async (
   try {
     await replaceActorIdentity(im, delegationIdentity)
     profile = await fetchProfile()
-  } catch (e) {
+  } catch (_e) {
     console.log("creating new profile")
     profile = await createNFIDProfile({
       delegationIdentity,

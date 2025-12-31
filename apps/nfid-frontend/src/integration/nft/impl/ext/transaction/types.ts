@@ -1,4 +1,4 @@
-interface TransactionToniq {
+export interface TransactionToniq {
   id: string
   token: string
   canister: string
@@ -8,7 +8,7 @@ interface TransactionToniq {
   price: number
 }
 
-interface ResponseData {
+export interface ResponseData {
   id: string
   owner: string
   canister: string

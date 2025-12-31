@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { expect } from "@jest/globals"
 import { createCipheriv } from "crypto"
 
@@ -19,9 +19,8 @@ describe.skip("symmetric suite", () => {
   describe("Symmetric Key Service Test", () => {
     it("Create account and retrieve same key + encrypt/decrypt", async function () {
       let mockedIdentity = Ed25519KeyIdentity.generate()
-      const { delegationIdentity } = await generateDelegationIdentity(
-        mockedIdentity,
-      )
+      const { delegationIdentity } =
+        await generateDelegationIdentity(mockedIdentity)
       replaceIdentity(delegationIdentity)
       await registerIIAndIM(mockedIdentity)
       let key = await symmetric(delegationIdentity)
@@ -44,9 +43,8 @@ describe.skip("symmetric suite", () => {
 
     it("Catch error if not registered account", async () => {
       let mockedIdentity = Ed25519KeyIdentity.generate()
-      const { delegationIdentity } = await generateDelegationIdentity(
-        mockedIdentity,
-      )
+      const { delegationIdentity } =
+        await generateDelegationIdentity(mockedIdentity)
       replaceIdentity(delegationIdentity)
       await expect(symmetric(delegationIdentity)).rejects.toThrow(
         "There was an issue getting symmetric key.",

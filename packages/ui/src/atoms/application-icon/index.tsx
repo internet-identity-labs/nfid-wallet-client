@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { NoIcon } from "packages/ui/src/assets/no-icon"
+import { NoIcon } from "../../assets/no-icon"
 
 interface ApplicationIconProps {
   appName: string

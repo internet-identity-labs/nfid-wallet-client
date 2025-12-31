@@ -86,7 +86,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
         })
       })
     }
-  }, [isSignIn])
+  }, [isSignIn, getAllWalletsFromThisDevice])
 
   const errorMessage =
     formState.errors.email?.type === "required"

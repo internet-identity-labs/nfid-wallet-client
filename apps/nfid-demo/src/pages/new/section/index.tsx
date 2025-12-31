@@ -1,8 +1,10 @@
 import clsx from "clsx"
 import React, { useState, useCallback } from "react"
 import { FaCode, FaChrome } from "react-icons/fa"
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
+import { PrismAsync } from "react-syntax-highlighter"
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism"
+
+const SyntaxHighlighter = PrismAsync as React.ComponentType<any>
 
 import { Copy, ToggleButton } from "@nfid-frontend/ui"
 
@@ -20,7 +22,7 @@ export const SectionTemplate: React.FC<SectionTemplateProps> = ({
   title,
   subtitle,
   example,
-  method,
+  method: _method,
   codeSnippet,
   jsonResponse,
   id,

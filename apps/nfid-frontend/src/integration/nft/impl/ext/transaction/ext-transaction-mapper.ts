@@ -1,4 +1,5 @@
 import { TransactionRecordToniq } from "src/integration/nft/impl/ext/transaction/toniq-transaction-mapper"
+import { TransactionToniq } from "src/integration/nft/impl/ext/transaction/types"
 import { TransactionRecord } from "src/integration/nft/nft"
 
 export class ExtTransactionMapper {

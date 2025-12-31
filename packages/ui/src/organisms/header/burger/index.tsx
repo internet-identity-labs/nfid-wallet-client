@@ -11,7 +11,7 @@ export interface BurgerMenuProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const BurgerMenu: React.FC<BurgerMenuProps> = ({
   isOpened,
-  walletTheme,
+  walletTheme: _walletTheme,
   isLanding,
   ...props
 }) => {

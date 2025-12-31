@@ -1,7 +1,6 @@
-import { Meta, StoryFn } from "@storybook/react"
-import React from "react"
+import { Meta } from "@storybook/react"
 
-import { RadioButton, RadioButtonProps } from "./index"
+import { RadioButton } from "./index"
 
 const meta: Meta = {
   title: "Molecules/RadioButton",

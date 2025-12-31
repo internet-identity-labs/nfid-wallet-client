@@ -10,7 +10,7 @@ const Story: Meta<typeof Page> = {
 }
 export default Story
 
-const Template: StoryFn<typeof Page> = (args) => (
+const Template: StoryFn<typeof Page> = (_args) => (
   <Page>
     <Page.Header>Header One</Page.Header>
     <Page.Body>Body</Page.Body>

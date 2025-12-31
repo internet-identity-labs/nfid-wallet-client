@@ -15,7 +15,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "downlevelIteration": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": []
   },
   "include": ["src", "../../types/env"],
   "extends": "../../tsconfig.base.json",

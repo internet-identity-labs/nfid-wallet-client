@@ -40,7 +40,7 @@ export async function signWithIIService(): Promise<IIAuthSession> {
                 await replaceActorIdentity(im, identity)
                 profile = await fetchProfile()
                 await im.use_access_point([identity.getPrincipal().toString()])
-              } catch (e) {
+              } catch (_e) {
                 console.debug("creating new profile")
                 profile = await createNFIDProfile({
                   delegationIdentity: identity,

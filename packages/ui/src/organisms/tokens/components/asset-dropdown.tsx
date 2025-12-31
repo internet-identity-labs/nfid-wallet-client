@@ -79,7 +79,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
         },
       })
     },
-    [navigate],
+    [navigate, profileConstants.base, profileConstants.activity],
   )
 
   if (!token.getTokenAddress()) return null

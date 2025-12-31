@@ -47,10 +47,8 @@ describe("shroff transfer kong error handler test", () => {
     expect(failedTransaction?.getStage()).toEqual(SwapStage.Swap)
     try {
       await errorHandler.completeTransaction(mockId)
-      // eslint-disable-next-line jest/no-jasmine-globals
       fail("Should not throw an error")
     } catch (e: any) {
-      // eslint-disable-next-line jest/no-conditional-expect
       expect(e.message).toContain("KongSwap provider error")
     }
   })

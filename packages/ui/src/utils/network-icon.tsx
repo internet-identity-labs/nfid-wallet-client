@@ -1,4 +1,3 @@
-import { ReactNode } from "react"
 import { IcpNetworkIcon } from "../atoms/icons/IcpNetworkIcon"
 import { EthNetworkIcon } from "../atoms/icons/EthNetworkIcon"
 import { BtcNetworkIcon } from "../atoms/icons/BtcNetworkIcon"
@@ -9,7 +8,11 @@ import { BaseNetworkIcon } from "../atoms/icons/BaseNetworkIcon"
 import { BnbNetworkIcon } from "../atoms/icons/BnbNetworkIcon"
 import { PolNetworkIcon } from "../atoms/icons/PolNetworkIcon"
 
-export const getNetworkIcon = (chainId: ChainId): ReactNode => {
+interface NetworkIconProps {
+  chainId: ChainId
+}
+
+export const NetworkIcon: React.FC<NetworkIconProps> = ({ chainId }) => {
   const isDarkTheme = useDarkTheme()
 
   switch (chainId) {

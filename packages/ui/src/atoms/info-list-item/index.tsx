@@ -2,7 +2,7 @@ import clsx from "clsx"
 
 import { IconCmpInfo, Tooltip } from "@nfid-frontend/ui"
 
-interface IInfoListItem {
+export interface IInfoListItem {
   title: string
   tooltip?: string
   isBold?: boolean

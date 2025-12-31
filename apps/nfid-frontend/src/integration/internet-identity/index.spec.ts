@@ -1,11 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import {
-  DelegationChain,
-  DelegationIdentity,
-  Ed25519KeyIdentity,
-} from "@dfinity/identity"
+import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 
 import {
   authState as authStateMock,
@@ -35,9 +31,8 @@ describe.skip("ii suite", () => {
   describe("II Service Test", () => {
     it("Should create protected Recovery device", async function () {
       let mockedIdentity = Ed25519KeyIdentity.generate()
-      const { delegationIdentity } = await generateDelegationIdentity(
-        mockedIdentity,
-      )
+      const { delegationIdentity } =
+        await generateDelegationIdentity(mockedIdentity)
       replaceIdentity(delegationIdentity)
       const deviceData: DeviceData = {
         alias: "Device",
@@ -121,7 +116,7 @@ describe.skip("ii suite", () => {
         delegationIdentity: delegationIdentityDummy,
       }
       // @ts-ignore
-      im.use_access_point = jest.fn((x: [] | [string]) => ({
+      im.use_access_point = jest.fn((_x: [] | [string]) => ({
         catch: jest.fn(),
       }))
       authStateMock.set({

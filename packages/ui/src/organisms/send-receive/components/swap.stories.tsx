@@ -1,62 +1,58 @@
 import { Principal } from "@dfinity/principal"
 import { Meta, StoryFn } from "@storybook/react"
 import { FormProvider, useForm } from "react-hook-form"
+import BigNumber from "bignumber.js"
 import { Quote } from "src/integration/swap/quote"
 
-import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
-
-import { FT } from "frontend/integration/ft/ft"
+import {
+  Category,
+  ChainId,
+  State,
+} from "@nfid/integration/token/icrc1/enum/enums"
 
 import { SwapFTUi, SwapFTUiProps } from "./swap"
 import { TransferTemplate } from "./template"
 
+const createMockToken = (symbol: string, name: string) => ({
+  init: async (_: Principal) => SendFTProps.token,
+  isInited: () => true,
+  getTokenName: () => name,
+  getTokenCategory: () => Category.Known,
+  getTokenCategoryFormatted: () => "Unknown",
+  getTokenBalance: () => BigInt(1000000000),
+  getTokenBalanceFormatted: () => "10",
+  getUSDBalanceFormatted: () => "$10",
+  getUSDBalance: () => new BigNumber(10),
+  getUSDBalanceDayChange: () => new BigNumber(0),
+  getTokenRate: (_: string) => new BigNumber(1.0),
+  getTokenRateDayChangePercent: () => ({ value: "0", positive: true }),
+  getTokenRateFormatted: (_: string) => "$10",
+  refreshBalance: async (_: Principal) => SendFTProps.token,
+  getTokenAddress: () => "2ouva-viaaa-aaaaq-aaamq-cai",
+  getTokenIndex: () => undefined,
+  getTokenSymbol: () => symbol,
+  getTokenDecimals: () => 8,
+  getTokenLogo: () => "Some logo",
+  getTokenState: () => State.Active,
+  getBlockExplorerLink: () => "https://explorer.example.com",
+  getIndexBlockExplorerLink: () => "https://explorer.example.com",
+  getChainId: () => ChainId.ICP,
+  hideToken: async () => {},
+  showToken: async () => {},
+  getTokenFee: async () => ({
+    getFee: () => BigInt(10000),
+  }),
+  getTokenFeeFormatted: () => "0.0001",
+  getTokenFeeFormattedUsd: () => "0.10 USD",
+  isHideable: () => true,
+  getRootSnsCanister: () => undefined,
+  getIcrc2Allowances: async (_: Principal) => [],
+  revokeAllowance: async (_: any, __: string) => {},
+})
+
 const mockTokens = [
-  {
-    init: async (_: Principal) => SendFTProps.token,
-    getTokenName: () => "Internet Computer",
-    getTokenCategory: () => Category.Known,
-    getTokenCategoryFormatted: () => "Unknown",
-    getTokenBalance: () => BigInt(1000000000),
-    getTokenBalanceFormatted: () => "10",
-    getUSDBalanceFormatted: async () => "$10",
-    getTokenRate: async (_: string) => 1.0,
-    getTokenRateFormatted: async (_: string) => "$10",
-    getTokenAddress: () => "2ouva-viaaa-aaaaq-aaamq-cai",
-    getTokenSymbol: () => "ICP",
-    getTokenDecimals: () => 8,
-    getTokenLogo: () => "Some logo",
-    getTokenState: () => State.Active,
-    getBlockExplorerLink: () => "https://explorer.example.com",
-    hideToken: async () => {},
-    showToken: async () => {},
-    getTokenFee: () => BigInt(10000),
-    getTokenFeeFormatted: () => "0.0001 CHAT",
-    getTokenFeeFormattedUsd: async () => "0.10 USD",
-    isHideable: () => true,
-  },
-  {
-    init: async (_: Principal) => SendFTProps.token,
-    getTokenName: () => "Chat",
-    getTokenCategory: () => Category.Known,
-    getTokenCategoryFormatted: () => "Unknown",
-    getTokenBalance: () => BigInt(1000000000),
-    getTokenBalanceFormatted: () => "10",
-    getUSDBalanceFormatted: async () => "$10",
-    getTokenRate: async (_: string) => 1.0,
-    getTokenRateFormatted: async (_: string) => "$10",
-    getTokenAddress: () => "2ouva-viaaa-aaaaq-aaamq-cai",
-    getTokenSymbol: () => "CHAT",
-    getTokenDecimals: () => 8,
-    getTokenLogo: () => "Some logo",
-    getTokenState: () => State.Active,
-    getBlockExplorerLink: () => "https://explorer.example.com",
-    hideToken: async () => {},
-    showToken: async () => {},
-    getTokenFee: () => BigInt(10000),
-    getTokenFeeFormatted: () => "0.0001 CHAT",
-    getTokenFeeFormattedUsd: async () => "0.10 USD",
-    isHideable: () => true,
-  },
+  createMockToken("ICP", "Internet Computer"),
+  createMockToken("CHAT", "Chat"),
 ]
 
 const mockQuote = {
@@ -93,7 +89,7 @@ const Template: StoryFn<SwapFTUiProps> = (args) => {
   return (
     <FormProvider {...formMethods}>
       <div className="w-[450px] h-[630px]">
-        <TransferTemplate>
+        <TransferTemplate isOpen={true}>
           <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
             Swap
           </div>

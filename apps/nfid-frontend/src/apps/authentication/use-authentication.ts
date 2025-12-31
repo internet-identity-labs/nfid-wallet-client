@@ -210,7 +210,7 @@ export const useAuthentication = () => {
               name: profile.name,
             },
           }
-        } catch (e) {
+        } catch (_e) {
           setIsLoading(false)
           return {
             tag: "err",

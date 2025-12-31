@@ -110,7 +110,7 @@ const machineConfig = {
                     appMeta: {
                       url: context.activeRequest?.origin,
                     },
-                  } as AuthenticationContext),
+                  }) as AuthenticationContext,
                 onDone: [
                   {
                     target: "CheckAuthentication",
@@ -247,7 +247,7 @@ const machineServices = {
       activeRequestMetadata: undefined,
     })),
     resetActiveRequest: assign(
-      (context: IdentityKitRPCMachineContext, _event: any) => ({
+      (_context: IdentityKitRPCMachineContext, _event: any) => ({
         activeRequest: undefined,
         activeRequestMetadata: undefined,
       }),

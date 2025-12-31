@@ -1,14 +1,13 @@
 import React from "react"
 
-interface PictureNFIDLoginProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {}
+interface PictureNFIDLoginProps extends React.DetailedHTMLProps<
+  React.HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
+> {}
 
 export const ImageNFIDLogin: React.FC<PictureNFIDLoginProps> = ({
-  children,
-  className,
+  children: _children,
+  className: _className,
 }) => {
   return (
     <svg

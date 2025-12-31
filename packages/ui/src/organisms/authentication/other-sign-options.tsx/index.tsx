@@ -45,7 +45,7 @@ export const AuthOtherSignOptions = ({
 
   useEffect(() => {
     if (profileAnchor) setValue("userNumber", profileAnchor)
-  }, [profileAnchor])
+  }, [profileAnchor, setValue])
 
   if (isLoading) return <BlurredLoader isLoading />
 

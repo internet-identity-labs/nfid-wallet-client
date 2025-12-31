@@ -34,9 +34,8 @@ describe.skip("Facade suite", () => {
   describe("Facade Service Test", () => {
     it("Should create and remove protected Recovery device", async function () {
       let mockedIdentity = Ed25519KeyIdentity.generate()
-      const { delegationIdentity } = await generateDelegationIdentity(
-        mockedIdentity,
-      )
+      const { delegationIdentity } =
+        await generateDelegationIdentity(mockedIdentity)
       replaceIdentity(delegationIdentity)
       const deviceData: DeviceData = {
         alias: "Device",
@@ -104,7 +103,7 @@ describe.skip("Facade suite", () => {
         delegationIdentity: recoveryIdentity,
       }
       // @ts-ignore
-      im.use_access_point = jest.fn((x: [] | [string]) => ({
+      im.use_access_point = jest.fn((_x: [] | [string]) => ({
         catch: jest.fn(),
       }))
       authStateMock.set({
@@ -133,9 +132,8 @@ describe.skip("Facade suite", () => {
 
     it("Should fetch principals", async function () {
       let mockedIdentity = Ed25519KeyIdentity.generate()
-      const { delegationIdentity } = await generateDelegationIdentity(
-        mockedIdentity,
-      )
+      const { delegationIdentity } =
+        await generateDelegationIdentity(mockedIdentity)
       replaceIdentity(delegationIdentity)
       const deviceData: DeviceData = {
         alias: "Device",
@@ -212,7 +210,7 @@ describe.skip("Facade suite", () => {
         delegationIdentity: delegationIdentity,
       }
       // @ts-ignore
-      im.use_access_point = jest.fn((x: [] | [string]) => ({
+      im.use_access_point = jest.fn((_x: [] | [string]) => ({
         catch: jest.fn(),
       }))
       authStateMock.set({ identity: mockedIdentity, delegationIdentity })

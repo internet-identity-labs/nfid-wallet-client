@@ -637,7 +637,7 @@ export async function fromSeedPhrase(
     })
     await im.sync_recovery_phrase_from_internet_identity(userNumber)
     profile = await fetchProfile()
-  } catch (e) {
+  } catch (_e) {
     throw new Error("This is not an NFID recovery phrase.")
   }
 

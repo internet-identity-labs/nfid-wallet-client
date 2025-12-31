@@ -14,7 +14,7 @@ const meta: Meta = {
 
 export default meta
 
-const DefaultTemplate: StoryFn<TableProps> = (args) => (
+const DefaultTemplate: StoryFn<TableProps> = (_args) => (
   <Table
     tableHeader={
       <TableRow className="font-bold border-black">

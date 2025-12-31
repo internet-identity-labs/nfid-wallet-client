@@ -77,10 +77,10 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   const [filter, setFilter] = useState<string[]>([])
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
 
-  const handleSearch = useCallback(
-    debounce((value: string) => setSearchInput(value), 300),
-    [],
-  )
+  const handleSearch = useCallback((value: string) => {
+    const debounced = debounce((val: string) => setSearchInput(val), 300)
+    debounced(value)
+  }, [])
 
   useEffect(() => {
     if (!isSwapTo) {
@@ -140,7 +140,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
     }
 
     return result
-  }, [tokensOptions, searchInput, filter])
+  }, [tokensOptions, searchInput, filter, filterTokensBySearchInput])
 
   useIntersectionObserver(itemRefs.current, !!isSwapTo, async (index) => {
     const token = filteredTokens[index]

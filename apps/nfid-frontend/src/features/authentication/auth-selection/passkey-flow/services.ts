@@ -100,7 +100,10 @@ export class PasskeyConnector {
     })
   }
 
-  private getAccessPointDeviceAndIcon({ transports, type }: IPasskeyMetadata) {
+  private getAccessPointDeviceAndIcon({
+    transports,
+    type: _type,
+  }: IPasskeyMetadata) {
     let icon
     let device
 

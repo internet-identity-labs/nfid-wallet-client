@@ -1,6 +1,5 @@
 import { JEST_GLOBALS } from "../../config/jest-globals"
 
-/* eslint-disable */
 export default {
   displayName: "nfid-demo",
   preset: "../../jest.preset.js",

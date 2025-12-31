@@ -8,7 +8,7 @@
     "appsDir": "apps",
     "libsDir": "packages"
   },
-  "extends": "nx/presets/npm.json",
+  "extends": "nx/presets/core.json",
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "generators": {
     "@nx/react": {

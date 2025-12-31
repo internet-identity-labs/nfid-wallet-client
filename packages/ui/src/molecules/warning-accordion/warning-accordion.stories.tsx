@@ -1,4 +1,4 @@
-import type { StoryFn, Meta } from "@storybook/react"
+import type { Meta, StoryFn } from "@storybook/react"
 
 import { WarningAccordion } from "."
 
@@ -8,7 +8,7 @@ const Story: Meta<typeof WarningAccordion> = {
 }
 export default Story
 
-const Template: StoryFn<typeof WarningAccordion> = (args) => (
+const Template: StoryFn<typeof WarningAccordion> = (_args) => (
   <WarningAccordion
     warnings={[
       {

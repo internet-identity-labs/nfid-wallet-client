@@ -31,7 +31,7 @@ export const Dropdown = ({
   useEffect(() => {
     if (!setIsOpen) return
     setIsOpen(isDropdownOpen)
-  }, [isDropdownOpen])
+  }, [isDropdownOpen, setIsOpen])
 
   return (
     <div className={clsx("w-full")} ref={ref}>

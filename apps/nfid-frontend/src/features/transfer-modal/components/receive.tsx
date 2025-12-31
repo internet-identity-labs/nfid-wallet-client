@@ -48,7 +48,7 @@ export const TransferReceive = ({
         if (!cancelled) {
           setAutoConversionBtcAddress(address)
         }
-      } catch (error) {
+      } catch (_error) {
         if (!cancelled) {
           toaster.error("Failed to retrieve BTC address")
           setAutoConversionBtcAddress("")

@@ -111,7 +111,7 @@ const config = {
     optimization: {
       minimize: !isExampleBuild,
     },
-    configure: (config: any, { env, paths }: any) => {
+    configure: (config: any, { env: _env, paths: _paths }: any) => {
       config.resolve.plugins = config.resolve.plugins.filter(
         (plugin: any) => !(plugin instanceof ModuleScopePlugin),
       )

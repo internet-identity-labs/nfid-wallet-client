@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/ui/src",
   "projectType": "library",
-  "tags": [],
+  "tags": ["scope:ui", "type:library", "layer:presentation"],
   "targets": {
     "lint": {
       "executor": "@nx/eslint:lint"

@@ -60,7 +60,7 @@ export function factoryAccount(principal?: Principal): Profile {
  * Generate a persona stub.
  * @returns {@link Persona}
  */
-export function factoryPersona(principal?: Principal): Account {
+export function factoryPersona(_principal?: Principal): Account {
   return {
     domain: "",
     label: "",
@@ -72,7 +72,7 @@ export function factoryPersona(principal?: Principal): Account {
  * Generate an access point stub.
  * @returns {@link AccessPoint}
  */
-export function factoryAccessPoint(principal?: Principal): AccessPoint {
+export function factoryAccessPoint(_principal?: Principal): AccessPoint {
   return {
     deviceType: DeviceType.Email,
     icon: Icon.mobile,

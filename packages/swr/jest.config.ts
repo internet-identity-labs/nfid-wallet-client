@@ -1,5 +1,6 @@
+/* eslint-disable */
 export default {
-  displayName: "config",
+  displayName: "swr",
   preset: "../../jest.preset.js",
   globals: {},
   transform: {
@@ -11,5 +12,5 @@ export default {
     ],
   },
   moduleFileExtensions: ["ts", "js", "html"],
-  coverageDirectory: "../../coverage/packages/config",
+  coverageDirectory: "../../coverage/packages/swr",
 }

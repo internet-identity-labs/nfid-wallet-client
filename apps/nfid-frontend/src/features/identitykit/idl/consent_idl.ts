@@ -1,5 +1,5 @@
 // @ts-nocheck
-/* eslint-disable no-empty-pattern */
+
 export const idlFactory = ({ IDL }: any) => {
   const icrc21_consent_message_metadata = IDL.Record({
     utc_offset_minutes: IDL.Opt(IDL.Int16),

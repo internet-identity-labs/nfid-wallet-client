@@ -64,7 +64,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
           }),
         )
         setQuotes(quotes)
-      } catch (e) {
+      } catch (_e) {
         return
       }
     }

@@ -1,6 +1,6 @@
 import clsx from "clsx"
 
-import { IconCmpArrowRightIcon } from "@nfid-frontend/ui"
+import { IconCmpArrowRightIcon } from "./icons"
 
 export function ArrowPercentChange({
   value,

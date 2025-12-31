@@ -20,8 +20,8 @@ export const ActivityTableGroup = ({
   date,
   rows,
   groupIndex,
-  token,
-  identity,
+  token: _token,
+  identity: _identity,
 }: IActivityTableGroup) => {
   const getRowId = useCallback((row: IActivityRow) => {
     if (row.asset.type === "ft")

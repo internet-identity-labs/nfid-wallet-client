@@ -4,7 +4,7 @@
   "sourceRoot": "packages/client-db/src",
   "projectType": "library",
   "license": "MIT",
-  "tags": [],
+  "tags": ["scope:client-db", "type:library", "layer:shared"],
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",

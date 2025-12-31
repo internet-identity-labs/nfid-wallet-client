@@ -79,7 +79,6 @@ describe("shroff transfer nfid error handler test", () => {
     try {
       await errorHandler.completeTransaction(mockId)
     } catch (e: any) {
-      // eslint-disable-next-line jest/no-conditional-expect
       expect(e.message).toContain("InsufficientFunds")
     }
   })

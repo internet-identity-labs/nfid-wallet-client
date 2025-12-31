@@ -1,9 +1,8 @@
-import { Ed25519KeyIdentity, WebAuthnIdentity } from "@dfinity/identity"
+import { Ed25519KeyIdentity } from "@dfinity/identity"
 import base64url from "base64url"
 import { PasskeyConnector } from "src/features/authentication/auth-selection/passkey-flow/services"
 
 import {
-  authState,
   DeviceType,
   im,
   IPasskeyMetadata,
@@ -42,18 +41,30 @@ describe("Passkey flow", () => {
 
     const pk = Ed25519KeyIdentity.generate()
 
-    const publickKeyHexString = pk.getPublicKey().toDer().toString()
+    const _publickKeyHexString = pk.getPublicKey().toDer().toString()
 
     console.log("Public key hex string", pk.getPrincipal().toText())
 
     let exp: { key: string; data: IPasskeyMetadata } = {
       key: "Dst6_Arh95HGTVwUnp5zEtad_Bo",
       data: {
+        name: "Test Passkey",
         type: "platform",
+        flags: {
+          userPresent: true,
+          userVerified: true,
+          attestedCredentialDataIncluded: true,
+          extensionDataIncluded: false,
+          backupEligibility: false,
+          backupState: false,
+          flagsInt: 0,
+        },
         aaguid: "fbfc3007154e4ecc8c0b6e020557d7bd",
         credentialId: base64urlToArrayBuffer("Dst6_Arh95HGTVwUnp5zEtad_Bo"),
         credentialStringId: "Dst6_Arh95HGTVwUnp5zEtad_Bo",
-        publicKey: base64urlToArrayBuffer(pk.getPrincipal().toText()),
+        publicKey: new Uint8Array(
+          base64urlToArrayBuffer(pk.getPrincipal().toText()),
+        ),
         transports: ["hybrid", "internal"],
         clientData: {
           type: "webauthn.create",
@@ -62,7 +73,7 @@ describe("Passkey flow", () => {
           crossOrigin: false,
         },
         created_at: "2025-02-14T10:27:40.595Z",
-      } as IPasskeyMetadata,
+      },
     }
     jest
       .spyOn(passkeyService as any, "decodePublicKeyCredential")
@@ -99,5 +110,5 @@ describe("Passkey flow", () => {
 
 function base64urlToArrayBuffer(base64urlString: string): ArrayBuffer {
   const decoded = base64url.toBuffer(base64urlString)
-  return decoded.buffer
+  return decoded.buffer as ArrayBuffer
 }

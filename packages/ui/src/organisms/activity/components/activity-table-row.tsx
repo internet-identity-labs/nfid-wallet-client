@@ -27,6 +27,7 @@ import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { IActivityRow } from "frontend/features/activity/types"
+import type { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useDarkTheme } from "frontend/hooks"
 import { APPROXIMATE_SWAP_DURATION } from "frontend/integration/swap/transaction/transaction-service"
@@ -188,8 +189,9 @@ export const ActivityTableRow = ({
   const currentToken = useMemo(() => {
     if (asset.type !== "ft" || !tokens) return
 
-    return tokens?.find((token) => token.getTokenAddress() === asset.canister)
-  }, [asset.type, tokens])
+    const ftAsset = asset as ActivityAssetFT
+    return tokens?.find((token) => token.getTokenAddress() === ftAsset.canister)
+  }, [asset, tokens])
 
   const providerName =
     transaction?.getSwapName() && SwapName[transaction?.getSwapName()]

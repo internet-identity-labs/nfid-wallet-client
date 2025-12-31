@@ -39,7 +39,6 @@ describe("shroff transfer kong error handler test", () => {
       })
     try {
       await shroff.swap(mockId)
-      // eslint-disable-next-line jest/no-jasmine-globals
       fail("Should throw an error")
     } catch (e) {}
     let failedTransaction = shroff.getSwapTransaction()

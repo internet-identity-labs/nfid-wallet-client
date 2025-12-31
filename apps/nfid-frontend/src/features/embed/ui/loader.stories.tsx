@@ -11,7 +11,7 @@ export default {
   component: Loader,
 } as Meta<typeof Loader>
 
-const Template: StoryFn<typeof Loader> = (args) => (
+const Template: StoryFn<typeof Loader> = (_args) => (
   <BrowserRouter>
     <ScreenResponsive className="overflow-auto max-w-[450px] max-h-[580px] shadow-lg m-auto border border-gray-100">
       <TooltipProvider>

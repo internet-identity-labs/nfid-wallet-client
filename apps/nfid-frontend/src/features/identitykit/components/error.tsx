@@ -114,7 +114,6 @@ export const RPCComponentError = ({
                     <div className="space-y-2">
                       <p className="font-bold">Canister ID</p>
                       <p className="">
-                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         {(request.data?.params as any)?.canisterId as string}
                       </p>
                     </div>
@@ -131,7 +130,6 @@ export const RPCComponentError = ({
                           renderArgs(JSON.parse(args)[0])
                         ) : (
                           <p className="">
-                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                             {(request.data?.params as any)?.arg}
                           </p>
                         )}

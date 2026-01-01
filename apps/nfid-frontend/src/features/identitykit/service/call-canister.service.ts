@@ -114,7 +114,6 @@ class CallCanisterService {
         throw new AgentError("Status buffer not found")
       }
       const statusArrayBuffer = toArrayBuffer(statusBuffer)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const status = new TextDecoder().decode(statusArrayBuffer as any)
 
       switch (status) {
@@ -130,7 +129,6 @@ class CallCanisterService {
             throw new AgentError("Reject code buffer not found")
           }
           const rejectCodeArrayBuffer = toArrayBuffer(rejectCodeBuffer)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const rejectCode = new Uint8Array(rejectCodeArrayBuffer as any)[0]
 
           const rejectMessageBuffer = lookupResultToBuffer(
@@ -151,7 +149,6 @@ class CallCanisterService {
           const error_code = error_code_buf
             ? (() => {
                 const errorCodeArrayBuffer = toArrayBuffer(error_code_buf)
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 return new TextDecoder().decode(errorCodeArrayBuffer as any)
               })()
             : undefined

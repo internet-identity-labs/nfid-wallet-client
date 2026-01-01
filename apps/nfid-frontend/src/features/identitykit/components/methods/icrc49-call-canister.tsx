@@ -6,16 +6,13 @@ export interface IRPCComponentICRC49 {
   consentMessage?: string
   methodName: string
   args: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   request: any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onApprove: (data: any) => void
   onReject: () => void
 }
 
 // key is `${canisterId}-${methodName}`
 const componentsMap: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: React.LazyExoticComponent<(args: any) => JSX.Element>
 } = {
   [`ryjl3-tyaaa-aaaaa-aaaba-cai-transfer`]: React.lazy(
@@ -29,7 +26,6 @@ const componentsMap: {
 }
 
 const getComponent = (canisterId: string, methodName: string) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let Cmp = componentsMap[`${canisterId}-${methodName}` as any]
   if (!Cmp) Cmp = componentsMap[methodName]
   if (!Cmp) Cmp = componentsMap["default"]

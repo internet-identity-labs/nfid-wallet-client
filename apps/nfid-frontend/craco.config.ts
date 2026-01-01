@@ -132,6 +132,12 @@ const config = {
           r.exclude = /node_modules\/(?!(@dfinity\/ledger-icp)\/).*/
           delete r.include
         }
+        // Disable ESLint loader in webpack build to avoid conflicts with custom ESLint config
+        // ESLint is still run via lint-staged and NX lint commands
+        if (r.loader && r.loader.indexOf("eslint-loader") !== -1) {
+          // Completely disable ESLint loader by making it match nothing
+          r.test = /$^/
+        }
       })
 
       const isProduction = process.env.FRONTEND_MODE === "production"

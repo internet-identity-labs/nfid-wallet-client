@@ -35,7 +35,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "apps/nfid-demo/jest.config.ts",
+        "jestConfig": "apps/nfid-demo/jest.config.js",
         "passWithNoTests": true
       }
     }

@@ -33,7 +33,8 @@
     "lint": {
       "executor": "@nx/eslint:lint",
       "options": {
-        "lintFilePatterns": ["apps/nfid-frontend/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["apps/nfid-frontend/**/*.{ts,tsx,js,jsx}"],
+        "maxWarnings": 100
       }
     }
   }

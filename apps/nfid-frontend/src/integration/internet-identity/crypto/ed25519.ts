@@ -18,7 +18,7 @@ export async function fromSeedWithSlip0010(
   let [slipSeed, chainCode] = await generateMasterKey(masterSeed)
 
   for (let i = 0; i < derivationPath.length; i++) {
-    ;[slipSeed, chainCode] = await derive(
+    [slipSeed, chainCode] = await derive(
       slipSeed,
       chainCode,
       derivationPath[i] | HARDENED,

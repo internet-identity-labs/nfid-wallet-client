@@ -8,7 +8,7 @@ import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.serv
 import { chainFusionSignerService } from "frontend/integration/bitcoin/services/chain-fusion-signer.service"
 import { EthSignTransactionRequest } from "frontend/integration/bitcoin/idl/chain-fusion-signer.d"
 import { INFURA_API_KEY } from "@nfid/integration/token/constants"
-import { EthereumTransactionParams } from "frontend/features/walletconnect/components/walletconnect-request"
+import { EthereumTransactionParams } from "frontend/features/walletconnect/components/walletconnect-types"
 import { NAMESPACES } from "./constants"
 
 import {

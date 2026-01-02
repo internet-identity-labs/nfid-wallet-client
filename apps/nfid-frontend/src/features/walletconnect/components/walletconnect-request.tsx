@@ -2,6 +2,10 @@ import React from "react"
 import { SignClientTypes } from "@walletconnect/types"
 
 import { WalletConnectPromptTemplate } from "./walletconnect-prompt-template"
+import { EthereumTransactionParams } from "./walletconnect-types"
+
+// Re-export for backward compatibility
+export type { EthereumTransactionParams }
 
 interface WalletConnectRequestProps {
   request: SignClientTypes.EventArguments["session_request"]
@@ -9,23 +13,6 @@ interface WalletConnectRequestProps {
   isLoading?: boolean
   onApprove: () => void
   onReject: () => void
-}
-
-/**
- * Ethereum transaction parameters as received from WalletConnect
- */
-export interface EthereumTransactionParams {
-  to?: string
-  from?: string
-  value?: string
-  gas?: string | number
-  gasLimit?: string | number
-  gasPrice?: string | number
-  maxFeePerGas?: string | number
-  maxPriorityFeePerGas?: string | number
-  nonce?: string | number
-  data?: string
-  chainId?: string | number
 }
 
 export const WalletConnectRequest: React.FC<WalletConnectRequestProps> = ({

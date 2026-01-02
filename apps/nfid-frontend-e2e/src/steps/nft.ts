@@ -6,17 +6,23 @@ import Nft from "../pages/nft.js"
 Then(
   /^Verifying that the token with name (.+) and collection (.+?)(?: and ID (.+))? is displayed$/,
   async (token: string, collection: string, id?: string) => {
-    await (await Nft.getNftName(token, collection)).waitForDisplayed({
+    await (
+      await Nft.getNftName(token, collection)
+    ).waitForDisplayed({
       timeout: 20000,
       timeoutMsg: `Not found NFT with name ${token} and collection ${collection}`,
     })
-    await (await Nft.getNftCollection(collection)).waitForDisplayed({
+    await (
+      await Nft.getNftCollection(collection)
+    ).waitForDisplayed({
       timeout: 20000,
       timeoutMsg: `Not found collection with name ${collection}`,
     })
 
     if (id)
-      await (await Nft.getNftId(id)).waitForDisplayed({
+      await (
+        await Nft.getNftId(id)
+      ).waitForDisplayed({
         timeout: 20000,
         timeoutMsg: `Token ID ${id} is wrong or still not displayed in 5sec`,
       })
@@ -68,10 +74,16 @@ Then(
         expect(await Nft.getValueFromColumnAtFirstRow("Event type")).toContain(
           type,
         ),
-      async () =>
-        expect(
-          await Nft.getValueFromColumnAtFirstRow("Date and time"),
-        ).toContain(date),
+      async () => {
+        // Extract date part only (before the time) to avoid timezone issues
+        // Expected format: "Oct 09, 2024 - 12:55:40 am"
+        // We'll only check the date part: "Oct 09, 2024"
+        const expectedDatePart = date.split(" - ")[0]
+        const actualDateText =
+          await Nft.getValueFromColumnAtFirstRow("Date and time")
+        const actualDatePart = actualDateText.split(" - ")[0]
+        expect(actualDatePart).toContain(expectedDatePart)
+      },
       async () =>
         expect(await Nft.getValueFromColumnAtFirstRow("To")).toContain(to),
       async () =>

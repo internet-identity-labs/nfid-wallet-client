@@ -8,6 +8,13 @@ import webpack from "webpack"
 import { serviceConfig } from "../../config/webpack-env"
 import dfxJson from "../../dfx.json"
 
+// Disable ESLint in webpack build to avoid conflicts with custom ESLint config
+// ESLint is still run via lint-staged and NX lint commands
+// This uses react-scripts' built-in DISABLE_ESLINT_PLUGIN environment variable
+if (!process.env.DISABLE_ESLINT_PLUGIN) {
+  process.env.DISABLE_ESLINT_PLUGIN = "true"
+}
+
 console.log("nfid-frontend", { serviceConfig })
 
 const isExampleBuild = process.env.EXAMPLE_BUILD === "1"
@@ -131,12 +138,6 @@ const config = {
         if (r.loader && r.loader.indexOf("babel") !== -1) {
           r.exclude = /node_modules\/(?!(@dfinity\/ledger-icp)\/).*/
           delete r.include
-        }
-        // Disable ESLint loader in webpack build to avoid conflicts with custom ESLint config
-        // ESLint is still run via lint-staged and NX lint commands
-        if (r.loader && r.loader.indexOf("eslint-loader") !== -1) {
-          // Completely disable ESLint loader by making it match nothing
-          r.test = /$^/
         }
       })
 

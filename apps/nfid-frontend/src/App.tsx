@@ -5,7 +5,7 @@ import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
 
 import { BlurredLoader, Loader, ScreenResponsive } from "@nfid-frontend/ui"
-import { ROUTE_EMBED, ROUTE_RPC } from "@nfid/config"
+import { ROUTE_EMBED, ROUTE_RPC, ROUTE_WALLETCONNECT } from "@nfid/config"
 import { authState, exchangeRateService, ic } from "@nfid/integration"
 import { useSWR } from "@nfid/swr"
 
@@ -21,7 +21,7 @@ import { AuthEmailMagicLink } from "./features/authentication/auth-selection/ema
 import IdentityKitRPCCoordinator from "./features/identitykit/coordinator"
 import { WalletRouter } from "./features/wallet"
 import { WalletConnectHandler } from "./features/walletconnect/walletconnect-handler"
-import { WalletConnectModal } from "./features/walletconnect/walletconnect-modal"
+import WalletConnectCoordinator from "./features/walletconnect/walletconnect-coordinator"
 import { NotFound } from "./ui/pages/404"
 import ProfileTemplate from "./ui/templates/profile-template/Template"
 import { useAuthentication } from "./apps/authentication/use-authentication"
@@ -165,7 +165,6 @@ export const App = () => {
   return (
     <Suspense fallback={<BlurredLoader isLoading />}>
       <WalletConnectHandler />
-      <WalletConnectModal />
       <AnimatePresence mode="wait">
         <BtcAddressProvider>
           <EthAddressProvider>
@@ -251,6 +250,10 @@ export const App = () => {
                   <Route
                     path={ROUTE_RPC}
                     element={<IdentityKitRPCCoordinator />}
+                  />
+                  <Route
+                    path={ROUTE_WALLETCONNECT}
+                    element={<WalletConnectCoordinator />}
                   />
                   <Route
                     path={ProfileConstants.security}

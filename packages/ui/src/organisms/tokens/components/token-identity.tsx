@@ -16,7 +16,7 @@ import {
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
-import { NetworkIcon } from "packages/ui/src/utils/network-icon"
+import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
 
 interface TokenIdentityProps extends HTMLAttributes<HTMLDivElement> {
   token: FT
@@ -58,7 +58,7 @@ export const TokenIdentity: FC<TokenIdentityProps> = ({
         />
         {withNetwork && (
           <div className="absolute bottom-[-5px] right-[-5px] sm:bottom-0 sm:right-0 w-[18px] h-[18px] rounded-[6px] bg-white dark:bg-zinc-800">
-            <NetworkIcon chainId={token.getChainId()} />
+            {getNetworkIcon(token.getChainId())}
           </div>
         )}
       </div>

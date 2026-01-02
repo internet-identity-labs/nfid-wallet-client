@@ -1,19 +1,15 @@
+import { ReactNode } from "react"
 import { IcpNetworkIcon } from "../atoms/icons/IcpNetworkIcon"
 import { EthNetworkIcon } from "../atoms/icons/EthNetworkIcon"
 import { BtcNetworkIcon } from "../atoms/icons/BtcNetworkIcon"
-import { useDarkTheme } from "frontend/hooks"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { ArbNetworkIcon } from "../atoms/icons/ArbNetworkIcon"
 import { BaseNetworkIcon } from "../atoms/icons/BaseNetworkIcon"
 import { BnbNetworkIcon } from "../atoms/icons/BnbNetworkIcon"
 import { PolNetworkIcon } from "../atoms/icons/PolNetworkIcon"
 
-interface NetworkIconProps {
-  chainId: ChainId
-}
-
-export const NetworkIcon: React.FC<NetworkIconProps> = ({ chainId }) => {
-  const isDarkTheme = useDarkTheme()
+export const getNetworkIcon = (chainId: ChainId): ReactNode => {
+  const isDarkTheme = document.documentElement.classList.contains("dark")
 
   switch (chainId) {
     case ChainId.ICP:

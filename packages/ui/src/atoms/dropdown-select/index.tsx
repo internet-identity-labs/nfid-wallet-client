@@ -113,7 +113,7 @@ export const DropdownSelect = ({
     } else {
       setOpenDirection("bottom")
     }
-  }, [isDropdownOpen, ref])
+  }, [isDropdownOpen])
 
   return (
     <div

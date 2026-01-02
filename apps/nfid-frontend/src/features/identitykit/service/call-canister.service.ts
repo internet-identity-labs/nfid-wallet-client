@@ -5,6 +5,7 @@ import {
   CallRequest,
   Cbor,
   Certificate,
+  LookupResult,
   lookupResultToBuffer,
   RequestId,
   UpdateCallRejectedError,
@@ -108,7 +109,7 @@ class CallCanisterService {
       const path = [new TextEncoder().encode("request_status"), requestId]
 
       const statusBuffer = lookupResultToBuffer(
-        certificate.lookup([...path, "status"]) as any,
+        certificate.lookup([...path, "status"]) as LookupResult,
       )
       if (!statusBuffer) {
         throw new AgentError("Status buffer not found")
@@ -123,7 +124,7 @@ class CallCanisterService {
           // Find rejection details in the certificate
 
           const rejectCodeBuffer = lookupResultToBuffer(
-            certificate.lookup([...path, "reject_code"]) as any,
+            certificate.lookup([...path, "reject_code"]) as LookupResult,
           )
           if (!rejectCodeBuffer) {
             throw new AgentError("Reject code buffer not found")
@@ -132,7 +133,7 @@ class CallCanisterService {
           const rejectCode = new Uint8Array(rejectCodeArrayBuffer as any)[0]
 
           const rejectMessageBuffer = lookupResultToBuffer(
-            certificate.lookup([...path, "reject_message"]) as any,
+            certificate.lookup([...path, "reject_message"]) as LookupResult,
           )
           if (!rejectMessageBuffer) {
             throw new AgentError("Reject message buffer not found")
@@ -144,7 +145,7 @@ class CallCanisterService {
           )
 
           const error_code_buf = lookupResultToBuffer(
-            certificate.lookup([...path, "error_code"]) as any,
+            certificate.lookup([...path, "error_code"]) as LookupResult,
           )
           const error_code = error_code_buf
             ? (() => {

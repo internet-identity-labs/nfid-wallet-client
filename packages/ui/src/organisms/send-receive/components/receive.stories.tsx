@@ -16,7 +16,7 @@ export default meta
 
 const Template: StoryFn<ReceiveProps> = (args) => (
   <div className="w-[450px] h-[630px]">
-    <TransferTemplate>
+    <TransferTemplate isOpen={true}>
       <Receive {...args} />
     </TransferTemplate>
   </div>

@@ -27,7 +27,7 @@ const Template: StoryFn<TransferNFTUiProps> = (args) => (
         firstValue="Token"
         secondValue="Collectible"
         className="mb-5"
-        onChange={() => console.log(1)}
+        onChange={() => {}}
         defaultValue={true}
         id="send_type_toggle"
       />
@@ -50,26 +50,13 @@ export const SendNFTProps = {
   selectedAccountAddress:
     "yrfx6-fmprd-wgad6-6or6b-2aw42-5qqhn-o4yt7-plkxr-2jtgv-azhzx-gae",
   balance: 200000,
-  setSelectedNFTId: (value: string | ((prevState: string) => string)) => {
-    if (typeof value === "function") {
-      const prevState = ""
-      console.log(
-        "Selected NFT ID:",
-        (value as (prevState: string) => string)(prevState),
-      )
-    } else {
-      console.log("Selected NFT ID:", value)
-    }
-  },
+  setSelectedNFTId: (value: string | ((prevState: string) => string)) => {},
   submit: async () => {
-    console.log("Send button clicked")
     return undefined
   },
   validateAddress: () => true,
   isSuccessOpen: false,
-  onClose: () => {
-    console.log("Close success modal")
-  },
+  onClose: () => {},
   status: SendStatus.PENDING,
 }
 

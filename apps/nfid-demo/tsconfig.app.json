@@ -3,7 +3,6 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "types": ["node"],
-    "skipLibCheck": true,
     "composite": true
   },
   "files": [

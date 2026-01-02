@@ -5,7 +5,7 @@ import { Checkbox } from "../checkbox"
 import { IconNftPlaceholder } from "../icons"
 import ImageWithFallback from "../image-with-fallback"
 import { useDarkTheme } from "frontend/hooks"
-import { NetworkIcon } from "../../utils/network-icon"
+import { getNetworkIcon } from "../../utils/network-icon"
 
 export interface IDropdownSelectOption {
   option: IOption
@@ -57,7 +57,7 @@ export const DropdownSelectOption = ({
               className="object-cover w-10 h-10 rounded-full bg-gray-50"
             />
             <div className="absolute bottom-[-5px] right-[-5px] sm:bottom-0 sm:right-0 w-[18px] h-[18px] rounded-[6px] bg-white dark:bg-zinc-800">
-              <NetworkIcon chainId={option.chainId!} />
+              {getNetworkIcon(option.chainId!)}
             </div>
           </div>
         ) : (

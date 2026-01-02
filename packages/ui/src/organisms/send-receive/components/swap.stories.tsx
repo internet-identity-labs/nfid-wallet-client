@@ -42,8 +42,8 @@ const createMockToken = (symbol: string, name: string) => ({
   getTokenFee: async () => ({
     getFee: () => BigInt(10000),
   }),
-  getTokenFeeFormatted: () => "0.0001",
-  getTokenFeeFormattedUsd: () => "0.10 USD",
+  getTokenFeeFormatted: (_fee: bigint) => "0.0001",
+  getTokenFeeFormattedUsd: (_fee: bigint) => "0.10 USD",
   isHideable: () => true,
   getRootSnsCanister: () => undefined,
   getIcrc2Allowances: async (_: Principal) => [],
@@ -97,8 +97,8 @@ const Template: StoryFn<SwapFTUiProps> = (args) => {
             {...args}
             fromToken={mockTokens[0]}
             toToken={mockTokens[1]}
-            setFromChosenToken={(value: string) => console.log(value)}
-            setToChosenToken={(value: string) => console.log(value)}
+            setFromChosenToken={() => {}}
+            setToChosenToken={() => {}}
           />
         </TransferTemplate>
       </div>
@@ -111,16 +111,14 @@ export const Default = Template.bind({
   allTokens: mockTokens,
   fromToken: mockTokens[0],
   toToken: mockTokens[1],
-  submit: async (_: FormFields) => {
-    console.log("Submit button clicked")
-  },
+  submit: async (_: FormFields) => {},
   loadingMessage: "Loading tokens...",
   isTokenLoading: false,
   showServiceError: false,
   showLiquidityError: undefined,
   isQuoteLoading: false,
   quote: mockQuote as Quote,
-  clearQuoteError: () => console.log("Clearing error"),
+  clearQuoteError: () => {},
 })
 
 export const SendFTProps: any = {}

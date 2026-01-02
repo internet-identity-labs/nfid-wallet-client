@@ -5,11 +5,15 @@ import canisterIds from "../canister_ids.json"
 let sdkGitHash
 try {
   sdkGitHash = childProcess
-    .execSync("cd ../../../sdk-ts/ && git rev-parse HEAD")
+    .execSync("cd ../../../sdk-ts/ && git rev-parse HEAD", {
+      stdio: "pipe",
+    })
     .toString()
     .trim()
     .slice(0, 12)
 } catch (e) {
+  // sdk-ts directory doesn't exist in CI or when building without the SDK repo
+  // This is expected and we fall back to "unknown"
   sdkGitHash = "unknown"
 }
 
@@ -79,13 +83,21 @@ export const serviceConfig = {
   ),
   SWAP_TRS_STORAGE: JSON.stringify(process.env.SWAP_TRS_STORAGE),
   NFID_WALLET_CANISTER: JSON.stringify(process.env.NFID_WALLET_CANISTER),
-  NFID_WALLET_CANISTER_STAKING: JSON.stringify(process.env.NFID_WALLET_CANISTER_STAKING),
+  NFID_WALLET_CANISTER_STAKING: JSON.stringify(
+    process.env.NFID_WALLET_CANISTER_STAKING,
+  ),
   IC_SIGNER_CANISTER_ID: JSON.stringify(process.env.IC_SIGNER_CANISTER_ID),
   PATRON_CANISTER_ID: JSON.stringify(process.env.PATRON_CANISTER_ID),
-  CHAIN_FUSION_SIGNER_CANISTER_ID: JSON.stringify(process.env.CHAIN_FUSION_SIGNER_CANISTER_ID),
+  CHAIN_FUSION_SIGNER_CANISTER_ID: JSON.stringify(
+    process.env.CHAIN_FUSION_SIGNER_CANISTER_ID,
+  ),
   BITCOIN_CANISTER_ID: JSON.stringify(process.env.BITCOIN_CANISTER_ID),
-  CK_BTC_LEDGER_CANISTER_ID: JSON.stringify(process.env.CK_BTC_LEDGER_CANISTER_ID),
-  CK_BTC_MINTER_CANISTER_ID: JSON.stringify(process.env.CK_BTC_MINTER_CANISTER_ID),
+  CK_BTC_LEDGER_CANISTER_ID: JSON.stringify(
+    process.env.CK_BTC_LEDGER_CANISTER_ID,
+  ),
+  CK_BTC_MINTER_CANISTER_ID: JSON.stringify(
+    process.env.CK_BTC_MINTER_CANISTER_ID,
+  ),
   FEE_PERCENT: JSON.stringify(process.env.FEE_PERCENT),
   FEE_ADDRESS: JSON.stringify(process.env.FEE_ADDRESS),
   CHAIN_NETWORK: JSON.stringify(process.env.CHAIN_NETWORK),

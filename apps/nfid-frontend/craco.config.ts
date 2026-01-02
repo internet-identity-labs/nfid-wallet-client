@@ -153,6 +153,10 @@ const config = {
         resolve: {
           ...config.resolve,
           extensions: [".js", ".ts", ".jsx", ".tsx"],
+          modules: [
+            ...(config.resolve.modules || ["node_modules"]),
+            path.resolve(__dirname, "../../node_modules"),
+          ],
           fallback: {
             ...config.resolve.fallback,
             assert: require.resolve("assert"),

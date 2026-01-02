@@ -593,6 +593,7 @@ export class WalletConnectService {
     tx: EthereumTransactionParams,
   ): Promise<EthSignTransactionRequest> {
     const fromAddressQuick = await ethereumService.getQuickAddress()
+    debugger
     if (tx.from !== fromAddressQuick) {
       throw new Error(
         "Transaction 'from' address is not the same as the identity address",
@@ -631,55 +632,23 @@ export class WalletConnectService {
       return BigInt(gas)
     }
 
-    // GAS LOGIC (correct for WC + EIP-1559)
-    let maxFeePerGas: bigint = BigInt(0)
-    let maxPriorityFeePerGas: bigint = BigInt(0)
+    // No gas parameters provided - fetch from network
+    const chainId = Number(tx.chainId)
+    const provider = new InfuraProvider(chainId, INFURA_API_KEY)
+    const feeData = await provider.getFeeData()
 
-    if (tx.maxFeePerGas !== undefined) {
-      // EIP-1559 tx from dApp
-      maxFeePerGas = parseGas(tx.maxFeePerGas)
-
-      if (tx.maxPriorityFeePerGas !== undefined) {
-        maxPriorityFeePerGas = parseGas(tx.maxPriorityFeePerGas)
-      } else {
-        // If maxPriorityFeePerGas is not provided, get it from network
-        // or use a reasonable default (2 Gwei = 2000000000 wei)
-        const chainId = Number(tx.chainId)
-        const provider = new InfuraProvider(chainId, INFURA_API_KEY)
-        const feeData = await provider.getFeeData()
-
-        if (feeData.maxPriorityFeePerGas !== null) {
-          maxPriorityFeePerGas = feeData.maxPriorityFeePerGas
-        } else {
-          // Fallback: 2 Gwei (2000000000 wei) - reasonable default for most networks
-          maxPriorityFeePerGas = BigInt(2000000000)
-        }
-      }
-    } else if (tx.gasPrice !== undefined) {
-      // Legacy → Convert to EIP-1559 compatible
-      const gasPrice = parseGas(tx.gasPrice)
-
-      // Gas price becomes BOTH fee and tip
-      maxFeePerGas = gasPrice
-      maxPriorityFeePerGas = gasPrice
-    } else {
-      // No gas parameters provided - fetch from network
-      const chainId = Number(tx.chainId)
-      const provider = new InfuraProvider(chainId, INFURA_API_KEY)
-      const feeData = await provider.getFeeData()
-
-      if (
-        feeData.maxFeePerGas === null ||
-        feeData.maxPriorityFeePerGas === null
-      ) {
-        throw new Error(
-          "Gas fee data is missing from network. Please provide maxFeePerGas and maxPriorityFeePerGas in transaction.",
-        )
-      }
-
-      maxFeePerGas = feeData.maxFeePerGas
-      maxPriorityFeePerGas = feeData.maxPriorityFeePerGas
+    if (
+      feeData.maxFeePerGas === null ||
+      feeData.maxPriorityFeePerGas === null
+    ) {
+      throw new Error(
+        "Gas fee data is missing from network. Please provide maxFeePerGas and maxPriorityFeePerGas in transaction.",
+      )
     }
+
+    //@vitalii probably we need  to show this numbers to user and pass them as a parameter
+    let maxFeePerGas = feeData.maxFeePerGas
+    let maxPriorityFeePerGas = feeData.maxPriorityFeePerGas
 
     // Final TX object
     return {

@@ -593,7 +593,6 @@ export class WalletConnectService {
     tx: EthereumTransactionParams,
   ): Promise<EthSignTransactionRequest> {
     const fromAddressQuick = await ethereumService.getQuickAddress()
-    debugger
     if (tx.from !== fromAddressQuick) {
       throw new Error(
         "Transaction 'from' address is not the same as the identity address",

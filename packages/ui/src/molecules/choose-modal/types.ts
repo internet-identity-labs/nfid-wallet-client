@@ -1,3 +1,5 @@
+import { ReactNode } from "react"
+
 export interface IGroupOption {
   title: string
   subTitle?: string
@@ -11,4 +13,12 @@ export interface IGroupOption {
 export interface IGroupedOptions {
   label: string
   options: IGroupOption[]
+}
+
+export interface IGroupedSendAddress {
+  id: string
+  title: string
+  subTitle?: string
+  value?: string
+  icon?: ReactNode
 }

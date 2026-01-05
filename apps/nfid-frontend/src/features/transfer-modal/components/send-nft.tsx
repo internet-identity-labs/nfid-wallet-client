@@ -1,6 +1,6 @@
 import toaster from "packages/ui/src/atoms/toast"
 import { TransferNFTUi } from "packages/ui/src/organisms/send-receive/components/send-nft"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { useSWR } from "@nfid/swr"
 
@@ -8,8 +8,13 @@ import { fetchNFT, fetchNFTs } from "frontend/features/collectibles/utils/util"
 import { useIdentity } from "frontend/hooks/identity"
 import { transferEXT } from "frontend/integration/entrepot/ext"
 
-import { SendStatus } from "../types"
-import { validateNftAddress } from "../utils"
+import { FormValues, SendStatus } from "../types"
+import { getAddressBookNftOptions, validateNftAddress } from "../utils"
+import {
+  addressBookFacade,
+  NftSearchRequest,
+} from "frontend/integration/address-book"
+import { FormProvider, useForm } from "react-hook-form"
 
 interface ITransferNFT {
   preselectedNFTId?: string
@@ -30,6 +35,25 @@ export const TransferNFT = ({
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [status, setStatus] = useState(SendStatus.PENDING)
   const { identity } = useIdentity()
+
+  const formMethods = useForm<FormValues>({
+    mode: "all",
+    defaultValues: {
+      to: "",
+    },
+  })
+
+  const { data: addresses } = useSWR("addressBook", async () =>
+    addressBookFacade.findAll(),
+  )
+
+  const addressesOptions = useMemo(() => {
+    return getAddressBookNftOptions(addresses)
+  }, [addresses])
+
+  const searchNftAddress = async (req: NftSearchRequest) => {
+    return addressBookFacade.nftSearch(req)
+  }
 
   useEffect(() => {
     setSelectedNFTId(preselectedNFTId)
@@ -74,18 +98,22 @@ export const TransferNFT = ({
   )
 
   return (
-    <TransferNFTUi
-      isLoading={isNftLoading && isNftListLoading}
-      loadingMessage={"Loading NFTs..."}
-      nfts={nfts?.items}
-      setSelectedNFTId={setSelectedNFTId}
-      selectedNFT={selectedNFT}
-      selectedReceiverWallet={selectedReceiverWallet}
-      submit={submit}
-      validateAddress={validateNftAddress}
-      isSuccessOpen={isSuccessOpen}
-      onClose={onClose}
-      status={status}
-    />
+    <FormProvider {...formMethods}>
+      <TransferNFTUi
+        isLoading={isNftLoading && isNftListLoading}
+        loadingMessage={"Loading NFTs..."}
+        nfts={nfts?.items}
+        setSelectedNFTId={setSelectedNFTId}
+        selectedNFT={selectedNFT}
+        selectedReceiverWallet={selectedReceiverWallet}
+        submit={submit}
+        validateAddress={validateNftAddress}
+        isSuccessOpen={isSuccessOpen}
+        onClose={onClose}
+        status={status}
+        addresses={addressesOptions}
+        searchAddress={searchNftAddress}
+      />
+    </FormProvider>
   )
 }

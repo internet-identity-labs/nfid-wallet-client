@@ -35,6 +35,8 @@ import {
   SearchRequest,
   UserAddressPreview,
 } from "frontend/integration/address-book"
+import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
+import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 
 interface ErrorStage {
   buttonText: string
@@ -263,6 +265,9 @@ export const ActivityTableRow = ({
             )}
           >
             {actionMarkup.icon}
+            <div className="absolute bottom-[-5px] right-[-5px] sm:bottom-0 sm:right-0 w-[18px] h-[18px] rounded-[6px] bg-white dark:bg-zinc-800">
+              {getNetworkIcon((asset as ActivityAssetFT).chainId, isDarkTheme)}
+            </div>
           </div>
           <div className="ml-2.5 mb-[11px] mt-[11px] shrink-0">
             <p
@@ -503,11 +508,15 @@ export const ActivityTableRow = ({
                         window.open(scanLink, "_blank", "noopener,noreferrer")
                       }
                     >
-                      <TickerAmount
-                        value={asset.amount}
-                        decimals={asset.decimals}
-                        symbol={asset.currency}
-                      />
+                      {asset.decimals === 0 ? (
+                        `${asset.amount} ${asset.currency}`
+                      ) : (
+                        <TickerAmount
+                          value={asset.amount}
+                          decimals={asset.decimals}
+                          symbol={asset.currency}
+                        />
+                      )}
                     </A>
                   ) : (
                     <p className="text-sm whitespace-nowrap dark:text-white">

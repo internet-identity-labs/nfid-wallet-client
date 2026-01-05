@@ -67,9 +67,7 @@ export interface EVMTransactionService {
   getActivitiesRows(address: string): Promise<IActivityRow[]>
 }
 
-export abstract class EVMTokenTransactionService
-  implements EVMTransactionService
-{
+export abstract class EVMTokenTransactionService implements EVMTransactionService {
   protected abstract getChainId(): number
 
   protected abstract getService(): Erc20Service
@@ -187,9 +185,7 @@ export abstract class EVMTokenTransactionService
   }
 }
 
-export abstract class EVMNativeTransactionService
-  implements EVMTransactionService
-{
+export abstract class EVMNativeTransactionService implements EVMTransactionService {
   protected getUrl(address: string): string {
     return `https://api.etherscan.io/v2/api?chainid=${this.getChainId()}&module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=desc&apikey=${ETHERSCAN_API_KEY}`
   }

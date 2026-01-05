@@ -207,7 +207,7 @@ export const Tokens: FC<TokensProps> = ({
                         !token.isInited())
                     }
                     hideZeroBalance={hideZeroBalance}
-                    key={`token_${token.getTokenAddress()}_${token.getTokenState()}`}
+                    key={`token_${token.getTokenAddress()}_${token.getTokenState()}_${token.getChainId()}`}
                     token={token}
                     tokens={allTokens}
                     profileConstants={profileConstants}

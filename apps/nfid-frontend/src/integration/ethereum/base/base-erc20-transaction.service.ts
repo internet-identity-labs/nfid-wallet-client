@@ -11,6 +11,10 @@ export class BaseErc20TransactionService extends EVMTokenTransactionService {
   protected getService(): Erc20Service {
     return baseErc20Service
   }
+
+  public getExplorerLink(txId: string): string {
+    return `https://basescan.org/tx/${txId}`
+  }
 }
 
 export const baseErc20TransactionService = new BaseErc20TransactionService()

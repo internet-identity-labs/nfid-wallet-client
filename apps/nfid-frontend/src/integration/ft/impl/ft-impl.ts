@@ -322,6 +322,7 @@ export class FTImpl implements FT {
         this.tokenAddress,
       )
     } catch (e) {
+      this.tokenRate = null
       console.error("ICRC1 rate fetch error: ", (e as Error).message)
     }
 

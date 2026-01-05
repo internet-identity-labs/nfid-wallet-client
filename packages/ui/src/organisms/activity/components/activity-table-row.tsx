@@ -13,7 +13,6 @@ import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 import {
   IconCmpArrow,
-  IconCmpStatusSuccess,
   IconCmpSwapActivity,
   IconCmpBurnActivity,
   IconCmpMintActivity,
@@ -24,80 +23,21 @@ import {
   ImageWithFallback,
   Tooltip,
 } from "@nfid-frontend/ui"
-import {
-  BTC_EXPLORER,
-  BTC_NATIVE_ID,
-  CKBTC_CANISTER_ID,
-  CKETH_LEDGER_CANISTER_ID,
-  ETH_EXPLORER,
-  ETH_NATIVE_ID,
-  ICP_CANISTER_ID,
-  ICP_EXPLORER,
-} from "@nfid/integration/token/constants"
-import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { IActivityRow } from "frontend/features/activity/types"
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useDarkTheme } from "frontend/hooks"
-import { FT } from "frontend/integration/ft/ft"
 import { APPROXIMATE_SWAP_DURATION } from "frontend/integration/swap/transaction/transaction-service"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
+import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
+import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 
 interface ErrorStage {
   buttonText: string
   tooltipTitle: string
   tooltipMessage: string
-}
-
-const getChainFusionTokenName = (address: string) => {
-  if (address === CKBTC_CANISTER_ID) {
-    return "bitcoin"
-  } else if (address === CKETH_LEDGER_CANISTER_ID) {
-    return "ethereum"
-  } else {
-    return `ethereum/${address}`
-  }
-}
-
-const getExplorerLink = (id: string, token?: FT, swapTx?: SwapTransaction) => {
-  if (!token) return undefined
-
-  if (
-    token.getTokenAddress() === BTC_NATIVE_ID ||
-    token.getTokenName() === "BTC"
-  ) {
-    return `${BTC_EXPLORER}/${id}`
-  }
-
-  if (token.getTokenAddress() === ETH_NATIVE_ID) {
-    return `${ETH_EXPLORER}/${id}`
-  }
-
-  if (token.getTokenAddress() === ICP_CANISTER_ID) {
-    return swapTx
-      ? `${ICP_EXPLORER}/transaction/${swapTx.getTransferId()}`
-      : `${ICP_EXPLORER}/transaction/${id}`
-  }
-
-  if (token.getTokenCategory() === Category.Sns) {
-    return swapTx
-      ? `${ICP_EXPLORER}/sns/${token.getRootSnsCanister()}/transaction/${swapTx.getTransferId()}`
-      : `${ICP_EXPLORER}/sns/${token.getRootSnsCanister()}/transaction/${id}`
-  }
-
-  if (token.getTokenCategory() === Category.ChainFusion) {
-    return swapTx
-      ? `${ICP_EXPLORER}/${getChainFusionTokenName(
-          token.getTokenAddress(),
-        )}/transaction/${swapTx.getTransferId()}`
-      : `${ICP_EXPLORER}/${getChainFusionTokenName(
-          token.getTokenAddress(),
-        )}/transaction/${id}`
-  }
-
-  return undefined
 }
 
 export const getTooltipAndButtonText = (
@@ -222,13 +162,8 @@ export const getActionMarkup = (
 }
 
 interface IActivityTableRow extends IActivityRow {
-  id: string
   nodeId: string
   identity?: SignIdentity
-}
-
-export const StatusIcons = {
-  Success: <IconCmpStatusSuccess />,
 }
 
 export const ActivityTableRow = ({
@@ -237,9 +172,9 @@ export const ActivityTableRow = ({
   from,
   timestamp,
   to,
-  id,
   nodeId,
   transaction,
+  scanLink,
 }: IActivityTableRow) => {
   const isDarkTheme = useDarkTheme()
   const [isLoading, setIsLoading] = useState(false)
@@ -287,7 +222,6 @@ export const ActivityTableRow = ({
   )
     return null
 
-  const explorerLink = getExplorerLink(id, currentToken, transaction)
   const tooltipAndButtonText = getTooltipAndButtonText(transaction)
   const actionMarkup = getActionMarkup(action, transaction)
 
@@ -305,6 +239,9 @@ export const ActivityTableRow = ({
             )}
           >
             {actionMarkup.icon}
+            <div className="absolute bottom-[-5px] right-[-5px] sm:bottom-0 sm:right-0 w-[18px] h-[18px] rounded-[6px] bg-white dark:bg-zinc-800">
+              {getNetworkIcon((asset as ActivityAssetFT).chainId)}
+            </div>
           </div>
           <div className="ml-2.5 mb-[11px] mt-[11px] shrink-0">
             <p
@@ -486,24 +423,24 @@ export const ActivityTableRow = ({
                 </>
               ) : (
                 <div className="flex flex-col">
-                  {explorerLink ? (
+                  {scanLink ? (
                     <A
                       target="_blank"
                       rel="noreferrer"
                       className="text-sm whitespace-nowrap"
                       onClick={() =>
-                        window.open(
-                          explorerLink,
-                          "_blank",
-                          "noopener,noreferrer",
-                        )
+                        window.open(scanLink, "_blank", "noopener,noreferrer")
                       }
                     >
-                      <TickerAmount
-                        value={asset.amount}
-                        decimals={asset.decimals}
-                        symbol={asset.currency}
-                      />
+                      {asset.decimals === 0 ? (
+                        `${asset.amount} ${asset.currency}`
+                      ) : (
+                        <TickerAmount
+                          value={asset.amount}
+                          decimals={asset.decimals}
+                          symbol={asset.currency}
+                        />
+                      )}
                     </A>
                   ) : (
                     <p className="text-sm whitespace-nowrap dark:text-white">

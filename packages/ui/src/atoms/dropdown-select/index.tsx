@@ -10,6 +10,7 @@ import useClickOutside from "../../utils/use-click-outside"
 import ArrowWhite from "./arrow-white.svg"
 import Arrow from "./arrow.svg"
 import { DropdownSelectOption } from "./option"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 export interface IOption {
   label: string
@@ -18,6 +19,7 @@ export interface IOption {
   value: string
   disabled?: boolean
   symbol?: string
+  chainId?: ChainId
 }
 
 export interface IDropdownSelect {

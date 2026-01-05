@@ -1,6 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
 import clsx from "clsx"
-import { FC } from "react"
+import { FC, useState } from "react"
 
 import {
   Button,
@@ -13,41 +13,88 @@ import {
 import { IActivityRowGroup } from "frontend/features/activity/types"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
+import { EVM_NATIVE, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 
 import { TableActivitySkeleton } from "../../atoms/skeleton"
 import { ActivityEmpty } from "./components/activity-empty"
 import { ActivityTableGroup } from "./components/activity-table-group"
 
+import { AllNetworksIcon } from "packages/ui/src/atoms/icons/AllNetworksIcon"
+import { IActivityAction } from "@nfid/integration/token/icrc1/types"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { BtcNetworkIcon } from "../../atoms/icons/BtcNetworkIcon"
+import { EthNetworkIcon } from "../../atoms/icons/EthNetworkIcon"
+import { IcpNetworkIcon } from "../../atoms/icons/IcpNetworkIcon"
+import { PolNetworkIcon } from "../../atoms/icons/PolNetworkIcon"
+import { ArbNetworkIcon } from "../../atoms/icons/ArbNetworkIcon"
+
+type IFilter = {
+  tx: string[]
+  chain: string[]
+  token: string[]
+}
+
+const chainOptions = [
+  { label: "Bitcoin", value: `${ChainId.BTC}`, icon: BtcNetworkIcon },
+  { label: "Ethereum", value: `${ChainId.ETH}`, icon: EthNetworkIcon },
+  { label: "Internet Computer", value: `${ChainId.ICP}`, icon: IcpNetworkIcon },
+  { label: "Polygon", value: `${ChainId.POL}`, icon: PolNetworkIcon },
+  { label: "Arbitrum", value: `${ChainId.ARB}`, icon: ArbNetworkIcon },
+]
+
+export const txOptions = [
+  { label: "Receive", value: `${IActivityAction.RECEIVED}` },
+  { label: "Send", value: `${IActivityAction.SENT}` },
+  { label: "Swap", value: `${IActivityAction.SWAP}` },
+  { label: "Approve", value: `${IActivityAction.APPROVE}` },
+  { label: "Mint", value: `${IActivityAction.MINT}` },
+  { label: "Burn", value: `${IActivityAction.BURN}` },
+]
+
 export interface ActivityProps {
   activityData: {
     activities: IActivityRowGroup[]
-    filter: string[]
-    setFilter: React.Dispatch<React.SetStateAction<string[]>>
     isValidating: boolean
     hasMoreData: boolean
     loadMore: () => Promise<void>
     isButtonLoading: boolean
-    resetHandler: () => void
     isFirstLoading: boolean
   }
   tokens: FT[]
   identity?: SignIdentity
+  tokenFilter: string[]
+  setTokenFilter: React.Dispatch<React.SetStateAction<string[]>>
+  chainFilter: string[]
+  setChainFilter: React.Dispatch<React.SetStateAction<string[]>>
+  txFilter: string[]
+  setTxFilter: React.Dispatch<React.SetStateAction<string[]>>
 }
 
-export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
+export const Activity: FC<ActivityProps> = ({
+  activityData,
+  tokens,
+  tokenFilter,
+  setTokenFilter,
+  chainFilter,
+  setChainFilter,
+  txFilter,
+  setTxFilter,
+}) => {
   const {
     activities,
-    filter,
-    setFilter,
     isValidating,
     hasMoreData,
     loadMore,
     isButtonLoading,
-    resetHandler,
     isFirstLoading,
   } = activityData
   const { isBtcAddressLoading } = useBtcAddress()
   const { isEthAddressLoading } = useEthAddress()
+  const [filter, setFilter] = useState<IFilter>({
+    tx: [],
+    chain: [],
+    token: [],
+  })
 
   const showSkeleton =
     isFirstLoading ||
@@ -60,7 +107,6 @@ export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
     <>
       <div className={clsx("flex justify-end", showSkeleton && "hidden")}>
         <FilterPopover
-          title="Assets"
           align="end"
           className="!min-w-[384px]"
           trigger={
@@ -73,26 +119,76 @@ export const Activity: FC<ActivityProps> = ({ activityData, tokens }) => {
                 <div
                   className={clsx(
                     "absolute w-2.5 h-2.5 bg-teal-600 dark:bg-teal-500 right-0 bottom-0 rounded-full border-2 border-white dark:border-[#141518]",
-                    filter.length > 0 ? "block" : "hidden",
+                    tokenFilter.length > 0 ||
+                      chainFilter.length > 0 ||
+                      txFilter.length > 0
+                      ? "block"
+                      : "hidden",
                   )}
                 ></div>
               </div>
             </div>
           }
-          onReset={resetHandler}
+          onReset={() => {
+            setTokenFilter([])
+            setChainFilter([])
+            setTxFilter([])
+            setFilter({ tx: [], chain: [], token: [] })
+          }}
+          onApply={() => {
+            setTokenFilter(filter.token)
+            setChainFilter(filter.chain)
+            setTxFilter(filter.tx)
+          }}
         >
-          <DropdownSelect
-            id={"number_of_filters"}
-            selectedValues={filter}
-            setSelectedValues={setFilter}
-            isMultiselect={true}
-            options={tokens.map((token: FT) => ({
-              label: token.getTokenName(),
-              value: token.getTokenAddress(),
-              icon: token.getTokenLogo(),
-              symbol: token.getTokenSymbol(),
-            }))}
-          />
+          <div className="mb-2.5">
+            <p className="mb-1 text-xs">Network</p>
+            <DropdownSelect
+              options={chainOptions}
+              selectedValues={filter.chain}
+              setSelectedValues={(chain) =>
+                setFilter((prev) => ({ ...prev, chain }))
+              }
+              placeholder="All networks"
+              placeholderIcon={AllNetworksIcon}
+            />
+          </div>
+          <div className="mb-2.5">
+            <p className="mb-1 text-xs">Assets</p>
+            <DropdownSelect
+              id={"number_of_filters"}
+              selectedValues={filter.token}
+              setSelectedValues={(token) =>
+                setFilter((prev) => ({ ...prev, token }))
+              }
+              isMultiselect={true}
+              options={tokens.map((token: FT) => {
+                const address = token.getTokenAddress()
+                const chainId = token.getChainId()
+                const value =
+                  address === EVM_NATIVE || address === ETH_NATIVE_ID
+                    ? `${address}_${chainId}`
+                    : address.toLowerCase()
+
+                return {
+                  label: token.getTokenName(),
+                  value,
+                  icon: token.getTokenLogo(),
+                  symbol: token.getTokenSymbol(),
+                  chainId,
+                }
+              })}
+            />
+          </div>
+          <div className="mb-2.5">
+            <p className="mb-1 text-xs">Transaction type</p>
+            <DropdownSelect
+              options={txOptions}
+              selectedValues={filter.tx}
+              setSelectedValues={(tx) => setFilter((prev) => ({ ...prev, tx }))}
+              placeholder="All"
+            />
+          </div>
         </FilterPopover>
       </div>
       {showEmpty ? (

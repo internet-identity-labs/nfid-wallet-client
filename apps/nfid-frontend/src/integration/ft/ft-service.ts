@@ -11,6 +11,7 @@ import {
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
+  EVM_NATIVE,
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -306,16 +307,28 @@ export class FtService {
 
   private serializeTokensData(tokens: FT[]): string {
     return JSON.stringify(
-      tokens.map((token) => ({
-        tokenAddress: token.getTokenAddress(),
-        tokenBalance: token.getTokenBalance()?.toString(),
-        tokenRate: token.getTokenRate("1")?.toString(),
-        tokenRateDayChangePercent: token.getTokenRateDayChangePercent()?.value,
-        tokenRateDayChangePercentPositive:
-          token.getTokenRateDayChangePercent()?.positive,
-        inited: token.isInited(),
-        state: token.getTokenState(),
-      })),
+      tokens.map((token) => {
+        const tokenRate = token.getTokenRate("1")
+        const serializedTokenRate =
+          tokenRate === null
+            ? null
+            : tokenRate !== undefined
+              ? tokenRate.toString()
+              : undefined
+
+        return {
+          tokenAddress: token.getTokenAddress(),
+          chainId: token.getChainId(),
+          tokenBalance: token.getTokenBalance()?.toString(),
+          tokenRate: serializedTokenRate,
+          tokenRateDayChangePercent:
+            token.getTokenRateDayChangePercent()?.value,
+          tokenRateDayChangePercentPositive:
+            token.getTokenRateDayChangePercent()?.positive,
+          inited: token.isInited(),
+          state: token.getTokenState(),
+        }
+      }),
     )
   }
 
@@ -323,8 +336,15 @@ export class FtService {
     const cachedData = JSON.parse(serialized)
     tokens.forEach((token) => {
       const data = cachedData.find(
-        (d: { tokenAddress: string }) =>
-          d.tokenAddress === token.getTokenAddress(),
+        (d: { tokenAddress: string; chainId?: number }) => {
+          const addressMatches = d.tokenAddress === token.getTokenAddress()
+          const isEvmNative = d.tokenAddress === EVM_NATIVE
+          const chainMatches = isEvmNative
+            ? d.chainId === token.getChainId()
+            : d.chainId === undefined || d.chainId === token.getChainId()
+
+          return addressMatches && chainMatches
+        },
       )
       if (!data) return
 
@@ -334,14 +354,16 @@ export class FtService {
         tokenImpl.tokenBalance = BigInt(data.tokenBalance)
       }
 
-      if (data.tokenRate) {
-        tokenImpl.tokenRate = {
-          value: new BigNumber(data.tokenRate),
-          dayChangePercent: data.tokenRateDayChangePercent,
-          dayChangePercentPositive: data.tokenRateDayChangePercentPositive,
+      if (data.tokenRate !== undefined) {
+        if (data.tokenRate !== null) {
+          tokenImpl.tokenRate = {
+            value: new BigNumber(data.tokenRate),
+            dayChangePercent: data.tokenRateDayChangePercent,
+            dayChangePercentPositive: data.tokenRateDayChangePercentPositive,
+          }
+        } else {
+          tokenImpl.tokenRate = null
         }
-      } else {
-        tokenImpl.tokenRate = null
       }
 
       tokenImpl.inited = data.inited
@@ -366,12 +388,12 @@ export class FtService {
   }
 
   async filterNotActiveNotZeroBalancesTokens(
-    allTokens: Array<FT>,
+    tokens: Array<FT>,
     principal: Principal,
   ): Promise<Array<FT>> {
     return (
       await Promise.all(
-        allTokens.map(async (t) => {
+        tokens.map(async (t) => {
           if (t.getTokenBalance() !== undefined) return t
           const ftWithBalance = await t.refreshBalance(principal)
           return ftWithBalance

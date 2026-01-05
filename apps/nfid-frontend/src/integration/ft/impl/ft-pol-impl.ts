@@ -39,7 +39,7 @@ export class FTPolygonImpl extends FTEvmAbstractImpl {
     try {
       this.tokenBalance = await this.getProvider().getQuickBalance()
     } catch (e) {
-      console.error("PolygonService error: ", (e as Error).message)
+      console.error("Polygon balance fetch error: ", (e as Error).message)
       return
     }
 

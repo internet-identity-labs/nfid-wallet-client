@@ -99,7 +99,9 @@ export abstract class EVMService {
 
   //get balance of eth address
   public async getBalance(address: Address): Promise<Balance> {
-    const cacheKey = `EVM_BALANCE_${CHAIN_ID}_${address.toLowerCase()}`
+    const network = await this.provider.getNetwork()
+    const chainId = Number(network.chainId)
+    const cacheKey = `EVM_BALANCE_${chainId}_${address.toLowerCase()}`
 
     const fetchAndCache = async (): Promise<Balance> => {
       const balance = await this.provider.getBalance(address)
@@ -184,6 +186,9 @@ export abstract class EVMService {
     )
     let nonce = await this.getTransactionCount(address)
 
+    const network = await this.provider.getNetwork()
+    const chainId = Number(network.chainId)
+
     let trs_request: EthSignTransactionRequest = {
       to: trs.to,
       value: parseEther(amount),
@@ -192,7 +197,7 @@ export abstract class EVMService {
       gas: gas.gasUsed,
       max_priority_fee_per_gas: gas.maxPriorityFeePerGas,
       max_fee_per_gas: gas.maxFeePerGas,
-      chain_id: CHAIN_ID,
+      chain_id: BigInt(chainId),
     }
     let signedTransaction = await chainFusionSignerService.ethSignTransaction(
       identity,

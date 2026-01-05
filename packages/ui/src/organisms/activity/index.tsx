@@ -27,6 +27,10 @@ import { EthNetworkIcon } from "../../atoms/icons/EthNetworkIcon"
 import { IcpNetworkIcon } from "../../atoms/icons/IcpNetworkIcon"
 import { PolNetworkIcon } from "../../atoms/icons/PolNetworkIcon"
 import { ArbNetworkIcon } from "../../atoms/icons/ArbNetworkIcon"
+import {
+  SearchRequest,
+  UserAddressPreview,
+} from "frontend/integration/address-book"
 
 type IFilter = {
   tx: string[]
@@ -68,6 +72,7 @@ export interface ActivityProps {
   setChainFilter: React.Dispatch<React.SetStateAction<string[]>>
   txFilter: string[]
   setTxFilter: React.Dispatch<React.SetStateAction<string[]>>
+  searchAddress: (req: SearchRequest) => Promise<UserAddressPreview[]>
 }
 
 export const Activity: FC<ActivityProps> = ({
@@ -79,6 +84,7 @@ export const Activity: FC<ActivityProps> = ({
   setChainFilter,
   txFilter,
   setTxFilter,
+  searchAddress,
 }) => {
   const {
     activities,
@@ -216,6 +222,7 @@ export const Activity: FC<ActivityProps> = ({
                     date={group.date}
                     rows={group.rows}
                     key={`group_${group.date}`}
+                    searchAddress={searchAddress}
                   />
                 ))
               )}

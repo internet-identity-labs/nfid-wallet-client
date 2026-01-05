@@ -5,7 +5,7 @@ import { A } from "packages/ui/src/atoms/custom-link"
 import { Spinner } from "packages/ui/src/atoms/spinner"
 import CopyAddress from "packages/ui/src/molecules/copy-address"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { errorHandlerFactory } from "src/integration/swap/errors/handler-factory"
 import { ContactSupportError } from "src/integration/swap/errors/types/contact-support-error"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
@@ -31,6 +31,10 @@ import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useDarkTheme } from "frontend/hooks"
 import { APPROXIMATE_SWAP_DURATION } from "frontend/integration/swap/transaction/transaction-service"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
+import {
+  SearchRequest,
+  UserAddressPreview,
+} from "frontend/integration/address-book"
 import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
 import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 
@@ -164,6 +168,7 @@ export const getActionMarkup = (
 interface IActivityTableRow extends IActivityRow {
   nodeId: string
   identity?: SignIdentity
+  searchAddress: (req: SearchRequest) => Promise<UserAddressPreview[]>
 }
 
 export const ActivityTableRow = ({
@@ -175,7 +180,12 @@ export const ActivityTableRow = ({
   nodeId,
   transaction,
   scanLink,
+  searchAddress,
 }: IActivityTableRow) => {
+  const [contactFrom, setContactFrom] = useState<UserAddressPreview | null>(
+    null,
+  )
+  const [contactTo, setContactTo] = useState<UserAddressPreview | null>(null)
   const isDarkTheme = useDarkTheme()
   const [isLoading, setIsLoading] = useState(false)
   const { data: tokens = undefined } = useSWRWithTimestamp(
@@ -186,6 +196,22 @@ export const ActivityTableRow = ({
       revalidateOnMount: false,
     },
   )
+
+  useEffect(() => {
+    const getContact = async () => {
+      if (from) {
+        const contactFrom = await searchAddress({ address: from })
+        if (contactFrom.length > 0) setContactFrom(contactFrom[0])
+      }
+
+      if (to) {
+        const contactTo = await searchAddress({ address: to })
+        if (contactTo.length > 0) setContactTo(contactTo[0])
+      }
+    }
+
+    getContact()
+  }, [])
 
   const currentToken = useMemo(() => {
     if (asset.type !== "ft" || !tokens) return
@@ -240,7 +266,7 @@ export const ActivityTableRow = ({
           >
             {actionMarkup.icon}
             <div className="absolute bottom-[-5px] right-[-5px] sm:bottom-0 sm:right-0 w-[18px] h-[18px] rounded-[6px] bg-white dark:bg-zinc-800">
-              {getNetworkIcon((asset as ActivityAssetFT).chainId)}
+              {getNetworkIcon((asset as ActivityAssetFT).chainId, isDarkTheme)}
             </div>
           </div>
           <div className="ml-2.5 mb-[11px] mt-[11px] shrink-0">
@@ -284,13 +310,25 @@ export const ActivityTableRow = ({
                     symbol={asset.currency}
                   />
                 </div>
-              ) : (
+              ) : !contactFrom ? (
                 <CopyAddress
                   className="dark:text-white"
                   address={from}
                   leadingChars={6}
                   trailingChars={4}
                 />
+              ) : (
+                <>
+                  <p className="leading-5 dark:text-white">
+                    {contactFrom.name}
+                  </p>
+                  <CopyAddress
+                    className="text-xs leading-5 text-gray-400 dark:text-zinc-400"
+                    address={contactFrom.address.value}
+                    leadingChars={6}
+                    trailingChars={4}
+                  />
+                </>
               )}
             </td>
             <td className="w-[34px] min-w-[34px] h-[24px] m-auto hidden sm:table-cell">
@@ -318,13 +356,23 @@ export const ActivityTableRow = ({
                     symbol={asset.currencyTo!}
                   />
                 </div>
-              ) : (
+              ) : !contactTo ? (
                 <CopyAddress
                   className="dark:text-white"
                   address={to}
                   leadingChars={6}
                   trailingChars={4}
                 />
+              ) : (
+                <>
+                  <p className="leading-5 dark:text-white">{contactTo.name}</p>
+                  <CopyAddress
+                    className="text-xs leading-5 text-gray-400 dark:text-zinc-400"
+                    address={contactTo.address.value}
+                    leadingChars={6}
+                    trailingChars={4}
+                  />
+                </>
               )}
             </td>
           </>
@@ -337,12 +385,26 @@ export const ActivityTableRow = ({
                     "transition-opacity w-[20%] hidden sm:table-cell pl-[28px]",
                   )}
                 >
-                  <CopyAddress
-                    className="dark:text-white"
-                    address={from}
-                    leadingChars={6}
-                    trailingChars={4}
-                  />
+                  {!contactFrom ? (
+                    <CopyAddress
+                      className="dark:text-white"
+                      address={from}
+                      leadingChars={6}
+                      trailingChars={4}
+                    />
+                  ) : (
+                    <>
+                      <p className="leading-5 dark:text-white">
+                        {contactFrom.name}
+                      </p>
+                      <CopyAddress
+                        className="text-xs leading-5 text-gray-400 dark:text-zinc-400"
+                        address={contactFrom.address.value}
+                        leadingChars={6}
+                        trailingChars={4}
+                      />
+                    </>
+                  )}
                 </td>
                 <td className="w-[34px] min-w-[34px] h-[24px] m-auto hidden sm:table-cell">
                   <img
@@ -357,12 +419,26 @@ export const ActivityTableRow = ({
                     "transition-opacity w-[20%] hidden sm:table-cell pl-[28px]",
                   )}
                 >
-                  <CopyAddress
-                    className="dark:text-white"
-                    address={to}
-                    leadingChars={6}
-                    trailingChars={4}
-                  />
+                  {!contactTo ? (
+                    <CopyAddress
+                      className="dark:text-white"
+                      address={to}
+                      leadingChars={6}
+                      trailingChars={4}
+                    />
+                  ) : (
+                    <>
+                      <p className="leading-5 dark:text-white">
+                        {contactTo.name}
+                      </p>
+                      <CopyAddress
+                        className="text-xs leading-5 text-gray-400 dark:text-zinc-400"
+                        address={contactTo.address.value}
+                        leadingChars={6}
+                        trailingChars={4}
+                      />
+                    </>
+                  )}
                 </td>
               </>
             ) : (

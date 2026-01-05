@@ -23,15 +23,43 @@ import {
   getLambdaActor,
 } from "../test-util"
 
+const applicationStub: Application = {
+  is_nft_storage: [],
+  is_trusted: [],
+  is_iframe_allowed: [],
+  alias: [["appAlias"]],
+  user_limit: 5,
+  domain: "domain",
+  name: "appName",
+  img: [],
+}
+
+const okAppResponseEmpty = () => ({
+  data: [] as [],
+  error: [] as [],
+  status_code: 200,
+})
+
+const okAppResponseOne = (app: Application) => ({
+  data: [app] as [Application],
+  error: [] as [],
+  status_code: 200,
+})
+
+const okBoolResponse = () => ({
+  data: [true] as [boolean],
+  error: [] as [],
+  status_code: 200,
+})
+
 describe("Identity Manager suite", () => {
   jest.setTimeout(300000)
 
   describe("Identity Manager Service Test", () => {
     it("Should create NFID profile", async function () {
       const identityDevice = getIdentity("87654321876543218765432187654318")
-      const identityDeviceDelegationIdentity = await getDelegationIdentity(
-        identityDevice,
-      )
+      const identityDeviceDelegationIdentity =
+        await getDelegationIdentity(identityDevice)
 
       const mockedIdentity = getIdentity("87654321876543218765432187654311")
       const delegationIdentity = await getDelegationIdentity(mockedIdentity)
@@ -85,58 +113,54 @@ describe("Identity Manager suite", () => {
     })
 
     it("Should create application", async function () {
-      // @ts-ignore
-      imMock.get_application = jest.fn(() => Promise.resolve({ data: [] }))
-      // @ts-ignore
-      imMock.update_application_alias = jest.fn(() =>
-        Promise.resolve({ data: [true] }),
-      )
+      const getApplicationSpy = jest
+        .spyOn(imMock, "get_application")
+        .mockResolvedValue(okAppResponseEmpty())
+
+      const updateAliasSpy = jest
+        .spyOn(imMock, "update_application_alias")
+        .mockResolvedValue(okBoolResponse())
+
       await processApplicationOrigin("domain", "appName")
-      expect(imMock.update_application_alias).toBeCalled()
+
+      expect(updateAliasSpy).toHaveBeenCalled()
+
+      getApplicationSpy.mockRestore()
+      updateAliasSpy.mockRestore()
     })
+
     it("Should update origin", async function () {
-      const application: Application = {
-        is_nft_storage: [],
-        is_trusted: [],
-        is_iframe_allowed: [],
-        alias: [["appAlias"]],
-        user_limit: 5,
-        domain: "domain",
-        name: "appName",
-        img: [],
-      }
-      // @ts-ignore
-      imMock.get_application = jest.fn(() =>
-        Promise.resolve({ data: [application] }),
-      )
-      // @ts-ignore
-      imMock.update_application_alias = jest.fn(() =>
-        Promise.resolve({ data: [true] }),
-      )
+      const getApplicationSpy = jest
+        .spyOn(imMock, "get_application")
+        .mockResolvedValue(okAppResponseOne(applicationStub))
+
+      const updateAliasSpy = jest
+        .spyOn(imMock, "update_application_alias")
+        .mockResolvedValue(okBoolResponse())
+
       await processApplicationOrigin("domain", "appAliasAnother", "test")
-      expect(imMock.update_application_alias).toBeCalled()
+
+      expect(updateAliasSpy).toHaveBeenCalled()
+
+      getApplicationSpy.mockRestore()
+      updateAliasSpy.mockRestore()
     })
+
     it("Should skip", async function () {
-      const application: Application = {
-        is_nft_storage: [],
-        is_trusted: [],
-        is_iframe_allowed: [],
-        alias: [["appAlias"]],
-        user_limit: 5,
-        domain: "domain",
-        name: "appName",
-        img: [],
-      }
-      // @ts-ignore
-      imMock.get_application = jest.fn(() =>
-        Promise.resolve({ data: [application] }),
-      )
-      // @ts-ignore
-      imMock.update_application_alias = jest.fn(() =>
-        Promise.resolve({ data: [true] }),
-      )
+      const getApplicationSpy = jest
+        .spyOn(imMock, "get_application")
+        .mockResolvedValue(okAppResponseOne(applicationStub))
+
+      const updateAliasSpy = jest
+        .spyOn(imMock, "update_application_alias")
+        .mockResolvedValue(okBoolResponse())
+
       await processApplicationOrigin("domain", "appAlias")
-      expect(imMock.update_application_alias).toBeCalledTimes(0)
+
+      expect(updateAliasSpy).not.toHaveBeenCalled()
+
+      getApplicationSpy.mockRestore()
+      updateAliasSpy.mockRestore()
     })
   })
 })

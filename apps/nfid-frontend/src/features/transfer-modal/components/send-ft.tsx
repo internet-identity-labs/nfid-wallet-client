@@ -43,11 +43,11 @@ import {
 import {
   Category,
   ChainId,
-  isEvmNativeToken,
+  isEvmToken,
 } from "@nfid/integration/token/icrc1/enum/enums"
 import { FTEvmAbstractImpl } from "frontend/integration/ft/impl/ft-evm-abstract-impl"
 import { FTERC20AbstractImpl } from "frontend/integration/ft/impl/ft-erc20-abstract-impl"
-import { TransactionResponse } from "ethers"
+import { isAddress, TransactionResponse } from "ethers"
 
 const DEFAULT_TRANSFER_ERROR = "Something went wrong"
 
@@ -214,37 +214,56 @@ export const TransferFT = ({
       return
     }
 
-    const fetchNonIcrc1Fee = async () => {
-      if (
-        token?.getChainId() === ChainId.BTC ||
-        (token && isEvmNativeToken(token.getChainId()))
-      ) {
-        setFee(undefined)
-        setIsFeeLoading(true)
-        try {
-          let fee =
-            token?.getChainId() === ChainId.BTC
-              ? await token?.getTokenFee(debouncedAmount, identity)
-              : await token?.getTokenFee(
-                  debouncedAmount,
-                  undefined,
-                  to,
-                  ethAddress,
-                  token.getTokenDecimals(),
-                )
-
-          if (!isCancelled) setFee(fee)
-        } catch (e) {
-          console.error(`Fee error: ${e}`)
-          setFeeError((e as Error).message)
-          if (!isCancelled) setFee(undefined)
-        } finally {
-          if (!isCancelled) setIsFeeLoading(false)
-        }
+    const fethcBtcFee = async () => {
+      try {
+        let fee = await token?.getTokenFee(debouncedAmount, identity)
+        if (!isCancelled) setFee(fee)
+      } catch (e) {
+        console.error(`Fee error: ${e}`)
+        setFeeError((e as Error).message)
+        if (!isCancelled) setFee(undefined)
+      } finally {
+        if (!isCancelled) setIsFeeLoading(false)
       }
     }
 
-    fetchNonIcrc1Fee()
+    const fetchEvmFee = async () => {
+      if (
+        token?.getTokenCategory() === Category.ERC20 &&
+        (!to || !isAddress(to))
+      )
+        return
+
+      setFee(undefined)
+      setIsFeeLoading(true)
+      try {
+        let fee = await token?.getTokenFee(
+          debouncedAmount,
+          undefined,
+          to,
+          ethAddress,
+          token.getTokenDecimals(),
+        )
+
+        if (!isCancelled) setFee(fee)
+      } catch (e) {
+        console.error(`Fee error: ${e}`)
+        setFeeError((e as Error).message)
+        if (!isCancelled) setFee(undefined)
+      } finally {
+        if (!isCancelled) setIsFeeLoading(false)
+      }
+    }
+
+    if (token?.getChainId() === ChainId.BTC) {
+      fethcBtcFee()
+      return
+    }
+
+    if (token && isEvmToken(token.getChainId())) {
+      fetchEvmFee()
+      return
+    }
 
     return () => {
       isCancelled = true
@@ -269,7 +288,7 @@ export const TransferFT = ({
   const submit = useCallback(async () => {
     if (!token) return toaster.error("No selected token")
 
-    if (isEvmNativeToken(token.getChainId())) {
+    if (isEvmToken(token.getChainId())) {
       if (!identity || !fee) return
 
       const ethFee = fee as FeeResponseETH

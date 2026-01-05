@@ -96,8 +96,6 @@ export const Activity: FC<ActivityProps> = ({
     token: [],
   })
 
-  console.log("ffill", isFirstLoading, isValidating)
-
   const showSkeleton =
     isFirstLoading ||
     (isValidating && !activities.length) ||

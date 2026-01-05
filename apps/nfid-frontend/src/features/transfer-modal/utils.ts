@@ -47,7 +47,7 @@ import {
   Category,
   State,
   ChainId,
-  isEvmNativeToken,
+  isEvmToken,
 } from "@nfid/integration/token/icrc1/enum/enums"
 import {
   UserAddress,
@@ -418,7 +418,7 @@ export const getAddressBookFtOptions = (
       return !!address.btc
     }
 
-    if (isEvmNativeToken(chainId) || category === Category.ERC20) {
+    if (isEvmToken(chainId) || category === Category.ERC20) {
       return !!address.evm
     }
 
@@ -438,7 +438,7 @@ export const getAddressBookFtOptions = (
     } else if (chainId === ChainId.BTC) {
       value = address.btc
       subTitle = value ? truncateString(value, 6, 4) : undefined
-    } else if (isEvmNativeToken(chainId) || category === Category.ERC20) {
+    } else if (isEvmToken(chainId) || category === Category.ERC20) {
       value = address.evm
       subTitle = value ? truncateString(value, 6, 4) : undefined
     }

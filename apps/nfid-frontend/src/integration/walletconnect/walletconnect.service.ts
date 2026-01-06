@@ -8,7 +8,7 @@ import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.serv
 import { chainFusionSignerService } from "frontend/integration/bitcoin/services/chain-fusion-signer.service"
 import { EthSignTransactionRequest } from "frontend/integration/bitcoin/idl/chain-fusion-signer.d"
 import { INFURA_API_KEY } from "@nfid/integration/token/constants"
-import { EthereumTransactionParams } from "frontend/features/walletconnect/components/walletconnect-request"
+import { EthereumTransactionParams } from "frontend/features/walletconnect/components/walletconnect-types"
 import { NAMESPACES } from "./constants"
 
 import {
@@ -208,6 +208,7 @@ export class WalletConnectService {
       })
 
       namespaces["eip155"] = {
+        chains: NAMESPACES.eip155.chains,
         accounts: formattedAccounts.flat(),
         methods: Array.from(ETH_METHODS),
         events: Array.from(ETH_EVENTS),
@@ -342,6 +343,27 @@ export class WalletConnectService {
   }
 
   /**
+   * Get all pending requests
+   */
+  getAllPendingRequests(): SignClientTypes.EventArguments["session_request"][] {
+    return Array.from(this.pendingRequests.values())
+  }
+
+  /**
+   * Find pending request by ID and topic
+   */
+  findPendingRequest(
+    requestId: number,
+    topic: string,
+  ): SignClientTypes.EventArguments["session_request"] | null {
+    const request = this.pendingRequests.get(requestId)
+    if (request && request.topic === topic) {
+      return request
+    }
+    return null
+  }
+
+  /**
    * Remove pending request
    */
   removePendingRequest(requestId: number): void {
@@ -395,6 +417,7 @@ export class WalletConnectService {
 
     const method = request.params.request.method
     const params = request.params.request.params
+    const chainId = request.params.chainId
 
     let result: any
 
@@ -411,17 +434,16 @@ export class WalletConnectService {
         break
       }
       case "eth_signTransaction": {
-        result = await this.handleEthSignTransaction(
-          identity,
-          params as [EthereumTransactionParams],
-        )
+        const [tx] = params as [EthereumTransactionParams]
+        //parse chainId eip155:137 -> 137
+        tx.chainId = chainId.split(":")[1]
+        result = await this.handleEthSignTransaction(identity, [tx])
         break
       }
       case "eth_sendTransaction": {
-        result = await this.handleEthSendTransaction(
-          identity,
-          params as [EthereumTransactionParams],
-        )
+        const [tx] = params as [EthereumTransactionParams]
+        tx.chainId = chainId.split(":")[1]
+        result = await this.handleEthSendTransaction(identity, [tx])
         break
       }
       case "eth_signTypedData":
@@ -579,12 +601,6 @@ export class WalletConnectService {
     if (!tx.to) {
       throw new Error("Transaction 'to' address is required")
     }
-    if (tx.gas === undefined && tx.gasLimit === undefined) {
-      throw new Error("Transaction 'gas' or 'gasLimit' is required")
-    }
-    if (tx.maxFeePerGas === undefined && tx.gasPrice === undefined) {
-      throw new Error("Transaction must include maxFeePerGas or gasPrice")
-    }
     if (tx.chainId === undefined) {
       throw new Error("Transaction 'chainId' is required")
     }
@@ -615,28 +631,23 @@ export class WalletConnectService {
       return BigInt(gas)
     }
 
-    // GAS LOGIC (correct for WC + EIP-1559)
-    let maxFeePerGas: bigint = BigInt(0)
-    let maxPriorityFeePerGas: bigint = BigInt(0)
+    // No gas parameters provided - fetch from network
+    const chainId = Number(tx.chainId)
+    const provider = new InfuraProvider(chainId, INFURA_API_KEY)
+    const feeData = await provider.getFeeData()
 
-    if (tx.maxFeePerGas !== undefined) {
-      // EIP-1559 tx from dApp
-      maxFeePerGas = parseGas(tx.maxFeePerGas)
-
-      if (tx.maxPriorityFeePerGas !== undefined) {
-        maxPriorityFeePerGas = parseGas(tx.maxPriorityFeePerGas)
-      } else {
-        // Default tip = 1 wei (avoids "gas tip cap 0" error)
-        maxPriorityFeePerGas = BigInt(1)
-      }
-    } else if (tx.gasPrice !== undefined) {
-      // Legacy → Convert to EIP-1559 compatible
-      const gasPrice = parseGas(tx.gasPrice)
-
-      // Gas price becomes BOTH fee and tip
-      maxFeePerGas = gasPrice
-      maxPriorityFeePerGas = gasPrice
+    if (
+      feeData.maxFeePerGas === null ||
+      feeData.maxPriorityFeePerGas === null
+    ) {
+      throw new Error(
+        "Gas fee data is missing from network. Please provide maxFeePerGas and maxPriorityFeePerGas in transaction.",
+      )
     }
+
+    //@vitalii probably we need  to show this numbers to user and pass them as a parameter
+    let maxFeePerGas = feeData.maxFeePerGas
+    let maxPriorityFeePerGas = feeData.maxPriorityFeePerGas
 
     // Final TX object
     return {

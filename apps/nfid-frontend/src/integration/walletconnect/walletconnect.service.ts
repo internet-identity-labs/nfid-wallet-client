@@ -8,7 +8,10 @@ import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.serv
 import { chainFusionSignerService } from "frontend/integration/bitcoin/services/chain-fusion-signer.service"
 import { EthSignTransactionRequest } from "frontend/integration/bitcoin/idl/chain-fusion-signer.d"
 import { INFURA_API_KEY } from "@nfid/integration/token/constants"
-import { EthereumTransactionParams } from "frontend/features/walletconnect/components/walletconnect-types"
+import {
+  EthereumTransactionParams,
+  WCGasCalculated,
+} from "frontend/features/walletconnect/types"
 import { NAMESPACES } from "./constants"
 
 import {
@@ -408,6 +411,7 @@ export class WalletConnectService {
    */
   async handleSessionRequest(
     request: SignClientTypes.EventArguments["session_request"],
+    userParams: WCGasCalculated,
   ): Promise<void> {
     if (!this.walletKit) {
       throw new Error("WalletConnect not initialized")
@@ -435,15 +439,14 @@ export class WalletConnectService {
       }
       case "eth_signTransaction": {
         const [tx] = params as [EthereumTransactionParams]
-        //parse chainId eip155:137 -> 137
         tx.chainId = chainId.split(":")[1]
-        result = await this.handleEthSignTransaction(identity, [tx])
+        result = await this.handleEthSignTransaction(identity, [tx], userParams)
         break
       }
       case "eth_sendTransaction": {
         const [tx] = params as [EthereumTransactionParams]
         tx.chainId = chainId.split(":")[1]
-        result = await this.handleEthSendTransaction(identity, [tx])
+        result = await this.handleEthSendTransaction(identity, [tx], userParams)
         break
       }
       case "eth_signTypedData":
@@ -591,6 +594,7 @@ export class WalletConnectService {
   private async prepareTransactionRequest(
     identity: SignIdentity,
     tx: EthereumTransactionParams,
+    userParams: WCGasCalculated,
   ): Promise<EthSignTransactionRequest> {
     const fromAddressQuick = await ethereumService.getQuickAddress()
     if (tx.from !== fromAddressQuick) {
@@ -631,25 +635,8 @@ export class WalletConnectService {
       return BigInt(gas)
     }
 
-    // No gas parameters provided - fetch from network
-    const chainId = Number(tx.chainId)
-    const provider = new InfuraProvider(chainId, INFURA_API_KEY)
-    const feeData = await provider.getFeeData()
+    const { maxPriorityFeePerGas, maxFeePerGas } = userParams
 
-    if (
-      feeData.maxFeePerGas === null ||
-      feeData.maxPriorityFeePerGas === null
-    ) {
-      throw new Error(
-        "Gas fee data is missing from network. Please provide maxFeePerGas and maxPriorityFeePerGas in transaction.",
-      )
-    }
-
-    //@vitalii probably we need  to show this numbers to user and pass them as a parameter
-    let maxFeePerGas = feeData.maxFeePerGas
-    let maxPriorityFeePerGas = feeData.maxPriorityFeePerGas
-
-    // Final TX object
     return {
       to: tx.to,
       value: parseValue(tx.value),
@@ -668,9 +655,14 @@ export class WalletConnectService {
   private async handleEthSignTransaction(
     identity: SignIdentity,
     params: [EthereumTransactionParams],
+    userParams: WCGasCalculated,
   ): Promise<string> {
     const [tx] = params
-    const txRequest = await this.prepareTransactionRequest(identity, tx)
+    const txRequest = await this.prepareTransactionRequest(
+      identity,
+      tx,
+      userParams,
+    )
     return await chainFusionSignerService.ethSignTransaction(
       identity,
       txRequest,
@@ -683,9 +675,14 @@ export class WalletConnectService {
   private async handleEthSendTransaction(
     identity: SignIdentity,
     params: [EthereumTransactionParams],
+    userParams: WCGasCalculated,
   ): Promise<string> {
     const [tx] = params
-    const txRequest = await this.prepareTransactionRequest(identity, tx)
+    const txRequest = await this.prepareTransactionRequest(
+      identity,
+      tx,
+      userParams,
+    )
 
     // SIGN
     const signedTx = await chainFusionSignerService.ethSignTransaction(

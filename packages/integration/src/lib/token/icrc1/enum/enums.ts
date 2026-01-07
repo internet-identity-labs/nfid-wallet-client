@@ -54,3 +54,13 @@ export const CHAIN_NAME: Record<ChainId, string> = {
   [ChainId.BASE]: "Base",
   [ChainId.ARB]: "Arbitrum One",
 }
+
+export const getEvmGasTokenSymbol = (chainId: ChainId): string => {
+  if (chainId < ChainId.ETH)
+    throw new Error("Gas is calculated for EVM chains only")
+
+  if (chainId === ChainId.POL) return "POL"
+  if (chainId === ChainId.BNB) return "BNB"
+
+  return "ETH"
+}

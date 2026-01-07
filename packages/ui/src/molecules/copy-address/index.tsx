@@ -37,7 +37,7 @@ export const CopyAddress: FC<CopyAddressProps> = ({
   return (
     <div
       className={clsx(
-        "inline-flex gap-[10px] items-center cursor-pointer",
+        "inline-flex gap-[10px] items-center cursor-pointer relative",
         "text-black active:text-gray-400 hover:text-zinc-500 transition-colors",
         copied && "!text-black dark:!text-white",
         className,

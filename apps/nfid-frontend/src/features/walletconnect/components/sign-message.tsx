@@ -1,55 +1,60 @@
 import React from "react"
 import { SignClientTypes } from "@walletconnect/types"
 
-import { EthereumTransactionParams } from "./walletconnect-types"
-import { WalletConnectSignSimpleMessage } from "./walletconnect-sign-simple-message"
-import { WalletConnectSignTypedData } from "./walletconnect-sign-typed-data"
-import { WalletConnectSignTransaction } from "./walletconnect-sign-transaction"
+import { EthereumTransactionParams, ValidationStatus } from "../types"
+import { WalletConnectSignSimpleMessage } from "./sign-simple-message"
+import { WalletConnectSignTypedData } from "./sign-typed-data"
+import { WalletConnectSignTransaction } from "./sign-transaction"
 
 interface WalletConnectSignMessageProps {
   request: SignClientTypes.EventArguments["session_request"]
   dAppOrigin: string
   isLoading?: boolean
-  onSign: () => void
+  onSign: () => Promise<void>
   onCancel: () => void
   error?: string | null
+  validationStatus: ValidationStatus
+  chainId: string
 }
 
-/**
- * Router component for displaying WalletConnect sign requests
- * Routes to appropriate component based on request method
- */
 export const WalletConnectSignMessage: React.FC<
   WalletConnectSignMessageProps
-> = ({ request, dAppOrigin, isLoading = false, onSign, onCancel, error }) => {
+> = ({
+  request,
+  dAppOrigin,
+  isLoading = false,
+  onSign,
+  onCancel,
+  error,
+  validationStatus,
+  chainId,
+}) => {
   const method = request.params.request.method
   const params = request.params.request.params
 
-  // Check request type
   const isTypedData =
     method === "eth_signTypedData" || method === "eth_signTypedData_v4"
   const isTransaction =
     method === "eth_signTransaction" || method === "eth_sendTransaction"
 
-  // Route to appropriate component based on method
   if (isTransaction) {
     const [tx] = params as [EthereumTransactionParams]
     return (
       <WalletConnectSignTransaction
         transaction={tx}
-        method={method}
         dAppOrigin={dAppOrigin}
         isLoading={isLoading}
         onSign={onSign}
         onCancel={onCancel}
         error={error}
+        validationStatus={validationStatus}
+        chainId={chainId}
       />
     )
   }
 
   if (isTypedData) {
     const [, typedDataParam] = params as [string, any]
-    // Parse typed data if it's a string
     let typedData: any
     if (typeof typedDataParam === "string") {
       try {
@@ -69,11 +74,12 @@ export const WalletConnectSignMessage: React.FC<
         onSign={onSign}
         onCancel={onCancel}
         error={error}
+        validationStatus={validationStatus}
+        chainId={chainId}
       />
     )
   }
 
-  // Simple message signing (personal_sign, eth_sign)
   let message: string = ""
   if (method === "personal_sign") {
     const [messageHex] = params as [string, string]
@@ -100,9 +106,10 @@ export const WalletConnectSignMessage: React.FC<
       onSign={onSign}
       onCancel={onCancel}
       error={error}
+      validationStatus={validationStatus}
+      chainId={chainId}
     />
   )
 }
 
-// Re-export types for backward compatibility
-export type { EthereumTransactionParams } from "./walletconnect-types"
+export type { EthereumTransactionParams } from "../types"

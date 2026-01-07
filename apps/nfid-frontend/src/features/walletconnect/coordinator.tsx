@@ -8,10 +8,13 @@ import AuthenticationCoordinator from "../authentication/root/coordinator"
 import { AuthenticationMachineActor } from "../authentication/root/root-machine"
 import NFIDAuthMachine from "../authentication/nfid/nfid-machine"
 import { walletConnectService } from "frontend/integration/walletconnect"
-import { WalletConnectApproveConnection } from "./components/walletconnect-approve-connection"
-import { WalletConnectSignMessage } from "./components/walletconnect-sign-message"
-import { RPCTemplate } from "../identitykit/components/templates/template"
+import { WalletConnectApproveConnection } from "./components/approve-connection"
+import { WalletConnectSignMessage } from "./components/sign-message"
+
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import { InfuraProvider } from "ethers"
+import { INFURA_API_KEY } from "@nfid/integration/token/constants"
+import { WalletConnectTemplate } from "./components/template"
 
 /**
  * WalletConnect Coordinator Component
@@ -335,7 +338,34 @@ export default function WalletConnectCoordinator() {
     try {
       setIsSigning(true)
       setError(null)
-      await walletConnectService.handleSessionRequest(request)
+
+      //No gas parameters provided - fetch from network
+      const chainId = BigInt(request.params.chainId.split(":")[1])
+      const provider = new InfuraProvider(chainId, INFURA_API_KEY)
+      const feeData = await provider.getFeeData()
+
+      if (
+        feeData.maxFeePerGas === null ||
+        feeData.maxPriorityFeePerGas === null
+      ) {
+        throw new Error(
+          "Gas fee data is missing from network. Please provide maxFeePerGas and maxPriorityFeePerGas in transaction.",
+        )
+      }
+
+      //@vitalii probably we need  to show this numbers to user and pass them as a parameter
+      let maxFeePerGas = feeData.maxFeePerGas
+      let maxPriorityFeePerGas = feeData.maxPriorityFeePerGas
+
+      //get correct Provider
+      //const totalGasPrice = tx.gasLimit * feeData.maxFeePerGas
+
+      console.log("chainIdfdf", maxFeePerGas, maxPriorityFeePerGas)
+
+      await walletConnectService.handleSessionRequest(request, {
+        maxPriorityFeePerGas,
+        maxFeePerGas,
+      })
       console.log("WalletConnect: Message signed successfully, closing window")
 
       // Close the window after signing
@@ -406,7 +436,7 @@ export default function WalletConnectCoordinator() {
     // Show AuthenticationCoordinator when machine is in AuthenticationMachine state
     if (authState.matches("AuthenticationMachine")) {
       return (
-        <RPCTemplate isApproveRequestInProgress={false}>
+        <WalletConnectTemplate isApproveRequestInProgress={false}>
           <AuthenticationCoordinator
             isIdentityKit
             actor={
@@ -417,43 +447,43 @@ export default function WalletConnectCoordinator() {
               <BlurredLoader isLoading loadingMessage="Authenticating..." />
             }
           />
-        </RPCTemplate>
+        </WalletConnectTemplate>
       )
     }
 
     // Loading state while machine initializes
     return (
-      <RPCTemplate isApproveRequestInProgress={false}>
+      <WalletConnectTemplate isApproveRequestInProgress={false}>
         <BlurredLoader
           isLoading
           loadingMessage="Initializing authentication..."
         />
-      </RPCTemplate>
+      </WalletConnectTemplate>
     )
   }
 
   // Show loading while connecting
   if (isConnecting && !proposal) {
     return (
-      <RPCTemplate isApproveRequestInProgress={false}>
+      <WalletConnectTemplate isApproveRequestInProgress={false}>
         <BlurredLoader
           isLoading
           loadingMessage="Connecting to WalletConnect..."
         />
-      </RPCTemplate>
+      </WalletConnectTemplate>
     )
   }
 
   // Show error if any (but not if we have a request or proposal to show)
   if (error && !proposal && !request) {
     return (
-      <RPCTemplate isApproveRequestInProgress={false}>
+      <WalletConnectTemplate isApproveRequestInProgress={false}>
         <div className="p-6">
-          <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+          <div className="p-3 border border-red-200 rounded-lg bg-red-50">
             <p className="text-sm text-red-800">{error}</p>
           </div>
         </div>
-      </RPCTemplate>
+      </WalletConnectTemplate>
     )
   }
 
@@ -465,7 +495,7 @@ export default function WalletConnectCoordinator() {
     const dAppOrigin = session?.peer.metadata.url || window.location.origin
 
     return (
-      <RPCTemplate isApproveRequestInProgress={false}>
+      <WalletConnectTemplate isApproveRequestInProgress={false}>
         <WalletConnectSignMessage
           request={request}
           dAppOrigin={dAppOrigin}
@@ -473,30 +503,38 @@ export default function WalletConnectCoordinator() {
           onSign={handleSign}
           onCancel={handleCancelSign}
           error={error}
+          validationStatus={
+            request.verifyContext.verified.validation ?? "UNKNOWN"
+          }
+          chainId={request?.params.chainId}
         />
-      </RPCTemplate>
+      </WalletConnectTemplate>
     )
   }
 
   // Show approve connection screen
   if (proposal) {
     return (
-      <RPCTemplate isApproveRequestInProgress={false}>
+      <WalletConnectTemplate isApproveRequestInProgress={false}>
         <WalletConnectApproveConnection
-          proposal={proposal}
+          dAppMetadata={proposal.params.proposer.metadata}
+          optionalNamespaces={proposal.params.optionalNamespaces}
+          validationStatus={
+            proposal.verifyContext.verified.validation ?? "UNKNOWN"
+          }
           ethAddress={ethAddress}
           onApprove={handleApprove}
           onReject={handleReject}
           error={error}
         />
-      </RPCTemplate>
+      </WalletConnectTemplate>
     )
   }
 
   // Default loading state
   return (
-    <RPCTemplate isApproveRequestInProgress={false}>
+    <WalletConnectTemplate isApproveRequestInProgress={false}>
       <BlurredLoader isLoading loadingMessage="Initializing..." />
-    </RPCTemplate>
+    </WalletConnectTemplate>
   )
 }

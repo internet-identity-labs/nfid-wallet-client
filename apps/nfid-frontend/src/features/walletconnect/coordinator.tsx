@@ -16,18 +16,6 @@ import { InfuraProvider } from "ethers"
 import { INFURA_API_KEY } from "@nfid/integration/token/constants"
 import { WalletConnectTemplate } from "./components/template"
 
-/**
- * WalletConnect Coordinator Component
- *
- * Handles WalletConnect URI-based connections from URL parameters.
- * Flow:
- * 1. Parse URI from URL (?uri=wc:...)
- * 2. Check authentication
- * 3. If not authenticated → show AuthenticationCoordinator
- * 4. After authentication → connect via URI
- * 5. Wait for session_proposal event
- * 6. Show approve connection screen
- */
 export default function WalletConnectCoordinator() {
   const [uri, setUri] = useState<string | null>(null)
   const [requestId, setRequestId] = useState<number | null>(null)
@@ -42,6 +30,7 @@ export default function WalletConnectCoordinator() {
   const [isSigning, setIsSigning] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [ethAddress, setEthAddress] = useState<string | null>(null)
+  const [authState] = useMachine(NFIDAuthMachine)
 
   // Parse URL parameters - can be either URI for new connection or requestId/sessionTopic for signing
   useEffect(() => {
@@ -428,91 +417,7 @@ export default function WalletConnectCoordinator() {
     }
   }
 
-  // Initialize authentication machine
-  const [authState] = useMachine(NFIDAuthMachine)
-
-  // Show authentication if not authenticated
-  if (!isAuthenticated) {
-    // Show AuthenticationCoordinator when machine is in AuthenticationMachine state
-    if (authState.matches("AuthenticationMachine")) {
-      return (
-        <WalletConnectTemplate isApproveRequestInProgress={false}>
-          <AuthenticationCoordinator
-            isIdentityKit
-            actor={
-              authState.children
-                .AuthenticationMachine as AuthenticationMachineActor
-            }
-            loader={
-              <BlurredLoader isLoading loadingMessage="Authenticating..." />
-            }
-          />
-        </WalletConnectTemplate>
-      )
-    }
-
-    // Loading state while machine initializes
-    return (
-      <WalletConnectTemplate isApproveRequestInProgress={false}>
-        <BlurredLoader
-          isLoading
-          loadingMessage="Initializing authentication..."
-        />
-      </WalletConnectTemplate>
-    )
-  }
-
-  // Show loading while connecting
-  if (isConnecting && !proposal) {
-    return (
-      <WalletConnectTemplate isApproveRequestInProgress={false}>
-        <BlurredLoader
-          isLoading
-          loadingMessage="Connecting to WalletConnect..."
-        />
-      </WalletConnectTemplate>
-    )
-  }
-
-  // Show error if any (but not if we have a request or proposal to show)
-  if (error && !proposal && !request) {
-    return (
-      <WalletConnectTemplate isApproveRequestInProgress={false}>
-        <div className="p-6">
-          <div className="p-3 border border-red-200 rounded-lg bg-red-50">
-            <p className="text-sm text-red-800">{error}</p>
-          </div>
-        </div>
-      </WalletConnectTemplate>
-    )
-  }
-
-  // Show sign message screen if there's a request
-  if (request) {
-    // Get dApp origin from session
-    const sessions = walletConnectService.getActiveSessions()
-    const session = sessions.find((s) => s.topic === request.topic)
-    const dAppOrigin = session?.peer.metadata.url || window.location.origin
-
-    return (
-      <WalletConnectTemplate isApproveRequestInProgress={false}>
-        <WalletConnectSignMessage
-          request={request}
-          dAppOrigin={dAppOrigin}
-          isLoading={isSigning}
-          onSign={handleSign}
-          onCancel={handleCancelSign}
-          error={error}
-          validationStatus={
-            request.verifyContext.verified.validation ?? "UNKNOWN"
-          }
-          chainId={request?.params.chainId}
-        />
-      </WalletConnectTemplate>
-    )
-  }
-
-  // Show approve connection screen
+  //  1. Approve connection screen
   if (proposal) {
     return (
       <WalletConnectTemplate isApproveRequestInProgress={false}>
@@ -531,7 +436,88 @@ export default function WalletConnectCoordinator() {
     )
   }
 
-  // Default loading state
+  // 2. Sign message/transaction screen
+  if (request) {
+    const sessions = walletConnectService.getActiveSessions()
+    const session = sessions.find((s) => s.topic === request.topic)
+    const dAppOrigin = session?.peer.metadata.url || window.location.origin
+    const method = request.params.request.method
+    const isTransaction =
+      method === "eth_signTransaction" || method === "eth_sendTransaction"
+
+    return (
+      <WalletConnectTemplate isApproveRequestInProgress={isTransaction}>
+        <WalletConnectSignMessage
+          request={request}
+          dAppOrigin={dAppOrigin}
+          isLoading={isSigning}
+          onSign={handleSign}
+          onCancel={handleCancelSign}
+          error={error}
+          validationStatus={
+            request.verifyContext.verified.validation ?? "UNKNOWN"
+          }
+          chainId={request?.params.chainId}
+        />
+      </WalletConnectTemplate>
+    )
+  }
+
+  // 3. Error screen if any (but not if we have a request or proposal to show)
+  if (error && !proposal && !request) {
+    return (
+      <WalletConnectTemplate isApproveRequestInProgress={false}>
+        <div className="p-6">
+          <div className="p-3 border border-red-200 rounded-lg bg-red-50">
+            <p className="text-sm text-red-800">{error}</p>
+          </div>
+        </div>
+      </WalletConnectTemplate>
+    )
+  }
+
+  // 4. Loading state screen while connecting
+  if (isConnecting && !proposal) {
+    return (
+      <WalletConnectTemplate isApproveRequestInProgress={false}>
+        <BlurredLoader
+          isLoading
+          loadingMessage="Connecting to WalletConnect..."
+        />
+      </WalletConnectTemplate>
+    )
+  }
+
+  // 5. Authentication screen if not authenticated
+  if (!isAuthenticated) {
+    if (authState.matches("AuthenticationMachine")) {
+      return (
+        <WalletConnectTemplate isApproveRequestInProgress={false}>
+          <AuthenticationCoordinator
+            isIdentityKit
+            actor={
+              authState.children
+                .AuthenticationMachine as AuthenticationMachineActor
+            }
+            loader={
+              <BlurredLoader isLoading loadingMessage="Authenticating..." />
+            }
+          />
+        </WalletConnectTemplate>
+      )
+    }
+
+    return (
+      <WalletConnectTemplate isApproveRequestInProgress={false}>
+        <BlurredLoader
+          isLoading
+          loadingMessage="Initializing authentication..."
+        />
+      </WalletConnectTemplate>
+    )
+  }
+
+  // 6. Loading state screen
   return (
     <WalletConnectTemplate isApproveRequestInProgress={false}>
       <BlurredLoader isLoading loadingMessage="Initializing..." />

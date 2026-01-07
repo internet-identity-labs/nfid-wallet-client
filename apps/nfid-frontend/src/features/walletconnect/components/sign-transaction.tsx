@@ -133,7 +133,7 @@ export const WalletConnectSignTransaction: React.FC<
           <span className="text-sm dark:text-white">{networkName}</span>
         </div>
       </div>
-      <div className="flex items-center justify-between h-[54px] border-b border-gray-400 dark:border-zinc-400">
+      <div className="flex items-center justify-between h-[54px] border-b border-gray-400 dark:border-zinc-100">
         <span className="text-sm text-gray-400 dark:text-zinc-400">
           Network fee
         </span>

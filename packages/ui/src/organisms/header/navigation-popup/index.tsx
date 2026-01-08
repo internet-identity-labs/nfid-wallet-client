@@ -24,6 +24,8 @@ export interface IAuthenticatedPopup extends HTMLAttributes<HTMLDivElement> {
     base: string
     security: string
     vaults: string
+    addressBook: string
+    permissions: string
   }
   isOpen: boolean
   walletTheme: NFIDTheme

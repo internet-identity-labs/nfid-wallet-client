@@ -21,11 +21,7 @@ export const shouldRenderLink = (
   if (!profileConstants) return true
   if (id === "nav-vaults" && pathname.includes(profileConstants.vaults))
     return false
-  if (
-    id === "nav-assets" &&
-    (pathname.includes(profileConstants.base) ||
-      pathname.includes(profileConstants.security))
-  )
+  if (id === "nav-assets" && pathname.includes(profileConstants.base))
     return false
 
   return true
@@ -38,6 +34,8 @@ export const renderLink = (
   isDarkTheme: boolean,
   profileConstants?: {
     security: string
+    addressBook: string
+    permissions: string
   },
 ) => {
   const isExternalLink = linkItem.id === "nav-knowledge-base"
@@ -47,8 +45,12 @@ export const renderLink = (
     : {
         onClick: () => {
           if (
-            linkItem.id === "nav-security" &&
-            location.pathname === profileConstants?.security
+            (linkItem.id === "nav-security" &&
+              location.pathname === profileConstants?.security) ||
+            (linkItem.id === "nav-address-book" &&
+              location.pathname === profileConstants?.addressBook) ||
+            (linkItem.id === "nav-permissions" &&
+              location.pathname === profileConstants?.permissions)
           ) {
             navigate(0)
           } else {

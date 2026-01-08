@@ -6,8 +6,18 @@ import {
   UserAddressSaveRequest,
   UserAddressUpdateRequest,
 } from "frontend/integration/address-book"
+import { FC } from "react"
+import { NFIDTheme } from "frontend/App"
 
-const AddressBookPage = () => {
+type AddressBookPageProps = {
+  walletTheme: NFIDTheme
+  setWalletTheme: (theme: NFIDTheme) => void
+}
+
+const AddressBookPage: FC<AddressBookPageProps> = ({
+  walletTheme,
+  setWalletTheme,
+}) => {
   const create = (request: UserAddressSaveRequest) =>
     addressBookFacade.save(request)
 
@@ -25,6 +35,8 @@ const AddressBookPage = () => {
       showBackButton
       pageTitle="Address book"
       className="dark:text-white"
+      walletTheme={walletTheme}
+      setWalletTheme={setWalletTheme}
     >
       <AddressBook
         addresses={addresses}

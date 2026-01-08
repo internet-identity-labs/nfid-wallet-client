@@ -281,7 +281,10 @@ export const App = () => {
                     path={ProfileConstants.addressBook}
                     element={
                       <AuthWrapper>
-                        <AddressBookPage />
+                        <AddressBookPage
+                          walletTheme={walletTheme}
+                          setWalletTheme={setWalletTheme}
+                        />
                       </AuthWrapper>
                     }
                   />

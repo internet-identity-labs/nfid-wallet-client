@@ -24,7 +24,7 @@ import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { ftService } from "frontend/integration/ft/ft-service"
 import { ProfileContext } from "frontend/provider"
 
-import { ModalType } from "../transfer-modal/types"
+import { ModalType, SelectedToken } from "../transfer-modal/types"
 import { fetchTokens } from "./utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
@@ -37,7 +37,7 @@ const TokensPage = () => {
   const { isBtcAddressLoading } = useBtcAddress()
   const { isEthAddressLoading } = useEthAddress()
 
-  const onSendClick = (selectedToken: string) => {
+  const onSendClick = (selectedToken: SelectedToken) => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
@@ -45,7 +45,7 @@ const TokensPage = () => {
     send("SHOW")
   }
 
-  const onSwapClick = (selectedToken: string) => {
+  const onSwapClick = (selectedToken: SelectedToken) => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.SWAP })
@@ -65,7 +65,10 @@ const TokensPage = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
-    send({ type: "ASSIGN_SELECTED_FT", data: CKBTC_CANISTER_ID })
+    send({
+      type: "ASSIGN_SELECTED_FT",
+      data: { address: CKBTC_CANISTER_ID, chainId: ChainId.ICP },
+    })
     send("SHOW")
   }
 
@@ -73,7 +76,10 @@ const TokensPage = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
-    send({ type: "ASSIGN_SELECTED_FT", data: ETH_NATIVE_ID })
+    send({
+      type: "ASSIGN_SELECTED_FT",
+      data: { address: ETH_NATIVE_ID, chainId: ChainId.ETH },
+    })
     send("SHOW")
   }
 
@@ -81,11 +87,14 @@ const TokensPage = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
-    send({ type: "ASSIGN_SELECTED_FT", data: CKETH_LEDGER_CANISTER_ID })
+    send({
+      type: "ASSIGN_SELECTED_FT",
+      data: { address: CKETH_LEDGER_CANISTER_ID, chainId: ChainId.ICP },
+    })
     send("SHOW")
   }
 
-  const onStakeClick = (selectedToken: string) => {
+  const onStakeClick = (selectedToken: SelectedToken) => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.STAKE })

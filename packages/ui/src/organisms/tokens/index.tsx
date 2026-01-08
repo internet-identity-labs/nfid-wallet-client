@@ -22,6 +22,7 @@ import { ActiveToken } from "./components/active-asset"
 import { ManageTokens } from "./components/manage-tokens"
 import { TokenInfoModal } from "./components/token-info-modal"
 import { ChainFilter } from "./components/chain-filter"
+import { SelectedToken } from "frontend/features/transfer-modal/types"
 
 export interface IProfileConstants {
   base: string
@@ -50,13 +51,13 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
     decimals: number
     fee: bigint
   }>
-  onSendClick: (value: string) => void
-  onSwapClick: (value: string) => void
+  onSendClick: (value: SelectedToken) => void
+  onSwapClick: (value: SelectedToken) => void
   onConvertToBtc: () => void
   onConvertToCkBtc: () => void
   onConvertToEth: () => void
   onConvertToCkEth: () => void
-  onStakeClick: (value: string) => void
+  onStakeClick: (value: SelectedToken) => void
   hideZeroBalance: boolean
   onZeroBalanceToggle: () => void
 }

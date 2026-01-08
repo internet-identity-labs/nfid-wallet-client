@@ -32,7 +32,7 @@ export const TransferModalCoordinator = () => {
   const [isConvertSuccess, setIsConvertSuccess] = useState(false)
 
   const hideModal = useCallback(() => {
-    send({ type: "ASSIGN_SELECTED_FT", data: "" })
+    send({ type: "ASSIGN_SELECTED_FT", data: undefined })
     send({ type: "ASSIGN_SELECTED_TARGET_FT", data: "" })
     send({ type: "ASSIGN_SELECTED_NFT", data: "" })
     send({ type: "CHANGE_TOKEN_TYPE", data: "ft" })
@@ -96,7 +96,7 @@ export const TransferModalCoordinator = () => {
             transition={{ duration: 0.25, ease: "easeInOut" }}
           >
             <TransferFT
-              preselectedTokenAddress={state.context.selectedFT}
+              preselectedToken={state.context.selectedFT}
               isVault={state.context.isOpenedFromVaults}
               preselectedAccountAddress={state.context.sourceWalletAddress}
               onClose={hideModal}
@@ -132,7 +132,7 @@ export const TransferModalCoordinator = () => {
             transition={{ duration: 0.25, ease: "easeInOut" }}
           >
             <SwapFT
-              preselectedSourceTokenAddress={state.context.selectedFT}
+              preselectedSourceTokenAddress={state.context.selectedFT?.address}
               preselectedTargetTokenAddress={state.context.selectedTargetFT}
               onClose={hideModal}
               onError={setHasSwapError}
@@ -151,7 +151,7 @@ export const TransferModalCoordinator = () => {
             transition={{ duration: 0.25, ease: "easeInOut" }}
           >
             <ConvertBTC
-              preselectedSourceTokenAddress={state.context.selectedFT}
+              preselectedSourceTokenAddress={state.context.selectedFT?.address}
               onClose={hideModal}
               setErrorMessage={setErrorMessage}
               setSuccessMessage={setSuccessMessage}
@@ -199,7 +199,7 @@ export const TransferModalCoordinator = () => {
             transition={{ duration: 0.25, ease: "easeInOut" }}
           >
             <StakeFT
-              preselectedTokenAddress={state.context.selectedFT}
+              preselectedTokenAddress={state.context.selectedFT?.address}
               onClose={hideModal}
               setErrorMessage={setErrorMessage}
               setSuccessMessage={setSuccessMessage}

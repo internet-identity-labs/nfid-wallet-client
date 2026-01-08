@@ -18,6 +18,7 @@ import {
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
 import { useDarkTheme } from "frontend/hooks"
+import { SelectedToken } from "frontend/features/transfer-modal/types"
 
 interface TokenIdentityProps extends HTMLAttributes<HTMLDivElement> {
   token: FT
@@ -25,7 +26,7 @@ interface TokenIdentityProps extends HTMLAttributes<HTMLDivElement> {
   onConvertToCkBtc?: () => void
   onConvertToEth?: () => void
   onConvertToCkEth?: () => void
-  onStakeClick?: (value: string) => void
+  onStakeClick?: (value: SelectedToken) => void
   withNetwork?: boolean
   withActions?: boolean
   isActive?: boolean
@@ -132,7 +133,12 @@ export const TokenIdentity: FC<TokenIdentityProps> = ({
                   <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
                   <span
                     className="flex items-center text-xs cursor-pointer text-primaryButtonColor dark:text-teal-500"
-                    onClick={() => onStakeClick?.(token.getTokenAddress())}
+                    onClick={() =>
+                      onStakeClick?.({
+                        address: token.getTokenAddress(),
+                        chainId: token.getChainId(),
+                      })
+                    }
                   >
                     <IconCmpStakeAction className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor dark:text-teal-500" />
                     Stake

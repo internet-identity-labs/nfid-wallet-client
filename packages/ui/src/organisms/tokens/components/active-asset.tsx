@@ -8,18 +8,19 @@ import { ArrowPercentChange } from "@nfid-frontend/ui"
 import { IProfileConstants } from ".."
 import { AssetDropdown } from "./asset-dropdown"
 import { TokenIdentity } from "./token-identity"
+import { SelectedToken } from "frontend/features/transfer-modal/types"
 
 interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   token: FT
   tokens: FT[]
   profileConstants: IProfileConstants
-  onSendClick: (value: string) => void
-  onSwapClick: (value: string) => void
+  onSendClick: (value: SelectedToken) => void
+  onSwapClick: (value: SelectedToken) => void
   onConvertToBtc: () => void
   onConvertToCkBtc: () => void
   onConvertToEth: () => void
   onConvertToCkEth: () => void
-  onStakeClick: (value: string) => void
+  onStakeClick: (value: SelectedToken) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   loadingToken: FT | null

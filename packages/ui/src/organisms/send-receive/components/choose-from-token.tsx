@@ -325,7 +325,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         </div>
         <div className="flex-[0_0_100%]"></div>
         {isLoading || isFeeLoading || !Boolean(token) ? (
-          <Skeleton className="w-[124px] h-1 rounded-[6px] mt-[15px]" />
+          <Skeleton className="w-[124px] h-1 rounded-[6px] mt-[15px] mb-[9px]" />
         ) : (
           <p
             className={clsx(

@@ -16,10 +16,7 @@
         "baseHref": "/",
         "main": "apps/nfid-demo/src/index.tsx",
         "tsConfig": "apps/nfid-demo/tsconfig.app.json",
-        "assets": [
-          "apps/nfid-demo/src/favicon.ico",
-          "apps/nfid-demo/src/assets"
-        ],
+        "assets": ["apps/nfid-demo/public", "apps/nfid-demo/src/assets"],
         "styles": ["apps/nfid-demo/src/index.scss"],
         "isolatedConfig": true,
         "webpackConfig": "apps/nfid-demo/craco.config.ts"

@@ -8,6 +8,10 @@ import { useSWRWithTimestamp } from "@nfid/swr"
 import { useActivityFilter } from "./hooks/filter"
 
 import { fetchTokens } from "../fungible-token/utils"
+import {
+  addressBookFacade,
+  SearchRequest,
+} from "frontend/integration/address-book"
 
 const ActivityPage = () => {
   const { state } = useLocation()
@@ -32,6 +36,10 @@ const ActivityPage = () => {
     txFilter,
   })
 
+  const searchAddress = async (req: SearchRequest) => {
+    return addressBookFacade.search(req)
+  }
+
   return (
     <Activity
       tokens={activeTokens}
@@ -45,6 +53,7 @@ const ActivityPage = () => {
       setChainFilter={setChainFilter}
       txFilter={txFilter}
       setTxFilter={setTxFilter}
+      searchAddress={searchAddress}
     />
   )
 }

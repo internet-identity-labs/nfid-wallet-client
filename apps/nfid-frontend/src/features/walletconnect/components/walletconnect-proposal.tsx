@@ -22,10 +22,10 @@ export const WalletConnectProposal: React.FC<WalletConnectProposalProps> = ({
   onReject,
 }) => {
   const dAppMetadata = proposal.params.proposer.metadata
-  const requiredNamespaces = proposal.params.requiredNamespaces
+  const optionalNamespaces = proposal.params.optionalNamespaces
 
   // Get all namespaces
-  const namespaceKeys = Object.keys(requiredNamespaces || {})
+  const namespaceKeys = Object.keys(optionalNamespaces || {})
 
   return (
     <div className="p-6 space-y-4">
@@ -65,7 +65,7 @@ export const WalletConnectProposal: React.FC<WalletConnectProposalProps> = ({
             </p>
           ) : (
             namespaceKeys.map((namespaceKey) => {
-              const namespace = requiredNamespaces[namespaceKey]
+              const namespace = optionalNamespaces[namespaceKey]
               if (!namespace) return null
 
               return (

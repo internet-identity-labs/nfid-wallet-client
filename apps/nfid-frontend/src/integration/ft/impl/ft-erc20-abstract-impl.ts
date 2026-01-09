@@ -99,13 +99,13 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
       const erc20FeeData = await this.getProvider().estimateERC20Gas(
         this.tokenAddress,
         _from!,
+        _to!,
         amount,
         _decimals!,
       )
 
       return new FeeResponseETH(erc20FeeData)
     } catch (e: any) {
-      console.log("eeeerr", e)
       throw new Error(e)
     }
   }

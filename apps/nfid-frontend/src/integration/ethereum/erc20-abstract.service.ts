@@ -481,6 +481,7 @@ export abstract class Erc20Service {
 
   public async estimateERC20Gas(
     contractAddress: Address,
+    to: Address,
     from: Address,
     amount: string,
     decimals: number,
@@ -499,7 +500,7 @@ export abstract class Erc20Service {
 
     const value = BigInt(Number(amount) * 10 ** decimals)
 
-    const gas = erc20Contract.transfer.estimateGas(from, value, { from })
+    const gas = erc20Contract.transfer.estimateGas(to, value, { from })
     const feeData = this.provider.getFeeData()
     const block = this.provider.getBlock("latest")
 

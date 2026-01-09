@@ -14,6 +14,7 @@ describe.skip("ERC20Service", () => {
       const gas = await ethErc20Service.estimateERC20Gas(
         contractAddress,
         ADDRESS,
+        ADDRESS,
         amount,
         ETH_DECIMALS,
       )
@@ -32,6 +33,7 @@ describe.skip("ERC20Service", () => {
       const amount = "1"
       const gas = await ethErc20Service.estimateERC20Gas(
         contractAddress,
+        ADDRESS,
         ADDRESS,
         amount,
         ETH_DECIMALS,

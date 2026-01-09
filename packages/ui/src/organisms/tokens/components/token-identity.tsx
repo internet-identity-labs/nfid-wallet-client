@@ -17,6 +17,7 @@ import {
 } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
+import { useDarkTheme } from "frontend/hooks"
 
 interface TokenIdentityProps extends HTMLAttributes<HTMLDivElement> {
   token: FT
@@ -43,6 +44,8 @@ export const TokenIdentity: FC<TokenIdentityProps> = ({
   isActive = true,
   disabled = false,
 }) => {
+  const isDarkTheme = useDarkTheme()
+
   return (
     <div className="flex items-center">
       <div className="w-[24px] h-[24px] sm:w-[40px] sm:h-[40px] mr-[12px] rounded-full bg-zinc-50 relative">
@@ -58,7 +61,7 @@ export const TokenIdentity: FC<TokenIdentityProps> = ({
         />
         {withNetwork && (
           <div className="absolute bottom-[-5px] right-[-5px] sm:bottom-0 sm:right-0 w-[18px] h-[18px] rounded-[6px] bg-white dark:bg-zinc-800">
-            {getNetworkIcon(token.getChainId())}
+            {getNetworkIcon(token.getChainId(), isDarkTheme)}
           </div>
         )}
       </div>

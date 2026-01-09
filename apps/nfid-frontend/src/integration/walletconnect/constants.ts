@@ -3,7 +3,7 @@
  */
 
 // Project ID from cloud.walletconnect.com
-export const WALLETCONNECT_PROJECT_ID = "951ec7b9914a35c2f62e2514c408ab8f"
+export const WALLETCONNECT_PROJECT_ID = "a88bf3d112c5af8cecb8dc17ef373114"
 
 // Wallet metadata for WalletConnect
 export const WALLETCONNECT_METADATA = {

@@ -9,19 +9,23 @@ import {
 import { FT } from "frontend/integration/ft/ft"
 
 import { ActivityTableRow } from "./activity-table-row"
+import {
+  SearchRequest,
+  UserAddressPreview,
+} from "frontend/integration/address-book"
 
 interface IActivityTableGroup extends IActivityRowGroup {
   groupIndex: number
   token?: FT
   identity?: SignIdentity
+  searchAddress: (req: SearchRequest) => Promise<UserAddressPreview[]>
 }
 
 export const ActivityTableGroup = ({
   date,
   rows,
   groupIndex,
-  token: _token,
-  identity: _identity,
+  searchAddress,
 }: IActivityTableGroup) => {
   const getRowId = useCallback((row: IActivityRow) => {
     if (row.asset.type === "ft")
@@ -54,6 +58,7 @@ export const ActivityTableGroup = ({
           {...row}
           nodeId={getRowId(row)}
           key={`group_${groupIndex}_activity_${i}`}
+          searchAddress={searchAddress}
         />
       ))}
     </>

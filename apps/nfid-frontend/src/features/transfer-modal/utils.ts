@@ -11,7 +11,7 @@ import { isAddress } from "ethers"
 import { PRINCIPAL_LENGTH } from "packages/constants"
 import { Shroff } from "src/integration/swap/shroff"
 
-import { IGroupedOptions } from "@nfid-frontend/ui"
+import { IGroupedOptions, IGroupedSendAddress } from "@nfid-frontend/ui"
 import { toUSD, truncateString } from "@nfid-frontend/utils"
 import {
   authState,
@@ -43,7 +43,12 @@ import {
 
 import { fetchVaultWalletsBalances } from "../fungible-token/fetch-balances"
 import { ftService } from "frontend/integration/ft/ft-service"
-import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
+import {
+  Category,
+  State,
+  ChainId,
+  isEvmToken,
+} from "@nfid/integration/token/icrc1/enum/enums"
 import {
   UserAddress,
   UserAddressSaveRequest,
@@ -389,4 +394,79 @@ export const getValidatorByTokenAddress = (
   }
 
   return validateICRC1Address
+}
+
+export const getAddressBookFtOptions = (
+  addresses: UserAddress[] | undefined,
+  token: FT | undefined,
+): IGroupedSendAddress[] => {
+  if (!addresses || !token) return []
+
+  const chainId = token.getChainId()
+  const category = token.getTokenCategory()
+
+  const filteredAddresses = addresses.filter((address) => {
+    if (chainId === ChainId.ICP) {
+      if (token.getTokenAddress() === ICP_CANISTER_ID) {
+        return !!address.icpAccountId
+      } else {
+        return !!address.icpPrincipal
+      }
+    }
+
+    if (chainId === ChainId.BTC) {
+      return !!address.btc
+    }
+
+    if (isEvmToken(chainId) || category === Category.ERC20) {
+      return !!address.evm
+    }
+
+    return false
+  })
+
+  return filteredAddresses.map((address) => {
+    let value: string | undefined
+    let subTitle: string | undefined
+
+    if (chainId === ChainId.ICP) {
+      value =
+        token.getTokenAddress() === ICP_CANISTER_ID
+          ? address.icpAccountId
+          : address.icpPrincipal
+      subTitle = value ? truncateString(value, 6, 4) : undefined
+    } else if (chainId === ChainId.BTC) {
+      value = address.btc
+      subTitle = value ? truncateString(value, 6, 4) : undefined
+    } else if (isEvmToken(chainId) || category === Category.ERC20) {
+      value = address.evm
+      subTitle = value ? truncateString(value, 6, 4) : undefined
+    }
+
+    return {
+      id: address.id,
+      title: address.name,
+      subTitle,
+      value,
+    }
+  })
+}
+
+export const getAddressBookNftOptions = (
+  addresses: UserAddress[] | undefined,
+): IGroupedSendAddress[] => {
+  if (!addresses) return []
+
+  return addresses
+    .filter((address) => !!address.icpPrincipal)
+    .map((address) => {
+      const value = address.icpPrincipal
+
+      return {
+        id: address.id,
+        title: address.name,
+        subTitle: value ? truncateString(value, 6, 4) : undefined,
+        value,
+      }
+    })
 }

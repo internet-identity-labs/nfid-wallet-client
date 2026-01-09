@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
 import { Dispatch, FC, SetStateAction } from "react"
-import { useForm } from "react-hook-form"
+import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 
 import {
@@ -13,12 +13,18 @@ import {
   IconNftPlaceholder,
   ChooseNftModal,
   Label,
+  IGroupedSendAddress,
 } from "@nfid-frontend/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 import { NFT } from "frontend/integration/nft/nft"
 
 import { SendSuccessUi } from "./send-success"
+import {
+  NftSearchRequest,
+  UserAddressPreview,
+} from "frontend/integration/address-book"
+import { ChooseAddressModal } from "packages/ui/src/molecules/choose-modal/address-modal"
 
 export interface TransferNFTUiProps {
   isLoading: boolean
@@ -32,6 +38,8 @@ export interface TransferNFTUiProps {
   isSuccessOpen: boolean
   onClose: () => void
   status: SendStatus
+  addresses: IGroupedSendAddress[] | undefined
+  searchAddress: (req: NftSearchRequest) => Promise<UserAddressPreview[]>
 }
 
 export const TransferNFTUi: FC<TransferNFTUiProps> = ({
@@ -44,18 +52,15 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
   isSuccessOpen,
   onClose,
   status,
+  addresses,
+  searchAddress,
 }) => {
   const {
-    register,
-    formState: { errors },
-    handleSubmit,
     watch,
-  } = useForm({
-    mode: "all",
-    defaultValues: {
-      to: selectedReceiverWallet ?? "",
-    },
-  })
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useFormContext()
   const to = watch("to")
 
   return (
@@ -127,23 +132,17 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
             </div>
           }
         />
-        <Input
-          inputClassName={clsx(
-            "border !border-black dark:!border-zinc-500 rounded-[12px] h-14 dark:bg-transparent",
-            "flex items-center justify-between",
-            "text-black px-4",
-            errors.to?.message &&
-              "!border-red-600 dark:!border-red-500 ring ring-red-100",
-          )}
+        <ChooseAddressModal<NftSearchRequest>
+          title="Send to"
+          addresses={addresses}
           placeholder="Recipient wallet address or account ID"
-          type="text"
-          labelText="To"
-          errorText={errors.to?.message}
-          id="input"
-          {...register("to", {
+          errorText={errors["to"]?.message as string}
+          registerFunction={register("to", {
             required: "This field cannot be empty",
             validate: (value) => validateAddress(value),
           })}
+          searchAddress={searchAddress}
+          token={undefined}
         />
         <Button
           id={"sendButton"}

@@ -24,24 +24,89 @@ export const formatValue = (value?: string, chainId?: ChainId): string => {
   }
 }
 
-export const formatGasPrice = (gasPrice?: string | number): string => {
-  if (!gasPrice) return "N/A"
-  try {
-    const price =
-      typeof gasPrice === "string" ? BigInt(gasPrice) : BigInt(gasPrice)
-    const gwei = Number(price) / 1e9
-    return `${gwei.toFixed(2)} Gwei`
-  } catch {
-    return String(gasPrice)
-  }
+export const formatGasPrice = (
+  totalGas?: string,
+  chainId?: ChainId,
+): string | undefined => {
+  if (!totalGas) return
+  const gasTokenSymbol = getEvmGasTokenSymbol(chainId || ChainId.ETH)
+
+  return `${new BigNumber(totalGas)
+    .dividedBy(10 ** ETH_DECIMALS)
+    .toFixed(ETH_DECIMALS)
+    .replace(TRIM_ZEROS, "")} ${gasTokenSymbol}`
 }
 
-export const formatUsdPrice = (rate: BigNumber, amount: string): string => {
+export const formatUsdPrice = (
+  rate?: BigNumber,
+  amount?: string,
+): string | undefined => {
+  if (!amount || !rate) return
   const value = rate.multipliedBy(
     BigNumber(amount).dividedBy(10 ** ETH_DECIMALS),
   )
 
   return formatUsdAmount(value)
+}
+
+export const formatTotalUsdPrice = (
+  rate?: BigNumber,
+  value?: string,
+  totalGas?: string,
+): string | undefined => {
+  if (!value || !rate || !totalGas) return
+
+  let amount
+  let gas
+
+  try {
+    const wei = BigInt(value.startsWith("0x") ? value : `0x${value}`)
+    const eth = Number(wei) / 10 ** ETH_DECIMALS
+    const fee = new BigNumber(totalGas).dividedBy(10 ** ETH_DECIMALS)
+    amount = eth
+    gas = fee
+  } catch {
+    return value
+  }
+
+  const total = gas.plus(amount)
+  const formattedTotal = rate.multipliedBy(total)
+
+  return formatUsdAmount(formattedTotal)
+}
+
+export const formatTotal = (
+  totalGas?: string,
+  value?: string,
+  chainId?: ChainId,
+) => {
+  const gasTokenSymbol = getEvmGasTokenSymbol(chainId || ChainId.ETH)
+
+  if (
+    !totalGas ||
+    !value ||
+    value === "0x" ||
+    value === "0x0" ||
+    value === "0"
+  ) {
+    return `0 ${gasTokenSymbol}`
+  }
+
+  let amount
+  let gas
+
+  try {
+    const wei = BigInt(value.startsWith("0x") ? value : `0x${value}`)
+    const eth = Number(wei) / 10 ** ETH_DECIMALS
+    const fee = new BigNumber(totalGas).dividedBy(10 ** ETH_DECIMALS)
+    amount = eth
+    gas = fee
+  } catch {
+    return value
+  }
+
+  const total = gas.plus(amount)
+  return `${total.toFixed(ETH_DECIMALS).replace(TRIM_ZEROS, "")} ${gasTokenSymbol}`
 }
 
 export const getDAppHostname = (origin: string): string => {

@@ -6,8 +6,12 @@ import {
   EthereumTransactionParams,
   ValidationStatus,
   WalletConnectSignRequestProps,
+  WCGasData,
 } from "../types"
 import {
+  formatGasPrice,
+  formatTotal,
+  formatTotalUsdPrice,
   formatUsdPrice,
   formatValue,
   getDAppHostname,
@@ -21,12 +25,18 @@ import { useDarkTheme } from "frontend/hooks"
 import { CopyAddress, Skeleton, Tooltip } from "@nfid-frontend/ui"
 import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
 import { exchangeRateService } from "@nfid/integration"
-import { CKETH_LEDGER_CANISTER_ID } from "@nfid/integration/token/constants"
+import {
+  CKETH_LEDGER_CANISTER_ID,
+  POLYGON_ADDRESS,
+} from "@nfid/integration/token/constants"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { polygonErc20Service } from "frontend/integration/ethereum/polygon/pol-erc20.service"
 
 interface WalletConnectSignTransactionProps extends WalletConnectSignRequestProps {
   transaction: EthereumTransactionParams
   validationStatus: ValidationStatus
   chainId: string
+  fee?: WCGasData
 }
 
 export const WalletConnectSignTransaction: React.FC<
@@ -40,28 +50,49 @@ export const WalletConnectSignTransaction: React.FC<
   onSign,
   onCancel,
   error,
+  fee,
 }) => {
   const isDarkTheme = useDarkTheme()
   const networkName = getNetworkName(chainId)
   const dAppHostname = getDAppHostname(dAppOrigin)
   const { title, text } = getStatusText(validationStatus)
   const [usdRate, setUsdRate] = useState<BigNumber>()
-
-  console.log("transaction", transaction)
+  const formattedGas = formatGasPrice(
+    fee?.total.toString(),
+    getNetworkId(chainId),
+  )
+  const formattedGasUsd = formatUsdPrice(usdRate, fee?.total.toString())
+  const formattedTotalUsd = formatTotalUsdPrice(
+    usdRate,
+    transaction.value,
+    fee?.total.toString(),
+  )
+  const formattedTotal = formatTotal(
+    fee?.total.toString(),
+    transaction.value,
+    getNetworkId(chainId),
+  )
 
   useEffect(() => {
     const getEthrate = async () => {
-      const ethRate = await exchangeRateService.usdPriceForICRC1(
-        CKETH_LEDGER_CANISTER_ID,
-      )
+      const network = getNetworkId(chainId)
+      if (network === ChainId.POL) {
+        const prices = await polygonErc20Service.getUSDPrices([POLYGON_ADDRESS])
+        const polRate = new BigNumber(prices[0].price)
+        setUsdRate(polRate)
+      } else {
+        const ethRate = await exchangeRateService.usdPriceForICRC1(
+          CKETH_LEDGER_CANISTER_ID,
+        )
 
-      if (ethRate !== null) {
-        setUsdRate(ethRate.value)
+        if (ethRate !== null) {
+          setUsdRate(ethRate.value)
+        }
       }
     }
 
     getEthrate()
-  }, [])
+  }, [chainId])
 
   return (
     <WalletConnectPromptTemplate
@@ -100,7 +131,7 @@ export const WalletConnectSignTransaction: React.FC<
       {transaction.value !== undefined && (
         <div className="text-center mb-[40px]">
           <p className="text-[32px] leading-[26px] font-medium tracking-[0.01em] dark:text-white">
-            {formatValue(transaction.value)}
+            {formatValue(transaction.value, getNetworkId(chainId))}
           </p>
           {usdRate ? (
             <p className="text-sm leading-5 text-gray-400 dark:text-zinc-400">
@@ -138,16 +169,15 @@ export const WalletConnectSignTransaction: React.FC<
           Network fee
         </span>
         <div className="text-right">
-          <p className="text-sm leading-5 dark:text-white">
-            {formatValue(String(transaction.gas || transaction.gasLimit))}
-            {/* gasLimit +  */}
-          </p>
-          {usdRate ? (
+          {formattedGas ? (
+            <p className="text-sm leading-5 dark:text-white">{formattedGas}</p>
+          ) : (
+            <Skeleton className="w-[120px] h-4 mb-1 ml-auto" />
+          )}
+
+          {usdRate && formattedGasUsd ? (
             <p className="text-xs leading-5 text-gray-400 dark:text-zinc-400">
-              {formatUsdPrice(
-                usdRate,
-                String(transaction.gas || transaction.gasLimit),
-              )}
+              {formattedGasUsd}
             </p>
           ) : (
             <Skeleton className="w-[80px] h-4 mt-1 ml-auto" />
@@ -159,15 +189,16 @@ export const WalletConnectSignTransaction: React.FC<
           Total
         </span>
         <div className="text-right">
-          <p className="text-sm font-bold leading-5 dark:text-white">
-            {formatValue(String(transaction.gas || transaction.gasLimit))}
-          </p>
-          {usdRate ? (
+          {formattedTotal ? (
+            <p className="text-sm font-bold leading-5 dark:text-white">
+              {formattedTotal}
+            </p>
+          ) : (
+            <Skeleton className="w-[120px] h-4 mb-1 ml-auto" />
+          )}
+          {usdRate && formattedTotalUsd ? (
             <p className="text-xs leading-5 text-gray-400 dark:text-zinc-400">
-              {formatUsdPrice(
-                usdRate,
-                String(transaction.gas || transaction.gasLimit),
-              )}
+              {formattedTotalUsd}
             </p>
           ) : (
             <Skeleton className="w-[80px] h-4 mt-1 ml-auto" />

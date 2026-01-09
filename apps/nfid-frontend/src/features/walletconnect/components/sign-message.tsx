@@ -1,7 +1,11 @@
 import React from "react"
 import { SignClientTypes } from "@walletconnect/types"
 
-import { EthereumTransactionParams, ValidationStatus } from "../types"
+import {
+  EthereumTransactionParams,
+  ValidationStatus,
+  WCGasData,
+} from "../types"
 import { WalletConnectSignSimpleMessage } from "./sign-simple-message"
 import { WalletConnectSignTypedData } from "./sign-typed-data"
 import { WalletConnectSignTransaction } from "./sign-transaction"
@@ -15,6 +19,7 @@ interface WalletConnectSignMessageProps {
   error?: string | null
   validationStatus: ValidationStatus
   chainId: string
+  fee?: WCGasData
 }
 
 export const WalletConnectSignMessage: React.FC<
@@ -28,6 +33,7 @@ export const WalletConnectSignMessage: React.FC<
   error,
   validationStatus,
   chainId,
+  fee,
 }) => {
   const method = request.params.request.method
   const params = request.params.request.params
@@ -49,6 +55,7 @@ export const WalletConnectSignMessage: React.FC<
         error={error}
         validationStatus={validationStatus}
         chainId={chainId}
+        fee={fee}
       />
     )
   }

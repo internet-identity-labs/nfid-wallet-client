@@ -30,7 +30,10 @@ export interface VerifyContext {
   }
 }
 
-export interface WCGasCalculated {
+export interface WCGasData {
+  gasUsed: bigint
   maxPriorityFeePerGas: bigint
   maxFeePerGas: bigint
+  baseFeePerGas: bigint
+  total: bigint
 }

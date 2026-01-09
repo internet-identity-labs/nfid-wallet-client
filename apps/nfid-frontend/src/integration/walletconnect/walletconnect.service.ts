@@ -10,7 +10,7 @@ import { EthSignTransactionRequest } from "frontend/integration/bitcoin/idl/chai
 import { INFURA_API_KEY } from "@nfid/integration/token/constants"
 import {
   EthereumTransactionParams,
-  WCGasCalculated,
+  WCGasData,
 } from "frontend/features/walletconnect/types"
 import { NAMESPACES } from "./constants"
 
@@ -411,7 +411,7 @@ export class WalletConnectService {
    */
   async handleSessionRequest(
     request: SignClientTypes.EventArguments["session_request"],
-    userParams: WCGasCalculated,
+    userParams?: WCGasData,
   ): Promise<void> {
     if (!this.walletKit) {
       throw new Error("WalletConnect not initialized")
@@ -440,12 +440,14 @@ export class WalletConnectService {
       case "eth_signTransaction": {
         const [tx] = params as [EthereumTransactionParams]
         tx.chainId = chainId.split(":")[1]
+        if (!userParams) return
         result = await this.handleEthSignTransaction(identity, [tx], userParams)
         break
       }
       case "eth_sendTransaction": {
         const [tx] = params as [EthereumTransactionParams]
         tx.chainId = chainId.split(":")[1]
+        if (!userParams) return
         result = await this.handleEthSendTransaction(identity, [tx], userParams)
         break
       }
@@ -592,9 +594,8 @@ export class WalletConnectService {
    * Prepare transaction request from Ethereum transaction params
    */
   private async prepareTransactionRequest(
-    identity: SignIdentity,
     tx: EthereumTransactionParams,
-    userParams: WCGasCalculated,
+    userParams: WCGasData,
   ): Promise<EthSignTransactionRequest> {
     const fromAddressQuick = await ethereumService.getQuickAddress()
     if (tx.from !== fromAddressQuick) {
@@ -609,15 +610,14 @@ export class WalletConnectService {
       throw new Error("Transaction 'chainId' is required")
     }
 
-    const fromAddress = await ethereumService.getAddress(identity)
-
     // NONCE
     let nonce: bigint
     if (tx.nonce !== undefined && tx.nonce !== null) {
       nonce = BigInt(tx.nonce)
     } else {
+      const provider = new InfuraProvider(BigInt(tx.chainId), INFURA_API_KEY)
       const transactionCount =
-        await ethereumService.getTransactionCount(fromAddress)
+        await provider.getTransactionCount(fromAddressQuick)
       nonce = BigInt(transactionCount)
     }
 
@@ -655,14 +655,10 @@ export class WalletConnectService {
   private async handleEthSignTransaction(
     identity: SignIdentity,
     params: [EthereumTransactionParams],
-    userParams: WCGasCalculated,
+    userParams: WCGasData,
   ): Promise<string> {
     const [tx] = params
-    const txRequest = await this.prepareTransactionRequest(
-      identity,
-      tx,
-      userParams,
-    )
+    const txRequest = await this.prepareTransactionRequest(tx, userParams)
     return await chainFusionSignerService.ethSignTransaction(
       identity,
       txRequest,
@@ -675,14 +671,10 @@ export class WalletConnectService {
   private async handleEthSendTransaction(
     identity: SignIdentity,
     params: [EthereumTransactionParams],
-    userParams: WCGasCalculated,
+    userParams: WCGasData,
   ): Promise<string> {
     const [tx] = params
-    const txRequest = await this.prepareTransactionRequest(
-      identity,
-      tx,
-      userParams,
-    )
+    const txRequest = await this.prepareTransactionRequest(tx, userParams)
 
     // SIGN
     const signedTx = await chainFusionSignerService.ethSignTransaction(

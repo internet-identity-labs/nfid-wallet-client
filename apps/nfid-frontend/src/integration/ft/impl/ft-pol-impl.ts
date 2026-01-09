@@ -6,7 +6,11 @@ import {
 import PolygonIcon from "packages/ui/src/organisms/tokens/assets/polygon.svg"
 import BigNumber from "bignumber.js"
 
-import { ETH_DECIMALS, EVM_NATIVE } from "@nfid/integration/token/constants"
+import {
+  ETH_DECIMALS,
+  EVM_NATIVE,
+  POLYGON_ADDRESS,
+} from "@nfid/integration/token/constants"
 import { FTEvmAbstractImpl } from "./ft-evm-abstract-impl"
 import {
   PolygonService,
@@ -43,9 +47,7 @@ export class FTPolygonImpl extends FTEvmAbstractImpl {
       return
     }
 
-    const prices = await polygonErc20Service.getUSDPrices([
-      "0x0000000000000000000000000000000000001010",
-    ])
+    const prices = await polygonErc20Service.getUSDPrices([POLYGON_ADDRESS])
     if (prices.length > 0) {
       this.tokenRate = {
         value: new BigNumber(prices[0].price),

@@ -1,5 +1,5 @@
 import { useMachine } from "@xstate/react"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
 import { SignClientTypes } from "@walletconnect/types"
@@ -15,6 +15,7 @@ import { useAuthentication } from "frontend/apps/authentication/use-authenticati
 import { InfuraProvider } from "ethers"
 import { INFURA_API_KEY } from "@nfid/integration/token/constants"
 import { WalletConnectTemplate } from "./components/template"
+import { WCGasData } from "./types"
 
 export default function WalletConnectCoordinator() {
   const [uri, setUri] = useState<string | null>(null)
@@ -27,10 +28,10 @@ export default function WalletConnectCoordinator() {
     SignClientTypes.EventArguments["session_request"] | null
   >(null)
   const [isConnecting, setIsConnecting] = useState(false)
-  const [isSigning, setIsSigning] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [ethAddress, setEthAddress] = useState<string | null>(null)
   const [authState] = useMachine(NFIDAuthMachine)
+  const [fee, setFee] = useState<WCGasData | undefined>()
 
   // Parse URL parameters - can be either URI for new connection or requestId/sessionTopic for signing
   useEffect(() => {
@@ -317,47 +318,61 @@ export default function WalletConnectCoordinator() {
     }
   }
 
-  // Handle sign message
-  const handleSign = async () => {
-    if (!request) {
-      setError("Missing request")
-      return
-    }
+  // Estimate gas
+  useEffect(() => {
+    if (!request) return
 
-    try {
-      setIsSigning(true)
-      setError(null)
+    const method = request.params.request.method
+    const isTransaction =
+      method === "eth_signTransaction" || method === "eth_sendTransaction"
 
-      //No gas parameters provided - fetch from network
+    if (!isTransaction) return
+
+    const getFee = async () => {
       const chainId = BigInt(request.params.chainId.split(":")[1])
       const provider = new InfuraProvider(chainId, INFURA_API_KEY)
       const feeData = await provider.getFeeData()
+      const { maxFeePerGas, maxPriorityFeePerGas } = feeData
 
-      if (
-        feeData.maxFeePerGas === null ||
-        feeData.maxPriorityFeePerGas === null
-      ) {
+      if (maxFeePerGas === null || maxPriorityFeePerGas === null) {
         throw new Error(
           "Gas fee data is missing from network. Please provide maxFeePerGas and maxPriorityFeePerGas in transaction.",
         )
       }
 
-      //@vitalii probably we need  to show this numbers to user and pass them as a parameter
-      let maxFeePerGas = feeData.maxFeePerGas
-      let maxPriorityFeePerGas = feeData.maxPriorityFeePerGas
+      const [block, gasUsed] = await Promise.all([
+        provider.getBlock("latest"),
+        provider.estimateGas({
+          to: request.params.request.params.to,
+          from: request.params.request.params.from,
+          value: request.params.request.params.value,
+        }),
+      ])
 
-      //get correct Provider
-      //const totalGasPrice = tx.gasLimit * feeData.maxFeePerGas
-
-      console.log("chainIdfdf", maxFeePerGas, maxPriorityFeePerGas)
-
-      await walletConnectService.handleSessionRequest(request, {
+      setFee({
         maxPriorityFeePerGas,
         maxFeePerGas,
+        gasUsed,
+        baseFeePerGas: block?.baseFeePerGas ?? BigInt(0),
+        total: gasUsed * maxFeePerGas,
       })
-      console.log("WalletConnect: Message signed successfully, closing window")
+    }
 
-      // Close the window after signing
+    getFee()
+  }, [request])
+
+  // Handle sign message
+  const handleSign = useCallback(async () => {
+    if (!request) {
+      setError("Missing request or gas")
+      return
+    }
+
+    try {
+      setError(null)
+      debugger
+      await walletConnectService.handleSessionRequest(request, fee)
+
       setTimeout(() => {
         if (window.opener) {
           window.close()
@@ -368,9 +383,8 @@ export default function WalletConnectCoordinator() {
     } catch (err) {
       console.error("Failed to sign message:", err)
       setError(err instanceof Error ? err.message : "Failed to sign message")
-      setIsSigning(false)
     }
-  }
+  }, [fee, request])
 
   // Handle cancel sign message
   const handleCancelSign = async () => {
@@ -450,7 +464,6 @@ export default function WalletConnectCoordinator() {
         <WalletConnectSignMessage
           request={request}
           dAppOrigin={dAppOrigin}
-          isLoading={isSigning}
           onSign={handleSign}
           onCancel={handleCancelSign}
           error={error}
@@ -458,6 +471,7 @@ export default function WalletConnectCoordinator() {
             request.verifyContext.verified.validation ?? "UNKNOWN"
           }
           chainId={request?.params.chainId}
+          fee={fee}
         />
       </WalletConnectTemplate>
     )

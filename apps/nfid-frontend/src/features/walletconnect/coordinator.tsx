@@ -1,5 +1,5 @@
 import { useMachine } from "@xstate/react"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
 import { SignClientTypes } from "@walletconnect/types"
@@ -8,23 +8,15 @@ import AuthenticationCoordinator from "../authentication/root/coordinator"
 import { AuthenticationMachineActor } from "../authentication/root/root-machine"
 import NFIDAuthMachine from "../authentication/nfid/nfid-machine"
 import { walletConnectService } from "frontend/integration/walletconnect"
-import { WalletConnectApproveConnection } from "./components/walletconnect-approve-connection"
-import { WalletConnectSignMessage } from "./components/walletconnect-sign-message"
-import { RPCTemplate } from "../identitykit/components/templates/template"
-import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import { WalletConnectApproveConnection } from "./components/approve-connection"
+import { WalletConnectSignMessage } from "./components/sign-message"
 
-/**
- * WalletConnect Coordinator Component
- *
- * Handles WalletConnect URI-based connections from URL parameters.
- * Flow:
- * 1. Parse URI from URL (?uri=wc:...)
- * 2. Check authentication
- * 3. If not authenticated → show AuthenticationCoordinator
- * 4. After authentication → connect via URI
- * 5. Wait for session_proposal event
- * 6. Show approve connection screen
- */
+import { useAuthentication } from "frontend/apps/authentication/use-authentication"
+import { InfuraProvider } from "ethers"
+import { INFURA_API_KEY } from "@nfid/integration/token/constants"
+import { WalletConnectTemplate } from "./components/template"
+import { WCGasData } from "./types"
+
 export default function WalletConnectCoordinator() {
   const [uri, setUri] = useState<string | null>(null)
   const [requestId, setRequestId] = useState<number | null>(null)
@@ -36,9 +28,10 @@ export default function WalletConnectCoordinator() {
     SignClientTypes.EventArguments["session_request"] | null
   >(null)
   const [isConnecting, setIsConnecting] = useState(false)
-  const [isSigning, setIsSigning] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [ethAddress, setEthAddress] = useState<string | null>(null)
+  const [authState] = useMachine(NFIDAuthMachine)
+  const [fee, setFee] = useState<WCGasData | undefined>()
 
   // Parse URL parameters - can be either URI for new connection or requestId/sessionTopic for signing
   useEffect(() => {
@@ -325,20 +318,60 @@ export default function WalletConnectCoordinator() {
     }
   }
 
+  // Estimate gas
+  useEffect(() => {
+    if (!request) return
+
+    const method = request.params.request.method
+    const isTransaction =
+      method === "eth_signTransaction" || method === "eth_sendTransaction"
+
+    if (!isTransaction) return
+
+    const getFee = async () => {
+      const chainId = BigInt(request.params.chainId.split(":")[1])
+      const provider = new InfuraProvider(chainId, INFURA_API_KEY)
+      const feeData = await provider.getFeeData()
+      const { maxFeePerGas, maxPriorityFeePerGas } = feeData
+
+      if (maxFeePerGas === null || maxPriorityFeePerGas === null) {
+        throw new Error(
+          "Gas fee data is missing from network. Please provide maxFeePerGas and maxPriorityFeePerGas in transaction.",
+        )
+      }
+
+      const [block, gasUsed] = await Promise.all([
+        provider.getBlock("latest"),
+        provider.estimateGas({
+          to: request.params.request.params.to,
+          from: request.params.request.params.from,
+          value: request.params.request.params.value,
+        }),
+      ])
+
+      setFee({
+        maxPriorityFeePerGas,
+        maxFeePerGas,
+        gasUsed,
+        baseFeePerGas: block?.baseFeePerGas ?? BigInt(0),
+        total: gasUsed * maxFeePerGas,
+      })
+    }
+
+    getFee()
+  }, [request])
+
   // Handle sign message
-  const handleSign = async () => {
+  const handleSign = useCallback(async () => {
     if (!request) {
-      setError("Missing request")
+      setError("Missing request or gas")
       return
     }
 
     try {
-      setIsSigning(true)
       setError(null)
-      await walletConnectService.handleSessionRequest(request)
-      console.log("WalletConnect: Message signed successfully, closing window")
+      await walletConnectService.handleSessionRequest(request, fee)
 
-      // Close the window after signing
       setTimeout(() => {
         if (window.opener) {
           window.close()
@@ -349,9 +382,8 @@ export default function WalletConnectCoordinator() {
     } catch (err) {
       console.error("Failed to sign message:", err)
       setError(err instanceof Error ? err.message : "Failed to sign message")
-      setIsSigning(false)
     }
-  }
+  }, [fee, request])
 
   // Handle cancel sign message
   const handleCancelSign = async () => {
@@ -398,15 +430,82 @@ export default function WalletConnectCoordinator() {
     }
   }
 
-  // Initialize authentication machine
-  const [authState] = useMachine(NFIDAuthMachine)
+  //  1. Approve connection screen
+  if (proposal) {
+    return (
+      <WalletConnectTemplate isApproveRequestInProgress={false}>
+        <WalletConnectApproveConnection
+          dAppMetadata={proposal.params.proposer.metadata}
+          optionalNamespaces={proposal.params.optionalNamespaces}
+          validationStatus={
+            proposal.verifyContext.verified.validation ?? "UNKNOWN"
+          }
+          ethAddress={ethAddress}
+          onApprove={handleApprove}
+          onReject={handleReject}
+          error={error}
+        />
+      </WalletConnectTemplate>
+    )
+  }
 
-  // Show authentication if not authenticated
+  // 2. Sign message/transaction screen
+  if (request) {
+    const sessions = walletConnectService.getActiveSessions()
+    const session = sessions.find((s) => s.topic === request.topic)
+    const dAppOrigin = session?.peer.metadata.url || window.location.origin
+    const method = request.params.request.method
+    const isTransaction =
+      method === "eth_signTransaction" || method === "eth_sendTransaction"
+
+    return (
+      <WalletConnectTemplate isApproveRequestInProgress={isTransaction}>
+        <WalletConnectSignMessage
+          request={request}
+          dAppOrigin={dAppOrigin}
+          onSign={handleSign}
+          onCancel={handleCancelSign}
+          error={error}
+          validationStatus={
+            request.verifyContext.verified.validation ?? "UNKNOWN"
+          }
+          chainId={request?.params.chainId}
+          fee={fee}
+        />
+      </WalletConnectTemplate>
+    )
+  }
+
+  // 3. Error screen if any (but not if we have a request or proposal to show)
+  if (error && !proposal && !request) {
+    return (
+      <WalletConnectTemplate isApproveRequestInProgress={false}>
+        <div className="p-6">
+          <div className="p-3 border border-red-200 rounded-lg bg-red-50">
+            <p className="text-sm text-red-800">{error}</p>
+          </div>
+        </div>
+      </WalletConnectTemplate>
+    )
+  }
+
+  // 4. Loading state screen while connecting
+  if (isConnecting && !proposal) {
+    return (
+      <WalletConnectTemplate isApproveRequestInProgress={false}>
+        <BlurredLoader
+          isLoading
+          loadingMessage="Connecting to WalletConnect..."
+        />
+      </WalletConnectTemplate>
+    )
+  }
+
+  // 5. Authentication screen if not authenticated
   if (!isAuthenticated) {
-    // Show AuthenticationCoordinator when machine is in AuthenticationMachine state
     if (authState.matches("AuthenticationMachine")) {
       return (
-        <RPCTemplate isApproveRequestInProgress={false}>
+        <WalletConnectTemplate isApproveRequestInProgress={false}>
           <AuthenticationCoordinator
             isIdentityKit
             actor={
@@ -417,86 +516,24 @@ export default function WalletConnectCoordinator() {
               <BlurredLoader isLoading loadingMessage="Authenticating..." />
             }
           />
-        </RPCTemplate>
+        </WalletConnectTemplate>
       )
     }
 
-    // Loading state while machine initializes
     return (
-      <RPCTemplate isApproveRequestInProgress={false}>
+      <WalletConnectTemplate isApproveRequestInProgress={false}>
         <BlurredLoader
           isLoading
           loadingMessage="Initializing authentication..."
         />
-      </RPCTemplate>
+      </WalletConnectTemplate>
     )
   }
 
-  // Show loading while connecting
-  if (isConnecting && !proposal) {
-    return (
-      <RPCTemplate isApproveRequestInProgress={false}>
-        <BlurredLoader
-          isLoading
-          loadingMessage="Connecting to WalletConnect..."
-        />
-      </RPCTemplate>
-    )
-  }
-
-  // Show error if any (but not if we have a request or proposal to show)
-  if (error && !proposal && !request) {
-    return (
-      <RPCTemplate isApproveRequestInProgress={false}>
-        <div className="p-6">
-          <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-800">{error}</p>
-          </div>
-        </div>
-      </RPCTemplate>
-    )
-  }
-
-  // Show sign message screen if there's a request
-  if (request) {
-    // Get dApp origin from session
-    const sessions = walletConnectService.getActiveSessions()
-    const session = sessions.find((s) => s.topic === request.topic)
-    const dAppOrigin = session?.peer.metadata.url || window.location.origin
-
-    return (
-      <RPCTemplate isApproveRequestInProgress={false}>
-        <WalletConnectSignMessage
-          request={request}
-          dAppOrigin={dAppOrigin}
-          isLoading={isSigning}
-          onSign={handleSign}
-          onCancel={handleCancelSign}
-          error={error}
-        />
-      </RPCTemplate>
-    )
-  }
-
-  // Show approve connection screen
-  if (proposal) {
-    return (
-      <RPCTemplate isApproveRequestInProgress={false}>
-        <WalletConnectApproveConnection
-          proposal={proposal}
-          ethAddress={ethAddress}
-          onApprove={handleApprove}
-          onReject={handleReject}
-          error={error}
-        />
-      </RPCTemplate>
-    )
-  }
-
-  // Default loading state
+  // 6. Loading state screen
   return (
-    <RPCTemplate isApproveRequestInProgress={false}>
+    <WalletConnectTemplate isApproveRequestInProgress={false}>
       <BlurredLoader isLoading loadingMessage="Initializing..." />
-    </RPCTemplate>
+    </WalletConnectTemplate>
   )
 }

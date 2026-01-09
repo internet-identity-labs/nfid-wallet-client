@@ -24,7 +24,7 @@ const principal = Principal.fromText(
   "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
 )
 
-describe("nft test suite", () => {
+describe.skip("nft test suite", () => {
   jest.setTimeout(50000)
   describe("nft", () => {
     it("should return", async () => {

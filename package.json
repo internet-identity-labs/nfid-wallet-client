@@ -102,6 +102,8 @@
     "@babel/core": "7.28.3",
     "@babel/eslint-parser": "7.28.0",
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
+    "@babel/plugin-syntax-flow": "7.23.3",
+    "@babel/plugin-transform-react-jsx": "7.27.1",
     "@babel/preset-env": "7.28.3",
     "@babel/preset-react": "7.27.1",
     "@babel/preset-typescript": "7.27.1",

@@ -370,7 +370,6 @@ export default function WalletConnectCoordinator() {
 
     try {
       setError(null)
-      debugger
       await walletConnectService.handleSessionRequest(request, fee)
 
       setTimeout(() => {

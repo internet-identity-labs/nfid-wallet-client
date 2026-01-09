@@ -6,20 +6,11 @@
   "tags": ["scope:app", "type:application", "layer:app"],
   "targets": {
     "build": {
-      "executor": "@nx/webpack:webpack",
-      "outputs": ["{options.outputPath}"],
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/apps/nfid-demo"],
       "options": {
-        "target": "web",
-        "compiler": "babel",
-        "outputPath": "dist/apps/nfid-demo",
-        "index": "apps/nfid-demo/src/index.html",
-        "baseHref": "/",
-        "main": "apps/nfid-demo/src/index.tsx",
-        "tsConfig": "apps/nfid-demo/tsconfig.app.json",
-        "assets": ["apps/nfid-demo/public", "apps/nfid-demo/src/assets"],
-        "styles": ["apps/nfid-demo/src/index.scss"],
-        "isolatedConfig": true,
-        "webpackConfig": "apps/nfid-demo/craco.config.ts"
+        "command": "BUILD_PATH=../../dist/apps/nfid-demo npx craco build",
+        "cwd": "apps/nfid-demo"
       }
     },
     "lint": {

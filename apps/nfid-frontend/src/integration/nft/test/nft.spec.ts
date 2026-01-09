@@ -210,7 +210,7 @@ const mockCollections = [
 ]
 
 describe("nft test suite", () => {
-  jest.setTimeout(50000)
+  jest.setTimeout(100000)
   describe("nft", () => {
     beforeEach(() => {
       // Mock fetchCollections

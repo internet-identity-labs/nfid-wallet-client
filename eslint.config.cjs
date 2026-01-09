@@ -3,9 +3,30 @@ const typescriptEslint = require("@typescript-eslint/eslint-plugin");
 const typescriptParser = require("@typescript-eslint/parser");
 const babelParser = require("@babel/eslint-parser");
 const reactHooks = require("eslint-plugin-react-hooks");
+const reactPlugin = require("eslint-plugin-react");
+
+const sharedTypeScriptRules = {
+  "no-extra-semi": "error",
+  "@typescript-eslint/no-unused-vars": [
+    "warn",
+    {
+      argsIgnorePattern: "^_",
+      varsIgnorePattern: "^_",
+      ignoreRestSiblings: true,
+    },
+  ],
+  "@typescript-eslint/no-explicit-any": "warn",
+  "@typescript-eslint/prefer-nullish-coalescing": "warn",
+  "@typescript-eslint/prefer-optional-chain": "warn",
+  "@typescript-eslint/no-floating-promises": "warn",
+  "@typescript-eslint/await-thenable": "error",
+  "react-hooks/rules-of-hooks": "error",
+  "react-hooks/exhaustive-deps": "warn",
+  "prefer-const": "warn",
+  "no-console": ["warn", { allow: ["warn", "error"] }],
+};
 
 module.exports = [
-  // Ignore patterns
   {
     ignores: [
       "node_modules/**",
@@ -21,7 +42,6 @@ module.exports = [
       "apps/nfid-frontend/src/integration/_ic_api/**",
     ],
   },
-  // Base configuration for all files
   {
     files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
     plugins: {
@@ -67,8 +87,6 @@ module.exports = [
       ],
     },
   },
-  // TypeScript files configuration for UI package and nfid-demo (without project to avoid tsconfig issues)
-  // This must come BEFORE the project-based config to take precedence
   {
     files: ["packages/ui/**/*.ts", "packages/ui/**/*.tsx", "apps/nfid-demo/**/*.ts", "apps/nfid-demo/**/*.tsx"],
     languageOptions: {
@@ -76,27 +94,27 @@ module.exports = [
       parserOptions: {
         ecmaVersion: "latest",
         sourceType: "module",
+        ecmaFeatures: {
+          jsx: true,
+        },
       },
     },
     plugins: {
       "@typescript-eslint": typescriptEslint,
+      "react": reactPlugin,
       "react-hooks": reactHooks,
     },
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
     rules: {
-      "no-extra-semi": "error",
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-        },
-      ],
-      "@typescript-eslint/no-explicit-any": "warn",
-      "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn",
+      ...sharedTypeScriptRules,
+      "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off",
     },
   },
-  // TypeScript files configuration (with project)
   {
     files: ["**/*.ts", "**/*.tsx"],
     ignores: ["packages/ui/**", "**/*.d.ts", "apps/nfid-frontend/src/integration/_ic_api/**", "apps/nfid-demo/**"],
@@ -107,27 +125,27 @@ module.exports = [
         sourceType: "module",
         project: ["./tsconfig.base.json"],
         tsconfigRootDir: __dirname,
+        ecmaFeatures: {
+          jsx: true,
+        },
       },
     },
     plugins: {
       "@typescript-eslint": typescriptEslint,
+      "react": reactPlugin,
       "react-hooks": reactHooks,
     },
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
     rules: {
-      "no-extra-semi": "error",
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        {
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-        },
-      ],
-      "@typescript-eslint/no-explicit-any": "warn",
-      "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn",
+      ...sharedTypeScriptRules,
+      "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off",
     },
   },
-  // JavaScript files configuration
   {
     files: ["**/*.js", "**/*.jsx"],
     languageOptions: {
@@ -148,7 +166,6 @@ module.exports = [
       "no-extra-semi": "off",
     },
   },
-  // Test files configuration
   {
     files: [
       "**/*.spec.ts",
@@ -165,32 +182,33 @@ module.exports = [
         jest: "readonly",
         describe: "readonly",
         it: "readonly",
+        test: "readonly",
         expect: "readonly",
         beforeEach: "readonly",
         afterEach: "readonly",
         beforeAll: "readonly",
         afterAll: "readonly",
+        vi: "readonly",
       },
     },
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-floating-promises": "off",
+      "no-console": "off",
     },
   },
-  // Disable module boundaries rule for UI package (has many .tsx files that NX plugin can't handle)
   {
     files: ["packages/ui/**/*"],
     rules: {
       "@nx/enforce-module-boundaries": "off",
     },
   },
-  // Disable module boundaries rule for nfid-frontend app (uses wildcard path mappings that NX plugin can't resolve)
   {
     files: ["apps/nfid-frontend/**/*"],
     rules: {
       "@nx/enforce-module-boundaries": "off",
     },
   },
-  // Disable module boundaries rule for nfid-demo app (demo app that imports from nfid-frontend)
   {
     files: ["apps/nfid-demo/**/*"],
     rules: {

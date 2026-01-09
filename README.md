@@ -172,10 +172,34 @@ npx nx serve nfid-demo
 
 #### Run E2E Tests
 
-Execute end-to-end tests using:
+Execute all end-to-end tests:
 
 ```bash
 npx env-cmd -f .env.test nx test:e2e nfid-frontend-e2e
+```
+
+**Run a specific test by tag:**
+
+```bash
+npx env-cmd -f .env.test nx test:e2e nfid-frontend-e2e -- --cucumberOpts.tagExpression='@sendft'
+```
+
+**Common test tags:**
+
+- `@sendft` - Send FT tests
+- `@assets` - Asset/token tests
+- `@desktop` - Desktop tests
+- `@mobile` - Mobile tests
+- `@skip` - Skipped tests
+
+**Combine multiple tags:**
+
+```bash
+# AND condition
+npx env-cmd -f .env.test nx test:e2e nfid-frontend-e2e -- --cucumberOpts.tagExpression='@sendft and @desktop'
+
+# OR condition
+npx env-cmd -f .env.test nx test:e2e nfid-frontend-e2e -- --cucumberOpts.tagExpression='@sendft or @assets'
 ```
 
 ---

@@ -1,7 +1,7 @@
 import { storageWithTtl } from "@nfid/client-db"
 
-import { ICRC1 } from "../../../_ic_api/icrc1_registry.d"
-import { iCRC1Registry } from "../../../actors"
+import { ICRC1 } from "../../../_ic_api/user_registry.d"
+import { userRegistry } from "../../../actors"
 import { authState } from "../../../authentication"
 import { State } from "../enum/enums"
 import { mapStateTS } from "../util"
@@ -16,12 +16,12 @@ export class Icrc1RegistryService {
     const cache = await storageWithTtl.getEvenExpired(registryCacheName)
     if (!cache) {
       const root = authState.getUserIdData().userId
-      const response = await iCRC1Registry.get_canisters_by_root(root)
+      const response = await userRegistry.get_canisters_by_root(root)
       storageWithTtl.set(registryCacheName, JSON.stringify(response), 30 * 1000)
       return response
     } else if (cache && cache.expired && !this.getCanistersByRootLock) {
       const root = authState.getUserIdData().userId
-      this.getCanistersByRootLock = iCRC1Registry
+      this.getCanistersByRootLock = userRegistry
         .get_canisters_by_root(root)
         .then((response) => {
           storageWithTtl.set(
@@ -45,7 +45,7 @@ export class Icrc1RegistryService {
     network?: number,
   ): Promise<void> {
     await Promise.all([
-      iCRC1Registry.store_icrc1_canister(
+      userRegistry.store_icrc1_canister(
         ledger,
         mapStateTS(state),
         network ? [network] : [],
@@ -59,11 +59,11 @@ export class Icrc1RegistryService {
     ledgerCanisterId: string,
   ): Promise<void> {
     const allUsersCanisters =
-      await iCRC1Registry.get_canisters_by_root(principal)
+      await userRegistry.get_canisters_by_root(principal)
     if (!allUsersCanisters.map((c) => c.ledger).includes(ledgerCanisterId)) {
       throw new Error("Canister not found.")
     }
-    await iCRC1Registry.remove_icrc1_canister(ledgerCanisterId)
+    await userRegistry.remove_icrc1_canister(ledgerCanisterId)
   }
 
   async getRegistryCacheName(): Promise<string> {

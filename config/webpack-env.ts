@@ -57,8 +57,8 @@ export const serviceConfig = {
     process.env.PUB_SUB_CHANNEL_CANISTER_ID,
   ),
   VERIFIER_CANISTER_ID: JSON.stringify(process.env.VERIFIER_CANISTER_ID),
-  ICRC1_REGISTRY_CANISTER_ID: JSON.stringify(
-    process.env.ICRC1_REGISTRY_CANISTER_ID,
+  USER_REGISTRY_CANISTER_ID: JSON.stringify(
+    process.env.USER_REGISTRY_CANISTER_ID,
   ),
   ICRC1_ORACLE_CANISTER_ID: JSON.stringify(
     process.env.ICRC1_ORACLE_CANISTER_ID,
@@ -79,13 +79,21 @@ export const serviceConfig = {
   ),
   SWAP_TRS_STORAGE: JSON.stringify(process.env.SWAP_TRS_STORAGE),
   NFID_WALLET_CANISTER: JSON.stringify(process.env.NFID_WALLET_CANISTER),
-  NFID_WALLET_CANISTER_STAKING: JSON.stringify(process.env.NFID_WALLET_CANISTER_STAKING),
+  NFID_WALLET_CANISTER_STAKING: JSON.stringify(
+    process.env.NFID_WALLET_CANISTER_STAKING,
+  ),
   IC_SIGNER_CANISTER_ID: JSON.stringify(process.env.IC_SIGNER_CANISTER_ID),
   PATRON_CANISTER_ID: JSON.stringify(process.env.PATRON_CANISTER_ID),
-  CHAIN_FUSION_SIGNER_CANISTER_ID: JSON.stringify(process.env.CHAIN_FUSION_SIGNER_CANISTER_ID),
+  CHAIN_FUSION_SIGNER_CANISTER_ID: JSON.stringify(
+    process.env.CHAIN_FUSION_SIGNER_CANISTER_ID,
+  ),
   BITCOIN_CANISTER_ID: JSON.stringify(process.env.BITCOIN_CANISTER_ID),
-  CK_BTC_LEDGER_CANISTER_ID: JSON.stringify(process.env.CK_BTC_LEDGER_CANISTER_ID),
-  CK_BTC_MINTER_CANISTER_ID: JSON.stringify(process.env.CK_BTC_MINTER_CANISTER_ID),
+  CK_BTC_LEDGER_CANISTER_ID: JSON.stringify(
+    process.env.CK_BTC_LEDGER_CANISTER_ID,
+  ),
+  CK_BTC_MINTER_CANISTER_ID: JSON.stringify(
+    process.env.CK_BTC_MINTER_CANISTER_ID,
+  ),
   FEE_PERCENT: JSON.stringify(process.env.FEE_PERCENT),
   FEE_ADDRESS: JSON.stringify(process.env.FEE_ADDRESS),
   CHAIN_NETWORK: JSON.stringify(process.env.CHAIN_NETWORK),

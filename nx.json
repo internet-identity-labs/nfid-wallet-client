@@ -19,13 +19,8 @@
   },
   "targetDefaults": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "production",
-        "^production"
-      ],
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"],
       "cache": true
     },
     "build-storybook": {
@@ -42,11 +37,7 @@
     },
     "@nx/jest:jest": {
       "cache": true,
-      "inputs": [
-        "default",
-        "^production",
-        "{workspaceRoot}/jest.preset.js"
-      ],
+      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
       "options": {
         "passWithNoTests": true
       },
@@ -58,10 +49,7 @@
       }
     },
     "@nx/eslint:lint": {
-      "inputs": [
-        "default",
-        "{workspaceRoot}/.eslintrc.json"
-      ],
+      "inputs": ["default", "{workspaceRoot}/.eslintrc.json"],
       "cache": true
     }
   },
@@ -80,7 +68,7 @@
         "env": "FRONTEND_MODE"
       },
       {
-        "env": "ICRC1_REGISTRY_CANISTER_ID"
+        "env": "USER_REGISTRY_CANISTER_ID"
       },
       {
         "env": "ICRC1_ORACLE_CANISTER_ID"

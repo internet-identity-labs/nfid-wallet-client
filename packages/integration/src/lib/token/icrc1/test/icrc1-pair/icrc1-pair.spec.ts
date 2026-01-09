@@ -12,7 +12,7 @@ import { Principal } from "@dfinity/principal"
 import {
   authState,
   generateDelegationIdentity,
-  iCRC1Registry,
+  userRegistry,
   im,
   mockIdentityA,
   replaceActorIdentity,
@@ -34,10 +34,9 @@ describe("ICRC1 pair suite", () => {
   let root: string
   beforeAll(async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
-    const { delegationIdentity } = await generateDelegationIdentity(
-      mockedIdentity,
-    )
-    await replaceActorIdentity(iCRC1Registry, delegationIdentity)
+    const { delegationIdentity } =
+      await generateDelegationIdentity(mockedIdentity)
+    await replaceActorIdentity(userRegistry, delegationIdentity)
     await replaceActorIdentity(im, delegationIdentity)
     const account = (await im.get_account()) as HTTPAccountResponse
     root = account.data[0]!.principal_id

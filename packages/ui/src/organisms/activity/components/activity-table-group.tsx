@@ -18,7 +18,7 @@ interface IActivityTableGroup extends IActivityRowGroup {
   groupIndex: number
   token?: FT
   identity?: SignIdentity
-  searchAddress: (req: SearchRequest) => Promise<UserAddressPreview[]>
+  searchAddress: (req: SearchRequest) => Promise<UserAddressPreview | undefined>
 }
 
 export const ActivityTableGroup = ({

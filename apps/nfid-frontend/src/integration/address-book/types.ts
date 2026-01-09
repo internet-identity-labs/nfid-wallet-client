@@ -56,5 +56,5 @@ export interface AddressBookFacade {
   get(id: UserAddressId): Promise<UserAddress>
   ftSearch(request: FtSearchRequest): Promise<Array<UserAddressPreview>>
   nftSearch(request?: NftSearchRequest): Promise<Array<UserAddressPreview>>
-  search(request: SearchRequest): Promise<Array<UserAddressPreview>>
+  search(request: SearchRequest): Promise<UserAddressPreview | undefined>
 }

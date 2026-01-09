@@ -81,7 +81,7 @@ export const TokenIdentity: FC<TokenIdentityProps> = ({
             <>
               {token.getTokenAddress() === BTC_NATIVE_ID && (
                 <>
-                  <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+                  <span className="block mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
                   <span
                     className="flex items-center text-xs cursor-pointer text-primaryButtonColor dark:text-teal-500"
                     onClick={onConvertToCkBtc}
@@ -93,7 +93,7 @@ export const TokenIdentity: FC<TokenIdentityProps> = ({
               )}
               {token.getTokenAddress() === ETH_NATIVE_ID && (
                 <>
-                  <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+                  <span className="block mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
                   <span
                     className="flex items-center text-xs cursor-pointer text-primaryButtonColor dark:text-teal-500"
                     onClick={onConvertToCkEth}
@@ -105,7 +105,7 @@ export const TokenIdentity: FC<TokenIdentityProps> = ({
               )}
               {token.getTokenAddress() === CKBTC_CANISTER_ID && (
                 <>
-                  <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+                  <span className="block mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
                   <span
                     className="flex items-center text-xs cursor-pointer text-primaryButtonColor dark:text-teal-500"
                     onClick={onConvertToBtc}
@@ -117,7 +117,7 @@ export const TokenIdentity: FC<TokenIdentityProps> = ({
               )}
               {token.getTokenAddress() === CKETH_LEDGER_CANISTER_ID && (
                 <>
-                  <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+                  <span className="block mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
                   <span
                     className="flex items-center text-xs cursor-pointer text-primaryButtonColor dark:text-teal-500"
                     onClick={onConvertToEth}
@@ -130,7 +130,7 @@ export const TokenIdentity: FC<TokenIdentityProps> = ({
               {(token.getTokenCategory() === Category.Sns ||
                 token.getTokenAddress() === ICP_CANISTER_ID) && (
                 <>
-                  <div className="mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+                  <span className="block mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
                   <span
                     className="flex items-center text-xs cursor-pointer text-primaryButtonColor dark:text-teal-500"
                     onClick={() =>

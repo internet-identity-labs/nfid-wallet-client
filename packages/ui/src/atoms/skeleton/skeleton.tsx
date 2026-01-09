@@ -11,14 +11,14 @@ export const Skeleton = ({
   children,
 }: ISkeleton) => {
   return (
-    <div
+    <span
       className={clsx(
-        "rounded-[12px] bg-skeletonColor dark:bg-[#3F3F4680]",
+        "rounded-[12px] bg-skeletonColor dark:bg-[#3F3F4680] block",
         isAnimated && "animate-pulse",
         className,
       )}
     >
       {children}
-    </div>
+    </span>
   )
 }

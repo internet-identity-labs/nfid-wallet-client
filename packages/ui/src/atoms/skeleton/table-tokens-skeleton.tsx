@@ -15,7 +15,7 @@ export const TableTokenSkeleton = ({
   className,
 }: TableTokenSkeletonProps) => {
   return (
-    <>
+    <tbody>
       {Array.from({ length: tableRowsAmount }).map((_, index) => (
         <tr key={index}>
           {Array.from({ length: tableCellAmount }).map((_, index) => (
@@ -66,6 +66,6 @@ export const TableTokenSkeleton = ({
           ))}
         </tr>
       ))}
-    </>
+    </tbody>
   )
 }

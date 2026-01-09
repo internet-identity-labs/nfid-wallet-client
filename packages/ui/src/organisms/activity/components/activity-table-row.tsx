@@ -37,7 +37,6 @@ import {
   UserAddressPreview,
 } from "frontend/integration/address-book"
 import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
-import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 
 interface ErrorStage {
   buttonText: string

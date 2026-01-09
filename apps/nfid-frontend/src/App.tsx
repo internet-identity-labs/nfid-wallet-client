@@ -20,8 +20,7 @@ import ThirdPartyAuthCoordinator from "./features/authentication/3rd-party/coord
 import { AuthEmailMagicLink } from "./features/authentication/auth-selection/email-flow/magic-link-flow"
 import IdentityKitRPCCoordinator from "./features/identitykit/coordinator"
 import { WalletRouter } from "./features/wallet"
-import { WalletConnectHandler } from "./features/walletconnect/walletconnect-handler"
-import WalletConnectCoordinator from "./features/walletconnect/walletconnect-coordinator"
+import WalletConnectCoordinator from "./features/walletconnect/coordinator"
 import { NotFound } from "./ui/pages/404"
 import ProfileTemplate from "./ui/templates/profile-template/Template"
 import { useAuthentication } from "./apps/authentication/use-authentication"
@@ -164,7 +163,6 @@ export const App = () => {
 
   return (
     <Suspense fallback={<BlurredLoader isLoading />}>
-      <WalletConnectHandler />
       <AnimatePresence mode="wait">
         <BtcAddressProvider>
           <EthAddressProvider>

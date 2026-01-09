@@ -16,14 +16,17 @@ const sharedTypeScriptRules = {
     },
   ],
   "@typescript-eslint/no-explicit-any": "warn",
-  "@typescript-eslint/prefer-nullish-coalescing": "warn",
-  "@typescript-eslint/prefer-optional-chain": "warn",
-  "@typescript-eslint/no-floating-promises": "warn",
-  "@typescript-eslint/await-thenable": "error",
   "react-hooks/rules-of-hooks": "error",
   "react-hooks/exhaustive-deps": "warn",
   "prefer-const": "warn",
   "no-console": ["warn", { allow: ["warn", "error"] }],
+};
+
+const typeAwareRules = {
+  "@typescript-eslint/prefer-nullish-coalescing": "warn",
+  "@typescript-eslint/prefer-optional-chain": "warn",
+  "@typescript-eslint/no-floating-promises": "warn",
+  "@typescript-eslint/await-thenable": "error",
 };
 
 module.exports = [
@@ -142,6 +145,7 @@ module.exports = [
     },
     rules: {
       ...sharedTypeScriptRules,
+      ...typeAwareRules,
       "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
     },

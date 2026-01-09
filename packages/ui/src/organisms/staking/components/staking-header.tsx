@@ -32,13 +32,13 @@ export const StakingHeader: FC<StakingInfoProps> = ({
           >
             {total !== undefined && (
               <>
-                <p>
+                <span className="block">
                   {typeof total === "string" ? total : total.getTokenValue()}{" "}
                   <span className="text-sm md:text-[16px]">{symbol}</span>
-                </p>
-                <p className="text-xs leading-5 text-secondary mt-0.5 font-normal">
+                </span>
+                <span className="block text-xs leading-5 text-secondary mt-0.5 font-normal">
                   {typeof total !== "string" && total.getUSDValue()}
-                </p>
+                </span>
               </>
             )}
           </p>
@@ -54,13 +54,13 @@ export const StakingHeader: FC<StakingInfoProps> = ({
           >
             {staked !== undefined && (
               <>
-                <p>
+                <span className="block">
                   {typeof staked === "string" ? staked : staked.getTokenValue()}{" "}
                   <span className="text-sm md:text-[16px]">{symbol}</span>
-                </p>
-                <p className="text-xs leading-5 text-secondary mt-0.5 font-normal">
+                </span>
+                <span className=" block text-xs leading-5 text-secondary mt-0.5 font-normal">
                   {typeof staked !== "string" && staked.getUSDValue()}
-                </p>
+                </span>
               </>
             )}
           </p>
@@ -75,15 +75,15 @@ export const StakingHeader: FC<StakingInfoProps> = ({
           >
             {rewards !== undefined && (
               <>
-                <p>
+                <span className="block">
                   {typeof rewards === "string"
                     ? rewards
                     : rewards.getTokenValue()}{" "}
                   <span className="text-sm md:text-[16px]">{symbol}</span>
-                </p>
-                <p className="text-xs leading-5 text-secondary mt-0.5 font-normal">
+                </span>
+                <span className="block text-xs leading-5 text-secondary mt-0.5 font-normal">
                   {typeof rewards !== "string" && rewards.getUSDValue()}
-                </p>
+                </span>
               </>
             )}
           </p>

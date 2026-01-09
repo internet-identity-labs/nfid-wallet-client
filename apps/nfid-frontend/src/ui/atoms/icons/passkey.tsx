@@ -18,7 +18,7 @@ export const PasskeyIcon: React.FC<PasskeyIconProps> = ({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clip-path="url(#clip0_41802_31923)">
+      <g clipPath="url(#clip0_41802_31923)">
         <path
           d="M7.42721 8.30773C9.72127 8.30773 11.581 6.44798 11.581 4.15386C11.581 1.85975 9.72127 0 7.42721 0C5.13314 0 3.27344 1.85975 3.27344 4.15386C3.27344 6.44798 5.13314 8.30773 7.42721 8.30773Z"
           fill={color}

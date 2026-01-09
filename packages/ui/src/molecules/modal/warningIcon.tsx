@@ -44,7 +44,7 @@ export const ModalWarningIcon: React.FC<ModalWarningIconProps> = ({
         stroke="url(#paint2_linear_1179_5054)"
         strokeOpacity="0.24"
       />
-      <g clip-path="url(#clip0_1179_5054)">
+      <g clipPath="url(#clip0_1179_5054)">
         <path
           d="M119 117.4V137"
           stroke="#FF9900"

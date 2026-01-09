@@ -7,15 +7,17 @@ interface TableTokenSkeletonProps {
   tableCellAmount: number
   tableRowsAmount: number
   className?: string
+  hasTbody?: boolean
 }
 
 export const TableTokenSkeleton = ({
   tableCellAmount,
   tableRowsAmount,
   className,
+  hasTbody = true,
 }: TableTokenSkeletonProps) => {
-  return (
-    <tbody>
+  const content = (
+    <>
       {Array.from({ length: tableRowsAmount }).map((_, index) => (
         <tr key={index}>
           {Array.from({ length: tableCellAmount }).map((_, index) => (
@@ -66,6 +68,7 @@ export const TableTokenSkeleton = ({
           ))}
         </tr>
       ))}
-    </tbody>
+    </>
   )
+  return hasTbody ? <tbody>{content}</tbody> : content
 }

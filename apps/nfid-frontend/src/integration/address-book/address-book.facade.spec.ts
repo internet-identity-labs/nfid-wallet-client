@@ -4,33 +4,45 @@
 import {
   addressBookCache,
   addressBookFacade,
-  addressBookStorage,
+  addressBookCanisterClient,
 } from "./address-book.container"
 import { ChainId, Category } from "@nfid/integration/token/icrc1/enum/enums"
-import { AddressType, UserAddress } from "./types"
+import { UserAddress } from "./types"
 import {
-  ALICE,
-  BOB,
-  CHARLIE,
-  ALICE_ENTITY,
-  BOB_ENTITY,
-  CHARLIE_ENTITY,
   ALICE_SAVE_REQUEST,
   BOB_SAVE_REQUEST,
   CHARLIE_SAVE_REQUEST,
+  ALICE_ICP_ADDRESS_PREVIEW,
+  ALICE_ICP_PRINCIPAL_PREVIEW,
+  ALICE_BTC_PREVIEW,
+  ALICE_EVM_PREVIEW,
+  BOB_ICP_ADDRESS_PREVIEW,
+  BOB_ICP_PRINCIPAL_PREVIEW,
+  CHARLIE_BTC_PREVIEW,
+  CHARLIE_EVM_PREVIEW,
 } from "./address-book.mocks"
+import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { mockIdentityA } from "packages/integration/src/lib/identity/mocks"
+import { generateDelegationIdentity } from "packages/integration/src/lib/test-utils"
+import { authState } from "packages/integration/src/lib/authentication/auth-state"
 
-describe("Address Book Service test suite", () => {
-  jest.setTimeout(35000)
+describe("Address Book", () => {
+  jest.setTimeout(50000)
+
+  beforeAll(async () => {
+    const identity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+    const { delegationIdentity } = await generateDelegationIdentity(identity)
+    await authState.set({ delegationIdentity })
+  })
 
   beforeEach(async () => {
-    await addressBookStorage.clear()
+    await addressBookCanisterClient.deleteAll()
     addressBookCache.reset()
   })
 
   describe("findAll", () => {
     it("should return empty array when no addresses stored", async () => {
-      // Given: empty storage
+      // Given: empty backend
       // When: findAll is called
       const result = await addressBookFacade.findAll()
 
@@ -39,19 +51,19 @@ describe("Address Book Service test suite", () => {
     })
 
     it("should return all addresses sorted alphabetically", async () => {
-      // Given: three addresses saved directly in storage with individual keys
-      await addressBookStorage.set(CHARLIE_ENTITY.id, CHARLIE_ENTITY)
-      await addressBookStorage.set(ALICE_ENTITY.id, ALICE_ENTITY)
-      await addressBookStorage.set(BOB_ENTITY.id, BOB_ENTITY)
+      // Given: three addresses saved via facade
+      await addressBookFacade.save(CHARLIE_SAVE_REQUEST)
+      await addressBookFacade.save(ALICE_SAVE_REQUEST)
+      await addressBookFacade.save(BOB_SAVE_REQUEST)
 
       // When: findAll is called
       const result = await addressBookFacade.findAll()
 
       // Then: should return addresses sorted alphabetically
       expect(result).toHaveLength(3)
-      expect(result[0]).toEqual(ALICE)
-      expect(result[1]).toEqual(BOB)
-      expect(result[2]).toEqual(CHARLIE)
+      expect(result[0]).toMatchObject(ALICE_SAVE_REQUEST)
+      expect(result[1]).toMatchObject(BOB_SAVE_REQUEST)
+      expect(result[2]).toMatchObject(CHARLIE_SAVE_REQUEST)
     })
   })
 
@@ -64,7 +76,7 @@ describe("Address Book Service test suite", () => {
       // Then: should save with auto-generated UUID
       const all = await addressBookFacade.findAll()
       expect(all).toHaveLength(1)
-      expect(all[0].name).toBe("Charlie")
+      expect(all[0]).toMatchObject(CHARLIE_SAVE_REQUEST)
       expect(all[0].id).toBeTruthy()
       expect(all[0].id).toMatch(/^[0-9a-f-]{36}$/)
     })
@@ -85,11 +97,13 @@ describe("Address Book Service test suite", () => {
   describe("update", () => {
     it("should update existing address", async () => {
       // Given: an existing saved address
-      await addressBookStorage.set(ALICE_ENTITY.id, ALICE_ENTITY)
+      await addressBookFacade.save(ALICE_SAVE_REQUEST)
+      const addresses = await addressBookFacade.findAll()
+      const alice = addresses.find((a) => a.name === "Alice")!
 
       // When: update is called with modified address
       const updated: UserAddress = {
-        ...ALICE,
+        ...alice,
         name: "Alice Updated",
       }
       await addressBookFacade.update(updated)
@@ -97,8 +111,11 @@ describe("Address Book Service test suite", () => {
       // Then: should update the address keeping the same id
       const all = await addressBookFacade.findAll()
       expect(all).toHaveLength(1)
-      expect(all[0].name).toBe("Alice Updated")
-      expect(all[0].id).toBe(ALICE.id)
+      expect(all[0]).toMatchObject({
+        ...ALICE_SAVE_REQUEST,
+        name: "Alice Updated",
+      })
+      expect(all[0].id).toBe(alice.id)
     })
 
     it("should throw error when updating without id", async () => {
@@ -119,29 +136,34 @@ describe("Address Book Service test suite", () => {
   describe("delete", () => {
     it("should delete address by id", async () => {
       // Given: two saved addresses
-      await addressBookStorage.set(ALICE_ENTITY.id, ALICE_ENTITY)
-      await addressBookStorage.set(BOB_ENTITY.id, BOB_ENTITY)
+      await addressBookFacade.save(ALICE_SAVE_REQUEST)
+      await addressBookFacade.save(BOB_SAVE_REQUEST)
+      const addresses = await addressBookFacade.findAll()
+      const alice = addresses.find((a) => a.name === "Alice")!
 
       // When: delete is called for Alice's id
-      await addressBookFacade.delete(ALICE.id)
+      await addressBookFacade.delete(alice.id)
 
       // Then: should remove Alice and keep Bob
       const all = await addressBookFacade.findAll()
       expect(all).toHaveLength(1)
-      expect(all[0]).toEqual(BOB)
+      expect(all[0]).toMatchObject(BOB_SAVE_REQUEST)
     })
   })
 
   describe("get", () => {
     it("should return full UserAddress object", async () => {
       // Given: a saved address
-      await addressBookStorage.set(ALICE_ENTITY.id, ALICE_ENTITY)
+      await addressBookFacade.save(ALICE_SAVE_REQUEST)
+      const addresses = await addressBookFacade.findAll()
+      const alice = addresses.find((a) => a.name === "Alice")!
 
       // When: get is called with the id
-      const address = await addressBookFacade.get(ALICE.id)
+      const address = await addressBookFacade.get(alice.id)
 
       // Then: should return the complete UserAddress object
-      expect(address).toEqual(ALICE)
+      expect(address).toMatchObject(ALICE_SAVE_REQUEST)
+      expect(address.id).toBe(alice.id)
     })
 
     it("should throw error when address not found", async () => {
@@ -157,8 +179,8 @@ describe("Address Book Service test suite", () => {
   describe("ftSearch", () => {
     beforeEach(async () => {
       // Given: two addresses with ICP addresses
-      await addressBookStorage.set(ALICE_ENTITY.id, ALICE_ENTITY)
-      await addressBookStorage.set(BOB_ENTITY.id, BOB_ENTITY)
+      await addressBookFacade.save(ALICE_SAVE_REQUEST)
+      await addressBookFacade.save(BOB_SAVE_REQUEST)
     })
 
     it("should filter by ICP Native (Account ID)", async () => {
@@ -170,9 +192,12 @@ describe("Address Book Service test suite", () => {
 
       // Then: should return ICP Account ID addresses only
       expect(result).toHaveLength(2)
-      expect(
-        result.every((r) => r.address.type === AddressType.ICP_ADDRESS),
-      ).toBe(true)
+      expect(result).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining(ALICE_ICP_ADDRESS_PREVIEW),
+          expect.objectContaining(BOB_ICP_ADDRESS_PREVIEW),
+        ]),
+      )
     })
 
     it("should filter by ICP non-Native (Principal)", async () => {
@@ -184,14 +209,17 @@ describe("Address Book Service test suite", () => {
 
       // Then: should return ICP Principal addresses only
       expect(result).toHaveLength(2)
-      expect(
-        result.every((r) => r.address.type === AddressType.ICP_PRINCIPAL),
-      ).toBe(true)
+      expect(result).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining(ALICE_ICP_PRINCIPAL_PREVIEW),
+          expect.objectContaining(BOB_ICP_PRINCIPAL_PREVIEW),
+        ]),
+      )
     })
 
     it("should filter by BTC", async () => {
       // Given: an additional address with BTC
-      await addressBookStorage.set(CHARLIE_ENTITY.id, CHARLIE_ENTITY)
+      await addressBookFacade.save(CHARLIE_SAVE_REQUEST)
 
       // When: searching for BTC addresses
       const result = await addressBookFacade.ftSearch({
@@ -201,12 +229,17 @@ describe("Address Book Service test suite", () => {
 
       // Then: should return BTC addresses only
       expect(result).toHaveLength(2)
-      expect(result.every((r) => r.address.type === AddressType.BTC)).toBe(true)
+      expect(result).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining(ALICE_BTC_PREVIEW),
+          expect.objectContaining(CHARLIE_BTC_PREVIEW),
+        ]),
+      )
     })
 
     it("should filter by EVM", async () => {
       // Given: an additional address with EVM
-      await addressBookStorage.set(CHARLIE_ENTITY.id, CHARLIE_ENTITY)
+      await addressBookFacade.save(CHARLIE_SAVE_REQUEST)
 
       // When: searching for EVM addresses
       const result = await addressBookFacade.ftSearch({
@@ -216,7 +249,12 @@ describe("Address Book Service test suite", () => {
 
       // Then: should return EVM addresses only
       expect(result).toHaveLength(2)
-      expect(result.every((r) => r.address.type === AddressType.ETH)).toBe(true)
+      expect(result).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining(ALICE_EVM_PREVIEW),
+          expect.objectContaining(CHARLIE_EVM_PREVIEW),
+        ]),
+      )
     })
 
     it("should filter by nameOrAddressLike (case-insensitive)", async () => {
@@ -229,7 +267,7 @@ describe("Address Book Service test suite", () => {
 
       // Then: should find Alice (case-insensitive)
       expect(result).toHaveLength(1)
-      expect(result[0].name).toBe("Alice")
+      expect(result[0]).toMatchObject({ name: "Alice" })
     })
 
     it("should filter by addressLike (case-insensitive)", async () => {
@@ -242,16 +280,16 @@ describe("Address Book Service test suite", () => {
 
       // Then: should find Alice's address
       expect(result).toHaveLength(1)
-      expect(result[0].name).toBe("Alice")
+      expect(result[0]).toMatchObject({ name: "Alice" })
     })
   })
 
   describe("nftSearch", () => {
     beforeEach(async () => {
-      // Given: three addresses (Alice and Bob have ICP Principal, Charlie doesn't)
-      await addressBookStorage.set(ALICE_ENTITY.id, ALICE_ENTITY)
-      await addressBookStorage.set(BOB_ENTITY.id, BOB_ENTITY)
-      await addressBookStorage.set(CHARLIE_ENTITY.id, CHARLIE_ENTITY)
+      // Given: three addresses
+      await addressBookFacade.save(ALICE_SAVE_REQUEST)
+      await addressBookFacade.save(BOB_SAVE_REQUEST)
+      await addressBookFacade.save(CHARLIE_SAVE_REQUEST)
     })
 
     it("should return all addresses with ICP Principal", async () => {
@@ -260,9 +298,12 @@ describe("Address Book Service test suite", () => {
 
       // Then: should return only addresses with ICP Principal
       expect(result).toHaveLength(2)
-      expect(
-        result.every((r) => r.address.type === AddressType.ICP_PRINCIPAL),
-      ).toBe(true)
+      expect(result).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining(ALICE_ICP_PRINCIPAL_PREVIEW),
+          expect.objectContaining(BOB_ICP_PRINCIPAL_PREVIEW),
+        ]),
+      )
     })
 
     it("should filter by nameOrAddressLike", async () => {
@@ -273,7 +314,7 @@ describe("Address Book Service test suite", () => {
 
       // Then: should find Bob only (case-insensitive)
       expect(result).toHaveLength(1)
-      expect(result[0].name).toBe("Bob")
+      expect(result[0]).toMatchObject({ name: "Bob" })
     })
 
     it("should filter by addressLike", async () => {
@@ -284,42 +325,60 @@ describe("Address Book Service test suite", () => {
 
       // Then: should find Alice's ICP Principal
       expect(result).toHaveLength(1)
-      expect(result[0].name).toBe("Alice")
+      expect(result[0]).toMatchObject({ name: "Alice" })
     })
   })
 
   describe("search", () => {
     beforeEach(async () => {
       // Given: two saved addresses
-      await addressBookStorage.set(ALICE_ENTITY.id, ALICE_ENTITY)
-      await addressBookStorage.set(BOB_ENTITY.id, BOB_ENTITY)
+      await addressBookFacade.save(ALICE_SAVE_REQUEST)
+      await addressBookFacade.save(BOB_SAVE_REQUEST)
     })
 
-    it("should filter by address substring (case-insensitive)", async () => {
-      // When: searching by partial address
+    it("should find exact address match", async () => {
+      // When: searching by exact address
+      const result = await addressBookFacade.search({
+        address: "aaaaa-aa",
+      })
+
+      // Then: should find exactly one result - Alice's ICP Principal
+      expect(result).toBeDefined()
+      expect(result).toMatchObject(ALICE_ICP_PRINCIPAL_PREVIEW)
+    })
+
+    it("should return undefined when no exact match found", async () => {
+      // When: searching by partial address (not exact match)
       const result = await addressBookFacade.search({
         address: "aaaaa",
       })
 
-      // Then: should find Alice's ICP Principal
-      expect(result.length).toBeGreaterThan(0)
-      expect(result.some((r) => r.name === "Alice")).toBe(true)
+      // Then: should return undefined
+      expect(result).toBeUndefined()
     })
 
     it("should match across all address types", async () => {
       // Given: an additional address with BTC
-      await addressBookStorage.set(CHARLIE_ENTITY.id, CHARLIE_ENTITY)
+      await addressBookFacade.save(CHARLIE_SAVE_REQUEST)
 
-      // When: searching by BTC address prefix
+      // When: searching by exact BTC address
       const result = await addressBookFacade.search({
-        address: "bc1q",
+        address: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
       })
 
-      // Then: should find all BTC addresses
-      expect(result).toHaveLength(2)
-      expect(
-        result.every((r) => r.address.value.toLowerCase().includes("bc1q")),
-      ).toBe(true)
+      // Then: should find exactly one result - Alice's BTC address
+      expect(result).toBeDefined()
+      expect(result).toMatchObject(ALICE_BTC_PREVIEW)
+    })
+
+    it("should be case-sensitive", async () => {
+      // When: searching with different case
+      const result = await addressBookFacade.search({
+        address: "AAAAA-AA",
+      })
+
+      // Then: should return undefined (case doesn't match)
+      expect(result).toBeUndefined()
     })
   })
 })

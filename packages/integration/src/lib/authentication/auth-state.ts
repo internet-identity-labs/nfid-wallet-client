@@ -194,7 +194,6 @@ function makeAuthState() {
       localStorage.removeItem(KEY_ETH_ADDRESS)
       storageWithTtl.clear()
       domainKeyStorage.clear()
-      walletStorage.clear()
     }
     await authStorage.clear()
     return true

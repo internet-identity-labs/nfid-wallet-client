@@ -126,7 +126,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           modalType={IModalType.SWAP}
           id={"swap-from-title"}
           token={fromToken}
-          setFromChosenToken={setFromChosenToken}
+          setFromChosenToken={(v) => setFromChosenToken(v.address)}
           usdRate={quote?.getSourceAmountUSD()}
           tokens={tokens}
           value={amount}

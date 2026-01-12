@@ -26,6 +26,7 @@ import {
   chainValidate,
   validateAddressBook,
 } from "./utils"
+import { useDarkTheme } from "frontend/hooks"
 
 type AddressBookModalProps =
   | {
@@ -53,6 +54,7 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
   address,
   addresses,
 }) => {
+  const isDarkTheme = useDarkTheme()
   const [isLoading, setIsLoading] = useState(false)
 
   const {
@@ -176,7 +178,9 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
           inputClassName="h-[60px]"
           id="accountId"
           labelText="ICP Account ID"
-          icon={<IcpNetworkIcon size={24} />}
+          icon={
+            <IcpNetworkIcon size={24} color={isDarkTheme ? "white" : "black"} />
+          }
           {...register("accountId", {
             validate: chainValidate(
               (v) => !v || validateAccountId(v),
@@ -195,7 +199,9 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
           inputClassName="h-[60px]"
           id="icpWallet"
           labelText="ICP wallet address"
-          icon={<IcpNetworkIcon size={24} />}
+          icon={
+            <IcpNetworkIcon size={24} color={isDarkTheme ? "white" : "black"} />
+          }
           {...register("icpWallet", {
             validate: chainValidate(
               (v) => !v || validateICRC1Address(v),
@@ -214,7 +220,9 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
           inputClassName="h-[60px]"
           id="btcWallet"
           labelText="BTC wallet address"
-          icon={<BtcNetworkIcon size={24} />}
+          icon={
+            <BtcNetworkIcon size={24} color={isDarkTheme ? "white" : "black"} />
+          }
           {...register("btcWallet", {
             validate: chainValidate(
               (v) => !v || validateBTCAddress(v),
@@ -233,7 +241,9 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
           inputClassName="h-[60px]"
           id="ethWallet"
           labelText="ETH wallet address"
-          icon={<EthNetworkIcon size={24} />}
+          icon={
+            <EthNetworkIcon size={24} color={isDarkTheme ? "white" : "black"} />
+          }
           {...register("ethWallet", {
             validate: chainValidate(
               (v) => !v || validateETHAddress(v),

@@ -12,6 +12,8 @@ export const shouldRenderLink = (
     base: string
     security: string
     vaults: string
+    addressBook: string
+    permissions: string
   },
 ) => {
   const { id } = linkItem
@@ -19,12 +21,35 @@ export const shouldRenderLink = (
 
   if (!hasVaults && id === "nav-vaults") return false
   if (!profileConstants) return true
-  if (id === "nav-vaults" && pathname.includes(profileConstants.vaults))
+  if (
+    id === "nav-vaults" &&
+    (pathname.includes(profileConstants.vaults) ||
+      pathname.includes(profileConstants.security) ||
+      pathname.includes(profileConstants.addressBook) ||
+      pathname.includes(profileConstants.permissions))
+  )
     return false
   if (
     id === "nav-assets" &&
     (pathname.includes(profileConstants.base) ||
-      pathname.includes(profileConstants.security))
+      pathname.includes(profileConstants.security) ||
+      pathname.includes(profileConstants.addressBook) ||
+      pathname.includes(profileConstants.permissions))
+  )
+    return false
+
+  if (
+    id === "nav-address-book" &&
+    pathname.includes(profileConstants.addressBook)
+  )
+    return false
+
+  if (id === "nav-security" && pathname.includes(profileConstants.security))
+    return false
+
+  if (
+    id === "nav-permissions" &&
+    pathname.includes(profileConstants.permissions)
   )
     return false
 
@@ -34,11 +59,7 @@ export const shouldRenderLink = (
 export const renderLink = (
   linkItem: INavigationPopupLinks,
   navigate: ReturnType<typeof useNavigate>,
-  location: Location,
   isDarkTheme: boolean,
-  profileConstants?: {
-    security: string
-  },
 ) => {
   const isExternalLink = linkItem.id === "nav-knowledge-base"
   const LinkComponent = isExternalLink ? "a" : "div"
@@ -46,14 +67,7 @@ export const renderLink = (
     ? { href: linkItem.link, target: "_blank" }
     : {
         onClick: () => {
-          if (
-            linkItem.id === "nav-security" &&
-            location.pathname === profileConstants?.security
-          ) {
-            navigate(0)
-          } else {
-            navigate(linkItem.link)
-          }
+          navigate(linkItem.link)
         },
       }
 

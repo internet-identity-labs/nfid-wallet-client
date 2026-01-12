@@ -18,7 +18,10 @@ import {
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 
-import { SendStatus } from "frontend/features/transfer-modal/types"
+import {
+  SendStatus,
+  SelectedToken,
+} from "frontend/features/transfer-modal/types"
 import { FT } from "frontend/integration/ft/ft"
 
 import { IModalType } from "../utils"
@@ -35,7 +38,7 @@ import { ChooseAddressModal } from "packages/ui/src/molecules/choose-modal/addre
 export interface TransferFTUiProps {
   tokens: FT[]
   token: FT | undefined
-  setChosenToken: (value: string) => void
+  setChosenToken: (value: SelectedToken) => void
   validateAddress: (address: string) => boolean | string
   isLoading: boolean
   isBtcEthLoading: boolean

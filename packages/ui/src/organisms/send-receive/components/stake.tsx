@@ -149,7 +149,7 @@ export const StakeUi: FC<StakeUiProps> = ({
         modalType={IModalType.STAKE}
         id="convert-from"
         token={token}
-        setFromChosenToken={setChosenToken}
+        setFromChosenToken={(v) => setChosenToken(v.address)}
         usdRate={token.getTokenRateFormatted(amount || 0)}
         tokens={tokens}
         title="Amount to stake"

@@ -26,7 +26,7 @@ import { useIdentity } from "frontend/hooks/identity"
 import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
-import { FormValues, SendStatus } from "../types"
+import { FormValues, SelectedToken, SendStatus } from "../types"
 import {
   getTokensWithUpdatedBalance,
   getVaultsAccountsOptions,
@@ -56,8 +56,13 @@ import {
 
 const DEFAULT_TRANSFER_ERROR = "Something went wrong"
 
+const DEFAULT_SELECTED_TOKEN: SelectedToken = {
+  address: ICP_CANISTER_ID,
+  chainId: ChainId.ICP,
+}
+
 interface ITransferFT {
-  preselectedTokenAddress: string | undefined
+  preselectedToken: SelectedToken | undefined
   isVault: boolean
   preselectedAccountAddress: string
   onClose: () => void
@@ -69,7 +74,7 @@ interface ITransferFT {
 
 export const TransferFT = ({
   isVault,
-  preselectedTokenAddress = ICP_CANISTER_ID,
+  preselectedToken = DEFAULT_SELECTED_TOKEN,
   preselectedAccountAddress = "",
   onClose,
   hideZeroBalance,
@@ -77,7 +82,8 @@ export const TransferFT = ({
   setSuccessMessage,
   onError,
 }: ITransferFT) => {
-  const [tokenAddress, setTokenAddress] = useState(preselectedTokenAddress)
+  const [tokenSelected, setTokenSelected] =
+    useState<SelectedToken>(preselectedToken)
   const [status, setStatus] = useState(SendStatus.PENDING)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const { identity, isLoading: isIdentityLoading } = useIdentity()
@@ -133,12 +139,12 @@ export const TransferFT = ({
   )
 
   useEffect(() => {
-    if (!preselectedTokenAddress) {
-      setTokenAddress(ICP_CANISTER_ID)
+    if (!preselectedToken) {
+      setTokenSelected({ address: ICP_CANISTER_ID, chainId: ChainId.ICP })
     } else {
-      setTokenAddress(preselectedTokenAddress)
+      setTokenSelected(preselectedToken)
     }
-  }, [preselectedTokenAddress])
+  }, [preselectedToken])
 
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
     "tokens",
@@ -165,9 +171,11 @@ export const TransferFT = ({
 
   const token = useMemo(() => {
     return filteredTokens?.find(
-      (token) => token.getTokenAddress() === tokenAddress,
+      (token) =>
+        token.getTokenAddress() === tokenSelected.address &&
+        token.getChainId() === tokenSelected.chainId,
     )
-  }, [tokenAddress, filteredTokens])
+  }, [tokenSelected, filteredTokens])
 
   const balance = useMemo(() => {
     return balances?.find(
@@ -545,7 +553,7 @@ export const TransferFT = ({
       <TransferFTUi
         token={token}
         tokens={filteredTokens || []}
-        setChosenToken={setTokenAddress}
+        setChosenToken={setTokenSelected}
         validateAddress={getValidatorByTokenAddress(
           token?.getTokenAddress(),
           token?.getTokenCategory(),

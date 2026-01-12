@@ -19,8 +19,8 @@ import { idlFactory as ecdsaSignerIDL } from "./_ic_api/ecdsa-signer"
 import { _SERVICE as EcdsaSigner } from "./_ic_api/ecdsa-signer.d"
 import { idlFactory as iCRC1OracleIDL } from "./_ic_api/icrc1_oracle"
 import { _SERVICE as ICRC1Oracle } from "./_ic_api/icrc1_oracle.d"
-import { idlFactory as iCRC1RegistryIDL } from "./_ic_api/icrc1_registry"
-import { _SERVICE as ICRC1Registry } from "./_ic_api/icrc1_registry.d"
+import { idlFactory as userRegistryIDL } from "./_ic_api/user_registry"
+import { _SERVICE as UserRegistry } from "./_ic_api/user_registry.d"
 import { idlFactory as imIDL } from "./_ic_api/identity_manager"
 import { _SERVICE as IdentityManager } from "./_ic_api/identity_manager.d"
 import { idlFactory as iiIDL } from "./_ic_api/internet_identity"
@@ -52,7 +52,7 @@ const canisterConfig = [
   ["EcdsaSigner", ECDSA_SIGNER_CANISTER_ID],
   ["SwapTransactionStorage", SWAP_TRS_STORAGE],
   ["ICSigner", IC_SIGNER_CANISTER_ID],
-  ["ICRC1Registry", ICRC1_REGISTRY_CANISTER_ID],
+  ["UserRegistry", USER_REGISTRY_CANISTER_ID],
   ["DelegationFactory", DELEGATION_FACTORY],
   ["PasskeyStorage", PASSKEY_STORAGE],
   ["IRC1Oracle", ICRC1_ORACLE_CANISTER_ID],
@@ -123,9 +123,9 @@ export const ii = actor<InternetIdentity>(INTERNET_IDENTITY_CANISTER_ID, iiIDL)
 export const im = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
 export const verifier = actor<Verifier>(VERIFIER_CANISTER_ID, verifierIDL)
 export const ledger = actor<Ledger>(LEDGER_CANISTER_ID, ledgerIDL)
-export const iCRC1Registry = actor<ICRC1Registry>(
-  ICRC1_REGISTRY_CANISTER_ID,
-  iCRC1RegistryIDL,
+export const userRegistry = actor<UserRegistry>(
+  USER_REGISTRY_CANISTER_ID,
+  userRegistryIDL,
 )
 
 export const iCRC1OracleActor = actor<ICRC1Oracle>(

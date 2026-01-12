@@ -62,7 +62,9 @@ export class DefaultAddressBookFacade implements AddressBookFacade {
     return this.nftSearchService.search(entities, request)
   }
 
-  async search(request: SearchRequest): Promise<Array<UserAddressPreview>> {
+  async search(
+    request: SearchRequest,
+  ): Promise<UserAddressPreview | undefined> {
     const entities = await this.repository.findAll()
     return this.generalSearchService.search(entities, request)
   }

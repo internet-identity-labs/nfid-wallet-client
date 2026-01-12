@@ -30,19 +30,19 @@ export class AddressBookMapper {
 
   toUserAddress(entity: UserAddressEntity): UserAddress {
     const addresses = entity.addresses.reduce(
-      (acc, addr) => {
-        switch (addr.type) {
+      (acc, address) => {
+        switch (address.type) {
           case AddressType.ICP_PRINCIPAL:
-            acc.icpPrincipal = addr.value
+            acc.icpPrincipal = address.value
             break
           case AddressType.ICP_ADDRESS:
-            acc.icpAccountId = addr.value
+            acc.icpAccountId = address.value
             break
           case AddressType.BTC:
-            acc.btc = addr.value
+            acc.btc = address.value
             break
           case AddressType.ETH:
-            acc.evm = addr.value
+            acc.evm = address.value
             break
         }
         return acc

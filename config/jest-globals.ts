@@ -17,7 +17,7 @@ export const JEST_GLOBALS = {
   FEE_PERCENT: "0.00875",
   FEE_ADDRESS:
     "xrzo4-h5v7q-vbas7-txnjh-q4ihf-4ywvk-l6h4a-rlpkh-47ktc-fdupw-tae",
-  ICRC1_REGISTRY_CANISTER_ID: "zdi5a-faaaa-aaaak-qc5hq-cai",
+  USER_REGISTRY_CANISTER_ID: "zsjjs-7aaaa-aaaak-apgyq-cai",
   ICRC1_ORACLE_CANISTER_ID: "ys266-uyaaa-aaaal-ajs4q-cai",
   DELEGATION_FACTORY: "wklas-pyaaa-aaaak-akv3a-cai",
   PASSKEY_STORAGE: "dy546-gqaaa-aaaak-akwiq-cai",

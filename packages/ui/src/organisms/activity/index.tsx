@@ -72,7 +72,7 @@ export interface ActivityProps {
   setChainFilter: React.Dispatch<React.SetStateAction<string[]>>
   txFilter: string[]
   setTxFilter: React.Dispatch<React.SetStateAction<string[]>>
-  searchAddress: (req: SearchRequest) => Promise<UserAddressPreview[]>
+  searchAddress: (req: SearchRequest) => Promise<UserAddressPreview | undefined>
 }
 
 export const Activity: FC<ActivityProps> = ({

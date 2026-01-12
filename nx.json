@@ -68,7 +68,7 @@
         "env": "FRONTEND_MODE"
       },
       {
-        "env": "ICRC1_REGISTRY_CANISTER_ID"
+        "env": "USER_REGISTRY_CANISTER_ID"
       },
       {
         "env": "ICRC1_ORACLE_CANISTER_ID"

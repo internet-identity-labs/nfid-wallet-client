@@ -168,7 +168,7 @@ export const getActionMarkup = (
 interface IActivityTableRow extends IActivityRow {
   nodeId: string
   identity?: SignIdentity
-  searchAddress: (req: SearchRequest) => Promise<UserAddressPreview[]>
+  searchAddress: (req: SearchRequest) => Promise<UserAddressPreview | undefined>
 }
 
 export const ActivityTableRow = ({
@@ -201,12 +201,12 @@ export const ActivityTableRow = ({
     const getContact = async () => {
       if (from) {
         const contactFrom = await searchAddress({ address: from })
-        if (contactFrom.length > 0) setContactFrom(contactFrom[0])
+        if (contactFrom) setContactFrom(contactFrom)
       }
 
       if (to) {
         const contactTo = await searchAddress({ address: to })
-        if (contactTo.length > 0) setContactTo(contactTo[0])
+        if (contactTo) setContactTo(contactTo)
       }
     }
 

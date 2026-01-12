@@ -1,35 +1,34 @@
-import { Storage } from "@nfid/client-db"
-
 import { AddressBookCache } from "./cache/address-book.cache"
 import { DefaultAddressBookFacade } from "./address-book.facade"
 import { AddressBookRepository } from "./repository/address-book.repository"
 import { AddressBookMapper } from "./mapper/address-book.mapper"
-import { UserAddressEntity } from "./interfaces"
+import { AddressBookCanisterMapper } from "./mapper/address-book-canister.mapper"
 import { FtSearchService } from "./services/ft-search.service"
 import { NftSearchService } from "./services/nft-search.service"
 import { GeneralSearchService } from "./services/general-search.service"
 import { SearchFilterService } from "./services/search-filter.service"
+import { AddressBookCanisterClient } from "./client/address-book-canister.client"
 
-export const addressBookStorage = new Storage<UserAddressEntity>({
-  dbName: "address-book-db",
-  storeName: "address-book-store",
-})
-
-export const addressBookMapper = new AddressBookMapper()
-export const searchFilterService = new SearchFilterService()
-export const ftSearchService = new FtSearchService(
+const addressBookMapper = new AddressBookMapper()
+const addressBookCanisterMapper = new AddressBookCanisterMapper()
+const searchFilterService = new SearchFilterService()
+const ftSearchService = new FtSearchService(
   addressBookMapper,
   searchFilterService,
 )
-export const nftSearchService = new NftSearchService(
+const nftSearchService = new NftSearchService(
   addressBookMapper,
   searchFilterService,
 )
-export const generalSearchService = new GeneralSearchService(addressBookMapper)
-export const addressBookCache = new AddressBookCache(addressBookStorage)
+const generalSearchService = new GeneralSearchService(addressBookMapper)
+
+export const addressBookCanisterClient = new AddressBookCanisterClient(
+  addressBookCanisterMapper,
+)
+export const addressBookCache = new AddressBookCache()
 export const addressBookRepository = new AddressBookRepository(
   addressBookCache,
-  addressBookStorage,
+  addressBookCanisterClient,
 )
 export const addressBookFacade = new DefaultAddressBookFacade(
   addressBookRepository,

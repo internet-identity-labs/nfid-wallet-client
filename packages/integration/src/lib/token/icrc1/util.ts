@@ -1,7 +1,7 @@
 import { hasOwnProperty } from "@nfid/integration"
 
 import { Category } from "../../_ic_api/icrc1_oracle.d"
-import { ICRC1State } from "../../_ic_api/icrc1_registry.d"
+import { ICRC1State } from "../../_ic_api/user_registry.d"
 import { Category as CategoryTS, State } from "./enum/enums"
 
 export function mapCategory(category: Category): CategoryTS {

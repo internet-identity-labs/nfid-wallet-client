@@ -8,13 +8,13 @@ export class GeneralSearchService {
   search(
     entities: UserAddressEntity[],
     request: SearchRequest,
-  ): UserAddressPreview[] {
-    const searchLower = request.address.toLowerCase()
+  ): UserAddressPreview | undefined {
+    const found = entities
+      .flatMap((entity) =>
+        entity.addresses.map((address) => ({ entity, address })),
+      )
+      .find(({ address }) => address.value === request.address)
 
-    return entities.flatMap((entity) =>
-      entity.addresses
-        .filter((address) => address.value.toLowerCase().includes(searchLower))
-        .map((address) => this.mapper.toPreview(entity, address)),
-    )
+    return found && this.mapper.toPreview(found.entity, found.address)
   }
 }

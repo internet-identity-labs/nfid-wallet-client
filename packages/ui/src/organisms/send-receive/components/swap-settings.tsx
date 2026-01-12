@@ -239,7 +239,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                           Provider doesn’t have enough liquidity to complete
                           this swap.
                         </p>
-                        <p className="basis-[130px] ml-auto flex items-center justify-between">
+                        <div className="basis-[130px] ml-auto flex items-center justify-between">
                           <span>{SwapName[key]}</span>
                           <div
                             className={clsx(
@@ -249,7 +249,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                           >
                             <IconCaret color="#9CA3AF" />
                           </div>
-                        </p>
+                        </div>
                       </div>
                     )
                   const swapNameValue = value.getSwapName()
@@ -278,7 +278,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                             Increase above {quote?.getSlippage().toFixed(2)}%
                           </span>
                         </p>
-                        <p className="basis-[130px] ml-auto flex items-center justify-between">
+                        <div className="basis-[130px] ml-auto flex items-center justify-between">
                           <span>{SwapName[key]}</span>
                           <div
                             className={clsx(
@@ -288,7 +288,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                           >
                             <IconCaret color="#9CA3AF" />
                           </div>
-                        </p>
+                        </div>
                       </div>
                     )
                   }
@@ -308,7 +308,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                       }}
                     >
                       <p>{quote?.getGuaranteedAmount(slippage)}</p>
-                      <p className="basis-[130px] ml-auto flex items-center justify-between">
+                      <div className="basis-[130px] ml-auto flex items-center justify-between">
                         <span>{swapName}</span>
                         <div
                           onClick={(e) => {
@@ -333,7 +333,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                             }
                           />
                         </div>
-                      </p>
+                      </div>
                     </div>
                   )
                 })}

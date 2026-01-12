@@ -6,12 +6,16 @@ import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import { useVault } from "../hooks/use-vault"
 import { tabs } from "./tabs"
+import { NFIDTheme } from "frontend/App"
 
-interface VaultsDetailsCoordinatorProps {}
+interface VaultsDetailsCoordinatorProps {
+  walletTheme: NFIDTheme
+  setWalletTheme: (theme: NFIDTheme) => void
+}
 
 export const VaultsDetailsCoordinator: React.FC<
   VaultsDetailsCoordinatorProps
-> = () => {
+> = ({ walletTheme, setWalletTheme }) => {
   const { vault, isFetching } = useVault()
 
   return (
@@ -19,6 +23,8 @@ export const VaultsDetailsCoordinator: React.FC<
       pageTitle={vault?.name}
       isLoading={isFetching}
       showBackButton
+      walletTheme={walletTheme}
+      setWalletTheme={setWalletTheme}
     >
       <p className="mb-5 text-sm">{vault?.description}</p>
       <Tabs tabs={tabs} defaultValue="wallets" />

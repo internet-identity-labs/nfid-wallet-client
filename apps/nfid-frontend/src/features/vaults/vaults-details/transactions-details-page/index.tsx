@@ -17,8 +17,16 @@ import { VaultTransactionInfo } from "./info-block"
 import { TransactionInfoRow } from "./info-row"
 import { VaultTransactionRejectReason } from "./rejected-modal"
 import { TransactionStatusArrow } from "./status-arrow"
+import { NFIDTheme } from "frontend/App"
 
-export const VaultTransactionsDetailsPage = () => {
+interface VaultTransactionsCoordinatorProps {
+  walletTheme: NFIDTheme
+  setWalletTheme: (theme: NFIDTheme) => void
+}
+
+export const VaultTransactionsDetailsPage: React.FC<
+  VaultTransactionsCoordinatorProps
+> = ({ walletTheme, setWalletTheme }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [state, setState] = useState<IVaultTransactionsDetails>()
   const location = useLocation()
@@ -52,6 +60,8 @@ export const VaultTransactionsDetailsPage = () => {
       isLoading={isLoading}
       pageTitle="Transaction details"
       showBackButton
+      walletTheme={walletTheme}
+      setWalletTheme={setWalletTheme}
     >
       <div className="relative flex flex-col md:flex-row">
         <div className="w-full md:w-1/2">

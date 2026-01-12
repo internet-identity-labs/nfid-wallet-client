@@ -24,6 +24,8 @@ export interface IAuthenticatedPopup extends HTMLAttributes<HTMLDivElement> {
     base: string
     security: string
     vaults: string
+    addressBook: string
+    permissions: string
   }
   isOpen: boolean
   walletTheme: NFIDTheme
@@ -103,15 +105,8 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
                   profileConstants,
                 ),
               )
-              .map((linkItem) =>
-                renderLink(
-                  linkItem,
-                  navigate,
-                  location,
-                  isDarkTheme,
-                  profileConstants,
-                ),
-              )}
+              .map((linkItem) => renderLink(linkItem, navigate, isDarkTheme))}
+            <div className="my-[8px] bg-gray-100 dark:bg-zinc-700 h-[1px]"></div>
             <div
               id="nav-logout"
               className={clsx(

@@ -53,6 +53,5 @@ export const navigationPopupLinks = [
     title: "Permissions",
     link: ProfileConstants.permissions,
     id: "nav-permissions",
-    separator: true,
   },
 ]

@@ -279,7 +279,10 @@ export const App = () => {
                     path={ProfileConstants.addressBook}
                     element={
                       <AuthWrapper>
-                        <AddressBookPage />
+                        <AddressBookPage
+                          walletTheme={walletTheme}
+                          setWalletTheme={setWalletTheme}
+                        />
                       </AuthWrapper>
                     }
                   />
@@ -296,7 +299,10 @@ export const App = () => {
                     element={
                       <AuthWrapper>
                         <VaultGuard>
-                          <VaultsListPage />
+                          <VaultsListPage
+                            walletTheme={walletTheme}
+                            setWalletTheme={setWalletTheme}
+                          />
                         </VaultGuard>
                       </AuthWrapper>
                     }
@@ -305,7 +311,10 @@ export const App = () => {
                     path={`${ProfileConstants.vaults}/${ProfileConstants.vault}`}
                     element={
                       <AuthWrapper>
-                        <VaultsDetailsCoordinator />
+                        <VaultsDetailsCoordinator
+                          walletTheme={walletTheme}
+                          setWalletTheme={setWalletTheme}
+                        />
                       </AuthWrapper>
                     }
                   />
@@ -324,7 +333,10 @@ export const App = () => {
                     path={`${ProfileConstants.vaults}/transactions/${ProfileConstants.vaultTransaction}`}
                     element={
                       <AuthWrapper>
-                        <VaultTransactionsDetailsPage />
+                        <VaultTransactionsDetailsPage
+                          walletTheme={walletTheme}
+                          setWalletTheme={setWalletTheme}
+                        />
                       </AuthWrapper>
                     }
                   />

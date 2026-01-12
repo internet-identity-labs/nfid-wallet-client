@@ -112,7 +112,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           modalType={getModalType(fromToken, toToken)}
           id={"convert-from-title"}
           token={fromToken}
-          setFromChosenToken={setFromChosenToken}
+          setFromChosenToken={(v) => setFromChosenToken(v.address)}
           usdRate={toToken!.getTokenRateFormatted(amount || "0")}
           value={amount}
           tokens={tokens}

@@ -9,10 +9,17 @@ import { VaultActionBar } from "../action-bar"
 import { getAllVaults } from "../services"
 import { VaultAddressBar } from "./address-bar"
 import { VaultsTable } from "./table"
+import { NFIDTheme } from "frontend/App"
 
-export interface VaultsListPageProps {}
+export interface VaultsListPageProps {
+  walletTheme: NFIDTheme
+  setWalletTheme: (theme: NFIDTheme) => void
+}
 
-export const VaultsListPage: React.FC<VaultsListPageProps> = () => {
+export const VaultsListPage: React.FC<VaultsListPageProps> = ({
+  walletTheme,
+  setWalletTheme,
+}) => {
   const [searchFilter, setSearchFilter] = useState("")
 
   const {
@@ -40,7 +47,11 @@ export const VaultsListPage: React.FC<VaultsListPageProps> = () => {
   )
 
   return (
-    <ProfileTemplate pageTitle="Vaults">
+    <ProfileTemplate
+      pageTitle="Vaults"
+      walletTheme={walletTheme}
+      setWalletTheme={setWalletTheme}
+    >
       <VaultAddressBar />
       <div className="border border-gray-200 rounded-xl mt-[30px]">
         <VaultActionBar onInputChange={onFilterChange} />

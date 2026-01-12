@@ -1,4 +1,5 @@
 import { Icrc1BlockIndex } from "@dfinity/ledger-icp"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { Wallet } from "frontend/integration/wallet/hooks/use-all-wallets"
 
@@ -24,6 +25,11 @@ export enum ModalType {
   REDEEM = "redeem",
 }
 
+export interface SelectedToken {
+  address: string
+  chainId: ChainId
+}
+
 export enum SendStatus {
   PENDING = "pending",
   COMPLETED = "completed",
@@ -45,7 +51,7 @@ export type TransferMachineContext = {
   tokenType: TokenType
   sourceWalletAddress: string
   sourceAccount?: Wallet
-  selectedFT?: string
+  selectedFT?: SelectedToken
   selectedTargetFT?: string
   selectedNFTId?: string
   receiverWallet: string
@@ -67,7 +73,7 @@ export type Events =
   | { type: "ASSIGN_STAKE_ID"; data: string }
   | { type: "ASSIGN_AMOUNT"; data: string }
   | { type: "ASSIGN_RECEIVER_WALLET"; data: string }
-  | { type: "ASSIGN_SELECTED_FT"; data: string }
+  | { type: "ASSIGN_SELECTED_FT"; data?: SelectedToken }
   | { type: "ASSIGN_SELECTED_TARGET_FT"; data: string }
   | { type: "ASSIGN_SELECTED_NFT"; data: string }
   | { type: "ASSIGN_ERROR"; data: string }

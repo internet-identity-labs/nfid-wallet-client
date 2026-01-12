@@ -36,6 +36,8 @@ export interface IProfileHeader extends React.HTMLAttributes<HTMLDivElement> {
     base: string
     security: string
     vaults: string
+    addressBook: string
+    permissions: string
   }
   walletTheme?: NFIDTheme
   setWalletTheme?: (theme: NFIDTheme) => void

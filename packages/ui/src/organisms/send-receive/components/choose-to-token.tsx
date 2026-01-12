@@ -113,7 +113,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
                 searchInputId={"targetTokenSearchInput"}
                 tokens={tokens}
                 title="Swap to"
-                onSelect={setToChosenToken}
+                onSelect={(v) => setToChosenToken(v.address)}
                 isSwapTo={true}
                 trigger={
                   <div

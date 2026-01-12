@@ -35,18 +35,19 @@ import { FT } from "frontend/integration/ft/ft"
 
 import { IProfileConstants } from ".."
 import { getUpdatedInitedTokens } from "frontend/features/transfer-modal/utils"
+import { SelectedToken } from "frontend/features/transfer-modal/types"
 
 type AssetDropdownProps = {
   token: FT
   tokens: FT[]
   profileConstants: IProfileConstants
-  onSendClick: (value: string) => void
-  onSwapClick: (value: string) => void
+  onSendClick: (value: SelectedToken) => void
+  onSwapClick: (value: SelectedToken) => void
   onConvertToBtc: () => void
   onConvertToCkBtc: () => void
   onConvertToEth: () => void
   onConvertToCkEth: () => void
-  onStakeClick: (value: string) => void
+  onStakeClick: (value: SelectedToken) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   setIsTokenProcessed: (value: boolean) => void
@@ -98,13 +99,23 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
           label="Send"
           icon={isDarkTheme ? IconSvgArrowWhite : IconSvgArrow}
           iconClassName="rotate-[135deg] dark:text-white"
-          handler={() => onSendClick(token.getTokenAddress())}
+          handler={() =>
+            onSendClick({
+              address: token.getTokenAddress(),
+              chainId: token.getChainId(),
+            })
+          }
         />
         {token.getChainId() === ChainId.ICP && (
           <DropdownOption
             label="Swap"
             icon={isDarkTheme ? IconSvgSwapActionWhite : IconSvgSwapAction}
-            handler={() => onSwapClick(token.getTokenAddress())}
+            handler={() =>
+              onSwapClick({
+                address: token.getTokenAddress(),
+                chainId: token.getChainId(),
+              })
+            }
           />
         )}
         {token.getTokenAddress() === CKBTC_CANISTER_ID && (
@@ -148,7 +159,12 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
           <DropdownOption
             label="Stake"
             icon={isDarkTheme ? IconSvgStakeActionWhite : IconSvgStakeAction}
-            handler={() => onStakeClick(token.getTokenAddress())}
+            handler={() =>
+              onStakeClick({
+                address: token.getTokenAddress(),
+                chainId: token.getChainId(),
+              })
+            }
           />
         )}
         <DropdownOption

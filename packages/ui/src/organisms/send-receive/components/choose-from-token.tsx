@@ -26,6 +26,7 @@ import {
   getIsMobileDeviceMatch,
 } from "packages/ui/src/utils/is-mobile"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { SelectedToken } from "frontend/features/transfer-modal/types"
 
 interface ChooseFromTokenProps {
   modalType: IModalType
@@ -34,7 +35,7 @@ interface ChooseFromTokenProps {
   tokens?: FT[]
   balance?: bigint | undefined
   value?: string
-  setFromChosenToken?: (value: string) => void
+  setFromChosenToken?: (value: SelectedToken) => void
   usdRate?: string | null
   title: string
   isResponsive?: boolean
@@ -324,7 +325,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         </div>
         <div className="flex-[0_0_100%]"></div>
         {isLoading || isFeeLoading || !Boolean(token) ? (
-          <Skeleton className="w-[124px] h-1 rounded-[6px] mt-[15px]" />
+          <Skeleton className="w-[124px] h-1 rounded-[6px] mt-[15px] mb-[9px]" />
         ) : (
           <p
             className={clsx(

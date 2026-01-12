@@ -6,12 +6,13 @@ import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 import { ChooseFtItem } from "./choose-ft-item"
 import { ChooseTokenModal } from "./token-modal"
 import { IModalType } from "../../organisms/send-receive/utils"
+import { SelectedToken } from "frontend/features/transfer-modal/types"
 
 export interface IChooseFtModal {
   id: string
   searchInputId?: string
   tokens: FT[]
-  onSelect: (value: string) => void
+  onSelect: (value: SelectedToken) => void
   title: string
   trigger?: JSX.Element
   isSwapTo?: boolean
@@ -63,7 +64,10 @@ export const ChooseFtModal = ({
   )
 
   const handleSelectTokenId = useCallback((token: FT) => {
-    return token.getTokenAddress()
+    return {
+      address: token.getTokenAddress(),
+      chainId: token.getChainId(),
+    }
   }, [])
 
   return (

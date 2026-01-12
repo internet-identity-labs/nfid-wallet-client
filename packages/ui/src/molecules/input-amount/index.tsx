@@ -58,7 +58,10 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
       <>
         {isLoading ? (
           <Skeleton
-            className={clsx("!w-[124px] rounded-[6px]", skeletonClassName)}
+            className={clsx(
+              "!w-[124px] rounded-[6px] h-[30px]",
+              skeletonClassName,
+            )}
           />
         ) : (
           <NumericFormat

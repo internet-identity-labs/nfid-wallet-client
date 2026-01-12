@@ -229,7 +229,7 @@ export class NfidSNSNeuronImpl extends NfidNeuronImpl<Neuron> {
       },
     }
 
-    let ledgerCanisterId = await icrc1OracleService
+    const ledgerCanisterId = await icrc1OracleService
       .getICRC1Canisters()
       .then((canisters) =>
         canisters

@@ -34,17 +34,17 @@ describe("Staking", () => {
   })
 
   it.skip("should stake neuron", async () => {
-    let edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
+    const edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
     jest
       .spyOn(icrc1StorageService as any, "getICRC1Canisters")
       .mockResolvedValueOnce(mockFt)
     try {
-      let neuronsNFIDW = await querySnsNeurons({
+      const neuronsNFIDW = await querySnsNeurons({
         identity: edId.getPrincipal(),
         rootCanisterId: Principal.fromText(NFIDW_ROOT_CANISTER),
         certified: false,
       })
-      let a = neuronsNFIDW.find(
+      const a = neuronsNFIDW.find(
         (n) => n.cached_neuron_stake_e8s === BigInt(500000000),
       )
       await disburse({
@@ -55,32 +55,32 @@ describe("Staking", () => {
     } catch (e: any) {
       console.error(e.message)
     }
-    let token = await ftService
+    const token = await ftService
       .getTokens(pairPrincipal)
       .then((tokens) =>
         tokens.find((token) => token.getTokenSymbol() === "NFIDW"),
       )
-    let staked = await stakingService.stake(token!, "5", edId)
+    const staked = await stakingService.stake(token!, "5", edId)
     expect(staked).toBeDefined()
-    let neuronsNFIDW = await querySnsNeurons({
+    const neuronsNFIDW = await querySnsNeurons({
       identity: edId.getPrincipal(),
       rootCanisterId: Principal.fromText(NFIDW_ROOT_CANISTER),
       certified: false,
     })
-    let actual = neuronsNFIDW.find(
+    const actual = neuronsNFIDW.find(
       (n) => bytesToHexString(n!.id[0]!.id) === bytesToHexString(staked.id),
     )
     expect(actual?.followees.length).toBeGreaterThan(0)
   })
 
   it("should return staked neurons", async () => {
-    let edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
+    const edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
     jest
       .spyOn(icrc1StorageService as any, "getICRC1Canisters")
       .mockResolvedValue(mockFt)
     jest.spyOn(stakingService as any, "getNeurons").mockResolvedValue(mockStake)
 
-    let tokens = await ftService.getTokens(pairPrincipal)
+    const tokens = await ftService.getTokens(pairPrincipal)
     const stakedTokens = await stakingService.getStakedTokens(
       Promise.resolve(edId),
       tokens,
@@ -180,12 +180,12 @@ describe("Staking", () => {
   })
 
   it("should return staking parameters", async () => {
-    let edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
+    const edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
     jest
       .spyOn(icrc1StorageService as any, "getICRC1Canisters")
       .mockResolvedValueOnce(mockFt)
 
-    let token = await ftService
+    const token = await ftService
       .getTokens(pairPrincipal)
       .then((tokens) =>
         tokens.find((token) => token.getTokenSymbol() === "NFIDW"),

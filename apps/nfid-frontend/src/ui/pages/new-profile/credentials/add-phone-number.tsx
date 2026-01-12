@@ -73,7 +73,7 @@ const ProfileAddPhoneNumber: React.FC<IProfileAddPhoneNumber> = ({
               labelText="Phone number"
               placeholder="+1 234 856 7890"
               errorText={errors.phone?.message}
-              onKeyUp={() => setResponseError && setResponseError("")}
+              onKeyUp={() => setResponseError?.("")}
               {...register("phone", {
                 required: phoneRules.errorMessages.required,
                 pattern: {

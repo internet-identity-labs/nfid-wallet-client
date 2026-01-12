@@ -73,7 +73,7 @@ export class KongSwapShroffImpl extends ShroffAbstract {
     const sourceUSDPricePromise = exchangeRateService.usdPriceForICRC1(
       this.source.ledger,
     )
-    let quotePromise = this.getQuotePromise(preCalculation)
+    const quotePromise = this.getQuotePromise(preCalculation)
     const [targetUSDPrice, sourceUSDPrice, quote] = await Promise.all([
       targetUSDPricePromise,
       sourceUSDPricePromise,
@@ -136,7 +136,7 @@ export class KongSwapShroffImpl extends ShroffAbstract {
 
       const slippage = await this.getSlippage()
 
-      let args: SwapArgs = {
+      const args: SwapArgs = {
         receive_token: this.target.symbol,
         max_slippage: [slippage],
         pay_amount: BigInt(
@@ -183,7 +183,7 @@ export class KongSwapShroffImpl extends ShroffAbstract {
 
   protected async swapInternal(args: SwapArgs): Promise<void> {
     try {
-      let resp = await this.actor.swap(args)
+      const resp = await this.actor.swap(args)
       console.log("Swap response", JSON.stringify(resp))
 
       if (hasOwnProperty(resp, "Err")) {
@@ -224,7 +224,7 @@ export class KongSwapShroffImpl extends ShroffAbstract {
 
       if (!("Ok" in result)) return []
 
-      let allPools: string[] = []
+      const allPools: string[] = []
 
       result.Ok.forEach((pool) => {
         if (pool.address_0 === source) allPools.push(pool.address_1)

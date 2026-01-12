@@ -15,10 +15,10 @@ import {
 describe("wallet suite", () => {
   describe("getWalletPrincipal", () => {
     it("request ii for principal", async function () {
-      let expected = Principal.anonymous()
+      const expected = Principal.anonymous()
       // @ts-ignore
       nfidIntegration.ii.get_principal = jest.fn(async () => expected)
-      let response = await getWalletPrincipal(10000)
+      const response = await getWalletPrincipal(10000)
       expect(response).toBe(expected)
     })
   })

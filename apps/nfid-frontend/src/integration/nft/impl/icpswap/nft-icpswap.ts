@@ -42,7 +42,7 @@ export class NftIcpSwap extends NftImpl {
   }
 
   async getDetails(): Promise<NFTDetails> {
-    let canisterActor = actorBuilder<IcpSwapCanister>(
+    const canisterActor = actorBuilder<IcpSwapCanister>(
       this.getCollectionId(),
       idlFactory,
     )
@@ -67,7 +67,7 @@ export class NftIcpSwap extends NftImpl {
   private async getIcsMetadata(): Promise<IcsMetadata> {
     if (this.icsMetadata === undefined) {
       const identity = new AnonymousIdentity()
-      let canisterActor = actorBuilder<IcpSwapCanister>(
+      const canisterActor = actorBuilder<IcpSwapCanister>(
         this.getCollectionId(),
         idlFactory,
         {
@@ -133,7 +133,7 @@ class NftIcpSwapDetails extends NFTDetailsImpl {
   }
 
   async getAssetFullSize(): Promise<AssetPreview> {
-    let format: DisplayFormat = toFormat(this.icsMetadata.fileType)
+    const format: DisplayFormat = toFormat(this.icsMetadata.fileType)
     return {
       url: this.icsMetadata.filePath,
       format,

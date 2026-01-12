@@ -61,7 +61,7 @@ export class NftYumi extends NftImpl {
   }
 
   async getDetails(): Promise<NFTDetails> {
-    let collectionResponse = (await fetch(
+    const collectionResponse = (await fetch(
       `https://stat.yuku.app/api/collection/${this.getCollectionId()}`,
     ).then((response) => response.json())) as CollectionResponse
     return new NFTYumiDetails(

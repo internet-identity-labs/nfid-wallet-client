@@ -97,14 +97,13 @@ describe("yumi test suite", () => {
       const yumiNFTWithDetails = result.items.filter(
         (nft) => nft.getCollectionId() === "fab4i-diaaa-aaaah-acr2q-cai",
       )[0]
-      const yumiProperties = await yumiNFTWithDetails
-        .getDetails()
-        .then((dt) => dt.getProperties())
+      const yumiDetails = await yumiNFTWithDetails.getDetails()
+      const yumiProperties = await yumiDetails.getProperties()
       expect(yumiProperties.mappedValues.length).toEqual(6)
       expect(yumiProperties.mappedValues[0].category).toEqual("1 of 1")
       expect(yumiProperties.mappedValues[0].option).toEqual("None")
 
-      const image = await yumiNFTWithDetails.getAssetPreview()
+      const image = yumiNFTWithDetails.getAssetPreview()
       expect(image?.format).toEqual("img")
       expect(image?.url).toEqual(
         "https://2kamf-liaaa-aaaam-abf5q-cai.raw.ic0.app/file/4612_original.gif",

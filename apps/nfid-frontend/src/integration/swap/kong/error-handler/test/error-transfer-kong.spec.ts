@@ -20,7 +20,7 @@ describe("shroff transfer kong error handler test", () => {
   it.skip("shroff transfer kong icrc2 error handler test", async function () {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
-    let mockId = Ed25519KeyIdentity.fromParsedJson(mock)
+    const mockId = Ed25519KeyIdentity.fromParsedJson(mock)
 
     const shroff: Shroff = await new KongShroffBuilder()
       .withSource(sourceLedger)
@@ -42,17 +42,17 @@ describe("shroff transfer kong error handler test", () => {
       await shroff.swap(mockId)
       fail("Should throw an error")
     } catch (e) {}
-    let failedTransaction = shroff.getSwapTransaction()
+    const failedTransaction = shroff.getSwapTransaction()
     const errorHandler = errorHandlerFactory.getHandler(failedTransaction!)
     expect(failedTransaction?.getStage()).toEqual(SwapStage.TransferSwap)
-    let transaction = await errorHandler.completeTransaction(mockId)
+    const transaction = await errorHandler.completeTransaction(mockId)
     expect(transaction.getStage()).toEqual(SwapStage.Completed)
   })
 
   it.skip("shroff transfer kong icrc1 error handler test", async function () {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
-    let mockId = Ed25519KeyIdentity.fromParsedJson(mock)
+    const mockId = Ed25519KeyIdentity.fromParsedJson(mock)
 
     const shroff: Shroff = await new KongShroffBuilder()
       .withSource(sourceLedger)
@@ -78,10 +78,10 @@ describe("shroff transfer kong error handler test", () => {
       await shroff.swap(mockId)
       fail("Should throw an error")
     } catch (e) {}
-    let failedTransaction = shroff.getSwapTransaction()
+    const failedTransaction = shroff.getSwapTransaction()
     const errorHandler = errorHandlerFactory.getHandler(failedTransaction!)
     expect(failedTransaction?.getStage()).toEqual(SwapStage.TransferSwap)
-    let transaction = await errorHandler.completeTransaction(mockId)
+    const transaction = await errorHandler.completeTransaction(mockId)
     expect(transaction.getStage()).toEqual(SwapStage.Completed)
   })
 })

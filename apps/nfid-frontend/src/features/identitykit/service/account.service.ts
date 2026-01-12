@@ -24,7 +24,7 @@ export const accountService = {
     derivationOrigin?: string,
   ): Promise<{ public: Account; anonymous: Account[] }> {
     const publicProfile = this.getPublicProfile()
-    let anonymousProfiles: Account[] = []
+    const anonymousProfiles: Account[] = []
 
     const account = await im.get_account()
 

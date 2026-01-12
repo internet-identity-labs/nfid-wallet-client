@@ -13,7 +13,7 @@ export async function decryptStringForIdentity(
   encrypted: string,
   identity: DelegationIdentity,
 ) {
-  let key = await symmetric(identity)
+  const key = await symmetric(identity)
   return decrypt(encrypted, key)
 }
 
@@ -39,8 +39,8 @@ export async function getSymmetricKey(
     fields,
   )
 
-  let body = Cbor.encode(request.body)
-  let str = toHexString(body)
+  const body = Cbor.encode(request.body)
+  const str = toHexString(body)
 
   const response = await fetch(url, {
     method: "POST",
@@ -56,7 +56,7 @@ export async function getSymmetricKey(
 }
 
 function decrypt(encrypted: string, key: string) {
-  let secretBuffer = Buffer.from(key, "hex")
+  const secretBuffer = Buffer.from(key, "hex")
   const cipher = createDecipheriv("aes-256-ecb", secretBuffer, "")
   let decryptedString = cipher.update(encrypted, "hex", "utf8")
   decryptedString += cipher.final("utf8")

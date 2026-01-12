@@ -53,8 +53,8 @@ export async function registerIIAndIM(identity: Ed25519KeyIdentity) {
     },
     credential_id: [],
   }
-  let anchor: UserNumber = await registerIIAccount(identity, deviceData)
-  let req: HTTPAccountRequest = {
+  const anchor: UserNumber = await registerIIAccount(identity, deviceData)
+  const req: HTTPAccountRequest = {
     anchor: anchor,
     access_point: [],
     wallet: [],
@@ -88,7 +88,7 @@ export const getDelegationIdentity = async (
 }
 
 export function getLambdaActor(): Agent.ActorSubclass<IdentityManager> {
-  let identity = getLambdaIdentity()
+  const identity = getLambdaIdentity()
   const lambdaIm = actor<IdentityManager>(IDENTITY_MANAGER_CANISTER_ID, imIDL)
   replaceActorIdentity(im, identity)
   return lambdaIm

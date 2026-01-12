@@ -197,7 +197,7 @@ export abstract class Erc20Service {
   protected abstract getDefiLlamaChainId(): string
 
   public async getTokensList(): Promise<ERC20TokenInfo[]> {
-    let allTokens = await this.getKnownTokensList()
+    const allTokens = await this.getKnownTokensList()
     return allTokens.filter((token) => token.chainId === this.chainId)
   }
 
@@ -270,7 +270,7 @@ export abstract class Erc20Service {
     const cache = await storageWithTtl.getEvenExpired(cacheKey)
 
     // Cache structure: Map<contractAddress, { balance: string, address: string, error?: string }>
-    let cachedBalances: Map<
+    const cachedBalances: Map<
       string,
       { balance: string; address: string; error?: string }
     > = new Map()
@@ -543,9 +543,12 @@ export abstract class Erc20Service {
     const nonce = await this.provider.getTransactionCount(fromAddress)
 
     const valueBigInt = BigInt(Number(value) * 10 ** decimals)
-    let trs = await erc20Contract.transfer.populateTransaction(to, valueBigInt)
+    const trs = await erc20Contract.transfer.populateTransaction(
+      to,
+      valueBigInt,
+    )
 
-    let trs_request: EthSignTransactionRequest = {
+    const trs_request: EthSignTransactionRequest = {
       to: trs.to,
       value: ZERO,
       data: [trs.data],
@@ -555,12 +558,12 @@ export abstract class Erc20Service {
       max_fee_per_gas: gas.maxFeePerGas,
       chain_id: BigInt(this.chainId),
     }
-    let signedTransaction = await chainFusionSignerService.ethSignTransaction(
+    const signedTransaction = await chainFusionSignerService.ethSignTransaction(
       identity,
       trs_request,
     )
     console.debug("signedTransaction", signedTransaction)
-    let response = await this.sendTransaction(signedTransaction)
+    const response = await this.sendTransaction(signedTransaction)
     console.debug("response", response)
     return response
   }

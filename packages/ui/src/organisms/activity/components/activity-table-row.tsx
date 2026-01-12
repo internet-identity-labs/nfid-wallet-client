@@ -229,7 +229,7 @@ export const ActivityTableRow = ({
 
     try {
       const errorHandler = errorHandlerFactory.getHandler(transaction)
-      let identity = await getWalletDelegation()
+      const identity = await getWalletDelegation()
       await errorHandler.completeTransaction(identity)
     } catch (e) {
       if (e instanceof ContactSupportError) {

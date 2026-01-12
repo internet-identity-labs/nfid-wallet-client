@@ -4,7 +4,7 @@ import { UserPreferences } from "src/integration/user-preferences/user-preferenc
 
 export class UserPrefService {
   async getUserPreferences(): Promise<UserPreferences> {
-    let userPreferences = await authStorage.get("userPreferences")
+    const userPreferences = await authStorage.get("userPreferences")
     if (!userPreferences) {
       return new UserPrefImpl()
     }

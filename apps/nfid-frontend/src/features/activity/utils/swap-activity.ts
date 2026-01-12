@@ -78,7 +78,7 @@ const getActivities = async (activeTokens: FT[]): Promise<Activity[]> => {
   const txsFormatted = await getFormattedTransactions()
 
   return getAllTransactions(txsFormatted).map((xt: TransactionData) => {
-    let tx = xt as TransactionDataExtended
+    const tx = xt as TransactionDataExtended
     const token = activeTokens.find((t) => t.getTokenAddress() === tx.canister)
 
     return {

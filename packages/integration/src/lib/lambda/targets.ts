@@ -65,7 +65,7 @@ export async function validateTargets(targets: string[], origin: string) {
       const result = (await actor[
         "get_trusted_origins_certified"
       ]()) as CertifiedResponse
-      if (!result || !result.response.includes(origin)) {
+      if (!result?.response.includes(origin)) {
         uncertifiedTargets.push(canisterId)
       } else {
         await verifyCertifiedResponse(result, "origins", canisterId)

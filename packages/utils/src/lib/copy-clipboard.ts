@@ -5,5 +5,5 @@ export const copyToClipboard = (
 ) => {
   e.stopPropagation()
   navigator.clipboard.writeText(value ?? "")
-  callback && callback()
+  callback?.()
 }

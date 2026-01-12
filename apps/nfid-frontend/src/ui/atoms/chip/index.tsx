@@ -20,7 +20,7 @@ export const Chip: React.FC<IChip> = ({ onRemove, title }) => {
     >
       <span className="text-xs tracking-[0.16px]">{title}</span>
       <img
-        onClick={() => onRemove && onRemove(title)}
+        onClick={() => onRemove?.(title)}
         className={clsx(
           "block w-4 cursor-pointer",
           "hover:bg-gray-200 rounded-full",

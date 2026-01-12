@@ -365,7 +365,7 @@ export const stakeNeuron = async ({
 }: ApiStakeNeuronParams): Promise<NeuronId> => {
   logWithTimestamp(`Staking Neuron call...`)
   const { canister } = await governanceCanister({ identity })
-  let lc = await ledgerCanister({
+  const lc = await ledgerCanister({
     identity,
     canisterId: Principal.fromText(LEDGER_CANISTER_ID),
   })

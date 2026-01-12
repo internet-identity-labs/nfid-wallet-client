@@ -22,7 +22,7 @@ describe("shroff transfer swap error handler test", () => {
   it("shroff transfer swap error handler test", async function () {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
-    let mockId = Ed25519KeyIdentity.fromParsedJson(mock)
+    const mockId = Ed25519KeyIdentity.fromParsedJson(mock)
 
     const shroff: Shroff = await new IcpSwapShroffBuilder()
       .withSource(sourceLedger)
@@ -55,9 +55,9 @@ describe("shroff transfer swap error handler test", () => {
     try {
       await shroff.swap(mockId)
     } catch (e) {}
-    let failedTransaction = shroff.getSwapTransaction()
+    const failedTransaction = shroff.getSwapTransaction()
     const errorHandler = errorHandlerFactory.getHandler(failedTransaction!)
-    let transaction = (await errorHandler.completeTransaction(
+    const transaction = (await errorHandler.completeTransaction(
       mockId,
     )) as IcpSwapTransactionImpl
     const balanceActual = await icpSwapService.getBalance(

@@ -19,8 +19,7 @@ export const useVaultPolicies = () => {
     return data?.map((policy) => ({
       ...policy,
       walletName: policy.wallets
-        ? wallets?.find((w) => w.uid === (policy.wallets && policy.wallets[0]))
-            ?.name
+        ? wallets?.find((w) => w.uid === policy.wallets?.[0])?.name
         : "Any",
     }))
   }, [data, wallets])

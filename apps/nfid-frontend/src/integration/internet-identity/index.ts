@@ -334,13 +334,13 @@ export async function removeRecoveryDeviceII(
   userNumber: UserNumber,
   seedPhrase: string,
 ) {
-  let { delegationIdentity } = authState.get()
+  const { delegationIdentity } = authState.get()
   if (!delegationIdentity) {
     throw Error("Unauthenticated")
   }
   await asRecoveryIdentity(seedPhrase)
 
-  let recoveryPhraseDeviceData = (await ii
+  const recoveryPhraseDeviceData = (await ii
     .lookup(userNumber)
     .then((x) =>
       x.find((d) => hasOwnProperty(d.purpose, "recovery")),
@@ -369,12 +369,12 @@ export async function protectRecoveryPhrase(
   userNumber: UserNumber,
   seedPhrase: string,
 ): Promise<void> {
-  let { delegationIdentity } = authState.get()
+  const { delegationIdentity } = authState.get()
   if (!delegationIdentity) {
     throw Error("Unauthenticated")
   }
   await asRecoveryIdentity(seedPhrase)
-  let recoveryPhraseDeviceData = (await ii
+  const recoveryPhraseDeviceData = (await ii
     .lookup(userNumber)
     .then((x) =>
       x.find((d) => hasOwnProperty(d.purpose, "recovery")),

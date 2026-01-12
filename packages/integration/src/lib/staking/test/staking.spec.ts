@@ -22,9 +22,9 @@ let neuronId: any
 describe("Staking", () => {
   jest.setTimeout(60000)
   it("should return neuron", async () => {
-    let edId = Ed25519KeyIdentity.fromParsedJson(identityJSONPublic)
+    const edId = Ed25519KeyIdentity.fromParsedJson(identityJSONPublic)
 
-    let neurons = await querySnsNeurons({
+    const neurons = await querySnsNeurons({
       identity: edId.getPrincipal(),
       rootCanisterId: Principal.fromText("m2blf-zqaaa-aaaaq-aaejq-cai"),
       certified: false,
@@ -34,7 +34,7 @@ describe("Staking", () => {
   })
 
   it("should stake neuron", async () => {
-    let edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
+    const edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
     try {
       await disburse({
         identity: edId,
@@ -46,7 +46,7 @@ describe("Staking", () => {
     }
 
     try {
-      let id = await stakeNeuron({
+      const id = await stakeNeuron({
         stake: BigInt(500000000),
         identity: edId,
         canisterId: Principal.fromText("m2blf-zqaaa-aaaaq-aaejq-cai"),

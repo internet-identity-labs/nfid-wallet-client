@@ -208,7 +208,7 @@ export const WalletConnectExample = ({
     const initProvider = async () => {
       try {
         // Mark initialization as in progress
-        ;(window as any)[initFlagKey] = true
+        (window as any)[initFlagKey] = true
 
         // Create new provider with all supported methods
         const ethProvider = await EthereumProvider.init({
@@ -260,9 +260,9 @@ export const WalletConnectExample = ({
         }
 
         // Clear initialization flag
-        ;(window as any)[initFlagKey] = false
+        (window as any)[initFlagKey] = false
       } catch (err) {
-        ;(window as any)[initFlagKey] = false
+        (window as any)[initFlagKey] = false
         console.error("Failed to initialize provider:", err)
         const errorMessage =
           err instanceof Error ? err.message : "Failed to initialize provider"

@@ -22,8 +22,8 @@ export const getAllActivity = async (
   limit: number,
   activeTokens: FT[],
 ): Promise<IActivityRow[]> => {
-  let btcAddress = await fetchBtcAddress()
-  let evmAddress = await fetchEthAddress()
+  const btcAddress = await fetchBtcAddress()
+  const evmAddress = await fetchEthAddress()
 
   const [icrc1Activities, swapActivities, btcActivities, evmActivities] =
     await Promise.all([

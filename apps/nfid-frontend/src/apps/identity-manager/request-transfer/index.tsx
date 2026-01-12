@@ -69,7 +69,7 @@ export const RequestTransfer = ({
   }, [amountICP, exchangeRate])
 
   const onApprove = async () => {
-    let validAddress = isHex(to)
+    const validAddress = isHex(to)
       ? to
       : AccountIdentifier.fromPrincipal({
           principal: Principal.fromText(to),

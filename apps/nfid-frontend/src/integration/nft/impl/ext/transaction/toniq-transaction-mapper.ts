@@ -23,7 +23,7 @@ export class TransactionRecordToniq implements SellTransactionRecord {
   }
 
   getTransactionView(): TransactionRecordView {
-    let a = new TransactionRecordView(
+    const a = new TransactionRecordView(
       "Sale",
       this.from,
       this.to,

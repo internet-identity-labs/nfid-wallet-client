@@ -29,7 +29,7 @@ const ProfileAddPhoneSMS: React.FC<IProfileAddPhoneSMS> = ({
   const { counter, setCounter } = useTimer({ defaultCounter: resendDelay })
 
   const handleResend = () => {
-    onResendCode && onResendCode()
+    onResendCode?.()
     setCounter(resendDelay)
   }
 

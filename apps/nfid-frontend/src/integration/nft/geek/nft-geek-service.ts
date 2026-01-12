@@ -14,7 +14,7 @@ export class NftGeekService {
     userPrincipal: string,
   ): Promise<DataStructure> {
     const str = `/nfid/principal/${userPrincipal}/registry`
-    let url = ic.isLocal
+    const url = ic.isLocal
       ? `/nft_geek_api${str}`
       : `https://api.nftgeek.app/api${str}`
     return await fetch(url, {

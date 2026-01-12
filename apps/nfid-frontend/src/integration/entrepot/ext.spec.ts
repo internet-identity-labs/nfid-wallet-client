@@ -29,22 +29,22 @@ describe("NFT EXT standard suite", () => {
     //this test describes how to purchase nft
     //TODO skip after e2e done because it takes 0.03% from the transaction
     it.skip("should lock and buy", async function () {
-      let price = 1000000
-      let idA = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
-      let idB = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
-      let token = "hdjt6-5ikor-uwiaa-aaaaa-b4ats-4aqca-aabhj-q"
+      const price = 1000000
+      const idA = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+      const idB = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
+      const token = "hdjt6-5ikor-uwiaa-aaaaa-b4ats-4aqca-aabhj-q"
 
-      let owner = (await fetchCollectionTokens(allien)).find(
+      const owner = (await fetchCollectionTokens(allien)).find(
         (tok) => tok.tokenId === token,
       )?.owner
-      let sourceIdentity =
+      const sourceIdentity =
         owner ===
         AccountIdentifier.fromPrincipal({
           principal: idA.getPrincipal(),
         }).toHex()
           ? idA
           : idB
-      let targetIdentity =
+      const targetIdentity =
         owner ===
         AccountIdentifier.fromPrincipal({
           principal: idA.getPrincipal(),
@@ -52,9 +52,9 @@ describe("NFT EXT standard suite", () => {
           ? idB
           : idA
       await listNFT(token, sourceIdentity, price)
-      let address = await lockNFT(token, targetIdentity, price)
+      const address = await lockNFT(token, targetIdentity, price)
       await transfer({ amount: price, to: address, identity: targetIdentity })
-      let result = await unListNFT(token, targetIdentity)
+      const result = await unListNFT(token, targetIdentity)
       expect(result).toBe(true)
     })
     // it("should unlist", async function () {
@@ -79,26 +79,26 @@ describe("NFT EXT standard suite", () => {
     //   )
     // })
     it.skip("should transfer", async function () {
-      let idA = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
-      let idB = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
-      let owner = (await fetchCollectionTokens(testCollection)).find(
+      const idA = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+      const idB = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
+      const owner = (await fetchCollectionTokens(testCollection)).find(
         (token) => token.tokenId === testToken,
       )?.owner
-      let sourceIdentity =
+      const sourceIdentity =
         owner ===
         AccountIdentifier.fromPrincipal({
           principal: idA.getPrincipal(),
         }).toHex()
           ? idA
           : idB
-      let targetIdentity =
+      const targetIdentity =
         owner ===
         AccountIdentifier.fromPrincipal({
           principal: idA.getPrincipal(),
         }).toHex()
           ? idA
           : idB
-      let response: Balance = await transferEXT(
+      const response: Balance = await transferEXT(
         testToken,
         sourceIdentity,
         AccountIdentifier.fromPrincipal({
@@ -113,27 +113,27 @@ describe("NFT EXT standard suite", () => {
     //Probably canister wrapper used for all legacy interfaces,
     // and we can proceed with common transfer API for EXT
     it("should transfer wrapped canister", async function () {
-      let testToken = encodeTokenIdentifier(testCollectionTurtle, 7322)
-      let idA = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
-      let idB = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
-      let owner = (await fetchCollectionTokens(testCollectionTurtle)).find(
+      const testToken = encodeTokenIdentifier(testCollectionTurtle, 7322)
+      const idA = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+      const idB = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
+      const owner = (await fetchCollectionTokens(testCollectionTurtle)).find(
         (token) => token.tokenId === testToken,
       )?.owner
-      let sourceIdentity =
+      const sourceIdentity =
         owner ===
         AccountIdentifier.fromPrincipal({
           principal: idA.getPrincipal(),
         }).toHex()
           ? idA
           : idB
-      let targetIdentity =
+      const targetIdentity =
         owner ===
         AccountIdentifier.fromPrincipal({
           principal: idA.getPrincipal(),
         }).toHex()
           ? idA
           : idB
-      let response: Balance = await transferEXT(
+      const response: Balance = await transferEXT(
         testToken,
         sourceIdentity,
         targetIdentity.getPrincipal().toText(),
@@ -142,26 +142,26 @@ describe("NFT EXT standard suite", () => {
     })
 
     it.skip("should throw Unauthorized error", async function () {
-      let idA = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
-      let idB = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
-      let owner = (await fetchCollectionTokens(testCollection)).find(
+      const idA = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
+      const idB = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
+      const owner = (await fetchCollectionTokens(testCollection)).find(
         (token) => token.tokenId === testToken,
       )?.owner
-      let sourceIdentity =
+      const sourceIdentity =
         owner ===
         AccountIdentifier.fromPrincipal({
           principal: idA.getPrincipal(),
         }).toHex()
           ? idB
           : idA
-      let targetIdentity =
+      const targetIdentity =
         owner ===
         AccountIdentifier.fromPrincipal({
           principal: idA.getPrincipal(),
         }).toHex()
           ? idA
           : idB
-      let transfer = transferEXT(
+      const transfer = transferEXT(
         testToken,
         sourceIdentity,
         AccountIdentifier.fromPrincipal({

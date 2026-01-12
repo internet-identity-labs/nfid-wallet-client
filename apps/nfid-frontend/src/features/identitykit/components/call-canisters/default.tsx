@@ -96,7 +96,7 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
         className={clsx(
           "grid grid-cols-[22px,1fr] gap-2.5 text-sm rounded-xl",
           "bg-orange-50 dark:bg-orange-500/10 p-[15px] mt-4 text-orange-900 dark:text-amber-600",
-          consentMessage && consentMessage.length && "hidden",
+          consentMessage?.length && "hidden",
         )}
       >
         <IconCmpWarning className="text-orange-900 dark:text-amber-600 w-[22px] h-[22px] shrink-1" />
@@ -108,7 +108,7 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
           trust this dapp.
         </p>
       </div>
-      {consentMessage && consentMessage.length && (
+      {consentMessage?.length && (
         <CallCanisterDetails
           canisterId={canisterId}
           sender={request?.data?.params?.sender}

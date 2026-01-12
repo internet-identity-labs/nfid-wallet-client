@@ -158,7 +158,7 @@ const TokensPage = () => {
   }
 
   const onSubmitIcrc1Pair = async (ledgerID: string, indexID: string) => {
-    let icrc1Pair = new Icrc1Pair(
+    const icrc1Pair = new Icrc1Pair(
       ledgerID,
       indexID !== "" ? indexID : undefined,
     )
@@ -168,7 +168,7 @@ const TokensPage = () => {
   }
 
   const onFetch = async (ledgerID: string, indexID: string) => {
-    let icrc1Pair = new Icrc1Pair(ledgerID, indexID)
+    const icrc1Pair = new Icrc1Pair(ledgerID, indexID)
 
     return await Promise.all([
       icrc1Pair.validateIfExists(userRootPrincipalId),

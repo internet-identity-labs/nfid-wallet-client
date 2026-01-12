@@ -153,7 +153,11 @@ export abstract class NftImpl implements NFT {
 
   protected getAssetPreviewAsync(): Promise<AssetPreview> {
     if (this.assetPreview === undefined) {
-      let url = entrepotAsset(this.getCollectionId(), this.getTokenId(), false)
+      const url = entrepotAsset(
+        this.getCollectionId(),
+        this.getTokenId(),
+        false,
+      )
       return Promise.resolve({
         //TODO can we have not img format in preview?
         format: "img",

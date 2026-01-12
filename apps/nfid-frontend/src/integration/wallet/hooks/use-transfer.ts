@@ -65,10 +65,9 @@ export const useTransfer = ({
       queuedTransfer.current?.domain !== domain ||
       queuedTransfer.current?.accountId !== accountId
     ) {
-      queuedTransfer.current?.rejectTransfer &&
-        queuedTransfer.current.rejectTransfer(
-          "domain or accountId has been changed",
-        )
+      queuedTransfer.current?.rejectTransfer?.(
+        "domain or accountId has been changed",
+      )
       queuedTransfer.current = null
     }
   }, [domain, accountId])

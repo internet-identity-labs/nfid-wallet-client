@@ -45,7 +45,7 @@ describe("Passkey flow", () => {
 
     console.log("Public key hex string", pk.getPrincipal().toText())
 
-    let exp: { key: string; data: IPasskeyMetadata } = {
+    const exp: { key: string; data: IPasskeyMetadata } = {
       key: "Dst6_Arh95HGTVwUnp5zEtad_Bo",
       data: {
         name: "Test Passkey",
@@ -83,7 +83,7 @@ describe("Passkey flow", () => {
       .mockImplementation(async () => {
         console.log("Set auth state")
       })
-    let key = await passkeyService.getCaptchaChallenge()
+    const key = await passkeyService.getCaptchaChallenge()
     const { delegationIdentity } = await passkeyService.registerWithPasskey(
       "mockedId",
       {

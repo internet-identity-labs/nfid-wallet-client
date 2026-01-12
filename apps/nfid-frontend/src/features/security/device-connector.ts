@@ -41,7 +41,7 @@ export class SecurityConnector {
   }
 
   getDevices = async (): Promise<IGroupedDevices> => {
-    let cacheUserData = authState.getUserIdData()
+    const cacheUserData = authState.getUserIdData()
 
     const imDevices = await this.getIMDevices()
 
@@ -69,7 +69,7 @@ export class SecurityConnector {
       : []
 
     const allDevicesWithMetadata = allDevices?.map((device) => {
-      let passkeyMetadata = passkeysMetadata.find(
+      const passkeyMetadata = passkeysMetadata.find(
         (p) => p.key === device?.credentialId,
       )
 

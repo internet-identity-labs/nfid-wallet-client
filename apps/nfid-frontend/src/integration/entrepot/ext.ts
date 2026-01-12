@@ -20,12 +20,12 @@ export async function transferEXT(
   source: Identity,
   target: string,
 ): Promise<Balance> {
-  let actor = await initActor(
+  const actor = await initActor(
     source,
     decodeTokenIdentifier(token).canister,
     extIDL,
   )
-  let request: TransferRequest = {
+  const request: TransferRequest = {
     token: token,
     from: constructUser(source.getPrincipal().toText()),
     subaccount: [],
@@ -47,7 +47,7 @@ export async function lockNFT(
   identity: Identity,
   price: number,
 ): Promise<AccountIdentifier> {
-  let actor = await initActor(
+  const actor = await initActor(
     identity,
     decodeTokenIdentifier(token).canister,
     extIDL,
@@ -75,7 +75,7 @@ export async function listNFT(
   identity: Identity,
   price: number,
 ): Promise<boolean> {
-  let actor = await initActor(
+  const actor = await initActor(
     identity,
     decodeTokenIdentifier(token).canister,
     extIDL,
@@ -96,7 +96,7 @@ export async function unListNFT(
   token: string,
   identity: Identity,
 ): Promise<boolean> {
-  let actor = await initActor(
+  const actor = await initActor(
     identity,
     decodeTokenIdentifier(token).canister,
     extIDL,
@@ -154,7 +154,7 @@ export function decodeTokenIdentifier(tid: string): {
 }
 
 export function to32bits(num: number): number[] {
-  let b = new ArrayBuffer(4)
+  const b = new ArrayBuffer(4)
   new DataView(b).setUint32(0, num)
   return Array.from(new Uint8Array(b))
 }

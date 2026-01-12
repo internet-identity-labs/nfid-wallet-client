@@ -207,7 +207,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
                   if (tokenId && !nft)
                     throw new Error("Couldn't find NFT. Please try again.")
 
-                  let transferIdentity = tokenId
+                  const transferIdentity = tokenId
                     ? await getWalletDelegationAdapter("nfid.one", "-1", [
                         nft?.canisterId!,
                       ])

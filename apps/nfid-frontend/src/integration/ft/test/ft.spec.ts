@@ -646,10 +646,8 @@ describe("ft test suite", () => {
         ])
 
       const result: FT[] = await ftService.getTokens(userId)
-      let filteredTokens = await ftService.filterNotActiveNotZeroBalancesTokens(
-        result,
-        principal,
-      )
+      const filteredTokens =
+        await ftService.filterNotActiveNotZeroBalancesTokens(result, principal)
       expect(filteredTokens.length).toEqual(1)
     })
 
@@ -721,10 +719,8 @@ describe("ft test suite", () => {
         ])
 
       const result: FT[] = await ftService.getTokens(userId)
-      let filteredTokens = await ftService.filterNotActiveNotZeroBalancesTokens(
-        result,
-        principal,
-      )
+      const filteredTokens =
+        await ftService.filterNotActiveNotZeroBalancesTokens(result, principal)
       expect(filteredTokens.length).toEqual(0)
     })
 
@@ -797,10 +793,8 @@ describe("ft test suite", () => {
 
       const result: FT[] = await ftService.getTokens(userId)
       jest.spyOn(result[4], "getTokenBalance").mockReturnValue(undefined)
-      let filteredTokens = await ftService.filterNotActiveNotZeroBalancesTokens(
-        result,
-        principal,
-      )
+      const filteredTokens =
+        await ftService.filterNotActiveNotZeroBalancesTokens(result, principal)
       expect(filteredTokens.length).toEqual(1)
     })
 

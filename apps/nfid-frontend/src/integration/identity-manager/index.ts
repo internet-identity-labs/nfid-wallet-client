@@ -318,8 +318,8 @@ export async function createNFIDProfile(
       deviceType === DeviceType.InternetIdentity
         ? { InternetIdentity: null }
         : email
-        ? { Email: null }
-        : { Passkey: null },
+          ? { Email: null }
+          : { Passkey: null },
     credential_id: credentialId ? [credentialId] : [],
   }
 
@@ -455,7 +455,7 @@ export async function processApplicationOrigin(
     aliasDomain,
     applicationName,
   })
-  let application = await im.get_application(derivationOrigin)
+  const application = await im.get_application(derivationOrigin)
   if (
     application.data.length === 0 ||
     !application?.data[0]?.alias[0]?.includes(aliasDomain)

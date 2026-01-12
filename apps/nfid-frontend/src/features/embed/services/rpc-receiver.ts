@@ -38,7 +38,7 @@ export type RPCResponse = RPCSuccessResponse | RPCErrorResponse
 const windowMessages = fromEvent<MessageEvent<RPCMessage>>(window, "message")
 
 export const rpcMessages = windowMessages.pipe(
-  filter((event) => event.data && event.data.jsonrpc === "2.0"),
+  filter((event) => event.data?.jsonrpc === "2.0"),
 )
 
 type ProcedureDetails = {
@@ -53,7 +53,7 @@ export type ProcedureCallEvent = {
 
 const validateRPCMessage = async (rpcMessage: RPCMessage, origin: string) => {
   const params = rpcMessage.params[0]
-  if (params && params.derivationOrigin) {
+  if (params?.derivationOrigin) {
     // What are we doing if 3rd party without derivationOrigin
     console.debug("validateRPCMessage", {
       derivationOrigin: params.derivationOrigin,

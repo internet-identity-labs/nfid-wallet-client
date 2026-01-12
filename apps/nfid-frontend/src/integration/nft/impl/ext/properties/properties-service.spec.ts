@@ -12,7 +12,7 @@ describe("nft test suite", () => {
     jest
       .spyOn(extPropertiesService as any, "fetchCollectionData")
       .mockResolvedValue(mockAttributesResponse)
-    let actual = await extPropertiesService.getProperties(
+    const actual = await extPropertiesService.getProperties(
       "o6lzt-kiaaa-aaaag-qbdza-cai",
       4234,
     )

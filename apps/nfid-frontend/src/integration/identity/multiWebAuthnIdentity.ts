@@ -111,7 +111,7 @@ export class MultiWebAuthnIdentity extends SignIdentity {
       ? ["usb", "nfc", "ble"]
       : []
 
-    let publicKeyOptions: PublicKeyCredentialRequestOptions = {
+    const publicKeyOptions: PublicKeyCredentialRequestOptions = {
       challenge: blob,
       userVerification: "preferred",
     }
@@ -124,7 +124,7 @@ export class MultiWebAuthnIdentity extends SignIdentity {
       }))
     }
 
-    let result = (await navigator.credentials.get({
+    const result = (await navigator.credentials.get({
       mediation: this._mediation,
       publicKey: publicKeyOptions,
       signal: this._signal,

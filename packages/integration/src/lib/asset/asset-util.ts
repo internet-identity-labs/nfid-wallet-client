@@ -23,7 +23,7 @@ export class PriceService {
   }
 
   public async getPriceFull(): Promise<TokenPrice[]> {
-    let prices = await this.fetchPrices()
+    const prices = await this.fetchPrices()
     Object.keys(wrappedTokenMap).forEach((wrappedToken) => {
       const baseToken = wrappedTokenMap[wrappedToken]
       if (prices[baseToken]) prices[wrappedToken] = prices[baseToken]

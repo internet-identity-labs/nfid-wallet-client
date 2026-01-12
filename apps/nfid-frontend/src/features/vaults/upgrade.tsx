@@ -86,7 +86,7 @@ export const VaultUpgradeScreen = () => {
               )}
               type="stroke"
               onClick={() =>
-                window.open("https://vaults-dev.nfid.one", "_blank")
+                window.open("https://app.nfidvaults.com", "_blank")
               }
             >
               Continue to NFID Vaults

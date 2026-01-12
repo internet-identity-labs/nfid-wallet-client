@@ -168,7 +168,7 @@ export class Icrc1Pair implements IIcrc1Pair {
       canisterId: this.ledger,
       agent: new HttpAgent({ ...agentBaseConfig, identity: signIdentity }),
     })
-    let result = await actor.remove_approval({
+    const result = await actor.remove_approval({
       fee: [],
       from_subaccount: [],
       spender: AccountIdentifier.fromHex(spenderPrincipalId).toUint8Array(),
@@ -190,7 +190,7 @@ export class Icrc1Pair implements IIcrc1Pair {
       canisterId: this.ledger,
       agent: new HttpAgent({ ...agentBaseConfig, identity: signIdentity }),
     })
-    let result = await actor.icrc2_approve({
+    const result = await actor.icrc2_approve({
       spender: {
         owner: spenderPrincipalId,
         subaccount: [],

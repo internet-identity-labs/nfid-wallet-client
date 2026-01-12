@@ -42,7 +42,7 @@ export const RequestNonFungibleTransfer = () => {
 
   const { data: userNFTs } = useSWRImmutable(
     identity ? [identity.getPrincipal(), "nfts"] : null,
-    async ([principal]) => {
+    async ([_principal]) => {
       return await fetch(`${API}/maddies/getAllNfts/${config?.address}`).then(
         (r) => r.json(),
       )

@@ -1,11 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import {
-  DelegationChain,
-  DelegationIdentity,
-  Ed25519KeyIdentity,
-} from "@dfinity/identity"
+import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
 
 import {
   authState as authStateMock,
@@ -34,10 +30,9 @@ describe.skip("ii suite", () => {
 
   describe("II Service Test", () => {
     it("Should create protected Recovery device", async function () {
-      let mockedIdentity = Ed25519KeyIdentity.generate()
-      const { delegationIdentity } = await generateDelegationIdentity(
-        mockedIdentity,
-      )
+      const mockedIdentity = Ed25519KeyIdentity.generate()
+      const { delegationIdentity } =
+        await generateDelegationIdentity(mockedIdentity)
       replaceIdentity(delegationIdentity)
       const deviceData: DeviceData = {
         alias: "Device",
@@ -49,8 +44,8 @@ describe.skip("ii suite", () => {
         purpose: { authentication: null },
         credential_id: [],
       }
-      let anchor = await registerIIAccount(mockedIdentity, deviceData)
-      let recoveryDevice = Ed25519KeyIdentity.generate()
+      const anchor = await registerIIAccount(mockedIdentity, deviceData)
+      const recoveryDevice = Ed25519KeyIdentity.generate()
       await iiIndexMock.addDevice(
         anchor,
         "DeviceRecoveryTest",
@@ -59,7 +54,7 @@ describe.skip("ii suite", () => {
         recoveryDevice.getPublicKey().toDer(),
       )
       //verify protected recovery phrase
-      let recoveryPhraseDeviceData = (await ii
+      const recoveryPhraseDeviceData = (await ii
         .lookup(anchor)
         .then((x) =>
           x.find((d) => hasOwnProperty(d.purpose, "recovery")),
@@ -76,7 +71,7 @@ describe.skip("ii suite", () => {
         Ed25519KeyIdentity.generate().getPublicKey().toDer(),
       )
       //verify auth device unprotected
-      let authDevice = (await ii
+      const authDevice = (await ii
         .lookup(anchor)
         .then((x) =>
           x.find((d) => d.alias === "DeviceRecoveryNotSeedPhrase"),
@@ -85,7 +80,7 @@ describe.skip("ii suite", () => {
     })
 
     it("should protect Unprotect Recovery Device", async function () {
-      let mockedIdentity = Ed25519KeyIdentity.generate()
+      const mockedIdentity = Ed25519KeyIdentity.generate()
       const { delegationIdentity: delegationIdentityDummy } =
         await generateDelegationIdentity(mockedIdentity)
       const deviceData: DeviceData = {
@@ -99,8 +94,8 @@ describe.skip("ii suite", () => {
         credential_id: [],
       }
       replaceIdentity(delegationIdentityDummy)
-      let anchor = await registerIIAccount(mockedIdentity, deviceData)
-      let recoveryPhraseDeviceData = (await ii
+      const anchor = await registerIIAccount(mockedIdentity, deviceData)
+      const recoveryPhraseDeviceData = (await ii
         .lookup(anchor)
         .then((x) =>
           x.find((d) => hasOwnProperty(d.purpose, "recovery")),
@@ -110,18 +105,18 @@ describe.skip("ii suite", () => {
         hasOwnProperty(recoveryPhraseDeviceData.protection, "unprotected"),
       ).toEqual(true)
 
-      let chain = await DelegationChain.create(
+      const chain = await DelegationChain.create(
         delegationIdentityDummy,
         mockedIdentity.getPublicKey(),
         new Date(Date.now() + 3_600_000 * 44),
       )
-      let feDelegation: FrontendDelegation = {
+      const feDelegation: FrontendDelegation = {
         chain: chain,
         sessionKey: mockedIdentity,
         delegationIdentity: delegationIdentityDummy,
       }
       // @ts-ignore
-      im.use_access_point = jest.fn((x: [] | [string]) => ({
+      im.use_access_point = jest.fn((_x: [] | [string]) => ({
         catch: jest.fn(),
       }))
       authStateMock.set({
@@ -138,7 +133,7 @@ describe.skip("ii suite", () => {
         .mockReturnValue(Promise.resolve(feDelegation))
       // @ts-ignore
       await iiIndexMock.protectRecoveryPhrase(anchor, "someStringForNow")
-      let updatedRecovery = (await ii
+      const updatedRecovery = (await ii
         .lookup(anchor)
         .then((x) =>
           x.find((d) => hasOwnProperty(d.purpose, "recovery")),

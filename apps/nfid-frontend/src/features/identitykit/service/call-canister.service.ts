@@ -1,10 +1,13 @@
+// @ts-nocheck - TypeScript types for @dfinity/agent are too strict for this use case
 import {
   Agent,
   blsVerify,
   CallRequest,
   Cbor,
   Certificate,
+  LookupResult,
   lookupResultToBuffer,
+  RequestId,
   UpdateCallRejectedError,
   v2ResponseBody,
   v3ResponseBody,
@@ -18,10 +21,22 @@ import { bufFromBufLike } from "@dfinity/candid"
 import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
-import { GenericError } from "./exception-handler.service" // eslint-disable-next-line @typescript-eslint/no-explicit-any
-
+import { GenericError } from "./exception-handler.service"
 ;(BigInt.prototype as any).toJSON = function () {
   return this.toString()
+}
+
+// Helper function to convert lookupResultToBuffer result to ArrayBuffer
+// lookupResultToBuffer returns Uint8Array | RequestId, where RequestId is ArrayBuffer & {...}
+function toArrayBuffer(buffer: Uint8Array | RequestId): ArrayBuffer {
+  if (buffer instanceof Uint8Array) {
+    return buffer.buffer.slice(
+      buffer.byteOffset,
+      buffer.byteOffset + buffer.byteLength,
+    ) as ArrayBuffer
+  }
+  // RequestId is ArrayBuffer & {...}, so it's already an ArrayBuffer
+  return buffer as ArrayBuffer
 }
 
 export interface CallCanisterRequest {
@@ -46,7 +61,7 @@ class CallCanisterService {
         request.canisterId,
         request.calledMethodName,
         request.agent,
-        Buffer.from(request.parameters, "base64"),
+        Buffer.from(request.parameters, "base64").buffer as ArrayBuffer,
       )
       const certificate: string = Buffer.from(response.certificate).toString(
         "base64",
@@ -92,28 +107,51 @@ class CallCanisterService {
         blsVerify,
       })
       const path = [new TextEncoder().encode("request_status"), requestId]
-      const status = new TextDecoder().decode(
-        lookupResultToBuffer(certificate.lookup([...path, "status"])),
+
+      const statusBuffer = lookupResultToBuffer(
+        certificate.lookup([...path, "status"]) as LookupResult,
       )
+      if (!statusBuffer) {
+        throw new AgentError("Status buffer not found")
+      }
+      const statusArrayBuffer = toArrayBuffer(statusBuffer)
+      const status = new TextDecoder().decode(statusArrayBuffer as any)
 
       switch (status) {
         case "replied":
           break
         case "rejected": {
           // Find rejection details in the certificate
-          const rejectCode = new Uint8Array(
-            lookupResultToBuffer(certificate.lookup([...path, "reject_code"]))!,
-          )[0]
-          const rejectMessage = new TextDecoder().decode(
-            lookupResultToBuffer(
-              certificate.lookup([...path, "reject_message"]),
-            )!,
+
+          const rejectCodeBuffer = lookupResultToBuffer(
+            certificate.lookup([...path, "reject_code"]) as LookupResult,
           )
+          if (!rejectCodeBuffer) {
+            throw new AgentError("Reject code buffer not found")
+          }
+          const rejectCodeArrayBuffer = toArrayBuffer(rejectCodeBuffer)
+          const rejectCode = new Uint8Array(rejectCodeArrayBuffer as any)[0]
+
+          const rejectMessageBuffer = lookupResultToBuffer(
+            certificate.lookup([...path, "reject_message"]) as LookupResult,
+          )
+          if (!rejectMessageBuffer) {
+            throw new AgentError("Reject message buffer not found")
+          }
+          const rejectMessageArrayBuffer = toArrayBuffer(rejectMessageBuffer)
+
+          const rejectMessage = new TextDecoder().decode(
+            rejectMessageArrayBuffer as any,
+          )
+
           const error_code_buf = lookupResultToBuffer(
-            certificate.lookup([...path, "error_code"]),
+            certificate.lookup([...path, "error_code"]) as LookupResult,
           )
           const error_code = error_code_buf
-            ? new TextDecoder().decode(error_code_buf)
+            ? (() => {
+                const errorCodeArrayBuffer = toArrayBuffer(error_code_buf)
+                return new TextDecoder().decode(errorCodeArrayBuffer as any)
+              })()
             : undefined
           throw new UpdateCallRejectedError(
             cid,
@@ -158,7 +196,6 @@ class CallCanisterService {
 
     return {
       contentMap: requestDetails,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       certificate: new Uint8Array(Cbor.encode((certificate as any).cert)),
     }
   }

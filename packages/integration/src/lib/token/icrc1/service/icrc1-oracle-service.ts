@@ -94,7 +94,7 @@ export class ICRC1OracleService {
     const actor = actorBuilder<_SERVICE>(ICRC1_ORACLE_CANISTER_ID, idlFactory, {
       agent: HttpAgent.createSync({ ...agentBaseConfig, identity }),
     })
-    let response = await actor.btc_select_user_utxos_fee({
+    const response = await actor.btc_select_user_utxos_fee({
       amount_satoshis: request.amount_satoshis,
       min_confirmations: request.min_confirmations,
       network: request.network,

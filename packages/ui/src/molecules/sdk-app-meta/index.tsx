@@ -1,6 +1,5 @@
 import { ApplicationLogo } from "../../atoms/application-logo"
 import { H5 } from "../../atoms/typography"
-import { P } from "../../atoms/typography/paragraph"
 
 export interface SDKApplicationMetaProps {
   applicationLogo?: string

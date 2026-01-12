@@ -11,7 +11,7 @@ const Story: Meta<typeof InfoListItem> = {
 }
 export default Story
 
-const Template: StoryFn<typeof InfoListItem> = (args) => (
+const Template: StoryFn<typeof InfoListItem> = (_args) => (
   <TooltipProvider>
     <div className="space-y-3">
       <InfoListItem

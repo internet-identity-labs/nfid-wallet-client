@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { motion } from "framer-motion"
-import { FC, useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { IoIosSearch } from "react-icons/io"
 
 import { useDarkTheme } from "frontend/hooks"

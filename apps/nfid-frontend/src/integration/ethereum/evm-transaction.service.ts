@@ -132,9 +132,9 @@ export abstract class EVMTokenTransactionService implements EVMTransactionServic
         return emptyResult
       }
 
-      let tokenList = await this.getService().getTokensList()
+      const tokenList = await this.getService().getTokensList()
 
-      let iconURLS: Map<string, string | undefined> = tokenList.reduce(
+      const iconURLS: Map<string, string | undefined> = tokenList.reduce(
         (acc: Map<string, string | undefined>, token: ERC20TokenInfo) => {
           acc.set(token.address.toLowerCase(), token.logoURI)
           return acc

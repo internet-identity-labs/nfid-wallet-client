@@ -51,7 +51,7 @@ export const TransferSuccess: React.FC<ITransferSuccess> = ({
             toaster.error(data.errorMessage?.message ?? "Unknown error", {
               toastId: "failedTransfer",
             })
-          errorCallback && errorCallback(data)
+          errorCallback?.(data)
           return setCurrentState(4)
         }
         setCurrentState(1)
@@ -70,7 +70,7 @@ export const TransferSuccess: React.FC<ITransferSuccess> = ({
             toaster.success(`Transaction ${title} successful`, {
               toastId: "successTransfer",
             })
-          callback && callback(data)
+          callback?.(data)
         }, 5000)
       },
       onError: async () => {

@@ -67,7 +67,7 @@ const RPCComponentICRC34 = ({
           >
             {applicationName}
           </a>
-          {verificationReport && verificationReport.details && (
+          {verificationReport?.details && (
             <Tooltip
               align="center"
               className="!p-[10px]"

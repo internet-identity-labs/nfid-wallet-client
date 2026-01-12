@@ -14,7 +14,7 @@ export async function removeRecoveryDeviceFacade(
   userNumber: UserNumber,
   seedPhrase: string,
 ): Promise<void> {
-  let pubKey = await removeRecoveryDeviceII(userNumber, seedPhrase)
+  const pubKey = await removeRecoveryDeviceII(userNumber, seedPhrase)
   await removeAccessPoint(
     Principal.selfAuthenticating(new Uint8Array(pubKey)).toText(),
   )

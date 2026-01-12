@@ -27,6 +27,7 @@ import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { IActivityRow } from "frontend/features/activity/types"
+import type { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useDarkTheme } from "frontend/hooks"
 import { APPROXIMATE_SWAP_DURATION } from "frontend/integration/swap/transaction/transaction-service"
@@ -36,7 +37,6 @@ import {
   UserAddressPreview,
 } from "frontend/integration/address-book"
 import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
-import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 
 interface ErrorStage {
   buttonText: string
@@ -216,8 +216,9 @@ export const ActivityTableRow = ({
   const currentToken = useMemo(() => {
     if (asset.type !== "ft" || !tokens) return
 
-    return tokens?.find((token) => token.getTokenAddress() === asset.canister)
-  }, [asset.type, tokens])
+    const ftAsset = asset as ActivityAssetFT
+    return tokens?.find((token) => token.getTokenAddress() === ftAsset.canister)
+  }, [asset, tokens])
 
   const providerName =
     transaction?.getSwapName() && SwapName[transaction?.getSwapName()]
@@ -228,7 +229,7 @@ export const ActivityTableRow = ({
 
     try {
       const errorHandler = errorHandlerFactory.getHandler(transaction)
-      let identity = await getWalletDelegation()
+      const identity = await getWalletDelegation()
       await errorHandler.completeTransaction(identity)
     } catch (e) {
       if (e instanceof ContactSupportError) {

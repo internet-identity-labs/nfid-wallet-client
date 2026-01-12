@@ -32,7 +32,7 @@ export class SwapTransactionService {
   }
 
   async storeTransaction(trs: SwapTransactionCandid) {
-    let di = authState.get().delegationIdentity
+    const di = authState.get().delegationIdentity
     if (!di) {
       throw new Error("Delegation identity not set")
     }

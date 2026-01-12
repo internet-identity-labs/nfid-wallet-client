@@ -24,10 +24,10 @@ const principal = Principal.fromText(
   "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
 )
 
-describe.skip("nft test suite", () => {
-  jest.setTimeout(50000)
+describe("nft test suite", () => {
+  jest.setTimeout(100000)
   describe("nft", () => {
-    it("should return", async () => {
+    it.skip("should return", async () => {
       jest
         .spyOn(nftGeekService as any, "fetchNftGeekData")
         .mockResolvedValue(mockGeekResponse)
@@ -202,7 +202,7 @@ describe.skip("nft test suite", () => {
         "af8283ad383bc6e16509683b3256fdb4a5d2ece25261e8c39b1677bab7019e44",
       )
 
-      const icpSwapWithProperties = await result.items.filter(
+      const icpSwapWithProperties = result.items.filter(
         (nft) => nft.getCollectionId() === "p5rex-yqaaa-aaaag-qb42a-cai",
       )[0]
       const icpSwapProperties = await icpSwapWithProperties

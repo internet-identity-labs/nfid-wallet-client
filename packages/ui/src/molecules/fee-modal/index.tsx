@@ -3,13 +3,13 @@ import { useState } from "react"
 
 import { IconCmpArrow } from "../../atoms/icons"
 import { CustomNetworkFee } from "./custom"
-import { FeeModalOption, IFeeModalOption } from "./option"
+import { IFeeModalOption } from "./option"
 
 export interface IFeeModal {
   feeOptions: IFeeModalOption[]
 }
 
-export const FeeModal = ({ feeOptions }: IFeeModal) => {
+export const FeeModal = ({ feeOptions: _feeOptions }: IFeeModal) => {
   const [isModalVisible, setIsModalVisible] = useState(true)
 
   return (

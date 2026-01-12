@@ -68,7 +68,7 @@ describe("Identity Manager suite", () => {
       // Optional disable.
       try {
         await update2fa(false)
-      } catch (e) {}
+      } catch (_e) {}
 
       await replaceActorIdentity(im, delegationIdentity)
       await im.remove_account()

@@ -180,7 +180,7 @@ export class FTImpl implements FT {
   getTokenRateDayChangePercent():
     | { value: string; positive: boolean }
     | undefined {
-    if (!this.tokenRate || !this.tokenRate.dayChangePercent) return
+    if (!this.tokenRate?.dayChangePercent) return
     return {
       positive: !!this.tokenRate.dayChangePercentPositive,
       value: this.tokenRate.dayChangePercent,
@@ -287,7 +287,7 @@ export class FTImpl implements FT {
     globalPrincipal: Principal,
   ): Promise<Array<AllowanceDetailDTO>> {
     const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
-    let icrc2Allowances = await icrc1Pair.getIcrc2Allowances(globalPrincipal)
+    const icrc2Allowances = await icrc1Pair.getIcrc2Allowances(globalPrincipal)
     return icrc2Allowances
   }
 

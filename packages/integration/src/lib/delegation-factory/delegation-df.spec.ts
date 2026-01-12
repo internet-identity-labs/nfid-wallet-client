@@ -224,7 +224,7 @@ describe.skip("Lambda Sign/Register Delegation Factory", () => {
         IDL.Service({
           get_principal: IDL.Func([], [IDL.Text], []),
         })
-      const agent2: Agent = await new HttpAgent({
+      const agent2: Agent = new HttpAgent({
         host: "https://ic0.app",
         identity: renewedIdentity,
       })

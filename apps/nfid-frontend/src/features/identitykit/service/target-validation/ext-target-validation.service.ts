@@ -8,7 +8,7 @@ class ExtTargetValidationService implements TargetValidationService {
   async validate(
     actor: ActorSubclass<ConsentMessageCanister>,
     canisterId: string,
-    origin: string,
+    _origin: string,
   ): Promise<void> {
     const result = await Promise.allSettled([actor.balance(), actor.transfer()])
 

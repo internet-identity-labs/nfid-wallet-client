@@ -5,11 +5,15 @@ import canisterIds from "../canister_ids.json"
 let sdkGitHash
 try {
   sdkGitHash = childProcess
-    .execSync("cd ../../../sdk-ts/ && git rev-parse HEAD")
+    .execSync("cd ../../../sdk-ts/ && git rev-parse HEAD", {
+      stdio: "pipe",
+    })
     .toString()
     .trim()
     .slice(0, 12)
 } catch (e) {
+  // sdk-ts directory doesn't exist in CI or when building without the SDK repo
+  // This is expected and we fall back to "unknown"
   sdkGitHash = "unknown"
 }
 

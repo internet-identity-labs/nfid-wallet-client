@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: "validation",
   preset: "../../jest.preset.js",

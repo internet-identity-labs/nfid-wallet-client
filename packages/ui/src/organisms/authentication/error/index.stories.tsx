@@ -1,6 +1,4 @@
 import { Meta, StoryFn } from "@storybook/react"
-import { IconCmpGoogle } from "packages/ui/src/atoms/icons"
-import { Button } from "packages/ui/src/molecules/button"
 
 import { withSignInDecorator } from "../../../decorators/sign-in"
 import { AuthEmailError, AuthEmailErrorProps } from "./index"

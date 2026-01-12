@@ -141,7 +141,7 @@ describe.skip("SignIn with Internet Identity", () => {
       derivedDelegationIdentity.getPublicKey(),
     )
 
-    let derivedAnchor: UserNumber = await registerIIAccount(
+    const derivedAnchor: UserNumber = await registerIIAccount(
       undefined as any as Ed25519KeyIdentity,
       derivedDeviceData,
     )
@@ -173,7 +173,7 @@ describe.skip("SignIn with Internet Identity", () => {
       )
 
     const secondlyTakenDerivedDelegationIdentity: DelegationIdentity =
-      await delegationIdentityFromSignedIdentity(
+      delegationIdentityFromSignedIdentity(
         privateIiIdentity,
         delegationChainFromDelegation(secondlyTakenPrivateDelegation),
       )

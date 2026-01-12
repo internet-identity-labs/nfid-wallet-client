@@ -41,7 +41,7 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
       } else {
         return 34
       }
-    }, [value])
+    }, [value, fontSize])
 
     const handlePaste = (e: any) => {
       const data = e.clipboardData

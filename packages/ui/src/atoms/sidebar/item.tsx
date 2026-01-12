@@ -10,7 +10,7 @@ interface IProfileSidebarItem extends React.HTMLAttributes<HTMLDivElement> {
 export const SidebarItem: React.FC<IProfileSidebarItem> = ({
   icon,
   title,
-  onClick,
+  onClick: _onClick,
   className,
   isActive,
   id,

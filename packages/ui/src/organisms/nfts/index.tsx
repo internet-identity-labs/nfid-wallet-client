@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { useState, useMemo, HTMLAttributes, FC, MouseEvent } from "react"
+import { useState, useMemo, HTMLAttributes, FC } from "react"
 import { IoIosSearch } from "react-icons/io"
 import { Link, useNavigate } from "react-router-dom"
 
@@ -39,7 +39,7 @@ export const NFTs: FC<INFTs> = ({
   nfts,
   searchTokens,
   links,
-  totalItems,
+  totalItems: _totalItems,
   currentPage,
   onTransferNFT,
 }) => {

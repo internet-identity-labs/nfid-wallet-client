@@ -9,8 +9,6 @@ import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import { FC, useEffect, useState } from "react"
 import { FT } from "src/integration/ft/ft"
 
-import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
-
 import { useDarkTheme } from "frontend/hooks"
 import { Skeleton } from "packages/ui/src/atoms/skeleton"
 import {

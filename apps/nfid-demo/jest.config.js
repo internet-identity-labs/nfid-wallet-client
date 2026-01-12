@@ -1,7 +1,6 @@
-import { JEST_GLOBALS } from "../../config/jest-globals"
+const { JEST_GLOBALS } = require("../../config/jest-globals.ts")
 
-/* eslint-disable */
-export default {
+module.exports = {
   displayName: "nfid-demo",
   preset: "../../jest.preset.js",
   transform: {

@@ -40,7 +40,7 @@ export const ChooseAccountModal = ({
   optionGroups,
   preselectedValue,
   onSelect,
-  onOpen,
+  onOpen: _onOpen,
   warningText,
   title,
   label,
@@ -59,16 +59,19 @@ export const ChooseAccountModal = ({
   const [selectedValue, setSelectedValue] = useState(preselectedValue ?? "")
   const [hasMore, setHasMore] = useState(Boolean(loadMore))
 
-  const handleSelect = useCallback((option: IGroupOption) => {
-    setSelectedValue(option.value)
-    setSelectedOption(option)
-    setTimeout(
-      () => {
-        setIsModalVisible(false)
-      },
-      isSmooth ? 100 : 0,
-    )
-  }, [])
+  const handleSelect = useCallback(
+    (option: IGroupOption) => {
+      setSelectedValue(option.value)
+      setSelectedOption(option)
+      setTimeout(
+        () => {
+          setIsModalVisible(false)
+        },
+        isSmooth ? 100 : 0,
+      )
+    },
+    [isSmooth],
+  )
 
   const filteredOptions = useMemo(() => {
     return filterGroupedOptionsByTitle(optionGroups, searchInput)
@@ -104,11 +107,17 @@ export const ChooseAccountModal = ({
       setSelectedOption(option)
       onSelect && option?.value && onSelect(option?.value)
     }
-  }, [optionGroups, isFirstPreselected, preselectedValue])
+  }, [
+    optionGroups,
+    isFirstPreselected,
+    preselectedValue,
+    selectedOption,
+    onSelect,
+  ])
 
   useEffect(() => {
     onSelect && onSelect(selectedValue)
-  }, [selectedValue])
+  }, [selectedValue, onSelect])
 
   return (
     <div className="flex flex-col shrink-0" id={"choose_modal"}>

@@ -1,8 +1,7 @@
 import Lottie, { AnimationItem } from "lottie-web"
 import React, { useEffect, useRef } from "react"
 
-export interface LottieAnimationProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface LottieAnimationProps extends React.HTMLAttributes<HTMLDivElement> {
   animationData: any
   loop?: boolean
   autoplay?: boolean
@@ -63,7 +62,7 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
         animationInstance.current.destroy()
       }
     }
-  }, [animationData, autoplay, loop])
+  }, [animationData, autoplay, loop, onComplete, speed, viewBox])
 
   const handleEnterFrame = () => {
     if (animationInstance.current) {

@@ -34,7 +34,7 @@ const getComponent = (canisterId: string, methodName: string) => {
 
 const RPCComponentICRC49 = (props: IRPCComponentICRC49) => {
   const { canisterId, methodName } = props
-  let Cmp = getComponent(canisterId, methodName)
+  const Cmp = getComponent(canisterId, methodName)
 
   return <Cmp {...props} />
 }

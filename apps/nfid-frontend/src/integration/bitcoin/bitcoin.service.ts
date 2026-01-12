@@ -39,7 +39,7 @@ export class BitcoinService {
     const { cachedValue } = this.getAddressFromCache()
 
     if (cachedValue == null) {
-      let identity = await getWalletDelegation()
+      const identity = await getWalletDelegation()
       return this.getAddress(identity)
     } else {
       return cachedValue as string
@@ -68,7 +68,7 @@ export class BitcoinService {
   }
 
   public async getQuickBalance(): Promise<bigint> {
-    const { cachedValue } = await this.getAddressFromCache()
+    const { cachedValue } = this.getAddressFromCache()
 
     if (!cachedValue) {
       throw Error("No bitcoin address in a cache.")
@@ -256,7 +256,7 @@ export class BitcoinService {
         }
       }
       return { ok: true }
-    } catch (e) {
+    } catch (_e) {
       return {
         ok: false,
         error:

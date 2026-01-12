@@ -272,7 +272,7 @@ export const AuthChooseAccount = ({
   let appHost: string = ""
   try {
     appHost = new URL(authRequest.hostname ?? "").host
-  } catch (e) {
+  } catch (_e) {
     appHost = appMeta.name ?? ""
   }
 

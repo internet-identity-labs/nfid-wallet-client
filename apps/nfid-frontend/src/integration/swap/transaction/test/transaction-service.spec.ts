@@ -20,7 +20,7 @@ const mock: JsonnableEd25519KeyIdentity = [
 ]
 
 describe("SwapTransactionService", () => {
-  let service = new SwapTransactionService()
+  const service = new SwapTransactionService()
 
   it("should return the correct tx loading state", async () => {
     jest.setTimeout(10000)

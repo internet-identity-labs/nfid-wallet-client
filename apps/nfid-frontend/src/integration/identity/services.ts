@@ -10,7 +10,7 @@ import {
 
 export async function postRemoteDelegationService(
   context: { pubsubChannel?: string; authSession?: AuthSession },
-  event: { data: AuthSession },
+  _event: { data: AuthSession },
 ): Promise<void> {
   const { chain, sessionKey } = authState.get()
   if (!chain)

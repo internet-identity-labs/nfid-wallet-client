@@ -21,7 +21,7 @@ describe("shroff transfer kong error handler test", () => {
   it.skip("shroff transfer kong icrc2 error handler test", async function () {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
-    let mockId = Ed25519KeyIdentity.fromParsedJson(mock)
+    const mockId = Ed25519KeyIdentity.fromParsedJson(mock)
 
     const shroff: Shroff = await new KongShroffBuilder()
       .withSource(sourceLedger)
@@ -42,15 +42,13 @@ describe("shroff transfer kong error handler test", () => {
     try {
       await shroff.swap(mockId)
     } catch (e) {}
-    let failedTransaction = shroff.getSwapTransaction()
+    const failedTransaction = shroff.getSwapTransaction()
     const errorHandler = errorHandlerFactory.getHandler(failedTransaction!)
     expect(failedTransaction?.getStage()).toEqual(SwapStage.Swap)
     try {
       await errorHandler.completeTransaction(mockId)
-      // eslint-disable-next-line jest/no-jasmine-globals
       fail("Should not throw an error")
     } catch (e: any) {
-      // eslint-disable-next-line jest/no-conditional-expect
       expect(e.message).toContain("KongSwap provider error")
     }
   })

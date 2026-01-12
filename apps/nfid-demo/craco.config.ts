@@ -10,14 +10,14 @@ console.log(">> ", { serviceConfig })
 
 const config = {
   webpack: {
-    configure: (config: any) => {
+    configure: (webpackConfig: any) => {
       // Remove guard against importing modules outside of `src`.
       // Needed for workspace projects.
-      config.resolve.plugins = config.resolve.plugins.filter(
+      webpackConfig.resolve.plugins = webpackConfig.resolve.plugins.filter(
         (plugin: any) => !(plugin instanceof ModuleScopePlugin),
       )
       // Add support for importing workspace projects.
-      config.resolve.plugins.push(
+      webpackConfig.resolve.plugins.push(
         new TsConfigPathsPlugin({
           configFile: path.resolve(__dirname, "tsconfig.json"),
           extensions: [".ts", ".tsx", ".js", ".jsx"],
@@ -27,17 +27,17 @@ const config = {
 
       // Replace include option for babel loader with exclude
       // so babel will handle workspace projects as well.
-      config.module.rules[1].oneOf.forEach((r: any) => {
+      webpackConfig.module.rules[1].oneOf.forEach((r: any) => {
         if (r.loader && r.loader.indexOf("babel") !== -1) {
           r.exclude = /node_modules/
           delete r.include
         }
       })
       return {
-        ...config,
+        ...webpackConfig,
         ignoreWarnings: [/Failed to parse source map from/],
         plugins: [
-          ...config.plugins,
+          ...webpackConfig.plugins,
           new webpack.DefinePlugin(serviceConfig),
           new webpack.ProvidePlugin({
             Buffer: [require.resolve("buffer/"), "Buffer"],
@@ -45,9 +45,9 @@ const config = {
           }),
         ],
         resolve: {
-          ...config.resolve,
+          ...webpackConfig.resolve,
           fallback: {
-            ...config.resolve.fallback,
+            ...webpackConfig.resolve.fallback,
             assert: require.resolve("assert"),
             buffer: require.resolve("buffer"),
             events: require.resolve("events"),
@@ -69,10 +69,10 @@ const config = {
     port: 4200,
   },
   jest: {
-    configure: (config: any) => {
-      config.resolver = "@nx/jest/plugins/resolver"
+    configure: (jestConfig: any) => {
+      jestConfig.resolver = "@nx/jest/plugins/resolver"
       return {
-        ...config,
+        ...jestConfig,
         globals: {
           ...JEST_GLOBALS,
         },

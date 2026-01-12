@@ -64,7 +64,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
           }),
         )
         setQuotes(quotes)
-      } catch (e) {
+      } catch (_e) {
         return
       }
     }
@@ -170,7 +170,7 @@ export const SwapSettings: FC<SwapSettingsProps> = ({
                   ref={customInputRef}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      ;(e.target as HTMLInputElement).blur()
+                      (e.target as HTMLInputElement).blur()
                     }
                   }}
                   onBlur={(e) => {

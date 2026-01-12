@@ -46,7 +46,7 @@ describe("shroff test", () => {
       .withSource(sourceLedger)
       .withTarget(targetLedger)
       .build()
-    let ledgerICRC = new Icrc1Pair(targetLedger, undefined)
+    const ledgerICRC = new Icrc1Pair(targetLedger, undefined)
     let seconds = 0
     const balance = await ledgerICRC.getBalance(mockPrincipal)
 
@@ -74,7 +74,7 @@ describe("shroff test", () => {
 
     const a: Promise<SwapTransaction> = shroff.swap(delegationIdentity)
 
-    let trs = shroff.getSwapTransaction() as IcpSwapTransactionImpl
+    const trs = shroff.getSwapTransaction() as IcpSwapTransactionImpl
 
     expect(trs?.getStage()).toEqual(SwapStage.TransferSwap)
 

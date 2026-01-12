@@ -1,5 +1,3 @@
-import { Principal } from "@dfinity/principal"
-
 import { CredentialId } from "../_ic_api/internet_identity.d"
 
 export const NFID_SIGNED_DELEGATION = {

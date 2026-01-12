@@ -92,7 +92,7 @@ describe("persona utils test suite", () => {
       const personas = [...excludedPersonas, ...canisterPersonas]
 
       // the selectAccounts selector should filter the personas
-      let accounts = selectAccounts(personas, scope, derivationOrigin)
+      const accounts = selectAccounts(personas, scope, derivationOrigin)
 
       // so that it only includes the canisterPersonas
       expect(accounts.length).toBe(canisterPersonas.length)

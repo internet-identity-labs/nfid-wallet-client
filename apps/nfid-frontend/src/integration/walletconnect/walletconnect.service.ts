@@ -67,7 +67,7 @@ export class WalletConnectService {
 
       // Expose to window for debugging
       if (typeof window !== "undefined") {
-        ;(window as any).walletConnectService = this
+        (window as any).walletConnectService = this
       }
     } catch (error) {
       console.error("Failed to initialize WalletConnect:", error)

@@ -8,5 +8,5 @@ export const resetIntegrationCache = (
   callback?: () => void,
 ) => {
   keys.map((key) => integrationCache.setItem(key, undefined, {}))
-  callback && callback()
+  callback?.()
 }

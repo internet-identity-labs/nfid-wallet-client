@@ -20,8 +20,8 @@ describe("Shroff Kong test", () => {
   jest.setTimeout(1500000)
 
   it.skip("should swap 2 tokens icrc2", async () => {
-    let identity = Ed25519KeyIdentity.fromParsedJson(mock)
-    let kongShroff = await new KongShroffBuilder()
+    const identity = Ed25519KeyIdentity.fromParsedJson(mock)
+    const kongShroff = await new KongShroffBuilder()
       .withSource("ryjl3-tyaaa-aaaaa-aaaba-cai")
       .withTarget("o7oak-iyaaa-aaaaq-aadzq-cai")
       .build()
@@ -45,18 +45,20 @@ describe("Shroff Kong test", () => {
 
     await kongShroff.getQuote("0.001")
 
-    let ledgerICRC = new Icrc1Pair("ryjl3-tyaaa-aaaaa-aaaba-cai", undefined)
-    let blncBefore = await ledgerICRC.getBalance(
+    const ledgerICRC = new Icrc1Pair("ryjl3-tyaaa-aaaaa-aaaba-cai", undefined)
+    const blncBefore = await ledgerICRC.getBalance(
       identity.getPrincipal().toText(),
     )
-    let kongICRC = new Icrc1Pair("o7oak-iyaaa-aaaaq-aadzq-cai", undefined)
-    let balanceKong = await kongICRC.getBalance(
+    const kongICRC = new Icrc1Pair("o7oak-iyaaa-aaaaq-aadzq-cai", undefined)
+    const balanceKong = await kongICRC.getBalance(
       identity.getPrincipal().toText(),
     )
 
-    let resp2 = await kongShroff.swap(identity)
+    const resp2 = await kongShroff.swap(identity)
 
-    let balance = await ledgerICRC.getBalance(identity.getPrincipal().toText())
+    const balance = await ledgerICRC.getBalance(
+      identity.getPrincipal().toText(),
+    )
     console.log("difference ICP", blncBefore - balance)
     const updatedBalanceKong = await kongICRC.getBalance(
       identity.getPrincipal().toText(),
@@ -74,8 +76,8 @@ describe("Shroff Kong test", () => {
   })
 
   it.skip("should swap 2 tokens icrc1", async () => {
-    let identity = Ed25519KeyIdentity.fromParsedJson(mock)
-    let kongShroff = await new KongShroffBuilder()
+    const identity = Ed25519KeyIdentity.fromParsedJson(mock)
+    const kongShroff = await new KongShroffBuilder()
       .withSource("ryjl3-tyaaa-aaaaa-aaaba-cai")
       .withTarget("o7oak-iyaaa-aaaaq-aadzq-cai")
       .build()
@@ -103,18 +105,20 @@ describe("Shroff Kong test", () => {
 
     await kongShroff.getQuote("0.001")
 
-    let ledgerICRC = new Icrc1Pair("ryjl3-tyaaa-aaaaa-aaaba-cai", undefined)
-    let blncBefore = await ledgerICRC.getBalance(
+    const ledgerICRC = new Icrc1Pair("ryjl3-tyaaa-aaaaa-aaaba-cai", undefined)
+    const blncBefore = await ledgerICRC.getBalance(
       identity.getPrincipal().toText(),
     )
-    let kongICRC = new Icrc1Pair("o7oak-iyaaa-aaaaq-aadzq-cai", undefined)
-    let balanceKong = await kongICRC.getBalance(
+    const kongICRC = new Icrc1Pair("o7oak-iyaaa-aaaaq-aadzq-cai", undefined)
+    const balanceKong = await kongICRC.getBalance(
       identity.getPrincipal().toText(),
     )
 
-    let resp2 = await kongShroff.swap(identity)
+    const resp2 = await kongShroff.swap(identity)
 
-    let balance = await ledgerICRC.getBalance(identity.getPrincipal().toText())
+    const balance = await ledgerICRC.getBalance(
+      identity.getPrincipal().toText(),
+    )
     console.log("difference ICP", blncBefore - balance)
     const updatedBalanceKong = await kongICRC.getBalance(
       identity.getPrincipal().toText(),

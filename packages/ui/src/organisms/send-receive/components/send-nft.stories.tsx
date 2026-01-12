@@ -1,6 +1,8 @@
 import { Meta, StoryFn } from "@storybook/react"
 import { ToggleButton } from "packages/ui/src/molecules/toggle-button"
 
+import { SendStatus } from "frontend/features/transfer-modal/types"
+
 import { TransferNFTUi, TransferNFTUiProps } from "./send-nft"
 import { TransferTemplate } from "./template"
 
@@ -17,7 +19,7 @@ export default meta
 
 const Template: StoryFn<TransferNFTUiProps> = (args) => (
   <div className="w-[450px] h-[630px]">
-    <TransferTemplate>
+    <TransferTemplate isOpen={true}>
       <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
         Send
       </div>
@@ -25,7 +27,7 @@ const Template: StoryFn<TransferNFTUiProps> = (args) => (
         firstValue="Token"
         secondValue="Collectible"
         className="mb-5"
-        onChange={() => console.log(1)}
+        onChange={() => {}}
         defaultValue={true}
         id="send_type_toggle"
       />
@@ -40,6 +42,7 @@ export const SendNFTProps = {
   isLoading: false,
   isBalanceLoading: false,
   loadingMessage: "",
+  nfts: undefined,
   nftOptions: [],
   selectedNFTId: "",
   selectedNFT: undefined,
@@ -47,22 +50,14 @@ export const SendNFTProps = {
   selectedAccountAddress:
     "yrfx6-fmprd-wgad6-6or6b-2aw42-5qqhn-o4yt7-plkxr-2jtgv-azhzx-gae",
   balance: 200000,
-  setSelectedNFTId: (value: string | ((prevState: string) => string)) => {
-    if (typeof value === "function") {
-      const prevState = ""
-      console.log(
-        "Selected NFT ID:",
-        (value as (prevState: string) => string)(prevState),
-      )
-    } else {
-      console.log("Selected NFT ID:", value)
-    }
-  },
+  setSelectedNFTId: (value: string | ((prevState: string) => string)) => {},
   submit: async () => {
-    console.log("Send button clicked")
     return undefined
   },
   validateAddress: () => true,
+  isSuccessOpen: false,
+  onClose: () => {},
+  status: SendStatus.PENDING,
 }
 
 SendNFT.args = SendNFTProps

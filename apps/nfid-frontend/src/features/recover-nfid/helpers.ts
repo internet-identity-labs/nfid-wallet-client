@@ -3,7 +3,7 @@ import { useCallback } from "react"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { parseUserNumber } from "frontend/integration/internet-identity/userNumber"
 
-export const useHandleRecovery = async (
+export const useHandleRecovery = (
   recoveryPhrase: string,
   resetError: () => void,
 ) => {
@@ -23,7 +23,7 @@ export const useHandleRecovery = async (
     try {
       resetError()
       result = await loginWithRecovery(seedPhrase, userNumber)
-    } catch (e) {
+    } catch (_e) {
       throw new Error(
         "We cannot restore your NFID with this recovery phrase. Please check it and try again.",
       )

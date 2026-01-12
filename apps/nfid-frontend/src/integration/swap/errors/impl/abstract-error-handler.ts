@@ -14,7 +14,7 @@ export abstract class AbstractErrorHandler extends TransactionErrorHandlerAbstra
     delegation: SignIdentity,
   ): Promise<SwapTransaction> {
     console.debug("Trying to complete transaction")
-    let trs = this.getTransaction()
+    const trs = this.getTransaction()
     const allOracle = await icrc1OracleService.getICRC1Canisters()
     const sourceLedger = allOracle.find((canister) => {
       return canister.ledger === trs.getSourceLedger()

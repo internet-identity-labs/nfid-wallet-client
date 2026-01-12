@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { expect } from "@jest/globals"
 import { createCipheriv } from "crypto"
 
@@ -18,23 +18,22 @@ describe.skip("symmetric suite", () => {
 
   describe("Symmetric Key Service Test", () => {
     it("Create account and retrieve same key + encrypt/decrypt", async function () {
-      let mockedIdentity = Ed25519KeyIdentity.generate()
-      const { delegationIdentity } = await generateDelegationIdentity(
-        mockedIdentity,
-      )
+      const mockedIdentity = Ed25519KeyIdentity.generate()
+      const { delegationIdentity } =
+        await generateDelegationIdentity(mockedIdentity)
       replaceIdentity(delegationIdentity)
       await registerIIAndIM(mockedIdentity)
-      let key = await symmetric(delegationIdentity)
+      const key = await symmetric(delegationIdentity)
       expect(typeof key).toBe("string")
-      let haveToBeSameKey = await symmetric(delegationIdentity)
+      const haveToBeSameKey = await symmetric(delegationIdentity)
       expect(key).toEqual(haveToBeSameKey)
       console.log(key)
       //wrap in same test to save time on registration
-      let phoneNumber = "+380501111111"
-      let encrypted = encrypt(phoneNumber, key)
+      const phoneNumber = "+380501111111"
+      const encrypted = encrypt(phoneNumber, key)
       console.log(encrypted)
 
-      let decrypted = await decryptStringForIdentity(
+      const decrypted = await decryptStringForIdentity(
         encrypted,
         delegationIdentity,
       )
@@ -43,10 +42,9 @@ describe.skip("symmetric suite", () => {
     })
 
     it("Catch error if not registered account", async () => {
-      let mockedIdentity = Ed25519KeyIdentity.generate()
-      const { delegationIdentity } = await generateDelegationIdentity(
-        mockedIdentity,
-      )
+      const mockedIdentity = Ed25519KeyIdentity.generate()
+      const { delegationIdentity } =
+        await generateDelegationIdentity(mockedIdentity)
       replaceIdentity(delegationIdentity)
       await expect(symmetric(delegationIdentity)).rejects.toThrow(
         "There was an issue getting symmetric key.",
@@ -55,8 +53,8 @@ describe.skip("symmetric suite", () => {
   })
 
   function encrypt(value: string, key: string) {
-    let secretBuffer = Buffer.from(key, "hex")
-    let cipher = createCipheriv("aes-256-ecb", secretBuffer, "")
+    const secretBuffer = Buffer.from(key, "hex")
+    const cipher = createCipheriv("aes-256-ecb", secretBuffer, "")
     let cipherText = cipher.update(value, "utf8", "hex")
     cipherText += cipher.final("hex")
     return cipherText

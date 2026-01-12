@@ -2,6 +2,7 @@ import {
   SellTransactionRecord,
   TransactionRecordView,
 } from "src/integration/nft/impl/nft-transaction-record"
+import { TransactionToniq } from "src/integration/nft/impl/ext/transaction/types"
 import { formatPrice } from "src/integration/nft/util/util"
 
 export class TransactionRecordToniq implements SellTransactionRecord {
@@ -22,7 +23,7 @@ export class TransactionRecordToniq implements SellTransactionRecord {
   }
 
   getTransactionView(): TransactionRecordView {
-    let a = new TransactionRecordView(
+    const a = new TransactionRecordView(
       "Sale",
       this.from,
       this.to,

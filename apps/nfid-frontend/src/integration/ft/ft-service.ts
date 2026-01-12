@@ -45,7 +45,7 @@ export interface TokensAvailableToSwap {
 
 export class FtService {
   async getTokens(userId: string): Promise<Array<FT>> {
-    let icrc1Tokens = await icrc1StorageService
+    const icrc1Tokens = await icrc1StorageService
       .getICRC1Canisters(userId)
       .then(async (canisters) => {
         const icp = canisters.find(
@@ -64,7 +64,7 @@ export class FtService {
           (canister) => canister.ledger === CKETH_LEDGER_CANISTER_ID,
         )
 
-        const updatePromises = []
+        const updatePromises: Promise<void>[] = []
 
         if (!icp || icp.state === State.Inactive) {
           updatePromises.push(
@@ -115,7 +115,7 @@ export class FtService {
         return ft
       })
 
-    let userCanisters = await icrc1RegistryService.getStoredUserTokens()
+    const userCanisters = await icrc1RegistryService.getStoredUserTokens()
 
     const [ethErc20Tokens, polErc20Tokens, baseErc20Tokens, arbErc20Tokens] =
       await Promise.all([
@@ -419,7 +419,7 @@ export class FtService {
       }
     | undefined
   > {
-    let price = ft
+    const price = ft
       .map((ft) => ({
         usdBalance: ft.getUSDBalance(),
         usdBalanceDayChange: ft.getUSDBalanceDayChange(),

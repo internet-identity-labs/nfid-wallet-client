@@ -1,4 +1,3 @@
 #!/bin/sh
-
-echo "✨ Running Prettier on staged files..."
+echo "✨ Running lint-staged (Prettier + ESLint) on staged files..."
 npx lint-staged

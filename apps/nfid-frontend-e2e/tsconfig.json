@@ -4,7 +4,6 @@
     "target": "es6",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
@@ -25,7 +24,7 @@
       "node",
       "@wdio/globals/types",
       "@wdio/cucumber-framework",
-      "expect-webdriverio",
+      "expect-webdriverio"
     ],
     "include": ["src/**/*.ts", "wdio*.ts"]
   },

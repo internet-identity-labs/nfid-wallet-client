@@ -631,7 +631,7 @@ export const stakeNeuron = async ({
   id: Uint8Array | number[]
 }> => {
   logWithTimestamp(`Staking Neuron call...`)
-  let wrapper = await loadSnsWrapper({
+  const wrapper = await loadSnsWrapper({
     identity,
     rootCanisterId: canisterId,
     certified: true,

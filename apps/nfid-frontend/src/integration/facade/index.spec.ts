@@ -33,10 +33,9 @@ describe.skip("Facade suite", () => {
 
   describe("Facade Service Test", () => {
     it("Should create and remove protected Recovery device", async function () {
-      let mockedIdentity = Ed25519KeyIdentity.generate()
-      const { delegationIdentity } = await generateDelegationIdentity(
-        mockedIdentity,
-      )
+      const mockedIdentity = Ed25519KeyIdentity.generate()
+      const { delegationIdentity } =
+        await generateDelegationIdentity(mockedIdentity)
       replaceIdentity(delegationIdentity)
       const deviceData: DeviceData = {
         alias: "Device",
@@ -48,8 +47,8 @@ describe.skip("Facade suite", () => {
         purpose: { authentication: null },
         credential_id: [],
       }
-      let anchor = await registerIIAccount(mockedIdentity, deviceData)
-      let recoveryDevice = Ed25519KeyIdentity.generate()
+      const anchor = await registerIIAccount(mockedIdentity, deviceData)
+      const recoveryDevice = Ed25519KeyIdentity.generate()
       const { delegationIdentity: recoveryIdentity } =
         await generateDelegationIdentity(recoveryDevice)
       await im.create_account({
@@ -67,7 +66,7 @@ describe.skip("Facade suite", () => {
         { recovery: null },
         recoveryDevice.getPublicKey().toDer(),
       )
-      let accessPoints = await im.create_access_point({
+      const accessPoints = await im.create_access_point({
         icon: "RecoveryTest",
         device: "RecoveryTest",
         browser: "RecoveryTest",
@@ -77,7 +76,7 @@ describe.skip("Facade suite", () => {
       })
       // @ts-ignore
       expect(accessPoints.data[0][0].device).toEqual("RecoveryTest")
-      let recoveryDeviceII = (await ii
+      const recoveryDeviceII = (await ii
         .lookup(anchor)
         .then((x) =>
           x.find((d) => hasOwnProperty(d.purpose, "recovery")),
@@ -93,18 +92,18 @@ describe.skip("Facade suite", () => {
         anchor,
       )
 
-      let chain = await DelegationChain.create(
+      const chain = await DelegationChain.create(
         recoveryDevice,
         recoveryIdentity.getPublicKey(),
         new Date(Date.now() + 3_600_000 * 44),
       )
-      let feDelegation: FrontendDelegation = {
+      const feDelegation: FrontendDelegation = {
         chain: chain,
         sessionKey: recoveryDevice,
         delegationIdentity: recoveryIdentity,
       }
       // @ts-ignore
-      im.use_access_point = jest.fn((x: [] | [string]) => ({
+      im.use_access_point = jest.fn((_x: [] | [string]) => ({
         catch: jest.fn(),
       }))
       authStateMock.set({
@@ -120,22 +119,21 @@ describe.skip("Facade suite", () => {
         .fn()
         .mockReturnValue(Promise.resolve(feDelegation))
       await removeRecoveryDeviceFacade(anchor, "seedPhrase")
-      let removedDevice = (await ii
+      const removedDevice = (await ii
         .lookup(anchor)
         .then((x) =>
           x.find((d) => hasOwnProperty(d.purpose, "recovery")),
         )) as DeviceData
       expect(removedDevice).toBe(undefined)
       replaceIdentity(delegationIdentity)
-      let aps = await im.read_access_points()
+      const aps = await im.read_access_points()
       expect(aps.data[0]).toEqual([])
     })
 
     it("Should fetch principals", async function () {
-      let mockedIdentity = Ed25519KeyIdentity.generate()
-      const { delegationIdentity } = await generateDelegationIdentity(
-        mockedIdentity,
-      )
+      const mockedIdentity = Ed25519KeyIdentity.generate()
+      const { delegationIdentity } =
+        await generateDelegationIdentity(mockedIdentity)
       replaceIdentity(delegationIdentity)
       const deviceData: DeviceData = {
         alias: "Device",
@@ -147,7 +145,7 @@ describe.skip("Facade suite", () => {
         purpose: { authentication: null },
         credential_id: [],
       }
-      let anchor = await registerIIAccount(mockedIdentity, deviceData)
+      const anchor = await registerIIAccount(mockedIdentity, deviceData)
       await im.create_account({
         anchor,
         access_point: [],
@@ -201,18 +199,18 @@ describe.skip("Facade suite", () => {
       delegationIdentity: DelegationIdentity,
       anchor: UserNumber,
     ) {
-      let chain = await DelegationChain.create(
+      const chain = await DelegationChain.create(
         mockedIdentity,
         mockedIdentity.getPublicKey(),
         new Date(Date.now() + 3_600_000 * 44),
       )
-      let feDelegation: FrontendDelegation = {
+      const feDelegation: FrontendDelegation = {
         chain: chain,
         sessionKey: mockedIdentity,
         delegationIdentity: delegationIdentity,
       }
       // @ts-ignore
-      im.use_access_point = jest.fn((x: [] | [string]) => ({
+      im.use_access_point = jest.fn((_x: [] | [string]) => ({
         catch: jest.fn(),
       }))
       authStateMock.set({ identity: mockedIdentity, delegationIdentity })

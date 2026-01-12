@@ -3,8 +3,7 @@ import React, { ReactElement } from "react"
 
 import { Label } from "./label"
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id?: string
   placeholder?: string
   type?: string
@@ -24,7 +23,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
     {
       id,
-      children,
+      children: _children,
       className,
       inputClassName,
       placeholder,

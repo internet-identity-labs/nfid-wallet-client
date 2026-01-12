@@ -76,7 +76,7 @@ export abstract class EVMService {
     const { cachedValue } = this.getAddressFromCache()
 
     if (cachedValue == null) {
-      let identity = await getWalletDelegation()
+      const identity = await getWalletDelegation()
       return this.getAddress(identity)
     } else {
       return cachedValue as string
@@ -172,24 +172,24 @@ export abstract class EVMService {
   ) {
     const ckEthContract = new Contract(MINTER_ADDRESS, CKETH_ABI, this.provider)
 
-    let address = await this.getAddress(identity)
+    const address = await this.getAddress(identity)
 
     const principalHex = encodePrincipalToEthAddress(identity.getPrincipal())
 
-    let subaccount =
+    const subaccount =
       "0x0000000000000000000000000000000000000000000000000000000000000000"
 
-    let trs = await ckEthContract.depositEth.populateTransaction(
+    const trs = await ckEthContract.depositEth.populateTransaction(
       principalHex,
       subaccount,
       { value: parseEther(amount) },
     )
-    let nonce = await this.getTransactionCount(address)
+    const nonce = await this.getTransactionCount(address)
 
     const network = await this.provider.getNetwork()
     const chainId = Number(network.chainId)
 
-    let trs_request: EthSignTransactionRequest = {
+    const trs_request: EthSignTransactionRequest = {
       to: trs.to,
       value: parseEther(amount),
       data: [trs.data],
@@ -199,11 +199,11 @@ export abstract class EVMService {
       max_fee_per_gas: gas.maxFeePerGas,
       chain_id: BigInt(chainId),
     }
-    let signedTransaction = await chainFusionSignerService.ethSignTransaction(
+    const signedTransaction = await chainFusionSignerService.ethSignTransaction(
       identity,
       trs_request,
     )
-    let response = await this.sendTransaction(signedTransaction)
+    const response = await this.sendTransaction(signedTransaction)
     return response
   }
 
@@ -219,7 +219,7 @@ export abstract class EVMService {
   ) {
     const parsedAmount = parseEther(amount)
     //we take 0.0000875% ckETH as fee
-    let identityLabsFee: bigint = this.getIdentityLabsFee(parsedAmount)
+    const identityLabsFee: bigint = this.getIdentityLabsFee(parsedAmount)
 
     //Minimum amount 0.03 ckETH
     if (parsedAmount < BigInt(30000000000000000)) {
@@ -233,17 +233,17 @@ export abstract class EVMService {
       identity,
     )
 
-    let agent = new HttpAgent({
+    const agent = new HttpAgent({
       ...agentBaseConfig,
       identity: identity,
     })
 
-    let ckEthMinter = await CkETHMinterCanister.create({
+    const ckEthMinter = CkETHMinterCanister.create({
       agent,
       canisterId: Principal.fromText(CKETH_MINTER_CANISTER_ID),
     })
 
-    let result = await ckEthMinter.withdrawEth({
+    const result = await ckEthMinter.withdrawEth({
       address,
       amount: parsedAmount,
     })
@@ -406,7 +406,7 @@ export abstract class EVMService {
 
     const nonce = await this.getTransactionCount(address)
 
-    let request: EthSignTransactionRequest = {
+    const request: EthSignTransactionRequest = {
       chain_id: BigInt(chainId),
       to: to,
       value: parseEther(value),
@@ -417,7 +417,7 @@ export abstract class EVMService {
       max_fee_per_gas: gas?.maxFeePerGas,
     }
 
-    let signedTransaction = await chainFusionSignerService.ethSignTransaction(
+    const signedTransaction = await chainFusionSignerService.ethSignTransaction(
       identity,
       request,
     )
@@ -440,7 +440,7 @@ export abstract class EVMService {
     amount: bigint,
     identity: SignIdentity,
   ): Promise<bigint> {
-    let ledger = IcrcLedgerCanister.create({
+    const ledger = IcrcLedgerCanister.create({
       canisterId: Principal.fromText(ledgerCanisterId),
       agent: new HttpAgent({
         ...agentBaseConfig,
@@ -451,7 +451,7 @@ export abstract class EVMService {
       owner: Principal.fromText(minterCanisterId),
       subaccount: [],
     }
-    let params: ApproveParams = {
+    const params: ApproveParams = {
       spender,
       amount,
     }

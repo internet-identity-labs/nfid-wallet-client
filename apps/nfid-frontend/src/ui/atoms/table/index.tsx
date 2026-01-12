@@ -45,7 +45,7 @@ export const TableHead: React.FC<{
             sort?.includes(heading) && "cursor-pointer hover:bg-gray-100",
           )}
           key={`heading${heading}`}
-          onClick={() => handleHeaderClick && handleHeaderClick(heading)}
+          onClick={() => handleHeaderClick?.(heading)}
         >
           <div
             className={clsx(

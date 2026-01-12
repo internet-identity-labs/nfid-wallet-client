@@ -54,7 +54,7 @@ export const loadSnsWrapper = async ({
   identity: Identity
   rootCanisterId: Principal
 }): Promise<SnsWrapper> => {
-  let root = SnsRootCanister.create({ canisterId: rootCanisterId })
+  const root = SnsRootCanister.create({ canisterId: rootCanisterId })
   const canister_ids = await root.listSnsCanisters({ certified: false })
   const agent = await createAgent({
     identity,

@@ -25,7 +25,6 @@ const toaster = (
 toaster.success = (text?: string, toastProps?: ToastOptions): Id =>
   toast.success(<Toast title="Success notification" text={text} />, {
     icon: <SuccessIcon />,
-    bodyClassName: text?.length ? "items-start" : "items-center",
     className: text?.length ? "items-start" : "items-center",
     closeOnClick: true,
     closeButton: <CloseIcon className="h-4 mt-2 min-w-4 max-w-4" />,
@@ -35,7 +34,6 @@ toaster.success = (text?: string, toastProps?: ToastOptions): Id =>
 toaster.warn = (text?: string, toastProps?: ToastOptions): Id =>
   toast.warn(<Toast title="Warning notification" text={text} />, {
     icon: <WarningIcon />,
-    bodyClassName: text?.length ? "items-start" : "items-center",
     className: text?.length ? "items-start" : "items-center",
     closeOnClick: true,
     closeButton: <CloseIcon className="h-4 mt-2 min-w-4 max-w-4" />,
@@ -45,7 +43,6 @@ toaster.warn = (text?: string, toastProps?: ToastOptions): Id =>
 toaster.error = (text?: string, toastProps?: ToastOptions): Id =>
   toast.error(<Toast title="Error notification" text={text} />, {
     icon: <ErrorIcon />,
-    bodyClassName: text?.length ? "items-start" : "items-center",
     className: text?.length ? "items-start" : "items-center",
     closeOnClick: true,
     closeButton: <CloseIcon className="h-4 mt-2 min-w-4 max-w-4" />,
@@ -55,7 +52,6 @@ toaster.error = (text?: string, toastProps?: ToastOptions): Id =>
 toaster.info = (text?: string, toastProps?: ToastOptions): Id =>
   toast.info(<Toast title="Info notification" text={text} />, {
     icon: <InfoIcon />,
-    bodyClassName: text?.length ? "items-start" : "items-center",
     className: text?.length ? "items-start" : "items-center",
     closeOnClick: true,
     closeButton: <CloseIcon className="h-4 mt-2 min-w-4 max-w-4" />,

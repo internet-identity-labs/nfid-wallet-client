@@ -240,7 +240,7 @@ export const TransferFT = ({
 
     const fethcBtcFee = async () => {
       try {
-        let fee = await token?.getTokenFee(debouncedAmount, identity)
+        const fee = await token?.getTokenFee(debouncedAmount, identity)
         if (!isCancelled) setFee(fee)
       } catch (e) {
         console.error(`Fee error: ${e}`)
@@ -261,7 +261,7 @@ export const TransferFT = ({
       setFee(undefined)
       setIsFeeLoading(true)
       try {
-        let fee = await token?.getTokenFee(
+        const fee = await token?.getTokenFee(
           debouncedAmount,
           undefined,
           to,

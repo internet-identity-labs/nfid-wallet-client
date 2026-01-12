@@ -8,6 +8,13 @@ import webpack from "webpack"
 import { serviceConfig } from "../../config/webpack-env"
 import dfxJson from "../../dfx.json"
 
+// Disable ESLint in webpack build to avoid conflicts with custom ESLint config
+// ESLint is still run via lint-staged and NX lint commands
+// This uses react-scripts' built-in DISABLE_ESLINT_PLUGIN environment variable
+if (!process.env.DISABLE_ESLINT_PLUGIN) {
+  process.env.DISABLE_ESLINT_PLUGIN = "true"
+}
+
 console.log("nfid-frontend", { serviceConfig })
 
 const isExampleBuild = process.env.EXAMPLE_BUILD === "1"
@@ -111,7 +118,7 @@ const config = {
     optimization: {
       minimize: !isExampleBuild,
     },
-    configure: (config: any, { env, paths }: any) => {
+    configure: (config: any, { env: _env, paths: _paths }: any) => {
       config.resolve.plugins = config.resolve.plugins.filter(
         (plugin: any) => !(plugin instanceof ModuleScopePlugin),
       )
@@ -146,6 +153,10 @@ const config = {
         resolve: {
           ...config.resolve,
           extensions: [".js", ".ts", ".jsx", ".tsx"],
+          modules: [
+            ...(config.resolve.modules || ["node_modules"]),
+            path.resolve(__dirname, "../../node_modules"),
+          ],
           fallback: {
             ...config.resolve.fallback,
             assert: require.resolve("assert"),

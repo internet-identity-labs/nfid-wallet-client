@@ -108,7 +108,7 @@ export async function getGlobalDelegation(
   targets: string[],
   origin = GLOBAL_ORIGIN,
 ): Promise<DelegationIdentity> {
-  let identityKey = JSON.stringify(
+  const identityKey = JSON.stringify(
     identity.getPrincipal().toText() + targets + origin + "_session",
   )
   const chainKey = JSON.stringify(

@@ -277,7 +277,7 @@ export const NFIDEmbedMachineV2 = createMachine(
           targets: event.data.rpcMessage.params[0].targets,
         },
       })),
-      updateProcedure: assign(({ messageQueue }, event) => {
+      updateProcedure: assign(({ messageQueue }, _event) => {
         return {
           rpcMessage: messageQueue[0],
           messageQueue: messageQueue.slice(1, messageQueue.length),

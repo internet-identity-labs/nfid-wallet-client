@@ -3,8 +3,7 @@ import React from "react"
 
 import { Label } from "../../molecules/input/label"
 
-export interface RadioButtonProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface RadioButtonProps extends React.InputHTMLAttributes<HTMLInputElement> {
   name: string
   text?: string
   value?: string
@@ -12,8 +11,8 @@ export interface RadioButtonProps
 }
 
 export const RadioButton: React.FC<RadioButtonProps> = ({
-  children,
-  className,
+  children: _children,
+  className: _className,
   text,
   value,
   name,

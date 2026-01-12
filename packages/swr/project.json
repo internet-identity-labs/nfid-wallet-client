@@ -3,10 +3,28 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/swr/src",
   "projectType": "library",
-  "tags": [],
+  "tags": ["scope:swr", "type:library", "layer:shared"],
   "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/swr",
+        "main": "packages/swr/src/index.ts",
+        "tsConfig": "packages/swr/tsconfig.lib.json",
+        "assets": ["packages/swr/*.md"]
+      }
+    },
     "lint": {
       "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/swr/jest.config.ts",
+        "passWithNoTests": true
+      }
     }
   }
 }

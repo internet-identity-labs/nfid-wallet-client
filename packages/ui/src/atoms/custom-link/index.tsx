@@ -1,8 +1,6 @@
 import clsx from "clsx"
 import { AnchorHTMLAttributes } from "react"
 
-import { IconCmpExternalIcon } from "../icons"
-
 export interface AProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   withGapBetweenChildren?: boolean
 }

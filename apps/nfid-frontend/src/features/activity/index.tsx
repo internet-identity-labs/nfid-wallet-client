@@ -15,7 +15,7 @@ import {
 
 const ActivityPage = () => {
   const { state } = useLocation()
-  const initialFilter = state && state.canisterId ? [state.canisterId] : []
+  const initialFilter = state?.canisterId ? [state.canisterId] : []
   const [tokenFilter, setTokenFilter] = useState<string[]>(initialFilter)
   const [chainFilter, setChainFilter] = useState<string[]>([])
   const [txFilter, setTxFilter] = useState<string[]>([])

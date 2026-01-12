@@ -1,7 +1,7 @@
-import { Meta, StoryFn } from "@storybook/react"
+import { Meta } from "@storybook/react"
 import { withRouter } from "storybook-addon-remix-react-router"
 
-import { ApproveTemplate, ApproveTemplateProps } from "./index"
+import { ApproveTemplate } from "./index"
 
 const meta: Meta = {
   title: "Templates/ApproveTemplate",

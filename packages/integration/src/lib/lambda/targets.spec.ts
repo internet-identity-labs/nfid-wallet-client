@@ -30,7 +30,7 @@ describe("Targets validation", () => {
 
   it.skip("validate certified", async function () {
     await storageWithTtl.clear()
-    const agent: Agent = await new HttpAgent({ host: "https://ic0.app" })
+    const agent: Agent = new HttpAgent({ host: "https://ic0.app" })
     const idlFactory: IDL.InterfaceFactory = ({ IDL }) =>
       IDL.Service({
         update_trusted_origins: IDL.Func(

@@ -208,7 +208,7 @@ export const WalletConnectExample = ({
     const initProvider = async () => {
       try {
         // Mark initialization as in progress
-        ;(window as any)[initFlagKey] = true
+        (window as any)[initFlagKey] = true
 
         // Create new provider with all supported methods
         const ethProvider = await EthereumProvider.init({
@@ -241,7 +241,8 @@ export const WalletConnectExample = ({
         })
 
         // Store provider globally for reuse
-        ;(window as any)[sharedProviderKey] = ethProvider
+        const key = sharedProviderKey
+        ;(window as any)[key] = ethProvider
 
         // Setup event listeners
         setupEventListeners(ethProvider)
@@ -259,9 +260,9 @@ export const WalletConnectExample = ({
         }
 
         // Clear initialization flag
-        ;(window as any)[initFlagKey] = false
+        (window as any)[initFlagKey] = false
       } catch (err) {
-        ;(window as any)[initFlagKey] = false
+        (window as any)[initFlagKey] = false
         console.error("Failed to initialize provider:", err)
         const errorMessage =
           err instanceof Error ? err.message : "Failed to initialize provider"
@@ -342,7 +343,7 @@ export const WalletConnectExample = ({
       try {
         const connectedAccounts = await providerToUse.enable()
         setAccounts(connectedAccounts)
-      } catch (reconnectError) {
+      } catch (_reconnectError) {
         handleError("Please connect wallet first. Failed to reconnect.")
         return
       }
@@ -404,7 +405,7 @@ export const WalletConnectExample = ({
       try {
         const connectedAccounts = await providerToUse.enable()
         setAccounts(connectedAccounts)
-      } catch (reconnectError) {
+      } catch (_reconnectError) {
         handleError("Please connect wallet first. Failed to reconnect.")
         return
       }
@@ -506,7 +507,7 @@ export const WalletConnectExample = ({
       try {
         const connectedAccounts = await providerToUse.enable()
         setAccounts(connectedAccounts)
-      } catch (reconnectError) {
+      } catch (_reconnectError) {
         handleError("Please connect wallet first. Failed to reconnect.")
         return
       }
@@ -597,7 +598,7 @@ export const WalletConnectExample = ({
       try {
         const connectedAccounts = await providerToUse.enable()
         setAccounts(connectedAccounts)
-      } catch (reconnectError) {
+      } catch (_reconnectError) {
         handleError("Please connect wallet first. Failed to reconnect.")
         return
       }
@@ -687,7 +688,7 @@ export const WalletConnectExample = ({
       try {
         const connectedAccounts = await providerToUse.enable()
         setAccounts(connectedAccounts)
-      } catch (reconnectError) {
+      } catch (_reconnectError) {
         handleError("Please connect wallet first. Failed to reconnect.")
         return
       }
@@ -712,7 +713,7 @@ export const WalletConnectExample = ({
       let parsedTypedData: any
       try {
         parsedTypedData = JSON.parse(typedData)
-      } catch (parseError) {
+      } catch (_parseError) {
         handleError("Invalid JSON format for typed data")
         return
       }

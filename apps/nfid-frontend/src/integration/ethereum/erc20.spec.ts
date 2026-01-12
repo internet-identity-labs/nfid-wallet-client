@@ -1,4 +1,3 @@
-import { parseEther } from "ethers"
 import { Ed25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { mockIdentityA } from "@nfid/integration"
 import { ethErc20Service } from "./eth/eth-erc20.service"
@@ -26,7 +25,7 @@ describe.skip("ERC20Service", () => {
     it("should send ERC20 transaction", async () => {
       const contractAddress = "0xdAC17F958D2ee523a2206206994597C13D831ec7"
       const identity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
-      let balance = await ethErc20Service.getMultipleTokenBalances(ADDRESS, [
+      const balance = await ethErc20Service.getMultipleTokenBalances(ADDRESS, [
         contractAddress,
       ])
       console.debug("balance", balance)

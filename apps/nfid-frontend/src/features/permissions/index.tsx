@@ -98,7 +98,7 @@ const PermissionsPage: FC<PermissionsPageProps> = ({
       )
 
       dispatch({ type: "LOAD_MORE_SUCCESS", payload: { list: nextBatch } })
-    } catch (e) {
+    } catch (_e) {
       dispatch({ type: "LOAD_MORE_SUCCESS", payload: { list: [] } })
     }
   }, [state.page, state.hasMore, publicKey, initedTokens])

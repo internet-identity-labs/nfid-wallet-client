@@ -37,7 +37,7 @@ const Template: StoryFn<TransferFTUiProps> = (args) => {
   return (
     <FormProvider {...formMethods}>
       <div className="w-[450px] h-[630px]">
-        <TransferTemplate>
+        <TransferTemplate isOpen={true}>
           <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
             Send
           </div>
@@ -45,7 +45,7 @@ const Template: StoryFn<TransferFTUiProps> = (args) => {
             firstValue="Token"
             secondValue="Collectible"
             className="mb-5"
-            onChange={() => console.log("Tab changed")}
+            onChange={() => {}}
             defaultValue={false}
             id="send_type_toggle"
           />
@@ -83,9 +83,7 @@ export const SendFTProps: any = {
   setUSDAmount: () => {},
   setSelectedCurrency: () => {},
   setSelectedBlockchain: () => {},
-  submit: async () => {
-    console.log("Send button clicked")
-  },
+  submit: async () => {},
   setChosenToken: () => {},
   validateAddress: () => true,
   tokens: [] as FT[],

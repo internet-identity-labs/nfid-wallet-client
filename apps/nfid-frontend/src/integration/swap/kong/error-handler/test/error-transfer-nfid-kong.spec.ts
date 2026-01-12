@@ -13,7 +13,7 @@ describe("shroff transfer kong error handler test", () => {
   it.skip("shroff transfer kong icrc2 error handler test", async function () {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
-    let mockId = Ed25519KeyIdentity.generate()
+    const mockId = Ed25519KeyIdentity.generate()
 
     const shroff: Shroff = await new KongShroffBuilder()
       .withSource(sourceLedger)
@@ -39,14 +39,13 @@ describe("shroff transfer kong error handler test", () => {
       })
     try {
       await shroff.swap(mockId)
-      // eslint-disable-next-line jest/no-jasmine-globals
       fail("Should throw an error")
     } catch (e) {}
-    let failedTransaction = shroff.getSwapTransaction()
+    const failedTransaction = shroff.getSwapTransaction()
     const errorHandler = errorHandlerFactory.getHandler(failedTransaction!)
     expect(failedTransaction?.getStage()).toEqual(SwapStage.TransferNFID)
     try {
-      let trs = await errorHandler.completeTransaction(mockId)
+      const trs = await errorHandler.completeTransaction(mockId)
       expect(trs.getStage()).toEqual(SwapStage.Completed)
     } catch (e) {
       if (e instanceof ContactSupportError) {

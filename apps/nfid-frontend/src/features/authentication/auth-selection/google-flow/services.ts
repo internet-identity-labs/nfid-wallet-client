@@ -43,7 +43,7 @@ export const signWithGoogleService = async (
   try {
     await replaceActorIdentity(im, delegation)
     profile = await fetchProfile()
-  } catch (e) {
+  } catch (_e) {
     console.log("creating new profile")
     profile = await createNFIDProfile({
       delegationIdentity: delegation,

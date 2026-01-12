@@ -69,7 +69,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
     data: balance,
     isLoading: isBalanceLoading,
     isValidating: isBalanceValidating,
-  } = useSWR(identity ? ["userBalance", identity] : null, ([key, identity]) =>
+  } = useSWR(identity ? ["userBalance", identity] : null, ([_key, identity]) =>
     getUserBalance(
       AccountIdentifier.fromPrincipal({
         principal: identity.getPrincipal(),
@@ -83,7 +83,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
 
   const { data: nft } = useSWR(
     tokenId && identity ? ["nftDetails", tokenId, identity] : null,
-    ([key, id, identity]) =>
+    ([_key, id, identity]) =>
       getNFTByTokenId(id, identity.getPrincipal().toString()),
   )
 
@@ -207,7 +207,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
                   if (tokenId && !nft)
                     throw new Error("Couldn't find NFT. Please try again.")
 
-                  let transferIdentity = tokenId
+                  const transferIdentity = tokenId
                     ? await getWalletDelegationAdapter("nfid.one", "-1", [
                         nft?.canisterId!,
                       ])

@@ -25,7 +25,7 @@ export default {
   },
 } as Meta
 
-const selectComponent = (tokenType: string) => {
+const SelectComponent = ({ tokenType }: { tokenType: string }) => {
   const { register, setValue, handleSubmit, resetField, formState } =
     useForm<FormFields>({
       defaultValues: {
@@ -60,7 +60,7 @@ const Template: StoryFn<TransferModalProps> = (args) => {
   return (
     <TransferModal
       {...args}
-      component={selectComponent(tokenType)}
+      component={<SelectComponent tokenType={tokenType} />}
       onTokenTypeChange={handleTokenTypeChange}
     />
   )

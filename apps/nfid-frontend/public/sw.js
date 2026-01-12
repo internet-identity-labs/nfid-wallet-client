@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-globals */
+ 
 self.addEventListener('install', () => {
   // Skip over the "waiting" lifecycle state, to ensure that our
   // new service worker is activated immediately, even if there's

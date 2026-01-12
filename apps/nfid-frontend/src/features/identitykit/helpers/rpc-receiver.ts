@@ -53,7 +53,7 @@ export type ProcedureCallEvent = {
 const windowMessages = fromEvent<MessageEvent<RPCMessage>>(window, "message")
 
 export const rpcMessages = windowMessages.pipe(
-  filter((event) => event.data && event.data.jsonrpc === "2.0"),
+  filter((event) => event.data?.jsonrpc === "2.0"),
 )
 
 export const RPCReceiverV3 =
@@ -68,9 +68,8 @@ export const RPCReceiverV3 =
       if (message?.data?.method === icrc29GetStatusMethodService.getMethod()) {
         try {
           const parent = window.opener || window.parent
-          const response = await icrc29GetStatusMethodService.executeMethod(
-            message,
-          )
+          const response =
+            await icrc29GetStatusMethodService.executeMethod(message)
           parent.postMessage(response, message.origin)
         } catch (error: unknown) {
           if (error instanceof NoActionError) {

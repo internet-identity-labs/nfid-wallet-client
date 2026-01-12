@@ -40,7 +40,7 @@ export const useTokensInit = (
 
       const { publicKey } = authState.getUserIdData()
       const principal = Principal.fromText(publicKey)
-      let initedTokens = await ftService.getInitedTokens(
+      const initedTokens = await ftService.getInitedTokens(
         activeTokens,
         principal,
       )

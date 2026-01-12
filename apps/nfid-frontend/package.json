@@ -10,17 +10,6 @@
     "eject": "react-scripts eject",
     "serve": "npm start"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ],
-    "rules": {
-      "jsx-a11y/alt-text": [
-        0
-      ]
-    }
-  },
   "browserslist": {
     "production": [
       "last 2 chrome version",

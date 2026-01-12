@@ -100,7 +100,10 @@ export class PasskeyConnector {
     })
   }
 
-  private getAccessPointDeviceAndIcon({ transports, type }: IPasskeyMetadata) {
+  private getAccessPointDeviceAndIcon({
+    transports,
+    type: _type,
+  }: IPasskeyMetadata) {
     let icon
     let device
 
@@ -199,7 +202,7 @@ export class PasskeyConnector {
   async updateStorageCredentialsId(accessPoint: AccessPoint) {
     if (accessPoint.credentialId) {
       const newKey = accessPoint.credentialId
-      let keys = await walletStorage.get("credentialIds")
+      const keys = await walletStorage.get("credentialIds")
       const parsedKeys: string[] = keys ? JSON.parse(keys as string) : []
       if (!parsedKeys.includes(newKey)) {
         parsedKeys.push(newKey)
@@ -471,7 +474,7 @@ export class PasskeyConnector {
     const { authData } = decodedAttestationObject
 
     // includes flags, and all other data
-    let authDataParsed = decodeHelpers.parseAuthenticatorData(authData)
+    const authDataParsed = decodeHelpers.parseAuthenticatorData(authData)
 
     // Format the AAGUID as a UUID string
     const aaguid = isoUint8Array.toHex(authDataParsed.aaguid!)

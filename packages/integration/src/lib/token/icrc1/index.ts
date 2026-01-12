@@ -27,7 +27,7 @@ export async function getICRC1HistoryDataForUser(
   const canisters =
     await icrc1StorageService.getICRC1ActiveCanisters(rootPrincipalId)
 
-  let cachedICRC1IndexData = (await storageWithTtl.get(
+  const cachedICRC1IndexData = (await storageWithTtl.get(
     "Activity_" + rootPrincipalId,
   )) as ICRC1IndexData[]
   let ledgerAndBlockNumberToStartFrom: {
@@ -61,7 +61,7 @@ export async function getICRC1HistoryDataForUser(
 
   if (!indexedCanisters.length) return []
 
-  let icrc1IndexData: Array<ICRC1IndexData> =
+  const icrc1IndexData: Array<ICRC1IndexData> =
     await icrc1TransactionHistoryService.getICRC1IndexData(
       indexedCanisters,
       publicKey,
@@ -70,7 +70,7 @@ export async function getICRC1HistoryDataForUser(
 
   icrc1IndexData.forEach((data) => {
     if (cachedICRC1IndexData) {
-      let cachedTransactions = cachedICRC1IndexData.find(
+      const cachedTransactions = cachedICRC1IndexData.find(
         (d) => d.canisterId === data.canisterId,
       )?.transactions
       if (cachedTransactions) {

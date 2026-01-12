@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { useClickOutside } from "packages/utils/src/index"
-import { FC, FunctionComponent, SVGProps, useEffect, useState } from "react"
+import { FC, SVGProps, useState } from "react"
 
 import {
   IconCmpWarning,

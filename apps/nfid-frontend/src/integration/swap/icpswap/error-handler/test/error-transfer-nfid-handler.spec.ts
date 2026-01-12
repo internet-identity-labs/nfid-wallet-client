@@ -21,7 +21,7 @@ describe("shroff transfer nfid error handler test", () => {
   it("shroff transfer nfid error handler test", async function () {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
-    let mockId = Ed25519KeyIdentity.fromParsedJson(mock)
+    const mockId = Ed25519KeyIdentity.fromParsedJson(mock)
 
     const shroff: Shroff = await new IcpSwapShroffBuilder()
       .withSource(sourceLedger)
@@ -73,13 +73,12 @@ describe("shroff transfer nfid error handler test", () => {
     try {
       await shroff.swap(mockId)
     } catch (e) {}
-    let failedTransaction = shroff.getSwapTransaction()
+    const failedTransaction = shroff.getSwapTransaction()
     const errorHandler = errorHandlerFactory.getHandler(failedTransaction!)
     expect(failedTransaction?.getStage()).toEqual(SwapStage.TransferNFID)
     try {
       await errorHandler.completeTransaction(mockId)
     } catch (e: any) {
-      // eslint-disable-next-line jest/no-conditional-expect
       expect(e.message).toContain("InsufficientFunds")
     }
   })

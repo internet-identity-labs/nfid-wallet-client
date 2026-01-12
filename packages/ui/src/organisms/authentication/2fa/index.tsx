@@ -24,7 +24,7 @@ export interface IAuth2FA {
   isIdentityKit?: boolean
 }
 export const Auth2FA = ({
-  appMeta,
+  appMeta: _appMeta,
   isLoading,
   handleAuth,
   onMounted,
@@ -35,7 +35,7 @@ export const Auth2FA = ({
     if (onMounted) {
       onMounted()
     }
-  }, [])
+  }, [onMounted])
   const isDarkTheme = useDarkTheme()
   if (isLoading) return <BlurredLoader isLoading />
 

@@ -3,7 +3,7 @@
   "$schema": "node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/nfid-frontend-e2e/src",
   "projectType": "application",
-  "tags": [],
+  "tags": ["scope:e2e", "type:application", "layer:app"],
   "// targets": "to see all targets run: nx show project nfid-frontend-e2e --web",
   "targets": {}
 }

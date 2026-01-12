@@ -11,6 +11,7 @@
     "dedupe:deps": "npx yarn-deduplicate yarn.lock",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "lint": "yarn nx run-many --target=lint --all",
     "report": "node_modules/.bin/allure generate apps/nfid-frontend-e2e/src/reporter/desktop/allure-results --clean -o apps/nfid-frontend-e2e/src/reporter/desktop/allure-report && node_modules/.bin/allure open apps/nfid-frontend-e2e/src/reporter/desktop/allure-report",
     "reportMobile": "node_modules/.bin/allure generate apps/nfid-frontend-e2e/src/reporter/mobile/allure-results --clean -o apps/nfid-frontend-e2e/src/reporter/mobile/allure-report && node_modules/.bin/allure open apps/nfid-frontend-e2e/src/reporter/mobile/allure-report",
     "prepare": "husky"
@@ -18,6 +19,9 @@
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,css,scss,md,yml,yaml,html}": [
       "prettier --write"
+    ],
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix"
     ]
   },
   "dependencies": {
@@ -98,6 +102,8 @@
     "@babel/core": "7.28.3",
     "@babel/eslint-parser": "7.28.0",
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
+    "@babel/plugin-syntax-flow": "7.23.3",
+    "@babel/plugin-transform-react-jsx": "7.27.1",
     "@babel/preset-env": "7.28.3",
     "@babel/preset-react": "7.27.1",
     "@babel/preset-typescript": "7.27.1",
@@ -144,8 +150,8 @@
     "@types/react-tooltip": "4.2.4",
     "@types/sha256": "0.2.2",
     "@types/uuid": "11.0.0",
-    "@typescript-eslint/eslint-plugin": "7.16.0",
-    "@typescript-eslint/parser": "7.16.0",
+    "@typescript-eslint/eslint-plugin": "8.50.1",
+    "@typescript-eslint/parser": "8.50.1",
     "@wdio/allure-reporter": "9.19.2",
     "@wdio/cli": "9.19.2",
     "@wdio/cucumber-framework": "9.19.2",
@@ -168,15 +174,13 @@
     "dotenv": "17.2.3",
     "elliptic": "6.6.1",
     "env-cmd": "11.0.0",
-    "eslint": "9.34.0",
-    "eslint-config-prettier": "9.0.0",
-    "eslint-config-react-app": "7.0.1",
-    "eslint-plugin-cypress": "2.13.4",
-    "eslint-plugin-import": "2.25.4",
-    "eslint-plugin-prettier": "4.0.0",
-    "eslint-plugin-react": "7.31.11",
-    "eslint-plugin-react-hooks": "4.3.0",
-    "eslint-plugin-storybook": "0.6.7",
+    "eslint": "9.39.2",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-cypress": "5.2.0",
+    "eslint-plugin-import": "2.32.0",
+    "eslint-plugin-prettier": "5.5.4",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "7.0.1",
     "eslint-plugin-wdio": "9.16.2",
     "events": "3.3.0",
     "expect-webdriverio": "5.4.2",

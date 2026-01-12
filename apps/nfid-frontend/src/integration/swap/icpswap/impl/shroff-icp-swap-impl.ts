@@ -206,7 +206,7 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
           const id = result.ok as bigint
           this.swapTransaction!.setSwap(id)
         } else {
-          let err = JSON.stringify(
+          const err = JSON.stringify(
             "Deposit and swap error: " + JSON.stringify(result.err),
           )
           console.error(err)

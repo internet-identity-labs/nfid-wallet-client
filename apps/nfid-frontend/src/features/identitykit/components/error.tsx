@@ -114,7 +114,7 @@ export const RPCComponentError = ({
                     <div className="space-y-2">
                       <p className="font-bold">Canister ID</p>
                       <p className="">
-                        {(request.data?.params as any)?.canisterId}
+                        {(request.data?.params as any)?.canisterId as string}
                       </p>
                     </div>
                     <div className="space-y-2">

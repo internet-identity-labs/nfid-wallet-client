@@ -24,7 +24,7 @@ export const useTimer = ({
 
     if (counter === 0) {
       setElapsed(true)
-      onElapsed && onElapsed()
+      onElapsed?.()
       clearInterval(Number(timer.current))
     }
 

@@ -189,7 +189,7 @@ describe("Lambda Sign/Register ECDSA", () => {
       )
       const renewedPrincipalId = renewedIdentity.getPrincipal().toText()
       expect(actualPrincipalId).toEqual(renewedPrincipalId)
-      const agent: Agent = await new HttpAgent({
+      const agent: Agent = new HttpAgent({
         host: "https://ic0.app",
         identity: actualIdentity,
       })
@@ -204,7 +204,7 @@ describe("Lambda Sign/Register ECDSA", () => {
       const result = (await actor["get_principal"]()) as string[]
       console.log(result)
 
-      const agent2: Agent = await new HttpAgent({
+      const agent2: Agent = new HttpAgent({
         host: "https://ic0.app",
         identity: renewedIdentity,
       })

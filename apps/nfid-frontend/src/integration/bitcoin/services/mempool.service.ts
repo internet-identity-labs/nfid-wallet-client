@@ -64,8 +64,7 @@ export class MempoolService {
 
       const latestTx = txs[0]
       if (
-        !latestTx ||
-        !latestTx.status?.confirmed ||
+        !latestTx?.status?.confirmed ||
         typeof latestTx.status.block_height !== "number"
       ) {
         return false

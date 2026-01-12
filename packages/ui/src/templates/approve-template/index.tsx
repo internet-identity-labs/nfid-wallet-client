@@ -7,8 +7,7 @@ import { Button } from "../../molecules/button"
 import { SDKApplicationMeta } from "../../molecules/sdk-app-meta"
 import { ScreenResponsive } from "../screen-responsive"
 
-export interface ApproveTemplateProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface ApproveTemplateProps extends React.HTMLAttributes<HTMLDivElement> {
   applicationName: string
   applicationLogo: string
   onReject: () => void
@@ -19,7 +18,7 @@ export interface ApproveTemplateProps
 
 export const ApproveTemplate: React.FC<ApproveTemplateProps> = ({
   children,
-  className,
+  className: _className,
   applicationName,
   applicationLogo,
   onReject,

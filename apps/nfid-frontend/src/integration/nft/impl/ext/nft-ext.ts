@@ -2,6 +2,10 @@ import { assetFullsize, fetchCollection } from "src/integration/entrepot/lib"
 import { EntrepotCollection } from "src/integration/entrepot/types"
 import { extPropertiesService } from "src/integration/nft/impl/ext/properties/properties-service"
 import { extTransactionMapper } from "src/integration/nft/impl/ext/transaction/ext-transaction-mapper"
+import {
+  ResponseData,
+  TransactionToniq,
+} from "src/integration/nft/impl/ext/transaction/types"
 import { NFTDetailsImpl, NftImpl } from "src/integration/nft/impl/nft-abstract"
 import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
 
@@ -55,17 +59,21 @@ class NFTExtDetails extends NFTDetailsImpl {
   }
 
   async getTransactions(
-    from: number,
-    to: number,
+    _from: number,
+    _to: number,
   ): Promise<{ activity: Array<TransactionRecord>; isLastPage: boolean }> {
-    let url = `${TOKEN_API}/${this.tokenId}`
-    let responseData: ResponseData = await fetch(url, {
+    const url = `${TOKEN_API}/${this.tokenId}`
+    const responseData: ResponseData = await fetch(url, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     }).then((response) => response.json())
     const trss: TransactionRecord[] = responseData.transactions
-      .map((raw) => extTransactionMapper.toTransactionRecordToniq(raw))
-      .filter((tx): tx is TransactionRecord => tx !== null)
+      .map((raw: TransactionToniq) =>
+        extTransactionMapper.toTransactionRecordToniq(raw),
+      )
+      .filter(
+        (tx: TransactionRecord | null): tx is TransactionRecord => tx !== null,
+      )
     return {
       activity: trss,
       isLastPage: true,

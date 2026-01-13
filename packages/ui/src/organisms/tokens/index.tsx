@@ -85,6 +85,7 @@ export const Tokens: FC<TokensProps> = ({
   const [loadingToken, setLoadingToken] = useState<FT | null>(null)
   const isDarkTheme = useDarkTheme()
   const [filter, setFilter] = useState<string[]>([])
+  const isLoading = isTokensLoading || initedTokens.length === 0
 
   const handleSorting = () => {
     const nextSorting = {
@@ -155,7 +156,7 @@ export const Tokens: FC<TokensProps> = ({
   return (
     <>
       <div className="relative flex flex-col">
-        <div className={clsx("flex justify-end", isTokensLoading && "hidden")}>
+        <div className={clsx("flex justify-end", isLoading && "hidden")}>
           <ChainFilter filter={filter} setFilter={setFilter} />
         </div>
         <div className="mb-[20px] overflow-x-auto scrollbar scrollbar-w-4 scrollbar-thumb-gray-300 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
@@ -190,7 +191,7 @@ export const Tokens: FC<TokensProps> = ({
               </tr>
             </thead>
             <tbody className="h-16 text-sm text-black">
-              {isTokensLoading ? (
+              {isLoading ? (
                 <TableTokenSkeleton
                   tableRowsAmount={5}
                   tableCellAmount={getIsMobileDeviceMatch() ? 2 : 6}
@@ -199,15 +200,6 @@ export const Tokens: FC<TokensProps> = ({
               ) : (
                 filteredTokens.map((token, index, arr) => (
                   <ActiveToken
-                    isIniting={
-                      isTokensLoading ||
-                      (token.getTokenAddress() === BTC_NATIVE_ID &&
-                        !token.isInited()) ||
-                      (token.getTokenAddress() === ETH_NATIVE_ID &&
-                        !token.isInited()) ||
-                      (token.getTokenAddress() === EVM_NATIVE &&
-                        !token.isInited())
-                    }
                     hideZeroBalance={hideZeroBalance}
                     key={`token_${token.getTokenAddress()}_${token.getTokenState()}_${token.getChainId()}`}
                     token={token}
@@ -237,7 +229,7 @@ export const Tokens: FC<TokensProps> = ({
           setLoadingToken={setLoadingToken}
           hideZeroBalance={hideZeroBalance}
           onZeroBalanceToggle={onZeroBalanceToggle}
-          manageBtnDisabled={isTokensLoading}
+          manageBtnDisabled={isLoading}
         />
       </div>
       <TokenInfoModal token={token} onClose={() => setToken(undefined)} />

@@ -20,7 +20,6 @@ import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc
 import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { ftService } from "frontend/integration/ft/ft-service"
 import { ProfileContext } from "frontend/provider"
 
@@ -34,8 +33,6 @@ const TokensPage = () => {
   const userRootPrincipalId = authState.getUserIdData().userId
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
-  const { isBtcAddressLoading } = useBtcAddress()
-  const { isEthAddressLoading } = useEthAddress()
 
   const onSendClick = (selectedToken: SelectedToken) => {
     send({ type: "ASSIGN_VAULTS", data: false })
@@ -108,11 +105,7 @@ const TokensPage = () => {
       revalidateOnMount: false,
     })
 
-  const { initedTokens } = useTokensInit(
-    tokens,
-    isBtcAddressLoading,
-    isEthAddressLoading,
-  )
+  const { initedTokens, isLoading: isTokensLoading } = useTokensInit(tokens)
 
   const tokensOwnedQuantity = useMemo(() => {
     return initedTokens?.filter(
@@ -233,7 +226,7 @@ const TokensPage = () => {
         <Tokens
           initedTokens={initedTokens || []}
           allTokens={tokens || []}
-          isTokensLoading={!initedTokens}
+          isTokensLoading={isTokensLoading}
           onSubmitIcrc1Pair={onSubmitIcrc1Pair}
           onFetch={onFetch}
           profileConstants={ProfileConstants}

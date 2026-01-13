@@ -43,7 +43,6 @@ import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-s
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { ModalType } from "frontend/features/transfer-modal/types"
 import { getAllVaults } from "frontend/features/vaults/services"
-import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
 
@@ -139,8 +138,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const [isSyncEmailLoading, setIsSyncEmailLoading] = useState(false)
   const { profile } = useProfile()
   const { logout } = useAuthentication()
-  const { isBtcAddressLoading } = useBtcAddress()
-  const { isEthAddressLoading } = useEthAddress()
 
   const hasVaults = useMemo(() => !!vaults?.length, [vaults])
 
@@ -148,11 +145,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     revalidateOnFocus: false,
   })
 
-  const { initedTokens } = useTokensInit(
-    tokens,
-    isBtcAddressLoading,
-    isEthAddressLoading,
-  )
+  const { initedTokens } = useTokensInit(tokens)
 
   const btc = useMemo(() => {
     return initedTokens?.find(

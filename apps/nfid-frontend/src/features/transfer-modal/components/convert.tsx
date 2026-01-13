@@ -14,7 +14,7 @@ import {
 import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
-import { useEthAddress, useBtcAddress } from "frontend/hooks"
+import { useEthAddress } from "frontend/hooks"
 import { useIdentity } from "frontend/hooks/identity"
 import {
   bitcoinService,
@@ -71,8 +71,7 @@ export const ConvertBTC = ({
   const [toTokenAddress, setToTokenAddress] = useState(
     getConversionTokenAddress(preselectedSourceTokenAddress ?? BTC_NATIVE_ID),
   )
-  const { ethAddress, isEthAddressLoading } = useEthAddress()
-  const { isBtcAddressLoading } = useBtcAddress()
+  const { ethAddress } = useEthAddress()
 
   const handleReverse = useCallback(() => {
     setFromTokenAddress(toTokenAddress)
@@ -85,11 +84,7 @@ export const ConvertBTC = ({
     { revalidateOnFocus: false, revalidateOnMount: false },
   )
 
-  const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(
-    tokens,
-    isBtcAddressLoading,
-    isEthAddressLoading,
-  )
+  const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(tokens)
 
   const filteredTokens = useMemo(() => {
     if (!initedTokens) return

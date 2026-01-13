@@ -60,13 +60,13 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
                     <p className="dark:text-white">
                       {wallet.email ?? wallet.name}
                     </p>
-                    <p className="mt-0.5 tex-xs text-gray-400 dark:text-zinc-500 leading-4.5">
+                    <div className="mt-0.5 tex-xs text-gray-400 dark:text-zinc-500 leading-4.5">
                       <CenterEllipsis
                         value={wallet.principal}
                         leadingChars={6}
                         trailingChars={3}
                       />
-                    </p>
+                    </div>
                   </div>
                   <IconCaret color={isDarkTheme ? "white" : "black"} />
                 </div>

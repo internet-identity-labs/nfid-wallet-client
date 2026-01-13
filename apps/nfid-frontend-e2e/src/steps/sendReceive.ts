@@ -38,7 +38,7 @@ Then(/^User selects ([^"]*) from send options/, async (currency: string) => {
             await it.click()
           },
         )
-      } catch (e) {
+      } catch (_e) {
         await Assets.tokenToSendBackButton.click()
       }
       return await Assets.chooseModalButton.isDisplayed()
@@ -80,22 +80,22 @@ Then(/^Verifying that the transaction is success$/, async () => {
 
 Then(
   /^Verifying that the Account ID is ([^"]*) and the Principal is ([^"]*)/,
-  async function (account: string, principal: string) {
+  async (account: string, principal: string) => {
     const currentAddress = await Assets.getAccountId(true)
-    let currentPrincipal = await Assets.getAccountId(false)
+    const currentPrincipal = await Assets.getAccountId(false)
 
     await softAssertAll(
       async () =>
-        await expect(
-          (await (currentAddress.firstAddressPart.getText())) +
-            "..." +
-            (await (currentAddress.secondAddressPart.getText())),
+        expect(
+          `${await currentAddress.firstAddressPart.getText() 
+            }...${ 
+            await currentAddress.secondAddressPart.getText()}`,
         ).toEqual(account),
       async () =>
-        await expect(
-          (await (currentPrincipal.firstAddressPart.getText())) +
-            "..." +
-            (await (currentPrincipal.secondAddressPart.getText())),
+        expect(
+          `${await currentPrincipal.firstAddressPart.getText() 
+            }...${ 
+            await currentPrincipal.secondAddressPart.getText()}`,
         ).toEqual(principal),
     )
   },

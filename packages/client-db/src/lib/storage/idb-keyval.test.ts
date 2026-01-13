@@ -7,8 +7,8 @@ let testCounter = 0
 
 const testDb = async () => {
   return await IdbKeyVal.create({
-    dbName: "db-" + testCounter,
-    storeName: "store-" + testCounter,
+    dbName: `db-${testCounter}`,
+    storeName: `store-${testCounter}`,
   })
 }
 

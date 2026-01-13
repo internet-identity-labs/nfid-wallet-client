@@ -1,7 +1,26 @@
-import { resetIntegrationCache } from "packages/integration/src/cache"
-import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
+
+import { resetIntegrationCache } from "@nfid/integration"
+import {
+  ICP_CANISTER_ID,
+  NFIDW_CANISTER_ID,
+} from "@nfid/integration/token/constants"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import { SwapFTUi } from "@nfid/ui/organisms/send-receive/components/swap"
+import { useTokensInit } from "@nfid/ui/organisms/send-receive/hooks/token-init"
+
+import { fetchTokens } from "frontend/features/fungible-token/utils"
+import { useIdentity } from "frontend/hooks/identity"
+import { FT } from "frontend/integration/ft/ft"
+import {
+  ftService,
+  TokensAvailableToSwap,
+} from "frontend/integration/ft/ft-service"
+import { FeeResponse } from "frontend/integration/ft/utils"
+import { swapService } from "frontend/integration/swap/service/swap-service"
+import { userPrefService } from "frontend/integration/user-preferences/user-pref-service"
 import {
   DepositError,
   LiquidityError,
@@ -13,31 +32,12 @@ import { Shroff } from "src/integration/swap/shroff"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
-import {
-  ICP_CANISTER_ID,
-  NFIDW_CANISTER_ID,
-} from "@nfid/integration/token/constants"
-import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
-
-import { fetchTokens } from "frontend/features/fungible-token/utils"
-import { useIdentity } from "frontend/hooks/identity"
-import { FT } from "frontend/integration/ft/ft"
-import {
-  ftService,
-  TokensAvailableToSwap,
-} from "frontend/integration/ft/ft-service"
-import { swapService } from "frontend/integration/swap/service/swap-service"
-import { userPrefService } from "frontend/integration/user-preferences/user-pref-service"
-
 import { FormValues } from "../types"
 import {
   getQuoteData,
   getTokensWithUpdatedBalance,
   updateCachedInitedTokens,
 } from "../utils"
-import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
-import { FeeResponse } from "frontend/integration/ft/utils"
-import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 const QUOTE_REFETCH_TIMER = 30
 

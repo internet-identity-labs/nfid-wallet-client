@@ -54,10 +54,9 @@ class InterfaceFactoryService {
     }
 
     const candidJs = await this.transformDidToJs(candidFile, agent as never)
-    const dataUri =
-      "data:text/javascript;charset=utf-8," + encodeURIComponent(candidJs)
+    const dataUri = `data:text/javascript;charset=utf-8,${encodeURIComponent(candidJs)}`
 
-    const interfaceFactory = await eval('import("' + dataUri + '")')
+    const interfaceFactory = await eval(`import("${dataUri}")`)
     return interfaceFactory.idlFactory
   }
 

@@ -1,10 +1,9 @@
-import { useProfile } from "src/integration/identity-manager/queries"
-
 import { authState } from "@nfid/integration"
 import { useSWR } from "@nfid/swr"
+import ProfileCredentialsPage from "@nfid/ui/pages/new-profile/credentials"
 
 import { decryptStringForIdentity } from "frontend/integration/lambda/symmetric"
-import ProfileCredentialsPage from "frontend/ui/pages/new-profile/credentials"
+import { useProfile } from "src/integration/identity-manager/queries"
 
 const ProfileCredentials = () => {
   const { profile } = useProfile()

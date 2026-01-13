@@ -1,8 +1,8 @@
 import clsx from "clsx"
 import { motion } from "framer-motion"
-import { A } from "packages/ui/src/atoms/custom-link"
-import { Separator } from "packages/ui/src/atoms/separator"
 import { useEffect, useMemo, useState } from "react"
+
+import { A, Separator } from "@nfid/ui"
 import { useForm } from "react-hook-form"
 
 import {
@@ -11,7 +11,7 @@ import {
   IconCmpArrow,
   IconCmpPasskey,
   Input,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 import { ExistingWallet } from "@nfid/integration"
 
 import { isWebAuthNSupported } from "frontend/integration/device"

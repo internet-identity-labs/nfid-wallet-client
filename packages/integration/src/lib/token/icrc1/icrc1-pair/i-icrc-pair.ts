@@ -1,6 +1,7 @@
 import { SignIdentity } from "@dfinity/agent"
-import { ICRC1Data, AllowanceDetailDTO } from "../types"
 import { Principal } from "@dfinity/principal"
+
+import { ICRC1Data, AllowanceDetailDTO } from "../types"
 
 export interface IIcrc1Pair {
   validateStandard(): Promise<void>

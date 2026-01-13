@@ -1,4 +1,9 @@
 import { UUID } from "node:crypto"
+
+import { v4 as uuidv4 } from "uuid"
+
+import { hasOwnProperty } from "@nfid/integration"
+
 import {
   SwapError,
   SwapTransaction,
@@ -8,9 +13,6 @@ import {
   SwapTransaction as SwapTransactionCandid,
 } from "src/integration/swap/transaction/idl/swap_trs_storage.d"
 import { SwapName, SwapStage } from "src/integration/swap/types/enums"
-import { v4 as uuidv4 } from "uuid"
-
-import { hasOwnProperty } from "@nfid/integration"
 
 export abstract class AbstractSwapTransaction implements SwapTransaction {
   protected uid: UUID

@@ -1,10 +1,12 @@
 import { Principal } from "@dfinity/principal"
-import { decodeTokenIdentifier } from "src/integration/entrepot/ext"
 
 import { Account } from "@nfid/integration"
 
-import { collection, token } from "."
+import { decodeTokenIdentifier } from "src/integration/entrepot/ext"
+
 import { EntrepotToken, UserNFTDetails } from "./types"
+
+import { collection, token } from "."
 
 export async function mapToNFTData(
   response: EntrepotToken[],

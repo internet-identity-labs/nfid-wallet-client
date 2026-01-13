@@ -1,10 +1,10 @@
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+
 import {
   authStorage,
   KEY_STORAGE_DELEGATION,
   KEY_STORAGE_KEY,
-} from "packages/integration/src/lib/authentication/storage"
-
+} from "@nfid/integration"
 import {
   authState,
   DeviceType,
@@ -58,7 +58,7 @@ export const signWithGoogleService = async (
   if (!profile.is2fa) {
     await authState.set({
       delegationIdentity: delegation,
-      identity: identity,
+      identity,
     })
   }
 
@@ -76,6 +76,6 @@ export const signWithGoogleService = async (
     sessionSource: "google",
     anchor: profile.anchor,
     delegationIdentity: delegation,
-    identity: identity,
+    identity,
   } as GoogleAuthSession
 }

@@ -1,13 +1,14 @@
 import { WebAuthnIdentity } from "@dfinity/identity"
-import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 
 import { ii, im, setProfileToStorage } from "@nfid/integration"
+import { getIsMobileDeviceMatch } from "@nfid/ui/utils/is-mobile"
 
-import { deviceInfo, fetchWebAuthnPlatformCapability } from "."
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "../identity"
 import { fetchProfile } from "../identity-manager"
 import { fetchAuthenticatorDevices } from "../internet-identity"
 import { creationOptions } from "../webauthn/creation-options"
+
+import { deviceInfo, fetchWebAuthnPlatformCapability } from "."
 
 export async function isMobileWithWebAuthn() {
   console.debug("isMobileWithWebAuthn call fetchWebAuthnCapability")

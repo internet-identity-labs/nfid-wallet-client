@@ -1,6 +1,8 @@
-import { EVMTokenTransactionService } from "../evm-transaction.service"
-import { Erc20Service } from "../erc20-abstract.service"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+
+import { Erc20Service } from "../erc20-abstract.service"
+import { EVMTokenTransactionService } from "../evm-transaction.service"
+
 import { arbitrumErc20Service } from "./arbitrum-erc20.service"
 
 export class ArbitrumErc20TransactionService extends EVMTokenTransactionService {

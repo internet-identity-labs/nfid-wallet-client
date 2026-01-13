@@ -8,25 +8,25 @@ import {
   FilterPopover,
   IconCmpFilters,
   Table,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 
 import { IActivityRowGroup } from "frontend/features/activity/types"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 import { EVM_NATIVE, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 
-import { TableActivitySkeleton } from "../../atoms/skeleton"
+import { TableActivitySkeleton } from "@nfid/ui/atoms/skeleton"
 import { ActivityEmpty } from "./components/activity-empty"
 import { ActivityTableGroup } from "./components/activity-table-group"
 
-import { AllNetworksIcon } from "packages/ui/src/atoms/icons/AllNetworksIcon"
+import { AllNetworksIcon } from "@nfid/ui/atoms/icons/AllNetworksIcon"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
-import { BtcNetworkIcon } from "../../atoms/icons/BtcNetworkIcon"
-import { EthNetworkIcon } from "../../atoms/icons/EthNetworkIcon"
-import { IcpNetworkIcon } from "../../atoms/icons/IcpNetworkIcon"
-import { PolNetworkIcon } from "../../atoms/icons/PolNetworkIcon"
-import { ArbNetworkIcon } from "../../atoms/icons/ArbNetworkIcon"
+import { BtcNetworkIcon } from "@nfid/ui/atoms/icons/BtcNetworkIcon"
+import { EthNetworkIcon } from "@nfid/ui/atoms/icons/EthNetworkIcon"
+import { IcpNetworkIcon } from "@nfid/ui/atoms/icons/IcpNetworkIcon"
+import { PolNetworkIcon } from "@nfid/ui/atoms/icons/PolNetworkIcon"
+import { ArbNetworkIcon } from "@nfid/ui/atoms/icons/ArbNetworkIcon"
 import {
   SearchRequest,
   UserAddressPreview,

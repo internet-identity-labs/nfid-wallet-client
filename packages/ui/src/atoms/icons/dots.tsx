@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React from "react"
 
 interface DotsIconProps extends React.HTMLAttributes<HTMLDivElement> {
-  onClick?: (e: any) => void
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void
 }
 
 export const DotsIcon: React.FC<DotsIconProps> = ({ className, onClick }) => {

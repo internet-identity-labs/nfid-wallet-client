@@ -25,5 +25,10 @@
     "**/*.stories.jsx",
     "**/*.stories.tsx"
   ],
-  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "../../types/env"]
+  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "../../types/env"],
+  "references": [
+    {
+      "path": "../utils/tsconfig.lib.json"
+    }
+  ]
 }

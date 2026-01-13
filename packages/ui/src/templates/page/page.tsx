@@ -1,7 +1,5 @@
 import React from "react"
 
-import { ScreenResponsive } from "../screen-responsive"
-
 type PageProps = {
   children: React.ReactNode
 }

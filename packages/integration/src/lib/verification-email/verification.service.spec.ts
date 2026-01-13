@@ -306,7 +306,7 @@ function validateVerifyRequest(url: string, options: any): void {
   })
   const body = JSON.parse(options.body)
   expect(body).toMatchObject({
-    token: token,
+    token,
   })
 }
 

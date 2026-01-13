@@ -7,6 +7,8 @@ export const resetIntegrationCache = (
   keys: string[],
   callback?: () => void,
 ) => {
-  keys.map((key) => integrationCache.setItem(key, undefined, {}))
+  void Promise.all(
+    keys.map((key) => integrationCache.setItem(key, undefined, {})),
+  )
   callback?.()
 }

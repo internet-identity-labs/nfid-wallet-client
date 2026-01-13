@@ -1,6 +1,6 @@
 import clsx from "clsx"
 
-import { ModalAdvanced } from "@nfid-frontend/ui"
+import { ModalAdvanced } from "@nfid/ui"
 
 export interface IVaultTransactionRejectReason {
   error: string

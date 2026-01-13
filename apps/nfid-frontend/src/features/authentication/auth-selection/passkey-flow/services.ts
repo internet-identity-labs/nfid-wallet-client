@@ -6,22 +6,21 @@ import {
   WebAuthnIdentity,
   wrapDER,
 } from "@dfinity/identity"
+
 import { randomBytes } from "@noble/hashes/utils"
 import * as decodeHelpers from "@simplewebauthn/server/helpers"
 import { isoUint8Array } from "@simplewebauthn/server/helpers"
 import base64url from "base64url"
 import CBOR from "cbor"
-import { Challenge } from "packages/integration/src/lib/_ic_api/identity_manager.d"
+
+import { Challenge } from "@nfid/integration"
 import {
   authStorage,
   KEY_STORAGE_DELEGATION,
   KEY_STORAGE_KEY,
   walletStorage,
-} from "packages/integration/src/lib/authentication/storage"
-import { toHexString } from "packages/integration/src/lib/delegation-factory/delegation-i"
-import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
-
-import { getBrowser } from "@nfid-frontend/utils"
+} from "@nfid/integration"
+import { toHexString } from "@nfid/integration"
 import {
   AccessPoint,
   authState,
@@ -39,17 +38,19 @@ import {
   RootWallet,
   storePasskey,
 } from "@nfid/integration"
+import { getIsMobileDeviceMatch } from "@nfid/ui/utils/is-mobile"
+import { getBrowser } from "@nfid/utils"
 
 import { getPlatformInfo } from "frontend/integration/device"
+import {
+  CredentialData,
+  MultiWebAuthnIdentity,
+} from "frontend/integration/identity/multiWebAuthnIdentity"
 import {
   createNFIDProfile,
   createPasskeyAccessPoint,
   fetchProfile,
 } from "frontend/integration/identity-manager"
-import {
-  CredentialData,
-  MultiWebAuthnIdentity,
-} from "frontend/integration/identity/multiWebAuthnIdentity"
 import { AbstractAuthSession } from "frontend/state/authentication"
 
 const alreadyRegisteredDeviceErrors = [
@@ -251,7 +252,7 @@ export class PasskeyConnector {
     const profile = await createNFIDProfile(
       {
         delegationIdentity: tempKey,
-        name: name,
+        name,
         deviceType: DeviceType.Passkey,
         credentialId: key,
         devicePrincipal: identity.getPrincipal().toText(),
@@ -286,7 +287,7 @@ export class PasskeyConnector {
       anchor: profile.anchor,
       name: profile.name,
       delegationIdentity,
-      identity: identity,
+      identity,
     }
   }
 
@@ -415,7 +416,7 @@ export class PasskeyConnector {
       return {
         anchor: profile.anchor,
         name: profile.name,
-        delegationIdentity: delegationIdentity,
+        delegationIdentity,
         identity: multiIdent._actualIdentity!,
       }
     } catch (e) {
@@ -443,7 +444,7 @@ export class PasskeyConnector {
     }
 
     const passkeysMetadata: IPasskeyMetadata[] = await Promise.all(
-      allowedPasskeys.map(async (p) => await this.getPasskeyByCredentialID(p!)),
+      allowedPasskeys.map(async (p) => await this.getPasskeyByCredentialID(p)),
     )
 
     return await this.loginWithPasskey(
@@ -557,7 +558,7 @@ export class PasskeyConnector {
         },
         user: {
           id: nextBorrowedAnchor,
-          name: name,
+          name,
           displayName: name,
         },
       },

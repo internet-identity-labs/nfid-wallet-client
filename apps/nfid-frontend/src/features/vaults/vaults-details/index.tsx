@@ -1,12 +1,13 @@
 import React from "react"
 
-import { Tabs } from "@nfid-frontend/ui"
+import { Tabs } from "@nfid/ui"
+import ProfileTemplate from "@nfid/ui/templates/profile-template/Template"
 
-import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
+import { NFIDTheme } from "frontend/App"
 
 import { useVault } from "../hooks/use-vault"
+
 import { tabs } from "./tabs"
-import { NFIDTheme } from "frontend/App"
 
 interface VaultsDetailsCoordinatorProps {
   walletTheme: NFIDTheme

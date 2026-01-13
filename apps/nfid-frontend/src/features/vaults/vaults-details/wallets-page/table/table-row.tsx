@@ -9,7 +9,7 @@ import {
   PopoverTools,
   TableCell,
   TableRow,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 
 import { ModalType } from "frontend/features/transfer-modal/types"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"

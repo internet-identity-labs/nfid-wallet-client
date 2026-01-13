@@ -1,5 +1,9 @@
 import * as Agent from "@dfinity/agent"
 import { HttpAgent, SignIdentity } from "@dfinity/agent"
+import {
+  AccountIdentifier,
+  principalToAccountIdentifier,
+} from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 
 import {
@@ -7,6 +11,7 @@ import {
   agentBaseConfig,
   hasOwnProperty,
 } from "@nfid/integration"
+import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { IIcrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/i-icrc-pair"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 
@@ -18,11 +23,6 @@ import { Category, State } from "../../enum/enums"
 import { icrc1OracleService } from "../../service/icrc1-oracle-service"
 import { icrc1StorageService } from "../../service/icrc1-storage-service"
 import { ICRC1Data, ICRC1Error, AllowanceDetailDTO } from "../../types"
-import {
-  AccountIdentifier,
-  principalToAccountIdentifier,
-} from "@dfinity/ledger-icp"
-import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 export class Icrc1Pair implements IIcrc1Pair {
   private readonly ledger: string
   private readonly index: string | undefined
@@ -47,7 +47,7 @@ export class Icrc1Pair implements IIcrc1Pair {
           "This does not appear to be an ICRC-1 compatible ledger canister.",
         )
       }
-    } catch (e) {
+    } catch (_e) {
       throw new ICRC1Error(
         "This does not appear to be an ICRC-1 compatible ledger canister.",
       )
@@ -154,8 +154,12 @@ export class Icrc1Pair implements IIcrc1Pair {
         expires_at:
           allowance.expires_at.length > 0 ? allowance.expires_at[0] : undefined,
       }))
-    } catch (e) {
-      console.debug("Failed to get allowances {} for token {}:", e, this.ledger)
+    } catch (_e) {
+      console.debug(
+        "Failed to get allowances {} for token {}:",
+        _e,
+        this.ledger,
+      )
       return []
     }
   }

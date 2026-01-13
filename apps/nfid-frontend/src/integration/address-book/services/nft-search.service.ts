@@ -1,3 +1,4 @@
+import { UserAddressEntity } from "../interfaces"
 import { AddressBookMapper } from "../mapper/address-book.mapper"
 import {
   Address,
@@ -5,7 +6,7 @@ import {
   NftSearchRequest,
   UserAddressPreview,
 } from "../types"
-import { UserAddressEntity } from "../interfaces"
+
 import { SearchFilterService } from "./search-filter.service"
 
 export class NftSearchService {

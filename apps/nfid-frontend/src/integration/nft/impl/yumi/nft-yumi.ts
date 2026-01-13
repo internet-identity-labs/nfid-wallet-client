@@ -1,3 +1,5 @@
+import { actorBuilder, hasOwnProperty } from "@nfid/integration"
+
 import { NFTDetailsImpl, NftImpl } from "src/integration/nft/impl/nft-abstract"
 import {
   AssetPreview,
@@ -16,8 +18,6 @@ import {
 } from "src/integration/nft/impl/yumi/types/yumi-types"
 import { array2string } from "src/integration/nft/impl/yumi/util/util"
 import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
-
-import { actorBuilder, hasOwnProperty } from "@nfid/integration"
 
 import { idlFactory } from "./idl/yumiNft"
 import { _SERVICE as YukuNftCanister } from "./idl/yumiNft.d"
@@ -130,7 +130,7 @@ class NFTYumiDetails extends NFTDetailsImpl {
 
     return {
       activity: transactions,
-      isLastPage: isLastPage,
+      isLastPage,
     }
   }
 
@@ -168,8 +168,8 @@ class NFTYumiDetails extends NFTDetailsImpl {
       body: JSON.stringify({
         canister: this.collectionData.canister,
         token_id: this.tokenNumber.toString(),
-        page: page,
-        limit: limit,
+        page,
+        limit,
       }),
     }).then((response) => response.json())
   }

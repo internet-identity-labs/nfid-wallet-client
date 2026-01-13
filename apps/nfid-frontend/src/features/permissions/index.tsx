@@ -1,3 +1,5 @@
+import { Principal } from "@dfinity/principal"
+
 import {
   useMemo,
   useCallback,
@@ -6,22 +8,25 @@ import {
   useReducer,
   useState,
 } from "react"
-import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
-import { NFIDTheme } from "frontend/App"
-import { Permissions } from "packages/ui/src/organisms/permissions"
-import { ftService, PAGE_SIZE } from "frontend/integration/ft/ft-service"
-import { Principal } from "@dfinity/principal"
-import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
+
 import { authState } from "@nfid/integration"
-import { fetchTokens } from "../fungible-token/utils"
-import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
-import { permissionsReducer, permissionsInitialState } from "./utils"
+import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import { Button } from "@nfid/ui"
+import { Spinner } from "@nfid/ui/atoms/spinner"
+import toaster from "@nfid/ui/atoms/toast"
+import { ModalComponent } from "@nfid/ui/molecules/modal"
+import { Permissions } from "@nfid/ui/organisms/permissions"
+import { useTokensInit } from "@nfid/ui/organisms/send-receive/hooks/token-init"
+import ProfileTemplate from "@nfid/ui/templates/profile-template/Template"
+
+import { NFIDTheme } from "frontend/App"
 import { useIdentity } from "frontend/hooks/identity"
-import { Button } from "@nfid-frontend/ui"
-import toaster from "packages/ui/src/atoms/toast"
-import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
-import { Spinner } from "packages/ui/src/atoms/spinner"
+import { ftService, PAGE_SIZE } from "frontend/integration/ft/ft-service"
+
+import { fetchTokens } from "../fungible-token/utils"
+
+import { permissionsReducer, permissionsInitialState } from "./utils"
 
 type PermissionsPageProps = {
   walletTheme: NFIDTheme

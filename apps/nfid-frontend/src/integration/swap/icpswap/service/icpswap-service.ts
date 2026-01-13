@@ -1,15 +1,17 @@
 import * as Agent from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
-import { Cache } from "node-ts-cache"
-import { integrationCache } from "packages/integration/src/cache"
-import { idlFactory as SwapPoolIDL } from "src/integration/swap/icpswap/idl/SwapPool"
-import { _SERVICE as SwapPool } from "src/integration/swap/icpswap/idl/SwapPool.d"
 
+import { Cache } from "node-ts-cache"
+
+import { integrationCache } from "@nfid/integration"
 import {
   actorBuilder,
   agentBaseConfig,
   hasOwnProperty,
 } from "@nfid/integration"
+
+import { idlFactory as SwapPoolIDL } from "src/integration/swap/icpswap/idl/SwapPool"
+import { _SERVICE as SwapPool } from "src/integration/swap/icpswap/idl/SwapPool.d"
 
 import { LiquidityError, ServiceUnavailableError } from "../../errors/types"
 import { idlFactory as SwapFactoryIDL } from "../idl/SwapFactory"
@@ -69,7 +71,7 @@ class IcpSwapService {
       if (hasOwnProperty(pool.err, "CommonError")) {
         throw new LiquidityError()
       }
-      console.error("Not able to get pool for pair: " + pool.err)
+      console.error(`Not able to get pool for pair: ${pool.err}`)
       throw new ServiceUnavailableError()
     })
   }

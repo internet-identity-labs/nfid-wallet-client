@@ -46,7 +46,7 @@ export const getAccountIdentifier = (address: string): string => {
     const principal = Principal.fromText(address)
     const accountIdentifier = AccountIdentifier.fromPrincipal({ principal })
     return accountIdentifier.toHex()
-  } catch (e) {
+  } catch (_e) {
     // Handle `${principal}-${checksum}-${subaccount}`
     const { owner: principalTo, subaccount } = decodeIcrcAccount(address)
     const subAccountObject = subaccount
@@ -90,9 +90,9 @@ export function fromHexString(hex: string): number[] {
   if (hex.length % 2 !== 0) {
     throw "Must have an even number of hex digits to convert to bytes"
   }
-  var numBytes = hex.length / 2
-  var byteArray = new Uint8Array(numBytes)
-  for (var i = 0; i < numBytes; i++) {
+  const numBytes = hex.length / 2
+  const byteArray = new Uint8Array(numBytes)
+  for (let i = 0; i < numBytes; i++) {
     byteArray[i] = parseInt(hex.substr(i * 2, 2), 16)
   }
   return Array.from(byteArray)

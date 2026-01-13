@@ -4,6 +4,7 @@ import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { getBalance } from "@nfid/integration"
 
 import { RPCMessage } from "../../type"
+
 import { DefaultMetadata } from "./interfaces"
 
 export const getDefaultMetadata = async (

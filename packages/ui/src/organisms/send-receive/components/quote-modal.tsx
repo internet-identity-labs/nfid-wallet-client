@@ -2,7 +2,7 @@ import clsx from "clsx"
 import { FC, useEffect, useState } from "react"
 import { Quote } from "src/integration/swap/quote"
 
-import { IconCmpArrow } from "@nfid-frontend/ui"
+import { IconCmpArrow } from "@nfid/ui"
 
 import { Shroff } from "frontend/integration/swap/shroff"
 import { SwapName } from "frontend/integration/swap/types/enums"

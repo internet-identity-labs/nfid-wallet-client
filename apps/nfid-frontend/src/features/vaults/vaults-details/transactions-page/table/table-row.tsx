@@ -1,16 +1,16 @@
-import toaster from "packages/ui/src/atoms/toast"
 import React, { useCallback } from "react"
 import { useNavigate } from "react-router-dom"
 
+import { TransactionState } from "@nfid/integration"
 import {
   Badge,
   IconCmpArrowRight,
   TableCell,
   TableRow,
   Tooltip,
-} from "@nfid-frontend/ui"
-import { CenterEllipsis } from "@nfid-frontend/ui"
-import { TransactionState } from "@nfid/integration"
+} from "@nfid/ui"
+import { CenterEllipsis } from "@nfid/ui"
+import toaster from "@nfid/ui/atoms/toast"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 

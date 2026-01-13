@@ -1,5 +1,5 @@
 export const idlFactory = ({ IDL }: any) => {
-  const Conf = IDL.Record({ key: IDL.Text, price: IDL.Nat64 })
+  const _Conf = IDL.Record({ key: IDL.Text, price: IDL.Nat64 })
 
   const KeyPair = IDL.Record({
     public_key: IDL.Text,

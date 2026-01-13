@@ -46,7 +46,7 @@ export async function getPhoneCredential(token: number[]) {
       })
 
       return credential
-    } catch (e) {
+    } catch (_e) {
       console.log("retrying...")
     }
   }

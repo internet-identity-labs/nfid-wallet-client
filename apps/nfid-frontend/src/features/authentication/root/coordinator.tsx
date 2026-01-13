@@ -1,26 +1,27 @@
 import { useActor } from "@xstate/react"
 import { motion } from "framer-motion"
 import { decodeJwt } from "jose"
-import toaster from "packages/ui/src/atoms/toast"
+import { ReactNode, useCallback, useMemo, useState } from "react"
+
+import { getAllWalletsFromThisDevice } from "@nfid/integration"
+import { Button, IconCmpGoogle, IconCmpDfinity } from "@nfid/ui"
+import toaster from "@nfid/ui/atoms/toast"
+import { BlurredLoader } from "@nfid/ui/molecules/blurred-loader"
 import {
   LoginEventHandler,
   SignInWithGoogle,
-} from "packages/ui/src/molecules/button/signin-with-google"
-import { Auth2FA } from "packages/ui/src/organisms/authentication/2fa"
-import { AuthAddPasskey } from "packages/ui/src/organisms/authentication/auth-add-passkey"
-import { AuthAddPasskeySuccess } from "packages/ui/src/organisms/authentication/auth-add-passkey/success"
-import { AuthSelection } from "packages/ui/src/organisms/authentication/auth-selection"
+} from "@nfid/ui/molecules/button/signin-with-google"
+import { Auth2FA } from "@nfid/ui/organisms/authentication/2fa"
+import { AuthAddPasskey } from "@nfid/ui/organisms/authentication/auth-add-passkey"
+import { AuthAddPasskeySuccess } from "@nfid/ui/organisms/authentication/auth-add-passkey/success"
+import { AuthSelection } from "@nfid/ui/organisms/authentication/auth-selection"
 import {
   AuthBackupWallet,
   AuthSaveRecoveryPhrase,
-} from "packages/ui/src/organisms/authentication/backup-wallet"
-import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/other-sign-options.tsx"
-import { AuthSignInWithRecoveryPhrase } from "packages/ui/src/organisms/authentication/sign-in-with-recovery-phrase"
-import { AuthSignUpPassKey } from "packages/ui/src/organisms/authentication/sign-up-passkey"
-import { ReactNode, useCallback, useMemo, useState } from "react"
-
-import { Button, IconCmpGoogle, IconCmpDfinity } from "@nfid-frontend/ui"
-import { getAllWalletsFromThisDevice } from "@nfid/integration"
+} from "@nfid/ui/organisms/authentication/backup-wallet"
+import { AuthOtherSignOptions } from "@nfid/ui/organisms/authentication/other-sign-options.tsx"
+import { AuthSignInWithRecoveryPhrase } from "@nfid/ui/organisms/authentication/sign-in-with-recovery-phrase"
+import { AuthSignUpPassKey } from "@nfid/ui/organisms/authentication/sign-up-passkey"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { AuthEmailFlowCoordinator } from "frontend/features/authentication/auth-selection/email-flow/coordination"
@@ -30,10 +31,10 @@ import { useLoadProfileFromStorage } from "frontend/hooks"
 import { generate } from "frontend/integration/internet-identity/crypto/mnemonic"
 import { parseUserNumber } from "frontend/integration/internet-identity/userNumber"
 import { AbstractAuthSession } from "frontend/state/authentication"
-import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
 
 import { authWithAnchor } from "../auth-selection/other-sign-options/services"
 import { passkeyConnector } from "../auth-selection/passkey-flow/services"
+
 import { AuthenticationMachineActor } from "./root-machine"
 
 export default function AuthenticationCoordinator({

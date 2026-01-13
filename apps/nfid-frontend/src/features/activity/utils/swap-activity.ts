@@ -1,11 +1,6 @@
-import {
-  Activity,
-  ActivityAssetFT,
-} from "packages/integration/src/lib/asset/types"
-import { SwapTransaction } from "src/integration/swap/swap-transaction"
-import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
-
 import { ICRC1TypeOracle } from "@nfid/integration"
+import { Activity, ActivityAssetFT } from "@nfid/integration/asset/types"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 import {
   IActivityAction,
@@ -13,9 +8,12 @@ import {
   TransactionData,
 } from "@nfid/integration/token/icrc1/types"
 
-import { IActivityRow } from "../types"
-import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { FT } from "frontend/integration/ft/ft"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
+import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
+
+import { IActivityRow } from "../types"
+
 import { getExplorerLink } from "./icrc1-activity"
 
 interface TransactionDataExtended extends TransactionData {

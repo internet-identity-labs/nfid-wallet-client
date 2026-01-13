@@ -17,6 +17,7 @@ import {
 import { delegationFactory, im, replaceActorIdentity } from "../actors"
 import { Chain } from "../lambda/lambda-delegation"
 import { getIdentity, getLambdaActor } from "../lambda/util"
+
 import {
   getAnonymousDelegation,
   getGlobalDelegation,
@@ -30,7 +31,7 @@ const identity = getIdentity("97654321876543218765432187654399")
 describe.skip("Lambda Sign/Register Delegation Factory", () => {
   jest.setTimeout(80000)
   describe("lambdaECDSA", () => {
-    it("register new user and check anchor/principal", async function () {
+    it("register new user and check anchor/principal", async () => {
       const mockedIdentity = Ed25519KeyIdentity.generate()
 
       const sessionKey = Ed25519KeyIdentity.generate()
@@ -77,7 +78,7 @@ describe.skip("Lambda Sign/Register Delegation Factory", () => {
       expect(Principal.fromText(principalText).isAnonymous()).toBeFalsy()
     })
 
-    it("get global keys with canister signature", async function () {
+    it("get global keys with canister signature", async () => {
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
         identity,
@@ -103,7 +104,7 @@ describe.skip("Lambda Sign/Register Delegation Factory", () => {
       expect(globalICIdentity.getPrincipal().toText()).toEqual(principalText)
     })
 
-    it("get anonymous delegation with the canister delegation", async function () {
+    it("get anonymous delegation with the canister delegation", async () => {
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
         identity,
@@ -152,7 +153,7 @@ describe.skip("Lambda Sign/Register Delegation Factory", () => {
       expect(acc.error.length).toEqual(1)
     })
 
-    it("get third party global keys canister delegation", async function () {
+    it("get third party global keys canister delegation", async () => {
       const canisterId = "irshc-3aaaa-aaaam-absla-cai"
 
       const nfidSessionKey = Ed25519KeyIdentity.generate()

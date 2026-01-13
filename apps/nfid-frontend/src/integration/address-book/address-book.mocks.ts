@@ -1,9 +1,9 @@
+import { UserAddressEntity } from "./interfaces"
 import {
   UserAddressSaveRequest,
   AddressType,
   UserAddressPreview,
 } from "./types"
-import { UserAddressEntity } from "./interfaces"
 
 export const ALICE_SAVE_REQUEST: UserAddressSaveRequest = {
   name: "Alice",

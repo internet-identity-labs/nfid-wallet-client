@@ -1,6 +1,6 @@
 import clsx from "clsx"
 
-import { IconSvgChevron } from "../../atoms/icons"
+import { IconSvgChevron } from "@nfid/ui/atoms/icons"
 
 export type SelectedTokenProps = {
   symbol: string

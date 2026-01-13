@@ -1,6 +1,6 @@
 import React from "react"
 
-import { NFIDLogoPlayground } from "@nfid-frontend/ui"
+import { NFIDLogoPlayground } from "@nfid/ui"
 
 export type Section = {
   id: string

@@ -1,4 +1,4 @@
-import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
+import ProfileContainer from "@nfid/ui/atoms/profile-container/Container"
 import { FC } from "react"
 
 import { TokenValue } from "frontend/integration/staking/types"

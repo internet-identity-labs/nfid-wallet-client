@@ -1,5 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
 import { uint8ArrayToHexString } from "@dfinity/utils"
+
 import { useMemo } from "react"
 
 import { getAddress } from "frontend/util/get-address"

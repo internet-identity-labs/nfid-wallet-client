@@ -1,5 +1,6 @@
-import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { Routes, Route, Navigate } from "react-router-dom"
+
+import ProfileContainer from "@nfid/ui/atoms/profile-container/Container"
 
 import ActivityPage from "../activity"
 import NFTsPage from "../collectibles"

@@ -1,12 +1,13 @@
 import { SignIdentity } from "@dfinity/agent"
+
+import { replaceActorIdentity } from "@nfid/integration"
+
 import {
   IcpSwapShroffBuilder,
   ShroffIcpSwapImpl,
 } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { Shroff } from "src/integration/swap/shroff"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
-
-import { replaceActorIdentity } from "@nfid/integration"
 
 export class ShroffWithdrawErrorHandler extends ShroffIcpSwapImpl {
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
@@ -17,9 +18,9 @@ export class ShroffWithdrawErrorHandler extends ShroffIcpSwapImpl {
       this.delegationIdentity = delegationIdentity
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       const balance = await this.swapPoolActor.getUserUnusedBalance(
-        this.delegationIdentity!.getPrincipal(),
+        this.delegationIdentity.getPrincipal(),
       )
-      console.debug("Balance: " + JSON.stringify(balance))
+      console.debug(`Balance: ${JSON.stringify(balance)}`)
       console.debug("Transaction restarted")
       await this.withdraw()
       console.debug("Withdraw done")
@@ -38,7 +39,7 @@ export class ShroffWithdrawErrorHandler extends ShroffIcpSwapImpl {
         }
       }
       console.error("Swap error:", e)
-      this.swapTransaction.setError("Withdraw retry error: " + e)
+      this.swapTransaction.setError(`Withdraw retry error: ${e}`)
       await this.restoreTransaction()
       throw e
     }

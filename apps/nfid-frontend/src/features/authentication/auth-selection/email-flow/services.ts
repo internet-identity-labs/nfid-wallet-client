@@ -3,12 +3,12 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
+
 import {
   authStorage,
   KEY_STORAGE_DELEGATION,
   KEY_STORAGE_KEY,
-} from "packages/integration/src/lib/authentication/storage"
-
+} from "@nfid/integration"
 import {
   authState,
   DeviceType,
@@ -60,7 +60,7 @@ export const checkEmailVerification = async (
         const res = await verificationService.checkVerification(
           verificationMethod,
           context.verificationEmail,
-          context.keyPair!,
+          context.keyPair,
           context.requestId,
           nonce - 1,
         )
@@ -93,7 +93,7 @@ export const verify = async (
 ): Promise<{ status: "success" | "invalid-token" | "link-required" }> => {
   console.debug("verify", {
     verificationMethod,
-    token: token,
+    token,
   })
 
   try {

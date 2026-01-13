@@ -4,22 +4,32 @@ const typescriptParser = require("@typescript-eslint/parser");
 const babelParser = require("@babel/eslint-parser");
 const reactHooks = require("eslint-plugin-react-hooks");
 const reactPlugin = require("eslint-plugin-react");
+const importPlugin = require("eslint-plugin-import");
+const unusedImportsPlugin = require("eslint-plugin-unused-imports");
 
 const sharedTypeScriptRules = {
   "no-extra-semi": "error",
+  // Keep @typescript-eslint/no-unused-vars for variables and imports
+  // unused-imports plugin will provide better error messages and auto-fix for imports
   "@typescript-eslint/no-unused-vars": [
-    "warn",
+    "error",
     {
       argsIgnorePattern: "^_",
       varsIgnorePattern: "^_",
       ignoreRestSiblings: true,
+      caughtErrorsIgnorePattern: "^_",
     },
   ],
+  // Use unused-imports plugin for better unused import detection and auto-fix
+  // This provides clearer error messages and can auto-remove unused imports
+  "unused-imports/no-unused-imports": "error",
   "@typescript-eslint/no-explicit-any": "warn",
   "react-hooks/rules-of-hooks": "error",
   "react-hooks/exhaustive-deps": "warn",
-  "prefer-const": "warn",
+  "prefer-const": "error",
   "no-console": ["warn", { allow: ["warn", "error"] }],
+  "import/no-unused-modules": "off",
+  "no-unused-vars": "off",
 };
 
 const typeAwareRules = {
@@ -106,6 +116,7 @@ module.exports = [
       "@typescript-eslint": typescriptEslint,
       "react": reactPlugin,
       "react-hooks": reactHooks,
+      "unused-imports": unusedImportsPlugin,
     },
     settings: {
       react: {
@@ -137,10 +148,18 @@ module.exports = [
       "@typescript-eslint": typescriptEslint,
       "react": reactPlugin,
       "react-hooks": reactHooks,
+      "import": importPlugin,
+      "unused-imports": unusedImportsPlugin,
     },
     settings: {
       react: {
         version: "detect",
+      },
+      "import/resolver": {
+        typescript: {
+          alwaysTryTypes: true,
+          project: "./tsconfig.base.json",
+        },
       },
     },
     rules: {
@@ -148,6 +167,57 @@ module.exports = [
       ...typeAwareRules,
       "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
+      "import/order": [
+        "error",
+        {
+          groups: [
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index",
+          ],
+          pathGroups: [
+            {
+              pattern: "@dfinity/**",
+              group: "external",
+              position: "before",
+            },
+            {
+              pattern: "@nfid/**",
+              group: "internal",
+              position: "before",
+            },
+            {
+              pattern: "frontend/**",
+              group: "internal",
+            },
+            {
+              pattern: "src/**",
+              group: "internal",
+            },
+          ],
+          pathGroupsExcludedImportTypes: ["react"],
+          "newlines-between": "always",
+          alphabetize: {
+            order: "asc",
+            caseInsensitive: true,
+          },
+        },
+      ],
+      "@typescript-eslint/no-non-null-assertion": "warn",
+      "@typescript-eslint/prefer-as-const": "error",
+      "@typescript-eslint/no-unnecessary-type-assertion": "warn",
+      "@typescript-eslint/no-empty-function": "warn",
+      "@typescript-eslint/no-empty-interface": "warn",
+      "@typescript-eslint/explicit-function-return-type": "off", // Too strict for React
+      "no-debugger": "error",
+      "no-alert": "warn",
+      "no-var": "error",
+      "object-shorthand": "warn",
+      "prefer-arrow-callback": "warn",
+      "prefer-template": "warn",
     },
   },
   {

@@ -1,4 +1,4 @@
-import { Skeleton } from "@nfid-frontend/ui"
+import { Skeleton } from "@nfid/ui"
 
 import { UserNFTDetails } from "frontend/integration/entrepot/types"
 

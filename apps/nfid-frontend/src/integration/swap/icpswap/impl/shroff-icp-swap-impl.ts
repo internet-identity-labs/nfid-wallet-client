@@ -2,19 +2,8 @@ import * as Agent from "@dfinity/agent"
 import { HttpAgent, SignIdentity } from "@dfinity/agent"
 import { Account, SubAccount } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
+
 import BigNumber from "bignumber.js"
-import { idlFactory as SwapPoolIDL } from "src/integration/swap/icpswap/idl/SwapPool"
-import { SourceInputCalculatorIcpSwap } from "src/integration/swap/icpswap/impl/icp-swap-calculator"
-import { IcpSwapQuoteImpl } from "src/integration/swap/icpswap/impl/icp-swap-quote-impl"
-import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
-import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-service"
-import { idlFactory as icrc1IDL } from "src/integration/swap/kong/idl/icrc1"
-import { _SERVICE as ICRC1ServiceIDL } from "src/integration/swap/kong/idl/icrc1.d"
-import { Quote } from "src/integration/swap/quote"
-import { Shroff } from "src/integration/swap/shroff"
-import { ShroffAbstract } from "src/integration/swap/shroff/shroff-abstract"
-import { SwapTransaction } from "src/integration/swap/swap-transaction"
-import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
 
 import {
   actorBuilder,
@@ -28,6 +17,19 @@ import {
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+
+import { idlFactory as SwapPoolIDL } from "src/integration/swap/icpswap/idl/SwapPool"
+import { SourceInputCalculatorIcpSwap } from "src/integration/swap/icpswap/impl/icp-swap-calculator"
+import { IcpSwapQuoteImpl } from "src/integration/swap/icpswap/impl/icp-swap-quote-impl"
+import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
+import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-service"
+import { idlFactory as icrc1IDL } from "src/integration/swap/kong/idl/icrc1"
+import { _SERVICE as ICRC1ServiceIDL } from "src/integration/swap/kong/idl/icrc1.d"
+import { Quote } from "src/integration/swap/quote"
+import { Shroff } from "src/integration/swap/shroff"
+import { ShroffAbstract } from "src/integration/swap/shroff/shroff-abstract"
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
+import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
 
 import {
   DepositError,
@@ -43,7 +45,6 @@ import { PoolData } from "../idl/SwapFactory.d"
 import {
   _SERVICE as SwapPool,
   DepositArgs,
-  Result,
   SwapArgs,
   WithdrawArgs,
   DepositAndSwapArgs,
@@ -111,7 +112,7 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
 
   async getQuote(amount: string): Promise<Quote> {
     const amountInDecimals = this.getAmountInDecimals(amount)
-    console.debug("Amount in decimals: " + amountInDecimals.toFixed())
+    console.debug(`Amount in decimals: ${amountInDecimals.toFixed()}`)
     const preCalculation = this.getCalculator(amountInDecimals)
 
     const targetUSDPricePromise = exchangeRateService.usdPriceForICRC1(
@@ -129,7 +130,7 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
       amountOutMinimum: slippage.toString(),
     }
 
-    const quotePromise = this.swapPoolActor.quote(args) as Promise<Result>
+    const quotePromise = this.swapPoolActor.quote(args)
 
     const [targetUSDPrice, sourceUSDPrice, quote] = await Promise.all([
       targetUSDPricePromise,
@@ -193,21 +194,22 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
           .plus(Number(this.source.fee))
         const args: DepositAndSwapArgs = {
           tokenInFee: this.source.fee,
-          amountIn: this.requestedQuote!.getSourceSwapAmount().toFixed(),
+          amountIn: this.requestedQuote.getSourceSwapAmount().toFixed(),
           zeroForOne: this.zeroForOne,
-          amountOutMinimum: this.requestedQuote!.getTargetAmount()
+          amountOutMinimum: this.requestedQuote
+            .getTargetAmount()
             .toFixed(this.target.decimals)
             .replace(TRIM_ZEROS, ""),
           tokenOutFee: this.target.fee,
         }
-        console.debug("Amount decimals: " + BigInt(amountDecimals.toFixed()))
+        console.debug(`Amount decimals: ${BigInt(amountDecimals.toFixed())}`)
         const result = await this.swapPoolActor.depositFromAndSwap(args)
         if (hasOwnProperty(result, "ok")) {
           const id = result.ok as bigint
-          this.swapTransaction!.setSwap(id)
+          this.swapTransaction.setSwap(id)
         } else {
           const err = JSON.stringify(
-            "Deposit and swap error: " + JSON.stringify(result.err),
+            `Deposit and swap error: ${JSON.stringify(result.err)}`,
           )
           console.error(err)
           throw new DepositError(err)
@@ -220,7 +222,7 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
             JSON.stringify(icrcTransferId),
           )
         } catch (e) {
-          throw new ContactSupportError("Deposit error: " + e)
+          throw new ContactSupportError(`Deposit error: ${e}`)
         }
         this.restoreTransaction()
         console.debug("Transfer to swap done")
@@ -271,7 +273,7 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
         token: this.source.ledger,
         amount: BigInt(amountDecimals.toFixed()),
       }
-      console.debug("Amount decimals: " + BigInt(amountDecimals.toFixed()))
+      console.debug(`Amount decimals: ${BigInt(amountDecimals.toFixed())}`)
 
       const result = await this.swapPoolActor.deposit(args)
 
@@ -280,11 +282,11 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
         this.swapTransaction!.setDeposit(id)
         return id
       }
-      console.error("Deposit error: " + JSON.stringify(result.err))
+      console.error(`Deposit error: ${JSON.stringify(result.err)}`)
       throw new DepositError(JSON.stringify(result.err))
     } catch (e) {
-      console.error("Deposit error: " + e)
-      throw new DepositError("Deposit error: " + e)
+      console.error(`Deposit error: ${e}`)
+      throw new DepositError(`Deposit error: ${e}`)
     }
   }
 
@@ -323,11 +325,11 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
         this.swapTransaction!.setNFIDTransferId(id)
         return id
       }
-      console.error("NFID transfer error: " + JSON.stringify(result.Err))
+      console.error(`NFID transfer error: ${JSON.stringify(result.Err)}`)
       throw new WithdrawError(JSON.stringify(result.Err))
     } catch (e) {
-      console.error("NFID transfer error: " + e)
-      throw new WithdrawError("NFID transfer error: " + e)
+      console.error(`NFID transfer error: ${e}`)
+      throw new WithdrawError(`NFID transfer error: ${e}`)
     }
   }
 
@@ -341,7 +343,7 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
           .replace(TRIM_ZEROS, ""),
       }
 
-      console.log("Swap args: " + JSON.stringify(args))
+      console.log(`Swap args: ${JSON.stringify(args)}`)
 
       return this.swapPoolActor.swap(args).then((result) => {
         if (hasOwnProperty(result, "ok")) {
@@ -350,7 +352,7 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
           return response
         }
 
-        console.error("Swap on exchange error: " + JSON.stringify(result.err))
+        console.error(`Swap on exchange error: ${JSON.stringify(result.err)}`)
 
         if (
           hasOwnProperty(result.err, "InternalError") &&
@@ -363,8 +365,8 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
         throw new SwapError(JSON.stringify(result.err))
       })
     } catch (e) {
-      console.error("Swap error: " + e)
-      throw new SwapError("Swap error: " + e)
+      console.error(`Swap error: ${e}`)
+      throw new SwapError(`Swap error: ${e}`)
     }
   }
 
@@ -380,19 +382,19 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
         fee: this.target.fee,
       }
       await replaceActorIdentity(this.swapPoolActor, this.delegationIdentity!)
-      console.debug("Withdraw args: " + JSON.stringify(args))
+      console.debug(`Withdraw args: ${JSON.stringify(args)}`)
       return this.swapPoolActor.withdraw(args).then((result) => {
         if (hasOwnProperty(result, "ok")) {
           const id = result.ok as bigint
           this.swapTransaction!.setWithdraw(id)
           return id
         }
-        console.error("Withdraw error: " + JSON.stringify(result.err))
+        console.error(`Withdraw error: ${JSON.stringify(result.err)}`)
         throw new WithdrawError(JSON.stringify(result.err))
       })
     } catch (e) {
-      console.error("Withdraw error: " + e)
-      throw new WithdrawError("Withdraw error: " + e)
+      console.error(`Withdraw error: ${e}`)
+      throw new WithdrawError(`Withdraw error: ${e}`)
     }
   }
 
@@ -409,7 +411,7 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
         this.swapTransaction!.toCandid(),
       )
     } catch (e) {
-      console.error("Restore transaction error: " + e)
+      console.error(`Restore transaction error: ${e}`)
       console.log("Retrying to restore transaction")
       return swapTransactionService.storeTransaction(
         this.swapTransaction!.toCandid(),

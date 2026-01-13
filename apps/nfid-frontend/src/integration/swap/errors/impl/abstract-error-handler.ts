@@ -1,13 +1,15 @@
 import { SignIdentity } from "@dfinity/agent"
+
 import BigNumber from "bignumber.js"
+
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+
 import { TransactionErrorHandlerAbstract } from "src/integration/swap/errors/error-handler-abstract"
 import { SourceInputCalculatorIcpSwap } from "src/integration/swap/icpswap/impl/icp-swap-calculator"
 import { IcpSwapQuoteImpl } from "src/integration/swap/icpswap/impl/icp-swap-quote-impl"
 import { Shroff } from "src/integration/swap/shroff"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { userPrefService } from "src/integration/user-preferences/user-pref-service"
-
-import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 export abstract class AbstractErrorHandler extends TransactionErrorHandlerAbstract {
   async completeTransaction(

@@ -1,6 +1,11 @@
 import { Actor, HttpAgent } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
+
 import BigNumber from "bignumber.js"
+
+import { exchangeRateService } from "@nfid/integration"
+import { E8S } from "@nfid/integration/token/constants"
+
 import { encodeTokenIdentifier } from "src/integration/entrepot/ext"
 import { entrepotAsset, getTokenLink } from "src/integration/entrepot/lib"
 import { e8s } from "src/integration/nft/constants/constants"
@@ -12,9 +17,6 @@ import {
   TokenProperties,
 } from "src/integration/nft/impl/nft-types"
 import { NFT, NFTDetails } from "src/integration/nft/nft"
-
-import { exchangeRateService } from "@nfid/integration"
-import { E8S } from "@nfid/integration/token/constants"
 
 const idlFactory = ({ IDL }: any) =>
   IDL.Service({
@@ -122,17 +124,17 @@ export abstract class NftImpl implements NFT {
   getTokenFloorPriceIcpFormatted(): string | undefined {
     const icpPrice = this.getTokenFloorPriceIcp()
     return icpPrice
-      ? BigNumber(icpPrice.toString()).div(E8S).toFormat({
+      ? `${BigNumber(icpPrice.toString()).div(E8S).toFormat({
           groupSeparator: "",
           decimalSeparator: ".",
-        }) + " ICP"
+        })} ICP`
       : undefined
   }
 
   getTokenFloorPriceUSDFormatted(): string | undefined {
     this.setUpPrice()
     return this.tokenFloorPriceUSD
-      ? this.tokenFloorPriceUSD.toFixed(2) + " USD"
+      ? `${this.tokenFloorPriceUSD.toFixed(2)} USD`
       : undefined
   }
 
@@ -161,7 +163,7 @@ export abstract class NftImpl implements NFT {
       return Promise.resolve({
         //TODO can we have not img format in preview?
         format: "img",
-        url: url,
+        url,
       })
     } else {
       return Promise.resolve(this.assetPreview)

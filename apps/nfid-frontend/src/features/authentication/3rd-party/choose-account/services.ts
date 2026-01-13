@@ -1,8 +1,7 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
-import { getPublicKey } from "packages/integration/src/lib/delegation-factory/delegation-i"
 
-import { authState, getBalance } from "@nfid/integration"
+import { authState, getBalance, getPublicKey } from "@nfid/integration"
 
 import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
 import { e8sICPToString } from "frontend/integration/wallet/utils"
@@ -16,14 +15,14 @@ export const getPublicProfile = async (): Promise<{
   const { delegationIdentity } = authState.get()
   if (!delegationIdentity) throw new Error("No identity")
 
-  const principalString = await getPublicKey(delegationIdentity!)
+  const principalString = await getPublicKey(delegationIdentity)
   const principal = Principal.fromText(principalString)
   const address = AccountIdentifier.fromPrincipal({ principal }).toHex()
   const balance = e8sICPToString(Number(await getBalance(address)))
   const exchangeRate = await getExchangeRate("ICP")
 
   return {
-    balance: balance,
+    balance,
     balanceUSD:
       balance === "0"
         ? "0.00 USD"

@@ -18,7 +18,7 @@ export class IcpswapTransactionMapper {
       case "Approve":
         return new TransactionRecordIcpSwap(transaction)
       default:
-        console.error("Unknown transaction IcpSwap type: " + transaction.remark)
+        console.error(`Unknown transaction IcpSwap type: ${transaction.remark}`)
         return null
     }
   }

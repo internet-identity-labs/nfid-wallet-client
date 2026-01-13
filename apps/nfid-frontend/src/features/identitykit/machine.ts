@@ -3,6 +3,7 @@ import { assign, createMachine } from "xstate"
 import AuthenticationMachine, {
   AuthenticationContext,
 } from "../authentication/root/root-machine"
+
 import { RPCReceiverV3 } from "./helpers/rpc-receiver"
 import { checkAuthenticationStatus } from "./service/authentication.service"
 import {
@@ -253,15 +254,17 @@ const machineServices = {
       }),
     ),
     assignComponentData: assign(
-      (context: IdentityKitRPCMachineContext, event: any) => ({
+      (_context: IdentityKitRPCMachineContext, event: any) => ({
         componentData: event.data,
       }),
     ),
-    assignError: assign((context: IdentityKitRPCMachineContext, event: any) => {
-      return {
-        error: event.data,
-      }
-    }),
+    assignError: assign(
+      (_context: IdentityKitRPCMachineContext, event: any) => {
+        return {
+          error: event.data,
+        }
+      },
+    ),
     prepareFailedResponse: async (context: IdentityKitRPCMachineContext) => {
       if (!context.activeRequest) throw new Error("No active request")
 

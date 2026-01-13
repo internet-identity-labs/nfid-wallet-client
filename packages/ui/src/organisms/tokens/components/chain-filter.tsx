@@ -1,19 +1,15 @@
 import clsx from "clsx"
 import { FC } from "react"
-import {
-  FilterPopover,
-  IconCmpFilters,
-  DropdownSelect,
-} from "@nfid-frontend/ui"
+import { FilterPopover, IconCmpFilters, DropdownSelect } from "@nfid/ui"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
-import { AllNetworksIcon } from "packages/ui/src/atoms/icons/AllNetworksIcon"
-import { BtcNetworkIcon } from "packages/ui/src/atoms/icons/BtcNetworkIcon"
-import { EthNetworkIcon } from "packages/ui/src/atoms/icons/EthNetworkIcon"
-import { IcpNetworkIcon } from "packages/ui/src/atoms/icons/IcpNetworkIcon"
-import { PolNetworkIcon } from "packages/ui/src/atoms/icons/PolNetworkIcon"
-import { BaseNetworkIcon } from "packages/ui/src/atoms/icons/BaseNetworkIcon"
-import { ArbNetworkIcon } from "packages/ui/src/atoms/icons/ArbNetworkIcon"
+import { AllNetworksIcon } from "@nfid/ui/atoms/icons/AllNetworksIcon"
+import { BtcNetworkIcon } from "@nfid/ui/atoms/icons/BtcNetworkIcon"
+import { EthNetworkIcon } from "@nfid/ui/atoms/icons/EthNetworkIcon"
+import { IcpNetworkIcon } from "@nfid/ui/atoms/icons/IcpNetworkIcon"
+import { PolNetworkIcon } from "@nfid/ui/atoms/icons/PolNetworkIcon"
+import { BaseNetworkIcon } from "@nfid/ui/atoms/icons/BaseNetworkIcon"
+import { ArbNetworkIcon } from "@nfid/ui/atoms/icons/ArbNetworkIcon"
 
 const chainOptions = [
   { label: "Bitcoin", value: `${ChainId.BTC}`, icon: BtcNetworkIcon },

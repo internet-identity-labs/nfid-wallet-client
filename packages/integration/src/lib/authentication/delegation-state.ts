@@ -1,8 +1,7 @@
 import { DelegationIdentity } from "@dfinity/identity"
 
-import { accessList } from "../actors"
 import { getGlobalDelegation } from "../delegation-factory/delegation-i"
-import { delegationByScope } from "../internet-identity/get-delegation-by-scope"
+
 import { authState } from "./auth-state"
 import { getExpirationDelay } from "./get-expiration"
 

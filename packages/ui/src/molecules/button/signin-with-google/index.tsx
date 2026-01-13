@@ -1,12 +1,10 @@
-import { getBrowser } from "packages/utils/src"
+import { getBrowser } from "@nfid/utils"
 import React from "react"
 
 import { CredentialResponse } from "./types"
 import useLoadGsiScript from "./useLoadGsiScript"
 
 export type LoginEventHandler = ({ credential }: CredentialResponse) => void
-
-if (!GOOGLE_CLIENT_ID) console.error("GOOGLE_CLIENT_ID is not defined")
 
 interface SignInWithGoogleProps {
   onLogin: LoginEventHandler
@@ -39,12 +37,15 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
   })
 
   const onClick = React.useCallback(() => {
-    let el: any
+    let el: HTMLElement | null = null
     if (getBrowser() === "Chrome") {
-      el = buttonRef.current?.querySelector("div[role=button]")
-    } else el = buttonRef.current?.children[0].children[1].children[1]
+      el = buttonRef.current?.querySelector("div[role=button]") as HTMLElement
+    } else {
+      const children = buttonRef.current?.children[0]?.children[1]
+        ?.children[1] as HTMLElement
+      el = children || null
+    }
 
-    //  @ts-ignore
     el?.click()
   }, [])
 

@@ -8,7 +8,7 @@ import {
   CopyAddress,
   IconCmpConvertWhite,
   IconCmpStake,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 
 import { Balance } from "./balance"
 

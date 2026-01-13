@@ -6,13 +6,14 @@ import {
   AuthorizingAppMeta,
 } from "frontend/state/authorization"
 
+import { validateDerivationOrigin } from "../internet-identity/validateDerivationOrigin"
+
 import {
   awaitClientMessage,
   getAppMetaFromQuery,
   isIdentityClientAuthEvent,
   postMessageToClient,
 } from "."
-import { validateDerivationOrigin } from "../internet-identity/validateDerivationOrigin"
 
 /**
  * xstate service initiating the idp flow via window message channel with the client

@@ -1,5 +1,5 @@
-import { Spinner } from "packages/ui/src/atoms/spinner"
-import { Dispatch, FC, SetStateAction, useEffect, useState } from "react"
+import { Spinner } from "@nfid/ui/atoms/spinner"
+import { Dispatch, FC, SetStateAction, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 
@@ -11,7 +11,7 @@ import {
   ChooseAccountModal,
   Skeleton,
   IGroupedSendAddress,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 import {
   BTC_NATIVE_ID,
   ETH_NATIVE_ID,
@@ -33,7 +33,7 @@ import {
   FtSearchRequest,
   UserAddressPreview,
 } from "frontend/integration/address-book"
-import { ChooseAddressModal } from "packages/ui/src/molecules/choose-modal/address-modal"
+import { ChooseAddressModal } from "@nfid/ui/molecules/choose-modal/address-modal"
 
 export interface TransferFTUiProps {
   tokens: FT[]

@@ -16,9 +16,7 @@ import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
 export class NftMemeCake extends NftImpl {
   async getDetails(): Promise<NFTDetails> {
     const nftResponse: MemeCakeApiResponse = await fetch(
-      `https://memecake.io/api/nft/token/${
-        this.getCollectionId() + "-" + this.getTokenNumber()
-      }`,
+      `https://memecake.io/api/nft/token/${`${this.getCollectionId()}-${this.getTokenNumber()}`}`,
     ).then((response) => response.json())
     return new NftMemeCakeDetails(
       nftResponse.data.collection,
@@ -62,11 +60,9 @@ class NftMemeCakeDetails extends NFTDetailsImpl {
 
   async getTransactions(from: number, to: number): Promise<NFTTransactions> {
     const response: TransactionApiResponse = await fetch(
-      `https://memecake.io/api/nft/token/${
-        this.collection.collectionOnChainPublicAddress +
-        "-" +
-        this.token.tokenIndex
-      }/activities`,
+      `https://memecake.io/api/nft/token/${`${
+        this.collection.collectionOnChainPublicAddress
+      }-${this.token.tokenIndex}`}/activities`,
     ).then((response) => response.json())
 
     const transactions: TransactionRecord[] = response.data

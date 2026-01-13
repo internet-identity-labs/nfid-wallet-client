@@ -4,12 +4,12 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
-import { KongSwapTransactionImpl } from "src/integration/swap/kong/impl/kong-swap-transaction-impl"
-import { SwapStage } from "src/integration/swap/types/enums"
 
 import { authState } from "@nfid/integration"
 
-import { IcpSwapTransactionImpl } from "../../icpswap/impl/icp-swap-transaction-impl"
+import { KongSwapTransactionImpl } from "src/integration/swap/kong/impl/kong-swap-transaction-impl"
+import { SwapStage } from "src/integration/swap/types/enums"
+
 import { SwapTransaction as SwapTransactionCandid } from "../idl/swap_trs_storage.d"
 import { SwapTransactionService } from "../transaction-service"
 
@@ -95,7 +95,7 @@ describe("SwapTransactionService", () => {
 
     await authState.set({
       identity: delegationIdentity,
-      delegationIdentity: delegationIdentity,
+      delegationIdentity,
     })
 
     jest

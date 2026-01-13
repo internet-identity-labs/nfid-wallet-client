@@ -1,5 +1,7 @@
-import { DerEncodedPublicKey } from "@dfinity/agent"
 import { Buffer } from "buffer"
+
+import { DerEncodedPublicKey } from "@dfinity/agent"
+
 import * as tweetnacl from "tweetnacl"
 
 import { CredentialId, DeviceData } from "../_ic_api/internet_identity.d"
@@ -82,7 +84,7 @@ export const creationOptions = (
 ): PublicKeyCredentialCreationOptions => {
   console.debug("creationOptions", {
     devices,
-    IS_E2E_TEST: IS_E2E_TEST,
+    IS_E2E_TEST,
     authenticatorAttachment,
   })
   return {

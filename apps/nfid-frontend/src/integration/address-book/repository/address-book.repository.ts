@@ -1,7 +1,7 @@
 import { AddressBookCache } from "../cache/address-book.cache"
-import { UserAddressId } from "../types"
-import { UserAddressEntity } from "../interfaces"
 import { AddressBookCanisterClient } from "../client/address-book-canister.client"
+import { UserAddressEntity } from "../interfaces"
+import { UserAddressId } from "../types"
 
 export class AddressBookRepository {
   constructor(

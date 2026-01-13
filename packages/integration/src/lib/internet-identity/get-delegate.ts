@@ -13,7 +13,7 @@ import {
   renewDelegationThirdParty,
 } from "../delegation-factory/delegation-i"
 import { mapOptional } from "../ic-utils"
-import { Chain } from "../lambda/lambda-delegation"
+
 import { SignedDelegation } from "./types"
 
 /**

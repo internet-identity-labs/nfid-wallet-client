@@ -1,13 +1,13 @@
 import { clsx } from "clsx"
 
-import { trimConcat } from "@nfid-frontend/utils"
+import { trimConcat } from "@nfid/utils"
 
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
-import { Skeleton } from "../../atoms/skeleton"
+import { Skeleton } from "@nfid/ui/atoms/skeleton"
 import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
-import { TokenIdentity } from "../../organisms/tokens/components/token-identity"
+import { TokenIdentity } from "@nfid/ui/organisms/tokens/components/token-identity"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 
 interface IChooseFtItem {

@@ -14,6 +14,7 @@ import {
   mapProfile,
   registerProfileWithAccessPoint,
 } from ".."
+
 import { userNumberAtom } from "./state"
 
 /** @deprecated FIXME: move to integration layer */

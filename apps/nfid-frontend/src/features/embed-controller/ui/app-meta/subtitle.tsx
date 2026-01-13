@@ -1,4 +1,4 @@
-import { IconCmpInfo, Tooltip } from "@nfid-frontend/ui"
+import { IconCmpInfo, Tooltip } from "@nfid/ui"
 
 interface RPCApplicationMetaSubtitleProps {
   applicationURL?: string

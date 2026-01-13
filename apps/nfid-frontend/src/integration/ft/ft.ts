@@ -1,5 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
+
 import BigNumber from "bignumber.js"
 
 import {
@@ -7,8 +8,8 @@ import {
   ChainId,
   State,
 } from "@nfid/integration/token/icrc1/enum/enums"
-
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
+
 import { FeeResponse } from "./utils"
 
 export interface FT {

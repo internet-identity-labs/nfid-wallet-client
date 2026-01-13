@@ -543,6 +543,6 @@ export const idlFactory = ({ IDL }: any) => {
     ),
   })
 }
-export const init = ({ IDL }: any) => {
+export const init = ({ IDL: _IDL }: any) => {
   return []
 }

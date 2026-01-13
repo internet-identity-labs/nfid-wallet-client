@@ -1,6 +1,6 @@
 import { Meta, StoryFn } from "@storybook/react"
 
-import { IconCmpArrowRight, Table } from "@nfid-frontend/ui"
+import { IconCmpArrowRight, Table } from "@nfid/ui"
 
 import { TableProps } from "."
 import { TableCell } from "./table-cell"

@@ -302,6 +302,6 @@ export const idlFactory = ({ IDL }: any) => {
     remove_approval: IDL.Func([RemoveApprovalArgs], [Result_2], []),
   })
 }
-export const init = ({ IDL }: any) => {
+export const init = ({ IDL: _IDL }: any) => {
   return []
 }

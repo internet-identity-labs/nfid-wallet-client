@@ -1,14 +1,18 @@
-import { InfuraProvider, Interface, AbiCoder } from "ethers"
-import { Address } from "../bitcoin/services/chain-fusion-signer.service"
-import { chainFusionSignerService } from "../bitcoin/services/chain-fusion-signer.service"
 import { SignIdentity } from "@dfinity/agent"
+
+import { InfuraProvider, Interface, AbiCoder } from "ethers"
 import { Contract } from "ethers"
 import { TransactionResponse } from "ethers"
-import { ethereumService } from "./eth/ethereum.service"
+
 import { storageWithTtl } from "@nfid/client-db"
+import { TokenPrice } from "@nfid/integration/asset/types"
 import { ChainId, State } from "@nfid/integration/token/icrc1/enum/enums"
+
 import { EthSignTransactionRequest } from "../bitcoin/idl/chain-fusion-signer.d"
-import { TokenPrice } from "packages/integration/src/lib/asset/types"
+import { chainFusionSignerService } from "../bitcoin/services/chain-fusion-signer.service"
+import { Address } from "../bitcoin/services/chain-fusion-signer.service"
+
+import { ethereumService } from "./eth/ethereum.service"
 
 export const ERC20_ABI = [
   "function transfer(address to, uint256 amount) external returns (bool)",
@@ -264,7 +268,7 @@ export abstract class Erc20Service {
     normalizedContracts: string[],
   ) {
     // Single cache key per address (not per token list)
-    const cacheKey = `ERC20_Balances_${normalizedAddress}_` + this.chainId
+    const cacheKey = `ERC20_Balances_${normalizedAddress}_${this.chainId}`
 
     // Check cache first
     const cache = await storageWithTtl.getEvenExpired(cacheKey)

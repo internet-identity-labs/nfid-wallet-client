@@ -1,4 +1,4 @@
-import { authStorage } from "packages/integration/src/lib/authentication/storage"
+import { authStorage } from "@nfid/integration"
 
 import { Account, RPCMessage, RPCSuccessResponse } from "../../../type"
 import {
@@ -6,6 +6,7 @@ import {
   INDEX_DB_CONNECTED_ACCOUNTS_KEY,
 } from "../../account.service"
 import { GenericError } from "../../exception-handler.service"
+
 import {
   ComponentData,
   InteractiveMethodService,

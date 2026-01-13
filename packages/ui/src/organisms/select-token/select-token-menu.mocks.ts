@@ -1,4 +1,4 @@
-import { IconSvgDfinity } from "../../atoms/icons"
+import { IconSvgDfinity } from "@nfid/ui/atoms/icons"
 
 export const TOKEN_OPTIONS = [
   { label: "ICP", value: "ICP", icon: IconSvgDfinity, fee: 0.0001 * 10 ** 8 },

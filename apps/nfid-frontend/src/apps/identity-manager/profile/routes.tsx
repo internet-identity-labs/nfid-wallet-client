@@ -1,8 +1,8 @@
-import { NavSecurityIcon } from "packages/ui/src/atoms/icons/nav-security"
-import { NavPermissionsIcon } from "packages/ui/src/atoms/icons/nav-permissions"
-import { NavVaultsIcon } from "packages/ui/src/atoms/icons/nav-vaults"
-import { NavWalletIcon } from "packages/ui/src/atoms/icons/nav-wallet"
-import { NavAddressBookIcon } from "packages/ui/src/atoms/icons/nav-book"
+import { NavAddressBookIcon } from "@nfid/ui/atoms/icons/nav-book"
+import { NavPermissionsIcon } from "@nfid/ui/atoms/icons/nav-permissions"
+import { NavSecurityIcon } from "@nfid/ui/atoms/icons/nav-security"
+import { NavVaultsIcon } from "@nfid/ui/atoms/icons/nav-vaults"
+import { NavWalletIcon } from "@nfid/ui/atoms/icons/nav-wallet"
 
 export const ProfileConstants = {
   base: "/wallet",

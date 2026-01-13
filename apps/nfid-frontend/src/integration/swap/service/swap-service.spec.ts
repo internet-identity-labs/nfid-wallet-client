@@ -1,6 +1,7 @@
 import { SwapName } from "src/integration/swap/types/enums"
 
 import { LiquidityError } from "../errors/types"
+
 import { SwapService } from "./swap-service"
 
 describe("SwapService", () => {

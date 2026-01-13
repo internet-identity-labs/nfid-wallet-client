@@ -1,26 +1,30 @@
-import { Core } from "@walletconnect/core"
+import { SignIdentity } from "@dfinity/agent"
+
 import { WalletKit } from "@reown/walletkit"
+import { Core } from "@walletconnect/core"
 import { SessionTypes, SignClientTypes } from "@walletconnect/types"
 import { getSdkError } from "@walletconnect/utils"
-import { SignIdentity } from "@dfinity/agent"
 import { InfuraProvider, TypedDataEncoder } from "ethers"
-import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
-import { chainFusionSignerService } from "frontend/integration/bitcoin/services/chain-fusion-signer.service"
-import { EthSignTransactionRequest } from "frontend/integration/bitcoin/idl/chain-fusion-signer.d"
+
 import { INFURA_API_KEY } from "@nfid/integration/token/constants"
+
 import {
   EthereumTransactionParams,
   WCGasData,
 } from "frontend/features/walletconnect/types"
-import { NAMESPACES } from "./constants"
+import { EthSignTransactionRequest } from "frontend/integration/bitcoin/idl/chain-fusion-signer.d"
+import { chainFusionSignerService } from "frontend/integration/bitcoin/services/chain-fusion-signer.service"
+import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
 
+import { getWalletDelegation } from "../facade/wallet"
+
+import { NAMESPACES } from "./constants"
 import {
   WALLETCONNECT_PROJECT_ID,
   WALLETCONNECT_METADATA,
   ETH_METHODS,
   ETH_EVENTS,
 } from "./constants"
-import { getWalletDelegation } from "../facade/wallet"
 
 /**
  * WalletConnect Service for NFID Wallet using WalletKit
@@ -120,8 +124,8 @@ export class WalletConnectService {
           const allSessions = this.walletKit.getActiveSessions()
           // getActiveSessions returns Record<string, SessionTypes.Struct>
           const foundSession = Object.values(allSessions).find(
-            (s) => (s as SessionTypes.Struct).topic === request.topic,
-          ) as SessionTypes.Struct | undefined
+            (s) => s.topic === request.topic,
+          )
           if (foundSession) {
             this.activeSessions.set(foundSession.topic, foundSession)
           } else {
@@ -165,7 +169,7 @@ export class WalletConnectService {
     const sessions = this.walletKit.getActiveSessions()
     // getActiveSessions returns Record<string, SessionTypes.Struct>
     Object.values(sessions).forEach((session) => {
-      const typedSession = session as SessionTypes.Struct
+      const typedSession = session
       this.activeSessions.set(typedSession.topic, typedSession)
     })
   }
@@ -276,7 +280,7 @@ export class WalletConnectService {
       const allSessions = this.walletKit.getActiveSessions()
       // getActiveSessions returns Record<string, SessionTypes.Struct>
       Object.values(allSessions).forEach((session) => {
-        const typedSession = session as SessionTypes.Struct
+        const typedSession = session
         if (!this.activeSessions.has(typedSession.topic)) {
           this.activeSessions.set(typedSession.topic, typedSession)
         }
@@ -293,9 +297,7 @@ export class WalletConnectService {
 
     const allSessions = this.walletKit.getActiveSessions()
     // getActiveSessions returns Record<string, SessionTypes.Struct>
-    return Object.values(allSessions).some(
-      (s) => (s as SessionTypes.Struct).topic === topic,
-    )
+    return Object.values(allSessions).some((s) => s.topic === topic)
   }
 
   /**
@@ -644,7 +646,7 @@ export class WalletConnectService {
       max_priority_fee_per_gas: maxPriorityFeePerGas,
       max_fee_per_gas: maxFeePerGas,
       chain_id: BigInt(tx.chainId),
-      nonce: nonce,
+      nonce,
       data: tx.data ? [tx.data] : [],
     }
   }

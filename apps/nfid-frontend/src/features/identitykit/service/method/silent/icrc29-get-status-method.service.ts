@@ -1,5 +1,6 @@
 import { RPCMessage, RPCSuccessResponse } from "../../../type"
 import { NoActionError } from "../../exception-handler.service"
+
 import { SilentMethodService } from "./silent-method.service"
 
 class Icrc29GetStatusMethodService extends SilentMethodService {

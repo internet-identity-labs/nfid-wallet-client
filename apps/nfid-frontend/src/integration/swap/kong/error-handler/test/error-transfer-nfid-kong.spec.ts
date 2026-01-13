@@ -1,16 +1,16 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
+
+import { ContactSupportError } from "frontend/integration/swap/errors/types/contact-support-error"
 import { errorHandlerFactory } from "src/integration/swap/errors/handler-factory"
 import { KongShroffBuilder } from "src/integration/swap/kong/impl/kong-swap-shroff"
 import { Shroff } from "src/integration/swap/shroff"
 import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
 import { SwapStage } from "src/integration/swap/types/enums"
 
-import { ContactSupportError } from "frontend/integration/swap/errors/types/contact-support-error"
-
 describe("shroff transfer kong error handler test", () => {
   jest.setTimeout(900000)
 
-  it.skip("shroff transfer kong icrc2 error handler test", async function () {
+  it.skip("shroff transfer kong icrc2 error handler test", async () => {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
     const mockId = Ed25519KeyIdentity.generate()
@@ -40,7 +40,7 @@ describe("shroff transfer kong error handler test", () => {
     try {
       await shroff.swap(mockId)
       fail("Should throw an error")
-    } catch (e) {}
+    } catch (_e) {}
     const failedTransaction = shroff.getSwapTransaction()
     const errorHandler = errorHandlerFactory.getHandler(failedTransaction!)
     expect(failedTransaction?.getStage()).toEqual(SwapStage.TransferNFID)

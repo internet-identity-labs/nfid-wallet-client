@@ -1,9 +1,22 @@
 import * as Agent from "@dfinity/agent"
 import { HttpAgent, SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
+
 import BigNumber from "bignumber.js"
 import { Cache } from "node-ts-cache"
-import { integrationCache } from "packages/integration/src/cache"
+
+import { integrationCache } from "@nfid/integration"
+import {
+  actorBuilder,
+  agentBaseConfig,
+  exchangeRateService,
+  hasOwnProperty,
+  ICRC1TypeOracle,
+  replaceActorIdentity,
+} from "@nfid/integration"
+import { TRIM_ZEROS } from "@nfid/integration/token/constants"
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+
 import {
   LiquidityError,
   ServiceUnavailableError,
@@ -24,17 +37,6 @@ import { KongQuoteImpl } from "src/integration/swap/kong/impl/kong-quote-impl"
 import { KongSwapTransactionImpl } from "src/integration/swap/kong/impl/kong-swap-transaction-impl"
 import { Shroff } from "src/integration/swap/shroff"
 import { ShroffAbstract } from "src/integration/swap/shroff/shroff-abstract"
-
-import {
-  actorBuilder,
-  agentBaseConfig,
-  exchangeRateService,
-  hasOwnProperty,
-  ICRC1TypeOracle,
-  replaceActorIdentity,
-} from "@nfid/integration"
-import { TRIM_ZEROS } from "@nfid/integration/token/constants"
-import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 import { ContactSupportError } from "../../errors/types/contact-support-error"
 import { Quote } from "../../quote"
@@ -65,7 +67,7 @@ export class KongSwapShroffImpl extends ShroffAbstract {
   //TODO improve
   async getQuote(amount: string): Promise<Quote> {
     const amountInDecimals = this.getAmountInDecimals(amount)
-    console.debug("Amount in decimals: " + amountInDecimals.toFixed())
+    console.debug(`Amount in decimals: ${amountInDecimals.toFixed()}`)
     const preCalculation = this.getCalculator(amountInDecimals)
     const targetUSDPricePromise = exchangeRateService.usdPriceForICRC1(
       this.target.ledger,
@@ -128,7 +130,7 @@ export class KongSwapShroffImpl extends ShroffAbstract {
           )
           this.swapTransaction.setDeposit(icrcTransferId)
         } catch (e) {
-          throw new ContactSupportError("Deposit error: " + e)
+          throw new ContactSupportError(`Deposit error: ${e}`)
         }
       }
 
@@ -192,7 +194,7 @@ export class KongSwapShroffImpl extends ShroffAbstract {
 
       this.swapTransaction!.setSwap(resp.Ok.ts)
     } catch (e) {
-      throw new ContactSupportError("Swap error: " + e)
+      throw new ContactSupportError(`Swap error: ${e}`)
     }
   }
 

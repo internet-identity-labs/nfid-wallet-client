@@ -1,5 +1,5 @@
-import { IconCmpArrowGreen, IconCmpArrowRed } from "../../atoms/icons"
-import { Button } from "../button"
+import { IconCmpArrowGreen, IconCmpArrowRed } from "@nfid/ui/atoms/icons"
+import { Button } from "@nfid/ui/molecules/button"
 import { Input } from "../input"
 
 export const CustomNetworkFee = () => {

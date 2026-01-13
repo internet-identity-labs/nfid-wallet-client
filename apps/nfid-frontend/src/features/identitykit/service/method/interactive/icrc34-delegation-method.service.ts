@@ -1,7 +1,7 @@
 import { DelegationChain, Ed25519PublicKey } from "@dfinity/identity"
-import { authStorage } from "packages/integration/src/lib/authentication/storage"
-import { getAnonymousDelegation } from "packages/integration/src/lib/delegation-factory/delegation-i"
 
+import { authStorage } from "@nfid/integration"
+import { getAnonymousDelegation } from "@nfid/integration"
 import { authState, getGlobalDelegationChain } from "@nfid/integration"
 
 import { getLegacyThirdPartyAuthSession } from "frontend/features/authentication/services"
@@ -19,6 +19,7 @@ import {
 } from "../../account.service"
 import { GenericError } from "../../exception-handler.service"
 import { targetService, VerificationReport } from "../../target.service"
+
 import {
   ComponentData,
   InteractiveMethodService,

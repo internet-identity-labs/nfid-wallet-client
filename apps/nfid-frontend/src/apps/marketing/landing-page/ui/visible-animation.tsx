@@ -49,7 +49,7 @@ const AnimationWrapper: React.FC<Props> = ({ animationData, className }) => {
         rendererSettings={{
           progressiveLoad: true,
           imagePreserveAspectRatio: "xMidYMid slice",
-          className: className,
+          className,
         }}
         // @ts-ignore
         renderer={"canvas"}

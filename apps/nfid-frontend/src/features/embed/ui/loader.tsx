@@ -1,4 +1,4 @@
-import { IconCmpNFTPreview, Skeleton } from "@nfid-frontend/ui"
+import { IconCmpNFTPreview, Skeleton } from "@nfid/ui"
 
 export const Loader = () => {
   return (

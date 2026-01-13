@@ -1,9 +1,10 @@
 import BigNumber from "bignumber.js"
-import { SwapAmountsReply } from "src/integration/swap/kong/idl/kong_backend.d"
-import { QuoteAbstract } from "src/integration/swap/quote/quote-abstract"
 
 import { ICRC1TypeOracle } from "@nfid/integration"
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
+
+import { SwapAmountsReply } from "src/integration/swap/kong/idl/kong_backend.d"
+import { QuoteAbstract } from "src/integration/swap/quote/quote-abstract"
 
 export class KongQuoteImpl extends QuoteAbstract {
   private readonly quoteResponse: SwapAmountsReply
@@ -60,11 +61,9 @@ export class KongQuoteImpl extends QuoteAbstract {
       .dividedBy(100)
     const guaranteedAmount = targetAmountWithZeroSlippage.minus(slippageAmount)
 
-    return (
-      guaranteedAmount.toFixed(this.target.decimals).replace(TRIM_ZEROS, "") +
-      " " +
-      this.target.symbol
-    )
+    return `${guaranteedAmount
+      .toFixed(this.target.decimals)
+      .replace(TRIM_ZEROS, "")} ${this.target.symbol}`
   }
 
   getLiquidityProviderFee(): string {

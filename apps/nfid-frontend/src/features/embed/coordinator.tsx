@@ -1,11 +1,12 @@
 import { useMachine } from "@xstate/react"
-import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import { useMemo } from "react"
 
-import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
+import { BlurredLoader, ScreenResponsive } from "@nfid/ui"
+import { ModalComponent } from "@nfid/ui/molecules/modal"
 
 import AuthenticationCoordinator from "../authentication/root/coordinator"
 import { AuthenticationMachineActor } from "../authentication/root/root-machine"
+
 import { NFIDEmbedMachineV2 } from "./machine-v2"
 import { ProcedureApprovalCoordinator } from "./procedure-approval-coordinator"
 import { PageError } from "./ui/error"
@@ -58,7 +59,7 @@ export default function NFIDEmbedCoordinator() {
             onRequestICDelegation={(data) => {
               send({
                 type: "APPROVE_IC_GET_DELEGATION",
-                data: data,
+                data,
               })
             }}
             onRequestICTransfer={(data) => {
@@ -67,7 +68,7 @@ export default function NFIDEmbedCoordinator() {
               })
               send({
                 type: "APPROVE_IC_REQUEST_TRANSFER",
-                data: data,
+                data,
               })
             }}
             onReset={() => send({ type: "RESET" })}

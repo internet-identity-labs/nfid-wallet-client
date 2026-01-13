@@ -8,7 +8,7 @@ import {
 import { extPropertiesService } from "src/integration/nft/impl/ext/properties/properties-service"
 
 describe("nft test suite", () => {
-  it("should return nft properties", async function () {
+  it("should return nft properties", async () => {
     jest
       .spyOn(extPropertiesService as any, "fetchCollectionData")
       .mockResolvedValue(mockAttributesResponse)

@@ -5,16 +5,12 @@ import {
   TransferTransactionRecord,
 } from "src/integration/nft/impl/nft-transaction-record"
 
-export class TransferTransactionRecordIcpSwap
-  implements TransferTransactionRecord
-{
+export class TransferTransactionRecordIcpSwap implements TransferTransactionRecord {
   private readonly from: string
   private readonly to: string
   private readonly date: Date
-  private readonly txType: string
 
   constructor(rawTransaction: TransferRecord) {
-    this.txType = rawTransaction.remark
     this.from = rawTransaction.from
     this.to = rawTransaction.to
     this.date = new Date(Number(rawTransaction.time / BigInt(1000000)))
@@ -34,14 +30,12 @@ export class TransferTransactionRecordIcpSwap
 export class MintTransactionRecordIcpSwap implements MintTransactionRecord {
   private readonly to: string
   private readonly date: Date
-  private readonly txType: string
   private readonly priceFormatted: string
 
   constructor(rawTransaction: TransferRecord) {
-    this.txType = rawTransaction.remark
     this.to = rawTransaction.to
     this.date = new Date(Number(rawTransaction.time / BigInt(1000000)))
-    this.priceFormatted = rawTransaction.price.toString() + " ICP"
+    this.priceFormatted = `${rawTransaction.price.toString()} ICP`
   }
 
   getTransactionView(): TransactionRecordView {
@@ -66,7 +60,7 @@ export class TransactionRecordIcpSwap implements MintTransactionRecord {
     this.txType = rawTransaction.remark
     this.to = rawTransaction.to
     this.date = new Date(Number(rawTransaction.time / BigInt(1000000)))
-    this.priceFormatted = rawTransaction.price.toString() + " ICP"
+    this.priceFormatted = `${rawTransaction.price.toString()} ICP`
     this.from = rawTransaction.from
   }
 

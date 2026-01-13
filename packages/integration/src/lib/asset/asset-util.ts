@@ -1,6 +1,7 @@
 import { Cache } from "node-ts-cache"
 
 import { integrationCache } from "../../cache"
+
 import { TokenPrice } from "./types"
 import { wrappedTokenMap } from "./wrapped-token-map"
 
@@ -40,7 +41,7 @@ export class PriceService {
         }
         return response.json().then((x) => x.data.rates)
       })
-      .catch((e) => {
+      .catch((_e) => {
         return []
       })
   }

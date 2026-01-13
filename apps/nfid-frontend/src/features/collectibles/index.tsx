@@ -1,13 +1,14 @@
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
-import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
-import { NFTs } from "packages/ui/src/organisms/nfts"
-import { Balance } from "packages/ui/src/organisms/profile-info/balance"
 import { useCallback, useContext, useState, useEffect, useMemo } from "react"
 
-import { Button, Skeleton } from "@nfid-frontend/ui"
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import { Button, Skeleton } from "@nfid/ui"
+import ProfileContainer from "@nfid/ui/atoms/profile-container/Container"
+import { NFTs } from "@nfid/ui/organisms/nfts"
+import { Balance } from "@nfid/ui/organisms/profile-info/balance"
+import { useTokensInit } from "@nfid/ui/organisms/send-receive/hooks/token-init"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { searchTokens } from "frontend/features/collectibles/utils/util"
@@ -17,8 +18,8 @@ import { ProfileContext } from "frontend/provider"
 
 import { fetchTokens } from "../fungible-token/utils"
 import { ModalType } from "../transfer-modal/types"
+
 import { fetchNFTs } from "./utils/util"
-import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 const DEFAULT_LIMIT_PER_PAGE = 8
 

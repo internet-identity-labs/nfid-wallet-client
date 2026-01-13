@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { TableCell, TableRow, CenterEllipsis } from "@nfid-frontend/ui"
+import { TableCell, TableRow, CenterEllipsis } from "@nfid/ui"
 
 export interface VaultsMembersTableRowProps {
   name: string

@@ -2,9 +2,9 @@ import * as RadixDialog from "@radix-ui/react-dialog"
 import clsx from "clsx"
 import React from "react"
 
-import { Loader } from "../../atoms/loader"
-import { H5 } from "../../atoms/typography"
-import { Button } from "../button"
+import { Loader } from "@nfid/ui/atoms/loader"
+import { H5 } from "@nfid/ui/atoms/typography"
+import { Button } from "@nfid/ui/molecules/button"
 
 export interface ModalButtonProps {
   text: string
@@ -14,8 +14,7 @@ export interface ModalButtonProps {
   id?: string
 }
 
-export interface ModalAdvancedProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface ModalAdvancedProps extends React.HTMLAttributes<HTMLDivElement> {
   title?: string
   subTitle?: string | JSX.Element
   primaryButton?: ModalButtonProps

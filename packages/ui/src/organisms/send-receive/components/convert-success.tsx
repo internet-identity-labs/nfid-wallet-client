@@ -1,8 +1,8 @@
 import clsx from "clsx"
 import { FC } from "react"
 
-import { IconCmpArrow, IconCmpArrowWhite } from "@nfid-frontend/ui"
-import { Button, H5 } from "@nfid-frontend/ui"
+import { IconCmpArrow, IconCmpArrowWhite } from "@nfid/ui"
+import { Button, H5 } from "@nfid/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 import { useDarkTheme } from "frontend/hooks"
@@ -61,19 +61,19 @@ export const ConvertSuccessUi: FC<ConvertSuccessUiProps> = ({
           {status === SendStatus.FAILED
             ? "Transaction failed"
             : status === SendStatus.COMPLETED
-            ? "Your transaction is on the way"
-            : "Converting"}
+              ? "Your transaction is on the way"
+              : "Converting"}
         </H5>
         <p className="h-5 mt-3 text-sm leading-5">
           {status === SendStatus.FAILED
             ? "Your assets are still in your wallet."
             : status === SendStatus.COMPLETED
-            ? isBtc
-              ? `${tokenName} will be on your address after 6 Bitcoin network confirmations. This usually takes about 90 minutes.`
-              : `${tokenName} will be on your address after the transaction is confirmed on the network. This usually takes a few minutes, depending on network congestion.`
-            : isBtc
-            ? `Conversion usually takes around ${duration} minutes.`
-            : `Conversion usually takes a few minutes, depending on network congestion`}
+              ? isBtc
+                ? `${tokenName} will be on your address after 6 Bitcoin network confirmations. This usually takes about 90 minutes.`
+                : `${tokenName} will be on your address after the transaction is confirmed on the network. This usually takes a few minutes, depending on network congestion.`
+              : isBtc
+                ? `Conversion usually takes around ${duration} minutes.`
+                : `Conversion usually takes a few minutes, depending on network congestion`}
         </p>
       </div>
       <div

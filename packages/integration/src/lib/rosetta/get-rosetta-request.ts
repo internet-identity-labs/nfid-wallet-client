@@ -15,7 +15,7 @@ export function getRosettaRequest(address: string): RosettaRequest {
       network: "00000000000000020101",
     },
     account_identifier: {
-      address: address,
+      address,
     },
   }
 }

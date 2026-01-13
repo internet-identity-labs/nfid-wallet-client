@@ -1,17 +1,14 @@
 import clsx from "clsx"
-import {
-  IconCmpArrowRight,
-  IconNftPlaceholder,
-} from "packages/ui/src/atoms/icons"
-import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
-import { Skeleton } from "packages/ui/src/atoms/skeleton"
-import { InputAmount } from "packages/ui/src/molecules/input-amount"
+import { IconCmpArrowRight, IconNftPlaceholder } from "@nfid/ui/atoms/icons"
+import ImageWithFallback from "@nfid/ui/atoms/image-with-fallback"
+import { Skeleton } from "@nfid/ui/atoms/skeleton"
+import { InputAmount } from "@nfid/ui/molecules/input-amount"
 import { FC, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
 import { PriceImpactStatus } from "src/integration/swap/types/enums"
 import { PriceImpact } from "src/integration/swap/types/types"
 
-import { ChooseFtModal, Tooltip } from "@nfid-frontend/ui"
+import { ChooseFtModal, Tooltip } from "@nfid/ui"
 
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
@@ -19,7 +16,7 @@ import {
   BALANCE_EDGE_LENGTH,
   BALANCE_MOBILE_EDGE_LENGTH,
   getIsMobileDeviceMatch,
-} from "packages/ui/src/utils/is-mobile"
+} from "@nfid/ui"
 
 interface ChooseToTokenProps {
   token: FT | undefined

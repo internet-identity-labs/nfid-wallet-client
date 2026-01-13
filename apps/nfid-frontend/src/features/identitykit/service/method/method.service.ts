@@ -2,6 +2,7 @@ import { validateDerivationOrigin } from "../../helpers/validate-derivation-orig
 import { IdentityKitRPCMachineContext } from "../../type"
 import { GenericError, NotSupportedError } from "../exception-handler.service"
 import { utilsService } from "../utils.service"
+
 import { icrc27AccountsMethodService } from "./interactive/icrc27-accounts-method.service"
 import { icrc34DelegationMethodService } from "./interactive/icrc34-delegation-method.service"
 import { icrc49CallCanisterMethodService } from "./interactive/icrc49-call-canister-method.service"
@@ -50,7 +51,7 @@ export const validateRequest = async (
   ) {
     const response = await validateDerivationOrigin(
       context.activeRequest.origin ?? origin,
-      String((context.activeRequest.data.params as any).derivationOrigin),
+      String(context.activeRequest.data.params.derivationOrigin),
     )
 
     if (response.result === "invalid") {

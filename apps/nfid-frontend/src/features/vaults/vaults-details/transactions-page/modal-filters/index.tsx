@@ -6,7 +6,7 @@ import {
   IconCmpFilters,
   Input,
   IOption,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 
 export interface VaultFilterTransactionsProps {
   initiatorsOptions: IOption[]

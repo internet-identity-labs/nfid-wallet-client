@@ -1,18 +1,17 @@
 import clsx from "clsx"
-import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import React, { useState } from "react"
 
-import { Button, IconCmpTrash } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
+import { Button, IconCmpTrash } from "@nfid/ui"
+import { Spinner } from "@nfid/ui/atoms/spinner"
+import { ModalComponent } from "@nfid/ui/molecules/modal"
 
 import { IHandleWithLoading } from ".."
 import { RemoveDeviceInUseError } from "../components/remove-device-in-use-error"
 import { securityConnector } from "../device-connector"
 import { IDevice } from "../types"
-import { Spinner } from "packages/ui/src/atoms/spinner"
 
-interface IDeleteRecoveryPhraseModal
-  extends React.HTMLAttributes<HTMLDivElement> {
+interface IDeleteRecoveryPhraseModal extends React.HTMLAttributes<HTMLDivElement> {
   device: IDevice
   handleWithLoading: IHandleWithLoading
 }

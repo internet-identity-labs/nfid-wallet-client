@@ -1,7 +1,9 @@
 import { DelegationIdentity } from "@dfinity/identity"
+
 import { format } from "date-fns"
 
 import { E8S } from "../token/constants"
+
 import {
   AccountBalance,
   AppBalance,
@@ -71,7 +73,7 @@ export abstract class Asset<T> implements FungibleAsset {
       tokenBalance: parseFloat(token.balance) * E8S,
       usdBalance: token.balanceinUsd,
       blockchain: this.getBlockchain(),
-      fee: fee,
+      fee,
       contract: token.contractAddress,
     }
   }

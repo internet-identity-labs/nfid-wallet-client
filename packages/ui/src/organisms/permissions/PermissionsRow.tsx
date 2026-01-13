@@ -6,7 +6,7 @@ import {
   CopyAddress,
   Button,
   Skeleton,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 import { Allowance } from "."
 
 interface PermissionsRowProps {

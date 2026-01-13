@@ -5,11 +5,9 @@ import {
   CallRequest,
   Cbor,
   Certificate,
-  LookupResult,
   lookupResultToBuffer,
   RequestId,
   UpdateCallRejectedError,
-  v2ResponseBody,
   v3ResponseBody,
 } from "@dfinity/agent"
 import { AgentError } from "@dfinity/agent/lib/cjs/errors"
@@ -33,7 +31,7 @@ function toArrayBuffer(buffer: Uint8Array | RequestId): ArrayBuffer {
     return buffer.buffer.slice(
       buffer.byteOffset,
       buffer.byteOffset + buffer.byteLength,
-    ) as ArrayBuffer
+    )
   }
   // RequestId is ArrayBuffer & {...}, so it's already an ArrayBuffer
   return buffer as ArrayBuffer
@@ -109,7 +107,7 @@ class CallCanisterService {
       const path = [new TextEncoder().encode("request_status"), requestId]
 
       const statusBuffer = lookupResultToBuffer(
-        certificate.lookup([...path, "status"]) as LookupResult,
+        certificate.lookup([...path, "status"]),
       )
       if (!statusBuffer) {
         throw new AgentError("Status buffer not found")
@@ -124,7 +122,7 @@ class CallCanisterService {
           // Find rejection details in the certificate
 
           const rejectCodeBuffer = lookupResultToBuffer(
-            certificate.lookup([...path, "reject_code"]) as LookupResult,
+            certificate.lookup([...path, "reject_code"]),
           )
           if (!rejectCodeBuffer) {
             throw new AgentError("Reject code buffer not found")
@@ -133,7 +131,7 @@ class CallCanisterService {
           const rejectCode = new Uint8Array(rejectCodeArrayBuffer as any)[0]
 
           const rejectMessageBuffer = lookupResultToBuffer(
-            certificate.lookup([...path, "reject_message"]) as LookupResult,
+            certificate.lookup([...path, "reject_message"]),
           )
           if (!rejectMessageBuffer) {
             throw new AgentError("Reject message buffer not found")
@@ -145,7 +143,7 @@ class CallCanisterService {
           )
 
           const error_code_buf = lookupResultToBuffer(
-            certificate.lookup([...path, "error_code"]) as LookupResult,
+            certificate.lookup([...path, "error_code"]),
           )
           const error_code = error_code_buf
             ? (() => {
@@ -166,8 +164,7 @@ class CallCanisterService {
       }
     } else if (response.body && "reject_message" in response.body) {
       // handle v2 response errors by throwing an UpdateCallRejectedError object
-      const { reject_code, reject_message, error_code } =
-        response.body as v2ResponseBody
+      const { reject_code, reject_message, error_code } = response.body
       throw new UpdateCallRejectedError(
         cid,
         methodName,

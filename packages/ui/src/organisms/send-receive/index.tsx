@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { ToggleButton } from "packages/ui/src/molecules/toggle-button"
+import { ToggleButton } from "@nfid/ui/molecules/toggle-button"
 import { FC } from "react"
 
 import { ModalType, TokenType } from "frontend/features/transfer-modal/types"
@@ -48,10 +48,10 @@ export const TransferModal: FC<TransferModalProps> = ({
         hasSwapError
           ? "min-h-[540px]"
           : isConvertSuccess
-          ? "min-h-[580px]"
-          : hasBtcError
-          ? "min-h-[520px]"
-          : "min-h-[480px]",
+            ? "min-h-[580px]"
+            : hasBtcError
+              ? "min-h-[520px]"
+              : "min-h-[480px]",
       )}
       overlayClassName={!isOpen ? "hidden" : ""}
       isOpen={isOpen}

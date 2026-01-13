@@ -1,8 +1,9 @@
 import { Principal } from "@dfinity/principal"
-import { encodeTokenIdentifier } from "src/integration/entrepot/ext"
 
 import { Account } from "@nfid/integration"
 import { Blockchain } from "@nfid/integration/token/types"
+
+import { encodeTokenIdentifier } from "src/integration/entrepot/ext"
 
 import {
   assetFullsize,

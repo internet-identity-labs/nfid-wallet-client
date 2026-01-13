@@ -1,17 +1,20 @@
-import React from "react"
 import { CoreTypes, ProposalTypes } from "@walletconnect/types"
+import React from "react"
 
-import { WalletConnectPromptTemplate } from "./prompt-template"
-import { Card, CopyAddress, Skeleton, Tooltip } from "@nfid-frontend/ui"
-import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
+import { Card, CopyAddress, Skeleton, Tooltip } from "@nfid/ui"
+import { getNetworkIcon } from "@nfid/ui/utils/network-icon"
+
+import { useDarkTheme } from "frontend/hooks"
+
+import { ValidationStatus } from "../types"
 import {
   getNetworkId,
   getNetworkName,
   getStatusIcon,
   getStatusText,
 } from "../utils"
-import { useDarkTheme } from "frontend/hooks"
-import { ValidationStatus } from "../types"
+
+import { WalletConnectPromptTemplate } from "./prompt-template"
 
 interface WalletConnectApproveConnectionProps {
   dAppMetadata: CoreTypes.Metadata

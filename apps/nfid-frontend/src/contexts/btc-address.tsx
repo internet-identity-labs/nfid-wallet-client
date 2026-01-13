@@ -1,7 +1,8 @@
 import { Principal } from "@dfinity/principal"
-import { authState } from "packages/integration/src/lib/authentication/auth-state"
+
 import { createContext, useCallback, useEffect, useState } from "react"
 
+import { authState } from "@nfid/integration"
 import { btcDepositService } from "@nfid/integration/token/btc/service"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"

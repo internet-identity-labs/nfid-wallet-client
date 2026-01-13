@@ -1,7 +1,18 @@
-import React, { useEffect, useState } from "react"
 import BigNumber from "bignumber.js"
+import React, { useEffect, useState } from "react"
 
-import { WalletConnectPromptTemplate } from "./prompt-template"
+import { exchangeRateService } from "@nfid/integration"
+import {
+  CKETH_LEDGER_CANISTER_ID,
+  POLYGON_ADDRESS,
+} from "@nfid/integration/token/constants"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { CopyAddress, Skeleton, Tooltip } from "@nfid/ui"
+import { getNetworkIcon } from "@nfid/ui/utils/network-icon"
+
+import { useDarkTheme } from "frontend/hooks"
+import { polygonErc20Service } from "frontend/integration/ethereum/polygon/pol-erc20.service"
+
 import {
   EthereumTransactionParams,
   ValidationStatus,
@@ -21,16 +32,7 @@ import {
   getStatusText,
 } from "../utils"
 
-import { useDarkTheme } from "frontend/hooks"
-import { CopyAddress, Skeleton, Tooltip } from "@nfid-frontend/ui"
-import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
-import { exchangeRateService } from "@nfid/integration"
-import {
-  CKETH_LEDGER_CANISTER_ID,
-  POLYGON_ADDRESS,
-} from "@nfid/integration/token/constants"
-import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
-import { polygonErc20Service } from "frontend/integration/ethereum/polygon/pol-erc20.service"
+import { WalletConnectPromptTemplate } from "./prompt-template"
 
 interface WalletConnectSignTransactionProps extends WalletConnectSignRequestProps {
   transaction: EthereumTransactionParams

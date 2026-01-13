@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-import { BurgerMenu, Dropdown, DropdownOption } from "@nfid-frontend/ui"
+import { BurgerMenu, Dropdown, DropdownOption } from "@nfid/ui"
 
 import { NFIDTheme } from "frontend/App"
 

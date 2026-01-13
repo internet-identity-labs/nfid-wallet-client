@@ -1,5 +1,5 @@
 import { Meta, StoryFn } from "@storybook/react"
-import { Button, IconCmpGoogle, IconCmpDfinity } from "@nfid-frontend/ui"
+import { Button, IconCmpGoogle, IconCmpDfinity } from "@nfid/ui"
 
 import { withSignInDecorator } from "../../../decorators/sign-in"
 import { AuthSelection, AuthSelectionProps } from "./index"

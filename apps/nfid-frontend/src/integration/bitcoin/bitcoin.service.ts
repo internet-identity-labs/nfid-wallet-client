@@ -1,8 +1,12 @@
 import { SignIdentity } from "@dfinity/agent"
-import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
-import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
+import { EMPTY, expand, firstValueFrom, from, last } from "rxjs"
+
+import { SelectedUtxosFeeResponse } from "@nfid/integration"
 import { Balance } from "@nfid/integration"
+import { KEY_BTC_ADDRESS } from "@nfid/integration"
+
+import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
 import { bitcoinCanisterService } from "./services/bitcoin-canister.service"
 import {
@@ -14,8 +18,6 @@ import { ckBtcService } from "./services/ckbtc.service"
 import { mempoolService } from "./services/mempool.service"
 import { patronService } from "./services/patron.service"
 import { satoshiService } from "./services/satoshi.service"
-import { EMPTY, expand, firstValueFrom, from, last } from "rxjs"
-import { KEY_BTC_ADDRESS } from "packages/integration/src/lib/authentication/storage"
 
 export type BlockIndex = bigint
 
@@ -42,7 +44,7 @@ export class BitcoinService {
       const identity = await getWalletDelegation()
       return this.getAddress(identity)
     } else {
-      return cachedValue as string
+      return cachedValue
     }
   }
 
@@ -50,7 +52,7 @@ export class BitcoinService {
     const { cachedValue, key } = this.getAddressFromCache()
 
     if (cachedValue != null) {
-      return cachedValue as string
+      return cachedValue
     }
 
     await patronService.askToPayFor(identity)
@@ -74,7 +76,7 @@ export class BitcoinService {
       throw Error("No bitcoin address in a cache.")
     }
 
-    return bitcoinCanisterService.getBalanceQuery(cachedValue as string)
+    return bitcoinCanisterService.getBalanceQuery(cachedValue)
   }
 
   public async getFee(
@@ -245,9 +247,8 @@ export class BitcoinService {
       }
     }
     try {
-      const hasConfirmations = await mempoolService.checkWalletConfirmations(
-        cachedValue as string,
-      )
+      const hasConfirmations =
+        await mempoolService.checkWalletConfirmations(cachedValue)
       if (!hasConfirmations) {
         return {
           ok: false,

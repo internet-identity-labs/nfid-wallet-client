@@ -7,7 +7,7 @@ export const createDeviceFactory = (
   publicKey: PublicKey,
 ): DeviceData => {
   return {
-    alias: alias,
+    alias,
     protection: {
       unprotected: null,
     },

@@ -9,7 +9,7 @@ export class MemeCakeTransactionMapper {
         return new SoldTransactionRecordMemeCake(transaction)
       default:
         console.error(
-          "Unknown transaction MemeCake type: " + transaction.transctionType,
+          `Unknown transaction MemeCake type: ${transaction.transctionType}`,
         )
         return null
     }

@@ -1,10 +1,6 @@
 import clsx from "clsx"
 
-import {
-  AccordionV2,
-  IconCmpArrowRight,
-  IconCmpWarning,
-} from "@nfid-frontend/ui"
+import { AccordionV2, IconCmpArrowRight, IconCmpWarning } from "@nfid/ui"
 
 export interface IWarningAccordionOption {
   title: string

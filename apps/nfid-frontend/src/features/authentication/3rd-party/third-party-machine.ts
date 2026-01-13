@@ -12,6 +12,7 @@ import {
 } from "frontend/state/authorization"
 
 import AuthenticationMachine from "../root/root-machine"
+
 import { ApproveIcGetDelegationSdkResponse } from "./choose-account/types"
 
 export interface ThirdPartyAuthMachineContext {

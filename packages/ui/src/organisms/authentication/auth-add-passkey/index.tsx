@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { FC } from "react"
 
-import { BlurredLoader, Button } from "@nfid-frontend/ui"
+import { BlurredLoader, Button } from "@nfid/ui"
 
 import Image from "./assets/passkey.webp"
 

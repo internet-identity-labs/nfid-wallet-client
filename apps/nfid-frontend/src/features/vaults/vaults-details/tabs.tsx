@@ -1,4 +1,4 @@
-import { ITab } from "@nfid-frontend/ui"
+import { ITab } from "@nfid/ui"
 
 import { VaultsMembersPage } from "./members-page"
 import { VaultsPoliciesPage } from "./policies-page"

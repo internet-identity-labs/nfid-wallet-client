@@ -1,8 +1,10 @@
 import * as Agent from "@dfinity/agent"
+
 import BigNumber from "bignumber.js"
 import { Cache } from "node-ts-cache"
 
 import { integrationCache } from "../../cache"
+
 import { actorBuilder } from "./../actors"
 import { idlFactory as IDL } from "./idl/ExchangeRate"
 import { _SERVICE as Service, ExchangeRate__1 } from "./idl/ExchangeRate.d"
@@ -85,7 +87,7 @@ export class ExchangeRateService {
           return {
             value: BigNumber(result.priceUSD),
           }
-        } catch (e) {
+        } catch (_e) {
           return null
         }
       }

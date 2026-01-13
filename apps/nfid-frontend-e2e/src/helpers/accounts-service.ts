@@ -54,25 +54,25 @@ class UserService implements UserActions {
   }
 
   async setAuth(anchor: number) {
-    let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
-    let errors: string[] = []
+    const testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
+    const errors: string[] = []
     await browser.waitUntil(
       async () => {
         await browser.pause(1000)
-        let executeResult = await browser.executeAsync(function (
+        const executeResult = await browser.executeAsync((
           authState,
           done,
-        ) {
+        ) => {
           // @ts-ignore
           if (typeof setAuthState === "function") {
             try {
               // @ts-ignore
               setAuthState(authState)
-                .then(async function (functionResult: Promise<string | Error>) {
+                .then(async (functionResult: Promise<string | Error>) => {
                   done(String(await functionResult))
                 })
-                .catch(function (error: Error) {
-                  done("error: " + error.message)
+                .catch((error: Error) => {
+                  done(`error: ${  error.message}`)
                 })
             } catch (e) {
               let errorMessage
@@ -82,10 +82,9 @@ class UserService implements UserActions {
               done(errorMessage)
             }
           } else done("setAuthState function is not available")
-        },
-        testUser.authstate)
+        }, testUser.authstate)
         errors.push(String(executeResult))
-        let state = await this.getAuthStateFromDB()
+        const state = await this.getAuthStateFromDB()
         errors.push(...state.errors)
         return (
           state.identity?.toString() ==
@@ -108,8 +107,8 @@ class UserService implements UserActions {
     delegation: string | null
     errors: string[]
   }> {
-    return await browser.executeAsync(function (done) {
-      let errors: string[] = []
+    return await browser.executeAsync((done) => {
+      const errors: string[] = []
       const dbRequest = indexedDB.open("authstate")
       dbRequest.onerror = (event) => {
         const request = event.target as IDBRequest
@@ -124,22 +123,21 @@ class UserService implements UserActions {
         const transaction = db.transaction(["ic-keyval"], "readonly")
         const objectStore = transaction.objectStore("ic-keyval")
 
-        const promises = ["identity", "delegation"].map(
-          (key) =>
-            new Promise((resolve, reject) => {
-              const request = objectStore.get(key)
-              request.onsuccess = () => {
-                resolve(request.result !== undefined ? request.result : null)
-              }
-              request.onerror = () => {
-                const errorMsg = `Can't get ${key} value. Error: ${
-                  request.error ? request.error.message : "Unknown error"
-                }`
-                errors.push(errorMsg)
-                reject(errorMsg)
-              }
-            }),
-        )
+        const promises = ["identity", "delegation"].map((key) => {
+          return new Promise((resolve, reject) => {
+            const request = objectStore.get(key)
+            request.onsuccess = () => {
+              resolve(request.result !== undefined ? request.result : null)
+            }
+            request.onerror = () => {
+              const errorMsg = `Can't get ${key} value. Error: ${
+                request.error ? request.error.message : "Unknown error"
+              }`
+              errors.push(errorMsg)
+              reject(errorMsg)
+            }
+          })
+        })
         Promise.all(promises)
           .then(([identity, delegation]) => {
             done({
@@ -161,7 +159,7 @@ class UserService implements UserActions {
     errors: string[]
   }> {
     return browser.executeAsync((dbName, done) => {
-      let errors: string[] = []
+      const errors: string[] = []
       const request = indexedDB.open(dbName)
 
       request.onupgradeneeded = function () {
@@ -170,7 +168,7 @@ class UserService implements UserActions {
 
       request.onsuccess = function () {
         request.result.close()
-        done({ result: true, errors: errors })
+        done({ result: true, errors })
       }
 
       request.onerror = function () {
@@ -179,7 +177,7 @@ class UserService implements UserActions {
             request.error ? request.error.message : "Unknown error"
           }`,
         )
-        done({ result: false, errors: errors })
+        done({ result: false, errors })
       }
 
       request.onblocked = function () {
@@ -197,7 +195,7 @@ class UserService implements UserActions {
     result: boolean
     errors: string[]
   }> {
-    let errors: string[] = []
+    const errors: string[] = []
     await browser.pause(1000)
     await this.checkDatabaseExists(waitForDB).then(async (it) => {
       errors.push(...it.errors)
@@ -215,11 +213,11 @@ class UserService implements UserActions {
         await browser.refresh()
       }
     })
-    let recheckResults = await this.checkDatabaseExists(waitForDB)
+    const recheckResults = await this.checkDatabaseExists(waitForDB)
     errors.push(...recheckResults.errors)
     return {
       result: recheckResults.result,
-      errors: errors,
+      errors,
     }
   }
 

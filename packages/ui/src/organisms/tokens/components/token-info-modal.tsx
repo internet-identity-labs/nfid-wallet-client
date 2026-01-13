@@ -2,15 +2,15 @@ import {
   IconNftPlaceholder,
   IconSvgExternal,
   IconSvgExternalWhite,
-} from "packages/ui/src/atoms/icons"
-import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
-import CopyAddress from "packages/ui/src/molecules/copy-address"
-import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
+} from "@nfid/ui/atoms/icons"
+import ImageWithFallback from "@nfid/ui/atoms/image-with-fallback"
+import CopyAddress from "@nfid/ui/molecules/copy-address"
+import { ModalComponent } from "@nfid/ui/molecules/modal"
 import { FC, useEffect, useState } from "react"
 import { FT } from "src/integration/ft/ft"
 
 import { useDarkTheme } from "frontend/hooks"
-import { Skeleton } from "packages/ui/src/atoms/skeleton"
+import { Skeleton } from "@nfid/ui/atoms/skeleton"
 import {
   Category,
   CHAIN_NAME,

@@ -1,6 +1,8 @@
+import { ICRC1 } from "@nfid/integration/token/icrc1/types"
+
 import { FT } from "../ft"
 import { FTImpl } from "../impl/ft-impl"
-import { ICRC1 } from "@nfid/integration/token/icrc1/types"
+
 import { TokenBuilder } from "./token-builder"
 
 export class ICRC1TokenBuilder implements TokenBuilder<ICRC1> {

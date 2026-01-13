@@ -1,7 +1,7 @@
 import React, { useMemo } from "react"
 
-import { Table } from "@nfid-frontend/ui"
 import { ObjectState, VaultMember } from "@nfid/integration"
+import { Table } from "@nfid/ui"
 
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
 
@@ -24,7 +24,7 @@ export const VaultsMembersTable: React.FC<VaultsMembersTableProps> = ({
       role: member.role,
       index: index + 1,
       isArchived: member.state === ObjectState.ARCHIVED,
-      isAdmin: isAdmin,
+      isAdmin,
     }))
   }, [isAdmin, members])
 

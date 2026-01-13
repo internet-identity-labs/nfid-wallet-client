@@ -1,6 +1,6 @@
 import clsx from "clsx"
 
-import { Label } from "@nfid-frontend/ui"
+import { Label } from "@nfid/ui"
 
 export interface ICheckbox {
   value: string

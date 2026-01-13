@@ -1,17 +1,7 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
-import toaster from "packages/ui/src/atoms/toast"
-import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import React from "react"
 
-import {
-  BlurredLoader,
-  Button,
-  IconCmpInfo,
-  RadioButton,
-  Tooltip,
-} from "@nfid-frontend/ui"
 import {
   Account,
   ThirdPartyAuthSession,
@@ -20,6 +10,15 @@ import {
   getPublicAccountDelegate,
 } from "@nfid/integration"
 import { useSWR } from "@nfid/swr"
+import {
+  BlurredLoader,
+  Button,
+  IconCmpInfo,
+  RadioButton,
+  Tooltip,
+} from "@nfid/ui"
+import toaster from "@nfid/ui/atoms/toast"
+import { AuthAppMeta } from "@nfid/ui/organisms/authentication/app-meta"
 
 import { RequestStatus } from "frontend/features/types"
 import { fetchProfile } from "frontend/integration/identity-manager"
@@ -32,6 +31,7 @@ import {
 
 import { getLegacyThirdPartyAuthSession } from "../../services"
 import { PublicProfileButton } from "../public-profile-button"
+
 import { ApproveIcGetDelegationSdkResponse } from "./types"
 
 export interface IAuthChooseAccount {

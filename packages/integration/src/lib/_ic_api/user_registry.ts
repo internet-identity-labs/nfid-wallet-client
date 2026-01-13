@@ -31,7 +31,7 @@ export const idlFactory = ({ IDL }: any) => {
     max_user_addresses: IDL.Nat32,
     max_name_length: IDL.Nat32,
   })
-  const Conf = IDL.Record({ im_canister: IDL.Opt(IDL.Text) })
+  const _Conf = IDL.Record({ im_canister: IDL.Opt(IDL.Text) })
   const ICRC1State = IDL.Variant({
     Inactive: IDL.Null,
     Active: IDL.Null,

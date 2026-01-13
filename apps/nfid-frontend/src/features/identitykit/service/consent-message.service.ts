@@ -5,6 +5,7 @@ import {
   type _SERVICE as ConsentMessageCanister,
 } from "../idl/consent"
 import { idlFactory as ConsentMessageCanisterIDL } from "../idl/consent_idl"
+
 import { actorService } from "./actor.service"
 import { GenericError } from "./exception-handler.service"
 

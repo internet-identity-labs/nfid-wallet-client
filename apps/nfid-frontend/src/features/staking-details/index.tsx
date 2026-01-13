@@ -1,12 +1,14 @@
 import { NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
 import { hexStringToUint8Array } from "@dfinity/utils"
+
 import { useActor } from "@xstate/react"
-import { StakingDetails } from "packages/ui/src/organisms/staking/staking-details"
 import { useContext, useMemo } from "react"
 import { useParams } from "react-router-dom"
 
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import { useTokensInit } from "@nfid/ui/organisms/send-receive/hooks/token-init"
+import { StakingDetails } from "@nfid/ui/organisms/staking/staking-details"
 
 import { useIdentity } from "frontend/hooks/identity"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
@@ -15,7 +17,6 @@ import { ProfileContext } from "frontend/provider"
 import { fetchTokens } from "../fungible-token/utils"
 import { fetchDelegates, fetchStakedTokens } from "../staking/utils"
 import { ModalType } from "../transfer-modal/types"
-import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 const StakingDetailsPage = () => {
   const { tokenSymbol } = useParams()

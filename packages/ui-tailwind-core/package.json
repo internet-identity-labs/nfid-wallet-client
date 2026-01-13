@@ -1,6 +1,6 @@
 {
   "version": "0.0.1-alpha.3",
-  "name": "@nfid-frontend/ui-tailwind-core",
+  "name": "@nfid/ui-tailwind-core",
   "author": "Philipp Litzenberger",
   "publishConfig": {
     "access": "public"

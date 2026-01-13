@@ -2,8 +2,8 @@ import clsx from "clsx"
 import { FC, useEffect, useState } from "react"
 import colors from "tailwindcss/colors"
 
-import { CloseIcon } from "../../atoms/icons/close-button"
-import { Button } from "../button"
+import { CloseIcon } from "@nfid/ui/atoms/icons/close-button"
+import { Button } from "@nfid/ui/molecules/button"
 import BannerBg from "./banner-bg.png"
 
 interface BtcBanner {

@@ -1,18 +1,19 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
-import toaster from "packages/ui/src/atoms/toast"
+
 import { useMemo, useState } from "react"
 
-import { IOption } from "@nfid-frontend/ui"
-import { isHex, toUSD } from "@nfid-frontend/utils"
 import { toPresentation } from "@nfid/integration/token/utils"
+import { IOption } from "@nfid/ui"
+import toaster from "@nfid/ui/atoms/toast"
+import { RequestTransferPage } from "@nfid/ui/pages/request-transfer"
+import { useTimer } from "@nfid/ui/utils/use-timer"
+import { isHex, toUSD } from "@nfid/utils"
 
 import { useICPExchangeRate } from "frontend/features/fungible-token/icp/hooks/use-icp-exchange-rate"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
-import { RequestTransferPage } from "frontend/ui/pages/request-transfer"
-import { useTimer } from "frontend/ui/utils/use-timer"
 
 interface IRequestTransfer {
   applicationName?: string

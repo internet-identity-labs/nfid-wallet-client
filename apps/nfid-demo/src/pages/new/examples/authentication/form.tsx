@@ -3,7 +3,7 @@ import React from "react"
 import { useFieldArray, useForm } from "react-hook-form"
 import { ImSpinner } from "react-icons/im"
 
-import { Button, Input } from "@nfid-frontend/ui"
+import { Button, Input } from "@nfid/ui"
 import { ONE_HOUR_IN_MS } from "@nfid/config"
 
 const CANISTER_IDS = [

@@ -8,8 +8,8 @@ import {
   Skeleton,
   TableNftActivitySkeleton,
   IconCmpExternalIcon,
-} from "@nfid-frontend/ui"
-import { trimConcat } from "@nfid-frontend/utils"
+} from "@nfid/ui"
+import { trimConcat } from "@nfid/utils"
 
 import {
   AssetPreview,
@@ -18,9 +18,9 @@ import {
 } from "frontend/integration/nft/impl/nft-types"
 import { NFT } from "frontend/integration/nft/nft"
 
-import { A } from "../../atoms/custom-link"
-import ProfileContainer from "../../atoms/profile-container/Container"
-import { ModalComponent } from "../../molecules/modal/index-v0"
+import { A } from "@nfid/ui/atoms/custom-link"
+import ProfileContainer from "@nfid/ui/atoms/profile-container/Container"
+import { ModalComponent } from "@nfid/ui/molecules/modal"
 
 export interface NFTDetailsProps {
   nft: NFT

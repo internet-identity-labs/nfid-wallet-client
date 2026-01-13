@@ -1,6 +1,6 @@
 import React from "react"
 
-import { BlurredLoader } from "@nfid-frontend/ui"
+import { BlurredLoader } from "@nfid/ui"
 
 export interface RPCComponentProps {
   method: RPCComponentsUI

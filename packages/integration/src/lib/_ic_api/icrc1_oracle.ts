@@ -1,5 +1,5 @@
 export const idlFactory = ({ IDL }: { IDL: any }) => {
-  const Conf = IDL.Record({
+  const _Conf = IDL.Record({
     operator: IDL.Opt(IDL.Principal),
     im_canister: IDL.Opt(IDL.Principal),
   })

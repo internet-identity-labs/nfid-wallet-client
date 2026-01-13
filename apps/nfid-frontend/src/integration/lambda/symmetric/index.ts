@@ -1,9 +1,11 @@
+import { Buffer } from "buffer"
+
 import { Cbor, QueryFields } from "@dfinity/agent"
 import { IDL } from "@dfinity/candid"
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { DelegationIdentity } from "@dfinity/identity"
+
 import { createDecipheriv } from "browser-crypto"
-import { Buffer } from "buffer"
 
 import { ic } from "@nfid/integration"
 
@@ -21,7 +23,7 @@ export async function symmetric(identity: DelegationIdentity) {
   try {
     return await getSymmetricKey(identity)
   } catch (e) {
-    throw new Error("There was an issue getting symmetric key." + e)
+    throw new Error(`There was an issue getting symmetric key.${e}`)
   }
 }
 

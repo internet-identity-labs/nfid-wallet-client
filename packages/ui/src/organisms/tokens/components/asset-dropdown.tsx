@@ -20,7 +20,7 @@ import {
   IconSvgStakeAction,
   IconSvgStakeActionWhite,
   IconSvgArrowWhite,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,

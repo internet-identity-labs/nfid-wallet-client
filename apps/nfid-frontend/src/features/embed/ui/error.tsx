@@ -1,4 +1,4 @@
-import { Button, IconCmpError, Page } from "@nfid-frontend/ui"
+import { Button, IconCmpError, Page } from "@nfid/ui"
 
 type PageErrorCmpProps = {
   error?: Error

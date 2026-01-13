@@ -3,6 +3,7 @@
  */
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { AccountIdentifier } from "@dfinity/ledger-icp"
+
 import { expect } from "@jest/globals"
 
 import { mockIdentityA, mockIdentityB } from "@nfid/integration"
@@ -28,7 +29,7 @@ describe("NFT EXT standard suite", () => {
     jest.setTimeout(50000)
     //this test describes how to purchase nft
     //TODO skip after e2e done because it takes 0.03% from the transaction
-    it.skip("should lock and buy", async function () {
+    it.skip("should lock and buy", async () => {
       const price = 1000000
       const idA = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
       const idB = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
@@ -78,7 +79,7 @@ describe("NFT EXT standard suite", () => {
     //     "Lock failed! Other : No listing!",
     //   )
     // })
-    it.skip("should transfer", async function () {
+    it.skip("should transfer", async () => {
       const idA = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
       const idB = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
       const owner = (await fetchCollectionTokens(testCollection)).find(
@@ -112,7 +113,7 @@ describe("NFT EXT standard suite", () => {
     //For now, it's not really possible to get collection/token info for old canisters.
     //Probably canister wrapper used for all legacy interfaces,
     // and we can proceed with common transfer API for EXT
-    it("should transfer wrapped canister", async function () {
+    it("should transfer wrapped canister", async () => {
       const testToken = encodeTokenIdentifier(testCollectionTurtle, 7322)
       const idA = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
       const idB = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
@@ -141,7 +142,7 @@ describe("NFT EXT standard suite", () => {
       expect(response).toBe(BigInt(1))
     })
 
-    it.skip("should throw Unauthorized error", async function () {
+    it.skip("should throw Unauthorized error", async () => {
       const idA = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
       const idB = Ed25519KeyIdentity.fromParsedJson(mockIdentityB)
       const owner = (await fetchCollectionTokens(testCollection)).find(

@@ -2,7 +2,7 @@ import { motion } from "framer-motion"
 import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
-import { BlurredLoader } from "@nfid-frontend/ui"
+import { BlurredLoader } from "@nfid/ui"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,

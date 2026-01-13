@@ -1,6 +1,11 @@
+import clsx from "clsx"
 import React from "react"
 
-import { WalletConnectPromptTemplate } from "./prompt-template"
+import { Tooltip } from "@nfid/ui"
+import { getNetworkIcon } from "@nfid/ui/utils/network-icon"
+
+import { useDarkTheme } from "frontend/hooks"
+
 import { ValidationStatus, WalletConnectSignRequestProps } from "../types"
 import {
   getDAppHostname,
@@ -10,10 +15,8 @@ import {
   getStatusText,
   renderTypedDataFields,
 } from "../utils"
-import { useDarkTheme } from "frontend/hooks"
-import { Tooltip } from "@nfid-frontend/ui"
-import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
-import clsx from "clsx"
+
+import { WalletConnectPromptTemplate } from "./prompt-template"
 
 interface WalletConnectSignTypedDataProps extends WalletConnectSignRequestProps {
   typedData: any

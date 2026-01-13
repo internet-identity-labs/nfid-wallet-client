@@ -35,14 +35,14 @@ export class Page {
     let counter = 0
     try {
       await this.loader.waitForDisplayed({ timeout: 8000 })
-    } catch (e: any) {
+    } catch (_e: any) {
       return
     }
     while ((await this.loader.isDisplayed()) && counter < 5) {
       try {
         await this.loader.waitForDisplayed({ timeout: 3000 })
         await this.loader.waitForDisplayed({ timeout: 20000, reverse: true })
-      } catch (e: any) {
+      } catch (_e: any) {
         ++counter
         // console.log(e);
       }
@@ -51,7 +51,7 @@ export class Page {
 
   async waitForDataCacheLoading() {
     await browser.waitUntil(
-      async function () {
+      async () => {
         return (await $("#root").getAttribute("data-cache-loaded")) === "true"
       },
       {
@@ -77,9 +77,9 @@ export class Page {
   }
 
   loginUsingIframe(
-    profileType?: string,
-    targets?: string,
-    derivation?: string,
+    _profileType?: string,
+    _targets?: string,
+    _derivation?: string,
   ) {}
 }
 

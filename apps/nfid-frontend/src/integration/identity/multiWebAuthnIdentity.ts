@@ -7,6 +7,8 @@
  *   then we know which one the user is actually using
  * - It doesn't support creating credentials; use `WebAuthnIdentity` for that
  */
+import { Buffer } from "buffer"
+
 import {
   DerEncodedPublicKey,
   PublicKey,
@@ -14,15 +16,15 @@ import {
   SignIdentity,
 } from "@dfinity/agent"
 import { DER_COSE_OID, unwrapDER, WebAuthnIdentity } from "@dfinity/identity"
-import borc from "borc"
-import { Buffer } from "buffer"
-import { authStorage } from "packages/integration/src/lib/authentication/storage"
-import toaster from "packages/ui/src/atoms/toast"
-import { arrayBufferEqual } from "src/integration/identity/services"
 
+import borc from "borc"
+
+import { authStorage } from "@nfid/integration"
 import { IPasskeyMetadata } from "@nfid/integration"
+import toaster from "@nfid/ui/atoms/toast"
 
 import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
+import { arrayBufferEqual } from "src/integration/identity/services"
 
 export type CredentialId = ArrayBuffer
 export type CredentialData = {

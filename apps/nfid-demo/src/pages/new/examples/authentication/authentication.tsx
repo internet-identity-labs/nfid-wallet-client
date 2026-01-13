@@ -1,12 +1,13 @@
 import React from "react"
 import { ImSpinner } from "react-icons/im"
 
-import { Button, DropdownSelect } from "@nfid-frontend/ui"
-import { BaseKeyType } from "@nfid/embed/src/lib/types"
+import { Button, DropdownSelect } from "@nfid/ui"
 
 import { useAuthentication } from "../../../../hooks/useAuthentication"
 import { ExampleMethod } from "../../method"
 import { AuthenticationForm } from "./form"
+
+type BaseKeyType = "ECDSA" | "Ed25519"
 
 export const AuthenticationExample = ({
   onError,

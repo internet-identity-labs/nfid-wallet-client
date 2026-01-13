@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React, { ChangeEvent, KeyboardEvent } from "react"
 
-import { IconCmpSearch, Input } from "@nfid-frontend/ui"
+import { IconCmpSearch, Input } from "@nfid/ui"
 
 export interface VaultActionBarProps {
   onInputChange?: (event: ChangeEvent<HTMLInputElement>) => void

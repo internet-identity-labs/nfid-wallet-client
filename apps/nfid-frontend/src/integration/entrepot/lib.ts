@@ -1,12 +1,13 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
+
+import { Account } from "@nfid/integration"
+import { Blockchain } from "@nfid/integration/token/types"
+
 import {
   decodeTokenIdentifier,
   encodeTokenIdentifier,
 } from "src/integration/entrepot/ext"
-
-import { Account } from "@nfid/integration"
-import { Blockchain } from "@nfid/integration/token/types"
 
 import { mapToNFTData } from "./mapper"
 import {

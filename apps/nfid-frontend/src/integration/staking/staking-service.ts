@@ -1,8 +1,8 @@
 import { SignIdentity } from "@dfinity/agent"
-import { FT } from "src/integration/ft/ft"
-import { StakedToken } from "src/integration/staking/staked-token"
 
 import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
+import { FT } from "src/integration/ft/ft"
+import { StakedToken } from "src/integration/staking/staked-token"
 
 import { TotalBalance } from "./types"
 

@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-import { Button, IconCmpArrow, TextArea } from "@nfid-frontend/ui"
+import { Button, IconCmpArrow, TextArea } from "@nfid/ui"
 
 import { AuthAppMeta } from "../app-meta"
 

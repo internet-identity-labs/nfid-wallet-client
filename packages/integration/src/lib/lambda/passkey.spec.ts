@@ -11,14 +11,14 @@ import { getIdentity, getLambdaActor } from "./util"
 
 describe("Passkey test", () => {
   jest.setTimeout(80000)
-  it("store/get", async function () {
+  it("store/get", async () => {
     await storePasskey("testKey", "testData")
     const response = await getPasskey(["testKey"])
     expect(response[0].key).toEqual("testKey")
     expect(response[0].data).toEqual("testData")
   })
 
-  it("store/get canister storage", async function () {
+  it("store/get canister storage", async () => {
     const mockedIdentity = getIdentity("97654321876543218765432187654388")
 
     const sessionKey = Ed25519KeyIdentity.generate()
@@ -63,7 +63,7 @@ describe("Passkey test", () => {
     let account
     try {
       account = await im.create_account(accountRequest as any)
-    } catch (e) {
+    } catch (_e) {
       account = await im.create_account(accountRequest as any)
     }
     const anchor = account.data[0]?.anchor
@@ -72,12 +72,12 @@ describe("Passkey test", () => {
     const key2 = (Math.random() + 1).toString(36).substring(7)
     try {
       await storePasskey(key1, "testData")
-    } catch (e) {
+    } catch (_e) {
       await storePasskey(key1, "testData")
     }
     try {
       await storePasskey(key2, "testData2")
-    } catch (e) {
+    } catch (_e) {
       await storePasskey(key2, "testData2")
     }
     const response = await getPasskey([key1])

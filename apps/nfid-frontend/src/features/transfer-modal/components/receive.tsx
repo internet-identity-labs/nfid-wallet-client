@@ -1,10 +1,11 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
-import toaster from "packages/ui/src/atoms/toast"
-import { Receive } from "packages/ui/src/organisms/send-receive/components/receive"
+
 import { useEffect, useState } from "react"
 
 import { btcDepositService } from "@nfid/integration/token/btc/service"
+import toaster from "@nfid/ui/atoms/toast"
+import { Receive } from "@nfid/ui/organisms/send-receive/components/receive"
 
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
 

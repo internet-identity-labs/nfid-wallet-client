@@ -8,14 +8,14 @@ import {
   Neuron,
 } from "@dfinity/sns/dist/candid/sns_governance"
 import { hexStringToUint8Array } from "@dfinity/utils"
+
 import { BigNumber } from "bignumber.js"
+
+import { storageWithTtl } from "@nfid/client-db"
 import {
   getNetworkEconomicsParameters,
   queryNeuron as queryICPNeuron,
-} from "packages/integration/src/lib/staking/governance.api"
-import { StakingService } from "src/integration/staking/staking-service"
-
-import { storageWithTtl } from "@nfid/client-db"
+} from "@nfid/integration"
 import {
   autoStakeMaturity,
   increaseDissolveDelay,
@@ -38,8 +38,10 @@ import {
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
+import { getWalletDelegation } from "frontend/integration/facade/wallet"
 import { FT } from "frontend/integration/ft/ft"
 import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
+import { StakingService } from "src/integration/staking/staking-service"
 
 import {
   NNS_NEURON_MAX_DISSOLVE_DELAY_SECONDS,
@@ -51,7 +53,6 @@ import { NfidSNSNeuronImpl } from "../impl/nfid-sns-neuron-impl"
 import { StakedTokenImpl } from "../impl/staked-token-impl"
 import { StakedToken } from "../staked-token"
 import { IStakingDelegates, IStakingICPDelegates, TotalBalance } from "../types"
-import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
 const NEURON_ERROR_TEXT = "No neuron for given NeuronId."
 export const stakedTokensCacheName = "StakedTokens"
@@ -432,14 +433,14 @@ export class StakingServiceImpl implements StakingService {
       stake: BigInt(amountInE8S.toFixed()),
       controller: identity.getPrincipal(),
       ledgerCanisterIdentity: identity,
-      identity: identity,
+      identity,
       fee,
     })
 
     await autoICPStakeMaturity({
       neuronId: id,
       autoStake: true,
-      identity: identity,
+      identity,
     })
 
     if (lockTime) {
@@ -519,7 +520,7 @@ export class StakingServiceImpl implements StakingService {
     root: Principal,
   ): Promise<IStakingDelegates> {
     return await listNNSFunctions({
-      identity: identity,
+      identity,
       rootCanisterId: root,
     })
   }

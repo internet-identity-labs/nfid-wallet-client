@@ -15,5 +15,5 @@ export type Persona = NFIDPersona
  * @deprecated there are no other accounts anymore
  */
 export function isNFIDPersona(persona: Persona): persona is NFIDPersona {
-  return typeof (persona as NFIDPersona).persona_id === "string"
+  return typeof persona.persona_id === "string"
 }

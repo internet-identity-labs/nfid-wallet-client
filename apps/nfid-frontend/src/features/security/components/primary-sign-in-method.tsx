@@ -7,9 +7,9 @@ import {
   getGoogleDeviceState,
 } from "@nfid/integration"
 import { useSWR } from "@nfid/swr"
+import { DeviceIconDecider } from "@nfid/ui/organisms/device-list/device-icon-decider"
 
 import { fetchAllDevices } from "frontend/integration/internet-identity"
-import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon-decider"
 
 type AccessPoint = {
   device: string

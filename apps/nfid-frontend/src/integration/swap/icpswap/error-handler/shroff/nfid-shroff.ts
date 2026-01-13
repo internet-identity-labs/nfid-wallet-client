@@ -1,12 +1,13 @@
 import { SignIdentity } from "@dfinity/agent"
+
+import { replaceActorIdentity } from "@nfid/integration"
+
 import {
   IcpSwapShroffBuilder,
   ShroffIcpSwapImpl,
 } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { Shroff } from "src/integration/swap/shroff"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
-
-import { replaceActorIdentity } from "@nfid/integration"
 
 export class ShroffNfidErrorHandler extends ShroffIcpSwapImpl {
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
@@ -18,9 +19,9 @@ export class ShroffNfidErrorHandler extends ShroffIcpSwapImpl {
       console.log("ReSwap NFID started")
 
       const balance = await this.swapPoolActor.getUserUnusedBalance(
-        this.delegationIdentity!.getPrincipal(),
+        this.delegationIdentity.getPrincipal(),
       )
-      console.debug("Balance: " + JSON.stringify(balance))
+      console.debug(`Balance: ${JSON.stringify(balance)}`)
 
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
       if (this.swapTransaction.getErrors().length === 0) {
@@ -34,7 +35,7 @@ export class ShroffNfidErrorHandler extends ShroffIcpSwapImpl {
       return this.swapTransaction
     } catch (e) {
       console.error("NFID transfer retry error: ", e)
-      this.swapTransaction.setError("NFID transfer retry error: " + e)
+      this.swapTransaction.setError(`NFID transfer retry error: ${e}`)
       await this.restoreTransaction()
       throw e
     }

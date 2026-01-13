@@ -2,9 +2,9 @@ import { useEffect, useState, useRef, useCallback } from "react"
 import { ImSpinner } from "react-icons/im"
 import { isAddress } from "ethers"
 
-import { Button } from "@nfid-frontend/ui"
+import { Button } from "@nfid/ui"
 import { EthereumProvider } from "@walletconnect/ethereum-provider"
-import { EthereumTransactionParams } from "frontend/features/walletconnect/components/walletconnect-request"
+import { EthereumTransactionParams } from "frontend/features/walletconnect/types"
 
 // WalletConnect Project ID
 const PROJECT_ID = "951ec7b9914a35c2f62e2514c408ab8f"

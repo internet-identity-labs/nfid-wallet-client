@@ -1,8 +1,8 @@
 import { clsx } from "clsx"
 
-import { Badge } from "../../atoms/badge"
-import { IconNftPlaceholder } from "../../atoms/icons"
-import ImageWithFallback from "../../atoms/image-with-fallback"
+import { Badge } from "@nfid/ui/atoms/badge"
+import { IconNftPlaceholder } from "@nfid/ui/atoms/icons"
+import ImageWithFallback from "@nfid/ui/atoms/image-with-fallback"
 
 interface IChooseAccountItem {
   handleClick: () => void

@@ -1,5 +1,7 @@
-import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
 import { UUID } from "node:crypto"
+
+import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
+
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { AbstractSwapTransaction } from "src/integration/swap/transaction/transaction-abstract"
 import { SwapName, SwapStage } from "src/integration/swap/types/enums"

@@ -1,13 +1,14 @@
 import BigNumber from "bignumber.js"
-import { SourceInputCalculatorIcpSwap } from "src/integration/swap/icpswap/impl/icp-swap-calculator"
-import { IcpSwapQuoteImpl } from "src/integration/swap/icpswap/impl/icp-swap-quote-impl"
 
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+
+import { SourceInputCalculatorIcpSwap } from "src/integration/swap/icpswap/impl/icp-swap-calculator"
+import { IcpSwapQuoteImpl } from "src/integration/swap/icpswap/impl/icp-swap-quote-impl"
 
 describe("quote test", () => {
   jest.setTimeout(200000)
 
-  it("quote interface test", async function () {
+  it("quote interface test", async () => {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "mxzaz-hqaaa-aaaar-qaada-cai"
 

@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 import { Principal } from "@dfinity/principal"
+
 import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
 import {
   expectedGeekResponse,

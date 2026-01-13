@@ -1,4 +1,4 @@
-import { Button, IconCmpArrow } from "@nfid-frontend/ui"
+import { Button, IconCmpArrow } from "@nfid/ui"
 
 import Image from "./image.webp"
 

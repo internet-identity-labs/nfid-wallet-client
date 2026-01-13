@@ -7,7 +7,7 @@ import {
   IconNftPlaceholder,
   IconCmpConvert,
   IconCmpStakeAction,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
@@ -16,7 +16,7 @@ import {
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
-import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
+import { getNetworkIcon } from "@nfid/ui"
 import { useDarkTheme } from "frontend/hooks"
 import { SelectedToken } from "frontend/features/transfer-modal/types"
 

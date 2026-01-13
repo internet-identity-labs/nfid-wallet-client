@@ -9,6 +9,7 @@ import {
   Icrc1TransferResult,
   TransferArg,
 } from "../../_ic_api/icrc1.d"
+
 import { icrc1StorageService } from "./service/icrc1-storage-service"
 import { icrc1TransactionHistoryService } from "./service/icrc1-transaction-history-service"
 import { ICRC1IndexData } from "./types"
@@ -28,7 +29,7 @@ export async function getICRC1HistoryDataForUser(
     await icrc1StorageService.getICRC1ActiveCanisters(rootPrincipalId)
 
   const cachedICRC1IndexData = (await storageWithTtl.get(
-    "Activity_" + rootPrincipalId,
+    `Activity_${rootPrincipalId}`,
   )) as ICRC1IndexData[]
   let ledgerAndBlockNumberToStartFrom: {
     ledger: string
@@ -80,7 +81,7 @@ export async function getICRC1HistoryDataForUser(
   })
 
   await storageWithTtl.set(
-    "Activity_" + rootPrincipalId,
+    `Activity_${rootPrincipalId}`,
     icrc1IndexData,
     15 * 1000,
   )

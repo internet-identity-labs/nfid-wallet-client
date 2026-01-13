@@ -3,9 +3,11 @@ import { CkBTCMinterCanister, RetrieveBtcOk } from "@dfinity/ckbtc"
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 import { createAgent } from "@dfinity/utils"
+
 import BigNumber from "bignumber.js"
 
 import { BlockIndex, CkBtcToBtcFee } from "../bitcoin.service"
+
 import { satoshiService } from "./satoshi.service"
 
 const NANO_SECONDS_IN_MILLISECOND = BigInt(1_000_000)

@@ -1,9 +1,11 @@
 /**
  * @jest-environment jsdom
  */
-import { Ed25519KeyIdentity } from "@dfinity/identity"
-import { expect } from "@jest/globals"
 import { createCipheriv } from "crypto"
+
+import { Ed25519KeyIdentity } from "@dfinity/identity"
+
+import { expect } from "@jest/globals"
 
 import { generateDelegationIdentity, replaceIdentity } from "@nfid/integration"
 
@@ -17,7 +19,7 @@ describe.skip("symmetric suite", () => {
   jest.setTimeout(50000)
 
   describe("Symmetric Key Service Test", () => {
-    it("Create account and retrieve same key + encrypt/decrypt", async function () {
+    it("Create account and retrieve same key + encrypt/decrypt", async () => {
       const mockedIdentity = Ed25519KeyIdentity.generate()
       const { delegationIdentity } =
         await generateDelegationIdentity(mockedIdentity)

@@ -1,7 +1,7 @@
-import { getExpirationDelay } from "packages/integration/src/lib/authentication/get-expiration"
 import { assign, createMachine } from "xstate"
 
 import { ONE_DAY_IN_MS } from "@nfid/config"
+import { getExpirationDelay } from "@nfid/integration"
 import { Application, authState, Chain } from "@nfid/integration"
 
 import { AuthSession } from "frontend/state/authentication"
@@ -10,6 +10,7 @@ import { AuthorizingAppMeta } from "frontend/state/authorization"
 import { ApproveIcGetDelegationSdkResponse } from "../authentication/3rd-party/choose-account/types"
 import AuthenticationMachine from "../authentication/root/root-machine"
 import { IRequestTransferResponse } from "../sdk/request-transfer/types"
+
 import { CheckApplicationMeta } from "./services/check-app-meta"
 import { CheckAuthState } from "./services/check-auth-state"
 import {
@@ -290,7 +291,7 @@ export const NFIDEmbedMachineV2 = createMachine(
       queueRequest: assign((context, event) => ({
         messageQueue: [...context.messageQueue, event.data.rpcMessage],
       })),
-      assignError: assign((context, event) => ({
+      assignError: assign((_context, event) => ({
         error: event.data,
       })),
       nfid_ready: () => {

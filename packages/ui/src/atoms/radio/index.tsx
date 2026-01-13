@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Label } from "../../molecules/input/label"
+import { Label } from "@nfid/ui/molecules/input/label"
 
 export interface RadioButtonProps extends React.InputHTMLAttributes<HTMLInputElement> {
   name: string

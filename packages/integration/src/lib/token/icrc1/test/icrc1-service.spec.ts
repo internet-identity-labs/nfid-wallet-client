@@ -11,7 +11,7 @@ const principal = Principal.fromText(
 
 describe("ICRC1 suite", () => {
   jest.setTimeout(200000)
-  it("should filter", async function () {
+  it("should filter", async () => {
     jest
       .spyOn(icrc1StorageService as any, "getICRC1Canisters")
       .mockResolvedValue([
@@ -55,7 +55,7 @@ describe("ICRC1 suite", () => {
     expect(filteredCanisters3.length).toEqual(2)
   })
 
-  it("should return active", async function () {
+  it("should return active", async () => {
     jest
       .spyOn(icrc1StorageService as any, "getICRC1Canisters")
       .mockResolvedValue([

@@ -1,25 +1,25 @@
-import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
+import ProfileContainer from "@nfid/ui/atoms/profile-container/Container"
 import { FC, useMemo, useState } from "react"
 
 import { useDarkTheme } from "frontend/hooks"
 import clsx from "clsx"
 import { IoIosSearch } from "react-icons/io"
 
-import { AddressBookEmptyIcon } from "../../atoms/icons/AddressBookEmpty"
-import { IconCmpPlus } from "../../atoms/icons"
+import { AddressBookEmptyIcon } from "@nfid/ui/atoms/icons/AddressBookEmpty"
+import { IconCmpPlus } from "@nfid/ui/atoms/icons"
 
-import { Button, Input, TableTokenSkeleton } from "@nfid-frontend/ui"
+import { Button, Input, TableTokenSkeleton } from "@nfid/ui"
 
 import {
   UserAddress,
   UserAddressSaveRequest,
   UserAddressUpdateRequest,
 } from "frontend/integration/address-book"
-import { getIsMobileDeviceMatch } from "../../utils/is-mobile"
+import { getIsMobileDeviceMatch } from "@nfid/ui/utils/is-mobile"
 import { AddressBookRow } from "./AddressBookRow"
 import { AddressBookModal } from "./AddressBookModal"
-import { ModalComponent } from "../../molecules/modal/index-v0"
-import { Spinner } from "../../atoms/spinner"
+import { ModalComponent } from "@nfid/ui/molecules/modal"
+import { Spinner } from "@nfid/ui/atoms/spinner"
 import {
   AddressBookAction,
   getUpdatedAddressBook,

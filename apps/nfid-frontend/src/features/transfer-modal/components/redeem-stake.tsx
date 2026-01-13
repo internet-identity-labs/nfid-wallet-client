@@ -1,15 +1,15 @@
-import { Redeem } from "packages/ui/src/organisms/send-receive/components/redeem"
 import { useCallback, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 
 import { mutate, mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
+import { Redeem } from "@nfid/ui/organisms/send-receive/components/redeem"
+import { useTokensInit } from "@nfid/ui/organisms/send-receive/hooks/token-init"
 
+import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { fetchStakedTokens } from "frontend/features/staking/utils"
 import { useIdentity } from "frontend/hooks/identity"
 
 import { SendStatus } from "../types"
-import { fetchTokens } from "frontend/features/fungible-token/utils"
-import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { getTokensWithUpdatedBalance, updateCachedInitedTokens } from "../utils"
 
 export interface ITransferReceive {

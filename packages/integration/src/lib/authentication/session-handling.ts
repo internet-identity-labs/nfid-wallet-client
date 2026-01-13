@@ -1,4 +1,5 @@
 import { IdleManager, IdleManagerOptions } from "@dfinity/auth-client"
+
 import { matchPath } from "react-router-dom"
 
 import { ROUTE_EMBED, TEN_MINUTES_IN_MS } from "@nfid/config"

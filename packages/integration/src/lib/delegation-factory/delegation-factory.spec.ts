@@ -1,9 +1,10 @@
+import { TextEncoder } from "util"
+
 import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
-import { TextEncoder } from "util"
 
 import { delegationFactory, replaceActorIdentity } from "@nfid/integration"
 
@@ -14,7 +15,7 @@ import {
 
 describe.skip("Delegation Factory Tests", () => {
   jest.setTimeout(80000)
-  it("get-principal", async function () {
+  it("get-principal", async () => {
     const mockedIdentity = getIdentity("97654321876543218765432187654388")
     await replaceActorIdentity(delegationFactory, mockedIdentity)
     const principal = await getPrincipalSignedByCanister(
@@ -26,7 +27,7 @@ describe.skip("Delegation Factory Tests", () => {
     ).toEqual(principal.toText())
   })
 
-  it("get delegation", async function () {
+  it("get delegation", async () => {
     const mockedIdentity = getIdentity("97654321876543218765432187654388")
     const sessionKey = Ed25519KeyIdentity.generate()
     const chainRoot = await DelegationChain.create(

@@ -1,10 +1,10 @@
 import clsx from "clsx"
-import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
+import ProfileContainer from "@nfid/ui/atoms/profile-container/Container"
 import { FC } from "react"
 
-import { IconCmpWarning, Table } from "@nfid-frontend/ui"
+import { IconCmpWarning, Table } from "@nfid/ui"
 
-import { A } from "../../atoms/custom-link"
+import { A } from "@nfid/ui/atoms/custom-link"
 
 export interface SecurityProps {
   primarySignInElement: JSX.Element

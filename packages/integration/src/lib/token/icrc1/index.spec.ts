@@ -1,18 +1,18 @@
 /**
  * @jest-environment jsdom
  */
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
 import { generateDelegationIdentity, mockIdentityA } from "@nfid/integration"
 import { transferICRC1 } from "@nfid/integration/token/icrc1/index"
 
 import { TransferArg } from "../../_ic_api/icrc1.d"
+
 import { icrc1TransactionHistoryService } from "./service/icrc1-transaction-history-service"
 
 describe("ICRC1 suite", () => {
   jest.setTimeout(300000)
-  let root: string
   const iCRC1TestCanister = "6jq2j-daaaa-aaaap-absuq-cai"
 
   it.skip("Get index data", async () => {
@@ -44,9 +44,8 @@ describe("ICRC1 suite", () => {
 
   it("Transfer", async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
-    const { delegationIdentity } = await generateDelegationIdentity(
-      mockedIdentity,
-    )
+    const { delegationIdentity } =
+      await generateDelegationIdentity(mockedIdentity)
     const transferArgs: TransferArg = {
       amount: BigInt(10),
       created_at_time: [],

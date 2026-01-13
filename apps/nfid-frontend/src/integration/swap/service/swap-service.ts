@@ -58,7 +58,7 @@ export class SwapService {
             const quote = await shroff.getQuote(amount)
 
             return { shroff, quote }
-          } catch (e) {}
+          } catch (_e) {}
         }),
       )
 

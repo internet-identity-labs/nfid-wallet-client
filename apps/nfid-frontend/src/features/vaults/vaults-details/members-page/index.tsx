@@ -1,10 +1,11 @@
 import React, { useCallback, useMemo, useState } from "react"
 
-import { EmptyCard, IconCmpMembers } from "@nfid-frontend/ui"
 import { VaultMember } from "@nfid/integration"
+import { EmptyCard, IconCmpMembers } from "@nfid/ui"
 
 import { VaultActionBar } from "../../action-bar"
 import { useVault } from "../../hooks/use-vault"
+
 import { VaultsMembersTable } from "./table"
 
 interface VaultsMembersPageProps {}

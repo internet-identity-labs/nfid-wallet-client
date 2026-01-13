@@ -1,10 +1,10 @@
 import {
   ActivityAssetFT,
   ActivityAssetNFT,
-} from "packages/integration/src/lib/asset/types"
-import { SwapTransaction } from "src/integration/swap/swap-transaction"
-
+} from "@nfid/integration/asset/types"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
+
+import { SwapTransaction } from "src/integration/swap/swap-transaction"
 
 export interface IActivityRow {
   id: string

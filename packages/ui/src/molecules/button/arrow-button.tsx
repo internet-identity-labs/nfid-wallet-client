@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React from "react"
 
 import { Button } from "."
-import { ReactComponent as ArrowLeft } from "../../atoms/icons/arrow.svg"
+import { ReactComponent as ArrowLeft } from "@nfid/ui/atoms/icons/arrow.svg"
 
 interface ArrowButtonProps {
   direction?: "left" | "right" | "top" | "bottom"

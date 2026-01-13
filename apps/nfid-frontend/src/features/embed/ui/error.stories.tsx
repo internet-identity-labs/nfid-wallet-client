@@ -1,7 +1,7 @@
 import type { StoryFn, Meta } from "@storybook/react"
 import { withRouter } from "storybook-addon-remix-react-router"
 
-import { ScreenResponsive } from "@nfid-frontend/ui"
+import { ScreenResponsive } from "@nfid/ui"
 
 import { PageError } from "./error"
 

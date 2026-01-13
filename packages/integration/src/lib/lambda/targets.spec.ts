@@ -8,16 +8,16 @@ import { CertifiedResponse, validateTargets } from "./targets"
 describe("Targets validation", () => {
   jest.setTimeout(60000)
 
-  it("validate", async function () {
+  it("validate", async () => {
     await storageWithTtl.clear()
     try {
       await validateTargets(["irshc-3aaaa-aaaam-absla-cai"], "nfid.one")
-    } catch (e) {
+    } catch (_e) {
       fail("Should pass")
     }
   })
 
-  it("validate fail", async function () {
+  it("validate fail", async () => {
     await storageWithTtl.clear()
     try {
       await validateTargets(["irshc-3aaaa-aaaam-absla-cai"], "hernia.one")
@@ -28,7 +28,7 @@ describe("Targets validation", () => {
     }
   })
 
-  it.skip("validate certified", async function () {
+  it.skip("validate certified", async () => {
     await storageWithTtl.clear()
     const agent: Agent = new HttpAgent({ host: "https://ic0.app" })
     const idlFactory: IDL.InterfaceFactory = ({ IDL }) =>
@@ -82,7 +82,7 @@ describe("Targets validation", () => {
 
     try {
       await validateTargets([canisterId], "nfid.one")
-    } catch (e) {
+    } catch (_e) {
       fail("Should pass")
     }
 

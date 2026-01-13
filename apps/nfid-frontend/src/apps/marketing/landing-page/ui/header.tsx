@@ -1,4 +1,4 @@
-import { NFIDLogo } from "@nfid-frontend/ui"
+import { NFIDLogo } from "@nfid/ui"
 
 import { NFIDAuthentication } from "./auth-modal"
 import { Container } from "./container"

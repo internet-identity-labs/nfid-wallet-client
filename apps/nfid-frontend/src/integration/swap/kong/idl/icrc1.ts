@@ -250,6 +250,6 @@ export const idlFactory = ({ IDL }: any) => {
     transfer_fee: IDL.Func([TransferFeeArg], [TransferFee], ["query"]),
   })
 }
-export const init = ({ IDL }: any) => {
+export const init = ({ IDL: _IDL }: any) => {
   return []
 }

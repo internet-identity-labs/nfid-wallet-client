@@ -22,16 +22,14 @@ When(
   async (anchor: number) => {
     await HomePage.continueWithRecoveryPhraseButton.click()
     await HomePage.recoveryPhraseTextArea.setValue(
-      (
-        await userClient.takeStaticUserByAnchor(anchor)
-      ).seed,
+      (await userClient.takeStaticUserByAnchor(anchor)).seed,
     )
     await HomePage.submitRecoveryPhraseButton.click()
     try {
       await HomePage.skipSecureWalletButton.waitForDisplayed({
         timeout: 8000,
       })
-    } catch (e) {
+    } catch (_e) {
       /*empty*/
     }
     if (await HomePage.skipSecureWalletButton.isDisplayed())

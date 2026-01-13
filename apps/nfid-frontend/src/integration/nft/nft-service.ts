@@ -1,14 +1,16 @@
 import { Principal } from "@dfinity/principal"
+
 import BigNumber from "bignumber.js"
 import { Cache } from "node-ts-cache"
-import { integrationCache } from "packages/integration/src/cache"
+
+import { integrationCache } from "@nfid/integration"
+import { exchangeRateService } from "@nfid/integration"
+import { ICP_DECIMALS } from "@nfid/integration/token/constants"
+
 import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
 import { nftMapper } from "src/integration/nft/impl/nft-mapper"
 import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
 import { NFT } from "src/integration/nft/nft"
-
-import { exchangeRateService } from "@nfid/integration"
-import { ICP_DECIMALS } from "@nfid/integration/token/constants"
 
 import { FT } from "../ft/ft"
 
@@ -108,8 +110,8 @@ export class NftService {
     return {
       value: usdBalance.toFixed(2),
       dayChangePercent: !tokenRateDayChange ? "0.00" : tokenRateDayChange.value,
-      dayChange: BigNumber(usdBalanceDayChange!).toFixed(2),
-      dayChangePositive: usdBalanceDayChange!.gte(0),
+      dayChange: BigNumber(usdBalanceDayChange).toFixed(2),
+      dayChangePositive: usdBalanceDayChange.gte(0),
       value24h: usdBalance.minus(usdBalanceDayChange).toFixed(2),
     }
   }

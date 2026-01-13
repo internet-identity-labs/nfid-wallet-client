@@ -1,4 +1,5 @@
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
+
 import { FT } from "frontend/integration/ft/ft"
 import { PAGE_SIZE } from "frontend/integration/ft/ft-service"
 

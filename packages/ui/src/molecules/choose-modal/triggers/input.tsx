@@ -1,6 +1,7 @@
 import clsx from "clsx"
-import { IconCmpArrowRight, IconCmpCancel } from "packages/ui/src/atoms/icons"
 import { ChangeEvent } from "react"
+
+import { IconCmpArrowRight, IconCmpCancel } from "@nfid/ui"
 import { UseFormRegisterReturn } from "react-hook-form"
 
 import { IGroupOption } from "../types"

@@ -1,4 +1,6 @@
 import { v4 as uuidv4 } from "uuid"
+
+import { UserAddressEntity } from "../interfaces"
 import {
   Address,
   AddressType,
@@ -6,7 +8,6 @@ import {
   UserAddress,
   UserAddressSaveRequest,
 } from "../types"
-import { UserAddressEntity } from "../interfaces"
 
 export class AddressBookMapper {
   toUserAddressEntity(userAddress: UserAddress): UserAddressEntity {

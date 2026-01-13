@@ -1,5 +1,6 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+
 import { errorHandlerFactory } from "src/integration/swap/errors/handler-factory"
 import { KongShroffBuilder } from "src/integration/swap/kong/impl/kong-swap-shroff"
 import { Shroff } from "src/integration/swap/shroff"
@@ -11,13 +12,10 @@ const mock: JsonnableEd25519KeyIdentity = [
   "0b897d4ee58ff13eed9cc5f1aa6de0f009423b9a866b384b2e52db08559c882b",
 ]
 
-const mockPrincipal =
-  "4pw67-jou3d-xb4py-6pnvx-5p75x-pp3mi-ywe4j-bhmmq-l3354-awsws-kae"
-
 describe("shroff transfer kong error handler test", () => {
   jest.setTimeout(900000)
 
-  it.skip("shroff transfer kong icrc2 error handler test", async function () {
+  it.skip("shroff transfer kong icrc2 error handler test", async () => {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
     const mockId = Ed25519KeyIdentity.fromParsedJson(mock)
@@ -41,7 +39,7 @@ describe("shroff transfer kong error handler test", () => {
     try {
       await shroff.swap(mockId)
       fail("Should throw an error")
-    } catch (e) {}
+    } catch (_e) {}
     const failedTransaction = shroff.getSwapTransaction()
     const errorHandler = errorHandlerFactory.getHandler(failedTransaction!)
     expect(failedTransaction?.getStage()).toEqual(SwapStage.TransferSwap)
@@ -49,7 +47,7 @@ describe("shroff transfer kong error handler test", () => {
     expect(transaction.getStage()).toEqual(SwapStage.Completed)
   })
 
-  it.skip("shroff transfer kong icrc1 error handler test", async function () {
+  it.skip("shroff transfer kong icrc1 error handler test", async () => {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
     const mockId = Ed25519KeyIdentity.fromParsedJson(mock)
@@ -77,7 +75,7 @@ describe("shroff transfer kong error handler test", () => {
     try {
       await shroff.swap(mockId)
       fail("Should throw an error")
-    } catch (e) {}
+    } catch (_e) {}
     const failedTransaction = shroff.getSwapTransaction()
     const errorHandler = errorHandlerFactory.getHandler(failedTransaction!)
     expect(failedTransaction?.getStage()).toEqual(SwapStage.TransferSwap)

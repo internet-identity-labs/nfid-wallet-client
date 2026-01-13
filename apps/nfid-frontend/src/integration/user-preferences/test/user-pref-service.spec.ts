@@ -1,4 +1,5 @@
-import { authStorage } from "packages/integration/src/lib/authentication/storage"
+import { authStorage } from "@nfid/integration"
+
 import { userPrefService } from "src/integration/user-preferences/user-pref-service"
 
 describe("userpref service test suite", () => {

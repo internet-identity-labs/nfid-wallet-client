@@ -4,6 +4,7 @@ import { ONE_MINUTE_IN_MS } from "@nfid/config"
 
 import { ic } from "../agent"
 import { createDelegationChain } from "../delegation-factory/delegation-i"
+
 import { isPresentInStorage } from "./domain-key-repository"
 import { Chain, fetchLambdaPublicKey } from "./lambda-delegation"
 
@@ -54,7 +55,7 @@ export async function executeCanisterCall(
 
   if (response.error) {
     throw new Error(
-      `Unable to execute method ${calledMethodName}: ` + response.error,
+      `Unable to execute method ${calledMethodName}: ${response.error}`,
     )
   }
 

@@ -1,6 +1,6 @@
 import clsx from "clsx"
 
-import { Copy, CenterEllipsis } from "@nfid-frontend/ui"
+import { Copy, CenterEllipsis } from "@nfid/ui"
 
 interface IVaultTransactionInfo {
   title?: string

@@ -2,6 +2,7 @@ import { ActorSubclass } from "@dfinity/agent"
 
 import { type _SERVICE as ConsentMessageCanister } from "../../idl/consent"
 import { TargetValidationError } from "../target.service"
+
 import { TargetValidationService } from "./target-validation.service"
 
 class StandardsTargetValidationService implements TargetValidationService {
@@ -9,7 +10,7 @@ class StandardsTargetValidationService implements TargetValidationService {
     actor: ActorSubclass<ConsentMessageCanister>,
     canisterId: string,
   ): Promise<void> {
-    var icrc10SupportedStandards: { url: string; name: string }[]
+    let icrc10SupportedStandards: { url: string; name: string }[]
     try {
       icrc10SupportedStandards = await actor.icrc10_supported_standards()
     } catch (error) {

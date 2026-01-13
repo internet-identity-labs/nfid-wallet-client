@@ -1,5 +1,6 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+
 import { errorHandlerFactory } from "src/integration/swap/errors/handler-factory"
 import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
 import { IcpSwapShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
@@ -13,15 +14,12 @@ const mock: JsonnableEd25519KeyIdentity = [
   "0b897d4ee58ff13eed9cc5f1aa6de0f009423b9a866b384b2e52db08559c882b",
 ]
 
-const mockPrincipal =
-  "4pw67-jou3d-xb4py-6pnvx-5p75x-pp3mi-ywe4j-bhmmq-l3354-awsws-kae"
-
 //too long. unskip when needed
 describe("shroff deposit error handler test", () => {
   jest.setTimeout(900000)
 
   //TODO fixme!!!
-  it.skip("deposit error handler test", async function () {
+  it.skip("deposit error handler test", async () => {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
     const mockId = Ed25519KeyIdentity.fromParsedJson(mock)
@@ -52,24 +50,16 @@ describe("shroff deposit error handler test", () => {
       .mockImplementation(() => {
         console.debug("Transaction stored MOCK")
       })
-    const can = await icpSwapService.getPoolFactory(sourceLedger, targetLedger)
-    const balanceExpected = await icpSwapService.getBalance(
-      can.canisterId.toText(),
-      mockId.getPrincipal(),
-    )
+    const _can = await icpSwapService.getPoolFactory(sourceLedger, targetLedger)
     try {
       await shroff.swap(mockId)
-    } catch (e) {}
+    } catch (_e) {}
     const failedTransaction = shroff.getSwapTransaction()
     expect(failedTransaction?.getStage()).toEqual(SwapStage.Deposit)
     const errorHandler = errorHandlerFactory.getHandler(failedTransaction!)
     const transaction = (await errorHandler.completeTransaction(
       mockId,
     )) as IcpSwapTransactionImpl
-    const balanceActual = await icpSwapService.getBalance(
-      can.canisterId.toText(),
-      mockId.getPrincipal(),
-    )
     expect(transaction.getStage()).toEqual(SwapStage.Completed)
   })
 })

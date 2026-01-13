@@ -1,13 +1,20 @@
 /**
  * @jest-environment jsdom
  */
+import { Ed25519KeyIdentity } from "@dfinity/identity"
+
+import {
+  authState,
+  generateDelegationIdentity,
+  mockIdentityA,
+} from "@nfid/integration"
+import { ChainId, Category } from "@nfid/integration/token/icrc1/enum/enums"
+
 import {
   addressBookCache,
   addressBookFacade,
   addressBookCanisterClient,
 } from "./address-book.container"
-import { ChainId, Category } from "@nfid/integration/token/icrc1/enum/enums"
-import { UserAddress } from "./types"
 import {
   ALICE_SAVE_REQUEST,
   BOB_SAVE_REQUEST,
@@ -21,10 +28,7 @@ import {
   CHARLIE_BTC_PREVIEW,
   CHARLIE_EVM_PREVIEW,
 } from "./address-book.mocks"
-import { Ed25519KeyIdentity } from "@dfinity/identity"
-import { mockIdentityA } from "packages/integration/src/lib/identity/mocks"
-import { generateDelegationIdentity } from "packages/integration/src/lib/test-utils"
-import { authState } from "packages/integration/src/lib/authentication/auth-state"
+import { UserAddress } from "./types"
 
 describe("Address Book", () => {
   jest.setTimeout(50000)

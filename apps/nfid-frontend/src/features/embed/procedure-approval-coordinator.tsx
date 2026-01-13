@@ -11,6 +11,7 @@ import { ApproveIcGetDelegationSdkResponse } from "../authentication/3rd-party/c
 import { RequestCanisterCall } from "../sdk/request-canister-call"
 import { RequestTransfer } from "../sdk/request-transfer"
 import { IRequestTransferResponse } from "../sdk/request-transfer/types"
+
 import { RPCMessage } from "./services/rpc-receiver"
 
 type ApproverCmpProps = {

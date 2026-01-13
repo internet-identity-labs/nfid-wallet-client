@@ -1,4 +1,5 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
+
 import { mnemonicToSeedSync } from "bip39"
 
 // A constant used for xor-ing derived paths to make them hardened.

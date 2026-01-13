@@ -9,13 +9,13 @@ import {
 } from "frontend/state/authorization"
 
 import { ApproveIcGetDelegationSdkResponse } from "../3rd-party/choose-account/types"
+import { signWithIIService } from "../auth-selection/ii-flow/ii-auth.service"
 import {
   checkIf2FAEnabled,
   shouldShowPasskeys,
   shouldShowPasskeysEvery6thTime,
   shouldShowRecoveryPhraseEvery8thTime,
 } from "../services"
-import { signWithIIService } from "../auth-selection/ii-flow/ii-auth.service"
 
 export interface AuthenticationContext {
   verificationEmail?: string

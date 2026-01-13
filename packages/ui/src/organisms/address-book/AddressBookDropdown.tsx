@@ -9,7 +9,7 @@ import {
   IconSvgTrash,
   IconSvgTrashWhite,
   IDropdownPosition,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 
 import { useDarkTheme } from "frontend/hooks"
 import { UserAddress } from "frontend/integration/address-book"

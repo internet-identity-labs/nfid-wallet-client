@@ -1,5 +1,5 @@
 export const idlFactory = ({ IDL }: any) => {
-  const InitArg = IDL.Record({ ledger_id: IDL.Principal })
+  const _InitArg = IDL.Record({ ledger_id: IDL.Principal })
   const GetAccountIdentifierTransactionsArgs = IDL.Record({
     max_results: IDL.Nat64,
     start: IDL.Opt(IDL.Nat64),
@@ -57,7 +57,7 @@ export const idlFactory = ({ IDL }: any) => {
     owner: IDL.Principal,
     subaccount: IDL.Opt(IDL.Vec(IDL.Nat8)),
   })
-  const GetAccountTransactionsArgs = IDL.Record({
+  const _GetAccountTransactionsArgs = IDL.Record({
     max_results: IDL.Nat,
     start: IDL.Opt(IDL.Nat),
     account: Account,

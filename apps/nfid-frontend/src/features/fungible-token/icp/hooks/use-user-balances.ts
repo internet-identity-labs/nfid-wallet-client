@@ -21,5 +21,5 @@ export const useUserBalances = () => {
     { dedupingInterval: 30_000, refreshInterval: 60_000 },
   )
 
-  return { balances: balances, isLoading, refreshBalances }
+  return { balances, isLoading, refreshBalances }
 }

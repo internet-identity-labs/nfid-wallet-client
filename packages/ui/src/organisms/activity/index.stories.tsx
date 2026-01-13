@@ -1,13 +1,9 @@
 import { Meta, StoryFn } from "@storybook/react"
 
-import { Chain } from "@nfid/integration"
-
-import {
-  IActivityAction,
-  IActivityRowGroup,
-} from "frontend/features/activity/types"
+import { IActivityRowGroup } from "frontend/features/activity/types"
+import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 import { FT } from "frontend/integration/ft/ft"
-import { Blockchain } from "frontend/ui/connnector/types"
+import { Blockchain } from "@nfid/integration/token/types"
 
 import ProfileContainer from "../../atoms/profile-container/Container"
 import { Activity, ActivityProps } from "./index"

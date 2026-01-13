@@ -22,8 +22,7 @@ import { _SERVICE as IdentityManager } from "./_ic_api/identity_manager.d"
 const LAMBDA_IDENTITY = process.env.LAMBDA_IDENTITY
 
 export async function registerIIAccount(
-  // FIXME: unused
-  identity: Ed25519KeyIdentity,
+  _identity: Ed25519KeyIdentity,
   deviceData: DeviceData,
 ) {
   const challenge: Challenge = (await ii.create_challenge()) as Challenge
@@ -55,7 +54,7 @@ export async function registerIIAndIM(identity: Ed25519KeyIdentity) {
   }
   const anchor: UserNumber = await registerIIAccount(identity, deviceData)
   const req: HTTPAccountRequest = {
-    anchor: anchor,
+    anchor,
     access_point: [],
     wallet: [],
     email: [],

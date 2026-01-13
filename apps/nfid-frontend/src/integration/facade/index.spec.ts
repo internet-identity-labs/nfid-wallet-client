@@ -32,7 +32,7 @@ describe.skip("Facade suite", () => {
   jest.setTimeout(100000)
 
   describe("Facade Service Test", () => {
-    it("Should create and remove protected Recovery device", async function () {
+    it("Should create and remove protected Recovery device", async () => {
       const mockedIdentity = Ed25519KeyIdentity.generate()
       const { delegationIdentity } =
         await generateDelegationIdentity(mockedIdentity)
@@ -98,7 +98,7 @@ describe.skip("Facade suite", () => {
         new Date(Date.now() + 3_600_000 * 44),
       )
       const feDelegation: FrontendDelegation = {
-        chain: chain,
+        chain,
         sessionKey: recoveryDevice,
         delegationIdentity: recoveryIdentity,
       }
@@ -130,7 +130,7 @@ describe.skip("Facade suite", () => {
       expect(aps.data[0]).toEqual([])
     })
 
-    it("Should fetch principals", async function () {
+    it("Should fetch principals", async () => {
       const mockedIdentity = Ed25519KeyIdentity.generate()
       const { delegationIdentity } =
         await generateDelegationIdentity(mockedIdentity)
@@ -186,7 +186,7 @@ describe.skip("Facade suite", () => {
       ])
       authStateMock.set({
         identity: mockedIdentity,
-        delegationIdentity: delegationIdentity,
+        delegationIdentity,
       })
       const principals: { principal: Principal; account: Account }[] =
         await fetchPrincipals()
@@ -205,9 +205,9 @@ describe.skip("Facade suite", () => {
         new Date(Date.now() + 3_600_000 * 44),
       )
       const feDelegation: FrontendDelegation = {
-        chain: chain,
+        chain,
         sessionKey: mockedIdentity,
-        delegationIdentity: delegationIdentity,
+        delegationIdentity,
       }
       // @ts-ignore
       im.use_access_point = jest.fn((_x: [] | [string]) => ({

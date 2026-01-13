@@ -1,12 +1,14 @@
+import { storageWithTtl } from "@nfid/client-db"
 import {
   ETH_DECIMALS,
   ETHERSCAN_API_KEY,
 } from "@nfid/integration/token/constants"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
-import { storageWithTtl } from "@nfid/client-db"
+
+import { IActivityRow } from "frontend/features/activity/types"
+
 import { Erc20Service } from "./erc20-abstract.service"
 import { ERC20TokenInfo } from "./erc20-abstract.service"
-import { IActivityRow } from "frontend/features/activity/types"
 
 export interface EtherscanTransaction {
   blockNumber: string
@@ -158,7 +160,7 @@ export abstract class EVMTokenTransactionService implements EVMTransactionServic
             amount,
             icon: iconURLS.get(tx.contractAddress.toLowerCase()),
             rate: 0,
-            decimals: decimals,
+            decimals,
             canister: tx.contractAddress.toLowerCase(),
             chainId: this.getChainId(),
           },

@@ -1,8 +1,10 @@
 import { SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
-import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
-import { SelectedUtxosFeeRequest } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
 
+import {
+  SelectedUtxosFeeRequest,
+  SelectedUtxosFeeResponse,
+} from "@nfid/integration"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 import { Account, PaymentType } from "../idl/chain-fusion-signer.d"

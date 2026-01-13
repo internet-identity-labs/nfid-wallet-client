@@ -1,21 +1,26 @@
-import { Principal } from "@dfinity/principal"
-import { FT } from "src/integration/ft/ft"
-import BigNumber from "bignumber.js"
-import { FTImpl } from "./ft-impl"
-import {
-  Erc20Service,
-  ERC20TokenInfo,
-} from "frontend/integration/ethereum/erc20-abstract.service"
-import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
-import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
-import { Category, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { SignIdentity } from "@dfinity/agent"
-import { FeeResponseETH } from "../utils"
+import { Principal } from "@dfinity/principal"
+
+import BigNumber from "bignumber.js"
+
 import {
   ETH_DECIMALS,
   EVM_NATIVE,
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
+import { Category, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
+
+import {
+  Erc20Service,
+  ERC20TokenInfo,
+} from "frontend/integration/ethereum/erc20-abstract.service"
+import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
+import { FT } from "src/integration/ft/ft"
+
+import { FeeResponseETH } from "../utils"
+
+import { FTImpl } from "./ft-impl"
 
 export abstract class FTERC20AbstractImpl extends FTImpl {
   constructor(erc20TokenInfo: ERC20TokenInfo) {

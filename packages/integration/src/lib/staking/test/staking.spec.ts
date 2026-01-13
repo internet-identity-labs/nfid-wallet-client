@@ -4,7 +4,7 @@ import { Principal } from "@dfinity/principal"
 
 import { disburse, querySnsNeurons, stakeNeuron } from "../sns-governance.api"
 
-const pairPrincipal =
+const _pairPrincipal =
   "ayigd-u23ly-o65by-pzgtm-udimh-ktcue-hyzwp-uqccr-t3vl4-b3mxe-bae"
 
 const identityJSON: JsonnableEd25519KeyIdentity = [
@@ -39,7 +39,7 @@ describe("Staking", () => {
       await disburse({
         identity: edId,
         rootCanisterId: Principal.fromText("m2blf-zqaaa-aaaaq-aaejq-cai"),
-        neuronId: neuronId,
+        neuronId,
       })
     } catch (e: any) {
       console.log(e.message)

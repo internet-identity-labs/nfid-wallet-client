@@ -1,9 +1,9 @@
 import { format } from "date-fns"
 import React, { useMemo } from "react"
 
-import { Table } from "@nfid-frontend/ui"
-import { bigIntMillisecondsToSeconds } from "@nfid-frontend/utils"
 import { Vault } from "@nfid/integration"
+import { Table } from "@nfid/ui"
+import { bigIntMillisecondsToSeconds } from "@nfid/utils"
 
 import { VaultsTableHeader } from "./table-header"
 import { VaultsTableRow, VaultsTableRowProps } from "./table-row"

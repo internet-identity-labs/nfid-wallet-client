@@ -1,4 +1,5 @@
 import { SignIdentity } from "@dfinity/agent"
+
 import { IcpSwapShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
 import { KongSwapShroffImpl } from "src/integration/swap/kong/impl/kong-swap-shroff"
 import { Shroff } from "src/integration/swap/shroff"
@@ -17,7 +18,7 @@ export class ErrorKongNfidShroff extends KongSwapShroffImpl {
       return this.swapTransaction
     } catch (e) {
       console.error("NFID transfer retry error: ", e)
-      this.swapTransaction.setError("NFID transfer retry error: " + e)
+      this.swapTransaction.setError(`NFID transfer retry error: ${e}`)
       await this.restoreTransaction()
       throw e
     }

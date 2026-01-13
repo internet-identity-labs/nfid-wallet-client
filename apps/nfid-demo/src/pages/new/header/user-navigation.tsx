@@ -1,13 +1,7 @@
 import { useAuthenticationContext } from "apps/nfid-demo/src/context/authentication"
 import clsx from "clsx"
 
-import {
-  Button,
-  CenterEllipsis,
-  Copy,
-  IconCmpInfo,
-  Popover,
-} from "@nfid-frontend/ui"
+import { Button, CenterEllipsis, Copy, IconCmpInfo, Popover } from "@nfid/ui"
 
 const UserNavigation = () => {
   const context = useAuthenticationContext()

@@ -3,6 +3,7 @@ import {
   AddressBookAddress as CanisterAddress,
   AddressBookAddressType as CanisterAddressType,
 } from "@nfid/integration"
+
 import { UserAddressEntity } from "../interfaces"
 import { Address, AddressType } from "../types"
 

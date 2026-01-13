@@ -1,8 +1,4 @@
 import { AnonymousIdentity, HttpAgent } from "@dfinity/agent"
-import { icpSwapPropertiesService } from "src/integration/nft/impl/icpswap/properties/properties-service"
-import { icpswapTransactionMapper } from "src/integration/nft/impl/icpswap/transaction/icpswap-transaction-mapper"
-import { NFTDetailsImpl, NftImpl } from "src/integration/nft/impl/nft-abstract"
-import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
 
 import {
   actorBuilder,
@@ -10,7 +6,13 @@ import {
   hasOwnProperty,
 } from "@nfid/integration"
 
+import { icpSwapPropertiesService } from "src/integration/nft/impl/icpswap/properties/properties-service"
+import { icpswapTransactionMapper } from "src/integration/nft/impl/icpswap/transaction/icpswap-transaction-mapper"
+import { NFTDetailsImpl, NftImpl } from "src/integration/nft/impl/nft-abstract"
+import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
+
 import { AssetPreview, DisplayFormat, TokenProperties } from "../nft-types"
+
 import { idlFactory } from "./idl/SwapNFT"
 import {
   _SERVICE as IcpSwapCanister,
@@ -88,17 +90,15 @@ export class NftIcpSwap extends NftImpl {
 
 class NftIcpSwapDetails extends NFTDetailsImpl {
   private readonly icsMetadata: IcsMetadata
-  private readonly canisterInfo: CanisterInfo
   private readonly tokenId: string
 
   constructor(
     icsMetadata: IcsMetadata,
-    canisterInfo: CanisterInfo,
+    _canisterInfo: CanisterInfo,
     tokenId: string,
   ) {
     super()
     this.icsMetadata = icsMetadata
-    this.canisterInfo = canisterInfo
     this.tokenId = tokenId
   }
 
@@ -153,7 +153,7 @@ function toFormat(file: string): DisplayFormat {
     case "image":
       return "img"
     default:
-      console.warn("Unknown ICPSWAP display format: " + file)
+      console.warn(`Unknown ICPSWAP display format: ${file}`)
       return "img"
   }
 }

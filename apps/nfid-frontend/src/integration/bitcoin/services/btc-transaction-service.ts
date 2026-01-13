@@ -1,15 +1,15 @@
-import { BTC_EXPLORER, BTC_NATIVE_ID } from "@nfid/integration/token/constants"
-import { IActivityAction } from "@nfid/integration/token/icrc1/types"
-
-import { IActivityRow } from "frontend/features/activity/types"
-import BtcIcon from "packages/ui/src/organisms/tokens/assets/bitcoin.svg"
-
 import {
   FungibleActivityRecords,
   FungibleActivityRecord,
-} from "../../../../../../packages/integration/src/lib/asset/types"
-import { BLOCK_HEIGHT_URL, REQUIRED_CONFIRMATIONS } from "./mempool.service"
+} from "@nfid/integration/asset/types"
+import { BTC_EXPLORER, BTC_NATIVE_ID } from "@nfid/integration/token/constants"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { IActivityAction } from "@nfid/integration/token/icrc1/types"
+import BtcIcon from "@nfid/ui/organisms/tokens/assets/bitcoin.svg"
+
+import { IActivityRow } from "frontend/features/activity/types"
+
+import { BLOCK_HEIGHT_URL, REQUIRED_CONFIRMATIONS } from "./mempool.service"
 
 const mainnet = "https://mempool.space/api/address/"
 

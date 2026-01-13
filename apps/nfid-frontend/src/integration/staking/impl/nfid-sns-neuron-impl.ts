@@ -6,10 +6,6 @@ import {
   Neuron,
   NeuronId,
 } from "@dfinity/sns/dist/candid/sns_governance"
-import {
-  bytesToHexString,
-  hexStringToBytes,
-} from "src/integration/staking/service/staking-service-impl"
 
 import {
   disburse,
@@ -22,8 +18,13 @@ import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 import { FT } from "frontend/integration/ft/ft"
+import {
+  bytesToHexString,
+  hexStringToBytes,
+} from "src/integration/staking/service/staking-service-impl"
 
 import { StakeSnsParamsCalculatorImpl } from "../calculator/stake-sns-params-calculator"
+
 import { NfidNeuronImpl } from "./nfid-neuron-impl"
 
 const MILISECONDS_PER_SECOND = 1000
@@ -113,7 +114,7 @@ export class NfidSNSNeuronImpl extends NfidNeuronImpl<Neuron> {
 
     await startDissolving({
       identity: signIdentity,
-      rootCanisterId: rootCanisterId,
+      rootCanisterId,
       neuronId: this.neuron.id[0]!,
     })
   }
@@ -124,7 +125,7 @@ export class NfidSNSNeuronImpl extends NfidNeuronImpl<Neuron> {
 
     await stopDissolving({
       identity: signIdentity,
-      rootCanisterId: rootCanisterId,
+      rootCanisterId,
       neuronId: this.neuron.id[0]!,
     })
   }
@@ -242,7 +243,7 @@ export class NfidSNSNeuronImpl extends NfidNeuronImpl<Neuron> {
 
     await disburse({
       identity: signIdentity,
-      rootCanisterId: rootCanisterId,
+      rootCanisterId,
       neuronId: this.neuron.id[0]!,
     })
 
@@ -254,7 +255,7 @@ export class NfidSNSNeuronImpl extends NfidNeuronImpl<Neuron> {
 
     if (!hasOwnProperty(result, "Ok")) {
       console.warn(
-        "Error transferring protocol fee: " + JSON.stringify(result.Err),
+        `Error transferring protocol fee: ${JSON.stringify(result.Err)}`,
       )
     }
   }

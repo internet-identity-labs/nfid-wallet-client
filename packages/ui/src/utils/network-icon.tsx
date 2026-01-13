@@ -1,12 +1,12 @@
 import { ReactNode } from "react"
-import { IcpNetworkIcon } from "../atoms/icons/IcpNetworkIcon"
-import { EthNetworkIcon } from "../atoms/icons/EthNetworkIcon"
-import { BtcNetworkIcon } from "../atoms/icons/BtcNetworkIcon"
+import { IcpNetworkIcon } from "@nfid/ui/atoms/icons/IcpNetworkIcon"
+import { EthNetworkIcon } from "@nfid/ui/atoms/icons/EthNetworkIcon"
+import { BtcNetworkIcon } from "@nfid/ui/atoms/icons/BtcNetworkIcon"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
-import { ArbNetworkIcon } from "../atoms/icons/ArbNetworkIcon"
-import { BaseNetworkIcon } from "../atoms/icons/BaseNetworkIcon"
-import { BnbNetworkIcon } from "../atoms/icons/BnbNetworkIcon"
-import { PolNetworkIcon } from "../atoms/icons/PolNetworkIcon"
+import { ArbNetworkIcon } from "@nfid/ui/atoms/icons/ArbNetworkIcon"
+import { BaseNetworkIcon } from "@nfid/ui/atoms/icons/BaseNetworkIcon"
+import { BnbNetworkIcon } from "@nfid/ui/atoms/icons/BnbNetworkIcon"
+import { PolNetworkIcon } from "@nfid/ui/atoms/icons/PolNetworkIcon"
 
 export const getNetworkIcon = (
   chainId: ChainId,

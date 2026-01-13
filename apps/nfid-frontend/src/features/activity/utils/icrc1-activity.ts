@@ -1,24 +1,22 @@
-import {
-  Activity,
-  ActivityAssetFT,
-} from "packages/integration/src/lib/asset/types"
-
 import { authState } from "@nfid/integration"
-import { getICRC1HistoryDataForUser } from "@nfid/integration/token/icrc1"
-import {
-  ICRC1IndexData,
-  TransactionData,
-} from "@nfid/integration/token/icrc1/types"
-
-import { IActivityRow } from "../types"
-import { nanoSecondsToDate } from "./activity"
-import { Category, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { Activity, ActivityAssetFT } from "@nfid/integration/asset/types"
 import {
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
   ICP_EXPLORER,
 } from "@nfid/integration/token/constants"
+import { getICRC1HistoryDataForUser } from "@nfid/integration/token/icrc1"
+import { Category, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import {
+  ICRC1IndexData,
+  TransactionData,
+} from "@nfid/integration/token/icrc1/types"
+
 import { FT } from "frontend/integration/ft/ft"
+
+import { IActivityRow } from "../types"
+
+import { nanoSecondsToDate } from "./activity"
 
 const getChainFusionTokenName = (address: string) => {
   if (address === CKBTC_CANISTER_ID) {
@@ -53,7 +51,7 @@ const getActivities = async (
 ): Promise<Activity[]> => {
   const { userId, publicKey } = authState.getUserIdData()
   const allCanistersActivities = await getICRC1HistoryDataForUser(
-    userId!,
+    userId,
     publicKey,
     BigInt(limit),
   )

@@ -1,5 +1,6 @@
 import { Meta, StoryFn } from "@storybook/react"
-import { withSignInDecorator } from "packages/ui/src/decorators/sign-in"
+
+import { withSignInDecorator } from "@nfid/ui/decorators/sign-in"
 
 import { AuthEmailPending, AuthEmailFlowProps } from "./index"
 

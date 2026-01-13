@@ -56,7 +56,7 @@ describe("Identity Manager suite", () => {
   jest.setTimeout(300000)
 
   describe("Identity Manager Service Test", () => {
-    it("Should create NFID profile", async function () {
+    it("Should create NFID profile", async () => {
       const identityDevice = getIdentity("87654321876543218765432187654318")
       const identityDeviceDelegationIdentity =
         await getDelegationIdentity(identityDevice)
@@ -112,7 +112,7 @@ describe("Identity Manager suite", () => {
       await im.remove_account()
     })
 
-    it("Should create application", async function () {
+    it("Should create application", async () => {
       const getApplicationSpy = jest
         .spyOn(imMock, "get_application")
         .mockResolvedValue(okAppResponseEmpty())
@@ -129,7 +129,7 @@ describe("Identity Manager suite", () => {
       updateAliasSpy.mockRestore()
     })
 
-    it("Should update origin", async function () {
+    it("Should update origin", async () => {
       const getApplicationSpy = jest
         .spyOn(imMock, "get_application")
         .mockResolvedValue(okAppResponseOne(applicationStub))
@@ -146,7 +146,7 @@ describe("Identity Manager suite", () => {
       updateAliasSpy.mockRestore()
     })
 
-    it("Should skip", async function () {
+    it("Should skip", async () => {
       const getApplicationSpy = jest
         .spyOn(imMock, "get_application")
         .mockResolvedValue(okAppResponseOne(applicationStub))

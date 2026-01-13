@@ -1,4 +1,4 @@
-import { Signature } from "@dfinity/agent"
+import { DerEncodedPublicKey, Signature } from "@dfinity/agent"
 import {
   Delegation,
   DelegationChain,
@@ -14,6 +14,7 @@ import {
   Timestamp,
   UserKey,
 } from "../_ic_api/delegation_factory.d"
+
 import { GetDelegationArgs, PrepareDelegationArgs } from "./types"
 
 export async function getDelegationChainSignedByCanister(
@@ -60,7 +61,8 @@ export async function getDelegationChainSignedByCanister(
               .buffer as Signature,
           },
         ],
-        new Uint8Array(prepareDelegationResponse[0]),
+        new Uint8Array(prepareDelegationResponse[0])
+          .buffer as DerEncodedPublicKey,
       )
     } else {
       throw new Error("No such delegation")

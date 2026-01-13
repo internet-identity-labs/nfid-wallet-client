@@ -1,10 +1,11 @@
 import { Principal } from "@dfinity/principal"
+
 import { format } from "date-fns"
 import React, { useMemo } from "react"
 
-import { Table } from "@nfid-frontend/ui"
-import { bigIntMillisecondsToSeconds, toUSD } from "@nfid-frontend/utils"
 import { Transaction } from "@nfid/integration"
+import { Table } from "@nfid/ui"
+import { bigIntMillisecondsToSeconds, toUSD } from "@nfid/utils"
 
 import { useICPExchangeRate } from "frontend/features/fungible-token/icp/hooks/use-icp-exchange-rate"
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
@@ -75,7 +76,7 @@ export const VaultsTransactionsTable: React.FC<
             ) !== -1,
           memo: transaction.memo,
           vaultId: vault?.id,
-        } as IVaultTransactionsDetails),
+        }) as IVaultTransactionsDetails,
     )
   }, [
     exchangeRate,

@@ -5,7 +5,7 @@ import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
 import { ChooseFtItem } from "./choose-ft-item"
 import { ChooseTokenModal } from "./token-modal"
-import { IModalType } from "../../organisms/send-receive/utils"
+import { IModalType } from "@nfid/ui/organisms/send-receive/utils"
 import { SelectedToken } from "frontend/features/transfer-modal/types"
 
 export interface IChooseFtModal {

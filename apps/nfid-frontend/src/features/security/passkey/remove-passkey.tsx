@@ -1,10 +1,10 @@
-import toaster from "packages/ui/src/atoms/toast"
-import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import { useCallback, HTMLAttributes, useState, FC } from "react"
 
-import { Button } from "@nfid-frontend/ui"
 import { RootWallet } from "@nfid/integration"
 import { authState } from "@nfid/integration"
+import { Button } from "@nfid/ui"
+import toaster from "@nfid/ui/atoms/toast"
+import { ModalComponent } from "@nfid/ui/molecules/modal"
 
 import { removeAccessPointFacade } from "frontend/integration/facade"
 import { useProfile } from "frontend/integration/identity-manager/queries"

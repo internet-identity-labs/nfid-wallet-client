@@ -7,6 +7,7 @@ import { Account } from "@dfinity/ledger-icp"
 import { ApproveParams, IcrcLedgerCanister } from "@dfinity/ledger-icrc"
 import { TransferArg } from "@dfinity/ledger-icrc/dist/candid/icrc_ledger"
 import { Principal } from "@dfinity/principal"
+
 import {
   Contract,
   InfuraProvider,
@@ -15,20 +16,10 @@ import {
   type FeeData,
   type TransactionResponse,
 } from "ethers"
+
 import { storageWithTtl } from "@nfid/client-db"
-import { agentBaseConfig } from "packages/integration/src/lib/actors"
-
-import { transferICRC1 } from "@nfid/integration/token/icrc1"
-
-import { EthSignTransactionRequest } from "../bitcoin/idl/chain-fusion-signer.d"
-import {
-  Address,
-  Balance,
-  chainFusionSignerService,
-} from "../bitcoin/services/chain-fusion-signer.service"
-import { patronService } from "../bitcoin/services/patron.service"
-import { CKETH_ABI } from "./cketh.constants"
-import { getWalletDelegation } from "../facade/wallet"
+import { agentBaseConfig } from "@nfid/integration"
+import { KEY_ETH_ADDRESS } from "@nfid/integration"
 import {
   MINTER_ADDRESS,
   CKETH_MINTER_CANISTER_ID,
@@ -37,8 +28,19 @@ import {
   CHAIN_ID,
   CKETH_LEDGER_CANISTER_ID,
 } from "@nfid/integration/token/constants"
-import { KEY_ETH_ADDRESS } from "packages/integration/src/lib/authentication/storage"
+import { transferICRC1 } from "@nfid/integration/token/icrc1"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+
+import { EthSignTransactionRequest } from "../bitcoin/idl/chain-fusion-signer.d"
+import {
+  Address,
+  Balance,
+  chainFusionSignerService,
+} from "../bitcoin/services/chain-fusion-signer.service"
+import { patronService } from "../bitcoin/services/patron.service"
+import { getWalletDelegation } from "../facade/wallet"
+
+import { CKETH_ABI } from "./cketh.constants"
 
 export type SendEthFee = {
   gasUsed: bigint
@@ -79,7 +81,7 @@ export abstract class EVMService {
       const identity = await getWalletDelegation()
       return this.getAddress(identity)
     } else {
-      return cachedValue as string
+      return cachedValue
     }
   }
 
@@ -88,7 +90,7 @@ export abstract class EVMService {
     const { cachedValue, key } = this.getAddressFromCache()
 
     if (cachedValue != null) {
-      return cachedValue as string
+      return cachedValue
     }
     await patronService.askToPayFor(identity)
 
@@ -114,7 +116,7 @@ export abstract class EVMService {
     const cache = await storageWithTtl.getEvenExpired(cacheKey)
 
     if (cache) {
-      const cachedBalance = BigInt(cache.value as string) as Balance
+      const cachedBalance = BigInt(cache.value as string)
       if (!cache.expired) {
         return cachedBalance
       }
@@ -135,7 +137,7 @@ export abstract class EVMService {
       throw Error("No ethereum address in a cache.")
     }
 
-    return await this.getBalance(cachedValue as Address)
+    return await this.getBalance(cachedValue)
   }
 
   //retrieve fee data from provider
@@ -235,7 +237,7 @@ export abstract class EVMService {
 
     const agent = new HttpAgent({
       ...agentBaseConfig,
-      identity: identity,
+      identity,
     })
 
     const ckEthMinter = CkETHMinterCanister.create({
@@ -408,7 +410,7 @@ export abstract class EVMService {
 
     const request: EthSignTransactionRequest = {
       chain_id: BigInt(chainId),
-      to: to,
+      to,
       value: parseEther(value),
       data: [],
       nonce: BigInt(nonce),
@@ -444,7 +446,7 @@ export abstract class EVMService {
       canisterId: Principal.fromText(ledgerCanisterId),
       agent: new HttpAgent({
         ...agentBaseConfig,
-        identity: identity,
+        identity,
       }),
     })
     const spender: Account = {

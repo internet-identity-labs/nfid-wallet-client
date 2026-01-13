@@ -1,15 +1,13 @@
 import React, { useCallback, useMemo, useState } from "react"
 
-import { EmptyCard, IconCmpTransactions } from "@nfid-frontend/ui"
-import {
-  bigIntMillisecondsToSeconds,
-  isDateBetween,
-} from "@nfid-frontend/utils"
 import { Transaction } from "@nfid/integration"
+import { EmptyCard, IconCmpTransactions } from "@nfid/ui"
+import { bigIntMillisecondsToSeconds, isDateBetween } from "@nfid/utils"
 
 import { VaultActionBar } from "../../action-bar"
 import { useVault } from "../../hooks/use-vault"
 import { useVaultTransactions } from "../../hooks/use-vault-transactions"
+
 import { VaultsTransactionsTable } from "./table"
 
 interface VaultsTransactionsPageProps {}

@@ -1,5 +1,5 @@
 export const idlFactory = ({ IDL }: any) => {
-  const InitArgs = IDL.Record({ im_canister: IDL.Principal })
+  const _InitArgs = IDL.Record({ im_canister: IDL.Principal })
   const UserNumber = IDL.Nat64
   const FrontendHostname = IDL.Text
   const PublicKey = IDL.Vec(IDL.Nat8)

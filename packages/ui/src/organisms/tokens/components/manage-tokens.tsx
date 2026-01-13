@@ -1,10 +1,10 @@
 import { debounce } from "@dfinity/utils"
 import clsx from "clsx"
 import { motion } from "framer-motion"
-import { CANISTER_ID_LENGTH } from "packages/constants"
-import { PlusIcon } from "packages/ui/src/atoms/icons/plus"
-import toaster from "packages/ui/src/atoms/toast"
-import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
+import { CANISTER_ID_LENGTH } from "@nfid/constants"
+import { PlusIcon } from "@nfid/ui/atoms/icons/plus"
+import toaster from "@nfid/ui/atoms/toast"
+import { ModalComponent } from "@nfid/ui/molecules/modal"
 import { FC, useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { IoIosSearch } from "react-icons/io"
@@ -21,7 +21,7 @@ import {
   ImageWithFallback,
   IconNftPlaceholder,
   Toggle,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 import { ICRC1Error } from "@nfid/integration/token/icrc1/types"
 
 import { useDarkTheme } from "frontend/hooks"

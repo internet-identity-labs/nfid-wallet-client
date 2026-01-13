@@ -3,7 +3,7 @@ import clsx from "clsx"
 import { motion } from "framer-motion"
 
 import { Popover, PopoverProps } from "."
-import { Button } from "../../molecules/button"
+import { Button } from "@nfid/ui/molecules/button"
 
 interface IFilterPopover extends PopoverProps {
   title?: string

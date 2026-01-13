@@ -1,18 +1,19 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
 import { Principal } from "@dfinity/principal"
+
+import { disburse, querySnsNeurons } from "@nfid/integration"
+import { NFIDW_CANISTER_ID } from "@nfid/integration/token/constants"
+import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
+import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
+
 import { ftService } from "src/integration/ft/ft-service"
 import {
   bytesToHexString,
   stakingService,
 } from "src/integration/staking/service/staking-service-impl"
 
-import { disburse, querySnsNeurons } from "@nfid/integration"
-import { NFIDW_CANISTER_ID } from "@nfid/integration/token/constants"
-import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
-
 import { mockFt, mockStake } from "./mock"
-import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 
 const NFIDW_ROOT_CANISTER = "m2blf-zqaaa-aaaaq-aaejq-cai"
 
@@ -68,7 +69,7 @@ describe("Staking", () => {
       certified: false,
     })
     const actual = neuronsNFIDW.find(
-      (n) => bytesToHexString(n!.id[0]!.id) === bytesToHexString(staked.id),
+      (n) => bytesToHexString(n.id[0]!.id) === bytesToHexString(staked.id),
     )
     expect(actual?.followees.length).toBeGreaterThan(0)
   })

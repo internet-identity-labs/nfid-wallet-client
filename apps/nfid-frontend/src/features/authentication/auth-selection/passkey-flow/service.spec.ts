@@ -1,6 +1,6 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
+
 import base64url from "base64url"
-import { PasskeyConnector } from "src/features/authentication/auth-selection/passkey-flow/services"
 
 import {
   DeviceType,
@@ -10,6 +10,7 @@ import {
 } from "@nfid/integration"
 
 import { fetchProfile } from "frontend/integration/identity-manager"
+import { PasskeyConnector } from "src/features/authentication/auth-selection/passkey-flow/services"
 
 describe("Passkey flow", () => {
   jest.setTimeout(80000)
@@ -40,8 +41,6 @@ describe("Passkey flow", () => {
       )
 
     const pk = Ed25519KeyIdentity.generate()
-
-    const _publickKeyHexString = pk.getPublicKey().toDer().toString()
 
     console.log("Public key hex string", pk.getPrincipal().toText())
 

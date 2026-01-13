@@ -1,4 +1,5 @@
 import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
+
 import { SwapTransaction as SwapTransactionCandid } from "src/integration/swap/transaction/idl/swap_trs_storage.d"
 import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 

@@ -1,12 +1,15 @@
 import { useEffect, useState, useCallback } from "react"
+
+import { ActivityAssetFT } from "@nfid/integration/asset/types"
+import { EVM_NATIVE, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 import { useSWR } from "@nfid/swr"
+
+import { FT } from "frontend/integration/ft/ft"
+
 import { PAGINATION_ITEMS } from "../constants"
 import { IActivityRow, IActivityRowGroup } from "../types"
 import { getAllActivity } from "../utils/activity"
 import { groupActivityRowsByDate } from "../utils/row"
-import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
-import { EVM_NATIVE, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
-import { FT } from "frontend/integration/ft/ft"
 
 interface UseActivityFilterParams {
   activeTokens: FT[]

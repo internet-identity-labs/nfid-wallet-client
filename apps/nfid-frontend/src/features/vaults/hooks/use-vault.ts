@@ -5,6 +5,7 @@ import { VaultRole } from "@nfid/integration"
 import { useSWR } from "@nfid/swr"
 
 import { getVaultById } from "../services"
+
 import { useVaultMember } from "./use-vault-member"
 
 export const useVault = () => {

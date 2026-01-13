@@ -1,4 +1,5 @@
-import { authStorage } from "packages/integration/src/lib/authentication/storage"
+import { authStorage } from "@nfid/integration"
+
 import { UserPrefImpl } from "src/integration/user-preferences/impl/user-pref-impl"
 import { UserPreferences } from "src/integration/user-preferences/user-preferences"
 

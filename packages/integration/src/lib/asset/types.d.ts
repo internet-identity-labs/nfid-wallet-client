@@ -222,7 +222,7 @@ declare interface Activity {
   transaction?: SwapTransaction
 }
 
-declare interface ActivityAssetNFT {
+export interface ActivityAssetNFT {
   type: "nft"
   name: string
   preview: string
@@ -232,7 +232,7 @@ declare interface ActivityAssetNFT {
   error?: string
 }
 
-declare interface ActivityAssetFT {
+export interface ActivityAssetFT {
   type: "ft"
   currency: string
   currencyTo?: string

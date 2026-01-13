@@ -1,7 +1,7 @@
 import { SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
+
 import BigNumber from "bignumber.js"
-import { FT } from "src/integration/ft/ft"
 
 import { exchangeRateService } from "@nfid/integration"
 import {
@@ -20,6 +20,8 @@ import {
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { ICRC1, AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
+
+import { FT } from "src/integration/ft/ft"
 
 import { formatUsdAmount } from "../../../util/format-usd-amount"
 import { FeeResponse, FeeResponseICP } from "../utils"
@@ -313,7 +315,7 @@ export class FTImpl implements FT {
     try {
       this.tokenBalance = await icrc1Pair.getBalance(globalPrincipal.toText())
     } catch (e) {
-      console.error("Icrc1Pair error: " + (e as Error).message)
+      console.error(`Icrc1Pair error: ${(e as Error).message}`)
       return
     }
 

@@ -3,7 +3,7 @@ import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-ser
 describe("icpswap service", () => {
   jest.setTimeout(200000)
 
-  it("get pool test", async function () {
+  it("get pool test", async () => {
     const poolData = await icpSwapService.getPoolFactory(
       "ryjl3-tyaaa-aaaaa-aaaba-cai",
       "mxzaz-hqaaa-aaaar-qaada-cai",

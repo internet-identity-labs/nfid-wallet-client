@@ -3,7 +3,9 @@ import {
   Ed25519KeyIdentity,
   JsonnableEd25519KeyIdentity,
 } from "@dfinity/identity/lib/cjs/identity/ed25519"
-import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
+
+import { SelectedUtxosFeeResponse } from "@nfid/integration"
+import { KEY_BTC_ADDRESS } from "@nfid/integration"
 
 import {
   bitcoinService,
@@ -13,7 +15,6 @@ import {
 } from "./bitcoin.service"
 import { TransactionId } from "./services/chain-fusion-signer.service"
 import { mempoolService } from "./services/mempool.service"
-import { KEY_BTC_ADDRESS } from "packages/integration/src/lib/authentication/storage"
 
 const IDENTITY: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003008adc857dfcd0477a7aaa01a657ca6923ce76c07645704b1e872deb1253baa",

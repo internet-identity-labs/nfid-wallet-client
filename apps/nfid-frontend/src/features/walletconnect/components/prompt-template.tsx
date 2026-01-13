@@ -1,9 +1,9 @@
 import clsx from "clsx"
-import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import { PropsWithChildren, useState } from "react"
 
-import { Address, Button, LogoMain } from "@nfid-frontend/ui"
-import { Spinner } from "packages/ui/src/atoms/spinner"
+import { Address, Button, LogoMain } from "@nfid/ui"
+import { Spinner } from "@nfid/ui/atoms/spinner"
+import { TickerAmount } from "@nfid/ui/molecules/ticker-amount"
 
 export interface WalletConnectBalanceSection {
   symbol: string

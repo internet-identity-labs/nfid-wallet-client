@@ -1,17 +1,19 @@
-import { IActivityRow } from "../types"
+import { delay } from "frontend/features/fungible-token/utils"
 import { getBtcActivitiesRows } from "frontend/integration/bitcoin/services/btc-transaction-service"
-import { ethTransactionService } from "frontend/integration/ethereum/eth/eth-transaction.service"
-import { getIcrc1ActivitiesRows } from "./icrc1-activity"
-import { getSwapActivitiesRows } from "./swap-activity"
-import { fetchBtcAddress } from "frontend/util/fetch-btc-address"
-import { fetchEthAddress } from "frontend/util/fetch-eth-address"
-import { polygonTransactionService } from "frontend/integration/ethereum/polygon/pol-transaction.service"
+import { arbitrumErc20TransactionService } from "frontend/integration/ethereum/arbitrum/arbitrum-erc20-transaction.service"
 import { arbitrumTransactionService } from "frontend/integration/ethereum/arbitrum/arbitrum-transaction.service"
 import { ethErc20TransactionService } from "frontend/integration/ethereum/eth/eth-erc20-transaction.service"
-import { arbitrumErc20TransactionService } from "frontend/integration/ethereum/arbitrum/arbitrum-erc20-transaction.service"
+import { ethTransactionService } from "frontend/integration/ethereum/eth/eth-transaction.service"
 import { polygonErc20TransactionService } from "frontend/integration/ethereum/polygon/pol-erc20-transaction.service"
-import { delay } from "frontend/features/fungible-token/utils"
+import { polygonTransactionService } from "frontend/integration/ethereum/polygon/pol-transaction.service"
 import { FT } from "frontend/integration/ft/ft"
+import { fetchBtcAddress } from "frontend/util/fetch-btc-address"
+import { fetchEthAddress } from "frontend/util/fetch-eth-address"
+
+import { IActivityRow } from "../types"
+
+import { getIcrc1ActivitiesRows } from "./icrc1-activity"
+import { getSwapActivitiesRows } from "./swap-activity"
 
 export const nanoSecondsToDate = (nanoSeconds: bigint): Date => {
   const milliseconds = Number(nanoSeconds / BigInt(1000000))

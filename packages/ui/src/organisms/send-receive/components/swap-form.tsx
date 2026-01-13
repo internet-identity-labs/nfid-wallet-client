@@ -1,17 +1,11 @@
 import clsx from "clsx"
-import { Spinner } from "packages/ui/src/atoms/spinner"
+import { Spinner } from "@nfid/ui/atoms/spinner"
 import { FC, useEffect, useState } from "react"
 import { FieldErrors, FieldValues } from "react-hook-form"
 import { Id } from "react-toastify"
 import { Quote } from "src/integration/swap/quote"
 
-import {
-  Button,
-  IconCmpArrow,
-  Checkbox,
-  IconCmpSwap,
-  Tooltip,
-} from "@nfid-frontend/ui"
+import { Button, IconCmpArrow, Checkbox, IconCmpSwap, Tooltip } from "@nfid/ui"
 
 import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"

@@ -1,7 +1,6 @@
+import { TokenValue } from "frontend/integration/staking/types"
 import { FT } from "src/integration/ft/ft"
 import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
-
-import { TokenValue } from "frontend/integration/staking/types"
 
 export interface StakedToken {
   getToken(): FT

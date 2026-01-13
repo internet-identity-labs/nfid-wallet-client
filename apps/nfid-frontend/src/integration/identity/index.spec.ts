@@ -3,9 +3,10 @@
  */
 import { ii } from "@nfid/integration"
 
-import { identityFromDeviceList } from "."
 import { getMultiIdent, lookup } from "../internet-identity"
 import { II_DEVICES_DATA } from "../internet-identity/__mocks"
+
+import { identityFromDeviceList } from "."
 
 describe("identityFromDeviceList", () => {
   it("has parity with legacy method", async () => {

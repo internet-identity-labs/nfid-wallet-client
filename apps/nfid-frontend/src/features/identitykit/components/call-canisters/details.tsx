@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { IconCmpArrow } from "@nfid-frontend/ui"
+import { IconCmpArrow } from "@nfid/ui"
 
 export interface CallCanisterDetailsProps {
   canisterId: string

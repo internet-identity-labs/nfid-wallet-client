@@ -1,7 +1,7 @@
 import clsx from "clsx"
 
 import { IOption } from "."
-import { Checkbox } from "../../atoms/checkbox"
+import { Checkbox } from "@nfid/ui/atoms/checkbox"
 
 export interface IDropdownOption {
   option: IOption

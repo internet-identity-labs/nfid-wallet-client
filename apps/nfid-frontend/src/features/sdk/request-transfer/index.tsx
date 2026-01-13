@@ -1,18 +1,18 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
-import { isPresentInStorage } from "packages/integration/src/lib/lambda/domain-key-repository"
-import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
-import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
+
 import React, { useState } from "react"
 
-import { Address, BlurredLoader, Button } from "@nfid-frontend/ui"
-import { toUSD } from "@nfid-frontend/utils"
-import { exchangeRateService } from "@nfid/integration"
+import { exchangeRateService, isPresentInStorage } from "@nfid/integration"
 import {
   E8S,
   ICP_DECIMALS,
   WALLET_FEE_E8S,
 } from "@nfid/integration/token/constants"
 import { useSWR } from "@nfid/swr"
+import { Address, BlurredLoader, Button } from "@nfid/ui"
+import { TickerAmount } from "@nfid/ui/molecules/ticker-amount"
+import { AuthAppMeta } from "@nfid/ui/organisms/authentication/app-meta"
+import { toUSD } from "@nfid/utils"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import {
@@ -26,6 +26,7 @@ import { AuthorizingAppMeta } from "frontend/state/authorization"
 
 import { SDKFooter } from "../ui/footer"
 import { TransferSuccess } from "../ui/transfer-success.tsx"
+
 import { RequestTransferFTDetails } from "./fungible-details"
 import { RequestTransferNFTDetails } from "./non-fungible-details"
 import { IRequestTransferResponse } from "./types"
@@ -214,7 +215,7 @@ export const RequestTransfer: React.FC<IRequestTransferProps> = ({
                     : (identity ?? (await getWalletDelegationAdapter()))
 
                   const request = {
-                    tokenId: tokenId,
+                    tokenId,
                     amount: Number(amount) / E8S,
                     ...(memo ? { memo } : {}),
                     identity: transferIdentity,

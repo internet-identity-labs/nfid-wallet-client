@@ -1,14 +1,16 @@
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
-import { TokenBuilder } from "./token-builder"
-import { EthereumTokenBuilder } from "./ethereum-builder-impl"
-import { PolygonTokenBuilder } from "./polygon-builder-impl"
+import { ICRC1 } from "@nfid/integration/token/icrc1/types"
+
+import { ERC20TokenInfo } from "frontend/integration/ethereum/erc20-abstract.service"
+
 import { ArbitrumTokenBuilder } from "./arbitrum-builder-impl"
 import { BaseTokenBuilder } from "./base-builder-impl"
-import { BnbTokenBuilder } from "./bnb-builder-impl"
 import { BitcoinTokenBuilder } from "./bitcoin-builder-impl"
+import { BnbTokenBuilder } from "./bnb-builder-impl"
+import { EthereumTokenBuilder } from "./ethereum-builder-impl"
 import { ICRC1TokenBuilder } from "./icrc1-builder-impl"
-import { ICRC1 } from "@nfid/integration/token/icrc1/types"
-import { ERC20TokenInfo } from "frontend/integration/ethereum/erc20-abstract.service"
+import { PolygonTokenBuilder } from "./polygon-builder-impl"
+import { TokenBuilder } from "./token-builder"
 
 export class TokenFactoryService {
   private builders = new Map<ChainId, TokenBuilder<ICRC1 | ERC20TokenInfo>>([

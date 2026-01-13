@@ -1,11 +1,12 @@
 import BigNumber from "bignumber.js"
+
+import { ICRC1TypeOracle } from "@nfid/integration"
+import { TRIM_ZEROS } from "@nfid/integration/token/constants"
+
 import { LiquidityError } from "src/integration/swap/errors/types"
 import { Quote } from "src/integration/swap/quote"
 import { PriceImpactStatus } from "src/integration/swap/types/enums"
 import { PriceImpact } from "src/integration/swap/types/types"
-
-import { ICRC1TypeOracle } from "@nfid/integration"
-import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 
 export abstract class QuoteAbstract implements Quote {
   protected readonly sourceAmount: string
@@ -81,15 +82,11 @@ export abstract class QuoteAbstract implements Quote {
   }
 
   getTargetAmountPrettifiedWithSymbol(): string {
-    return (
-      this.getTargetAmount()
-        .minus(Number(this.target.fee))
-        .div(10 ** this.target.decimals)
-        .toFixed(this.target.decimals)
-        .replace(TRIM_ZEROS, "") +
-      " " +
-      this.target.symbol
-    )
+    return `${this.getTargetAmount()
+      .minus(Number(this.target.fee))
+      .div(10 ** this.target.decimals)
+      .toFixed(this.target.decimals)
+      .replace(TRIM_ZEROS, "")} ${this.target.symbol}`
   }
 
   getGuaranteedAmount(slippage: number): string {
@@ -97,11 +94,9 @@ export abstract class QuoteAbstract implements Quote {
     const slippageAmount = amount.multipliedBy(slippage).dividedBy(100)
     const guaranteedAmount = amount.minus(slippageAmount)
 
-    return (
-      guaranteedAmount.toFixed(this.target.decimals).replace(TRIM_ZEROS, "") +
-      " " +
-      this.target.symbol
-    )
+    return `${guaranteedAmount
+      .toFixed(this.target.decimals)
+      .replace(TRIM_ZEROS, "")} ${this.target.symbol}`
   }
 
   getSourceAmountPrettified(): string {
@@ -112,14 +107,10 @@ export abstract class QuoteAbstract implements Quote {
   }
 
   getSourceAmountPrettifiedWithSymbol(): string {
-    return (
-      this.getSourceUserInputAmount()
-        .div(10 ** this.source.decimals)
-        .toFixed(this.source.decimals)
-        .replace(TRIM_ZEROS, "") +
-      " " +
-      this.source.symbol
-    )
+    return `${this.getSourceUserInputAmount()
+      .div(10 ** this.source.decimals)
+      .toFixed(this.source.decimals)
+      .replace(TRIM_ZEROS, "")} ${this.source.symbol}`
   }
 
   //TODO
@@ -162,20 +153,16 @@ export abstract class QuoteAbstract implements Quote {
       status: priceImpact.isGreaterThanOrEqualTo(-1)
         ? PriceImpactStatus.LOW
         : priceImpact.isGreaterThanOrEqualTo(-5)
-        ? PriceImpactStatus.MEDIUM
-        : PriceImpactStatus.HIGH,
+          ? PriceImpactStatus.MEDIUM
+          : PriceImpactStatus.HIGH,
     }
   }
 
   getWidgetFee(): string {
-    return (
-      BigNumber(this.getWidgetFeeAmount().toString())
-        .div(10 ** this.source.decimals)
-        .toFixed(this.source.decimals)
-        .replace(TRIM_ZEROS, "") +
-      " " +
-      this.source.symbol
-    )
+    return `${BigNumber(this.getWidgetFeeAmount().toString())
+      .div(10 ** this.source.decimals)
+      .toFixed(this.source.decimals)
+      .replace(TRIM_ZEROS, "")} ${this.source.symbol}`
   }
 
   getSourceUserInputAmount(): BigNumber {

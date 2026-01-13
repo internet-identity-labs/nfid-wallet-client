@@ -1,5 +1,5 @@
-import { UserAddressId } from "../types"
 import { UserAddressEntity } from "../interfaces"
+import { UserAddressId } from "../types"
 
 type CacheState =
   | { loaded: false }

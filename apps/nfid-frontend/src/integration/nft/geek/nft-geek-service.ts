@@ -1,7 +1,8 @@
 import { Principal } from "@dfinity/principal"
-import { DataStructure, MappedToken } from "src/integration/nft/geek/geek-types"
 
 import { ic } from "@nfid/integration"
+
+import { DataStructure, MappedToken } from "src/integration/nft/geek/geek-types"
 
 export class NftGeekService {
   async getNftGeekData(userPrincipal: Principal): Promise<MappedToken[]> {

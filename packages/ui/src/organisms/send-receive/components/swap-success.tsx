@@ -14,8 +14,8 @@ import {
   IconNftPlaceholder,
   ImageWithFallback,
   LottieAnimation,
-} from "@nfid-frontend/ui"
-import { Button, H5 } from "@nfid-frontend/ui"
+} from "@nfid/ui"
+import { Button, H5 } from "@nfid/ui"
 
 import { useDarkTheme } from "frontend/hooks"
 
@@ -135,8 +135,8 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
           {error
             ? `${providerName} ${getTitleAndButtonText(error)?.title} failed`
             : isCompleted
-            ? ""
-            : getTextStatusByStep(step)}
+              ? ""
+              : getTextStatusByStep(step)}
         </p>
       </div>
       <div className="relative flex items-center justify-center w-full">

@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import { Ed25519KeyIdentity } from "@dfinity/identity"
 
 import { iCRC1OracleActor, mockIdentityA } from "@nfid/integration"
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"
@@ -17,9 +17,8 @@ describe("ICRC1 suite", () => {
   let root: string
   it.skip("Store/retrieve canister id", async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
-    const { delegationIdentity } = await generateDelegationIdentity(
-      mockedIdentity,
-    )
+    const { delegationIdentity } =
+      await generateDelegationIdentity(mockedIdentity)
     await replaceActorIdentity(iCRC1OracleActor, delegationIdentity)
     await replaceActorIdentity(im, delegationIdentity)
     const edId = Ed25519KeyIdentity.generate()

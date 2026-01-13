@@ -1,4 +1,5 @@
 import { Icrc1BlockIndex } from "@dfinity/ledger-icp"
+
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { Wallet } from "frontend/integration/wallet/hooks/use-all-wallets"

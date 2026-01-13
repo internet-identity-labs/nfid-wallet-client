@@ -1,6 +1,6 @@
 import { Principal } from "@dfinity/principal"
+
 import { format } from "date-fns"
-import toaster from "packages/ui/src/atoms/toast"
 
 import {
   DeviceType,
@@ -12,6 +12,7 @@ import {
   im,
   replaceActorIdentity,
 } from "@nfid/integration"
+import toaster from "@nfid/ui/atoms/toast"
 
 import { removeAccessPointFacade } from "frontend/integration/facade"
 import { fetchProfile } from "frontend/integration/identity-manager"
@@ -23,6 +24,7 @@ import {
 import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
 
 import { passkeyConnector } from "../authentication/auth-selection/passkey-flow/services"
+
 import { isPasskeyDevice, isRecoveryDevice } from "./helpers"
 import { IDevice, IGroupedDevices } from "./types"
 import { mapIIDevicesToIDevices, mapIMDevicesToIDevices } from "./utils"

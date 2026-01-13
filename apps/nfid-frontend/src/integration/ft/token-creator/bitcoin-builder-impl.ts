@@ -1,6 +1,7 @@
+import { ERC20TokenInfo } from "../../ethereum/erc20-abstract.service"
 import { FT } from "../ft"
 import { FTBitcoinImpl } from "../impl/ft-btc-impl"
-import { ERC20TokenInfo } from "../../ethereum/erc20-abstract.service"
+
 import { TokenBuilder } from "./token-builder"
 
 export class BitcoinTokenBuilder implements TokenBuilder {

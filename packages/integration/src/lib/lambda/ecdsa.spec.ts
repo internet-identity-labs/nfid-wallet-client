@@ -32,7 +32,7 @@ describe("Lambda Sign/Register ECDSA", () => {
   const expectedGlobalAcc =
     "5vmgr-rh2gt-xlv6s-xzynd-vsg5l-2oodj-nomhe-mpv4y-6rgpw-cmwyz-bqe"
   describe("lambdaECDSA", () => {
-    it("get global IC keys Lambda Flow", async function () {
+    it("get global IC keys Lambda Flow", async () => {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
       const sessionKey = Ed25519KeyIdentity.generate()
       const chainRoot = await DelegationChain.create(
@@ -48,7 +48,7 @@ describe("Lambda Sign/Register ECDSA", () => {
 
       await authState.set({
         identity: delegationIdentity,
-        delegationIdentity: delegationIdentity,
+        delegationIdentity,
       })
       await replaceActorIdentity(im, delegationIdentity)
 
@@ -69,12 +69,12 @@ describe("Lambda Sign/Register ECDSA", () => {
       try {
         await replaceActorIdentity(im, globalICIdentity)
         await im.get_account()
-      } catch (e) {
+      } catch (_e) {
         throw Error("Should not fail")
       }
     })
 
-    it("get anonymous IC keys", async function () {
+    it("get anonymous IC keys", async () => {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
 
       const nfidSessionKey = Ed25519KeyIdentity.generate()
@@ -118,7 +118,7 @@ describe("Lambda Sign/Register ECDSA", () => {
       )
     })
 
-    it("get third party global keys", async function () {
+    it("get third party global keys", async () => {
       const canisterId = "irshc-3aaaa-aaaam-absla-cai"
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
 

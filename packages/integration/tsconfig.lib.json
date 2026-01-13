@@ -12,5 +12,16 @@
     "./src/setup-tests.ts",
     "**/*.spec.ts",
     "**/*.test.ts"
+  ],
+  "references": [
+    {
+      "path": "../client-db/tsconfig.lib.json"
+    },
+    {
+      "path": "../config/tsconfig.lib.json"
+    },
+    {
+      "path": "../utils/tsconfig.lib.json"
+    }
   ]
 }

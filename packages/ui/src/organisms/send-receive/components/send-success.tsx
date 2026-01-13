@@ -5,8 +5,8 @@ import {
   IconNftPlaceholder,
   ImageWithFallback,
   LottieAnimation,
-} from "@nfid-frontend/ui"
-import { Button, H5 } from "@nfid-frontend/ui"
+} from "@nfid/ui"
+import { Button, H5 } from "@nfid/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 

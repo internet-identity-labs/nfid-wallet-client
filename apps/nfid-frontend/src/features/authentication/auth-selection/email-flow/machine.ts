@@ -3,10 +3,11 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
-import toaster from "packages/ui/src/atoms/toast"
+
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
 import { KeyPair } from "@nfid/integration"
+import toaster from "@nfid/ui/atoms/toast"
 
 import { AuthSession, IIAuthSession } from "frontend/state/authentication"
 
@@ -145,7 +146,7 @@ const AuthWithEmailMachine =
           chainRoot: event.data.chainRoot,
           delegation: event.data.delegation,
         })),
-        toastError: (context, event) => {
+        toastError: (_context, event) => {
           try {
             const message = JSON.parse(event.data.message)
             toaster.error(message.error)
@@ -156,7 +157,7 @@ const AuthWithEmailMachine =
         stopIntervalVerification,
       },
       guards: {
-        isRequestNotExpired: (context, event: { data: Error }) => {
+        isRequestNotExpired: (_context, event: { data: Error }) => {
           return event.data.message.includes("Please wait for a minute!")
         },
       },

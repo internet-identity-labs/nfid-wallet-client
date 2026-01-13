@@ -12,7 +12,6 @@ import {
 
 import { ThirdPartyAuthSession } from "frontend/state/authorization"
 
-import { addTentativeDevice, TentativeDeviceResponse } from "."
 import {
   HTTPAccessPointResponse,
   AccessPointResponse,
@@ -21,9 +20,11 @@ import {
 import { DeviceData, UserNumber } from "../_ic_api/internet_identity.d"
 import { deviceInfo, getBrowserName, getIcon } from "../device"
 import { createDeviceFactory } from "../device/create-device-factory"
-import { fetchProfile } from "../identity-manager"
 import { delegationChainFromDelegation } from "../identity/delegation-chain-from-delegation"
+import { fetchProfile } from "../identity-manager"
 import { registerIIAccount, registerIIAndIM } from "../test-util"
+
+import { addTentativeDevice, TentativeDeviceResponse } from "."
 
 describe.skip("SignIn with Internet Identity", () => {
   jest.setTimeout(150000)

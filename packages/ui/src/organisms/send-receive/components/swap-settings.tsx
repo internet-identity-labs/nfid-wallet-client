@@ -1,9 +1,9 @@
 import clsx from "clsx"
-import { IconCaret } from "packages/ui/src/atoms/icons/caret"
-import { InputAmount } from "packages/ui/src/molecules/input-amount"
+import { IconCaret } from "@nfid/ui/atoms/icons/caret"
+import { InputAmount } from "@nfid/ui/molecules/input-amount"
 import { FC, useEffect, useRef, useState } from "react"
 
-import { IconCmpArrow, IconInfo, Tooltip } from "@nfid-frontend/ui"
+import { IconCmpArrow, IconInfo, Tooltip } from "@nfid/ui"
 
 import { useDarkTheme } from "frontend/hooks"
 import { Quote } from "frontend/integration/swap/quote"

@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { useEffect, useState } from "react"
 
-import { IconCmpLoading } from "@nfid-frontend/ui"
+import { IconCmpLoading } from "@nfid/ui"
 
 const TransactionStatuses = [
   "Verifying balance",

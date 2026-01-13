@@ -1,5 +1,5 @@
 export const idlFactory = ({ IDL }: any) => {
-  const Conf = IDL.Record({ ledger_canister_id: IDL.Principal })
+  const _Conf = IDL.Record({ ledger_canister_id: IDL.Principal })
   const TransactionState = IDL.Variant({
     Approved: IDL.Null,
     Rejected: IDL.Null,

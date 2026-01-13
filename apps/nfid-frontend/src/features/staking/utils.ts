@@ -6,13 +6,12 @@ import { Followees } from "@dfinity/sns/dist/candid/sns_governance"
 import { ICP_ROOT_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
+import { FT } from "frontend/integration/ft/ft"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
 import {
   IStakingDelegates,
   IStakingICPDelegates,
 } from "frontend/integration/staking/types"
-
-import { FT } from "frontend/integration/ft/ft"
 
 export const fetchStakedTokens = async (tokens: FT[], refetch?: boolean) => {
   return await stakingService.getStakedTokens(

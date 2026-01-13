@@ -1,17 +1,17 @@
 import clsx from "clsx"
-import toaster from "packages/ui/src/atoms/toast"
-import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import React, { useMemo, useState } from "react"
 
-import { Button, IconCmpPlus } from "@nfid-frontend/ui"
+import { Button, IconCmpPlus } from "@nfid/ui"
+import { CopyIcon } from "@nfid/ui/atoms/icons/copy"
+import { Spinner } from "@nfid/ui/atoms/spinner"
+import toaster from "@nfid/ui/atoms/toast"
+import { ModalComponent } from "@nfid/ui/molecules/modal"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { generate } from "frontend/integration/internet-identity/crypto/mnemonic"
-import { CopyIcon } from "frontend/ui/atoms/icons/copy"
 
 import { IHandleWithLoading } from ".."
 import { securityConnector } from "../device-connector"
-import { Spinner } from "packages/ui/src/atoms/spinner"
 
 interface IAddRecoveryPhraseModal extends React.HTMLAttributes<HTMLDivElement> {
   handleWithLoading: IHandleWithLoading

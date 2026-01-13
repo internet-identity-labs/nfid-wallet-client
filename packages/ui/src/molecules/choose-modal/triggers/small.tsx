@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { IconCmpArrowRight } from "packages/ui/src/atoms/icons"
+import { IconCmpArrowRight } from "@nfid/ui/atoms/icons"
 
 import { IGroupOption } from "../types"
 

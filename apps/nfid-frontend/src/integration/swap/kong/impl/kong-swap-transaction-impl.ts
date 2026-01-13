@@ -1,4 +1,5 @@
 import { UUID } from "node:crypto"
+
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { SwapTransaction as SwapTransactionCandid } from "src/integration/swap/transaction/idl/swap_trs_storage.d"
 import { AbstractSwapTransaction } from "src/integration/swap/transaction/transaction-abstract"
@@ -73,7 +74,7 @@ export class KongSwapTransactionImpl extends AbstractSwapTransaction {
     throw new Error("Method not implemented.")
   }
 
-  setWithdraw(withdraw: bigint): void {
+  setWithdraw(_withdraw: bigint): void {
     throw new Error("Method not implemented.")
   }
 }

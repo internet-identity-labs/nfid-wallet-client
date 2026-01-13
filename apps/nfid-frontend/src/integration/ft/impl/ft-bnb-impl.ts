@@ -1,16 +1,17 @@
+import { EVM_NATIVE, ETH_DECIMALS } from "@nfid/integration/token/constants"
 import {
   Category,
   ChainId,
   State,
 } from "@nfid/integration/token/icrc1/enum/enums"
-import BnbIcon from "packages/ui/src/organisms/tokens/assets/bnb.svg"
+import BnbIcon from "@nfid/ui/organisms/tokens/assets/bnb.svg"
 
-import { EVM_NATIVE, ETH_DECIMALS } from "@nfid/integration/token/constants"
-import { FTEvmAbstractImpl } from "./ft-evm-abstract-impl"
 import {
   BnbService,
   bnbService,
 } from "frontend/integration/ethereum/bnb/bnb.service"
+
+import { FTEvmAbstractImpl } from "./ft-evm-abstract-impl"
 
 export class FTBnbImpl extends FTEvmAbstractImpl {
   constructor(state: State) {

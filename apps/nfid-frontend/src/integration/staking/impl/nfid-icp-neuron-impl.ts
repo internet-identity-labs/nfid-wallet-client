@@ -15,6 +15,7 @@ import {
 import { FT } from "frontend/integration/ft/ft"
 
 import { StakeICPParamsCalculatorImpl } from "../calculator/stake-icp-params-calculator-impl"
+
 import { NfidNeuronImpl } from "./nfid-neuron-impl"
 
 export class NfidICPNeuronImpl extends NfidNeuronImpl<NeuronInfo> {

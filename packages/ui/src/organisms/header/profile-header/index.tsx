@@ -1,6 +1,7 @@
 import clsx from "clsx"
-import { useClickOutside } from "packages/utils/src/index"
 import { FC, SVGProps, useState } from "react"
+
+import { useClickOutside } from "@nfid/utils"
 
 import {
   IconCmpWarning,
@@ -8,7 +9,7 @@ import {
   NFIDLogoMain,
   BurgerMenu,
   NFIDLogo,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 
 import { NFIDTheme } from "frontend/App"
 import { useDarkTheme } from "frontend/hooks"

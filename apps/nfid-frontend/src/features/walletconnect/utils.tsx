@@ -1,14 +1,17 @@
+import BigNumber from "bignumber.js"
+
+import { ETH_DECIMALS, TRIM_ZEROS } from "@nfid/integration/token/constants"
 import {
   ChainId,
   getEvmGasTokenSymbol,
 } from "@nfid/integration/token/icrc1/enum/enums"
-import { ValidationStatus } from "./types"
-import ValidIcon from "./assets/valid.svg"
+
+import { formatUsdAmount } from "frontend/util/format-usd-amount"
+
 import InvalidIcon from "./assets/invalid.svg"
 import UnknownIcon from "./assets/unverified.svg"
-import { ETH_DECIMALS, TRIM_ZEROS } from "@nfid/integration/token/constants"
-import { formatUsdAmount } from "frontend/util/format-usd-amount"
-import BigNumber from "bignumber.js"
+import ValidIcon from "./assets/valid.svg"
+import { ValidationStatus } from "./types"
 
 export const formatValue = (value?: string, chainId?: ChainId): string => {
   const gasTokenSymbol = getEvmGasTokenSymbol(chainId || ChainId.ETH)

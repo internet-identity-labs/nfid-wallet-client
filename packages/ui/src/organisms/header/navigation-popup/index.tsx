@@ -1,10 +1,10 @@
 import clsx from "clsx"
 import { motion } from "framer-motion"
-import { NavDisconnectIcon } from "packages/ui/src/atoms/icons/nav-disconnect"
+import { NavDisconnectIcon } from "@nfid/ui/atoms/icons/nav-disconnect"
 import { HTMLAttributes, FC } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 
-import { Skeleton } from "@nfid-frontend/ui"
+import { Skeleton } from "@nfid/ui"
 
 import { NFIDTheme } from "frontend/App"
 import { useDarkTheme } from "frontend/hooks"

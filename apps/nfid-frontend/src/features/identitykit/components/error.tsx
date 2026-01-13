@@ -1,10 +1,11 @@
 import clsx from "clsx"
 import { useState } from "react"
 
-import { IconCmpWarning, ToggleButton } from "@nfid-frontend/ui"
+import { IconCmpWarning, ToggleButton } from "@nfid/ui"
 
 import { CanisterCallTitle } from "../constants"
 import { RPCMessage } from "../type"
+
 import { CallCanisterDetails, renderArgs } from "./call-canisters/details"
 import { RPCComponentsUI } from "./methods/method"
 import { RPCPromptTemplate } from "./templates/prompt-template"
@@ -114,7 +115,7 @@ export const RPCComponentError = ({
                     <div className="space-y-2">
                       <p className="font-bold">Canister ID</p>
                       <p className="">
-                        {(request.data?.params as any)?.canisterId as string}
+                        {request.data?.params?.canisterId as string}
                       </p>
                     </div>
                     <div className="space-y-2">
@@ -129,9 +130,7 @@ export const RPCComponentError = ({
                         {args ? (
                           renderArgs(JSON.parse(args)[0])
                         ) : (
-                          <p className="">
-                            {(request.data?.params as any)?.arg}
-                          </p>
+                          <p className="">{request.data?.params?.arg}</p>
                         )}
                       </div>
                     </div>

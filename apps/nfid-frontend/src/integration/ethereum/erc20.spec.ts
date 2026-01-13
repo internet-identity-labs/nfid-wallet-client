@@ -1,7 +1,9 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+
 import { mockIdentityA } from "@nfid/integration"
-import { ethErc20Service } from "./eth/eth-erc20.service"
 import { ETH_DECIMALS } from "@nfid/integration/token/constants"
+
+import { ethErc20Service } from "./eth/eth-erc20.service"
 
 describe.skip("ERC20Service", () => {
   const ADDRESS = "0x20d8e0104C9d3EB43714aB5AA4A06bbc04d93496"

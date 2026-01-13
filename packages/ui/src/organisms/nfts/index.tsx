@@ -10,7 +10,7 @@ import {
   IconNftPlaceholder,
   IconNftPlaceholderDark,
   ImageWithFallback,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 
 import { useDarkTheme } from "frontend/hooks"
 import { NFT } from "frontend/integration/nft/nft"
@@ -18,7 +18,7 @@ import { NFT } from "frontend/integration/nft/nft"
 import EmptyNFTDark from "./assets/empty-dark.png"
 import EmptyNFT from "./assets/empty.webp"
 
-import { GalleryNftSkeleton, TableNftSkeleton } from "../../atoms/skeleton"
+import { GalleryNftSkeleton, TableNftSkeleton } from "@nfid/ui/atoms/skeleton"
 import { NFTDisplaySwitch } from "./nft-display-switch"
 
 export interface INFTs extends HTMLAttributes<HTMLDivElement> {

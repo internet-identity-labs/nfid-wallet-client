@@ -1,12 +1,12 @@
 import React, { useEffect } from "react"
 import useSWRImmutable from "swr/immutable"
 
-import { Tooltip } from "@nfid-frontend/ui"
+import { Tooltip } from "@nfid/ui"
+import { ChooseAccount } from "@nfid/ui/organisms/choose-account"
 
-import { ChooseAccount } from "frontend/ui/organisms/choose-account"
+import InvalidIcon from "frontend/features/identitykit/assets/invalid.svg"
+import ValidIcon from "frontend/features/identitykit/assets/valid.svg"
 
-import InvalidIcon from "../../assets/invalid.svg"
-import ValidIcon from "../../assets/valid.svg"
 import { VerificationReport } from "../../service/target.service"
 import { Account } from "../../type"
 import { RPCPromptTemplate } from "../templates/prompt-template"

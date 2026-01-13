@@ -116,6 +116,6 @@ export const idlFactory = ({ IDL }: any) => {
     saveTransactions: IDL.Func([TransactionsType, IDL.Bool], [], []),
   })
 }
-export const init = ({ IDL }: any) => {
+export const init = ({ IDL: _IDL }: any) => {
   return []
 }

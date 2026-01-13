@@ -1,8 +1,6 @@
 // REFERENCE:
 // https://internetcomputer.org/docs/current/references/cli-reference/dfx-ledger/#options
 
-import { ChainId } from "./icrc1/enum/enums"
-
 // ICP
 export const E8S = 10 ** 8
 export const WALLET_FEE = 0.0001

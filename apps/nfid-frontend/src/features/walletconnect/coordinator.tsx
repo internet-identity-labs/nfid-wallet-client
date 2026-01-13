@@ -1,19 +1,20 @@
+import { SignClientTypes } from "@walletconnect/types"
 import { useMachine } from "@xstate/react"
+import { InfuraProvider } from "ethers"
 import { useCallback, useEffect, useState } from "react"
 
-import { BlurredLoader } from "@nfid-frontend/ui"
-import { SignClientTypes } from "@walletconnect/types"
-
-import AuthenticationCoordinator from "../authentication/root/coordinator"
-import { AuthenticationMachineActor } from "../authentication/root/root-machine"
-import NFIDAuthMachine from "../authentication/nfid/nfid-machine"
-import { walletConnectService } from "frontend/integration/walletconnect"
-import { WalletConnectApproveConnection } from "./components/approve-connection"
-import { WalletConnectSignMessage } from "./components/sign-message"
+import { INFURA_API_KEY } from "@nfid/integration/token/constants"
+import { BlurredLoader } from "@nfid/ui"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
-import { InfuraProvider } from "ethers"
-import { INFURA_API_KEY } from "@nfid/integration/token/constants"
+import { walletConnectService } from "frontend/integration/walletconnect"
+
+import NFIDAuthMachine from "../authentication/nfid/nfid-machine"
+import AuthenticationCoordinator from "../authentication/root/coordinator"
+import { AuthenticationMachineActor } from "../authentication/root/root-machine"
+
+import { WalletConnectApproveConnection } from "./components/approve-connection"
+import { WalletConnectSignMessage } from "./components/sign-message"
 import { WalletConnectTemplate } from "./components/template"
 import { WCGasData } from "./types"
 

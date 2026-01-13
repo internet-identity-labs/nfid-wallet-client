@@ -1,8 +1,8 @@
 import clsx from "clsx"
-import { CopyIcon } from "packages/ui/src/atoms/icons/copy"
+import { CopyIcon } from "@nfid/ui/atoms/icons/copy"
 import { FC, useState } from "react"
 
-import { Button, Checkbox } from "@nfid-frontend/ui"
+import { Button, Checkbox } from "@nfid/ui"
 
 export interface AuthSaveRecoveryPhraseProps {
   onDone: () => void

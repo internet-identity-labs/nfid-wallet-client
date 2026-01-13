@@ -5,8 +5,8 @@ import { IoIosSearch } from "react-icons/io"
 
 import { useDarkTheme } from "frontend/hooks"
 
-import { Input } from "../../molecules/input"
-import useClickOutside from "../../utils/use-click-outside"
+import { Input } from "@nfid/ui/molecules/input"
+import useClickOutside from "@nfid/ui/utils/use-click-outside"
 import ArrowWhite from "./arrow-white.svg"
 import Arrow from "./arrow.svg"
 import { DropdownSelectOption } from "./option"

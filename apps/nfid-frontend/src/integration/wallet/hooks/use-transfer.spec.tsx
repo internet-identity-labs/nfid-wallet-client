@@ -8,12 +8,14 @@ import { Profile } from "@nfid/integration"
 import { transfer } from "@nfid/integration/token/icp"
 
 import * as facadeMocks from "frontend/integration/facade/wallet"
-import * as imQueryMocks from "frontend/integration/identity-manager/queries"
 import { factoryDelegationIdentity } from "frontend/integration/identity/__mocks"
+import * as imQueryMocks from "frontend/integration/identity-manager/queries"
+
+import { stringICPtoE8s } from "../utils"
+
+import { useTransfer } from "./use-transfer"
 
 import { TokenTransferConfig } from "."
-import { stringICPtoE8s } from "../utils"
-import { useTransfer } from "./use-transfer"
 
 jest.mock("@nfid/integration/token/icp")
 

@@ -1,7 +1,8 @@
-import { Crypto } from "@peculiar/webcrypto"
 import "fake-indexeddb/auto"
 import { TextEncoder, TextDecoder } from "util"
 import "whatwg-fetch"
+
+import { Crypto } from "@peculiar/webcrypto"
 
 jest.retryTimes(3, { logErrorsBeforeRetry: true })
 

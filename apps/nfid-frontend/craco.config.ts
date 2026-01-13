@@ -1,6 +1,7 @@
 // import {} from "@craco/craco"
-import CspHtmlWebpackPlugin from "@melloware/csp-webpack-plugin"
 import path from "path"
+
+import CspHtmlWebpackPlugin from "@melloware/csp-webpack-plugin"
 import ModuleScopePlugin from "react-dev-utils/ModuleScopePlugin"
 import TsConfigPathsPlugin from "tsconfig-paths-webpack-plugin"
 import webpack from "webpack"

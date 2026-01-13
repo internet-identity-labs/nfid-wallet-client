@@ -3,8 +3,8 @@ import React from "react"
 
 import successWhiteIcon from "./assets/success-white.svg"
 
-import { Button } from "../../molecules/button"
-import { SDKApplicationMeta } from "../../molecules/sdk-app-meta"
+import { Button } from "@nfid/ui/molecules/button"
+import { SDKApplicationMeta } from "@nfid/ui/molecules/sdk-app-meta"
 import { ScreenResponsive } from "../screen-responsive"
 
 export interface ApproveTemplateProps extends React.HTMLAttributes<HTMLDivElement> {

@@ -308,7 +308,7 @@ export async function createNFIDProfile(
   }
 
   const dd: AccessPointRequest = {
-    icon: icon,
+    icon,
     device: device ?? deviceType,
     pub_key: devicePrincipal
       ? devicePrincipal
@@ -344,7 +344,7 @@ export async function createNFIDProfile(
     .then((response) => {
       console.debug("createNFIDProfile", { response })
       if (response.status_code !== 200) {
-        throw Error("Unable to create account: " + response.error)
+        throw Error(`Unable to create account: ${response.error}`)
       }
       return response
     })

@@ -1,6 +1,5 @@
-import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
-
-import { Address } from "@nfid-frontend/ui"
+import { Address } from "@nfid/ui"
+import { TickerAmount } from "@nfid/ui/molecules/ticker-amount"
 
 import { CanisterCallTitle } from "../../constants"
 import { TransferMetadata } from "../../service/canister-calls-helpers/interfaces"

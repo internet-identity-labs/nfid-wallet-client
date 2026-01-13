@@ -113,7 +113,7 @@ export async function createTentativeDevice({
     sessionSource: "localDevice",
     identity: userIdentity,
     delegationIdentity: userDelegation?.delegationIdentity,
-    anchor: anchor,
+    anchor,
   } as AuthSession
 
   if (!userIdentity || !userDelegation) return session
@@ -160,9 +160,9 @@ export async function checkTentativeDevice({
   frontendDelegation: userDelegation,
   anchor,
 }: IIAuthenticationMachineContext) {
-  return new Promise<boolean>((resolve, reject) => {
+  return new Promise<boolean>((resolve, _reject) => {
     const intervalCheck = async () => {
-      window.setTimeout(async function () {
+      window.setTimeout(async () => {
         if (!userIdentity || !userDelegation) return false
 
         const devices = await fetchAllDevices(BigInt(anchor))

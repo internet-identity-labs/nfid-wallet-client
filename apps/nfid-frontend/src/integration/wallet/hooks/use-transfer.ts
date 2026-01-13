@@ -1,12 +1,14 @@
 import { DelegationIdentity } from "@dfinity/identity"
+
 import React from "react"
 
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
 
-import { TokenTransferConfig } from "."
 import { useWalletDelegation } from "./use-wallet-delegation"
+
+import { TokenTransferConfig } from "."
 
 interface Transfer {
   to: string
@@ -109,7 +111,7 @@ export const useTransfer = ({
             rejectTransfer: reject,
             executeTransfer: (walletDelegation, to, amount) => {
               handleTokenTransfer({
-                amount: amount,
+                amount,
                 to,
                 delegationIdentity: walletDelegation,
                 canisterId: tokenCanisterId,
@@ -122,7 +124,7 @@ export const useTransfer = ({
           }
         } else {
           return handleTokenTransfer({
-            amount: amount,
+            amount,
             to,
             memo,
             delegationIdentity: walletDelegation,

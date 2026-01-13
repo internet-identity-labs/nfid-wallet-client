@@ -1,8 +1,9 @@
 import BigNumber from "bignumber.js"
-import { KongCalculator } from "src/integration/swap/kong/impl/kong-calculator"
-import { KongQuoteImpl } from "src/integration/swap/kong/impl/kong-quote-impl"
 
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+
+import { KongCalculator } from "src/integration/swap/kong/impl/kong-calculator"
+import { KongQuoteImpl } from "src/integration/swap/kong/impl/kong-quote-impl"
 
 describe("Kong quote test", () => {
   jest.setTimeout(1500000)

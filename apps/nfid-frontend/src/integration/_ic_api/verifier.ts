@@ -118,6 +118,6 @@ export const idlFactory = ({ IDL }: any) => {
     resolve_token: IDL.Func([IDL.Vec(IDL.Nat8)], [IDL.Opt(Certificate)], []),
   })
 }
-export const init = ({ IDL }: any) => {
+export const init = ({ IDL: _IDL }: any) => {
   return []
 }

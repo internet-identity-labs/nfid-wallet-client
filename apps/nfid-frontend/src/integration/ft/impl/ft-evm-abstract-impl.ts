@@ -1,16 +1,20 @@
-import { FTImpl } from "./ft-impl"
+import { SignIdentity } from "@dfinity/agent"
+
+import { exchangeRateService } from "@nfid/integration"
 import {
   CKETH_LEDGER_CANISTER_ID,
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
-import { exchangeRateService } from "@nfid/integration"
-import { FT } from "../ft"
-import { FeeResponseETH } from "../utils"
-import { SignIdentity } from "@dfinity/agent"
+
 import {
   EVMService,
   SendEthFee,
 } from "frontend/integration/ethereum/evm.service"
+
+import { FT } from "../ft"
+import { FeeResponseETH } from "../utils"
+
+import { FTImpl } from "./ft-impl"
 
 export abstract class FTEvmAbstractImpl extends FTImpl {
   public abstract getProvider(): EVMService

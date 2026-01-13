@@ -5,10 +5,12 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+
 import { expect } from "@jest/globals"
 
 import { getGlobalDelegationChain } from "../delegation-factory/delegation-i"
 import { getAnonymousDelegate } from "../internet-identity"
+
 import {
   DEFAULT_EXPIRAITON_TIME_MILLIS,
   saveToStorage,
@@ -25,7 +27,7 @@ describe("Targets validation", () => {
   jest.setTimeout(50000)
 
   //TODO
-  it.skip("get third party global keys", async function () {
+  it.skip("get third party global keys", async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
 
     const nfidSessionKey = Ed25519KeyIdentity.generate()
@@ -79,8 +81,8 @@ describe("Targets validation", () => {
     }
   })
 
-  it("validate without params", async function () {
-    const idl = {
+  it("validate without params", async () => {
+    const _idl = {
       get_trusted_origins: IDL.Func([], [IDL.Vec(IDL.Text)], []),
     }
     const mockedIdentity = getIdentity("87654321876543218765432187654311")

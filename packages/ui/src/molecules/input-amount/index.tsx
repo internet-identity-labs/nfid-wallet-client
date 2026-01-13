@@ -2,7 +2,7 @@ import clsx from "clsx"
 import { forwardRef, InputHTMLAttributes, useMemo } from "react"
 import { NumericFormat } from "react-number-format"
 
-import { Skeleton } from "../../atoms/skeleton"
+import { Skeleton } from "@nfid/ui/atoms/skeleton"
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   decimals: number
@@ -43,7 +43,7 @@ export const InputAmount = forwardRef<HTMLInputElement, InputProps>(
       }
     }, [value, fontSize])
 
-    const handlePaste = (e: any) => {
+    const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
       const data = e.clipboardData
       if (!data) return
       const pastedText = e.clipboardData.getData("Text")

@@ -4,15 +4,18 @@ import { Route, Routes, useLocation } from "react-router-dom"
 import "tailwindcss/tailwind.css"
 import { Usergeek } from "usergeek-ic-js"
 
-import { BlurredLoader, Loader, ScreenResponsive } from "@nfid-frontend/ui"
 import { ROUTE_EMBED, ROUTE_RPC, ROUTE_WALLETCONNECT } from "@nfid/config"
 import { authState, exchangeRateService, ic } from "@nfid/integration"
 import { useSWR } from "@nfid/swr"
+import { BlurredLoader, Loader, ScreenResponsive } from "@nfid/ui"
+import { NotFound } from "@nfid/ui/pages/404"
+import { AuthWrapper } from "@nfid/ui/pages/auth-wrapper"
+import { VaultGuard } from "@nfid/ui/pages/vault-guard"
+import ProfileTemplate from "@nfid/ui/templates/profile-template/Template"
 
-import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
-import { VaultGuard } from "frontend/ui/pages/vault-guard"
 import { walletConnectService } from "frontend/integration/walletconnect"
 
+import { useAuthentication } from "./apps/authentication/use-authentication"
 import { ProfileConstants } from "./apps/identity-manager/profile/routes"
 import { BtcAddressProvider } from "./contexts"
 import { EthAddressProvider } from "./contexts/eth-address"
@@ -21,9 +24,6 @@ import { AuthEmailMagicLink } from "./features/authentication/auth-selection/ema
 import IdentityKitRPCCoordinator from "./features/identitykit/coordinator"
 import { WalletRouter } from "./features/wallet"
 import WalletConnectCoordinator from "./features/walletconnect/coordinator"
-import { NotFound } from "./ui/pages/404"
-import ProfileTemplate from "./ui/templates/profile-template/Template"
-import { useAuthentication } from "./apps/authentication/use-authentication"
 
 const LandingHomePage = lazy(() =>
   import("./apps/marketing/landing-page").then((components) => ({
@@ -59,7 +59,7 @@ const VaultTransactionsDetailsPage = lazy(
 const NFTDetailsPage = lazy(() => import("frontend/features/nft-details"))
 
 if (USERGEEK_API_KEY) {
-  Usergeek.init({ apiKey: USERGEEK_API_KEY as string, host: ic.host })
+  Usergeek.init({ apiKey: USERGEEK_API_KEY, host: ic.host })
 }
 
 export enum NFIDTheme {

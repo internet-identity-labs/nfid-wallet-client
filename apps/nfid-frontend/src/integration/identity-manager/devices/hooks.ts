@@ -4,6 +4,7 @@ import {
 } from "@dfinity/candid/lib/cjs/utils/buffer"
 import { WebAuthnIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
+
 import React from "react"
 
 import { im, Icon } from "@nfid/integration"
@@ -29,6 +30,7 @@ import { derFromPubkey } from "frontend/integration/internet-identity/utils"
 import { creationOptions } from "frontend/integration/webauthn/creation-options"
 
 import { useAccount } from "../account/hooks"
+
 import { LegacyDevice, RecoveryDevice } from "./state"
 
 export interface WebAuthnDevice {

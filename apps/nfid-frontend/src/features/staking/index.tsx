@@ -1,18 +1,19 @@
 import { useActor } from "@xstate/react"
-import { Staking } from "packages/ui/src/organisms/staking"
 import { useContext } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { useSWRWithTimestamp } from "@nfid/swr"
+import { useTokensInit } from "@nfid/ui/organisms/send-receive/hooks/token-init"
+import { Staking } from "@nfid/ui/organisms/staking"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
 import { ProfileContext } from "frontend/provider"
 
-import { ModalType } from "../transfer-modal/types"
-import { fetchStakedTokens } from "./utils"
 import { fetchTokens } from "../fungible-token/utils"
-import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
+import { ModalType } from "../transfer-modal/types"
+
+import { fetchStakedTokens } from "./utils"
 
 const StakingPage = () => {
   const navigate = useNavigate()

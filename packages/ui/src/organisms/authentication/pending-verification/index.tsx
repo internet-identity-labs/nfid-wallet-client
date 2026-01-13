@@ -1,6 +1,6 @@
-import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
+import { AuthAppMeta } from "@nfid/ui/organisms/authentication/app-meta"
 
-import { Button, IconCmpArrow, IconCmpDoubleSpinner } from "@nfid-frontend/ui"
+import { Button, IconCmpArrow, IconCmpDoubleSpinner } from "@nfid/ui"
 
 export interface AuthEmailFlowProps {
   email: string

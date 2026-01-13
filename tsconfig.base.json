@@ -18,16 +18,17 @@
     "resolveJsonModule": true,
     "typeRoots": ["./node_modules/@types", "./types"],
     "paths": {
-      "@nfid-frontend/ui": ["packages/ui/src/index.ts"],
-      "@nfid-frontend/utils": ["packages/utils/src/index.ts"],
+      "@nfid/ui": ["packages/ui/src/index.ts"],
+      "@nfid/ui/*": ["packages/ui/src/*"],
+      "@nfid/utils": ["packages/utils/src/index.ts"],
       "@nfid/client-db": ["packages/client-db/src/index.ts"],
       "@nfid/swr": ["packages/swr/src/index.ts"],
       "@nfid/config": ["packages/config/src/index.ts"],
       "@nfid/integration": ["packages/integration/src/index.ts"],
-      "@nfid/integration-ethereum": [
-        "packages/integration-ethereum/src/index.ts"
-      ],
       "@nfid/integration/token/*": ["packages/integration/src/lib/token/*"],
+      "@nfid/integration/asset/*": ["packages/integration/src/lib/asset/*"],
+      "@nfid/integration/_ic_api/*": ["packages/integration/src/lib/_ic_api/*"],
+      "@nfid/constants": ["packages/constants/index.ts"],
       "frontend/*": ["apps/nfid-frontend/src/*"],
       "src/*": ["apps/nfid-frontend/src/*"]
     }

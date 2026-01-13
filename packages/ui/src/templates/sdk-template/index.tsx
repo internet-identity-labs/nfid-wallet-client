@@ -2,7 +2,7 @@ import clsx from "clsx"
 import React from "react"
 
 import logo from "../../assets/id.svg"
-import { NFIDGradientBar } from "../../atoms/gradient-bar"
+import { NFIDGradientBar } from "@nfid/ui/atoms/gradient-bar"
 
 interface ResponsiveTemplateProps extends React.HTMLAttributes<HTMLDivElement> {
   frameLabel?: string

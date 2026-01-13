@@ -1,9 +1,9 @@
 import { Agent, HttpAgent, Identity } from "@dfinity/agent"
 import { IDL } from "@dfinity/candid"
 import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
-import { authStorage } from "packages/integration/src/lib/authentication/storage"
 
 import { WALLET_SESSION_TTL_1_MIN_IN_MS } from "@nfid/config"
+import { authStorage } from "@nfid/integration"
 import {
   authState,
   getAnonymousDelegation,
@@ -31,6 +31,7 @@ import {
   CANDID_UI_CANISTER,
   interfaceFactoryService,
 } from "../../interface-factory.service"
+
 import {
   ComponentData,
   InteractiveMethodService,
@@ -132,9 +133,9 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
       const func: IDL.FuncClass = idl._fields.find(
         (x: unknown[]) => icrc49Dto.method === x[0],
       )![1]
-      argument = JSON.stringify(
-        IDL.decode(func.argTypes, Buffer.from(icrc49Dto.arg, "base64")),
-      )
+      const buffer = Buffer.from(icrc49Dto.arg, "base64")
+      const arrayBuffer = new Uint8Array(buffer).buffer
+      argument = JSON.stringify(IDL.decode(func.argTypes, arrayBuffer))
     } catch (e) {
       console.warn(
         "The candid service metadata has not been found, defaulting to the display of encoded data: ",

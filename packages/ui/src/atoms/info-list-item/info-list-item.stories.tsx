@@ -1,7 +1,7 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import type { StoryFn, Meta } from "@storybook/react"
 
-import { IconCmpCopy, IconCmpSettings } from "@nfid-frontend/ui"
+import { IconCmpCopy, IconCmpSettings } from "@nfid/ui"
 
 import { InfoListItem } from "."
 

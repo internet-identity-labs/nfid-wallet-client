@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { useCallback, useState } from "react"
 
-import { truncateString } from "@nfid-frontend/utils"
+import { truncateString } from "@nfid/utils"
 
 import { ReactComponent as IconCmpCopied } from "./assets/copied.svg"
 import { ReactComponent as IconCmpCopy } from "./assets/copy.svg"

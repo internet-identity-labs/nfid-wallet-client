@@ -5,6 +5,6 @@ export const idlFactory = ({ IDL }: any) => {
     ping: IDL.Func([], [IDL.Bool], ["query"]),
   })
 }
-export const init = ({ IDL }: any) => {
+export const init = ({ IDL: _IDL }: any) => {
   return []
 }

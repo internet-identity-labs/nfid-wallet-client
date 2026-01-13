@@ -1,4 +1,4 @@
-import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
+import { AuthAppMeta } from "@nfid/ui/organisms/authentication/app-meta"
 
 import ImageVerified from "../images/verified.png"
 

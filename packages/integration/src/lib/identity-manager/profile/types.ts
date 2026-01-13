@@ -1,5 +1,6 @@
 import { AccessPoint } from "../access-points"
 import { Account } from "../account"
+
 import { RootWallet } from "./constants"
 
 export interface Profile {

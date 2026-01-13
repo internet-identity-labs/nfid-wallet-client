@@ -1,10 +1,10 @@
 import clsx from "clsx"
 import { FC, useCallback, useState } from "react"
 
-import { CenterEllipsis } from "@nfid-frontend/ui"
+import { CenterEllipsis } from "@nfid/ui"
 
-import { CopiedAddressIcon } from "../../atoms/icons/CopiedAddressIcon"
-import { CopyAddressIcon } from "../../atoms/icons/CopyAddressIcon"
+import { CopiedAddressIcon } from "@nfid/ui/atoms/icons/CopiedAddressIcon"
+import { CopyAddressIcon } from "@nfid/ui/atoms/icons/CopyAddressIcon"
 
 export interface CopyAddressProps {
   address: string

@@ -1,6 +1,6 @@
 import clsx from "clsx"
-import { IconCmpArrow } from "packages/ui/src/atoms/icons"
-import { Skeleton } from "packages/ui/src/atoms/skeleton"
+import { IconCmpArrow } from "@nfid/ui/atoms/icons"
+import { Skeleton } from "@nfid/ui/atoms/skeleton"
 import { FC } from "react"
 
 import {

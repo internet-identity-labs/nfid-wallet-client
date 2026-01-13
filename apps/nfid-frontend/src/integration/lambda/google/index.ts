@@ -1,7 +1,7 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 
-import { getBrowserName } from "@nfid-frontend/utils"
 import { authState, im, requestFEDelegation } from "@nfid/integration"
+import { getBrowserName } from "@nfid/utils"
 
 import { fetchProfile } from "frontend/integration/identity-manager"
 import "frontend/integration/internet-identity"

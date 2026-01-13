@@ -1,10 +1,5 @@
 import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp"
 
-import { rosetta } from ".."
-import { restCall } from "../../rest/rest-call"
-import { getRosettaRequest } from "../get-rosetta-request"
-import { mapToBalance } from "./map-to-balance"
-
 export type RosettaTokenBalance = {
   value: string
 }

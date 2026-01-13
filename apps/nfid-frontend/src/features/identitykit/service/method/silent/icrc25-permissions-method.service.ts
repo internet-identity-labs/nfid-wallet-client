@@ -1,6 +1,7 @@
 import { preparePermissionsResponse } from "frontend/features/identitykit/helpers/scopes"
 
 import { RPCMessage, RPCSuccessResponse } from "../../../type"
+
 import { SilentMethodService } from "./silent-method.service"
 
 class Icrc25PermissionsMethodService extends SilentMethodService {

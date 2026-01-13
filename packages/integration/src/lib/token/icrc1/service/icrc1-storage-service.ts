@@ -1,6 +1,7 @@
 import { State } from "../enum/enums"
 import { ICRC1 as ICRC1UserData } from "../types"
 import { mapCategory, mapState } from "../util"
+
 import { icrc1OracleService } from "./icrc1-oracle-service"
 import { icrc1RegistryService } from "./icrc1-registry-service"
 

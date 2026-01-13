@@ -27,7 +27,7 @@ export const querySnsNeurons = async ({
   logWithTimestamp("Getting sns neurons: call...")
   const { listNeurons } = await loadSnsWrapper({
     identity: new AnonymousIdentity(),
-    rootCanisterId: rootCanisterId,
+    rootCanisterId,
     certified,
   })
   const neurons = await listNeurons({
@@ -163,7 +163,7 @@ export const disburse = async ({
 
   const { disburse } = await loadSnsWrapper({
     identity,
-    rootCanisterId: rootCanisterId,
+    rootCanisterId,
     certified: true,
   })
 
@@ -268,7 +268,7 @@ export const increaseDissolveDelay = async ({
   })
   await increaseDissolveDelay({
     neuronId,
-    additionalDissolveDelaySeconds: additionalDissolveDelaySeconds,
+    additionalDissolveDelaySeconds,
   })
 
   logWithTimestamp(`Increase sns dissolve delay complete.`)

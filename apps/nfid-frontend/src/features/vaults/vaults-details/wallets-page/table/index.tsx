@@ -1,8 +1,8 @@
 import React, { useMemo } from "react"
 
-import { Table } from "@nfid-frontend/ui"
-import { toUSD } from "@nfid-frontend/utils"
 import { ObjectState, Wallet } from "@nfid/integration"
+import { Table } from "@nfid/ui"
+import { toUSD } from "@nfid/utils"
 
 import { useICPExchangeRate } from "frontend/features/fungible-token/icp/hooks/use-icp-exchange-rate"
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
@@ -38,8 +38,8 @@ export const VaultsWalletsTable: React.FC<VaultsWalletsTableProps> = ({
             exchangeRate,
           ),
           isArchived: wallet.state === ObjectState.ARCHIVED,
-          isAdmin: isAdmin,
-        } as VaultsWalletsTableRowProps),
+          isAdmin,
+        }) as VaultsWalletsTableRowProps,
     )
   }, [exchangeRate, isAdmin, wallets])
 

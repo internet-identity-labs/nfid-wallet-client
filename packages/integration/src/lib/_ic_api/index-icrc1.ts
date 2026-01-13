@@ -1,8 +1,8 @@
 export const idlFactory = ({ IDL }: any) => {
   const Value = IDL.Rec()
   const UpgradeArg = IDL.Record({ ledger_id: IDL.Opt(IDL.Principal) })
-  const InitArg = IDL.Record({ ledger_id: IDL.Principal })
-  const IndexArg = IDL.Variant({ Upgrade: UpgradeArg, Init: InitArg })
+  const _InitArg = IDL.Record({ ledger_id: IDL.Principal })
+  const _IndexArg = IDL.Variant({ Upgrade: UpgradeArg, Init: _InitArg })
   const BlockIndex = IDL.Nat
   const SubAccount = IDL.Vec(IDL.Nat8)
   const Account = IDL.Record({
@@ -77,7 +77,7 @@ export const idlFactory = ({ IDL }: any) => {
   Value.fill(
     IDL.Variant({
       Int: IDL.Int,
-      Map: Map,
+      Map,
       Nat: IDL.Nat,
       Nat64: IDL.Nat64,
       Blob: IDL.Vec(IDL.Nat8),
@@ -118,9 +118,9 @@ export const idlFactory = ({ IDL }: any) => {
     status: IDL.Func([], [Status], ["query"]),
   })
 }
-export const init = ({ IDL }: any) => {
-  const UpgradeArg = IDL.Record({ ledger_id: IDL.Opt(IDL.Principal) })
-  const InitArg = IDL.Record({ ledger_id: IDL.Principal })
-  const IndexArg = IDL.Variant({ Upgrade: UpgradeArg, Init: InitArg })
-  return [IDL.Opt(IndexArg)]
+export const init = ({ IDL: _IDL }: any) => {
+  const UpgradeArg = _IDL.Record({ ledger_id: _IDL.Opt(_IDL.Principal) })
+  const InitArg = _IDL.Record({ ledger_id: _IDL.Principal })
+  const IndexArg = _IDL.Variant({ Upgrade: UpgradeArg, Init: InitArg })
+  return [_IDL.Opt(IndexArg)]
 }

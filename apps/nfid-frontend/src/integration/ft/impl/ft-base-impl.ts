@@ -1,16 +1,17 @@
+import { ETH_DECIMALS, EVM_NATIVE } from "@nfid/integration/token/constants"
 import {
   Category,
   ChainId,
   State,
 } from "@nfid/integration/token/icrc1/enum/enums"
-import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
+import EthIcon from "@nfid/ui/organisms/tokens/assets/ethereum.svg"
 
-import { ETH_DECIMALS, EVM_NATIVE } from "@nfid/integration/token/constants"
-import { FTEvmAbstractImpl } from "./ft-evm-abstract-impl"
 import {
   BaseService,
   baseService,
 } from "frontend/integration/ethereum/base/base.service"
+
+import { FTEvmAbstractImpl } from "./ft-evm-abstract-impl"
 
 export class FTBaseImpl extends FTEvmAbstractImpl {
   constructor(state: State) {

@@ -1,5 +1,5 @@
 {
-  "name": "@nfid-frontend/validation",
+  "name": "@nfid/utils",
   "version": "0.0.1",
   "type": "commonjs",
   "repository": "git@github.com:internet-identity-labs/nfid-wallet-client.git",

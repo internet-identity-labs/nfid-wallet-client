@@ -1,7 +1,7 @@
 import clsx from "clsx"
 
-import { Table } from "../../molecules/table"
-import { getIsMobileDeviceMatch } from "../../utils/is-mobile"
+import { Table } from "@nfid/ui/molecules/table"
+import { getIsMobileDeviceMatch } from "@nfid/ui/utils/is-mobile"
 import ProfileContainer from "../profile-container/Container"
 import { Skeleton } from "./skeleton"
 

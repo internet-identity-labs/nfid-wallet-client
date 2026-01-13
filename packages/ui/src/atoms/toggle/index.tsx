@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Tooltip } from "@nfid-frontend/ui"
+import { Tooltip } from "@nfid/ui"
 
 interface ToggleProps {
   onToggle: (state: boolean) => void

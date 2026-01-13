@@ -1,11 +1,11 @@
 import clsx from "clsx"
 import { FC } from "react"
-import { CopyAddress, IDropdownPosition } from "@nfid-frontend/ui"
+import { CopyAddress, IDropdownPosition } from "@nfid/ui"
 import { UserAddress } from "frontend/integration/address-book"
 
-import { IcpNetworkIcon } from "packages/ui/src/atoms/icons/IcpNetworkIcon"
-import { BtcNetworkIcon } from "packages/ui/src/atoms/icons/BtcNetworkIcon"
-import { EthNetworkIcon } from "packages/ui/src/atoms/icons/EthNetworkIcon"
+import { IcpNetworkIcon } from "@nfid/ui/atoms/icons/IcpNetworkIcon"
+import { BtcNetworkIcon } from "@nfid/ui/atoms/icons/BtcNetworkIcon"
+import { EthNetworkIcon } from "@nfid/ui/atoms/icons/EthNetworkIcon"
 import { AddressBookDropdown } from "./AddressBookDropdown"
 import { useDarkTheme } from "frontend/hooks"
 

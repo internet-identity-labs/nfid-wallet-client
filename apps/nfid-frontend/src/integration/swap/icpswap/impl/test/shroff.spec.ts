@@ -4,15 +4,14 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
-import { SlippageQuoteError } from "src/integration/swap/errors/types"
-import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
-import { IcpSwapShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
-import { SwapTransaction } from "src/integration/swap/swap-transaction"
-import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
-import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 import { authState } from "@nfid/integration"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
+
+import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
+import { IcpSwapShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
+import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
+import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 const mock: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
@@ -25,7 +24,7 @@ const mockPrincipal =
 describe("shroff test", () => {
   jest.setTimeout(1500000)
 
-  it("shroff quote test", async function () {
+  it("shroff quote test", async () => {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "mxzaz-hqaaa-aaaar-qaada-cai"
     const shroff = await new IcpSwapShroffBuilder()
@@ -39,7 +38,7 @@ describe("shroff test", () => {
     quote.getWidgetFeeAmount()
   })
 
-  it.skip("shroff transfer test", async function () {
+  it.skip("shroff transfer test", async () => {
     const sourceLedger = "ryjl3-tyaaa-aaaaa-aaaba-cai"
     const targetLedger = "zfcdd-tqaaa-aaaaq-aaaga-cai"
     const shroff = await new IcpSwapShroffBuilder()
@@ -67,12 +66,12 @@ describe("shroff test", () => {
 
     await authState.set({
       identity: delegationIdentity,
-      delegationIdentity: delegationIdentity,
+      delegationIdentity,
     })
 
     const transactionBeforeSwap = await swapTransactionService.getTransactions()
 
-    const a: Promise<SwapTransaction> = shroff.swap(delegationIdentity)
+    shroff.swap(delegationIdentity)
 
     const trs = shroff.getSwapTransaction() as IcpSwapTransactionImpl
 

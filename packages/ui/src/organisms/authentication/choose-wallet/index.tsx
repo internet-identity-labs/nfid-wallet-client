@@ -1,8 +1,8 @@
 import clsx from "clsx"
-import { IconCaret } from "packages/ui/src/atoms/icons/caret"
+import { IconCaret } from "@nfid/ui/atoms/icons/caret"
 import { FC } from "react"
 
-import { Button, CenterEllipsis } from "@nfid-frontend/ui"
+import { Button, CenterEllipsis } from "@nfid/ui"
 import { ExistingWallet } from "@nfid/integration"
 
 import { useDarkTheme } from "frontend/hooks"

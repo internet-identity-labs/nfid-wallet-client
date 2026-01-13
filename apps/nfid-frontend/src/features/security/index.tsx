@@ -1,19 +1,22 @@
 import { useMemo, useCallback, FC, useState } from "react"
-import { useSWR } from "@nfid/swr"
-import { Loader, PasskeySkeleton, Toggle } from "@nfid-frontend/ui"
+
 import { Icon } from "@nfid/integration"
+import { useSWR } from "@nfid/swr"
+import { Loader, PasskeySkeleton, Toggle } from "@nfid/ui"
+import { DeviceIconDecider } from "@nfid/ui/organisms/device-list/device-icon-decider"
+import { Security } from "@nfid/ui/organisms/security"
+import ProfileTemplate from "@nfid/ui/templates/profile-template/Template"
+
+import { NFIDTheme } from "frontend/App"
 import { useDarkTheme } from "frontend/hooks"
 import { useProfile } from "frontend/integration/identity-manager/queries"
-import { Security } from "packages/ui/src/organisms/security"
-import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
-import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon-decider"
+
 import { PasskeyDeviceItem } from "./components/passkey-device-item"
 import { PrimarySignInMethod } from "./components/primary-sign-in-method"
+import { securityConnector } from "./device-connector"
 import { AddPasskey } from "./passkey/add-passkey"
 import { AddRecoveryPhrase } from "./recovery-phrase/add-recovery"
 import { DeleteRecoveryPhrase } from "./recovery-phrase/remove-recovery"
-import { securityConnector } from "./device-connector"
-import { NFIDTheme } from "frontend/App"
 
 type SecurityPageProps = {
   walletTheme: NFIDTheme

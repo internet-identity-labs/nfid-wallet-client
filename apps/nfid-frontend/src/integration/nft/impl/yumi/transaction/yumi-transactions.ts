@@ -18,7 +18,7 @@ export class ListTransactionRecordYumi implements ListTransactionRecord {
     this.from = rawTransaction.fromAid!
     const milliseconds = BigInt(rawTransaction.created_at) / BigInt(1_000_000)
     this.date = new Date(Number(milliseconds))
-    this.price = rawTransaction.token_amount + " " + rawTransaction.token_symbol
+    this.price = `${rawTransaction.token_amount} ${rawTransaction.token_symbol}`
   }
 
   getTransactionView(): TransactionRecordView {
@@ -47,8 +47,7 @@ export class SoldTransactionRecordYumi implements SellTransactionRecord {
     this.to = rawTransaction.toAid!
     const milliseconds = BigInt(rawTransaction.created_at) / BigInt(1_000_000)
     this.date = new Date(Number(milliseconds))
-    this.priceFormatted =
-      rawTransaction.token_amount + " " + rawTransaction.token_symbol
+    this.priceFormatted = `${rawTransaction.token_amount} ${rawTransaction.token_symbol}`
   }
 
   getTransactionView(): TransactionRecordView {

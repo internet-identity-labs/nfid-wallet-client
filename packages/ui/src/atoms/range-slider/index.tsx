@@ -1,7 +1,7 @@
 import * as Slider from "@radix-ui/react-slider"
 import clsx from "clsx"
 
-import { getFormattedPeriod } from "../../organisms/send-receive/utils"
+import { getFormattedPeriod } from "@nfid/ui/organisms/send-receive/utils"
 import "./index.css"
 
 export interface RangeSliderProps {

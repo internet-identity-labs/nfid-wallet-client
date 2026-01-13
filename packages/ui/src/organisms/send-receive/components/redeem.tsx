@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { FC } from "react"
 
-import { BlurredLoader, Button } from "@nfid-frontend/ui"
+import { BlurredLoader, Button } from "@nfid/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 import { NFIDNeuron } from "frontend/integration/staking/nfid-neuron"

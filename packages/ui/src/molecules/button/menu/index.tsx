@@ -1,8 +1,10 @@
 import clsx from "clsx"
 import React from "react"
 
-export interface ButtonMenuProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+export interface ButtonMenuProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "children"
+> {
   children: (toggle: () => void) => React.ReactNode
   buttonElement?: React.ReactElement | string
   toggleMenu: boolean
@@ -27,8 +29,8 @@ export const ButtonMenu: React.FC<ButtonMenuProps> = ({
   )
 
   React.useEffect(() => {
-    const handleClickOutside = (event: any) => {
-      if (ref.current && !ref.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
         setToggleMenu(false)
       }
     }

@@ -1,7 +1,7 @@
 import clsx from "clsx"
 
-import { IconCmpArrow } from "@nfid-frontend/ui"
 import { TransactionState } from "@nfid/integration"
+import { IconCmpArrow } from "@nfid/ui"
 
 interface ITransactionStatusArrow {
   state?: TransactionState

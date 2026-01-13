@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { FC } from "react"
 
-import { Button, H5 } from "@nfid-frontend/ui"
+import { Button, H5 } from "@nfid/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 
@@ -45,15 +45,15 @@ export const StakeSuccessUi: FC<StakeSuccessProps> = ({
           {status === SendStatus.FAILED
             ? "Transaction failed"
             : status === SendStatus.COMPLETED
-            ? "Staked successfully"
-            : "Staking"}
+              ? "Staked successfully"
+              : "Staking"}
         </H5>
         <p className="h-5 mt-3 text-sm leading-5">
           {status === SendStatus.FAILED
             ? "Your assets are still in your wallet."
             : status === SendStatus.COMPLETED
-            ? ""
-            : `This usually takes about ${duration} seconds.`}
+              ? ""
+              : `This usually takes about ${duration} seconds.`}
         </p>
       </div>
       <div className="relative flex items-center justify-center w-full">

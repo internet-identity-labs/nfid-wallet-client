@@ -145,7 +145,7 @@ export class Icrc1TransactionHistoryService {
   ): Array<TransactionData> {
     return rawTrss.map((rawTrs) => {
       if (rawTrs.transaction.transfer.length !== 0) {
-        const trs: Transfer = rawTrs.transaction.transfer[0]!
+        const trs: Transfer = rawTrs.transaction.transfer[0]
         const type =
           ownerPrincipal === trs.from.owner.toText()
             ? ("Sent" as IActivityAction)

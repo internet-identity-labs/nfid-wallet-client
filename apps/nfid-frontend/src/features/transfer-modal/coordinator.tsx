@@ -1,14 +1,14 @@
 import { useActor } from "@xstate/react"
 import { motion } from "framer-motion"
-import toaster from "packages/ui/src/atoms/toast"
-import { useDisableScroll } from "packages/ui/src/molecules/modal/hooks/disable-scroll"
-import {
-  TransferModal,
-  TransferVaultModal,
-} from "packages/ui/src/organisms/send-receive"
 import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 
 import { authState } from "@nfid/integration"
+import toaster from "@nfid/ui/atoms/toast"
+import { useDisableScroll } from "@nfid/ui/molecules/modal/hooks/disable-scroll"
+import {
+  TransferModal,
+  TransferVaultModal,
+} from "@nfid/ui/organisms/send-receive"
 
 import { userPrefService } from "frontend/integration/user-preferences/user-pref-service"
 import { ProfileContext } from "frontend/provider"

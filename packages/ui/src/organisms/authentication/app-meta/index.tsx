@@ -1,7 +1,7 @@
 import clsx from "clsx"
-import { A } from "packages/ui/src/atoms/custom-link"
+import { A } from "@nfid/ui/atoms/custom-link"
 
-import { H5, LogoMain, LogoLanding } from "@nfid-frontend/ui"
+import { H5, LogoMain, LogoLanding } from "@nfid/ui"
 
 import { useDarkTheme } from "frontend/hooks"
 

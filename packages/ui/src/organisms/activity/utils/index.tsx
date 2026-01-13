@@ -1,4 +1,4 @@
-import { IconCmpArrow, IconCmpSwapActivity } from "packages/ui/src/atoms/icons"
+import { IconCmpArrow, IconCmpSwapActivity } from "@nfid/ui/atoms/icons"
 
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 

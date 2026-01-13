@@ -1,6 +1,12 @@
 import { ActorSubclass, SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
+
 import BigNumber from "bignumber.js"
+
+import { hasOwnProperty, ICRC1TypeOracle, TransferArg } from "@nfid/integration"
+import { TRIM_ZEROS } from "@nfid/integration/token/constants"
+import { transferICRC1 } from "@nfid/integration/token/icrc1"
+
 import { DepositError, WithdrawError } from "src/integration/swap/errors/types"
 import { Account, ApproveArgs } from "src/integration/swap/kong/idl/icrc1.d"
 import type { _SERVICE as ICRC1ServiceIDL } from "src/integration/swap/kong/idl/icrc1.d"
@@ -9,10 +15,6 @@ import { Shroff } from "src/integration/swap/shroff"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
 import { userPrefService } from "src/integration/user-preferences/user-pref-service"
-
-import { hasOwnProperty, ICRC1TypeOracle, TransferArg } from "@nfid/integration"
-import { TRIM_ZEROS } from "@nfid/integration/token/constants"
-import { transferICRC1 } from "@nfid/integration/token/icrc1"
 
 import { ContactSupportError } from "../errors/types/contact-support-error"
 import { SwapName } from "../types/enums"
@@ -51,7 +53,7 @@ export abstract class ShroffAbstract implements Shroff {
     try {
       const amountDecimals = this.requestedQuote!.getTransferToSwapAmount()
 
-      console.debug("Amount decimals: " + BigInt(amountDecimals.toFixed()))
+      console.debug(`Amount decimals: ${BigInt(amountDecimals.toFixed())}`)
 
       const transferArgs: TransferArg = {
         amount: BigInt(amountDecimals.toFixed()),
@@ -73,11 +75,11 @@ export abstract class ShroffAbstract implements Shroff {
         return id
       }
       console.error(
-        "Transfer to " + this.getSwapName() + ": " + JSON.stringify(result.Err),
+        `Transfer to ${this.getSwapName()}: ${JSON.stringify(result.Err)}`,
       )
       throw new DepositError(JSON.stringify(result.Err))
     } catch (e) {
-      console.error("Deposit error: " + e)
+      console.error(`Deposit error: ${e}`)
       throw new DepositError(e as Error)
     }
   }
@@ -110,12 +112,12 @@ export abstract class ShroffAbstract implements Shroff {
         this.swapTransaction!.setNFIDTransferId(id)
         return id
       }
-      console.error("NFID transfer error: " + JSON.stringify(result.Err))
+      console.error(`NFID transfer error: ${JSON.stringify(result.Err)}`)
       throw new WithdrawError(JSON.stringify(result.Err))
     } catch (e) {
-      console.error("NFID transfer error: " + e)
+      console.error(`NFID transfer error: ${e}`)
       this.swapTransaction?.setError((e as Error).message)
-      throw new WithdrawError("NFID transfer error: " + e)
+      throw new WithdrawError(`NFID transfer error: ${e}`)
     }
   }
 
@@ -125,7 +127,7 @@ export abstract class ShroffAbstract implements Shroff {
         this.swapTransaction!.toCandid(),
       )
     } catch (e) {
-      console.error("Restore transaction error: " + e)
+      console.error(`Restore transaction error: ${e}`)
       console.log("Retrying to restore transaction")
       return swapTransactionService.storeTransaction(
         this.swapTransaction!.toCandid(),
@@ -186,8 +188,8 @@ export abstract class ShroffAbstract implements Shroff {
 
       return BigInt(icrc2approve.Ok)
     } catch (e) {
-      console.error("Deposit error: " + e)
-      throw new ContactSupportError("Deposit error: " + e)
+      console.error(`Deposit error: ${e}`)
+      throw new ContactSupportError(`Deposit error: ${e}`)
     }
   }
 

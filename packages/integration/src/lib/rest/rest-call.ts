@@ -4,7 +4,7 @@ export async function restCall<T>(
   request?: T,
 ): Promise<Response> {
   let metadata = {
-    method: method,
+    method,
     headers: {
       "Content-Type": "application/json",
     },

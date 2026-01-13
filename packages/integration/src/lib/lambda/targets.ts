@@ -1,3 +1,5 @@
+import crypto from "crypto"
+
 import {
   Actor,
   ActorSubclass,
@@ -8,7 +10,6 @@ import {
 } from "@dfinity/agent"
 import { IDL } from "@dfinity/candid"
 import { Principal } from "@dfinity/principal"
-import crypto from "crypto"
 
 import { storageWithTtl } from "@nfid/client-db"
 
@@ -70,7 +71,7 @@ export async function validateTargets(targets: string[], origin: string) {
       } else {
         await verifyCertifiedResponse(result, "origins", canisterId)
       }
-    } catch (e) {
+    } catch (_e) {
       uncertifiedTargets.push(canisterId)
     }
   })
@@ -128,14 +129,12 @@ async function verifyCertifiedResponse(
       .update(newOwnedString)
       .digest()
     const byteArray = new Uint8Array(sha256Result)
-    if (!equal(byteArray, value)) {
+    const valueBytes = new Uint8Array(value)
+
+    if (compare(byteArray.buffer, valueBytes.buffer) !== 0) {
       throw new Error("Response hash does not match")
     }
   } else {
     throw new Error("Response not found in tree")
   }
-}
-
-function equal(a: ArrayBuffer, b: ArrayBuffer): boolean {
-  return compare(new Uint8Array(a), new Uint8Array(b)) === 0
 }

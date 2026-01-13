@@ -11,7 +11,7 @@ import {
 import { Quote } from "src/integration/swap/quote"
 import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
-import { BlurredLoader } from "@nfid-frontend/ui"
+import { BlurredLoader } from "@nfid/ui"
 
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"

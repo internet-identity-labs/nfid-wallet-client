@@ -1,4 +1,5 @@
 import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+
 import { entropyToMnemonic, validateMnemonic } from "bip39"
 
 // TODO: find a better way to do this

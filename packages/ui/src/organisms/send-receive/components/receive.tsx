@@ -1,8 +1,8 @@
 import clsx from "clsx"
-import { Spinner } from "packages/ui/src/atoms/spinner"
+import { Spinner } from "@nfid/ui/atoms/spinner"
 import { FC } from "react"
 
-import { Copy, CenterEllipsis } from "@nfid-frontend/ui"
+import { Copy, CenterEllipsis } from "@nfid/ui"
 
 export interface ReceiveProps {
   selectedAccountAddress: string

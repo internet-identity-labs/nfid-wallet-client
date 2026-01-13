@@ -1,9 +1,4 @@
 import clsx from "clsx"
-import toaster from "packages/ui/src/atoms/toast"
-import { SignInWithGoogle } from "packages/ui/src/molecules/button/signin-with-google"
-import { EmailMagicLinkExpired } from "packages/ui/src/organisms/authentication/magic-link-flow/expired"
-import { EmailMagicLinkLink } from "packages/ui/src/organisms/authentication/magic-link-flow/link-accounts"
-import { EmailMagicLinkSuccess } from "packages/ui/src/organisms/authentication/magic-link-flow/success"
 import { useCallback, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
@@ -12,7 +7,12 @@ import {
   IconCmpGoogle,
   IconCmpNFIDWalletLogoBlack,
   Loader,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
+import toaster from "@nfid/ui/atoms/toast"
+import { SignInWithGoogle } from "@nfid/ui/molecules/button/signin-with-google"
+import { EmailMagicLinkExpired } from "@nfid/ui/organisms/authentication/magic-link-flow/expired"
+import { EmailMagicLinkLink } from "@nfid/ui/organisms/authentication/magic-link-flow/link-accounts"
+import { EmailMagicLinkSuccess } from "@nfid/ui/organisms/authentication/magic-link-flow/success"
 
 import { linkGoogle, verify } from "../services"
 

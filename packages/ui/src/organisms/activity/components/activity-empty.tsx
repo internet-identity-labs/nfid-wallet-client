@@ -1,4 +1,4 @@
-import { ArrowsHistoryIcon } from "frontend/ui/atoms/icons/arrows-history"
+import { ArrowsHistoryIcon } from "@nfid/ui/atoms/icons/arrows-history"
 
 export interface IActivityPage {}
 

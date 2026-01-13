@@ -13,7 +13,6 @@ import {
   GLOBAL_ORIGIN,
   ic,
   icSigner,
-  im,
   replaceActorIdentity,
   toHexString,
 } from "@nfid/integration"
@@ -44,7 +43,7 @@ export async function getAnonymousDelegationThroughLambda(
     delegationChain: JSON.stringify(delegationChainForLambda.toJSON()),
     tempPublicKey: lambdaPublicKey,
     domain,
-    sessionPublicKey: toHexString(sessionKey),
+    sessionPublicKey: toHexString(new Uint8Array(sessionKey).buffer),
     delegationTtl: maxTimeToLive,
   }
   const signUrl = ic.isLocal ? `/ecdsa_get_anonymous` : AWS_ECDSA_GET_ANONYMOUS
@@ -92,7 +91,7 @@ export async function oldFlowGlobalKeysFromLambda(
   const request = {
     chain,
     delegationChain: JSON.stringify(delegationChainForLambda.toJSON()),
-    sessionPublicKey: toHexString(sessionPublicKey),
+    sessionPublicKey: toHexString(new Uint8Array(sessionPublicKey).buffer),
     tempPublicKey: lambdaPublicKey,
     targets,
     delegationTtl: maxTimeToLive,

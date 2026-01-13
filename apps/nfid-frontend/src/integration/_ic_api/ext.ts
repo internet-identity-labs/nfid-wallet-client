@@ -66,6 +66,6 @@ export const extIDL = ({ IDL }: any) => {
     settle: IDL.Func([TokenIdentifier], [Result_3], []),
   })
 }
-export const init = ({ IDL }: any) => {
+export const init = ({ IDL: _IDL }: any) => {
   return []
 }

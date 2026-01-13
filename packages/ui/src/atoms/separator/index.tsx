@@ -1,9 +1,9 @@
 import clsx from "clsx"
 import React from "react"
 
-import { ElementProps } from "frontend/types/react"
+import { HTMLAttributes } from "react"
 
-interface SeparatorProps extends ElementProps<HTMLDivElement> {}
+interface SeparatorProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const Separator: React.FC<SeparatorProps> = ({ className }) => {
   return (

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react"
 
-import { Table } from "@nfid-frontend/ui"
 import { ObjectState, Policy } from "@nfid/integration"
+import { Table } from "@nfid/ui"
 
 import { useVault } from "frontend/features/vaults/hooks/use-vault"
 import { e8sICPToString } from "frontend/integration/wallet/utils"
@@ -36,8 +36,8 @@ export const VaultsPoliciesTable: React.FC<VaultsPoliciesTableProps> = ({
             ? `${policy.memberThreshold} of ${vault?.members.length}`
             : "All",
           isArchived: policy.state === ObjectState.ARCHIVED,
-          isAdmin: isAdmin,
-        } as VaultsPoliciesTableRowProps),
+          isAdmin,
+        }) as VaultsPoliciesTableRowProps,
     )
   }, [isAdmin, policies, vault?.members.length])
 

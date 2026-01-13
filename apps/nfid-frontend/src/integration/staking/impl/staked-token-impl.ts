@@ -1,12 +1,13 @@
 import { NeuronState } from "@dfinity/nns"
+
 import BigNumber from "bignumber.js"
-import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
-import { StakedToken } from "src/integration/staking/staked-token"
 
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
 import { TokenValue } from "frontend/integration/staking/types"
+import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
+import { StakedToken } from "src/integration/staking/staked-token"
 
 export class StakedTokenImpl implements StakedToken {
   protected token: FT

@@ -2,8 +2,8 @@ import clsx from "clsx"
 import { HTMLAttributes, FC, useState } from "react"
 import { FT } from "src/integration/ft/ft"
 
-import { Skeleton, IDropdownPosition } from "@nfid-frontend/ui"
-import { ArrowPercentChange } from "@nfid-frontend/ui"
+import { Skeleton, IDropdownPosition } from "@nfid/ui"
+import { ArrowPercentChange } from "@nfid/ui"
 
 import { IProfileConstants } from ".."
 import { AssetDropdown } from "./asset-dropdown"

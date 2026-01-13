@@ -13,6 +13,7 @@ import { ii, vault as vaultAPI, vaultAnonymous } from "../actors"
 import { authState } from "../authentication"
 import { GLOBAL_ORIGIN } from "../delegation-factory/delegation-i"
 import { RootWallet } from "../identity-manager/profile"
+
 import {
   candidToPolicy,
   candidToTransaction,

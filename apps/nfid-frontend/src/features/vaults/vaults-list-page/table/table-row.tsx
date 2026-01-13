@@ -1,7 +1,7 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
 
-import { IconCmpArrowRight, TableCell, TableRow } from "@nfid-frontend/ui"
+import { IconCmpArrowRight, TableCell, TableRow } from "@nfid/ui"
 
 export interface VaultsTableRowProps {
   name: string

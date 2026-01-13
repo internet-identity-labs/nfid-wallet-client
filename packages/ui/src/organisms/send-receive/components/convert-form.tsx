@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { Spinner } from "packages/ui/src/atoms/spinner"
+import { Spinner } from "@nfid/ui/atoms/spinner"
 import { FC, useEffect, useState } from "react"
 import { FieldErrors, FieldValues } from "react-hook-form"
 
@@ -9,7 +9,7 @@ import {
   IconCmpConvertWhite,
   Skeleton,
   Tooltip,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 
 import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"

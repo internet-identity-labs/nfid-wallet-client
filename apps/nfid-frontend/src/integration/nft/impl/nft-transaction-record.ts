@@ -1,7 +1,8 @@
 import { format } from "date-fns"
-import { TransactionRecord } from "src/integration/nft/nft"
 
 import { exchangeRateService } from "@nfid/integration"
+
+import { TransactionRecord } from "src/integration/nft/nft"
 
 export abstract class TransactionRecordAbstract implements TransactionRecord {
   abstract getTransactionView(): TransactionRecordView
@@ -66,14 +67,14 @@ export class TransactionRecordView {
   }
 }
 
-export interface TransferTransactionRecord extends TransactionRecordAbstract {}
+export type TransferTransactionRecord = TransactionRecordAbstract
 
-export interface SellTransactionRecord extends TransactionRecordAbstract {}
+export type SellTransactionRecord = TransactionRecordAbstract
 
-export interface MintTransactionRecord extends TransactionRecordAbstract {}
+export type MintTransactionRecord = TransactionRecordAbstract
 
-export interface BurnTransactionRecord extends TransactionRecordAbstract {}
+export type BurnTransactionRecord = TransactionRecordAbstract
 
-export interface ListTransactionRecord extends TransactionRecordAbstract {}
+export type ListTransactionRecord = TransactionRecordAbstract
 
-export interface ClaimTransactionRecord extends TransactionRecordAbstract {}
+export type ClaimTransactionRecord = TransactionRecordAbstract

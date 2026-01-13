@@ -1,4 +1,5 @@
 import { RPCMessage, RPCSuccessResponse } from "../../../type"
+
 import { SilentMethodService } from "./silent-method.service"
 
 class Icrc25SupportedStandardsMethodService extends SilentMethodService {

@@ -2,7 +2,7 @@ import clsx from "clsx"
 import { FC } from "react"
 import { Link, useNavigate } from "react-router-dom"
 
-import { LogoLanding, LogoMain } from "@nfid-frontend/ui"
+import { LogoLanding, LogoMain } from "@nfid/ui"
 
 interface NFIDLogoProps {
   className?: string

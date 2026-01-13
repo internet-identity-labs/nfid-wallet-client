@@ -1,11 +1,11 @@
-import { Principal } from "@dfinity/principal"
 import { SignIdentity } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
+
 import BigNumber from "bignumber.js"
 import { Cache } from "node-ts-cache"
-import { integrationCache } from "packages/integration/src/cache"
-import { storageWithTtl } from "@nfid/client-db"
-import { FT } from "src/integration/ft/ft"
 
+import { storageWithTtl } from "@nfid/client-db"
+import { integrationCache } from "@nfid/integration"
 import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
@@ -22,16 +22,18 @@ import {
 } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
-
-import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
-import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 import { mapState } from "@nfid/integration/token/icrc1/util"
 
+import { FT } from "src/integration/ft/ft"
+
+import { arbitrumErc20Service } from "../ethereum/arbitrum/arbitrum-erc20.service"
+import { baseErc20Service } from "../ethereum/base/base-erc20.service"
 import { ethErc20Service } from "../ethereum/eth/eth-erc20.service"
 import { polygonErc20Service } from "../ethereum/polygon/pol-erc20.service"
-import { baseErc20Service } from "../ethereum/base/base-erc20.service"
-import { arbitrumErc20Service } from "../ethereum/arbitrum/arbitrum-erc20.service"
+import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
+import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
+
 import { tokenFactory } from "./token-creator/token-factory.service"
 
 const InitedTokens = "InitedTokens"
@@ -433,8 +435,8 @@ export class FtService {
           },
           ft,
         ) => ({
-          usdBalance: acc.usdBalance!.plus(ft.usdBalance!),
-          usdBalanceDayChange: acc.usdBalanceDayChange!.plus(
+          usdBalance: acc.usdBalance.plus(ft.usdBalance!),
+          usdBalanceDayChange: acc.usdBalanceDayChange.plus(
             ft.usdBalanceDayChange || 0,
           ),
         }),

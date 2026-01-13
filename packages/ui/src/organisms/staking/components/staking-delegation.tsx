@@ -1,7 +1,7 @@
 import { motion } from "framer-motion"
-import { Spinner } from "packages/ui/src/atoms/spinner"
-import { Button } from "packages/ui/src/molecules/button"
-import CopyAddress from "packages/ui/src/molecules/copy-address"
+import { Spinner } from "@nfid/ui/atoms/spinner"
+import { Button } from "@nfid/ui/molecules/button"
+import CopyAddress from "@nfid/ui/molecules/copy-address"
 import { FC } from "react"
 
 import { IFollowees } from "frontend/integration/staking/types"

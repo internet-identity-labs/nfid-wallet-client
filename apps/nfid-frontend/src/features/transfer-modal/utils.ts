@@ -6,13 +6,11 @@ import {
 } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
+
 import validate, { Network } from "bitcoin-address-validation"
 import { isAddress } from "ethers"
 import { PRINCIPAL_LENGTH } from "packages/constants"
-import { Shroff } from "src/integration/swap/shroff"
 
-import { IGroupedOptions, IGroupedSendAddress } from "@nfid-frontend/ui"
-import { toUSD, truncateString } from "@nfid-frontend/utils"
 import {
   authState,
   getBalance,
@@ -30,30 +28,33 @@ import {
   EVM_NATIVE,
 } from "@nfid/integration/token/constants"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
-import { mutate, mutateWithTimestamp } from "@nfid/swr"
-
-import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
-import { transferEXT } from "frontend/integration/entrepot/ext"
-import { FT } from "frontend/integration/ft/ft"
-import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
-import {
-  e8sICPToString,
-  stringICPtoE8s,
-} from "frontend/integration/wallet/utils"
-
-import { fetchVaultWalletsBalances } from "../fungible-token/fetch-balances"
-import { ftService } from "frontend/integration/ft/ft-service"
 import {
   Category,
   State,
   ChainId,
   isEvmToken,
 } from "@nfid/integration/token/icrc1/enum/enums"
+import { mutate, mutateWithTimestamp } from "@nfid/swr"
+import { IGroupedOptions, IGroupedSendAddress } from "@nfid/ui"
+import { toUSD, truncateString } from "@nfid/utils"
+
+import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import {
   UserAddress,
   UserAddressSaveRequest,
   UserAddressUpdateRequest,
 } from "frontend/integration/address-book"
+import { transferEXT } from "frontend/integration/entrepot/ext"
+import { FT } from "frontend/integration/ft/ft"
+import { ftService } from "frontend/integration/ft/ft-service"
+import { getExchangeRate } from "frontend/integration/rosetta/get-exchange-rate"
+import {
+  e8sICPToString,
+  stringICPtoE8s,
+} from "frontend/integration/wallet/utils"
+import { Shroff } from "src/integration/swap/shroff"
+
+import { fetchVaultWalletsBalances } from "../fungible-token/fetch-balances"
 
 export enum AddressBookAction {
   CREATE = "CREATE",
@@ -117,7 +118,7 @@ export const getVaultsAccountsOptions = async (): Promise<
     options: vaultWallets.map((wallet) => ({
       title: wallet.name ?? "",
       subTitle: truncateString(wallet.address ?? "", 6, 4),
-      innerTitle: String(wallet.balance?.ICP) + " ICP",
+      innerTitle: `${String(wallet.balance?.ICP)} ICP`,
       innerSubtitle: toUSD(Number(wallet.balance?.ICP), rate),
       value: wallet.address ?? "",
     })),
@@ -332,7 +333,7 @@ export const getUpdatedAddressBook = async (
   let updated: UserAddress[]
 
   if (mode === AddressBookAction.CREATE) {
-    const tempId = `tmp-${Date.now()}` as string
+    const tempId = `tmp-${Date.now()}`
     updated = [...data, { id: tempId, ...request } as UserAddress]
   } else if (mode === AddressBookAction.EDIT) {
     updated = data.map((addr) =>

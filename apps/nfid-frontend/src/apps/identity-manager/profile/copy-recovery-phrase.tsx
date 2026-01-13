@@ -1,8 +1,8 @@
 import React from "react"
 import { useLocation } from "react-router-dom"
 
-import ProfilePhraseCopyPage from "frontend/ui/pages/new-profile/copy-recovery-phrase"
-import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
+import ProfilePhraseCopyPage from "@nfid/ui/pages/new-profile/copy-recovery-phrase"
+import { useNFIDNavigate } from "@nfid/ui/utils/use-nfid-navigate"
 
 import { ProfileConstants } from "./routes"
 

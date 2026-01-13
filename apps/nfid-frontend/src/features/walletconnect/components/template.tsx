@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { IconCmpNFIDWalletLogoWhite, IconCmpShare } from "@nfid-frontend/ui"
+import { IconCmpNFIDWalletLogoWhite, IconCmpShare } from "@nfid/ui"
 
 import LeftBgApproval from "../assets/left-bg-approval.png"
 import LeftBg from "../assets/left-bg.png"

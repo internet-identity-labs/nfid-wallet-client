@@ -1,13 +1,13 @@
 import { Principal } from "@dfinity/principal"
-import { Spinner } from "packages/ui/src/atoms/spinner"
-import toaster from "packages/ui/src/atoms/toast"
+import { Spinner } from "@nfid/ui/atoms/spinner"
+import toaster from "@nfid/ui/atoms/toast"
 import { FC, useCallback, useState } from "react"
 
 import {
   IconSvgEyeClosed,
   IconSvgEyeShown,
   IconSvgEyeShownWhite,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { getUserPrincipalId } from "frontend/features/fungible-token/utils"

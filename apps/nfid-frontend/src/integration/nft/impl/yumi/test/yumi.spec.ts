@@ -2,12 +2,14 @@
  * @jest-environment jsdom
  */
 import { Principal } from "@dfinity/principal"
+
 import BigNumber from "bignumber.js"
+
+import { exchangeRateService } from "@nfid/integration"
+
 import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
 import { mockGeekResponse } from "src/integration/nft/mock/mock"
 import { nftService } from "src/integration/nft/nft-service"
-
-import { exchangeRateService } from "@nfid/integration"
 
 const principal = Principal.fromText(
   "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",

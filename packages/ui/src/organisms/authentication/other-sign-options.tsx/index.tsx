@@ -1,5 +1,5 @@
-import { IconButton } from "packages/ui/src/molecules/button/icon-button"
-import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
+import { IconButton } from "@nfid/ui/molecules/button/icon-button"
+import { AuthAppMeta } from "@nfid/ui/organisms/authentication/app-meta"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 
@@ -9,7 +9,7 @@ import {
   IconCmpTouchId,
   IconCmpUsb,
   Input,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 
 export interface AuthOtherSignOptionsProps {
   onBack: () => void

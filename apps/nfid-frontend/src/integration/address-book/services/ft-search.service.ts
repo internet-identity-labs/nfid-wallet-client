@@ -1,4 +1,6 @@
 import { ChainId, Category } from "@nfid/integration/token/icrc1/enum/enums"
+
+import { UserAddressEntity } from "../interfaces"
 import { AddressBookMapper } from "../mapper/address-book.mapper"
 import {
   Address,
@@ -6,7 +8,7 @@ import {
   FtSearchRequest,
   UserAddressPreview,
 } from "../types"
-import { UserAddressEntity } from "../interfaces"
+
 import { SearchFilterService } from "./search-filter.service"
 
 export class FtSearchService {

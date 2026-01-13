@@ -62,14 +62,14 @@ export async function fetchVaultsWalletsBalances(
       const balance = await getICPBalance(address)
 
       return {
-        principal: principal,
+        principal,
         account: {
           domain: "nfid.vaults",
           label: wallet.name ?? "",
           accountId: wallet.uid,
         },
         principalId: principal.toText(),
-        address: address,
+        address,
         balance: { ICP: balance },
         vaultId: wallet?.vaultId,
         vaultName: wallet?.vaultName,

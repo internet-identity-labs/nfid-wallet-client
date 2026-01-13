@@ -26,6 +26,11 @@ import {
   ThirdPartyAuthSession,
 } from "frontend/state/authorization"
 
+import { deviceInfo, getBrowserName, getIcon } from "../device"
+import { identityFromDeviceList } from "../identity"
+
+import { apiResultToLoginResult } from "./api-result-to-login-result"
+
 import {
   CaptchaChallenge,
   Device,
@@ -34,9 +39,6 @@ import {
   registerInternetIdentity,
   registerInternetIdentityWithII,
 } from "."
-import { deviceInfo, getBrowserName, getIcon } from "../device"
-import { identityFromDeviceList } from "../identity"
-import { apiResultToLoginResult } from "./api-result-to-login-result"
 
 export async function loginWithAnchor(
   _: unknown,
@@ -230,20 +232,20 @@ export async function registerService(
             pubKey,
           }
         : sessionSource === "ii"
-        ? {
-            deviceType: DeviceType.Unknown,
-            icon: "ii" as Icon,
-            device: "Internet Identity",
-            browser: delegationIdentity.getPrincipal().toString(),
-            pubKey,
-          }
-        : {
-            icon: getIcon(deviceInfo),
-            device: deviceInfo.newDeviceName,
-            browser: deviceInfo.browser.name ?? "Mobile",
-            pubKey,
-            deviceType: DeviceType.Unknown,
-          }
+          ? {
+              deviceType: DeviceType.Unknown,
+              icon: "ii" as Icon,
+              device: "Internet Identity",
+              browser: delegationIdentity.getPrincipal().toString(),
+              pubKey,
+            }
+          : {
+              icon: getIcon(deviceInfo),
+              device: deviceInfo.newDeviceName,
+              browser: deviceInfo.browser.name ?? "Mobile",
+              pubKey,
+              deviceType: DeviceType.Unknown,
+            }
     console.debug("RouterRegisterDeviceDecider handleRegister", {
       account,
       accessPoint,

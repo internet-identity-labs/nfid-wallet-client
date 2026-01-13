@@ -1,9 +1,9 @@
 import clsx from "clsx"
-import { CloseIcon } from "packages/ui/src/atoms/icons/close-button"
+import { CloseIcon } from "@nfid/ui/atoms/icons/close-button"
 import React from "react"
 
-import { H5 } from "../../../atoms/typography"
-import { Button } from "../../button"
+import { H5 } from "@nfid/ui/atoms/typography"
+import { Button } from "@nfid/ui/molecules/button"
 
 export interface ModalButtonProps {
   text: string
@@ -12,8 +12,7 @@ export interface ModalButtonProps {
   block?: boolean
 }
 
-export interface ModalAdvancedProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface ModalAdvancedProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string
   subTitle?: string | JSX.Element
   onClose?: () => void

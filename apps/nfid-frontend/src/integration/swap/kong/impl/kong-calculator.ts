@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js"
+
 import {
   CalculatorAbstract,
   WIDGET_FEE,

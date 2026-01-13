@@ -12,16 +12,15 @@ import {
   Icon,
   replaceActorIdentity,
 } from "@nfid/integration"
-import { IIAuthSession } from "frontend/state/authentication"
+import { authStorage } from "@nfid/integration"
 
 import {
   fetchProfile,
   createNFIDProfile,
 } from "frontend/integration/identity-manager"
-import { authStorage } from "packages/integration/src/lib/authentication/storage"
+import { IIAuthSession } from "frontend/state/authentication"
 
 export const identityProvider = "https://id.ai"
-//who knows why FE canister URL named like this....
 export const derivationOrigin = CANISTER_WITH_AT_LEAST_ONE_PASSKEY
 
 export async function signWithIIService(): Promise<IIAuthSession> {
@@ -54,7 +53,7 @@ export async function signWithIIService(): Promise<IIAuthSession> {
               const session: IIAuthSession = {
                 sessionSource: "ii" as const,
                 anchor: profile?.anchor,
-                identity: identity,
+                identity,
                 delegationIdentity: identity as DelegationIdentity,
               }
 
@@ -66,7 +65,7 @@ export async function signWithIIService(): Promise<IIAuthSession> {
               // If 2FA is enabled, checkIf2FAEnabled will handle it after verification
               if (!profile.is2fa) {
                 await authState.set({
-                  identity: identity,
+                  identity,
                   delegationIdentity: identity as DelegationIdentity,
                 })
               }

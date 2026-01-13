@@ -2,7 +2,7 @@ import clsx from "clsx"
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 
-import useClickOutside from "../../utils/use-click-outside"
+import useClickOutside from "@nfid/ui/utils/use-click-outside"
 
 export type IDropdownPosition = "top" | "bottom"
 

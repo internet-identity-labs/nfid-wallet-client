@@ -1,8 +1,8 @@
 import { FC, useEffect, useState } from "react"
 import clsx from "clsx"
-import { ModalComponent } from "../../molecules/modal/index-v0"
-import { Spinner } from "../../atoms/spinner"
-import { Button, Input } from "@nfid-frontend/ui"
+import { ModalComponent } from "@nfid/ui/molecules/modal"
+import { Spinner } from "@nfid/ui/atoms/spinner"
+import { Button, Input } from "@nfid/ui"
 import { useForm } from "react-hook-form"
 import {
   AddressBookAction,
@@ -18,9 +18,9 @@ import {
   UserAddressUpdateRequest,
 } from "frontend/integration/address-book"
 
-import { IcpNetworkIcon } from "packages/ui/src/atoms/icons/IcpNetworkIcon"
-import { BtcNetworkIcon } from "packages/ui/src/atoms/icons/BtcNetworkIcon"
-import { EthNetworkIcon } from "packages/ui/src/atoms/icons/EthNetworkIcon"
+import { IcpNetworkIcon } from "@nfid/ui/atoms/icons/IcpNetworkIcon"
+import { BtcNetworkIcon } from "@nfid/ui/atoms/icons/BtcNetworkIcon"
+import { EthNetworkIcon } from "@nfid/ui/atoms/icons/EthNetworkIcon"
 import {
   AddressBookFormValues,
   chainValidate,

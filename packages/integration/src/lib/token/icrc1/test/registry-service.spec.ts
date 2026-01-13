@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import { Ed25519KeyIdentity } from "@dfinity/identity"
 
 import { authState, mockIdentityA } from "@nfid/integration"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
@@ -12,14 +12,13 @@ import { generateDelegationIdentity } from "../../../test-utils"
 
 describe("ICRC1 suite", () => {
   jest.setTimeout(200000)
-  let root: string
   it("Store/retrieve canister id", async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
     const { delegationIdentity } =
       await generateDelegationIdentity(mockedIdentity)
     await authState.set({
       identity: delegationIdentity,
-      delegationIdentity: delegationIdentity,
+      delegationIdentity,
     })
     await replaceActorIdentity(userRegistry, delegationIdentity)
     await replaceActorIdentity(im, delegationIdentity)
@@ -29,7 +28,7 @@ describe("ICRC1 suite", () => {
       State.Active,
     )
     const account = await im.get_account()
-    root = account.data[0]!.principal_id
+    const _root = account.data[0]!.principal_id
     const canisters = await icrc1RegistryService.getStoredUserTokens()
     expect(canisters.map((l) => l.ledger)).toContain(
       edId.getPrincipal().toText(),

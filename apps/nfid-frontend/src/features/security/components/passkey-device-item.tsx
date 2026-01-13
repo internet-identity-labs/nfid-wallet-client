@@ -2,12 +2,12 @@ import clsx from "clsx"
 import { motion } from "framer-motion"
 import React from "react"
 
-import { IconCmpDots, IconCmpWarning, Tooltip } from "@nfid-frontend/ui"
-import { useClickOutside } from "@nfid-frontend/utils"
 import { Icon } from "@nfid/integration"
+import { IconCmpDots, IconCmpWarning, Tooltip } from "@nfid/ui"
+import { DeviceIconDecider } from "@nfid/ui/organisms/device-list/device-icon-decider"
+import { useClickOutside } from "@nfid/utils"
 
 import { useDarkTheme } from "frontend/hooks"
-import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon-decider"
 
 import { IHandleWithLoading } from ".."
 import { DetailsPasskey } from "../passkey/details-passkey"

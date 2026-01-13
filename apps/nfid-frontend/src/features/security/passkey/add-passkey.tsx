@@ -1,15 +1,16 @@
 import clsx from "clsx"
-import toaster from "packages/ui/src/atoms/toast"
-import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
 import { useState, useCallback } from "react"
 
-import { BlurredLoader, Button, IconCmpPlus } from "@nfid-frontend/ui"
+import { BlurredLoader, Button, IconCmpPlus } from "@nfid/ui"
+import toaster from "@nfid/ui/atoms/toast"
+import { ModalComponent } from "@nfid/ui/molecules/modal"
 
 import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
 import { useDarkTheme } from "frontend/hooks"
 import { ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST } from "frontend/integration/identity"
 
 import { IHandleWithLoading } from ".."
+
 import MultiPasskeyDark from "./multi-passkey-dark.png"
 import MultiPasskey from "./multi-passkey.webp"
 
@@ -41,8 +42,8 @@ export const AddPasskey = ({
               ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST.includes(e.message)
                 ? "This device is already registered."
                 : e.message.includes("either timed out or was not allowed")
-                ? "It seems like the process was interrupted. Feel free to try again!"
-                : e.message,
+                  ? "It seems like the process was interrupted. Feel free to try again!"
+                  : e.message,
             )
           }
           throw e

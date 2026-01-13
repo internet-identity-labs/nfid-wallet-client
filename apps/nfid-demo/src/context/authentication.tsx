@@ -7,8 +7,9 @@ import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
 import { NFID } from "@nfid/embed"
-import { BaseKeyType } from "@nfid/embed/src/lib/types"
 import { useSWR } from "@nfid/swr"
+
+type BaseKeyType = "ECDSA" | "Ed25519"
 
 declare const NFID_PROVIDER_URL: string
 
@@ -55,10 +56,10 @@ const isProd = origin.includes(".nfid.one")
 const derivationCanisterId = isDev
   ? CANISTER_IDS["nfid-demo"].dev
   : isStaging
-  ? CANISTER_IDS["nfid-demo"].stage
-  : isProd
-  ? CANISTER_IDS["nfid-demo"].ic
-  : undefined
+    ? CANISTER_IDS["nfid-demo"].stage
+    : isProd
+      ? CANISTER_IDS["nfid-demo"].ic
+      : undefined
 
 const derivationOrigin =
   derivationCanisterId && `https://${derivationCanisterId}.ic0.app`

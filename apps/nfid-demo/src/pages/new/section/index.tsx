@@ -6,7 +6,7 @@ import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism"
 
 const SyntaxHighlighter = PrismAsync as React.ComponentType<any>
 
-import { Copy, ToggleButton } from "@nfid-frontend/ui"
+import { Copy, ToggleButton } from "@nfid/ui"
 
 type SectionTemplateProps = {
   title: string

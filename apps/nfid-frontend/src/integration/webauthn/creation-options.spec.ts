@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 import { DeviceData } from "../_ic_api/internet_identity.d"
+
 import { transformDeviceDataToExcludeCredentials } from "./creation-options"
 import { DEVICE_DATA_MOCK } from "./creation-options.mocks"
 

@@ -1,5 +1,4 @@
-import { getGlobalDelegation } from "packages/integration/src/lib/delegation-factory/delegation-i"
-
+import { getGlobalDelegation } from "@nfid/integration"
 import {
   ThirdPartyAuthSession,
   authState,

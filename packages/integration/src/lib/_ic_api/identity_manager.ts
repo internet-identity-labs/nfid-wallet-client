@@ -392,6 +392,6 @@ export const idlFactory = ({ IDL }: any) => {
     get_captcha: IDL.Func([], [Challenge], []),
   })
 }
-export const init = ({ IDL }: any) => {
+export const init = ({ IDL: _IDL }: any) => {
   return []
 }

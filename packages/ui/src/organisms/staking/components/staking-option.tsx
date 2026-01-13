@@ -1,16 +1,16 @@
 import clsx from "clsx"
-import { A } from "packages/ui/src/atoms/custom-link"
+import { A } from "@nfid/ui/atoms/custom-link"
 import {
   IconInfo,
   IconInfoDark,
   IconNftPlaceholder,
-} from "packages/ui/src/atoms/icons"
-import { IconCaret } from "packages/ui/src/atoms/icons/caret"
-import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
-import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
-import CopyAddress from "packages/ui/src/molecules/copy-address"
-import { Table } from "packages/ui/src/molecules/table"
-import { Tooltip } from "packages/ui/src/molecules/tooltip"
+} from "@nfid/ui/atoms/icons"
+import { IconCaret } from "@nfid/ui/atoms/icons/caret"
+import ImageWithFallback from "@nfid/ui/atoms/image-with-fallback"
+import ProfileContainer from "@nfid/ui/atoms/profile-container/Container"
+import CopyAddress from "@nfid/ui/molecules/copy-address"
+import { Table } from "@nfid/ui/molecules/table"
+import { Tooltip } from "@nfid/ui/molecules/tooltip"
 import { FC } from "react"
 
 import { useDarkTheme } from "frontend/hooks"

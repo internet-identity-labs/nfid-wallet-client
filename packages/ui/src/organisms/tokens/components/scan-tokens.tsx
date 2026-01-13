@@ -1,10 +1,10 @@
 import clsx from "clsx"
-import { Button } from "packages/ui/src/molecules/button"
-import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
+import { Button } from "@nfid/ui/molecules/button"
+import { ModalComponent } from "@nfid/ui/molecules/modal"
 import { useEffect, useState } from "react"
 import { FT } from "src/integration/ft/ft"
 
-import { Skeleton } from "@nfid-frontend/ui"
+import { Skeleton } from "@nfid/ui"
 import { useSWRWithTimestamp } from "@nfid/swr"
 
 import {

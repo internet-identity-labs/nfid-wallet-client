@@ -2,8 +2,8 @@ import { Identity } from "@dfinity/agent/lib/cjs/auth"
 import { AccountIdentifier as AccountIdentifierAddress } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
 
-import { isHex } from "@nfid-frontend/utils"
 import { initActor } from "@nfid/integration"
+import { isHex } from "@nfid/utils"
 
 import { extIDL } from "frontend/integration/_ic_api/ext"
 import {
@@ -26,7 +26,7 @@ export async function transferEXT(
     extIDL,
   )
   const request: TransferRequest = {
-    token: token,
+    token,
     from: constructUser(source.getPrincipal().toText()),
     subaccount: [],
     to: constructUser(target),
@@ -38,7 +38,7 @@ export async function transferEXT(
     throw Error(`Transfer failed!: ${e}`, e)
   })) as TransferResult
   if ("err" in result)
-    throw Error("Transfer failed! " + formatError(result.err))
+    throw Error(`Transfer failed! ${formatError(result.err)}`)
   return result.ok
 }
 
@@ -65,7 +65,7 @@ export async function lockNFT(
       throw Error(`Lock failed!: ${e}`, e)
     })) as LockResult
   if ("err" in result) {
-    throw Error("Lock failed! " + formatError(result.err))
+    throw Error(`Lock failed! ${formatError(result.err)}`)
   }
   return result.ok
 }
@@ -81,14 +81,14 @@ export async function listNFT(
     extIDL,
   )
   const request = {
-    token: token,
+    token,
     from_subaccount: [],
     price: [BigInt(price)],
   }
   const result = (await actor.list(request).catch((e) => {
     throw Error(`List failed!: ${e}`, e)
   })) as ListResult
-  if ("err" in result) throw Error("List failed! " + formatError(result.err))
+  if ("err" in result) throw Error(`List failed! ${formatError(result.err)}`)
   return result.ok === null
 }
 
@@ -102,14 +102,14 @@ export async function unListNFT(
     extIDL,
   )
   const request = {
-    token: token,
+    token,
     from_subaccount: [],
     price: [],
   }
   const result = (await actor.list(request).catch((e) => {
     throw Error(`UnList failed!: ${e}`, e)
   })) as LockResult
-  if ("err" in result) throw Error("UnList failed! " + formatError(result.err))
+  if ("err" in result) throw Error(`UnList failed! ${formatError(result.err)}`)
   return result.ok === null
 }
 
@@ -122,7 +122,7 @@ const constructUser = (u: string) => {
 }
 
 function formatError(err: { [key: string]: any }) {
-  return Object.keys(err)[0] + " : " + Object.values(err)[0]
+  return `${Object.keys(err)[0]} : ${Object.values(err)[0]}`
 }
 
 export function encodeTokenIdentifier(canister: string, index: number): string {
@@ -172,7 +172,7 @@ export function from32bits(bytes: number[]): number {
 }
 
 export function toHexString(bytes: number[]): string {
-  return Array.from(bytes, function (byte) {
-    return ("0" + (byte & 0xff).toString(16)).slice(-2)
+  return Array.from(bytes, (byte) => {
+    return `0${(byte & 0xff).toString(16)}`.slice(-2)
   }).join("")
 }

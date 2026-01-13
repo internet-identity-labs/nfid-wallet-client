@@ -1,8 +1,8 @@
 import bowser from "bowser"
-import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 import useSWRImmutable from "swr/immutable"
 
 import { Icon } from "@nfid/integration"
+import { getIsMobileDeviceMatch } from "@nfid/ui/utils/is-mobile"
 
 const PLATFORMS_MACOS = ["Macintosh", "MacIntel", "MacPPC", "Mac68K"]
 const PLATFORMS_WINDOWS = ["Win32", "Win64", "Windows", "WinCE"]
@@ -37,16 +37,31 @@ export function getBrowserName(): string {
   return browser.name || "My Computer"
 }
 
+/**
+ * Determines if a platform authenticator (e.g., Touch ID, Face ID, Windows Hello) is available.
+ *
+ * Note: In e2e headless mode, `isUserVerifyingPlatformAuthenticatorAvailable()` may not
+ * correctly detect platform authenticators. In e2e mode, we rely on virtual authenticators
+ * configured in the test setup, so this function should return true if WebAuthn is supported.
+ *
+ * @returns Promise<boolean> - true if platform authenticator is available, false otherwise
+ */
 export async function fetchWebAuthnPlatformCapability() {
   if (!isWebAuthNSupported()) {
     return false
+  }
+
+  // In e2e test mode, virtual authenticators are used, so we assume platform authenticator
+  // is available if WebAuthn is supported. The actual detection may be unreliable in headless mode.
+  if (typeof IS_E2E_TEST !== "undefined" && IS_E2E_TEST === "true") {
+    return true
   }
 
   return PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()
 }
 
 export function getPlatformInfo() {
-  var userAgent = window.navigator.userAgent,
+  const userAgent = window.navigator.userAgent,
     platform = window.navigator.platform
 
   switch (true) {

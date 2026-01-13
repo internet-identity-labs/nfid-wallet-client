@@ -2,6 +2,7 @@ import { ActorSubclass } from "@dfinity/agent"
 
 import { type _SERVICE as ConsentMessageCanister } from "../../idl/consent"
 import { TargetValidationError } from "../target.service"
+
 import { TargetValidationService } from "./target-validation.service"
 
 class ExtTargetValidationService implements TargetValidationService {

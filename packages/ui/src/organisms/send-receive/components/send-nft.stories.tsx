@@ -1,5 +1,6 @@
 import { Meta, StoryFn } from "@storybook/react"
-import { ToggleButton } from "packages/ui/src/molecules/toggle-button"
+
+import { ToggleButton } from "@nfid/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 
@@ -50,7 +51,7 @@ export const SendNFTProps = {
   selectedAccountAddress:
     "yrfx6-fmprd-wgad6-6or6b-2aw42-5qqhn-o4yt7-plkxr-2jtgv-azhzx-gae",
   balance: 200000,
-  setSelectedNFTId: (value: string | ((prevState: string) => string)) => {},
+  setSelectedNFTId: (_value: string | ((prevState: string) => string)) => {},
   submit: async () => {
     return undefined
   },

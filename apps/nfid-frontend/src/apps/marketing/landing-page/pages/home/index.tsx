@@ -43,6 +43,7 @@ import { Container } from "../../ui/container"
 import { Footer } from "../../ui/footer"
 import AnimationWrapper from "../../ui/visible-animation"
 import { Wrapper } from "../wrapper"
+
 import { InfoCopy } from "./info-copy"
 import { LinkIcon } from "./link-icon"
 

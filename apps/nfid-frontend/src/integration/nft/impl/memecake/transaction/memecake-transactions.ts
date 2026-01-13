@@ -18,7 +18,7 @@ export class SoldTransactionRecordMemeCake implements SellTransactionRecord {
     this.from = rawTransaction.sellerPubKey
     this.to = rawTransaction.buyerPubKey
     this.date = new Date(rawTransaction.transactionDate)
-    this.priceFormatted = rawTransaction.transactionAmount + " ICP"
+    this.priceFormatted = `${rawTransaction.transactionAmount} ICP`
   }
 
   getTransactionView(): TransactionRecordView {

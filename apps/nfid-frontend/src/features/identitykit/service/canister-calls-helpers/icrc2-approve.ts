@@ -6,6 +6,7 @@ import { _SERVICE as icrc1and2IDLService } from "../../idl/token-pepe-ledger_idl
 import { RPCMessage } from "../../type"
 import { actorService } from "../actor.service"
 import { IC_HOSTNAME } from "../method/interactive/icrc49-call-canister-method.service"
+
 import { ICRC2Metadata } from "./interfaces"
 
 export const getMetadataICRC2Approve = async (
@@ -29,7 +30,7 @@ export const getMetadataICRC2Approve = async (
 
   const [balance, symbol, decimals, fee] = await Promise.all([
     actor.icrc1_balance_of({
-      owner: owner,
+      owner,
       subaccount: subaccount ? [subaccount] : [],
     }),
     actor.icrc1_symbol(),

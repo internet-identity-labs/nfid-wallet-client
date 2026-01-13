@@ -1,10 +1,11 @@
 import clsx from "clsx"
 
-import { IconCmpWarning } from "@nfid-frontend/ui"
 import { ICP_DECIMALS } from "@nfid/integration/token/constants"
+import { IconCmpWarning } from "@nfid/ui"
 
 import { DefaultMetadata } from "../../service/canister-calls-helpers/interfaces"
 import { RPCPromptTemplate } from "../templates/prompt-template"
+
 import { CallCanisterDetails } from "./details"
 
 export interface CallCanisterLedgerTransferProps {

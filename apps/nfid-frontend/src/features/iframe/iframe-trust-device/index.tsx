@@ -1,4 +1,4 @@
-import { BlurredLoader, Button } from "@nfid-frontend/ui"
+import { BlurredLoader, Button } from "@nfid/ui"
 
 import securityKey from "./assets/security-key.png"
 import webauthn from "./assets/webauthn.png"

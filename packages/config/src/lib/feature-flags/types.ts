@@ -4,7 +4,7 @@ export type Feature = string
 
 export type PropertyName = string
 
-export type FeatureConfig = { [property: PropertyName]: any }
+export type FeatureConfig = { [property: PropertyName]: unknown }
 
 export type FeaturePolicy = {
   name: FeatureName

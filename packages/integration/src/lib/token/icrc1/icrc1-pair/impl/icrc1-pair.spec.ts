@@ -1,8 +1,10 @@
-import { Principal } from "@dfinity/principal"
-import { Icrc1Pair } from "./Icrc1-pair"
-import { mockIdentityA } from "@nfid/integration"
 import { Ed25519KeyIdentity } from "@dfinity/identity"
 import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { Principal } from "@dfinity/principal"
+
+import { mockIdentityA } from "@nfid/integration"
+
+import { Icrc1Pair } from "./Icrc1-pair"
 
 describe.skip("ICRC1 pair suite", () => {
   jest.setTimeout(200000)

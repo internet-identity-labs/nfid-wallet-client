@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React, { HTMLAttributes, useEffect, useState } from "react"
 
-import { Loader } from "../../atoms/loader"
+import { Loader } from "@nfid/ui/atoms/loader"
 import { BlurOverlay } from "../blur-overlay"
 
 interface BlurredLoaderProps extends HTMLAttributes<HTMLDivElement> {

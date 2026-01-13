@@ -1,11 +1,11 @@
+import { ic } from "@nfid/integration"
+
 import {
   Category,
   ParsedData,
   ValueMapping,
 } from "src/integration/nft/impl/ext/properties/types"
 import { TokenProperties } from "src/integration/nft/impl/nft-types"
-
-import { ic } from "@nfid/integration"
 
 export class ExtPropertiesService {
   async getProperties(

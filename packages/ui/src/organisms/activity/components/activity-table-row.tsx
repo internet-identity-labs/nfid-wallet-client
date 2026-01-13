@@ -1,11 +1,9 @@
 import { SignIdentity } from "@dfinity/agent"
 import clsx from "clsx"
 import { format } from "date-fns"
-import { A } from "packages/ui/src/atoms/custom-link"
-import { Spinner } from "packages/ui/src/atoms/spinner"
-import CopyAddress from "packages/ui/src/molecules/copy-address"
-import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import { useEffect, useMemo, useState } from "react"
+
+import { A, Spinner, CopyAddress, TickerAmount } from "@nfid/ui"
 import { errorHandlerFactory } from "src/integration/swap/errors/handler-factory"
 import { ContactSupportError } from "src/integration/swap/errors/types/contact-support-error"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
@@ -22,12 +20,12 @@ import {
   IconSvgArrowRightWhite,
   ImageWithFallback,
   Tooltip,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { IActivityRow } from "frontend/features/activity/types"
-import type { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
+import type { ActivityAssetFT } from "@nfid/integration/asset/types"
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useDarkTheme } from "frontend/hooks"
 import { APPROXIMATE_SWAP_DURATION } from "frontend/integration/swap/transaction/transaction-service"
@@ -36,7 +34,7 @@ import {
   SearchRequest,
   UserAddressPreview,
 } from "frontend/integration/address-book"
-import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
+import { getNetworkIcon } from "@nfid/ui"
 
 interface ErrorStage {
   buttonText: string

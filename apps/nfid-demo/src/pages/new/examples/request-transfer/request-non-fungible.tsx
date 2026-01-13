@@ -1,10 +1,10 @@
 import { useAuthenticationContext } from "apps/nfid-demo/src/context/authentication"
-import toaster from "packages/ui/src/atoms/toast"
+import toaster from "@nfid/ui/atoms/toast"
 import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
 import useSWRImmutable from "swr/immutable"
 
-import { Button, DropdownSelect, Input } from "@nfid-frontend/ui"
+import { Button, DropdownSelect, Input } from "@nfid/ui"
 import { DelegationType } from "@nfid/embed"
 
 import { ExampleError } from "../../error"

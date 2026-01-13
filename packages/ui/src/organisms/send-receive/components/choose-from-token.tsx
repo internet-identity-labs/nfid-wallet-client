@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js"
 import clsx from "clsx"
-import { InputAmount } from "packages/ui/src/molecules/input-amount"
-import { formatAssetAmountRaw } from "packages/ui/src/molecules/ticker-amount"
+import { InputAmount } from "@nfid/ui/molecules/input-amount"
+import { formatAssetAmountRaw } from "@nfid/ui/molecules/ticker-amount"
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useFormContext } from "react-hook-form"
 
@@ -12,8 +12,8 @@ import {
   IconNftPlaceholder,
   ChooseFtModal,
   Skeleton,
-} from "@nfid-frontend/ui"
-import { validateTransferAmountField } from "@nfid-frontend/utils"
+} from "@nfid/ui"
+import { validateTransferAmountField } from "@nfid/utils"
 import { E8S } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
@@ -24,7 +24,7 @@ import {
   BALANCE_EDGE_LENGTH,
   BALANCE_MOBILE_EDGE_LENGTH,
   getIsMobileDeviceMatch,
-} from "packages/ui/src/utils/is-mobile"
+} from "@nfid/ui"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { SelectedToken } from "frontend/features/transfer-modal/types"
 

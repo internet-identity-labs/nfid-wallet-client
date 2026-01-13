@@ -1,4 +1,5 @@
 import { SignIdentity } from "@dfinity/agent"
+
 import { useEffect, useState } from "react"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"

@@ -1,7 +1,8 @@
 import { Principal } from "@dfinity/principal"
 
-import { btcDepositService } from "@nfid/integration/token/btc/service"
 import { useEffect, useRef } from "react"
+
+import { btcDepositService } from "@nfid/integration/token/btc/service"
 
 export function useBTCDepositsToMintCKBTCListener(principal: Principal | null) {
   const watcherRef = useRef<{ clearInterval: () => void } | null>(null)

@@ -5,8 +5,8 @@ import {
   IconNftPlaceholder,
   ImageWithFallback,
   LottieAnimation,
-} from "@nfid-frontend/ui"
-import { Button, H5 } from "@nfid-frontend/ui"
+} from "@nfid/ui"
+import { Button, H5 } from "@nfid/ui"
 
 import Fail from "../assets/error.json"
 import Success1 from "../assets/success_1.json"
@@ -51,7 +51,7 @@ export const Success: React.FC<SuccessProps> = ({
 
   return (
     <div
-      id={"success_window_" + step}
+      id={`success_window_${step}`}
       className={clsx(
         "text-black text-center relative h-[440px]",
         "flex flex-grow flex-col justify-between",
@@ -62,15 +62,15 @@ export const Success: React.FC<SuccessProps> = ({
           {isFailed
             ? "Transaction failed"
             : isCompleted
-            ? "Sent successfully"
-            : "Processing..."}
+              ? "Sent successfully"
+              : "Processing..."}
         </H5>
         <p className="mt-2 text-sm leading-5">
           {isFailed
             ? "Your assets are still in your wallet."
             : isCompleted
-            ? ""
-            : `This usually takes less than ${duration}.`}
+              ? ""
+              : `This usually takes less than ${duration}.`}
         </p>
 
         <div className="absolute flex items-center justify-center w-full px-3 top-0 sm:-top-[65px]">

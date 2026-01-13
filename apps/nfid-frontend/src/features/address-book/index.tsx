@@ -1,13 +1,15 @@
-import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
-import { AddressBook } from "packages/ui/src/organisms/address-book"
+import { FC } from "react"
+
 import { useSWR } from "@nfid/swr"
+import { AddressBook } from "@nfid/ui/organisms/address-book"
+import ProfileTemplate from "@nfid/ui/templates/profile-template/Template"
+
+import { NFIDTheme } from "frontend/App"
 import {
   addressBookFacade,
   UserAddressSaveRequest,
   UserAddressUpdateRequest,
 } from "frontend/integration/address-book"
-import { FC } from "react"
-import { NFIDTheme } from "frontend/App"
 
 type AddressBookPageProps = {
   walletTheme: NFIDTheme

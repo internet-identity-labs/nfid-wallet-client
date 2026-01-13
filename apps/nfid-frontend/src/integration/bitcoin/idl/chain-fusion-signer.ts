@@ -20,10 +20,10 @@ export const idlFactory = ({ IDL }) => {
   })
   const CallerPaysIcrc2Tokens = IDL.Record({ ledger: IDL.Principal })
   const PaymentType = IDL.Variant({
-    PatronPaysIcrc2Tokens: PatronPaysIcrc2Tokens,
+    PatronPaysIcrc2Tokens,
     AttachedCycles: IDL.Null,
     CallerPaysIcrc2Cycles: IDL.Null,
-    CallerPaysIcrc2Tokens: CallerPaysIcrc2Tokens,
+    CallerPaysIcrc2Tokens,
     PatronPaysIcrc2Cycles: Account,
   })
   const GetAddressResponse = IDL.Record({ address: IDL.Text })
@@ -89,7 +89,7 @@ export const idlFactory = ({ IDL }) => {
   })
   const GetAddressError = IDL.Variant({
     InternalError: IDL.Record({ msg: IDL.Text }),
-    PaymentError: PaymentError,
+    PaymentError,
   })
   const Result = IDL.Variant({
     Ok: GetAddressResponse,
@@ -139,7 +139,7 @@ export const idlFactory = ({ IDL }) => {
   const SendBtcError = IDL.Variant({
     BuildP2wpkhError: BuildP2wpkhTxError,
     InternalError: IDL.Record({ msg: IDL.Text }),
-    PaymentError: PaymentError,
+    PaymentError,
   })
   const Result_2 = IDL.Variant({
     Ok: SendBtcResponse,
@@ -156,7 +156,7 @@ export const idlFactory = ({ IDL }) => {
   const EthAddressResponse = IDL.Record({ address: IDL.Text })
   const EthAddressError = IDL.Variant({
     SigningError: IDL.Tuple(RejectionCode_1, IDL.Text),
-    PaymentError: PaymentError,
+    PaymentError,
   })
   const Result_3 = IDL.Variant({
     Ok: EthAddressResponse,

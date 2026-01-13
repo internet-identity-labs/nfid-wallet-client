@@ -2,11 +2,12 @@ import clsx from "clsx"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 
+import { CardBody } from "@nfid/ui"
+import { NFIDLogin } from "@nfid/ui/pages/nfid-login"
+import { AppScreen } from "@nfid/ui/templates/app-screen/AppScreen"
+import { useNFIDNavigate } from "@nfid/ui/utils/use-nfid-navigate"
+
 import { useLoadProfileFromStorage } from "frontend/hooks"
-import { CardBody } from "frontend/ui/molecules/card/body"
-import { NFIDLogin } from "frontend/ui/pages/nfid-login"
-import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
-import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
 
 import { useAuthentication } from "../../use-authentication"
 

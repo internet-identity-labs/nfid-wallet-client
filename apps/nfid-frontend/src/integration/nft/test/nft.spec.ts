@@ -2,10 +2,8 @@
  * @jest-environment jsdom
  */
 import { Principal } from "@dfinity/principal"
+
 import BigNumber from "bignumber.js"
-import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
-import { mockGeekResponse } from "src/integration/nft/mock/mock"
-import { nftService } from "src/integration/nft/nft-service"
 
 import { exchangeRateService } from "@nfid/integration"
 import {
@@ -17,6 +15,9 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
+import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
+import { mockGeekResponse } from "src/integration/nft/mock/mock"
+import { nftService } from "src/integration/nft/nft-service"
 
 import { NftImpl } from "../impl/nft-abstract"
 

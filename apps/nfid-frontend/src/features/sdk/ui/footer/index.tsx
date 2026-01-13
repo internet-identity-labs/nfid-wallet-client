@@ -1,10 +1,11 @@
 import { DelegationIdentity } from "@dfinity/identity"
-import clsx from "clsx"
-import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 
-import { Skeleton } from "@nfid-frontend/ui"
-import { truncateString } from "@nfid-frontend/utils"
+import clsx from "clsx"
+
 import { ICP_DECIMALS } from "@nfid/integration/token/constants"
+import { Skeleton } from "@nfid/ui"
+import { TickerAmount } from "@nfid/ui/molecules/ticker-amount"
+import { truncateString } from "@nfid/utils"
 
 export const SDKFooter = ({
   identity,

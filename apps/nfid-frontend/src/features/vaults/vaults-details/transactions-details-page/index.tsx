@@ -1,23 +1,24 @@
 import clsx from "clsx"
-import toaster from "packages/ui/src/atoms/toast"
 import React, { useCallback, useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 
-import { Badge, Button, IconCmpOut } from "@nfid-frontend/ui"
 import { approveTransaction, TransactionState } from "@nfid/integration"
+import { Badge, Button, IconCmpOut } from "@nfid/ui"
+import { Accordion } from "@nfid/ui/atoms/accordion"
+import toaster from "@nfid/ui/atoms/toast"
+import ProfileTemplate from "@nfid/ui/templates/profile-template/Template"
 
-import { Accordion } from "frontend/ui/atoms/accordion"
-import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
+import { NFIDTheme } from "frontend/App"
 
 import {
   IVaultTransactionsDetails,
   VaultBadgeStatuses,
 } from "../transactions-page/table/table-row"
+
 import { VaultTransactionInfo } from "./info-block"
 import { TransactionInfoRow } from "./info-row"
 import { VaultTransactionRejectReason } from "./rejected-modal"
 import { TransactionStatusArrow } from "./status-arrow"
-import { NFIDTheme } from "frontend/App"
 
 interface VaultTransactionsCoordinatorProps {
   walletTheme: NFIDTheme

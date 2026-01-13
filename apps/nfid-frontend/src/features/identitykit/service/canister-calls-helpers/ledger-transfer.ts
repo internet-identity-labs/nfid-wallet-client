@@ -6,6 +6,7 @@ import { exchangeRateService, getBalance } from "@nfid/integration"
 import { ICP_DECIMALS, WALLET_FEE_E8S } from "@nfid/integration/token/constants"
 
 import { RPCMessage } from "../../type"
+
 import { TransferMetadata } from "./interfaces"
 
 export const getLedgerTransferMetadata = async (

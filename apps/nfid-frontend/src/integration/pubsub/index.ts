@@ -1,4 +1,5 @@
 import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
+
 import { SWRConfiguration } from "swr"
 
 import { pubsub } from "@nfid/integration"
@@ -43,7 +44,7 @@ export function buildRemoteLoginRegisterMessage(
 export function isRemoteLoginRegisterMessage(
   message: BaseMessage,
 ): message is RemoteLoginRegisterMessage {
-  return (message as BaseMessage).type === "remote-login-register"
+  return message.type === "remote-login-register"
 }
 
 export interface NFIDLoginRegisterMessage extends BaseMessage {
@@ -97,7 +98,7 @@ export async function postMessages(topic: Topic, messages: any[]) {
       messages.map((m) => JSON.stringify(m)),
     )
     .then((r) => unpackResponse(sanitizeResponse(r)))
-    .catch(async (e) => {
+    .catch(async (_e) => {
       await createTopic(topic)
         .then(() => postMessages(topic, messages))
         .catch((e) => {

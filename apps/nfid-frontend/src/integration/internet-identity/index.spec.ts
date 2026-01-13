@@ -29,7 +29,7 @@ describe.skip("ii suite", () => {
   jest.setTimeout(50000)
 
   describe("II Service Test", () => {
-    it("Should create protected Recovery device", async function () {
+    it("Should create protected Recovery device", async () => {
       const mockedIdentity = Ed25519KeyIdentity.generate()
       const { delegationIdentity } =
         await generateDelegationIdentity(mockedIdentity)
@@ -79,7 +79,7 @@ describe.skip("ii suite", () => {
       expect(hasOwnProperty(authDevice.protection, "unprotected")).toEqual(true)
     })
 
-    it("should protect Unprotect Recovery Device", async function () {
+    it("should protect Unprotect Recovery Device", async () => {
       const mockedIdentity = Ed25519KeyIdentity.generate()
       const { delegationIdentity: delegationIdentityDummy } =
         await generateDelegationIdentity(mockedIdentity)
@@ -111,7 +111,7 @@ describe.skip("ii suite", () => {
         new Date(Date.now() + 3_600_000 * 44),
       )
       const feDelegation: FrontendDelegation = {
-        chain: chain,
+        chain,
         sessionKey: mockedIdentity,
         delegationIdentity: delegationIdentityDummy,
       }

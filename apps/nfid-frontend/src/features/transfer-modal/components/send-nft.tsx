@@ -1,20 +1,20 @@
-import toaster from "packages/ui/src/atoms/toast"
-import { TransferNFTUi } from "packages/ui/src/organisms/send-receive/components/send-nft"
 import { useCallback, useEffect, useMemo, useState } from "react"
+import { FormProvider, useForm } from "react-hook-form"
 
 import { useSWR } from "@nfid/swr"
+import toaster from "@nfid/ui/atoms/toast"
+import { TransferNFTUi } from "@nfid/ui/organisms/send-receive/components/send-nft"
 
 import { fetchNFT, fetchNFTs } from "frontend/features/collectibles/utils/util"
 import { useIdentity } from "frontend/hooks/identity"
-import { transferEXT } from "frontend/integration/entrepot/ext"
-
-import { FormValues, SendStatus } from "../types"
-import { getAddressBookNftOptions, validateNftAddress } from "../utils"
 import {
   addressBookFacade,
   NftSearchRequest,
 } from "frontend/integration/address-book"
-import { FormProvider, useForm } from "react-hook-form"
+import { transferEXT } from "frontend/integration/entrepot/ext"
+
+import { FormValues, SendStatus } from "../types"
+import { getAddressBookNftOptions, validateNftAddress } from "../utils"
 
 interface ITransferNFT {
   preselectedNFTId?: string

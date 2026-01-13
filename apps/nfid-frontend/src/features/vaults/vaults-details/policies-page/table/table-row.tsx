@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { TableCell, TableRow } from "@nfid-frontend/ui"
+import { TableCell, TableRow } from "@nfid/ui"
 
 export interface VaultsPoliciesTableRowProps {
   id: bigint

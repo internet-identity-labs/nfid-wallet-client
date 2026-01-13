@@ -1,6 +1,6 @@
 import clsx from "clsx"
 
-import { IconCmpGrid, IconCmpTable } from "@nfid-frontend/ui"
+import { IconCmpGrid, IconCmpTable } from "@nfid/ui"
 
 interface INFTDisplaySwitch {
   state: "grid" | "table"

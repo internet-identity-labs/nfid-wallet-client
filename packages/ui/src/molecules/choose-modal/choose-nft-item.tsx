@@ -1,12 +1,12 @@
 import { clsx } from "clsx"
 
-import { trimConcat } from "@nfid-frontend/utils"
+import { trimConcat } from "@nfid/utils"
 
 import { NFT } from "frontend/integration/nft/nft"
 
-import { IconNftPlaceholder } from "../../atoms/icons"
-import ImageWithFallback from "../../atoms/image-with-fallback"
-import { Skeleton } from "../../atoms/skeleton"
+import { IconNftPlaceholder } from "@nfid/ui/atoms/icons"
+import ImageWithFallback from "@nfid/ui/atoms/image-with-fallback"
+import { Skeleton } from "@nfid/ui/atoms/skeleton"
 
 interface IChooseNftItem {
   token: NFT

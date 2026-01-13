@@ -12,6 +12,7 @@ import { fetchProfile } from "frontend/integration/identity-manager"
 import { AuthorizationRequest } from "frontend/state/authorization"
 
 import { securityConnector } from "../security/device-connector"
+
 import { passkeyConnector } from "./auth-selection/passkey-flow/services"
 import { AuthenticationContext } from "./root/root-machine"
 

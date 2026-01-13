@@ -1,6 +1,7 @@
 import { Principal } from "@dfinity/principal"
 import { Meta, StoryFn } from "@storybook/react"
-import { ToggleButton } from "packages/ui/src/molecules/toggle-button"
+
+import { ToggleButton } from "@nfid/ui"
 import { FormProvider, useForm } from "react-hook-form"
 
 import { Category, State } from "@nfid/integration/token/icrc1/enum/enums"

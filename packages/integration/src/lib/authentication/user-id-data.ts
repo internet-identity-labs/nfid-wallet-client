@@ -50,7 +50,7 @@ export async function createUserIdData(
 
   return {
     userId: account.data[0]!.principal_id,
-    publicKey: publicKey,
+    publicKey,
     anchor: account.data[0]!.anchor,
     wallet: rootWallet,
     name:

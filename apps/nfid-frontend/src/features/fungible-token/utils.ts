@@ -8,11 +8,11 @@ import {
 } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { mapState } from "@nfid/integration/token/icrc1/util"
+
 import { arbitrumErc20Service } from "frontend/integration/ethereum/arbitrum/arbitrum-erc20.service"
 import { baseErc20Service } from "frontend/integration/ethereum/base/base-erc20.service"
 import { ethErc20Service } from "frontend/integration/ethereum/eth/eth-erc20.service"
 import { polygonErc20Service } from "frontend/integration/ethereum/polygon/pol-erc20.service"
-
 import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
 import { tokenFactory } from "frontend/integration/ft/token-creator/token-factory.service"

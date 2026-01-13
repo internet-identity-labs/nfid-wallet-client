@@ -1,4 +1,5 @@
 import { PublicKey } from "../_ic_api/internet_identity.d"
+
 import { getDelegateRetry } from "./get-delegate"
 import { prepareDelegate } from "./prepare-delegate"
 import { ThirdPartyAuthSession } from "./types"

@@ -1,6 +1,6 @@
 import clsx from "clsx"
-import { A } from "packages/ui/src/atoms/custom-link"
-import { RangeSlider } from "packages/ui/src/atoms/range-slider"
+import { A } from "@nfid/ui/atoms/custom-link"
+import { RangeSlider } from "@nfid/ui/atoms/range-slider"
 import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
@@ -15,7 +15,7 @@ import {
   IconCmpStakeGray,
   Skeleton,
   IconInfoDark,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 import { useDarkTheme } from "frontend/hooks"

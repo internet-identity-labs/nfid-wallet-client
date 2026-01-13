@@ -1,11 +1,11 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
+
 import BigNumber from "bignumber.js"
+import { TransactionResponse, isAddress } from "ethers"
 import debounce from "lodash/debounce"
 import { PRINCIPAL_LENGTH } from "packages/constants"
-import toaster from "packages/ui/src/atoms/toast"
-import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
 import { useCallback, useMemo, useState, useEffect, useRef } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
@@ -16,14 +16,33 @@ import {
   transfer as transferICP,
 } from "@nfid/integration/token/icp"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
+import {
+  Category,
+  ChainId,
+  isEvmToken,
+} from "@nfid/integration/token/icrc1/enum/enums"
 import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import toaster from "@nfid/ui/atoms/toast"
+import { TransferFTUi } from "@nfid/ui/organisms/send-receive/components/send-ft"
+import { useTokensInit } from "@nfid/ui/organisms/send-receive/hooks/token-init"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { useIdentity } from "frontend/hooks/identity"
+import {
+  addressBookFacade,
+  FtSearchRequest,
+} from "frontend/integration/address-book"
 import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
+import { FTERC20AbstractImpl } from "frontend/integration/ft/impl/ft-erc20-abstract-impl"
+import { FTEvmAbstractImpl } from "frontend/integration/ft/impl/ft-evm-abstract-impl"
+import {
+  FeeResponse,
+  FeeResponseBTC,
+  FeeResponseETH,
+} from "frontend/integration/ft/utils"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 
 import { FormValues, SelectedToken, SendStatus } from "../types"
@@ -34,25 +53,6 @@ import {
   updateCachedInitedTokens,
   getAddressBookFtOptions,
 } from "../utils"
-import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
-import {
-  FeeResponse,
-  FeeResponseBTC,
-  FeeResponseETH,
-} from "frontend/integration/ft/utils"
-import {
-  Category,
-  ChainId,
-  isEvmToken,
-} from "@nfid/integration/token/icrc1/enum/enums"
-import { FTEvmAbstractImpl } from "frontend/integration/ft/impl/ft-evm-abstract-impl"
-import { FTERC20AbstractImpl } from "frontend/integration/ft/impl/ft-erc20-abstract-impl"
-
-import { TransactionResponse, isAddress } from "ethers"
-import {
-  addressBookFacade,
-  FtSearchRequest,
-} from "frontend/integration/address-book"
 
 const DEFAULT_TRANSFER_ERROR = "Something went wrong"
 
@@ -469,7 +469,7 @@ export const TransferFT = ({
         transferResult = transferICP({
           amount: stringICPtoE8s(String(amount)),
           to: getAccountIdentifier(to),
-          identity: identity,
+          identity,
         })
       } else {
         const { owner, subaccount } = decodeIcrcAccount(to)
@@ -480,7 +480,7 @@ export const TransferFT = ({
           },
           amount: BigInt(
             BigNumber(amount)
-              .multipliedBy(10 ** token.getTokenDecimals()!)
+              .multipliedBy(10 ** token.getTokenDecimals())
               .toFixed(),
           ),
           memo: [],

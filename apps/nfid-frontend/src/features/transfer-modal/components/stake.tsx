@@ -1,5 +1,3 @@
-import toaster from "packages/ui/src/atoms/toast"
-import { StakeUi } from "packages/ui/src/organisms/send-receive/components/stake"
 import { useCallback, useMemo, useState, useEffect } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
@@ -10,6 +8,9 @@ import {
 } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutate, mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
+import toaster from "@nfid/ui/atoms/toast"
+import { StakeUi } from "@nfid/ui/organisms/send-receive/components/stake"
+import { useTokensInit } from "@nfid/ui/organisms/send-receive/hooks/token-init"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { fetchStakedTokens } from "frontend/features/staking/utils"
@@ -23,7 +24,6 @@ import {
   getTokensWithUpdatedBalance,
   updateCachedInitedTokens,
 } from "../utils"
-import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 const DEFAULT_STAKE_ERROR = "Something went wrong"
 

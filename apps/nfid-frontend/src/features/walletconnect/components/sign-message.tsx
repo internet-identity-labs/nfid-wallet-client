@@ -1,14 +1,15 @@
-import React from "react"
 import { SignClientTypes } from "@walletconnect/types"
+import React from "react"
 
 import {
   EthereumTransactionParams,
   ValidationStatus,
   WCGasData,
 } from "../types"
+
 import { WalletConnectSignSimpleMessage } from "./sign-simple-message"
-import { WalletConnectSignTypedData } from "./sign-typed-data"
 import { WalletConnectSignTransaction } from "./sign-transaction"
+import { WalletConnectSignTypedData } from "./sign-typed-data"
 
 interface WalletConnectSignMessageProps {
   request: SignClientTypes.EventArguments["session_request"]

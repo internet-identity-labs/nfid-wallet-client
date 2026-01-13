@@ -31,6 +31,6 @@ export async function prepareDelegate(
     )
     .then(([userPublicKey, timestamp]) => ({
       userPublicKey: new Uint8Array(userPublicKey),
-      timestamp: timestamp,
+      timestamp,
     }))
 }

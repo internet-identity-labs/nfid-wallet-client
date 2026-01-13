@@ -2,11 +2,15 @@ import { Agent, HttpAgent } from "@dfinity/agent"
 
 import { type _SERVICE as ConsentMessageCanister } from "../idl/consent"
 import { idlFactory as ConsentMessageCanisterIDL } from "../idl/consent_idl"
+
 import { actorService } from "./actor.service"
 import { targetValidationServices } from "./target-validation/target-validation.service"
 
 export class TargetValidationError extends Error {
-  constructor(error: string, public report: VerificationReport) {
+  constructor(
+    error: string,
+    public report: VerificationReport,
+  ) {
     super(error)
   }
 }

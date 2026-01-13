@@ -3,6 +3,7 @@
  */
 import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
+
 import { expect } from "@jest/globals"
 
 import * as nfidIntegration from "@nfid/integration"
@@ -14,7 +15,7 @@ import {
 
 describe("wallet suite", () => {
   describe("getWalletPrincipal", () => {
-    it("request ii for principal", async function () {
+    it("request ii for principal", async () => {
       const expected = Principal.anonymous()
       // @ts-ignore
       nfidIntegration.ii.get_principal = jest.fn(async () => expected)
@@ -24,7 +25,7 @@ describe("wallet suite", () => {
   })
 
   describe("getWalletDelegation", () => {
-    it("should pass correct scope", async function () {
+    it("should pass correct scope", async () => {
       const delegationByScope = jest
         .spyOn(nfidIntegration.delegationState, "getDelegation")
         .mockImplementation(() => Promise.resolve({} as DelegationIdentity))

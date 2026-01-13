@@ -1,5 +1,3 @@
-import React from "react"
-
 import Discord from "./assets/ds.svg"
 import Github from "./assets/gh.svg"
 import Twitter from "./assets/tw.svg"

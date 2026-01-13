@@ -1,13 +1,7 @@
 import { useActor } from "@xstate/react"
-import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
-import { Balance } from "packages/ui/src/organisms/profile-info/balance"
-import { Tokens } from "packages/ui/src/organisms/tokens"
-import { ScanTokens } from "packages/ui/src/organisms/tokens/components/scan-tokens"
 import { useContext, useEffect, useMemo, useState } from "react"
-import { userPrefService } from "src/integration/user-preferences/user-pref-service"
 import useSWR from "swr"
 
-import { Skeleton } from "@nfid-frontend/ui"
 import { storageWithTtl } from "@nfid/client-db"
 import { authState } from "@nfid/integration"
 import {
@@ -15,19 +9,26 @@ import {
   CKETH_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 import { useSWRWithTimestamp } from "@nfid/swr"
+import { Skeleton } from "@nfid/ui"
+import ProfileContainer from "@nfid/ui/atoms/profile-container/Container"
+import { Balance } from "@nfid/ui/organisms/profile-info/balance"
+import { useTokensInit } from "@nfid/ui/organisms/send-receive/hooks/token-init"
+import { Tokens } from "@nfid/ui/organisms/tokens"
+import { ScanTokens } from "@nfid/ui/organisms/tokens/components/scan-tokens"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { ftService } from "frontend/integration/ft/ft-service"
 import { ProfileContext } from "frontend/provider"
+import { userPrefService } from "src/integration/user-preferences/user-pref-service"
 
 import { ModalType, SelectedToken } from "../transfer-modal/types"
+
 import { fetchTokens } from "./utils"
-import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
-import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 const TokensPage = () => {
   const [hideZeroBalance, setHideZeroBalance] = useState(false)

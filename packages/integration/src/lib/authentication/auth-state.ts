@@ -7,15 +7,20 @@ import {
   Ed25519KeyIdentity,
   wrapDER,
 } from "@dfinity/identity"
+
 import base64url from "base64url"
 import { BehaviorSubject, find, lastValueFrom, map } from "rxjs"
+
+import { storageWithTtl } from "@nfid/client-db"
 
 import { PassKeyData } from "../_ic_api/passkey_storage.d"
 import { im, passkeyStorage, replaceActorIdentity } from "../actors"
 import { agent } from "../agent"
 import { isDelegationExpired } from "../agent/is-delegation-expired"
 import { Environment } from "../constant/env.constant"
+import { domainKeyStorage } from "../lambda/domain-key-storage"
 import { getPasskey, storePasskey } from "../lambda/passkey"
+
 import { requestFEDelegation } from "./frontend-delegation"
 import { setupSessionManager } from "./session-handling"
 import {
@@ -32,8 +37,6 @@ import {
   serializeUserIdData,
   UserIdData,
 } from "./user-id-data"
-import { domainKeyStorage } from "../lambda/domain-key-storage"
-import { storageWithTtl } from "@nfid/client-db"
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -334,7 +337,7 @@ export function replaceIdentity(identity: Identity, calledFrom?: string) {
 }
 
 function getUserIdDataStorageKey(delegationIdentity: DelegationIdentity) {
-  return "user_profile_data_" + delegationIdentity.getPrincipal().toText()
+  return `user_profile_data_${delegationIdentity.getPrincipal().toText()}`
 }
 
 export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
@@ -438,7 +441,7 @@ export async function migratePasskeys(identity: DelegationIdentity) {
       .flat(),
   )
   for (const credentialId of credentialIds) {
-    const passkey = await getPasskey([credentialId!])
+    const passkey = await getPasskey([credentialId])
     storePasskey(passkey[0].key, passkey[0].data)
   }
 }

@@ -1,3 +1,4 @@
+export * from "./cache"
 export * from "./lib/actors"
 export * from "./lib/agent"
 export * from "./lib/agent/is-delegation-expired"
@@ -20,6 +21,7 @@ export * from "./lib/verification-email/verification.service"
 export * from "./lib/google-signin/google-signin-v2.service"
 export * from "./lib/lambda/passkey"
 export * from "./lib/lambda/execute-canister-call"
+export * from "./lib/lambda/domain-key-repository"
 export * from "./lib/delegation-factory/delegation-i"
 export * from "./lib/lambda/targets"
 export * from "./lib/delegation"
@@ -37,4 +39,6 @@ export {
   stopDissolving as stopICPDissolving,
   startDissolving as startICPDissolving,
   disburse as disburseICP,
+  queryNeuron,
+  getNetworkEconomicsParameters,
 } from "./lib/staking/governance.api"

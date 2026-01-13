@@ -1,4 +1,4 @@
-import { Button } from "packages/ui/src/molecules/button"
+import { Button } from "@nfid/ui/molecules/button"
 import { FC } from "react"
 
 import WarningIcon from "../assets/swap-warning.svg"

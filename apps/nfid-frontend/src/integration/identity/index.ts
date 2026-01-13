@@ -4,6 +4,7 @@ import { DeviceData } from "../_ic_api/internet_identity.d"
 import { fetchProfile } from "../identity-manager"
 import { Device, fetchAuthenticatorDevices } from "../internet-identity"
 import { creationOptions, getCredentials } from "../webauthn/creation-options"
+
 import { MultiWebAuthnIdentity } from "./multiWebAuthnIdentity"
 
 /**

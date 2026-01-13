@@ -1,7 +1,7 @@
 import { Ed25519KeyIdentity } from "@dfinity/identity"
-import toaster from "packages/ui/src/atoms/toast"
 
 import { RootWallet, DeviceType, authState, ic } from "@nfid/integration"
+import toaster from "@nfid/ui/atoms/toast"
 
 import { securityConnector } from "frontend/features/security/device-connector"
 import { fetchProfile } from "frontend/integration/identity-manager"

@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
+import ImageWithFallback from "@nfid/ui/atoms/image-with-fallback"
 import { Dispatch, FC, SetStateAction } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
@@ -9,12 +9,11 @@ import {
   IconCmpArrow,
   IconCmpArrowRight,
   IconCmpNFTPreview,
-  Input,
   IconNftPlaceholder,
   ChooseNftModal,
   Label,
   IGroupedSendAddress,
-} from "@nfid-frontend/ui"
+} from "@nfid/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 import { NFT } from "frontend/integration/nft/nft"
@@ -24,7 +23,11 @@ import {
   NftSearchRequest,
   UserAddressPreview,
 } from "frontend/integration/address-book"
-import { ChooseAddressModal } from "packages/ui/src/molecules/choose-modal/address-modal"
+import { ChooseAddressModal } from "@nfid/ui/molecules/choose-modal/address-modal"
+
+export interface TransferNFTFormValues {
+  to: string
+}
 
 export interface TransferNFTUiProps {
   isLoading: boolean
@@ -33,7 +36,7 @@ export interface TransferNFTUiProps {
   setSelectedNFTId: Dispatch<SetStateAction<string>>
   selectedNFT: NFT | undefined
   selectedReceiverWallet: string | undefined
-  submit: (values: any) => Promise<Id | undefined>
+  submit: (values: TransferNFTFormValues) => Promise<Id | undefined>
   validateAddress: (value: string) => boolean | string
   isSuccessOpen: boolean
   onClose: () => void
@@ -46,7 +49,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
   nfts,
   setSelectedNFTId,
   selectedNFT,
-  selectedReceiverWallet,
+  selectedReceiverWallet: _selectedReceiverWallet,
   submit,
   validateAddress,
   isSuccessOpen,

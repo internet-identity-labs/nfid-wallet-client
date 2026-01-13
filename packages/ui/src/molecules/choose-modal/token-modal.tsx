@@ -11,14 +11,9 @@ import {
 } from "react"
 import { IoIosSearch } from "react-icons/io"
 
-import {
-  ChooseTokenSkeleton,
-  IconInfo,
-  IconInfoDark,
-  Tooltip,
-} from "@nfid-frontend/ui"
-import { Input } from "@nfid-frontend/ui"
-import { IconCmpArrow } from "@nfid-frontend/ui"
+import { ChooseTokenSkeleton, IconInfo, IconInfoDark, Tooltip } from "@nfid/ui"
+import { Input } from "@nfid/ui"
+import { IconCmpArrow } from "@nfid/ui"
 import { authState } from "@nfid/integration"
 
 import { useDarkTheme } from "frontend/hooks"
@@ -27,10 +22,10 @@ import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 import { FTImpl } from "frontend/integration/ft/impl/ft-impl"
 import { NFT } from "frontend/integration/nft/nft"
 
-import { useIntersectionObserver } from "../../organisms/send-receive/hooks/intersection-observer"
+import { useIntersectionObserver } from "@nfid/ui/organisms/send-receive/hooks/intersection-observer"
 import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
-import { IModalType } from "../../organisms/send-receive/utils"
-import { ChainFilter } from "../../organisms/tokens/components/chain-filter"
+import { IModalType } from "@nfid/ui/organisms/send-receive/utils"
+import { ChainFilter } from "@nfid/ui/organisms/tokens/components/chain-filter"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 
 const INITED_TOKENS_LIMIT = 6

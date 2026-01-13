@@ -1,5 +1,4 @@
 import debounce from "lodash/debounce"
-import { ConvertUi } from "packages/ui/src/organisms/send-receive/components/convert"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 
@@ -12,6 +11,8 @@ import {
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
 import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
+import { ConvertUi } from "@nfid/ui/organisms/send-receive/components/convert"
+import { useTokensInit } from "@nfid/ui/organisms/send-receive/hooks/token-init"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useEthAddress, useBtcAddress } from "frontend/hooks"
@@ -26,7 +27,6 @@ import {
   CkEthToEthFee,
   EthToCkEthFee,
 } from "frontend/integration/ethereum/evm.service"
-
 import { FT } from "frontend/integration/ft/ft"
 
 import { FormValues, SendStatus } from "../types"
@@ -35,7 +35,6 @@ import {
   getTokensWithUpdatedBalance,
   updateCachedInitedTokens,
 } from "../utils"
-import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 interface ConvertBTCProps {
   preselectedSourceTokenAddress: string | undefined

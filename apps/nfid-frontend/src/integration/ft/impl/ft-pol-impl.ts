@@ -1,9 +1,3 @@
-import {
-  Category,
-  ChainId,
-  State,
-} from "@nfid/integration/token/icrc1/enum/enums"
-import PolygonIcon from "packages/ui/src/organisms/tokens/assets/polygon.svg"
 import BigNumber from "bignumber.js"
 
 import {
@@ -11,12 +5,20 @@ import {
   EVM_NATIVE,
   POLYGON_ADDRESS,
 } from "@nfid/integration/token/constants"
-import { FTEvmAbstractImpl } from "./ft-evm-abstract-impl"
+import {
+  Category,
+  ChainId,
+  State,
+} from "@nfid/integration/token/icrc1/enum/enums"
+import PolygonIcon from "@nfid/ui/organisms/tokens/assets/polygon.svg"
+
+import { polygonErc20Service } from "frontend/integration/ethereum/polygon/pol-erc20.service"
 import {
   PolygonService,
   polygonService,
 } from "frontend/integration/ethereum/polygon/polygon.service"
-import { polygonErc20Service } from "frontend/integration/ethereum/polygon/pol-erc20.service"
+
+import { FTEvmAbstractImpl } from "./ft-evm-abstract-impl"
 
 export class FTPolygonImpl extends FTEvmAbstractImpl {
   constructor(state: State) {

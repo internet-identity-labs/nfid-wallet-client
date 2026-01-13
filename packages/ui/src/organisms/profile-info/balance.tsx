@@ -1,8 +1,8 @@
 import BigNumber from "bignumber.js"
 import clsx from "clsx"
 
-import { ArrowPercentChange } from "../../atoms/arrow-percent-change"
-import { Skeleton } from "../../atoms/skeleton"
+import { ArrowPercentChange } from "@nfid/ui/atoms/arrow-percent-change"
+import { Skeleton } from "@nfid/ui/atoms/skeleton"
 
 export function Balance({
   isLoading,

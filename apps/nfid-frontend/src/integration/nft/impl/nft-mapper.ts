@@ -18,7 +18,7 @@ export class NftMapper {
       case MarketPlace.ICPSWAP:
         return new NftIcpSwap(mappedToken)
       default: {
-        console.warn("Unsupported marketplace: " + mappedToken.marketPlace)
+        console.warn(`Unsupported marketplace: ${mappedToken.marketPlace}`)
         return null
       }
     }

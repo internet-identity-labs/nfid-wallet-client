@@ -10,6 +10,7 @@ import {
   Wallet as WalletCandid,
 } from "../_ic_api/vault.d"
 import { hasOwnProperty } from "../test-utils"
+
 import {
   Approve,
   Currency,

@@ -1,6 +1,7 @@
 import { ActorSubclass } from "@dfinity/agent"
 
 import { type _SERVICE as ConsentMessageCanister } from "../../idl/consent"
+
 import { originsTargetValidationService } from "./origins-target-validation.service"
 
 export interface TargetValidationService {

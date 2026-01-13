@@ -14,17 +14,17 @@ import {
   IStakingICPDelegates,
   StakingState,
 } from "frontend/integration/staking/types"
-import { NotFound } from "frontend/ui/pages/404"
+import { NotFound } from "@nfid/ui/pages/404"
 
-import { IconNftPlaceholder } from "../../atoms/icons"
-import ImageWithFallback from "../../atoms/image-with-fallback"
-import { Skeleton } from "../../atoms/skeleton"
-import { StakingHeaderSkeleton } from "../../atoms/skeleton/staking-header"
-import { TableStakingOptionSkeleton } from "../../atoms/skeleton/table-staking-option"
-import { Button } from "../../molecules/button"
-import { ArrowButton } from "../../molecules/button/arrow-button"
-import { Input } from "../../molecules/input"
-import { ModalComponent } from "../../molecules/modal/index-v0"
+import { IconNftPlaceholder } from "@nfid/ui/atoms/icons"
+import ImageWithFallback from "@nfid/ui/atoms/image-with-fallback"
+import { Skeleton } from "@nfid/ui/atoms/skeleton"
+import { StakingHeaderSkeleton } from "@nfid/ui/atoms/skeleton/staking-header"
+import { TableStakingOptionSkeleton } from "@nfid/ui/atoms/skeleton/table-staking-option"
+import { Button } from "@nfid/ui/molecules/button"
+import { ArrowButton } from "@nfid/ui/molecules/button/arrow-button"
+import { Input } from "@nfid/ui/molecules/input"
+import { ModalComponent } from "@nfid/ui/molecules/modal"
 import { StakingHeader } from "./components/staking-header"
 import { StakingOption } from "./components/staking-option"
 import {

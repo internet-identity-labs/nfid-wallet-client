@@ -15,7 +15,7 @@ export class YumiTransactionMapper {
       case "sold":
         return new SoldTransactionRecordYumi(transaction)
       default:
-        console.error("Unknown YUMI transaction type: " + transaction.eventType)
+        console.error(`Unknown YUMI transaction type: ${transaction.eventType}`)
         return null
     }
   }

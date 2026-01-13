@@ -1,6 +1,6 @@
+import { UserAddressEntity } from "../interfaces"
 import { AddressBookMapper } from "../mapper/address-book.mapper"
 import { SearchRequest, UserAddressPreview } from "../types"
-import { UserAddressEntity } from "../interfaces"
 
 export class GeneralSearchService {
   constructor(private readonly mapper: AddressBookMapper) {}

@@ -1,6 +1,6 @@
 import clsx from "clsx"
 
-import { IconCmpInfo, Tooltip } from "@nfid-frontend/ui"
+import { IconCmpInfo, Tooltip } from "@nfid/ui"
 
 export interface IInfoListItem {
   title: string

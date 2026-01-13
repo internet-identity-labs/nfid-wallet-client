@@ -1,12 +1,12 @@
 import clsx from "clsx"
-import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
-import React from "react"
 
-import { IconCmpWarning } from "@nfid-frontend/ui"
+import { IconCmpWarning } from "@nfid/ui"
+import { TickerAmount } from "@nfid/ui/molecules/ticker-amount"
 
 import { CanisterCallTitle } from "../../constants"
 import { ICRC2Metadata } from "../../service/canister-calls-helpers/interfaces"
 import { RPCPromptTemplate } from "../templates/prompt-template"
+
 import { CallCanisterDetails } from "./details"
 
 export interface CallCanisterICRC2SpendingCapProps {

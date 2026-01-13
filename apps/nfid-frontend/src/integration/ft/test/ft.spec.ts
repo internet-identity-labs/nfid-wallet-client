@@ -1,9 +1,6 @@
 import { Principal } from "@dfinity/principal"
+
 import BigNumber from "bignumber.js"
-import { FT } from "src/integration/ft/ft"
-import { ftService } from "src/integration/ft/ft-service"
-import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
-import { mockGeekResponse } from "src/integration/nft/mock/mock"
 
 import { exchangeRateService } from "@nfid/integration"
 import {
@@ -12,17 +9,21 @@ import {
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
+import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
+import { arbitrumErc20Service } from "frontend/integration/ethereum/arbitrum/arbitrum-erc20.service"
+import { baseErc20Service } from "frontend/integration/ethereum/base/base-erc20.service"
+import { bnbErc20Service } from "frontend/integration/ethereum/bnb/bnb-erc20.service"
+import { ethErc20Service } from "frontend/integration/ethereum/eth/eth-erc20.service"
+import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
+import { polygonErc20Service } from "frontend/integration/ethereum/polygon/pol-erc20.service"
 import { nftService } from "frontend/integration/nft/nft-service"
 import { portfolioService } from "frontend/integration/portfolio-balance/portfolio-service"
-import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
-import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
-import { ethErc20Service } from "frontend/integration/ethereum/eth/eth-erc20.service"
-import { polygonErc20Service } from "frontend/integration/ethereum/polygon/pol-erc20.service"
-import { baseErc20Service } from "frontend/integration/ethereum/base/base-erc20.service"
-import { arbitrumErc20Service } from "frontend/integration/ethereum/arbitrum/arbitrum-erc20.service"
-import { bnbErc20Service } from "frontend/integration/ethereum/bnb/bnb-erc20.service"
+import { FT } from "src/integration/ft/ft"
+import { ftService } from "src/integration/ft/ft-service"
+import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
+import { mockGeekResponse } from "src/integration/nft/mock/mock"
 
 const userId = "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae"
 const principal = Principal.fromText(userId)
@@ -333,7 +334,7 @@ describe("ft test suite", () => {
         .spyOn(result, "getTokenRateDayChangePercent")
         .mockReturnValue(undefined)
       await result?.init(principal)
-      expect(result!.getUSDBalanceDayChange()).toEqual(BigNumber(0))
+      expect(result.getUSDBalanceDayChange()).toEqual(BigNumber(0))
     })
 
     it("should calculate negative usd balance change", async () => {
@@ -402,7 +403,7 @@ describe("ft test suite", () => {
       })
     })
 
-    it("should get all sorted tokens", async function () {
+    it("should get all sorted tokens", async () => {
       jest
         .spyOn(icrc1StorageService as any, "getICRC1Canisters")
         .mockResolvedValue([
@@ -485,7 +486,7 @@ describe("ft test suite", () => {
       expect(result[10].getTokenCategory()).toEqual(Category.Spam)
     })
 
-    it("should calculate USD balance", async function () {
+    it("should calculate USD balance", async () => {
       jest
         .spyOn(nftGeekService as any, "fetchNftGeekData")
         .mockResolvedValue(mockGeekResponse)

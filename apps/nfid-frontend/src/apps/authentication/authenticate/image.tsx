@@ -1,9 +1,9 @@
 import React from "react"
 
-interface PictureNFIDLoginProps extends React.DetailedHTMLProps<
+type PictureNFIDLoginProps = React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
   HTMLDivElement
-> {}
+>
 
 export const ImageNFIDLogin: React.FC<PictureNFIDLoginProps> = ({
   children: _children,

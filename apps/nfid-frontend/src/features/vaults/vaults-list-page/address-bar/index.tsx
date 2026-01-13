@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Copy, Loader, CenterEllipsis, Card } from "@nfid-frontend/ui"
+import { Copy, Loader, CenterEllipsis, Card } from "@nfid/ui"
 
 import { useVaultMember } from "../../hooks/use-vault-member"
 

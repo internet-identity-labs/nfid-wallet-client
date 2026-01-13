@@ -2,17 +2,19 @@
  * @jest-environment jsdom
  */
 import { Principal } from "@dfinity/principal"
+
 import { expect } from "@jest/globals"
 
 import { Account } from "@nfid/integration"
 
-import { collection, principalTokens } from "."
 import { collection as mockCollection } from "./__mock"
 import { UserNFTDetails } from "./types"
 
+import { collection, principalTokens } from "."
+
 describe("Entrepot suite", () => {
   describe("getNFTsOfPrincipals", () => {
-    it("should return correct NFTs.", async function () {
+    it("should return correct NFTs.", async () => {
       const mock = [
         {
           canisterId: mockCollection.id,
@@ -39,7 +41,7 @@ describe("Entrepot suite", () => {
       )
       const acc: Account = { accountId: "", domain: "", label: "" }
       const response: UserNFTDetails[] = await principalTokens([
-        { principal: principal, account: acc },
+        { principal, account: acc },
       ])
       expect(response[0].principal).toBe(principal)
       expect(response[0].account).toBe(acc)
@@ -56,7 +58,7 @@ describe("Entrepot suite", () => {
   })
 
   describe("collection", () => {
-    it("should return correct collection details.", async function () {
+    it("should return correct collection details.", async () => {
       const info = new Response(JSON.stringify([mockCollection]))
       jest
         .spyOn(global, "fetch")

@@ -3,6 +3,7 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
+
 import * as jose from "jose"
 
 import { DEFAULT_DELEGATION_TTL } from "@nfid/config"
@@ -55,7 +56,7 @@ export const verificationService = {
   },
 
   async sendVerification({
-    verificationMethod,
+    verificationMethod: _verificationMethod,
     emailAddress,
   }: SendVerificationEmailRequest): Promise<SendVerificationResponse> {
     const url = ic.isLocal

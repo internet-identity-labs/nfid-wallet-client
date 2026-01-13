@@ -4,7 +4,6 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 
-import { storageWithTtl } from "@nfid/client-db"
 import { ONE_HOUR_IN_MS } from "@nfid/config"
 
 import { integrationCache } from "../../cache"
@@ -23,6 +22,7 @@ import {
   oldFlowGlobalKeysFromLambda,
 } from "../lambda/lambda-delegation"
 import { validateTargets } from "../lambda/targets"
+
 import {
   getDelegationChainSignedByCanister,
   getPrincipalSignedByCanister,
@@ -73,7 +73,7 @@ export async function getGlobalDelegationChain(
   //save to temp storage for renew delegation flow
   await saveToStorage(
     origin,
-    toHexString(sessionPublicKey),
+    toHexString(new Uint8Array(sessionPublicKey).buffer),
     DEFAULT_EXPIRAITON_TIME_MILLIS,
   )
 
@@ -109,10 +109,10 @@ export async function getGlobalDelegation(
   origin = GLOBAL_ORIGIN,
 ): Promise<DelegationIdentity> {
   const identityKey = JSON.stringify(
-    identity.getPrincipal().toText() + targets + origin + "_session",
+    `${identity.getPrincipal().toText() + targets + origin}_session`,
   )
   const chainKey = JSON.stringify(
-    identity.getPrincipal().toText() + targets + origin + "_chain",
+    `${identity.getPrincipal().toText() + targets + origin}_chain`,
   )
   const identityKeyFromStorage = (await integrationCache.getItem(
     identityKey,
@@ -205,8 +205,7 @@ export async function getPublicKey(
   origin = GLOBAL_ORIGIN,
   type = DelegationType.GLOBAL,
 ): Promise<string> {
-  const cacheKey =
-    "getPublicKey" + identity.getPrincipal().toText() + type.toString()
+  const cacheKey = `getPublicKey${identity.getPrincipal().toText()}${type.toString()}`
 
   const cachedValue = await integrationCache.getItem(cacheKey)
 

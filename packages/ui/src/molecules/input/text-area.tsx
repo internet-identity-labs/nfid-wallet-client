@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import { Label } from "@nfid-frontend/ui"
+import { Label } from "@nfid/ui"
 
 interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   rows?: number

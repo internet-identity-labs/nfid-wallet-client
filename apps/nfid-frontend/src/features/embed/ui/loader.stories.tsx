@@ -2,7 +2,7 @@ import { TooltipProvider } from "@radix-ui/react-tooltip"
 import { StoryFn, Meta } from "@storybook/react"
 import { BrowserRouter } from "react-router-dom"
 
-import { ScreenResponsive } from "@nfid-frontend/ui"
+import { ScreenResponsive } from "@nfid/ui"
 
 import { Loader } from "./loader"
 

@@ -1,9 +1,9 @@
 import { useActor } from "@xstate/react"
-import { AuthEmailVerified } from "packages/ui/src/organisms/authentication/email-verified"
-import { AuthEmailError } from "packages/ui/src/organisms/authentication/error"
-import { AuthEmailPending } from "packages/ui/src/organisms/authentication/pending-verification"
 
-import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
+import { BlurredLoader } from "@nfid/ui/molecules/blurred-loader"
+import { AuthEmailVerified } from "@nfid/ui/organisms/authentication/email-verified"
+import { AuthEmailError } from "@nfid/ui/organisms/authentication/error"
+import { AuthEmailPending } from "@nfid/ui/organisms/authentication/pending-verification"
 
 import { AuthWithEmailActor } from "./machine"
 

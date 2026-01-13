@@ -156,9 +156,9 @@ export const idlFactory = ({ IDL }: any) => {
     ),
   })
 }
-export const init = ({ IDL }: any) => {
-  const InternetIdentityInit = IDL.Record({
-    assigned_user_number_range: IDL.Tuple(IDL.Nat64, IDL.Nat64),
+export const init = ({ IDL: _IDL }: any) => {
+  const InternetIdentityInit = _IDL.Record({
+    assigned_user_number_range: _IDL.Tuple(_IDL.Nat64, _IDL.Nat64),
   })
-  return [IDL.Opt(InternetIdentityInit)]
+  return [_IDL.Opt(InternetIdentityInit)]
 }

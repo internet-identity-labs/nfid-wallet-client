@@ -1,6 +1,6 @@
 import clsx from "clsx"
-import { IconNftPlaceholder } from "packages/ui/src/atoms/icons"
-import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
+import { IconNftPlaceholder } from "@nfid/ui/atoms/icons"
+import ImageWithFallback from "@nfid/ui/atoms/image-with-fallback"
 import React, { useEffect, useState } from "react"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"

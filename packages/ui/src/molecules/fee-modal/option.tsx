@@ -1,6 +1,6 @@
 import clsx from "clsx"
 
-import { IconCmpArrowRight } from "../../atoms/icons"
+import { IconCmpArrowRight } from "@nfid/ui/atoms/icons"
 
 export interface IFeeModalOption {
   title: string

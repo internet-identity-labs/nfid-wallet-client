@@ -1,15 +1,16 @@
 import React, { useCallback, useMemo, useState } from "react"
 
-import { EmptyCard, IconCmpVault, Loader } from "@nfid-frontend/ui"
 import { useSWR } from "@nfid/swr"
+import { EmptyCard, IconCmpVault, Loader } from "@nfid/ui"
+import ProfileTemplate from "@nfid/ui/templates/profile-template/Template"
 
-import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
+import { NFIDTheme } from "frontend/App"
 
 import { VaultActionBar } from "../action-bar"
 import { getAllVaults } from "../services"
+
 import { VaultAddressBar } from "./address-bar"
 import { VaultsTable } from "./table"
-import { NFIDTheme } from "frontend/App"
 
 export interface VaultsListPageProps {
   walletTheme: NFIDTheme

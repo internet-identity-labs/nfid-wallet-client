@@ -68,7 +68,7 @@ export const getIIAuthSessionService = async () => {
   const session = {
     sessionSource: "ii",
     anchor: profile?.anchor,
-    identity: identity,
+    identity,
     delegationIdentity: identity,
   } as IIAuthSession
 

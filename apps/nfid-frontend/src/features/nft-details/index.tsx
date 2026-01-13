@@ -1,6 +1,5 @@
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
-import { NFTDetails } from "packages/ui/src/organisms/nft-details"
 import {
   useCallback,
   useContext,
@@ -11,22 +10,19 @@ import {
 } from "react"
 import { useLocation, useParams } from "react-router-dom"
 
-import {
-  IconSvgArrow,
-  IconSvgArrowWhite,
-  Loader,
-  Tooltip,
-} from "@nfid-frontend/ui"
 import { useSWR } from "@nfid/swr"
+import { IconSvgArrow, IconSvgArrowWhite, Loader, Tooltip } from "@nfid/ui"
+import { NFTDetails } from "@nfid/ui/organisms/nft-details"
+import { NotFound } from "@nfid/ui/pages/404"
+import ProfileTemplate from "@nfid/ui/templates/profile-template/Template"
 
 import { NFIDTheme } from "frontend/App"
 import { useDarkTheme } from "frontend/hooks"
 import { ProfileContext } from "frontend/provider"
-import { NotFound } from "frontend/ui/pages/404"
-import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
 
 import { fetchNFT } from "../collectibles/utils/util"
 import { ModalType } from "../transfer-modal/types"
+
 import { nftInitialState, nftReducer } from "./utils"
 
 type NftDetailsProps = {

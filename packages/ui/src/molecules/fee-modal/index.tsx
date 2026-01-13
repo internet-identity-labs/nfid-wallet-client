@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { useState } from "react"
 
-import { IconCmpArrow } from "../../atoms/icons"
+import { IconCmpArrow } from "@nfid/ui/atoms/icons"
 import { CustomNetworkFee } from "./custom"
 import { IFeeModalOption } from "./option"
 

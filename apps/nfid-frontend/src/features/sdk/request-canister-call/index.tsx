@@ -1,13 +1,14 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
-import clsx from "clsx"
-import { Spinner } from "packages/ui/src/atoms/spinner"
-import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 
-import { BlurredLoader, IconCmpWarning } from "@nfid-frontend/ui"
-import { truncateString } from "@nfid-frontend/utils"
+import clsx from "clsx"
+
 import { ICP_DECIMALS } from "@nfid/integration/token/constants"
 import { useSWR } from "@nfid/swr"
+import { BlurredLoader, IconCmpWarning } from "@nfid/ui"
+import { Spinner } from "@nfid/ui/atoms/spinner"
+import { TickerAmount } from "@nfid/ui/molecules/ticker-amount"
+import { truncateString } from "@nfid/utils"
 
 import { RPCPromptTemplate } from "frontend/features/identitykit/components/templates/prompt-template"
 import { getUserBalance } from "frontend/features/transfer-modal/utils"

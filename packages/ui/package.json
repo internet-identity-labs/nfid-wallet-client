@@ -1,5 +1,5 @@
 {
-  "name": "@nfid-frontend/ui",
+  "name": "@nfid/ui",
   "version": "0.0.1",
   "type": "commonjs",
   "main": "./src/index.ts",
@@ -7,7 +7,7 @@
   "repository": "git@github.com:internet-identity-labs/nfid-wallet-client.git",
   "license": "MIT",
   "dependencies": {
-    "@nfid-frontend/ui-tailwind-core": "workspace:*"
+    "@nfid/ui-tailwind-core": "workspace:*"
   },
   "peerDependencies": {
     "react": "^18.3.1",

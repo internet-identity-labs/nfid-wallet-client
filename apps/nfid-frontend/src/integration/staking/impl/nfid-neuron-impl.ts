@@ -1,12 +1,13 @@
 import { SignIdentity } from "@dfinity/agent"
 import { NeuronState, Followees as IcpFollowees } from "@dfinity/nns"
 import { Followees, NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
+
 import BigNumber from "bignumber.js"
-import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
 
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
+import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
 
 import { StakeParamsCalculator } from "../stake-params-calculator"
 import { FormattedDate, TokenValue } from "../types"

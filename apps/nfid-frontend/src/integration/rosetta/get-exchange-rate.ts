@@ -1,4 +1,4 @@
-import { PriceService } from "packages/integration/src/lib/asset/asset-util"
+import { PriceService } from "@nfid/integration"
 
 import { XdrUsd } from "frontend/integration/rosetta/rosetta_interface"
 

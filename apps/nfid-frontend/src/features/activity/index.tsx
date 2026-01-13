@@ -1,17 +1,18 @@
-import { Activity } from "packages/ui/src/organisms/activity"
 import { useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { useSWRWithTimestamp } from "@nfid/swr"
+import { Activity } from "@nfid/ui/organisms/activity"
 
-import { useActivityFilter } from "./hooks/filter"
-
-import { fetchTokens } from "../fungible-token/utils"
 import {
   addressBookFacade,
   SearchRequest,
 } from "frontend/integration/address-book"
+
+import { fetchTokens } from "../fungible-token/utils"
+
+import { useActivityFilter } from "./hooks/filter"
 
 const ActivityPage = () => {
   const { state } = useLocation()

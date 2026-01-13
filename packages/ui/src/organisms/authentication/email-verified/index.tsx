@@ -1,8 +1,8 @@
 import clsx from "clsx"
-import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
+import { AuthAppMeta } from "@nfid/ui/organisms/authentication/app-meta"
 import React from "react"
 
-import { Button } from "@nfid-frontend/ui"
+import { Button } from "@nfid/ui"
 
 import { useDarkTheme } from "frontend/hooks"
 

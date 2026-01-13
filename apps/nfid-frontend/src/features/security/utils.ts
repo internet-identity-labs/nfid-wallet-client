@@ -1,7 +1,8 @@
 import { Principal } from "@dfinity/principal"
-import base64url from "base64url"
-import { DeviceData } from "packages/integration/src/lib/_ic_api/internet_identity.d"
 
+import base64url from "base64url"
+
+import { DeviceData } from "@nfid/integration"
 import { DeviceType, Icon } from "@nfid/integration"
 
 import { AccessPointResponse } from "frontend/integration/_ic_api/identity_manager.d"

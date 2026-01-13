@@ -71,7 +71,11 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
         )}
       >
         <Loader isLoading={isLoading} />
-        {isDarkTheme ? <NFIDLogo /> : <NFIDLogoMain assetsLink={assetsLink} />}
+        {isDarkTheme ? (
+          <NFIDLogo assetsLink={assetsLink} />
+        ) : (
+          <NFIDLogoMain assetsLink={assetsLink} />
+        )}
 
         <div className={clsx("relative")} ref={popupRef} id="profile">
           <BurgerMenu

@@ -5,7 +5,6 @@ import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import {
   HTMLAttributes,
-  useCallback,
   useState,
   ReactNode,
   FC,
@@ -83,9 +82,12 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   walletTheme,
   setWalletTheme,
 }) => {
-  const handleNavigateBack = useCallback(() => {
-    window.history.back()
-  }, [])
+  const location = useLocation()
+  const navigate = useNavigate()
+  const handleNavigateBack = () => {
+    navigate(`${ProfileConstants.base}/${ProfileConstants.tokens}`)
+  }
+
   const [hasUncompletedSwap, setHasUncompletedSwap] = useState(false)
 
   const tabs = useMemo(() => {
@@ -113,9 +115,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
       },
     ]
   }, [hasUncompletedSwap])
-
-  const location = useLocation()
-  const navigate = useNavigate()
 
   useEffect(() => {
     const checkTransactions = async () => {

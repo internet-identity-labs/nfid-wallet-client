@@ -92,7 +92,7 @@ export class NftService {
 
     const usdBalance = nfts
       .filter((nft) => !nft.getError())
-      .map((nft) => BigNumber(nft.getTokenFloorPriceUSD() ?? 0))
+      .map((nft) => BigNumber(nft.getTokenFloorPriceUSD()?.toFixed(2) ?? 0))
       .reduce((sum, usd) => sum.plus(usd), new BigNumber(0))
 
     const usdBalanceDayChange = icp.getUSDBalanceDayChange(usdBalance)
@@ -101,7 +101,7 @@ export class NftService {
     if (!usdBalanceDayChange) return
 
     return {
-      value: usdBalance.toFixed(2),
+      value: usdBalance.toString(),
       dayChangePercent: tokenRateDayChange?.value ?? "0.00",
       dayChange: usdBalanceDayChange.toFixed(2),
       dayChangePositive: usdBalanceDayChange.gte(0),

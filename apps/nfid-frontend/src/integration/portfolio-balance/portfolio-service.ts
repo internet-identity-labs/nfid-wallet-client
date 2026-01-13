@@ -46,7 +46,7 @@ export class PortfolioService {
     )
 
     return {
-      value: valueSum.toFixed(2),
+      value: valueSum.toString(),
       dayChangePercent: valueSum24h.eq(0)
         ? "0.00"
         : valueSum

@@ -8,7 +8,6 @@ import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
 import { NFT } from "src/integration/nft/nft"
 
 import { exchangeRateService } from "@nfid/integration"
-import { ICP_DECIMALS } from "@nfid/integration/token/constants"
 
 import { FT } from "../ft/ft"
 
@@ -54,7 +53,7 @@ export class NftService {
   }
 
   async getNFTsTotalICPPrice(nfts: NFT[] | undefined) {
-    if (!nfts || nfts.length === 0) return
+    if (!nfts || nfts.length === 0) return new BigNumber(0)
 
     return nfts
       .filter((nft) => !nft.getError())
@@ -83,22 +82,18 @@ export class NftService {
       nfts.map((nft) => (nft.isInited() ? Promise.resolve(nft) : nft.init())),
     )
 
-    const totalICP = await this.getNFTsTotalICPPrice(nfts)
-
     if (!icp) return
 
     const tokenRate = await exchangeRateService.usdPriceForICRC1(
-      icp?.getTokenAddress(),
+      icp.getTokenAddress(),
     )
 
     if (!tokenRate) return
 
-    const tokenAmount = exchangeRateService.parseTokenAmount(
-      Number(totalICP),
-      ICP_DECIMALS,
-    )
-
-    const usdBalance = tokenAmount.multipliedBy(tokenRate.value)
+    const usdBalance = nfts
+      .filter((nft) => !nft.getError())
+      .map((nft) => BigNumber(nft.getTokenFloorPriceUSD()?.toFixed(2) ?? 0))
+      .reduce((sum, usd) => sum.plus(usd), new BigNumber(0))
 
     const usdBalanceDayChange = icp.getUSDBalanceDayChange(usdBalance)
     const tokenRateDayChange = icp.getTokenRateDayChangePercent()
@@ -106,10 +101,10 @@ export class NftService {
     if (!usdBalanceDayChange) return
 
     return {
-      value: usdBalance.toFixed(2),
-      dayChangePercent: !tokenRateDayChange ? "0.00" : tokenRateDayChange.value,
-      dayChange: BigNumber(usdBalanceDayChange!).toFixed(2),
-      dayChangePositive: usdBalanceDayChange!.gte(0),
+      value: usdBalance.toString(),
+      dayChangePercent: tokenRateDayChange?.value ?? "0.00",
+      dayChange: usdBalanceDayChange.toFixed(2),
+      dayChangePositive: usdBalanceDayChange.gte(0),
       value24h: usdBalance.minus(usdBalanceDayChange).toFixed(2),
     }
   }

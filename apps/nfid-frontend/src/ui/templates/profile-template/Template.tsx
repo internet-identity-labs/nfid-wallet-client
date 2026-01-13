@@ -5,7 +5,6 @@ import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import {
   HTMLAttributes,
-  useCallback,
   useState,
   ReactNode,
   FC,
@@ -43,7 +42,6 @@ import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-s
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { ModalType } from "frontend/features/transfer-modal/types"
 import { getAllVaults } from "frontend/features/vaults/services"
-import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
 
@@ -84,9 +82,12 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   walletTheme,
   setWalletTheme,
 }) => {
-  const handleNavigateBack = useCallback(() => {
-    window.history.back()
-  }, [])
+  const location = useLocation()
+  const navigate = useNavigate()
+  const handleNavigateBack = () => {
+    navigate(`${ProfileConstants.base}/${ProfileConstants.tokens}`)
+  }
+
   const [hasUncompletedSwap, setHasUncompletedSwap] = useState(false)
 
   const tabs = useMemo(() => {
@@ -115,9 +116,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     ]
   }, [hasUncompletedSwap])
 
-  const location = useLocation()
-  const navigate = useNavigate()
-
   useEffect(() => {
     const checkTransactions = async () => {
       const transactions = await swapTransactionService.getTransactions()
@@ -139,8 +137,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const [isSyncEmailLoading, setIsSyncEmailLoading] = useState(false)
   const { profile } = useProfile()
   const { logout } = useAuthentication()
-  const { isBtcAddressLoading } = useBtcAddress()
-  const { isEthAddressLoading } = useEthAddress()
 
   const hasVaults = useMemo(() => !!vaults?.length, [vaults])
 
@@ -148,11 +144,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     revalidateOnFocus: false,
   })
 
-  const { initedTokens } = useTokensInit(
-    tokens,
-    isBtcAddressLoading,
-    isEthAddressLoading,
-  )
+  const { initedTokens } = useTokensInit(tokens)
 
   const btc = useMemo(() => {
     return initedTokens?.find(

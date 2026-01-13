@@ -8,33 +8,32 @@ import {
   ftService,
   TOKENS_REFRESH_INTERVAL,
 } from "frontend/integration/ft/ft-service"
-import {
-  isNonIcrc1Token,
-  State,
-} from "@nfid/integration/token/icrc1/enum/enums"
-import { useContext, useMemo, useEffect } from "react"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
+import { useContext, useMemo } from "react"
 import { useActor } from "@xstate/react"
 import { ProfileContext } from "frontend/provider"
+import { useBtcAddress, useEthAddress } from "frontend/hooks"
 
-export const useTokensInit = (
-  tokens: FT[] | undefined,
-  isBtcAddressLoading?: boolean,
-  isEthAddressLoading?: boolean,
-) => {
+export const useTokensInit = (tokens: FT[] | undefined) => {
+  const { isEthAddressLoading } = useEthAddress()
+  const { isBtcAddressLoading } = useBtcAddress()
   const activeTokens = useMemo(
     () => tokens?.filter((token) => token.getTokenState() === State.Active),
     [tokens],
   )
   const globalServices = useContext(ProfileContext)
-
   const [state] = useActor(globalServices.transferService)
+  const addressesReady = !isBtcAddressLoading && !isEthAddressLoading
 
   const {
     data: initedTokens,
     mutate,
     isLoading,
   } = useSWRWithTimestamp(
-    activeTokens && activeTokens.length > 0 ? "initedTokens" : null,
+    // TODO: do not block all the tokens if there is no eth/btc address!
+    addressesReady && activeTokens && activeTokens.length > 0
+      ? "initedTokens"
+      : null,
     async () => {
       if (!activeTokens) return
 
@@ -60,37 +59,6 @@ export const useTokensInit = (
       },
     },
   )
-
-  const areNativeInited = useMemo(() => {
-    if (!initedTokens) return false
-
-    const nonIcrc1Tokens = initedTokens.filter((t) =>
-      isNonIcrc1Token(t.getChainId()),
-    )
-
-    return nonIcrc1Tokens.every((token) => token?.isInited())
-  }, [initedTokens])
-
-  useEffect(() => {
-    if (!initedTokens || areNativeInited) return
-
-    if (!isBtcAddressLoading && !isEthAddressLoading) {
-      const { publicKey } = authState.getUserIdData()
-      const principal = Principal.fromText(publicKey)
-
-      ftService
-        .initializeBtcEthTokensWhenReady(initedTokens, principal)
-        .then(async () => {
-          mutate(undefined, { revalidate: true })
-        })
-    }
-  }, [
-    isBtcAddressLoading,
-    isEthAddressLoading,
-    initedTokens,
-    mutate,
-    areNativeInited,
-  ])
 
   return { initedTokens, mutate, isLoading }
 }

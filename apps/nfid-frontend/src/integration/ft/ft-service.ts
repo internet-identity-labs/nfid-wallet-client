@@ -138,7 +138,9 @@ export class FtService {
 
       tokenFactory.getCreatorByChainID(ChainId.POL).buildNative(
         mapState(
-          userCanisters.find((c) => c.network === ChainId.POL)?.state ?? {
+          userCanisters.find(
+            (c) => c.network === ChainId.POL && c.ledger === EVM_NATIVE,
+          )?.state ?? {
             Inactive: null,
           },
         ),
@@ -146,7 +148,9 @@ export class FtService {
 
       tokenFactory.getCreatorByChainID(ChainId.ARB).buildNative(
         mapState(
-          userCanisters.find((c) => c.network === ChainId.ARB)?.state ?? {
+          userCanisters.find(
+            (c) => c.network === ChainId.ARB && c.ledger === EVM_NATIVE,
+          )?.state ?? {
             Inactive: null,
           },
         ),
@@ -154,7 +158,9 @@ export class FtService {
 
       tokenFactory.getCreatorByChainID(ChainId.BASE).buildNative(
         mapState(
-          userCanisters.find((c) => c.network === ChainId.BASE)?.state ?? {
+          userCanisters.find(
+            (c) => c.network === ChainId.BASE && c.ledger === EVM_NATIVE,
+          )?.state ?? {
             Inactive: null,
           },
         ),
@@ -420,11 +426,11 @@ export class FtService {
     | undefined
   > {
     const price = ft
+      .filter((ft) => ft.getUSDBalance()?.gt(0))
       .map((ft) => ({
-        usdBalance: ft.getUSDBalance(),
+        usdBalance: ft.getUSDBalance()?.toFixed(2),
         usdBalanceDayChange: ft.getUSDBalanceDayChange(),
       }))
-      .filter((ft) => ft.usdBalance !== undefined && ft.usdBalance.gt(0))
       .reduce(
         (
           acc: {
@@ -445,7 +451,7 @@ export class FtService {
       )
 
     return {
-      value: price.usdBalance.toFixed(2),
+      value: price.usdBalance.toString(),
       dayChangePercent: price.usdBalance.eq(0)
         ? "0.00"
         : BigNumber(price.usdBalanceDayChange!)

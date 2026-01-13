@@ -25,7 +25,6 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   dropdownPosition: IDropdownPosition
   loadingToken: FT | null
   hideZeroBalance?: boolean
-  isIniting?: boolean
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
@@ -43,7 +42,6 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   dropdownPosition,
   loadingToken,
   hideZeroBalance,
-  isIniting,
   ...props
 }) => {
   const [isTokenProcessed, setIsTokenProcessed] = useState(false)
@@ -83,7 +81,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         {token.getTokenCategoryFormatted()}
       </td>
       <td className="pr-[10px] hidden md:table-cell min-w-[120px] dark:text-white">
-        {isIniting || tokenPrice === undefined ? (
+        {tokenPrice === undefined ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
         ) : tokenPrice !== null ? (
           <div>
@@ -107,7 +105,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`token_${token.getTokenName().replace(/\s/g, "")}_${token.getChainId()}_balance`}
         className="pr-[10px] text-right md:text-left pr-[10px] flex-grow min-w-0 sm:w-auto min-w-[120px]"
       >
-        {isIniting || balance === undefined ? (
+        {balance === undefined ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
         ) : (
           <p className="flex items-center justify-end md:justify-start dark:text-white">
@@ -129,7 +127,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         )}
         <p className="text-xs md:hidden text-secondary dark:text-white">
           &nbsp;
-          {isIniting || usdBalance === undefined ? (
+          {usdBalance === undefined ? (
             <Skeleton
               className={clsx("max-w-full h-[10px] w-[50px] ml-auto")}
             />
@@ -144,7 +142,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         id={`token_${token.getTokenName().replace(/\s/g, "")}_usd`}
         className="pr-[10px] hidden md:table-cell pr-[10px] dark:text-white"
       >
-        {isIniting || usdBalance === undefined ? (
+        {usdBalance === undefined ? (
           <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
         ) : usdBalance === null ? (
           "Not listed"

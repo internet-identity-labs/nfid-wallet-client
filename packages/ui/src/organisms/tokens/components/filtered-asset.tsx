@@ -45,7 +45,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({
         setLoadingToken(null)
       }
     },
-    [tokens],
+    [tokens, setLoadingToken],
   )
 
   const showToken = useCallback(

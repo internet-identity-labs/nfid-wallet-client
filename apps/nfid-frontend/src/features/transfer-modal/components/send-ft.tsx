@@ -152,11 +152,7 @@ export const TransferFT = ({
     { revalidateOnFocus: false, revalidateOnMount: false },
   )
 
-  const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(
-    tokens,
-    isBtcAddressLoading,
-    isEthAddressLoading,
-  )
+  const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(tokens)
 
   const filteredTokens = useMemo(() => {
     if (!initedTokens) return

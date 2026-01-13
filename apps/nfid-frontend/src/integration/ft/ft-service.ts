@@ -138,7 +138,9 @@ export class FtService {
 
       tokenFactory.getCreatorByChainID(ChainId.POL).buildNative(
         mapState(
-          userCanisters.find((c) => c.network === ChainId.POL)?.state ?? {
+          userCanisters.find(
+            (c) => c.network === ChainId.POL && c.ledger === EVM_NATIVE,
+          )?.state ?? {
             Inactive: null,
           },
         ),
@@ -146,7 +148,9 @@ export class FtService {
 
       tokenFactory.getCreatorByChainID(ChainId.ARB).buildNative(
         mapState(
-          userCanisters.find((c) => c.network === ChainId.ARB)?.state ?? {
+          userCanisters.find(
+            (c) => c.network === ChainId.ARB && c.ledger === EVM_NATIVE,
+          )?.state ?? {
             Inactive: null,
           },
         ),
@@ -154,7 +158,9 @@ export class FtService {
 
       tokenFactory.getCreatorByChainID(ChainId.BASE).buildNative(
         mapState(
-          userCanisters.find((c) => c.network === ChainId.BASE)?.state ?? {
+          userCanisters.find(
+            (c) => c.network === ChainId.BASE && c.ledger === EVM_NATIVE,
+          )?.state ?? {
             Inactive: null,
           },
         ),

@@ -1,4 +1,4 @@
-import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
+import { ModalComponent } from "@nfid-frontend/ui"
 import React from "react"
 
 import NFIDAuthCoordinator from "frontend/features/authentication/nfid/coordinator"

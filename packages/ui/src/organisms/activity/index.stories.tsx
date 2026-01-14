@@ -7,7 +7,7 @@ import {
   IActivityRowGroup,
 } from "frontend/features/activity/types"
 import { FT } from "frontend/integration/ft/ft"
-import { Blockchain } from "frontend/ui/connnector/types"
+import { Blockchain } from "../../connnector/types"
 
 import ProfileContainer from "../../atoms/profile-container/Container"
 import { Activity, ActivityProps } from "./index"

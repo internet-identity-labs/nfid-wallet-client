@@ -1,4 +1,4 @@
-import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
+import { ProfileTemplate } from "@nfid-frontend/ui"
 import { AddressBook } from "packages/ui/src/organisms/address-book"
 import { useSWR } from "@nfid/swr"
 import {

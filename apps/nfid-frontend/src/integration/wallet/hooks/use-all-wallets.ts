@@ -8,7 +8,7 @@ import { TokenBalance } from "frontend/features/fungible-token/fetch-balances"
 import { useUserBalances } from "frontend/features/fungible-token/icp/hooks/use-user-balances"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
-import { sortAlphabetic, keepStaticOrder } from "frontend/ui/utils/sorting"
+import { sortAlphabetic, keepStaticOrder } from "@nfid-frontend/ui"
 
 export type Wallet = {
   principal: Principal

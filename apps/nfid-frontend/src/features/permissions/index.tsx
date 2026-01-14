@@ -6,7 +6,7 @@ import {
   useReducer,
   useState,
 } from "react"
-import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
+import { ProfileTemplate } from "@nfid-frontend/ui"
 import { NFIDTheme } from "frontend/App"
 import { Permissions } from "packages/ui/src/organisms/permissions"
 import { ftService, PAGE_SIZE } from "frontend/integration/ft/ft-service"
@@ -20,7 +20,7 @@ import { permissionsReducer, permissionsInitialState } from "./utils"
 import { useIdentity } from "frontend/hooks/identity"
 import { Button } from "@nfid-frontend/ui"
 import toaster from "packages/ui/src/atoms/toast"
-import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
+import { ModalComponent } from "@nfid-frontend/ui"
 import { Spinner } from "packages/ui/src/atoms/spinner"
 
 type PermissionsPageProps = {

@@ -5,7 +5,7 @@ import {
 } from "packages/ui/src/atoms/icons"
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
 import CopyAddress from "packages/ui/src/molecules/copy-address"
-import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
+import { ModalComponent } from "@nfid-frontend/ui"
 import { FC, useEffect, useState } from "react"
 import { FT } from "src/integration/ft/ft"
 

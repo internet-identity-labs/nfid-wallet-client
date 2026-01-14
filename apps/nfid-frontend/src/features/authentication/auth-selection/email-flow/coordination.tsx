@@ -3,7 +3,7 @@ import { AuthEmailVerified } from "packages/ui/src/organisms/authentication/emai
 import { AuthEmailError } from "packages/ui/src/organisms/authentication/error"
 import { AuthEmailPending } from "packages/ui/src/organisms/authentication/pending-verification"
 
-import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
+import { BlurredLoader } from "@nfid-frontend/ui"
 
 import { AuthWithEmailActor } from "./machine"
 

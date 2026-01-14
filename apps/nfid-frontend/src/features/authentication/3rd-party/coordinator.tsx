@@ -2,7 +2,7 @@ import { useMachine } from "@xstate/react"
 import React, { useEffect } from "react"
 
 import { AuthorizationRequest } from "frontend/state/authorization"
-import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
+import { BlurredLoader } from "@nfid-frontend/ui"
 
 import AuthenticationCoordinator from "../root/coordinator"
 import { AuthenticationMachineActor } from "../root/root-machine"

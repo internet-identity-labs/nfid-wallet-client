@@ -38,11 +38,9 @@ export class PortfolioService {
     const stakingValue = stakingBalance?.value || "0"
     const stakingValue24h = stakingBalance?.value24h || "0"
 
-    const valueSum = BigNumber(
-      Number(ftValue) + Number(nftValue) + Number(stakingValue),
-    )
+    const valueSum = new BigNumber(ftValue).plus(nftValue).plus(stakingValue)
     const valueSum24h = BigNumber(
-      Number(ftValue24h) + Number(nftValue24h) + Number(stakingValue24h),
+      new BigNumber(ftValue24h).plus(nftValue24h).plus(stakingValue24h),
     )
 
     return {

@@ -407,7 +407,7 @@ describe("Address Book", () => {
 
     it("should find address from IC Explorer when not in local storage", async () => {
       // Given: empty local storage (IC Explorer will be queried)
-      jest.spyOn(icExplorerClient, "find").mockResolvedValue({
+      const findSpy = jest.spyOn(icExplorerClient, "find").mockResolvedValue({
         statusCode: 600,
         message: null,
         data: {
@@ -429,25 +429,30 @@ describe("Address Book", () => {
         },
       })
 
-      // When: searching for YUKU governance canister
-      const result = await addressBookFacade.search({
+      // When: searching for YUKU governance canister twice
+      const result1 = await addressBookFacade.search({
         address: "auadn-oqaaa-aaaaq-aacya-cai",
       })
 
-      // Then: should return IC Explorer result
-      expect(result).toBeDefined()
-      expect(result).toMatchObject({
-        id: "auadn-oqaaa-aaaaq-aacya-cai",
+      const result2 = await addressBookFacade.search({
+        address: "auadn-oqaaa-aaaaq-aacya-cai",
+      })
+
+      // Then: should return IC Explorer result for both searches
+      const response = {
         name: "SNS:YUKU-GOVERNANCE",
         address: {
           type: AddressType.ICP_PRINCIPAL,
           value: "auadn-oqaaa-aaaaq-aacya-cai",
         },
-      })
+      }
 
-      expect(icExplorerClient.find).toHaveBeenCalledWith(
-        "auadn-oqaaa-aaaaq-aacya-cai",
-      )
+      expect(result1).toMatchObject(response)
+      expect(result2).toStrictEqual(result1)
+
+      // And: should call IC Explorer client only once due to caching
+      expect(findSpy).toHaveBeenCalledTimes(1)
+      expect(findSpy).toHaveBeenCalledWith("auadn-oqaaa-aaaaq-aacya-cai")
     })
   })
 })

@@ -1,5 +1,6 @@
 import { IcExplorerResponse } from "../interfaces"
 import { UserAddressPreview, AddressType, Address } from "../types"
+import { v4 as uuidv4 } from "uuid"
 
 export class IcExplorerMapper {
   toUserAddressPreview(
@@ -23,7 +24,7 @@ export class IcExplorerMapper {
     }
 
     return {
-      id: keyword,
+      id: uuidv4(),
       name: item.alias,
       address,
     }

@@ -1,13 +1,11 @@
-/**
- * @jest-environment jsdom
- */
 import {
   addressBookCache,
   addressBookFacade,
   addressBookCanisterClient,
+  icExplorerClient,
 } from "./address-book.container"
 import { ChainId, Category } from "@nfid/integration/token/icrc1/enum/enums"
-import { UserAddress } from "./types"
+import { UserAddress, AddressType } from "./types"
 import {
   ALICE_SAVE_REQUEST,
   BOB_SAVE_REQUEST,
@@ -336,6 +334,10 @@ describe("Address Book", () => {
       await addressBookFacade.save(BOB_SAVE_REQUEST)
     })
 
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+
     it("should find exact address match", async () => {
       // When: searching by exact address
       const result = await addressBookFacade.search({
@@ -348,6 +350,16 @@ describe("Address Book", () => {
     })
 
     it("should return undefined when no exact match found", async () => {
+      // Mock IC Explorer to return undefined (no match found)
+      jest.spyOn(icExplorerClient, "find").mockResolvedValue({
+        statusCode: 200,
+        message: null,
+        data: {
+          tokenList: null,
+          addressList: null,
+        },
+      })
+
       // When: searching by partial address (not exact match)
       const result = await addressBookFacade.search({
         address: "aaaaa",
@@ -355,6 +367,7 @@ describe("Address Book", () => {
 
       // Then: should return undefined
       expect(result).toBeUndefined()
+      expect(icExplorerClient.find).toHaveBeenCalledWith("aaaaa")
     })
 
     it("should match across all address types", async () => {
@@ -372,6 +385,16 @@ describe("Address Book", () => {
     })
 
     it("should be case-sensitive", async () => {
+      // Mock IC Explorer to return undefined (no match found)
+      jest.spyOn(icExplorerClient, "find").mockResolvedValue({
+        statusCode: 200,
+        message: null,
+        data: {
+          tokenList: null,
+          addressList: null,
+        },
+      })
+
       // When: searching with different case
       const result = await addressBookFacade.search({
         address: "AAAAA-AA",
@@ -379,6 +402,52 @@ describe("Address Book", () => {
 
       // Then: should return undefined (case doesn't match)
       expect(result).toBeUndefined()
+      expect(icExplorerClient.find).toHaveBeenCalledWith("AAAAA-AA")
+    })
+
+    it("should find address from IC Explorer when not in local storage", async () => {
+      // Given: empty local storage (IC Explorer will be queried)
+      jest.spyOn(icExplorerClient, "find").mockResolvedValue({
+        statusCode: 600,
+        message: null,
+        data: {
+          tokenList: null,
+          addressList: [
+            {
+              type: "address",
+              symbol: null,
+              ledgerId: null,
+              priceUSD: null,
+              alias: "SNS:YUKU-GOVERNANCE",
+              principalId: "auadn-oqaaa-aaaaq-aacya-cai",
+              accountId:
+                "3eddf794a9e64025238ef1a3c2e6bbf0bfd5a6e0dfa7cabef9e676921eabdafe",
+              subaccountId:
+                "0000000000000000000000000000000000000000000000000000000000000000",
+            },
+          ],
+        },
+      })
+
+      // When: searching for YUKU governance canister
+      const result = await addressBookFacade.search({
+        address: "auadn-oqaaa-aaaaq-aacya-cai",
+      })
+
+      // Then: should return IC Explorer result
+      expect(result).toBeDefined()
+      expect(result).toMatchObject({
+        id: "auadn-oqaaa-aaaaq-aacya-cai",
+        name: "SNS:YUKU-GOVERNANCE",
+        address: {
+          type: AddressType.ICP_PRINCIPAL,
+          value: "auadn-oqaaa-aaaaq-aacya-cai",
+        },
+      })
+
+      expect(icExplorerClient.find).toHaveBeenCalledWith(
+        "auadn-oqaaa-aaaaq-aacya-cai",
+      )
     })
   })
 })

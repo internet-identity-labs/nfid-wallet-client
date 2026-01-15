@@ -9,18 +9,11 @@ export interface IcExplorerResponse {
 }
 
 export interface IcExplorerData {
-  tokenList: IcExplorerTokenItem[] | null
-  addressList: IcExplorerAddressItem[] | null
+  tokenList: IcExplorerItem[] | null
+  addressList: IcExplorerItem[] | null
 }
 
-export interface IcExplorerTokenItem {
-  ledgerId: string | null
-  priceUSD: string | null
-  symbol: string | null
-  type: string | null
-}
-
-export interface IcExplorerAddressItem {
+export interface IcExplorerItem {
   type: string
   symbol: string | null
   ledgerId: string | null
@@ -31,19 +24,15 @@ export interface IcExplorerAddressItem {
   subaccountId: string | null
 }
 
-export interface IcExplorerAddressItemCacheItem extends ICacheItem {
+export interface IcExplorerItemCacheItem extends ICacheItem {
   content: IcExplorerResponse
 }
 
-export const icExplorerTtlStorage = new Storage<IcExplorerAddressItemCacheItem>(
-  {
-    dbName: "ic-explorer-db",
-    storeName: "ic-explorer-ttl-storage",
-  },
-)
+export const icExplorerTtlStorage = new Storage<IcExplorerItemCacheItem>({
+  dbName: "ic-explorer-db",
+  storeName: "ic-explorer-ttl-storage",
+})
 
 export const icExplorerAddressItemCacheIdb = new CacheContainer(
-  new CompositeTtlCacheStorage<IcExplorerAddressItemCacheItem>(
-    icExplorerTtlStorage,
-  ),
+  new CompositeTtlCacheStorage<IcExplorerItemCacheItem>(icExplorerTtlStorage),
 )

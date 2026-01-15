@@ -1,8 +1,8 @@
 import { AddressBookRepository } from "./repository/address-book.repository"
 import { AddressBookMapper } from "./mapper/address-book.mapper"
-import { FtSearchService } from "./services/ft-search.service"
-import { NftSearchService } from "./services/nft-search.service"
-import { GeneralSearchService } from "./services/general-search.service"
+import { FtSearchService } from "./service/ft-search.service"
+import { NftSearchService } from "./service/nft-search.service"
+import { GeneralSearchService } from "./service/general-search.service"
 import {
   AddressBookFacade,
   FtSearchRequest,

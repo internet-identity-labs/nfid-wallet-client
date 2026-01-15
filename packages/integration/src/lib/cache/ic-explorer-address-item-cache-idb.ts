@@ -9,8 +9,15 @@ export interface IcExplorerResponse {
 }
 
 export interface IcExplorerData {
-  tokenList: any | null
+  tokenList: IcExplorerTokenItem[] | null
   addressList: IcExplorerAddressItem[] | null
+}
+
+export interface IcExplorerTokenItem {
+  ledgerId: string | null
+  priceUSD: string | null
+  symbol: string | null
+  type: string | null
 }
 
 export interface IcExplorerAddressItem {

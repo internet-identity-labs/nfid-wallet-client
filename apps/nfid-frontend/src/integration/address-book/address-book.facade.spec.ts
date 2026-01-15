@@ -5,6 +5,7 @@ import {
   icExplorerClient,
 } from "./address-book.container"
 import { ChainId, Category } from "@nfid/integration/token/icrc1/enum/enums"
+import { icExplorerAddressItemCacheIdb } from "@nfid/integration"
 import { UserAddress, AddressType } from "./types"
 import {
   ALICE_SAVE_REQUEST,
@@ -332,6 +333,7 @@ describe("Address Book", () => {
       // Given: two saved addresses
       await addressBookFacade.save(ALICE_SAVE_REQUEST)
       await addressBookFacade.save(BOB_SAVE_REQUEST)
+      await icExplorerAddressItemCacheIdb.clear()
     })
 
     afterEach(() => {
@@ -407,7 +409,7 @@ describe("Address Book", () => {
 
     it("should find address from IC Explorer when not in local storage", async () => {
       // Given: empty local storage (IC Explorer will be queried)
-      const findSpy = jest.spyOn(icExplorerClient, "find").mockResolvedValue({
+      const mockResponse = {
         statusCode: 600,
         message: null,
         data: {
@@ -427,7 +429,12 @@ describe("Address Book", () => {
             },
           ],
         },
-      })
+      }
+
+      const fetchSpy = jest.spyOn(global, "fetch").mockResolvedValue({
+        ok: true,
+        json: async () => mockResponse,
+      } as Response)
 
       // When: searching for YUKU governance canister twice
       const result1 = await addressBookFacade.search({
@@ -448,11 +455,19 @@ describe("Address Book", () => {
       }
 
       expect(result1).toMatchObject(response)
-      expect(result2).toStrictEqual(result1)
+      expect(result2).toMatchObject(response)
 
-      // And: should call IC Explorer client only once due to caching
-      expect(findSpy).toHaveBeenCalledTimes(1)
-      expect(findSpy).toHaveBeenCalledWith("auadn-oqaaa-aaaaq-aacya-cai")
+      // And: should call fetch only once due to caching
+      // First call: fetch invoked, result cached by @Cache decorator
+      // Second call: cache returns without invoking fetch
+      expect(fetchSpy).toHaveBeenCalledTimes(1)
+      expect(fetchSpy).toHaveBeenCalledWith(
+        "https://api.icexplorer.io/api/dashboard/search",
+        expect.objectContaining({
+          method: "POST",
+          body: JSON.stringify({ keyword: "auadn-oqaaa-aaaaq-aacya-cai" }),
+        }),
+      )
     })
   })
 })

@@ -113,6 +113,19 @@ export class IdbKeyVal implements KeyValueStore {
   }
 
   /**
+   * Remove multiple keys in a single transaction
+   * @param keys array of {@link IDBValidKey}
+   * @returns void
+   */
+  public async removeAll(keys: IDBValidKey[]): Promise<void> {
+    if (keys.length === 0) return
+    const tx = this._db.transaction(this._storeName, "readwrite")
+    const store = tx.objectStore(this._storeName)
+    await Promise.all(keys.map((key) => store.delete(key)))
+    await tx.done
+  }
+
+  /**
    * Clear db
    * @returns void
    */

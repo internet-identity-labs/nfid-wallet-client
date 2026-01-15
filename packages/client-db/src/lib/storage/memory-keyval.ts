@@ -46,6 +46,16 @@ export class MemoryKeyVal implements KeyValueStore {
   }
 
   /**
+   * Remove multiple keys
+   * @param keys array of {@link IDBValidKey}
+   * @returns void
+   */
+  public async removeAll(keys: IDBValidKey[]): Promise<void> {
+    console.debug("MemoryKeyVal.removeAll", { count: keys.length })
+    keys.forEach((key) => this._map.delete(key))
+  }
+
+  /**
    * Clear storage
    * @returns void
    */

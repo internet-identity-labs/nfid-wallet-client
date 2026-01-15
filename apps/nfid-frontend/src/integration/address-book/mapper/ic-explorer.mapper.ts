@@ -1,4 +1,4 @@
-import { IcExplorerResponse } from "../interfaces"
+import { IcExplorerResponse } from "@nfid/integration"
 import { UserAddressPreview, AddressType, Address } from "../types"
 import { v4 as uuidv4 } from "uuid"
 

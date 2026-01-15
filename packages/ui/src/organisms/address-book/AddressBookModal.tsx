@@ -178,6 +178,7 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
           inputClassName="h-[60px]"
           id="accountId"
           labelText="ICP Account ID"
+          placeholder="Enter ICP Account ID"
           icon={
             <IcpNetworkIcon size={24} color={isDarkTheme ? "white" : "black"} />
           }
@@ -199,6 +200,7 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
           inputClassName="h-[60px]"
           id="icpWallet"
           labelText="ICP wallet address"
+          placeholder="Enter ICP wallet address"
           icon={
             <IcpNetworkIcon size={24} color={isDarkTheme ? "white" : "black"} />
           }
@@ -220,6 +222,7 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
           inputClassName="h-[60px]"
           id="btcWallet"
           labelText="BTC wallet address"
+          placeholder="Enter BTC wallet address"
           icon={
             <BtcNetworkIcon size={24} color={isDarkTheme ? "white" : "black"} />
           }
@@ -241,6 +244,7 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
           inputClassName="h-[60px]"
           id="ethWallet"
           labelText="ETH wallet address"
+          placeholder="Enter ETH wallet address"
           icon={
             <EthNetworkIcon size={24} color={isDarkTheme ? "white" : "black"} />
           }

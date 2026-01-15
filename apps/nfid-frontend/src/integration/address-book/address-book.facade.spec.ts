@@ -1,13 +1,12 @@
-/**
- * @jest-environment jsdom
- */
 import {
   addressBookCache,
   addressBookFacade,
   addressBookCanisterClient,
+  icExplorerClient,
 } from "./address-book.container"
 import { ChainId, Category } from "@nfid/integration/token/icrc1/enum/enums"
-import { UserAddress } from "./types"
+import { icExplorerAddressItemCacheIdb } from "@nfid/integration"
+import { UserAddress, AddressType } from "./types"
 import {
   ALICE_SAVE_REQUEST,
   BOB_SAVE_REQUEST,
@@ -334,6 +333,11 @@ describe("Address Book", () => {
       // Given: two saved addresses
       await addressBookFacade.save(ALICE_SAVE_REQUEST)
       await addressBookFacade.save(BOB_SAVE_REQUEST)
+      await icExplorerAddressItemCacheIdb.clear()
+    })
+
+    afterEach(() => {
+      jest.restoreAllMocks()
     })
 
     it("should find exact address match", async () => {
@@ -348,6 +352,16 @@ describe("Address Book", () => {
     })
 
     it("should return undefined when no exact match found", async () => {
+      // Mock IC Explorer to return undefined (no match found)
+      jest.spyOn(icExplorerClient, "find").mockResolvedValue({
+        statusCode: 200,
+        message: null,
+        data: {
+          tokenList: null,
+          addressList: null,
+        },
+      })
+
       // When: searching by partial address (not exact match)
       const result = await addressBookFacade.search({
         address: "aaaaa",
@@ -355,6 +369,7 @@ describe("Address Book", () => {
 
       // Then: should return undefined
       expect(result).toBeUndefined()
+      expect(icExplorerClient.find).toHaveBeenCalledWith("aaaaa")
     })
 
     it("should match across all address types", async () => {
@@ -372,6 +387,16 @@ describe("Address Book", () => {
     })
 
     it("should be case-sensitive", async () => {
+      // Mock IC Explorer to return undefined (no match found)
+      jest.spyOn(icExplorerClient, "find").mockResolvedValue({
+        statusCode: 200,
+        message: null,
+        data: {
+          tokenList: null,
+          addressList: null,
+        },
+      })
+
       // When: searching with different case
       const result = await addressBookFacade.search({
         address: "AAAAA-AA",
@@ -379,6 +404,70 @@ describe("Address Book", () => {
 
       // Then: should return undefined (case doesn't match)
       expect(result).toBeUndefined()
+      expect(icExplorerClient.find).toHaveBeenCalledWith("AAAAA-AA")
+    })
+
+    it("should find address from IC Explorer when not in local storage", async () => {
+      // Given: empty local storage (IC Explorer will be queried)
+      const mockResponse = {
+        statusCode: 600,
+        message: null,
+        data: {
+          tokenList: null,
+          addressList: [
+            {
+              type: "address",
+              symbol: null,
+              ledgerId: null,
+              priceUSD: null,
+              alias: "SNS:YUKU-GOVERNANCE",
+              principalId: "auadn-oqaaa-aaaaq-aacya-cai",
+              accountId:
+                "3eddf794a9e64025238ef1a3c2e6bbf0bfd5a6e0dfa7cabef9e676921eabdafe",
+              subaccountId:
+                "0000000000000000000000000000000000000000000000000000000000000000",
+            },
+          ],
+        },
+      }
+
+      const fetchSpy = jest.spyOn(global, "fetch").mockResolvedValue({
+        ok: true,
+        json: async () => mockResponse,
+      } as Response)
+
+      // When: searching for YUKU governance canister twice
+      const result1 = await addressBookFacade.search({
+        address: "auadn-oqaaa-aaaaq-aacya-cai",
+      })
+
+      const result2 = await addressBookFacade.search({
+        address: "auadn-oqaaa-aaaaq-aacya-cai",
+      })
+
+      // Then: should return IC Explorer result for both searches
+      const response = {
+        name: "SNS:YUKU-GOVERNANCE",
+        address: {
+          type: AddressType.ICP_PRINCIPAL,
+          value: "auadn-oqaaa-aaaaq-aacya-cai",
+        },
+      }
+
+      expect(result1).toMatchObject(response)
+      expect(result2).toMatchObject(response)
+
+      // And: should call fetch only once due to caching
+      // First call: fetch invoked, result cached by @Cache decorator
+      // Second call: cache returns without invoking fetch
+      expect(fetchSpy).toHaveBeenCalledTimes(1)
+      expect(fetchSpy).toHaveBeenCalledWith(
+        "https://api.icexplorer.io/api/dashboard/search",
+        expect.objectContaining({
+          method: "POST",
+          body: JSON.stringify({ keyword: "auadn-oqaaa-aaaaq-aacya-cai" }),
+        }),
+      )
     })
   })
 })

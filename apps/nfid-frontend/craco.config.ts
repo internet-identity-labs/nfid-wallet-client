@@ -54,6 +54,7 @@ const setupCSP = () => {
         "https://etherscan.io/",
         "https://api.etherscan.io/",
         "https://api-sepolia.etherscan.io/",
+        "https://api.icexplorer.io/api/dashboard/search",
       ],
       "worker-src": "'self' blob:",
       "img-src": ["'self' blob: data: content: https:"],

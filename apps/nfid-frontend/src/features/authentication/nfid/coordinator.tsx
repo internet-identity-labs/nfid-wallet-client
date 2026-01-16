@@ -3,7 +3,7 @@ import React from "react"
 import { useNavigate } from "react-router-dom"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
+import { BlurredLoader } from "@nfid-frontend/ui"
 
 import AuthenticationCoordinator from "../root/coordinator"
 import { AuthenticationMachineActor } from "../root/root-machine"

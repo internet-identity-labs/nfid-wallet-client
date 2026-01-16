@@ -1,5 +1,5 @@
 import toaster from "packages/ui/src/atoms/toast"
-import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
+import { ModalComponent } from "@nfid-frontend/ui"
 import { useCallback, HTMLAttributes, useState, FC } from "react"
 
 import { Button } from "@nfid-frontend/ui"

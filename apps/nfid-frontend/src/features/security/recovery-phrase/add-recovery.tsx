@@ -1,13 +1,13 @@
 import clsx from "clsx"
 import toaster from "packages/ui/src/atoms/toast"
-import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
+import { ModalComponent } from "@nfid-frontend/ui"
 import React, { useMemo, useState } from "react"
 
 import { Button, IconCmpPlus } from "@nfid-frontend/ui"
 
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { generate } from "frontend/integration/internet-identity/crypto/mnemonic"
-import { CopyIcon } from "frontend/ui/atoms/icons/copy"
+import { CopyIcon } from "@nfid-frontend/ui"
 
 import { IHandleWithLoading } from ".."
 import { securityConnector } from "../device-connector"

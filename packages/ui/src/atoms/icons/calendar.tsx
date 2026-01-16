@@ -1,6 +1,6 @@
 import React from "react"
 
-type CalendarIconProps = React.HTMLAttributes<HTMLOrSVGElement>
+interface CalendarIconProps extends React.HTMLAttributes<HTMLOrSVGElement> {}
 
 export const CalendarIcon: React.FC<CalendarIconProps> = ({ onClick }) => {
   return (

@@ -113,3 +113,4 @@ const H5 = <C extends React.ElementType = "h5">({
 }
 
 export { H1, H2, H3, H4, H5 }
+export { P } from "./paragraph"

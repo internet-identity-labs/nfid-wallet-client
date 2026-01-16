@@ -9,7 +9,7 @@ import {
 import { useSWR } from "@nfid/swr"
 
 import { fetchAllDevices } from "frontend/integration/internet-identity"
-import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon-decider"
+import { DeviceIconDecider } from "@nfid-frontend/ui"
 
 type AccessPoint = {
   device: string

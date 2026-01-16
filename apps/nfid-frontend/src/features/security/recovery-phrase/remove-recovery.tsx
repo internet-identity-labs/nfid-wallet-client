@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
+import { ModalComponent } from "@nfid-frontend/ui"
 import React, { useState } from "react"
 
 import { Button, IconCmpTrash } from "@nfid-frontend/ui"
@@ -11,8 +11,7 @@ import { securityConnector } from "../device-connector"
 import { IDevice } from "../types"
 import { Spinner } from "packages/ui/src/atoms/spinner"
 
-interface IDeleteRecoveryPhraseModal
-  extends React.HTMLAttributes<HTMLDivElement> {
+interface IDeleteRecoveryPhraseModal extends React.HTMLAttributes<HTMLDivElement> {
   device: IDevice
   handleWithLoading: IHandleWithLoading
 }

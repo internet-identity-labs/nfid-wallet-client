@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { Button } from "packages/ui/src/molecules/button"
-import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
+import { ModalComponent } from "@nfid-frontend/ui"
 import { useEffect, useState } from "react"
 import { FT } from "src/integration/ft/ft"
 

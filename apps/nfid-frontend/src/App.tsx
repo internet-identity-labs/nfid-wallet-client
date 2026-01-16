@@ -9,9 +9,10 @@ import { ROUTE_EMBED, ROUTE_RPC, ROUTE_WALLETCONNECT } from "@nfid/config"
 import { authState, exchangeRateService, ic } from "@nfid/integration"
 import { useSWR } from "@nfid/swr"
 
-import { AuthWrapper } from "frontend/ui/pages/auth-wrapper"
-import { VaultGuard } from "frontend/ui/pages/vault-guard"
+import { AuthWrapper, VaultGuard } from "@nfid-frontend/ui"
 import { walletConnectService } from "frontend/integration/walletconnect"
+import { useVaultMember } from "./features/vaults/hooks/use-vault-member"
+import { getAllVaults } from "./features/vaults/services"
 
 import { ProfileConstants } from "./apps/identity-manager/profile/routes"
 import { BtcAddressProvider } from "./contexts"
@@ -21,8 +22,7 @@ import { AuthEmailMagicLink } from "./features/authentication/auth-selection/ema
 import IdentityKitRPCCoordinator from "./features/identitykit/coordinator"
 import { WalletRouter } from "./features/wallet"
 import WalletConnectCoordinator from "./features/walletconnect/coordinator"
-import { NotFound } from "./ui/pages/404"
-import ProfileTemplate from "./ui/templates/profile-template/Template"
+import { NotFound, ProfileTemplate } from "@nfid-frontend/ui"
 import { useAuthentication } from "./apps/authentication/use-authentication"
 
 const LandingHomePage = lazy(() =>
@@ -71,7 +71,12 @@ export enum NFIDTheme {
 export const App = () => {
   const [walletTheme, setWalletTheme] = useState<NFIDTheme>(NFIDTheme.SYSTEM)
 
-  const { isAuthenticated } = useAuthentication()
+  const { isAuthenticated, cacheLoaded } = useAuthentication()
+  const { isReady } = useVaultMember()
+  const { data: vaults, isLoading: vaultsLoading } = useSWR(
+    isReady ? "vaults" : null,
+    getAllVaults,
+  )
 
   useEffect(() => {
     const sub = authState.subscribe(({ cacheLoaded }) => {
@@ -171,7 +176,10 @@ export const App = () => {
                 <Route
                   path={`${ProfileConstants.base}/*`}
                   element={
-                    <AuthWrapper>
+                    <AuthWrapper
+                      isAuthenticated={isAuthenticated}
+                      cacheLoaded={cacheLoaded}
+                    >
                       <ProfileTemplate
                         isWallet
                         walletTheme={walletTheme}
@@ -185,7 +193,10 @@ export const App = () => {
                 <Route
                   path={`${ProfileConstants.base}/${ProfileConstants.nfts}/${ProfileConstants.nftDetails}`}
                   element={
-                    <AuthWrapper>
+                    <AuthWrapper
+                      isAuthenticated={isAuthenticated}
+                      cacheLoaded={cacheLoaded}
+                    >
                       <NFTDetailsPage
                         walletTheme={walletTheme}
                         setWalletTheme={setWalletTheme}
@@ -256,7 +267,10 @@ export const App = () => {
                   <Route
                     path={ProfileConstants.security}
                     element={
-                      <AuthWrapper>
+                      <AuthWrapper
+                        isAuthenticated={isAuthenticated}
+                        cacheLoaded={cacheLoaded}
+                      >
                         <ProfileSecurity
                           walletTheme={walletTheme}
                           setWalletTheme={setWalletTheme}
@@ -267,7 +281,10 @@ export const App = () => {
                   <Route
                     path={ProfileConstants.permissions}
                     element={
-                      <AuthWrapper>
+                      <AuthWrapper
+                        isAuthenticated={isAuthenticated}
+                        cacheLoaded={cacheLoaded}
+                      >
                         <ProfilePermissions
                           walletTheme={walletTheme}
                           setWalletTheme={setWalletTheme}
@@ -278,7 +295,10 @@ export const App = () => {
                   <Route
                     path={ProfileConstants.addressBook}
                     element={
-                      <AuthWrapper>
+                      <AuthWrapper
+                        isAuthenticated={isAuthenticated}
+                        cacheLoaded={cacheLoaded}
+                      >
                         <AddressBookPage
                           walletTheme={walletTheme}
                           setWalletTheme={setWalletTheme}
@@ -289,7 +309,10 @@ export const App = () => {
                   <Route
                     path={ProfileConstants.copyRecoveryPhrase}
                     element={
-                      <AuthWrapper>
+                      <AuthWrapper
+                        isAuthenticated={isAuthenticated}
+                        cacheLoaded={cacheLoaded}
+                      >
                         <CopyRecoveryPhrase />
                       </AuthWrapper>
                     }
@@ -297,8 +320,11 @@ export const App = () => {
                   <Route
                     path={`${ProfileConstants.vaults}`}
                     element={
-                      <AuthWrapper>
-                        <VaultGuard>
+                      <AuthWrapper
+                        isAuthenticated={isAuthenticated}
+                        cacheLoaded={cacheLoaded}
+                      >
+                        <VaultGuard vaults={vaults} isLoading={vaultsLoading}>
                           <VaultsListPage
                             walletTheme={walletTheme}
                             setWalletTheme={setWalletTheme}
@@ -310,7 +336,10 @@ export const App = () => {
                   <Route
                     path={`${ProfileConstants.vaults}/${ProfileConstants.vault}`}
                     element={
-                      <AuthWrapper>
+                      <AuthWrapper
+                        isAuthenticated={isAuthenticated}
+                        cacheLoaded={cacheLoaded}
+                      >
                         <VaultsDetailsCoordinator
                           walletTheme={walletTheme}
                           setWalletTheme={setWalletTheme}
@@ -321,7 +350,10 @@ export const App = () => {
                   <Route
                     path={`${ProfileConstants.base}/${ProfileConstants.nfts}/${ProfileConstants.nftDetails}`}
                     element={
-                      <AuthWrapper>
+                      <AuthWrapper
+                        isAuthenticated={isAuthenticated}
+                        cacheLoaded={cacheLoaded}
+                      >
                         <NFTDetailsPage
                           walletTheme={walletTheme}
                           setWalletTheme={setWalletTheme}
@@ -332,7 +364,10 @@ export const App = () => {
                   <Route
                     path={`${ProfileConstants.vaults}/transactions/${ProfileConstants.vaultTransaction}`}
                     element={
-                      <AuthWrapper>
+                      <AuthWrapper
+                        isAuthenticated={isAuthenticated}
+                        cacheLoaded={cacheLoaded}
+                      >
                         <VaultTransactionsDetailsPage
                           walletTheme={walletTheme}
                           setWalletTheme={setWalletTheme}

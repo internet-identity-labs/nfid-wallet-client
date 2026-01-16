@@ -1,5 +1,5 @@
 import { useMachine } from "@xstate/react"
-import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
+import { ModalComponent } from "@nfid-frontend/ui"
 import { useMemo } from "react"
 
 import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"

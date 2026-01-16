@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import toaster from "packages/ui/src/atoms/toast"
-import { ModalComponent } from "packages/ui/src/molecules/modal/index-v0"
+import { ModalComponent } from "@nfid-frontend/ui"
 import { useState, useCallback } from "react"
 
 import { BlurredLoader, Button, IconCmpPlus } from "@nfid-frontend/ui"
@@ -41,8 +41,8 @@ export const AddPasskey = ({
               ERROR_DEVICE_IN_EXCLUDED_CREDENTIAL_LIST.includes(e.message)
                 ? "This device is already registered."
                 : e.message.includes("either timed out or was not allowed")
-                ? "It seems like the process was interrupted. Feel free to try again!"
-                : e.message,
+                  ? "It seems like the process was interrupted. Feel free to try again!"
+                  : e.message,
             )
           }
           throw e

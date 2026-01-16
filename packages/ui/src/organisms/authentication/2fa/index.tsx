@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import { Button } from "@nfid-frontend/ui"
 
 import { useDarkTheme } from "frontend/hooks"
-import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
+import { BlurredLoader } from "@nfid-frontend/ui"
 
 import Image2FADark from "./2fa-dark.png"
 import Image2FA from "./2fa.png"

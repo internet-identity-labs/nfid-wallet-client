@@ -11,8 +11,8 @@ import { useICPExchangeRate } from "frontend/features/fungible-token/icp/hooks/u
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { useTransfer } from "frontend/integration/wallet/hooks/use-transfer"
 import { stringICPtoE8s } from "frontend/integration/wallet/utils"
-import { RequestTransferPage } from "frontend/ui/pages/request-transfer"
-import { useTimer } from "frontend/ui/utils/use-timer"
+import { RequestTransferPage } from "@nfid-frontend/ui"
+import { useTimer } from "@nfid-frontend/ui"
 
 interface IRequestTransfer {
   applicationName?: string

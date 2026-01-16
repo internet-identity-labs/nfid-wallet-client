@@ -3,6 +3,8 @@ import { ReactNode } from "react"
 
 import { IconCmpWarning } from "@nfid-frontend/ui"
 
+export { CardBody } from "./body"
+
 export enum CardType {
   WARNING,
   NOTICE,

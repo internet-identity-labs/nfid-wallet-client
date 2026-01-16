@@ -1,42 +1,62 @@
+import * as RadixAccordion from "@radix-ui/react-accordion"
 import clsx from "clsx"
-import React, { useRef, useState } from "react"
+import React, { useRef, useState, useEffect } from "react"
 
 export interface AccordionProps {
-  title: React.ReactNode
-  details: React.ReactNode
+  title?: React.ReactNode
+  details?: React.ReactNode
   isBorder?: boolean
-  style?: any
+  style?: React.CSSProperties
   openTrigger?: string
   closeTrigger?: string
   className?: string
   detailsClassName?: string
   titleClassName?: string
   isOpen?: boolean
+  trigger?: JSX.Element
+  children?: JSX.Element | React.ReactNode
+  value?: string
+  onValueChange?: (value: string) => void
+  type?: "single" | "multiple"
+  collapsible?: boolean
 }
 
 export const Accordion: React.FC<AccordionProps> = ({
   title,
   details,
-  className,
   isBorder = true,
   style,
-  detailsClassName,
   openTrigger,
   closeTrigger,
+  className,
+  detailsClassName,
   titleClassName,
   isOpen,
+  trigger,
+  children,
+  value: controlledValue,
+  onValueChange,
+  type = "single",
+  collapsible = true,
 }) => {
-  const [active, setActive] = useState(isOpen || false)
+  // All hooks must be called unconditionally at the top
+  const [internalValueMultiple, setInternalValueMultiple] = useState<string[]>(
+    Array.isArray(controlledValue)
+      ? controlledValue
+      : controlledValue
+        ? [controlledValue]
+        : [],
+  )
+  const [internalValueSingle, setInternalValueSingle] = useState(
+    controlledValue ?? "",
+  )
+  const [active, setActive] = useState(isOpen ?? false)
   const [height, setHeight] = useState("0px")
   const [rotate, setRotate] = useState("transform duration-700 ease")
-
   const contentSpace = useRef<HTMLDivElement>(null)
 
-  function toggleAccordion() {
-    setActive((prevState) => !prevState)
-  }
-
-  React.useEffect(() => {
+  // Effects for non-trigger mode
+  useEffect(() => {
     setHeight(
       active
         ? `${contentSpace.current && contentSpace.current.scrollHeight}px`
@@ -49,17 +69,86 @@ export const Accordion: React.FC<AccordionProps> = ({
     )
   }, [active])
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (openTrigger) {
       setActive(true)
     }
   }, [openTrigger])
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (closeTrigger) {
       setActive(false)
     }
   }, [closeTrigger])
+
+  useEffect(() => {
+    if (isOpen !== undefined) {
+      setActive(isOpen)
+    }
+  }, [isOpen])
+
+  if (trigger !== undefined) {
+    if (type === "multiple") {
+      const value = controlledValue
+        ? Array.isArray(controlledValue)
+          ? controlledValue
+          : [controlledValue]
+        : internalValueMultiple
+      const handleValueChange = onValueChange
+        ? (vals: string[]) => onValueChange(vals.join(","))
+        : setInternalValueMultiple
+
+      return (
+        <RadixAccordion.Root
+          type="multiple"
+          value={value}
+          onValueChange={handleValueChange}
+        >
+          <RadixAccordion.Item value="1" className={className}>
+            <RadixAccordion.Trigger className="w-full">
+              {trigger}
+            </RadixAccordion.Trigger>
+            <RadixAccordion.Content className="w-full">
+              {children}
+            </RadixAccordion.Content>
+          </RadixAccordion.Item>
+        </RadixAccordion.Root>
+      )
+    }
+
+    // Single type (default)
+    const value = controlledValue ?? internalValueSingle
+    const handleValueChange = onValueChange ?? setInternalValueSingle
+
+    return (
+      <RadixAccordion.Root
+        type="single"
+        value={value}
+        onValueChange={handleValueChange}
+        collapsible={collapsible}
+      >
+        <RadixAccordion.Item value="1" className={className}>
+          <RadixAccordion.Trigger
+            onClick={() => {
+              if (!onValueChange) {
+                setInternalValueSingle(value === "1" ? "" : "1")
+              }
+            }}
+            className="w-full"
+          >
+            {trigger}
+          </RadixAccordion.Trigger>
+          <RadixAccordion.Content className="w-full">
+            {children}
+          </RadixAccordion.Content>
+        </RadixAccordion.Item>
+      </RadixAccordion.Root>
+    )
+  }
+
+  function toggleAccordion() {
+    setActive((prevState) => !prevState)
+  }
 
   return (
     <div
@@ -114,9 +203,21 @@ export const Accordion: React.FC<AccordionProps> = ({
             detailsClassName,
           )}
         >
-          {details}
+          {details || children}
         </div>
       </div>
     </div>
+  )
+}
+
+export const AccordionV2: React.FC<{
+  trigger: JSX.Element
+  children: JSX.Element
+  className?: string
+}> = ({ trigger, children, className }) => {
+  return (
+    <Accordion trigger={trigger} className={className}>
+      {children}
+    </Accordion>
   )
 }

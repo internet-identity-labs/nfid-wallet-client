@@ -2,7 +2,7 @@ import React from "react"
 
 import { Tabs } from "@nfid-frontend/ui"
 
-import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
+import { ProfileTemplate } from "@nfid-frontend/ui"
 
 import { useVault } from "../hooks/use-vault"
 import { tabs } from "./tabs"

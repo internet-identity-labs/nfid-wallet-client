@@ -6,8 +6,8 @@ import { useLocation } from "react-router-dom"
 import { Badge, Button, IconCmpOut } from "@nfid-frontend/ui"
 import { approveTransaction, TransactionState } from "@nfid/integration"
 
-import { Accordion } from "frontend/ui/atoms/accordion"
-import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
+import { Accordion } from "@nfid-frontend/ui"
+import { ProfileTemplate } from "@nfid-frontend/ui"
 
 import {
   IVaultTransactionsDetails,

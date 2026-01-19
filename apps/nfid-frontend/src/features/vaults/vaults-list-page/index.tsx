@@ -3,7 +3,7 @@ import React, { useCallback, useMemo, useState } from "react"
 import { EmptyCard, IconCmpVault, Loader } from "@nfid-frontend/ui"
 import { useSWR } from "@nfid/swr"
 
-import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
+import { ProfileTemplate } from "@nfid-frontend/ui"
 
 import { VaultActionBar } from "../action-bar"
 import { getAllVaults } from "../services"

@@ -14,7 +14,7 @@ import {
   IStakingICPDelegates,
   StakingState,
 } from "frontend/integration/staking/types"
-import { NotFound } from "frontend/ui/pages/404"
+import { NotFound } from "../../pages/404"
 
 import { IconNftPlaceholder } from "../../atoms/icons"
 import ImageWithFallback from "../../atoms/image-with-fallback"
@@ -24,7 +24,7 @@ import { TableStakingOptionSkeleton } from "../../atoms/skeleton/table-staking-o
 import { Button } from "../../molecules/button"
 import { ArrowButton } from "../../molecules/button/arrow-button"
 import { Input } from "../../molecules/input"
-import { ModalComponent } from "../../molecules/modal/index-v0"
+import { ModalComponent } from "@nfid-frontend/ui"
 import { StakingHeader } from "./components/staking-header"
 import { StakingOption } from "./components/staking-option"
 import {

@@ -30,7 +30,7 @@ import { useLoadProfileFromStorage } from "frontend/hooks"
 import { generate } from "frontend/integration/internet-identity/crypto/mnemonic"
 import { parseUserNumber } from "frontend/integration/internet-identity/userNumber"
 import { AbstractAuthSession } from "frontend/state/authentication"
-import { BlurredLoader } from "frontend/ui/molecules/blurred-loader"
+import { BlurredLoader } from "@nfid-frontend/ui"
 
 import { authWithAnchor } from "../auth-selection/other-sign-options/services"
 import { passkeyConnector } from "../auth-selection/passkey-flow/services"

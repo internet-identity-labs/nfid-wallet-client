@@ -1,6 +1,6 @@
 import React from "react"
 
-import { ChooseAccount } from "frontend/ui/organisms/choose-account"
+import { ChooseAccount } from "@nfid-frontend/ui"
 
 import { Account } from "../../type"
 import { RPCPromptTemplate } from "../templates/prompt-template"

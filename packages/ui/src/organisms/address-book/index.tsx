@@ -18,7 +18,7 @@ import {
 import { getIsMobileDeviceMatch } from "../../utils/is-mobile"
 import { AddressBookRow } from "./AddressBookRow"
 import { AddressBookModal } from "./AddressBookModal"
-import { ModalComponent } from "../../molecules/modal/index-v0"
+import { ModalComponent } from "@nfid-frontend/ui"
 import { Spinner } from "../../atoms/spinner"
 import {
   AddressBookAction,

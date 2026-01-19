@@ -3,10 +3,10 @@ import React from "react"
 import { useNavigate } from "react-router-dom"
 
 import { useLoadProfileFromStorage } from "frontend/hooks"
-import { CardBody } from "frontend/ui/molecules/card/body"
-import { NFIDLogin } from "frontend/ui/pages/nfid-login"
-import { AppScreen } from "frontend/ui/templates/app-screen/AppScreen"
-import { useNFIDNavigate } from "frontend/ui/utils/use-nfid-navigate"
+import { CardBody } from "@nfid-frontend/ui"
+import { NFIDLogin } from "@nfid-frontend/ui"
+import { AppScreen } from "@nfid-frontend/ui"
+import { useNFIDNavigate } from "@nfid-frontend/ui"
 
 import { useAuthentication } from "../../use-authentication"
 

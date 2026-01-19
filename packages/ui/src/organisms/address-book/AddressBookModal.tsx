@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react"
 import clsx from "clsx"
-import { ModalComponent } from "../../molecules/modal/index-v0"
+import { ModalComponent } from "@nfid-frontend/ui"
 import { Spinner } from "../../atoms/spinner"
 import { Button, Input } from "@nfid-frontend/ui"
 import { useForm } from "react-hook-form"

@@ -3,7 +3,7 @@ import useSWRImmutable from "swr/immutable"
 
 import { Tooltip } from "@nfid-frontend/ui"
 
-import { ChooseAccount } from "frontend/ui/organisms/choose-account"
+import { ChooseAccount } from "@nfid-frontend/ui"
 
 import InvalidIcon from "../../assets/invalid.svg"
 import ValidIcon from "../../assets/valid.svg"

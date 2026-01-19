@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { UseFormRegisterReturn } from "react-hook-form"
 import { IoIosSearch } from "react-icons/io"
 import InfiniteScroll from "react-infinite-scroll-component"
-import { trimConcat } from "src/ui/atoms/util/util"
+import { trimConcat } from "@nfid-frontend/ui"
 
 import { IconCmpWarning } from "@nfid-frontend/ui"
 import { Input } from "@nfid-frontend/ui"

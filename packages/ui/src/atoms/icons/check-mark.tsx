@@ -5,9 +5,7 @@ interface MapPinIconProps extends React.HTMLAttributes<HTMLOrSVGElement> {
   size?: string | number
 }
 
-export const IconCheckMark: React.FC<MapPinIconProps> = ({
-  onClick: _onClick,
-}) => {
+export const IconCheckMark: React.FC<MapPinIconProps> = ({ onClick }) => {
   return (
     <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path

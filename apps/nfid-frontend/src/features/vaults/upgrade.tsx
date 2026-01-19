@@ -2,7 +2,7 @@ import clsx from "clsx"
 
 import { Button } from "@nfid-frontend/ui"
 
-import ProfileTemplate from "frontend/ui/templates/profile-template/Template"
+import { ProfileTemplate } from "@nfid-frontend/ui"
 
 import ImageVaultUpgrade from "./vault-upgrade.png"
 

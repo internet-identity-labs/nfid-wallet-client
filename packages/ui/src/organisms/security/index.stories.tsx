@@ -9,8 +9,8 @@ import {
   IconCmpTrash,
 } from "@nfid-frontend/ui"
 
-import { DocumentIcon } from "frontend/ui/atoms/icons/document"
-import { GoogleIcon } from "frontend/ui/atoms/icons/google"
+import { DocumentIcon } from "../../atoms/icons/document"
+import { GoogleIcon } from "../../atoms/icons/google"
 
 import { Toggle } from "../../atoms/toggle"
 import { Security, SecurityProps } from "./index"

@@ -20,7 +20,7 @@ import { NFT } from "frontend/integration/nft/nft"
 
 import { A } from "../../atoms/custom-link"
 import ProfileContainer from "../../atoms/profile-container/Container"
-import { ModalComponent } from "../../molecules/modal/index-v0"
+import { ModalComponent } from "@nfid-frontend/ui"
 
 export interface NFTDetailsProps {
   nft: NFT

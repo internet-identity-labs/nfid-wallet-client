@@ -7,7 +7,7 @@ import { useClickOutside } from "@nfid-frontend/utils"
 import { Icon } from "@nfid/integration"
 
 import { useDarkTheme } from "frontend/hooks"
-import { DeviceIconDecider } from "frontend/ui/organisms/device-list/device-icon-decider"
+import { DeviceIconDecider } from "@nfid-frontend/ui"
 
 import { IHandleWithLoading } from ".."
 import { DetailsPasskey } from "../passkey/details-passkey"

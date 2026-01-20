@@ -132,7 +132,8 @@ export abstract class Erc20Service {
 
     // Create cache key based on sorted addresses to ensure consistency
     const sortedAddresses = [...addresses].sort().join(",")
-    const cacheKey = `${ERC20_TOKENS_CACHE_KEY}-${this.chainId}-${sortedAddresses}`
+    const root = authState.getUserIdData().anchor
+    const cacheKey = `${ERC20_TOKENS_CACHE_KEY}-${root}-${this.chainId}-${sortedAddresses}`
 
     // Check cache first
     const cache = await storageWithTtl.getEvenExpired(cacheKey)
@@ -264,10 +265,8 @@ export abstract class Erc20Service {
     normalizedAddress: string,
     normalizedContracts: string[],
   ) {
-    const root = authState.getUserIdData().anchor
     // Single cache key per address (not per token list)
-    const cacheKey =
-      `ERC20_Balances__${root}__${normalizedAddress}_` + this.chainId
+    const cacheKey = `ERC20_Balances_${normalizedAddress}_` + this.chainId
 
     // Check cache first
     const cache = await storageWithTtl.getEvenExpired(cacheKey)

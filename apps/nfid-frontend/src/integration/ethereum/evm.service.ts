@@ -39,6 +39,7 @@ import {
 } from "@nfid/integration/token/constants"
 import { KEY_ETH_ADDRESS } from "packages/integration/src/lib/authentication/storage"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { authState } from "packages/integration/src/lib/authentication/auth-state"
 
 export type SendEthFee = {
   gasUsed: bigint
@@ -101,7 +102,8 @@ export abstract class EVMService {
   public async getBalance(address: Address): Promise<Balance> {
     const network = await this.provider.getNetwork()
     const chainId = Number(network.chainId)
-    const cacheKey = `EVM_BALANCE_${chainId}_${address.toLowerCase()}`
+    const root = authState.getUserIdData().anchor
+    const cacheKey = `EVM_BALANCE__${root}__${chainId}_${address.toLowerCase()}`
 
     const fetchAndCache = async (): Promise<Balance> => {
       const balance = await this.provider.getBalance(address)

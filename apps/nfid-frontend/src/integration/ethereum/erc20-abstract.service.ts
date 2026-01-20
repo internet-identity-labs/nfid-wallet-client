@@ -9,6 +9,7 @@ import { storageWithTtl } from "@nfid/client-db"
 import { ChainId, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { EthSignTransactionRequest } from "../bitcoin/idl/chain-fusion-signer.d"
 import { TokenPrice } from "packages/integration/src/lib/asset/types"
+import { authState } from "packages/integration/src/lib/authentication/auth-state"
 
 export const ERC20_ABI = [
   "function transfer(address to, uint256 amount) external returns (bool)",
@@ -263,8 +264,10 @@ export abstract class Erc20Service {
     normalizedAddress: string,
     normalizedContracts: string[],
   ) {
+    const root = authState.getUserIdData().anchor
     // Single cache key per address (not per token list)
-    const cacheKey = `ERC20_Balances_${normalizedAddress}_` + this.chainId
+    const cacheKey =
+      `ERC20_Balances__${root}__${normalizedAddress}_` + this.chainId
 
     // Check cache first
     const cache = await storageWithTtl.getEvenExpired(cacheKey)

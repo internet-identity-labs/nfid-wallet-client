@@ -9,6 +9,7 @@ import { storageWithTtl } from "@nfid/client-db"
 import { ChainId, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { EthSignTransactionRequest } from "../bitcoin/idl/chain-fusion-signer.d"
 import { TokenPrice } from "packages/integration/src/lib/asset/types"
+import { authState } from "packages/integration/src/lib/authentication/auth-state"
 
 export const ERC20_ABI = [
   "function transfer(address to, uint256 amount) external returns (bool)",
@@ -129,16 +130,22 @@ export abstract class Erc20Service {
       return []
     }
 
-    // Create cache key based on sorted addresses to ensure consistency
-    const sortedAddresses = [...addresses].sort().join(",")
-    const cacheKey = `${ERC20_TOKENS_CACHE_KEY}-${this.chainId}-${sortedAddresses}`
+    const root = authState.getUserIdData().anchor
+    const cacheKey = `${ERC20_TOKENS_CACHE_KEY}-${root}-${this.chainId}`
 
     // Check cache first
     const cache = await storageWithTtl.getEvenExpired(cacheKey)
 
     let prices: Record<string, number>
 
-    if (!cache) {
+    //check that cache contains all addresses
+    const cacheHasAllAddresses =
+      cache &&
+      addresses.every(
+        (address) =>
+          address.toLowerCase() in (cache.value as Record<string, number>),
+      )
+    if (!cache || !cacheHasAllAddresses) {
       // No cache, fetch and cache
       prices = await this.fetchAndCachePrices(addresses, cacheKey)
     } else if (!cache.expired) {

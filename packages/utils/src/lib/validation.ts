@@ -1,7 +1,19 @@
 import BigNumber from "bignumber.js"
 
+enum IModalType {
+  SWAP = "SWAP",
+  SEND = "SEND",
+  STAKE = "STAKE",
+  CONVERT_TO_BTC = "CONVERT_TO_BTC",
+  CONVERT_TO_CKBTC = "CONVERT_TO_CKBTC",
+  CONVERT_TO_ETH = "CONVERT_TO_ETH",
+  CONVERT_TO_CKETH = "CONVERT_TO_CKETH",
+}
+
 const MIN_CK_BTC_AMOUNT_TO_CONVERT = 0.00051
+const MIN_BTC_AMOUNT_TO_CONVERT = 0.000005
 const MIN_CK_ETH_AMOUNT_TO_CONVERT = 0.03
+const MIN_ETH_AMOUNT_TO_CONVERT = 0.0005
 
 interface Validation {
   min?: number
@@ -32,8 +44,7 @@ export const validateTransferAmountField =
     balance: bigint | undefined,
     fee: bigint | undefined,
     decimals: number | undefined,
-    isConvertFromCkBtc: boolean,
-    isConvertFromCkEth: boolean,
+    modalType: IModalType,
     minAmount?: number,
     symbol?: string,
   ) =>
@@ -57,21 +68,36 @@ export const validateTransferAmountField =
       return "Insufficient funds"
 
     if (
-      isConvertFromCkBtc &&
+      modalType === IModalType.CONVERT_TO_BTC &&
       valueNum.isLessThan(MIN_CK_BTC_AMOUNT_TO_CONVERT)
     ) {
       return `Amount can't be less than ${MIN_CK_BTC_AMOUNT_TO_CONVERT} ckBTC.`
     }
 
     if (
-      isConvertFromCkEth &&
+      modalType === IModalType.CONVERT_TO_CKBTC &&
+      valueNum.isLessThan(MIN_BTC_AMOUNT_TO_CONVERT)
+    ) {
+      return `Amount can't be less than ${MIN_BTC_AMOUNT_TO_CONVERT} BTC.`
+    }
+
+    if (
+      modalType === IModalType.CONVERT_TO_ETH &&
       valueNum.isLessThan(MIN_CK_ETH_AMOUNT_TO_CONVERT)
     ) {
       return `Amount can't be less than ${MIN_CK_ETH_AMOUNT_TO_CONVERT} ckETH.`
     }
 
+    if (
+      modalType === IModalType.CONVERT_TO_CKETH &&
+      valueNum.isLessThan(MIN_ETH_AMOUNT_TO_CONVERT)
+    ) {
+      return `Amount can't be less than ${MIN_ETH_AMOUNT_TO_CONVERT} ETH.`
+    }
+
     if (minAmount !== undefined && valueNum.isLessThan(minAmount)) {
       return `Minimum amount to stake ${symbol} is ${minAmount}`
     }
+
     return true
   }

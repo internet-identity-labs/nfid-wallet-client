@@ -260,8 +260,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
                   balance || token.getTokenBalance(),
                   modalType === IModalType.SWAP ? BigInt(0) : feeFormatted,
                   decimals,
-                  modalType === IModalType.CONVERT_TO_BTC,
-                  modalType === IModalType.CONVERT_TO_ETH,
+                  modalType,
                   minAmount,
                   token.getTokenSymbol(),
                 )(value)

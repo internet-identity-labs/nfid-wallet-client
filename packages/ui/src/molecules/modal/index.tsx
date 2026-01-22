@@ -223,5 +223,3 @@ export const Modal: React.FC<ModalProps> = ({
 }
 
 export const ModalComponent = Modal
-
-export const ModalAdvanced = Modal

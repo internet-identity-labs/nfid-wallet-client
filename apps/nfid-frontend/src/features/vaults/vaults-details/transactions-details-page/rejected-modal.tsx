@@ -1,6 +1,6 @@
 import clsx from "clsx"
 
-import { ModalAdvanced } from "@nfid-frontend/ui"
+import { ModalComponent } from "@nfid-frontend/ui"
 
 export interface IVaultTransactionRejectReason {
   error: string
@@ -10,7 +10,7 @@ export const VaultTransactionRejectReason = ({
   error,
 }: IVaultTransactionRejectReason) => {
   return (
-    <ModalAdvanced
+    <ModalComponent
       large
       title="Transaction status details"
       secondaryButton={{
@@ -35,6 +35,6 @@ export const VaultTransactionRejectReason = ({
       >
         {error}
       </div>
-    </ModalAdvanced>
+    </ModalComponent>
   )
 }

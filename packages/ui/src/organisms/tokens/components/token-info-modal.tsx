@@ -39,12 +39,11 @@ export const TokenInfoModal: FC<TokenInfoModalProps> = ({ token, onClose }) => {
     }
 
     getFee()
-  }, [token])
+  }, [token, chainId])
 
   return (
     <>
       <ModalComponent
-        title="Token information"
         isVisible={Boolean(token)}
         onClose={onClose}
         className="p-[20px] w-[90%] md:w-[450px] md:!h-[580px] z-[100] rounded-xl"

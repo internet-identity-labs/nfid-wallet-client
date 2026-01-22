@@ -357,10 +357,25 @@ export abstract class Erc20Service {
     try {
       const cache = await storageWithTtl.getEvenExpired(cacheKey)
       if (cache && !cache.expired) {
-        return cache.value as Map<
+        // Restore cached balances from array to Map for easier lookup
+        const cachedArray = cache.value as Array<{
+          contractAddress: string
+          balance: string
+          address: string
+          error?: string
+        }>
+        const cachedBalances = new Map<
           string,
           { balance: string; address: string; error?: string }
-        >
+        >()
+        cachedArray.forEach((item) => {
+          cachedBalances.set(item.contractAddress.toLowerCase(), {
+            balance: item.balance,
+            address: item.address,
+            error: item.error,
+          })
+        })
+        return cachedBalances
       }
 
       // Use Multicall3 to get all balances in a single request

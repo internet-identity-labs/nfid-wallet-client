@@ -279,6 +279,7 @@ export class PasskeyConnector {
       delegationIdentity,
       sessionKey,
       chain,
+      activeDevicePrincipalId: identity.getPrincipal().toText(),
     })
     await this.cachePasskeyDelegation(sessionKey, delegationIdentity)
 

@@ -12,7 +12,7 @@ import {
   useContext,
   useEffect,
 } from "react"
-import { Outlet, useLocation, useNavigate } from "react-router-dom"
+import { Outlet, useLocation, useNavigate, useMatch } from "react-router-dom"
 import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
 import { SwapStage } from "src/integration/swap/types/enums"
 import useSWRImmutable from "swr/immutable"
@@ -84,8 +84,18 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 }) => {
   const location = useLocation()
   const navigate = useNavigate()
+
+  const isNftDetails = Boolean(
+    useMatch(
+      `${ProfileConstants.base}/${ProfileConstants.nfts}/${ProfileConstants.nftDetails}`,
+    ),
+  )
+
   const handleNavigateBack = () => {
-    navigate(`${ProfileConstants.base}/${ProfileConstants.tokens}`)
+    const url = !isNftDetails
+      ? `${ProfileConstants.base}/${ProfileConstants.tokens}`
+      : `${ProfileConstants.base}/${ProfileConstants.nfts}`
+    navigate(url)
   }
 
   const [hasUncompletedSwap, setHasUncompletedSwap] = useState(false)

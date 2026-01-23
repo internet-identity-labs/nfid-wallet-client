@@ -72,6 +72,7 @@ type SetProps = {
   delegationIdentity: DelegationIdentity
   chain?: DelegationChain | undefined
   sessionKey?: Ed25519KeyIdentity | undefined
+  activeDevicePrincipalId?: string
 }
 
 function makeAuthState() {
@@ -217,6 +218,7 @@ function makeAuthState() {
     delegationIdentity,
     chain,
     sessionKey,
+    activeDevicePrincipalId,
   }: SetProps) {
     console.debug("makeAuthState set new auth state")
     const userIdData = await createUserIdData(delegationIdentity)
@@ -242,7 +244,8 @@ function makeAuthState() {
       ...observableAuthState$.getValue(),
       identity,
       delegationIdentity,
-      activeDevicePrincipalId: delegationIdentity.getPrincipal().toText(),
+      activeDevicePrincipalId:
+        activeDevicePrincipalId ?? delegationIdentity.getPrincipal().toText(),
       chain,
       sessionKey,
       userIdData,

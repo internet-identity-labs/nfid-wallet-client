@@ -224,11 +224,6 @@ function makeAuthState() {
   }: SetProps) {
     console.debug("makeAuthState set new auth state")
     const userIdData = await createUserIdData(delegationIdentity)
-    const previousAnchor = localStorage.getItem("anchor")
-
-    if (previousAnchor && previousAnchor !== userIdData.anchor.toString()) {
-      await reset(true)
-    }
     localStorage.setItem("anchor", userIdData.anchor.toString())
 
     const current = await walletStorage.get(

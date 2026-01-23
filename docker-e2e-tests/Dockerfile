@@ -28,10 +28,10 @@ RUN mkdir -p "${NVM_DIR}" \
     && nvm install "${NODE_VERSION}"
 
 # Install YARN
-RUN mkdir -p /etc/apt/keyrings \
-    && curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /etc/apt/keyrings/yarnkey.gpg >/dev/null \
-    && echo "deb [signed-by=/etc/apt/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list \
-    && apt-get update && apt-get install -y yarn
+RUN [ -s "${NVM_DIR}/nvm.sh" ] && \
+    . "${NVM_DIR}/nvm.sh" && \
+    corepack enable && \
+    corepack prepare yarn@1.22.21 --activate
 
 # Install Chrome
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \

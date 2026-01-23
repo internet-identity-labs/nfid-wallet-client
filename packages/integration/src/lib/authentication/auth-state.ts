@@ -25,6 +25,7 @@ import {
   KEY_STORAGE_KEY,
   KEY_BTC_ADDRESS,
   KEY_ETH_ADDRESS,
+  KEY_ANCHOR,
 } from "./storage"
 import {
   createUserIdData,
@@ -193,6 +194,7 @@ function makeAuthState() {
     if (hard) {
       localStorage.removeItem(KEY_BTC_ADDRESS)
       localStorage.removeItem(KEY_ETH_ADDRESS)
+      localStorage.removeItem(KEY_ANCHOR)
       storageWithTtl.clear()
       domainKeyStorage.clear()
     }
@@ -222,6 +224,7 @@ function makeAuthState() {
   }: SetProps) {
     console.debug("makeAuthState set new auth state")
     const userIdData = await createUserIdData(delegationIdentity)
+    localStorage.setItem(KEY_ANCHOR, userIdData.anchor.toString())
 
     const current = await walletStorage.get(
       getUserIdDataStorageKey(delegationIdentity),

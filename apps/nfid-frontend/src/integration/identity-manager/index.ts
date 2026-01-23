@@ -35,6 +35,7 @@ import {
   WalletVariant,
 } from "../_ic_api/identity_manager.d"
 import { PublicKey } from "../_ic_api/internet_identity.d"
+import { KEY_ANCHOR } from "packages/integration/src/lib/authentication/storage"
 
 export interface CreateAccessPoint extends AccessPointCommon {
   pubKey: PublicKey
@@ -112,7 +113,7 @@ function mapAccessPoint(accessPoint: AccessPointResponse): AccessPoint {
  */
 export async function fetchProfile() {
   console.debug("fetchProfile im.get_account")
-  return await im
+  const response = await im
     .get_account()
     .then((response) => {
       console.debug("fetchProfile im.get_account", { response })
@@ -130,6 +131,12 @@ export async function fetchProfile() {
       }
       throw new Error(`fetchProfile im.get_account: ${e.message}`)
     })
+  const anchor = localStorage.getItem(KEY_ANCHOR)
+  if (anchor && anchor !== response.anchor.toString()) {
+    console.debug("fetchProfile anchor mismatch, resetting auth state")
+    await authState.reset(true)
+  }
+  return response
 }
 
 /**

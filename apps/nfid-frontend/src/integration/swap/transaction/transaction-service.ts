@@ -3,11 +3,11 @@ import { HttpAgent } from "@dfinity/agent"
 import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
 import { KongSwapTransactionImpl } from "src/integration/swap/kong/impl/kong-swap-transaction-impl"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
-import { idlFactory as SwapStorageIDL } from "src/integration/swap/transaction/idl/swap_trs_storage"
+import { idlFactory as SwapStorageIDL } from "@nfid/integration/_ic_api/swap_trs_storage"
 import {
   _SERVICE as SwapStorage,
   SwapTransaction as SwapTransactionCandid,
-} from "src/integration/swap/transaction/idl/swap_trs_storage.d"
+} from "@nfid/integration/_ic_api/swap_trs_storage.d"
 import { SwapStage } from "src/integration/swap/types/enums"
 
 import {

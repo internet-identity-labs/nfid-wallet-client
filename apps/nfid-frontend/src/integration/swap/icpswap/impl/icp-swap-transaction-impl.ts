@@ -4,7 +4,7 @@ import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { AbstractSwapTransaction } from "src/integration/swap/transaction/transaction-abstract"
 import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
-import { SwapTransaction as SwapTransactionCandid } from "../../transaction/idl/swap_trs_storage.d"
+import { SwapTransaction as SwapTransactionCandid } from "@nfid/integration/_ic_api/swap_trs_storage.d"
 import { Error as ErrorSwap } from "../idl/SwapPool.d"
 
 export class IcpSwapTransactionImpl extends AbstractSwapTransaction {

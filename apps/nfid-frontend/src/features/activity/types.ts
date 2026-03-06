@@ -15,6 +15,7 @@ export interface IActivityRow {
   to: string
   transaction?: SwapTransaction
   scanLink?: string
+  note?: string
 }
 
 export interface IActivityRowGroup {

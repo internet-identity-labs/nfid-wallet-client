@@ -6,7 +6,7 @@ import {
 import {
   SwapStage as SwapStageCandid,
   SwapTransaction as SwapTransactionCandid,
-} from "src/integration/swap/transaction/idl/swap_trs_storage.d"
+} from "@nfid/integration/_ic_api/swap_trs_storage.d"
 import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 import { v4 as uuidv4 } from "uuid"
 

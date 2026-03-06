@@ -15,7 +15,7 @@ import {
 } from "packages/integration/src/lib/staking/governance.api"
 import { StakingService } from "src/integration/staking/staking-service"
 
-import { storageWithTtl } from "@nfid/client-db"
+import { ttlCacheService } from "@nfid/client-db"
 import {
   autoStakeMaturity,
   increaseDissolveDelay,
@@ -84,34 +84,19 @@ export class StakingServiceImpl implements StakingService {
     tokens: FT[],
     refetch?: boolean,
   ): Promise<Array<StakedToken> | undefined> {
-    const cache = await storageWithTtl.getEvenExpired(stakedTokensCacheName)
-
-    if (!cache || Boolean(refetch)) {
-      const identity = await delegation
-      const stakes = await this.fetchStakedTokens(identity, tokens)
-      storageWithTtl.set(
-        stakedTokensCacheName,
-        this.serializeStakes(stakes),
-        300 * 1000,
-      )
-      return stakes
-    }
-
-    if (cache && cache.expired) {
-      delegation.then((data) => {
-        this.fetchStakedTokens(data, tokens).then((stakes) => {
-          storageWithTtl.set(
-            stakedTokensCacheName,
-            this.serializeStakes(stakes),
-            300 * 1000,
-          )
-        })
-      })
-
-      return this.deserializeStakes(cache.value as string, tokens)
-    }
-
-    return this.deserializeStakes(cache.value as string, tokens)
+    return ttlCacheService.getOrFetch<Array<StakedToken> | undefined>(
+      stakedTokensCacheName,
+      async () => {
+        const identity = await delegation
+        return this.fetchStakedTokens(identity, tokens)
+      },
+      300 * 1000,
+      {
+        forceRefetch: Boolean(refetch),
+        serialize: (v) => this.serializeStakes(v),
+        deserialize: (v) => this.deserializeStakes(v as string, tokens),
+      },
+    )
   }
 
   private async fetchStakedTokens(

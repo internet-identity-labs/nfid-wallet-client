@@ -15,7 +15,7 @@ import {
   type FeeData,
   type TransactionResponse,
 } from "ethers"
-import { storageWithTtl } from "@nfid/client-db"
+import { ttlCacheService } from "@nfid/client-db"
 import { agentBaseConfig } from "packages/integration/src/lib/actors"
 
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
@@ -103,29 +103,17 @@ export abstract class EVMService {
     const chainId = Number(network.chainId)
     const cacheKey = `EVM_BALANCE_${chainId}_${address.toLowerCase()}`
 
-    const fetchAndCache = async (): Promise<Balance> => {
-      const balance = await this.provider.getBalance(address)
-      // Random TTL between 20s and 30s to avoid thundering herd on expiry
-      const randomTtlMs = 20000 + Math.floor(Math.random() * 10000)
-      await storageWithTtl.set(cacheKey, balance.toString(), randomTtlMs)
-      return balance
-    }
-
-    const cache = await storageWithTtl.getEvenExpired(cacheKey)
-
-    if (cache) {
-      const cachedBalance = BigInt(cache.value as string) as Balance
-      if (!cache.expired) {
-        return cachedBalance
-      }
-      // Refresh in background, return cached value immediately
-      fetchAndCache().catch((error) =>
-        console.error("Failed to refresh balance cache:", error),
-      )
-      return cachedBalance
-    }
-
-    return await fetchAndCache()
+    return ttlCacheService.getOrFetch(
+      cacheKey,
+      () => this.provider.getBalance(address),
+      () => 20000 + Math.floor(Math.random() * 10000),
+      {
+        serialize: (v) => v.toString(),
+        deserialize: (v) => BigInt(v as string) as Balance,
+        onBackgroundError: (error) =>
+          console.error("Failed to refresh balance cache:", error),
+      },
+    )
   }
 
   public async getQuickBalance(): Promise<Balance> {

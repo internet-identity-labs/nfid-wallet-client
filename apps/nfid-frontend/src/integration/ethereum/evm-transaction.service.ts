@@ -198,7 +198,7 @@ export abstract class EVMNativeTransactionService implements EVMTransactionServi
       console.debug("Etherscan response:", data)
 
       if (data.status !== "1") {
-        console.error("Etherscan API error:", data.message)
+        console.debug("Etherscan API error:", data.message)
         return []
       }
 

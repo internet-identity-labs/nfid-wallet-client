@@ -33,7 +33,7 @@ describe("nft test suite", () => {
       expect(extNft.getCollectionId()).toEqual("64x4q-laaaa-aaaal-qdjca-cai")
       expect(extNft.getCollectionName()).toEqual("Cellphones")
       expect(extNft.getTokenName()).toEqual("Cellphones #2066")
-      expect(extNft.getTokenFloorPriceIcpFormatted()).toEqual("0.02 ICP")
+      expect(extNft.getTokenFloorPriceFormatted()).toEqual("0.02 ICP")
       expect(extNft.getTokenFloorPriceUSDFormatted()).toEqual("0.18 USD")
       expect(extNft.getTokenId()).toEqual(
         "yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",

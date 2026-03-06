@@ -9,6 +9,7 @@ import { TransferArg } from "@dfinity/ledger-icrc/dist/candid/icrc_ledger"
 import { Principal } from "@dfinity/principal"
 import {
   Contract,
+  Interface,
   InfuraProvider,
   parseEther,
   TransactionRequest,
@@ -65,8 +66,71 @@ export type EthToCkEthFee = {
   icpNetworkFee: bigint
 }
 
+export interface EvmNftMetadata {
+  name?: string
+  description?: string
+  image?: string
+  image_url?: string
+  external_url?: string
+  attributes?: Array<{ trait_type: string; value: string }>
+}
+
+export interface EvmNftAsset {
+  contract: string
+  tokenId: string
+  supply: string
+  type: "ERC-721" | "ERC-1155" | "ERC-404"
+  metadata?: EvmNftMetadata
+  imageUrl?: string
+  animationUrl?: string
+  tokenName?: string
+  tokenSymbol?: string
+  chainId: number
+  acquiredAt?: number
+}
+
+interface BlockscoutNftItem {
+  id: string
+  token_type: "ERC-721" | "ERC-1155" | "ERC-404"
+  value: string
+  image_url?: string
+  animation_url?: string
+  metadata?: Record<string, unknown>
+  token: {
+    address_hash: string
+    name?: string
+    symbol?: string
+  }
+}
+
+interface BlockscoutNftResponse {
+  items: BlockscoutNftItem[]
+  next_page_params: Record<string, string> | null
+}
+
+interface BlockscoutTransferItem {
+  timestamp: string
+  token: { address_hash: string }
+  total: { token_id?: string } | null
+}
+
+interface BlockscoutTransfersResponse {
+  items: BlockscoutTransferItem[]
+  next_page_params: Record<string, string> | null
+}
+
+const EVM_NFTS_CACHE_TTL = 30 * 1000
+
+const ERC721_TRANSFER_IFACE = new Interface([
+  "function safeTransferFrom(address from, address to, uint256 tokenId)",
+])
+const ERC1155_TRANSFER_IFACE = new Interface([
+  "function safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes data)",
+])
+
 export abstract class EVMService {
   protected provider: InfuraProvider
+  protected readonly blockscoutBaseUrl: string | undefined = undefined
 
   constructor() {
     this.provider = new InfuraProvider(CHAIN_ID, INFURA_API_KEY)
@@ -114,6 +178,140 @@ export abstract class EVMService {
           console.error("Failed to refresh balance cache:", error),
       },
     )
+  }
+
+  public async getNFTs(address: string): Promise<EvmNftAsset[]> {
+    if (!this.blockscoutBaseUrl) return []
+
+    const network = await this.provider.getNetwork()
+    const chainId = Number(network.chainId)
+    const cacheKey = `EVM_NFTS_${chainId}_${address.toLowerCase()}`
+
+    return ttlCacheService.getOrFetch(
+      cacheKey,
+      () => this.fetchNFTs(address, chainId),
+      EVM_NFTS_CACHE_TTL,
+      {
+        onBackgroundError: (error) =>
+          console.error("Failed to refresh EVM NFTs cache:", error),
+      },
+    )
+  }
+
+  private async fetchNFTs(
+    address: string,
+    chainId: number,
+  ): Promise<EvmNftAsset[]> {
+    const baseUrl = this.blockscoutBaseUrl
+    if (!baseUrl) return []
+
+    const nfts = await this.fetchNFTList(address, baseUrl, chainId)
+    if (nfts.length === 0) return nfts
+
+    const ownedKeys = new Set(
+      nfts.map((n) => `${n.contract.toLowerCase()}:${n.tokenId}`),
+    )
+    const timestamps = await this.fetchNFTTimestamps(
+      address,
+      baseUrl,
+      ownedKeys,
+    ).catch(() => new Map<string, number>())
+
+    return nfts.map((nft) => ({
+      ...nft,
+      acquiredAt: timestamps.get(
+        `${nft.contract.toLowerCase()}:${nft.tokenId}`,
+      ),
+    }))
+  }
+
+  private async fetchNFTList(
+    address: string,
+    baseUrl: string,
+    chainId: number,
+  ): Promise<EvmNftAsset[]> {
+    const results: EvmNftAsset[] = []
+    let nextPageParams: Record<string, string> | null = null
+
+    do {
+      const url = new URL(`${baseUrl}/api/v2/addresses/${address}/nft`)
+      url.searchParams.set("type", "ERC-721,ERC-1155,ERC-404")
+      if (nextPageParams) {
+        for (const [k, v] of Object.entries(nextPageParams)) {
+          url.searchParams.set(k, v)
+        }
+      }
+
+      const response = await fetch(url.toString())
+      if (!response.ok) {
+        throw new Error(
+          `Blockscout API error: ${response.status} ${response.statusText}`,
+        )
+      }
+
+      const data: BlockscoutNftResponse = await response.json()
+
+      for (const item of data.items) {
+        results.push({
+          contract: item.token.address_hash,
+          tokenId: item.id,
+          supply: item.value,
+          type: item.token_type,
+          metadata: item.metadata as EvmNftMetadata | undefined,
+          imageUrl: item.image_url,
+          animationUrl: item.animation_url,
+          tokenName: item.token.name,
+          tokenSymbol: item.token.symbol,
+          chainId,
+        })
+      }
+
+      nextPageParams = data.next_page_params ?? null
+    } while (nextPageParams)
+
+    return results
+  }
+
+  private async fetchNFTTimestamps(
+    address: string,
+    baseUrl: string,
+    ownedKeys: Set<string>,
+  ): Promise<Map<string, number>> {
+    const timestamps = new Map<string, number>()
+    const remaining = new Set(ownedKeys)
+    let nextPageParams: Record<string, string> | null = null
+
+    do {
+      const url = new URL(
+        `${baseUrl}/api/v2/addresses/${address}/token-transfers`,
+      )
+      url.searchParams.set("type", "ERC-721,ERC-1155,ERC-404")
+      url.searchParams.set("filter", "to")
+      if (nextPageParams) {
+        for (const [k, v] of Object.entries(nextPageParams)) {
+          url.searchParams.set(k, v)
+        }
+      }
+
+      const response = await fetch(url.toString())
+      if (!response.ok) break
+
+      const data: BlockscoutTransfersResponse = await response.json()
+
+      for (const item of data.items) {
+        const tokenId = item.total?.token_id
+        if (!tokenId) continue
+        const key = `${item.token.address_hash.toLowerCase()}:${tokenId}`
+        if (remaining.has(key) && !timestamps.has(key)) {
+          timestamps.set(key, new Date(item.timestamp).getTime())
+          remaining.delete(key)
+        }
+      }
+
+      nextPageParams = data.next_page_params ?? null
+    } while (nextPageParams && remaining.size > 0)
+
+    return timestamps
   }
 
   public async getQuickBalance(): Promise<Balance> {
@@ -411,6 +609,95 @@ export abstract class EVMService {
     )
 
     return await this.sendTransaction(signedTransaction)
+  }
+
+  public async getNFTTransferFee(
+    from: Address,
+    to: Address,
+    asset: Pick<EvmNftAsset, "contract" | "tokenId" | "type">,
+  ): Promise<SendEthFee> {
+    const data = this.buildNFTTransferData(from, to, asset)
+
+    const gasUsed = await this.estimateGas({
+      from,
+      to: asset.contract as Address,
+      data,
+    })
+
+    const feeData = await this.getFeeData()
+    if (!feeData.maxFeePerGas || !feeData.maxPriorityFeePerGas) {
+      throw new Error("getNFTTransferFee: Gas fee data is missing")
+    }
+
+    const baseFee = await this.getBaseFee()
+
+    return {
+      gasUsed,
+      maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
+      maxFeePerGas: feeData.maxFeePerGas,
+      baseFeePerGas: baseFee,
+      ethereumNetworkFee: this.estimateTransaction(
+        gasUsed,
+        feeData.maxFeePerGas,
+      ),
+    }
+  }
+
+  public async sendNFTTransaction(
+    identity: SignIdentity,
+    to: Address,
+    asset: Pick<EvmNftAsset, "contract" | "tokenId" | "type">,
+    gas: {
+      gasUsed: bigint
+      maxPriorityFeePerGas: bigint
+      maxFeePerGas: bigint
+      baseFeePerGas: bigint
+    },
+  ): Promise<TransactionResponse> {
+    const from = await this.getAddress(identity)
+    const network = await this.provider.getNetwork()
+    const chainId = Number(network.chainId)
+    const nonce = await this.getTransactionCount(from)
+    const data = this.buildNFTTransferData(from, to, asset)
+
+    const request: EthSignTransactionRequest = {
+      chain_id: BigInt(chainId),
+      to: asset.contract,
+      value: BigInt(0),
+      data: [data],
+      nonce: BigInt(nonce),
+      gas: gas.gasUsed,
+      max_priority_fee_per_gas: gas.maxPriorityFeePerGas,
+      max_fee_per_gas: gas.maxFeePerGas,
+    }
+
+    const signedTransaction = await chainFusionSignerService.ethSignTransaction(
+      identity,
+      request,
+    )
+    return this.sendTransaction(signedTransaction)
+  }
+
+  private buildNFTTransferData(
+    from: Address,
+    to: Address,
+    asset: Pick<EvmNftAsset, "tokenId" | "type">,
+  ): string {
+    const tokenId = BigInt(asset.tokenId)
+    if (asset.type === "ERC-1155") {
+      return ERC1155_TRANSFER_IFACE.encodeFunctionData("safeTransferFrom", [
+        from,
+        to,
+        tokenId,
+        BigInt(1),
+        "0x",
+      ])
+    }
+    return ERC721_TRANSFER_IFACE.encodeFunctionData("safeTransferFrom", [
+      from,
+      to,
+      tokenId,
+    ])
   }
 
   private getAddressFromCache() {

@@ -2,6 +2,12 @@ import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { Cache } from "node-ts-cache"
 import { integrationCache } from "packages/integration/src/cache"
+import { arbitrumService } from "frontend/integration/ethereum/arbitrum/arbitrum.service"
+import { baseService } from "frontend/integration/ethereum/base/base.service"
+import { bnbService } from "frontend/integration/ethereum/bnb/bnb.service"
+import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
+import { polygonService } from "frontend/integration/ethereum/polygon/polygon.service"
+import { EvmNftImpl } from "src/integration/nft/impl/evm/nft-evm"
 import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
 import { nftMapper } from "src/integration/nft/impl/nft-mapper"
 import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
@@ -12,18 +18,46 @@ import { exchangeRateService } from "@nfid/integration"
 import { FT } from "../ft/ft"
 
 export class NftService {
+  async getICPNFTs(userPrincipal: Principal): Promise<NFT[]> {
+    const data = await nftGeekService.getNftGeekData(userPrincipal)
+    const nfts = data
+      .map(nftMapper.toNFT)
+      .filter((nft): nft is NFT => nft !== null)
+    await Promise.all(nfts.map((nft) => nft.init()))
+    return nfts
+  }
+
+  async getEVMNFTs(_userPrincipal: Principal): Promise<NFT[]> {
+    const address = await ethereumService.getQuickAddress()
+    const services = [
+      ethereumService,
+      baseService,
+      polygonService,
+      arbitrumService,
+      bnbService,
+    ]
+    const settled = await Promise.allSettled(
+      services.map((svc) => svc.getNFTs(address)),
+    )
+    const assets = settled.flatMap((r) =>
+      r.status === "fulfilled" ? r.value : [],
+    )
+    const nfts = assets.map((asset) => new EvmNftImpl(asset))
+    await Promise.all(nfts.map((nft) => nft.init()))
+    return nfts
+  }
+
   async getNFTs(
     userPrincipal: Principal,
     page: number = 1,
     limitPerPage: number = Number.MAX_SAFE_INTEGER,
   ): Promise<PaginatedResponse<NFT>> {
-    const data = await nftGeekService.getNftGeekData(userPrincipal)
+    const [icpNfts, evmNfts] = await Promise.all([
+      this.getICPNFTs(userPrincipal),
+      this.getEVMNFTs(userPrincipal),
+    ])
 
-    const rawData = data
-      .map(nftMapper.toNFT)
-      .filter((nft): nft is NFT => nft !== null)
-
-    await Promise.all(rawData.map((nft) => nft.init()))
+    const rawData = [...icpNfts, ...evmNfts]
 
     const nftsWithoutPrice = rawData.filter(
       (nft) => nft.getTokenFloorPriceUSD() === undefined || nft.getError(),
@@ -39,8 +73,8 @@ export class NftService {
 
     const sortedItems = items.sort(
       (a, b) =>
-        Number(b.getTokenFloorPriceIcpFormatted()) -
-        Number(a.getTokenFloorPriceIcpFormatted()),
+        Number(b.getTokenFloorPriceFormatted()) -
+        Number(a.getTokenFloorPriceFormatted()),
     )
 
     return {
@@ -57,7 +91,7 @@ export class NftService {
 
     return nfts
       .filter((nft) => !nft.getError())
-      .map((nft) => nft.getTokenFloorPriceIcp())
+      .map((nft) => nft.getTokenFloorPrice())
       .filter((price): price is number => price !== undefined)
       .reduce((sum, price) => sum.plus(price), new BigNumber(0))
   }

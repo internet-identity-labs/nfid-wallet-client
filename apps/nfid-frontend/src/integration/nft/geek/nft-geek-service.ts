@@ -1,13 +1,26 @@
 import { Principal } from "@dfinity/principal"
+import { ttlCacheService } from "@nfid/client-db"
 import { DataStructure, MappedToken } from "src/integration/nft/geek/geek-types"
 
 import { ic } from "@nfid/integration"
 
+const NFT_GEEK_CACHE_TTL = 30 * 1000
+
 export class NftGeekService {
   async getNftGeekData(userPrincipal: Principal): Promise<MappedToken[]> {
-    return this.fetchNftGeekData(userPrincipal.toText()).then((data) => {
-      return this.mapDataToObjects(data)
-    })
+    const cacheKey = `ICP_NFT_GEEK_${userPrincipal.toText()}`
+    return ttlCacheService.getOrFetch(
+      cacheKey,
+      () =>
+        this.fetchNftGeekData(userPrincipal.toText()).then((data) =>
+          this.mapDataToObjects(data),
+        ),
+      NFT_GEEK_CACHE_TTL,
+      {
+        serialize: JSON.stringify,
+        deserialize: (v) => JSON.parse(v as string) as MappedToken[],
+      },
+    )
   }
 
   private async fetchNftGeekData(

@@ -52,7 +52,7 @@ export const ChooseNftItem = ({ token }: IChooseNftItem) => {
       </div>
       <div>
         <p className="text-sm text-right">
-          {token.getTokenFloorPriceIcpFormatted() || "Unknown"}
+          {token.getTokenFloorPriceFormatted() || "Unknown"}
         </p>
         <p className="text-xs text-right text-gray-400 dark:text-zinc-500">
           {token.getTokenFloorPriceUSDFormatted() ?? null}

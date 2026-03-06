@@ -57,7 +57,7 @@ describe("nft test suite", () => {
       expect(extNft.getCollectionId()).toEqual("64x4q-laaaa-aaaal-qdjca-cai")
       expect(extNft.getCollectionName()).toEqual("Cellphones")
       expect(extNft.getTokenName()).toEqual("Cellphones #2066")
-      expect(extNft.getTokenFloorPriceIcpFormatted()).toEqual("0.02 ICP")
+      expect(extNft.getTokenFloorPriceFormatted()).toEqual("0.02 ICP")
       expect(extNft.getTokenFloorPriceUSDFormatted()).toEqual("0.18 USD")
       expect(extNft.getTokenId()).toEqual(
         "yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
@@ -116,7 +116,7 @@ describe("nft test suite", () => {
       expect(memecakeNft.getTokenName()).toEqual("Boxy Land #5002")
 
       //TODO geek does not return us price for ths token
-      expect(memecakeNft.getTokenFloorPriceIcpFormatted()).toEqual(undefined)
+      expect(memecakeNft.getTokenFloorPriceFormatted()).toEqual(undefined)
       expect(memecakeNft.getTokenFloorPriceUSDFormatted()).toEqual(undefined)
       expect(memecakeNft.getTokenId()).toEqual(
         "ubfjy-6qkor-uwiaa-aaaaa-byanl-4aqca-aacof-a",
@@ -167,7 +167,7 @@ describe("nft test suite", () => {
       expect(icpswapAsset?.url).toEqual(
         "https://gfcya-pyaaa-aaaan-qbxda-cai.raw.ic0.app/100000",
       )
-      expect(icpswapNft.getTokenFloorPriceIcpFormatted()).toEqual("0.2 ICP")
+      expect(icpswapNft.getTokenFloorPriceFormatted()).toEqual("0.2 ICP")
       expect(icpswapNft.getTokenFloorPriceUSDFormatted()).toEqual("1.79 USD")
       const icpswapDetails = await icpswapNft.getDetails()
       expect(icpswapDetails.getAbout()).toEqual(
@@ -297,7 +297,7 @@ describe("nft test suite", () => {
       expect(nft.getCollectionId()).toEqual("64x4q-laaaa-aaaal-qdjca-cai")
       expect(nft.getCollectionName()).toEqual("Cellphones")
       expect(nft.getTokenName()).toEqual("Cellphones #2066")
-      expect(nft.getTokenFloorPriceIcpFormatted()).toEqual("0.02 ICP")
+      expect(nft.getTokenFloorPriceFormatted()).toEqual("0.02 ICP")
       expect(nft.getTokenFloorPriceUSDFormatted()).toEqual("0.18 USD")
       expect(nft.getTokenId()).toEqual(nftId)
       expect(nft.getMarketPlace()).toEqual("EXT")

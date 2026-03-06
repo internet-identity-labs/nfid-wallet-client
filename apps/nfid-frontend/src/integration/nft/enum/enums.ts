@@ -3,6 +3,7 @@ export enum MarketPlace {
   MEMECAKE = "MEMECAKE",
   YUKU = "YUKU",
   EXT = "EXT",
+  EVM = "EVM",
 }
 
 export enum TransactionType {

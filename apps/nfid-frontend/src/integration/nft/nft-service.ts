@@ -28,7 +28,12 @@ export class NftService {
   }
 
   async getEVMNFTs(_userPrincipal: Principal): Promise<NFT[]> {
-    const address = await ethereumService.getQuickAddress()
+    let address: string
+    try {
+      address = await ethereumService.getQuickAddress()
+    } catch {
+      return []
+    }
     const services = [
       ethereumService,
       baseService,

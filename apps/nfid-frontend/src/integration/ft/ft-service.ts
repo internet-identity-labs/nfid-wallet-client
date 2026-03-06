@@ -247,7 +247,7 @@ export class FtService {
       allowance: AllowanceDetailDTO
     }>
   > {
-    const tokens = ft.filter((token) => token.getChainId() === ChainId.ICP)
+    const tokens = ft
 
     const allFlattened: { token: FT; allowance: AllowanceDetailDTO }[] = []
 

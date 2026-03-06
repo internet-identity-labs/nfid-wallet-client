@@ -16,7 +16,9 @@ import { exchangeRateService } from "@nfid/integration"
 import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
 import { FT } from "../ft"
 import { SignIdentity } from "@dfinity/agent"
+import { Principal } from "@dfinity/principal"
 import { FeeResponseBTC } from "../utils"
+import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 
 export class FTBitcoinImpl extends FTImpl {
   constructor() {
@@ -71,4 +73,14 @@ export class FTBitcoinImpl extends FTImpl {
     )
     return new FeeResponseBTC(fee_satoshis, utxos)
   }
+
+  // Bitcoin does not support ERC20/ICRC2 allowances
+  async getIcrc2Allowances(_: Principal): Promise<Array<AllowanceDetailDTO>> {
+    return []
+  }
+
+  async revokeAllowance(
+    _identity: SignIdentity,
+    _spender: string,
+  ): Promise<void> {}
 }

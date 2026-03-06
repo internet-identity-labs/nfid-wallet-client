@@ -230,7 +230,7 @@ export abstract class EVMNativeTransactionService implements EVMTransactionServi
       console.debug("Etherscan response:", data)
 
       if (data.status !== "1") {
-        console.error("Etherscan API error:", data.message)
+        console.debug("Etherscan API error:", data.message)
         const emptyResult: IActivityRow[] = []
         // Cache empty result with random TTL between 15-25 seconds
         const randomTtl = 15000 + Math.floor(Math.random() * 10000)

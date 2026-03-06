@@ -454,7 +454,7 @@ export class StakingServiceImpl implements StakingService {
         .map((neuron) => new NfidSNSNeuronImpl(neuron, token, params))
       return nfidN.length ? new StakedTokenImpl(token, nfidN) : undefined
     } catch (e) {
-      console.error("getStakedSNSNeurons error: ", e)
+      console.debug("getStakedSNSNeurons error: ", e)
       return
     }
   }

@@ -12,6 +12,7 @@ import { arbitrumErc20TransactionService } from "frontend/integration/ethereum/a
 import { polygonErc20TransactionService } from "frontend/integration/ethereum/polygon/pol-erc20-transaction.service"
 import { delay } from "frontend/features/fungible-token/utils"
 import { FT } from "frontend/integration/ft/ft"
+import { noteService } from "frontend/integration/note/note-service"
 
 export const nanoSecondsToDate = (nanoSeconds: bigint): Date => {
   const milliseconds = Number(nanoSeconds / BigInt(1000000))
@@ -53,6 +54,8 @@ export const getAllActivity = async (
     ...arbitrumActivities,
     ...polygonActivities,
   ]
+
+  await noteService.populateNotes(activitiesArray)
 
   return activitiesArray
 }

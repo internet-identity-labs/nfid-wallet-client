@@ -67,7 +67,7 @@
     "clsx": "2.1.1",
     "core-js": "3.45.1",
     "date-fns": "4.1.0",
-    "dompurify": "3.3.1",
+    "dompurify": "3.3.2",
     "ethers": "6.16.0",
     "framer-motion": "12.23.26",
     "idb": "8.0.3",
@@ -201,7 +201,7 @@
     "serve": "14.2.5",
     "sha256": "0.2.0",
     "source-map-explorer": "2.5.3",
-    "storybook": "8.6.15",
+    "storybook": "8.6.17",
     "stream-browserify": "3.0.0",
     "stream-http": "3.2.0",
     "tailwind-scrollbar": "3.1.0",
@@ -215,7 +215,7 @@
     "vm-browserify": "1.1.2",
     "wdio-video-reporter": "6.1.1",
     "webdriverio": "9.19.2",
-    "webpack": "5.104.1",
+    "webpack": "5.105.0",
     "whatwg-fetch": "3.6.20"
   },
   "resolutions": {

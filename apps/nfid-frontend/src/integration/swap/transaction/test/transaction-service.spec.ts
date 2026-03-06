@@ -10,7 +10,7 @@ import { SwapStage } from "src/integration/swap/types/enums"
 import { authState } from "@nfid/integration"
 
 import { IcpSwapTransactionImpl } from "../../icpswap/impl/icp-swap-transaction-impl"
-import { SwapTransaction as SwapTransactionCandid } from "../idl/swap_trs_storage.d"
+import { SwapTransaction as SwapTransactionCandid } from "@nfid/integration/_ic_api/swap_trs_storage.d"
 import { SwapTransactionService } from "../transaction-service"
 
 const mockDuration = 2 * 1000

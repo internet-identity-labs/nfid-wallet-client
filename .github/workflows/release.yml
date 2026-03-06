@@ -203,7 +203,7 @@ jobs:
   #         dfx build --network "${NETWORK_NAME}" "${CANISTER_NAME}"
 
   #     - name: Save artifact
-  #       uses: actions/upload-artifact@v6
+  #       uses: actions/upload-artifact@v7
   #       with:
   #         retention-days: 1
   #         name: nfid-demo
@@ -350,7 +350,7 @@ jobs:
   #       failOnError: false
 
   #   - name: POST-DEPLOY => Save artifact.
-  #     uses: actions/upload-artifact@v6
+  #     uses: actions/upload-artifact@v7
   #     with:
   #       name: ${{github.sha}}-nfid-demo
   #       retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
@@ -588,7 +588,7 @@ jobs:
           ci_echo_success "Canister '${CANISTER_NAME}' was installed to the network '${NETWORK_NAME}'" >&2
 
       - name: POST-DEPLOY => Save artifact.
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{github.sha}}-nfid-wallet-client
           retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}

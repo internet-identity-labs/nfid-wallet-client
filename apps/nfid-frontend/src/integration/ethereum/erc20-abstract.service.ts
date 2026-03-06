@@ -5,7 +5,7 @@ import { SignIdentity } from "@dfinity/agent"
 import { Contract } from "ethers"
 import { TransactionResponse } from "ethers"
 import { ethereumService } from "./eth/ethereum.service"
-import { storageWithTtl } from "@nfid/client-db"
+import { storageWithTtl, ttlCacheService } from "@nfid/client-db"
 import { ChainId, State } from "@nfid/integration/token/icrc1/enum/enums"
 import { EthSignTransactionRequest } from "../bitcoin/idl/chain-fusion-signer.d"
 import { TokenPrice } from "packages/integration/src/lib/asset/types"
@@ -133,31 +133,26 @@ export abstract class Erc20Service {
     const root = authState.getUserIdData().anchor
     const cacheKey = `${ERC20_TOKENS_CACHE_KEY}-${root}-${this.chainId}`
 
-    // Check cache first
     const cache = await storageWithTtl.getEvenExpired(cacheKey)
 
-    let prices: Record<string, number>
-
-    //check that cache contains all addresses
     const cacheHasAllAddresses =
-      cache &&
+      !!cache &&
       addresses.every(
         (address) =>
           address.toLowerCase() in (cache.value as Record<string, number>),
       )
-    if (!cache || !cacheHasAllAddresses) {
-      // No cache, fetch and cache
+
+    let prices: Record<string, number>
+
+    if (!cacheHasAllAddresses) {
       prices = await this.fetchAndCachePrices(addresses, cacheKey)
-    } else if (!cache.expired) {
-      // Cache exists and not expired, use it
-      prices = cache.value as Record<string, number>
     } else {
-      // Cache expired, return it immediately and refresh in background
-      prices = cache.value as Record<string, number>
-      // Refresh in background without waiting
-      this.fetchAndCachePrices(addresses, cacheKey).catch((error) => {
-        console.error("Failed to refresh token prices in background:", error)
-      })
+      prices = cache!.value as Record<string, number>
+      if (cache!.expired) {
+        this.fetchAndCachePrices(addresses, cacheKey).catch((error) =>
+          console.error("Failed to refresh token prices in background:", error),
+        )
+      }
     }
 
     // Map to TokenPrice format
@@ -362,20 +357,18 @@ export abstract class Erc20Service {
     Map<string, { balance: string; address: string; error?: string }>
   > {
     try {
-      const cache = await storageWithTtl.getEvenExpired(cacheKey)
-      if (cache && !cache.expired) {
-        // Restore cached balances from array to Map for easier lookup
-        const cachedArray = cache.value as Array<{
-          contractAddress: string
-          balance: string
-          address: string
-          error?: string
-        }>
+      const cached = (await storageWithTtl.get(cacheKey)) as Array<{
+        contractAddress: string
+        balance: string
+        address: string
+        error?: string
+      }> | null
+      if (cached) {
         const cachedBalances = new Map<
           string,
           { balance: string; address: string; error?: string }
         >()
-        cachedArray.forEach((item) => {
+        cached.forEach((item) => {
           cachedBalances.set(item.contractAddress.toLowerCase(), {
             balance: item.balance,
             address: item.address,
@@ -610,42 +603,18 @@ export abstract class Erc20Service {
    * @returns Array of token information with logos
    */
   protected async getKnownTokensList(): Promise<ERC20TokenInfo[]> {
-    // Check cache first
-    const cache = await storageWithTtl.getEvenExpired(
+    return ttlCacheService.getOrFetch(
       ERC20_TOKENS_LIST_CACHE_KEY,
+      () => this.fetchTokensList(),
+      ERC20_TOKENS_LIST_CACHE_TTL,
+      {
+        onBackgroundError: (error) =>
+          console.error("Failed to refresh token list in background:", error),
+      },
     )
-
-    // If no cache, fetch and wait for result
-    if (!cache) {
-      return await this.fetchAndCacheTokensList()
-    }
-
-    // If cache exists and not expired, return it
-    if (cache && !cache.expired) {
-      return cache.value as ERC20TokenInfo[]
-    }
-
-    // If cache exists but expired, return it immediately and refresh in background
-    if (cache && cache.expired) {
-      // Refresh in background without waiting
-      this.fetchAndCacheTokensList().catch((error) => {
-        console.error("Failed to refresh token list in background:", error)
-      })
-
-      // Return expired cache immediately
-      return cache.value as ERC20TokenInfo[]
-    }
-
-    // Fallback (should not reach here)
-    return await this.fetchAndCacheTokensList()
   }
 
-  /**
-   * Fetch tokens list from Uniswap API and cache it
-   * @private
-   */
-  private async fetchAndCacheTokensList(): Promise<ERC20TokenInfo[]> {
-    // Uniswap Token Lists - most comprehensive and maintained
+  private async fetchTokensList(): Promise<ERC20TokenInfo[]> {
     const tokenListUrl = `https://tokens.uniswap.org`
 
     const response = await fetch(tokenListUrl)
@@ -658,7 +627,7 @@ export abstract class Erc20Service {
     // Token List format: { tokens: [...] }
     const tokens = data.tokens || []
 
-    const result = tokens
+    return tokens
       .filter((token: any) => token.chainId)
       .map((token: any) => ({
         address: token.address?.toLowerCase() || "",
@@ -669,15 +638,6 @@ export abstract class Erc20Service {
         chainId: token.chainId,
         state: State.Inactive,
       }))
-      .filter((token: ERC20TokenInfo) => token.address) // Remove invalid entries
-
-    // Cache the result for 24 hours
-    await storageWithTtl.set(
-      ERC20_TOKENS_LIST_CACHE_KEY,
-      result,
-      ERC20_TOKENS_LIST_CACHE_TTL,
-    )
-
-    return result
+      .filter((token: ERC20TokenInfo) => token.address)
   }
 }

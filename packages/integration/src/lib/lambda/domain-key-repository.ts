@@ -14,30 +14,19 @@ export async function saveToStorage(
 export async function getFromStorage(key: string): Promise<any> {
   const item = await domainKeyStorage.getEvenExpired(key)
 
-  if (item) {
-    if (!item.expired) {
-      return item.value
-    } else {
-      await domainKeyStorage.remove(key)
-      throw new Error(`Value for key '${key}' has expired.`)
-    }
-  } else {
-    throw new Error(`Value for key '${key}' not found.`)
+  if (!item) throw new Error(`Value for key '${key}' not found.`)
+
+  if (item.expired) {
+    await domainKeyStorage.remove(key)
+    throw new Error(`Value for key '${key}' has expired.`)
   }
+
+  return item.value
 }
 
 export async function isPresentInStorage(key: string) {
   const item = await domainKeyStorage.getEvenExpired(key)
-
-  if (item) {
-    if (!item.expired) {
-      return true
-    } else {
-      return false
-    }
-  } else {
-    return false
-  }
+  return !!item && !item.expired
 }
 
 export async function deleteFromStorage(key: string): Promise<void> {

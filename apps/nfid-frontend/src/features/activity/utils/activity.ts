@@ -13,14 +13,6 @@ import { polygonErc20TransactionService } from "frontend/integration/ethereum/po
 import { delay } from "frontend/features/fungible-token/utils"
 import { FT } from "frontend/integration/ft/ft"
 import { noteService } from "frontend/integration/note/note-service"
-import {
-  BtcNoteKey,
-  EvmNoteKey,
-  IcpNoteKey,
-  NoteKeyable,
-} from "frontend/integration/note/note-key"
-import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
-import { ChainId, isEvmToken } from "@nfid/integration/token/icrc1/enum/enums"
 
 export const nanoSecondsToDate = (nanoSeconds: bigint): Date => {
   const milliseconds = Number(nanoSeconds / BigInt(1000000))
@@ -63,46 +55,9 @@ export const getAllActivity = async (
     ...polygonActivities,
   ]
 
-  await populateNotes(activitiesArray)
+  await noteService.populateNotes(activitiesArray)
 
   return activitiesArray
-}
-
-const toHex = (arr: Uint8Array | number[]): string =>
-  (arr instanceof Uint8Array ? arr : new Uint8Array(arr)).reduce(
-    (s, b) => s + b.toString(16).padStart(2, "0"),
-    "",
-  )
-
-const buildNoteKey = (row: IActivityRow): NoteKeyable | null => {
-  if (row.asset.type !== "ft") return null
-  const { chainId, canister } = row.asset as ActivityAssetFT
-  if (chainId === ChainId.ICP) return new IcpNoteKey(BigInt(row.id), canister)
-  if (isEvmToken(chainId)) return new EvmNoteKey(row.id, chainId)
-  if (chainId === ChainId.BTC) return new BtcNoteKey(row.id)
-  return null
-}
-
-const populateNotes = async (rows: IActivityRow[]): Promise<void> => {
-  const rowKeyPairs = rows.flatMap((row) => {
-    const key = buildNoteKey(row)
-    return key ? [{ row, key }] : []
-  })
-
-  if (rowKeyPairs.length === 0) return
-
-  const blobs = await Promise.all(rowKeyPairs.map(({ key }) => key.toBlob()))
-
-  const blobHexToRow = new Map<string, IActivityRow>(
-    blobs.map((blob, i) => [toHex(blob), rowKeyPairs[i].row]),
-  )
-
-  const noteEntries = await noteService.getNotesByBlobs(blobs)
-
-  for (const entry of noteEntries) {
-    const row = blobHexToRow.get(toHex(entry.key))
-    if (row) row.note = entry.value
-  }
 }
 
 const fetchEvmActivitiesSequentially = async (

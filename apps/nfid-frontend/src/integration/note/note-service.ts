@@ -12,8 +12,37 @@ import {
   authState,
   replaceActorIdentity,
 } from "@nfid/integration"
+import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
+import { ChainId, isEvmToken } from "@nfid/integration/token/icrc1/enum/enums"
 
-import { NOTE_MAX_LENGTH, NoteKeyable } from "./note-key"
+import { Storage } from "@nfid/client-db"
+
+import { IActivityRow } from "frontend/features/activity/types"
+import {
+  BtcNoteKey,
+  EvmNoteKey,
+  IcpNoteKey,
+  NOTE_MAX_LENGTH,
+  NoteKeyable,
+} from "./note-key"
+
+const NOTES_CACHE_KEY = "notes_cache"
+const notesStorage = new Storage<Record<string, NoteEntry>>({
+  dbName: "notes-db",
+  storeName: "notes-store",
+})
+
+const toHex = (b: Uint8Array | number[]): string =>
+  Array.from(b, (byte) => byte.toString(16).padStart(2, "0")).join("")
+
+const buildNoteKey = (row: IActivityRow): NoteKeyable | null => {
+  if (row.asset.type !== "ft") return null
+  const { chainId, canister } = row.asset as ActivityAssetFT
+  if (chainId === ChainId.ICP) return new IcpNoteKey(BigInt(row.id), canister)
+  if (isEvmToken(chainId)) return new EvmNoteKey(row.id, chainId)
+  if (chainId === ChainId.BTC) return new BtcNoteKey(row.id)
+  return null
+}
 
 export class NoteService {
   private storageActor: Agent.ActorSubclass<SwapStorage>
@@ -61,11 +90,40 @@ export class NoteService {
   }
 
   /**
-   * Returns note entries for pre-computed blob keys.
-   * Use this when blobs are already computed to avoid re-hashing.
+   * Populates row.note for each activity row that has a note on-chain.
+   * Uses a permanent accumulative cache (no TTL — notes are immutable once stored):
+   * only blobs absent from the cache are fetched from the network.
    */
-  async getNotesByBlobs(blobs: Uint8Array[]): Promise<Array<NoteEntry>> {
-    return this.storageActor.get_notes(blobs)
+  async populateNotes(rows: IActivityRow[]): Promise<void> {
+    const rowKeyPairs = rows.flatMap((row) => {
+      const key = buildNoteKey(row)
+      return key ? [{ row, key }] : []
+    })
+
+    if (rowKeyPairs.length === 0) return
+
+    const blobs = await Promise.all(rowKeyPairs.map(({ key }) => key.toBlob()))
+
+    const cached: Record<string, NoteEntry> =
+      (await notesStorage.get(NOTES_CACHE_KEY)) ?? {}
+
+    const missingBlobs = blobs.filter((b) => !(toHex(b) in cached))
+
+    if (missingBlobs.length > 0) {
+      const fetched = await this.storageActor.get_notes(missingBlobs)
+      fetched.forEach((entry) => {
+        cached[toHex(entry.key as Uint8Array)] = entry
+      })
+      await notesStorage.set(NOTES_CACHE_KEY, cached)
+    }
+
+    const blobHexToRow = new Map<string, IActivityRow>(
+      blobs.map((blob, i) => [toHex(blob), rowKeyPairs[i].row]),
+    )
+
+    for (const [hex, row] of blobHexToRow) {
+      if (cached[hex]) row.note = cached[hex].value
+    }
   }
 }
 

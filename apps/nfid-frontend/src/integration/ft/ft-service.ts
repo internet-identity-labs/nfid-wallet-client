@@ -3,7 +3,7 @@ import { SignIdentity } from "@dfinity/agent"
 import BigNumber from "bignumber.js"
 import { Cache } from "node-ts-cache"
 import { integrationCache } from "packages/integration/src/cache"
-import { storageWithTtl } from "@nfid/client-db"
+import { storageWithTtl, ttlCacheService } from "@nfid/client-db"
 import { FT } from "src/integration/ft/ft"
 
 import {
@@ -189,33 +189,16 @@ export class FtService {
     refetch?: boolean,
   ): Promise<FT[]> {
     const cacheKey = this.getCacheKey(principal)
-    const cache = await storageWithTtl.getEvenExpired(cacheKey)
-
-    if (!cache || Boolean(refetch)) {
-      const initedTokens = await this.fetchInitedTokens(tokens, principal)
-
-      await storageWithTtl.set(
-        cacheKey,
-        this.serializeTokensData(initedTokens),
-        TOKENS_REFRESH_INTERVAL,
-      )
-
-      return initedTokens
-    }
-
-    if (cache && cache.expired) {
-      this.fetchInitedTokens(tokens, principal).then((initedTokens) => {
-        storageWithTtl.set(
-          cacheKey,
-          this.serializeTokensData(initedTokens),
-          TOKENS_REFRESH_INTERVAL,
-        )
-      })
-
-      return this.deserializeTokensData(cache.value as string, tokens)
-    }
-
-    return this.deserializeTokensData(cache?.value as string, tokens)
+    return ttlCacheService.getOrFetch(
+      cacheKey,
+      () => this.fetchInitedTokens(tokens, principal),
+      TOKENS_REFRESH_INTERVAL,
+      {
+        forceRefetch: Boolean(refetch),
+        serialize: (v) => this.serializeTokensData(v),
+        deserialize: (v) => this.deserializeTokensData(v as string, tokens),
+      },
+    )
   }
 
   public async initializeBtcEthTokensWhenReady(

@@ -1,4 +1,4 @@
-import { storageWithTtl } from "@nfid/client-db"
+import { storageWithTtl, ttlCacheService } from "@nfid/client-db"
 
 import { ICRC1 } from "../../../_ic_api/user_registry.d"
 import { userRegistry } from "../../../actors"
@@ -9,34 +9,18 @@ import { mapStateTS } from "../util"
 const icrc1RegistryCacheName = "ICRC1RegistryService.getCanistersByRoot"
 
 export class Icrc1RegistryService {
-  private getCanistersByRootLock: Promise<void> | null = null
-
   public async getStoredUserTokens(): Promise<Array<ICRC1>> {
     const registryCacheName = await this.getRegistryCacheName()
-    const cache = await storageWithTtl.getEvenExpired(registryCacheName)
-    if (!cache) {
-      const root = authState.getUserIdData().userId
-      const response = await userRegistry.get_canisters_by_root(root)
-      storageWithTtl.set(registryCacheName, JSON.stringify(response), 30 * 1000)
-      return response
-    } else if (cache && cache.expired && !this.getCanistersByRootLock) {
-      const root = authState.getUserIdData().userId
-      this.getCanistersByRootLock = userRegistry
-        .get_canisters_by_root(root)
-        .then((response) => {
-          storageWithTtl.set(
-            registryCacheName,
-            JSON.stringify(response),
-            30 * 1000,
-          )
-        })
-        .finally(() => {
-          this.getCanistersByRootLock = null
-        })
-      return JSON.parse(cache.value as string) as ICRC1[]
-    } else {
-      return JSON.parse(cache.value as string) as ICRC1[]
-    }
+    return ttlCacheService.getOrFetch(
+      registryCacheName,
+      () =>
+        userRegistry.get_canisters_by_root(authState.getUserIdData().userId),
+      30 * 1000,
+      {
+        serialize: JSON.stringify,
+        deserialize: (v) => JSON.parse(v as string) as ICRC1[],
+      },
+    )
   }
 
   async storeICRC1Canister(

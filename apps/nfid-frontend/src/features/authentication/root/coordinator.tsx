@@ -350,6 +350,18 @@ export default function AuthenticationCoordinator({
                   }
                 />
               }
+              iiButton={
+                <Button
+                  id="ii-sign-button"
+                  className="h-12 !p-0 active:!text-black dark:active:!text-white"
+                  type="stroke"
+                  icon={<IconCmpDfinity className="w-6 h-6 min-w-6" />}
+                  block
+                  onClick={onSelectIIAuth}
+                >
+                  Continue with Internet Identity
+                </Button>
+              }
               onTypeChange={() => send({ type: "SIGN_IN" })}
             />
           </motion.div>

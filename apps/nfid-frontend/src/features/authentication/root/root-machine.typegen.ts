@@ -104,6 +104,7 @@ export interface Typegen0 {
     shouldShowPasskeys:
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
+      | "done.invoke.AuthWithIIService"
     shouldShowPasskeys6th: "AUTHENTICATED" | "done.invoke.checkIf2FAEnabled"
     shouldShowRecovery8th:
       | "AUTHENTICATED"
@@ -126,6 +127,7 @@ export interface Typegen0 {
     | "SignUpPassKey"
     | "SignUpWithEmail"
     | "SignUpWithGoogle"
+    | "SignUpWithII"
     | "TwoFA"
     | "check2FA"
     | "checkPasskeys"

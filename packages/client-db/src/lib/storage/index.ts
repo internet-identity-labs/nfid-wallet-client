@@ -1,4 +1,5 @@
 export * from "./idb-keyval"
 export * from "./memory-keyval"
 export * from "./storage"
+export * from "./ttl-cache-service"
 export * from "./ttl-storage"

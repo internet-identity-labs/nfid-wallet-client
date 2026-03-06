@@ -1,6 +1,6 @@
 import { HttpAgent, SignIdentity } from "@dfinity/agent"
 
-import { storageWithTtl } from "@nfid/client-db"
+import { ttlCacheService } from "@nfid/client-db"
 
 import { idlFactory } from "../../../_ic_api/icrc1_oracle"
 import {
@@ -54,27 +54,15 @@ export class ICRC1OracleService {
   }
 
   async getICRC1Canisters(): Promise<ICRC1[]> {
-    const cache = await storageWithTtl.getEvenExpired(icrc1OracleCacheName)
-    if (!cache) {
-      const response = await this.requestNetworkForCanisters()
-      storageWithTtl.set(
-        icrc1OracleCacheName,
-        this.serializeCanisters(response),
-        60 * 1000,
-      )
-      return response
-    } else if (cache && cache.expired) {
-      this.requestNetworkForCanisters().then((response) => {
-        storageWithTtl.set(
-          icrc1OracleCacheName,
-          this.serializeCanisters(response),
-          60 * 1000,
-        )
-      })
-      return this.deserializeCanisters(cache.value as string)
-    } else {
-      return this.deserializeCanisters(cache.value as string)
-    }
+    return ttlCacheService.getOrFetch(
+      icrc1OracleCacheName,
+      () => this.requestNetworkForCanisters(),
+      60 * 1000,
+      {
+        serialize: (v) => this.serializeCanisters(v),
+        deserialize: (v) => this.deserializeCanisters(v as string),
+      },
+    )
   }
 
   async requestNetworkForCanisters() {

@@ -22,6 +22,11 @@ export enum ChainId {
   BNB = 56,
   BASE = 8453,
   ARB = 42161,
+  ETH_SEPOLIA = 11155111,
+  POL_AMOY = 80002,
+  BNB_TESTNET = 97,
+  ARB_SEPOLIA = 421614,
+  BASE_SEPOLIA = 84532,
 }
 
 export const isEvmToken = (chainId: ChainId): boolean => {
@@ -53,6 +58,11 @@ export const CHAIN_NAME: Record<ChainId, string> = {
   [ChainId.BNB]: "BNB Smart Chain",
   [ChainId.BASE]: "Base",
   [ChainId.ARB]: "Arbitrum One",
+  [ChainId.ETH_SEPOLIA]: "Ethereum Sepolia",
+  [ChainId.POL_AMOY]: "Polygon Amoy",
+  [ChainId.BNB_TESTNET]: "BNB Testnet",
+  [ChainId.ARB_SEPOLIA]: "Arbitrum Sepolia",
+  [ChainId.BASE_SEPOLIA]: "Base Sepolia",
 }
 
 export const getEvmGasTokenSymbol = (chainId: ChainId): string => {

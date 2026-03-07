@@ -21,6 +21,10 @@ const idlFactory = ({ IDL }: any) =>
     nonExistingMethod: IDL.Func([], [IDL.Text], ["query"]),
   })
 
+// Module-level cache: one IC call per collectionId per session.
+// On error — entry is removed so the next call can retry.
+const canisterStatusCache = new Map<string, Promise<void>>()
+
 export interface NftError {
   props: {
     Message: string
@@ -115,12 +119,12 @@ export abstract class NftImpl implements NFT {
     return this.tokenName
   }
 
-  getTokenFloorPriceIcp(): number | undefined {
+  getTokenFloorPrice(): number | undefined {
     return this.tokenFloorPriceICP
   }
 
-  getTokenFloorPriceIcpFormatted(): string | undefined {
-    const icpPrice = this.getTokenFloorPriceIcp()
+  getTokenFloorPriceFormatted(): string | undefined {
+    const icpPrice = this.getTokenFloorPrice()
     return icpPrice
       ? BigNumber(icpPrice.toString()).div(E8S).toFormat({
           groupSeparator: "",
@@ -178,7 +182,19 @@ export abstract class NftImpl implements NFT {
     }
   }
 
-  private async getCanisterStatus(canisterId: string) {
+  private getCanisterStatus(canisterId: string): Promise<void> {
+    const cached = canisterStatusCache.get(canisterId)
+    if (cached) return cached
+
+    const promise = this.checkCanisterAlive(canisterId).catch((e) => {
+      canisterStatusCache.delete(canisterId)
+      throw e
+    })
+    canisterStatusCache.set(canisterId, promise)
+    return promise
+  }
+
+  private async checkCanisterAlive(canisterId: string): Promise<void> {
     try {
       const agent = await HttpAgent.create({ host: IC_HOST })
 

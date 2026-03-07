@@ -5,6 +5,7 @@ import { EVMService } from "../evm.service"
 
 export class EthereumService extends EVMService {
   protected provider: InfuraProvider
+  protected readonly blockscoutBaseUrl = "https://eth.blockscout.com"
 
   constructor() {
     super()

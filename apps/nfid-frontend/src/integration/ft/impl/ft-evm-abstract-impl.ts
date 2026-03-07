@@ -1,3 +1,5 @@
+import { Principal } from "@dfinity/principal"
+import { SignIdentity } from "@dfinity/agent"
 import { FTImpl } from "./ft-impl"
 import {
   CKETH_LEDGER_CANISTER_ID,
@@ -6,11 +8,11 @@ import {
 import { exchangeRateService } from "@nfid/integration"
 import { FT } from "../ft"
 import { FeeResponseETH } from "../utils"
-import { SignIdentity } from "@dfinity/agent"
 import {
   EVMService,
   SendEthFee,
 } from "frontend/integration/ethereum/evm.service"
+import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 
 export abstract class FTEvmAbstractImpl extends FTImpl {
   public abstract getProvider(): EVMService
@@ -58,4 +60,14 @@ export abstract class FTEvmAbstractImpl extends FTImpl {
 
     return new FeeResponseETH(ethFeeData)
   }
+
+  // Native EVM tokens (ETH, BNB, POL, etc.) do not support ERC20 allowances
+  async getIcrc2Allowances(_: Principal): Promise<Array<AllowanceDetailDTO>> {
+    return []
+  }
+
+  async revokeAllowance(
+    _identity: SignIdentity,
+    _spender: string,
+  ): Promise<void> {}
 }

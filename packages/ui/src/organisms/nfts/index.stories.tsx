@@ -27,7 +27,7 @@ const mockNFTs = [
     }),
     getTokenName: () => "First NFT",
     getCollectionName: () => "Collection",
-    getTokenFloorPriceIcpFormatted: () => "0.5 ICP",
+    getTokenFloorPriceFormatted: () => "0.5 ICP",
     getTokenFloorPriceUSDFormatted: () => "$10.00",
   },
   {
@@ -39,7 +39,7 @@ const mockNFTs = [
     }),
     getTokenName: () => "Second NFT",
     getCollectionName: () => "Collection",
-    getTokenFloorPriceIcpFormatted: () => undefined,
+    getTokenFloorPriceFormatted: () => undefined,
     getTokenFloorPriceUSDFormatted: () => undefined,
   },
   {
@@ -51,7 +51,7 @@ const mockNFTs = [
     }),
     getTokenName: () => "Third NFT",
     getCollectionName: () => "Collection",
-    getTokenFloorPriceIcpFormatted: () => "0.5 ICP",
+    getTokenFloorPriceFormatted: () => "0.5 ICP",
     getTokenFloorPriceUSDFormatted: () => undefined,
   },
 ]

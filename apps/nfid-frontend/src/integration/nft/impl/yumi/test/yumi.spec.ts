@@ -34,7 +34,7 @@ describe("yumi test suite", () => {
       expect(yumiNFT.getCollectionName()).toEqual("Mifoko")
       expect(yumiNFT.getTokenName()).toEqual("Mifoko #9103")
       //geek does not return us price for ths token
-      expect(yumiNFT.getTokenFloorPriceIcpFormatted()).toEqual(undefined)
+      expect(yumiNFT.getTokenFloorPriceFormatted()).toEqual(undefined)
       expect(yumiNFT.getTokenFloorPriceUSDFormatted()).toEqual(undefined)
       expect(yumiNFT.getTokenId()).toEqual(
         "h5nvt-iykor-uwiaa-aaaaa-bya6v-yaqca-aaeoh-q",

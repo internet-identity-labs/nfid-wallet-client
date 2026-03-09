@@ -16,6 +16,7 @@ import {
   EVM_NATIVE,
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
+import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 
 export abstract class FTERC20AbstractImpl extends FTImpl {
   constructor(erc20TokenInfo: ERC20TokenInfo) {
@@ -123,5 +124,39 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
     )
 
     return feeInUsd || undefined
+  }
+
+  async getIcrc2Allowances(_: Principal): Promise<Array<AllowanceDetailDTO>> {
+    const ownerAddress = await ethereumService.getQuickAddress()
+    // Fetch allowances for ALL contracts on this chain in one getLogs call (cached).
+    // Each token then filters its own entry from the shared result.
+    const allContracts = await this.getTokens()
+    const allAllowances = await this.getProvider().getEvmAllowances(
+      ownerAddress,
+      allContracts,
+    )
+    return allAllowances
+      .filter(
+        (a) => a.contract.toLowerCase() === this.tokenAddress.toLowerCase(),
+      )
+      .map((a) => ({
+        from_account: ownerAddress,
+        to_spender: a.spender,
+        allowance: a.allowance,
+        expires_at: undefined,
+      }))
+  }
+
+  async revokeAllowance(
+    identity: SignIdentity,
+    spender: string,
+  ): Promise<void> {
+    await this.getProvider().setERC20Allowance(
+      identity,
+      this.tokenAddress,
+      spender,
+      BigInt(0),
+      this.getChainId() as ChainId,
+    )
   }
 }

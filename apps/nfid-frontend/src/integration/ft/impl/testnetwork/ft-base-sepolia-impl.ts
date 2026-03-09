@@ -23,7 +23,7 @@ export class FTBaseSepoliaImpl extends FTEvmAbstractImpl {
     super({
       ledger: EVM_NATIVE,
       symbol: "ETH",
-      name: "Base Sepolia",
+      name: "Ethereum Sepolia",
       decimals: ETH_DECIMALS,
       category: Category.TESTNET,
       logo: EthIcon,

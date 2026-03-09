@@ -172,10 +172,10 @@ export const NFTs: FC<INFTs> = ({
                     {nft.getTokenId()}
                   </td>
                   <td>
-                    {nft.getTokenFloorPriceIcpFormatted() ? (
+                    {nft.getTokenFloorPriceFormatted() ? (
                       <>
                         <p className="leading-[26px] dark:text-white">
-                          {nft.getTokenFloorPriceIcpFormatted()}
+                          {nft.getTokenFloorPriceFormatted()}
                         </p>
                         <p className="text-xs text-gray-400 dark:text-zinc-500 leading-[20px]">
                           {nft.getTokenFloorPriceUSDFormatted()}
@@ -282,10 +282,10 @@ export const NFTs: FC<INFTs> = ({
                       >
                         {nft.getError() ? (
                           <p className="dark:text-white">{nft.getError()}</p>
-                        ) : nft.getTokenFloorPriceIcpFormatted() ? (
+                        ) : nft.getTokenFloorPriceFormatted() ? (
                           <>
                             <p className="leading-[26px] dark:text-white">
-                              {nft.getTokenFloorPriceIcpFormatted()}
+                              {nft.getTokenFloorPriceFormatted()}
                             </p>
                             <p className="text-gray-400 dark:text-zinc-400 text-xs leading-[20px]">
                               {nft.getTokenFloorPriceUSDFormatted()}

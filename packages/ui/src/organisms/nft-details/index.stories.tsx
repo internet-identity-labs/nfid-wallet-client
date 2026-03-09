@@ -29,7 +29,7 @@ const mockNFT = {
   }),
   getTokenName: () => "First NFT",
   getCollectionName: () => "Collection",
-  getTokenFloorPriceIcpFormatted: () => "0.5 ICP",
+  getTokenFloorPriceFormatted: () => "0.5 ICP",
   getTokenFloorPriceUSDFormatted: () => "$10.00",
 }
 

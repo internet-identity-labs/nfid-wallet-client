@@ -196,12 +196,12 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                     Floor price
                   </p>
                   <p>
-                    {!nft.getTokenFloorPriceIcpFormatted() ? (
+                    {!nft.getTokenFloorPriceFormatted() ? (
                       <span>Unknown</span>
                     ) : (
                       <>
                         <span className="block text-sm">
-                          {nft.getTokenFloorPriceIcpFormatted()}
+                          {nft.getTokenFloorPriceFormatted()}
                         </span>
                         <span className="block text-xs text-gray-400 dark:text-zinc-500">
                           {nft.getTokenFloorPriceUSDFormatted()}

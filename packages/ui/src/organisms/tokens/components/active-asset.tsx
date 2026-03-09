@@ -4,6 +4,10 @@ import { FT } from "src/integration/ft/ft"
 
 import { Skeleton, IDropdownPosition } from "@nfid-frontend/ui"
 import { ArrowPercentChange } from "@nfid-frontend/ui"
+import {
+  ChainId,
+  isTestnetToken,
+} from "@nfid/integration/token/icrc1/enum/enums"
 
 import { IProfileConstants } from ".."
 import { AssetDropdown } from "./asset-dropdown"
@@ -25,6 +29,10 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   dropdownPosition: IDropdownPosition
   loadingToken: FT | null
   hideZeroBalance?: boolean
+  testnetEnabled?: boolean
+  arbitrumEnabled?: boolean
+  baseEnabled?: boolean
+  polygonEnabled?: boolean
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
@@ -42,6 +50,10 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   dropdownPosition,
   loadingToken,
   hideZeroBalance,
+  testnetEnabled,
+  arbitrumEnabled,
+  baseEnabled,
+  polygonEnabled,
   ...props
 }) => {
   const [isTokenProcessed, setIsTokenProcessed] = useState(false)
@@ -49,6 +61,11 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   const balance = token.getTokenBalance()
   const usdBalance = token.getUSDBalanceFormatted(false)
   const tokenPrice = token.getTokenRateFormatted("1", false)
+
+  if (!testnetEnabled && isTestnetToken(token.getChainId())) return null
+  if (!arbitrumEnabled && token.getChainId() === ChainId.ARB) return null
+  if (!baseEnabled && token.getChainId() === ChainId.BASE) return null
+  if (!polygonEnabled && token.getChainId() === ChainId.POL) return null
 
   if (hideZeroBalance && balance === BigInt(0) && token.isHideable())
     return null

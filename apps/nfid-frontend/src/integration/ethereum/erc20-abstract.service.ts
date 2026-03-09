@@ -1,9 +1,16 @@
-import { InfuraProvider, Interface, AbiCoder } from "ethers"
+import {
+  InfuraProvider,
+  Interface,
+  AbiCoder,
+  Contract,
+  TransactionResponse,
+  id,
+  zeroPadValue,
+  getAddress,
+} from "ethers"
 import { Address } from "../bitcoin/services/chain-fusion-signer.service"
 import { chainFusionSignerService } from "../bitcoin/services/chain-fusion-signer.service"
 import { SignIdentity } from "@dfinity/agent"
-import { Contract } from "ethers"
-import { TransactionResponse } from "ethers"
 import { ethereumService } from "./eth/ethereum.service"
 import { storageWithTtl, ttlCacheService } from "@nfid/client-db"
 import { ChainId, State } from "@nfid/integration/token/icrc1/enum/enums"
@@ -16,6 +23,18 @@ export const ERC20_ABI = [
   "function approve(address spender, uint256 amount) external returns (bool)",
   "function balanceOf(address account) external view returns (uint256)",
 ]
+
+export const ERC20_APPROVAL_ABI = [
+  "event Approval(address indexed owner, address indexed spender, uint256 value)",
+  "function approve(address spender, uint256 amount) external returns (bool)",
+  "function allowance(address owner, address spender) external view returns (uint256)",
+]
+
+export interface EvmAllowance {
+  contract: string
+  spender: string
+  allowance: bigint
+}
 
 // Multicall3 contract address (works on all EVM chains)
 // Reference: https://medium.com/coinmonks/the-best-method-for-bulk-fetching-erc20-token-balances-99da12f4d839
@@ -33,6 +52,8 @@ export const ZERO = BigInt(0)
 
 const ERC20_TOKENS_LIST_CACHE_KEY = "ERC20_TokensList"
 const ERC20_TOKENS_LIST_CACHE_TTL = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
+
+const ERC20_ALLOWANCES_CACHE_TTL = 60 * 1000 // 60 seconds
 
 export interface ERC20TokenInfo {
   address: string
@@ -64,6 +85,12 @@ export abstract class Erc20Service {
         error?: string
       }>
     >
+  >()
+
+  // One in-flight request per (owner, chainId) — all tokens share the same promise
+  private getEvmAllowancesQueue = new Map<
+    string,
+    Promise<Array<EvmAllowance>>
   >()
 
   public async getTokensWithNonZeroBalance(
@@ -639,5 +666,177 @@ export abstract class Erc20Service {
         state: State.Inactive,
       }))
       .filter((token: ERC20TokenInfo) => token.address)
+  }
+
+  /**
+   * Get all active ERC20 allowances for a given owner across all provided contracts.
+   *
+   * Single getLogs call per (owner, chainId) — results are cached for
+   * ERC20_ALLOWANCES_CACHE_TTL. Concurrent calls with the same key share the
+   * same in-flight promise so only one request reaches the node.
+   *
+   * Requires an archive-capable RPC (e.g. Alchemy) for full historical coverage.
+   */
+  public async getEvmAllowances(
+    ownerAddress: string,
+    contractAddresses: string[],
+  ): Promise<Array<EvmAllowance>> {
+    if (contractAddresses.length === 0) return []
+
+    const normalizedOwner = ownerAddress.toLowerCase()
+    const cacheKey = `ERC20_Allowances_${normalizedOwner}_${this.chainId}`
+
+    const existing = this.getEvmAllowancesQueue.get(cacheKey)
+    if (existing) return existing
+
+    const promise = this._fetchEvmAllowances(
+      normalizedOwner,
+      contractAddresses,
+      cacheKey,
+    ).finally(() => this.getEvmAllowancesQueue.delete(cacheKey))
+
+    this.getEvmAllowancesQueue.set(cacheKey, promise)
+    return promise
+  }
+
+  private async _fetchEvmAllowances(
+    ownerAddress: string,
+    contractAddresses: string[],
+    cacheKey: string,
+  ): Promise<Array<EvmAllowance>> {
+    const cached = (await storageWithTtl.get(cacheKey)) as EvmAllowance[] | null
+    if (cached) return cached
+
+    const approvalTopic = id("Approval(address,address,uint256)")
+    const paddedOwner = zeroPadValue(ownerAddress, 32)
+    const approvalInterface = new Interface(ERC20_APPROVAL_ABI)
+
+    const logs = await this.provider.getLogs({
+      address: contractAddresses,
+      topics: [approvalTopic, paddedOwner],
+      fromBlock: 0,
+      toBlock: "latest",
+    })
+
+    // Deduplicate (contract, spender) pairs — keep the last seen entry per key.
+    // Only pairs that ever had an Approval event end up here, NOT all tokens.
+    const pairs = new Map<string, { contract: string; spender: string }>()
+    for (const log of logs) {
+      const parsed = approvalInterface.parseLog({
+        topics: log.topics as string[],
+        data: log.data,
+      })
+      if (!parsed) continue
+      const spender: string = getAddress(parsed.args.spender)
+      const key = `${log.address.toLowerCase()}:${spender.toLowerCase()}`
+      pairs.set(key, { contract: log.address, spender })
+    }
+
+    if (pairs.size === 0) {
+      await storageWithTtl.set(cacheKey, [], ERC20_ALLOWANCES_CACHE_TTL)
+      return []
+    }
+
+    // Batch all allowance(owner, spender) reads into a single Multicall3 request
+    // to avoid N separate eth_call round-trips.
+    const multicallInterface = new Interface(MULTICALL3_ABI)
+    const approvalIface = new Interface(ERC20_APPROVAL_ABI)
+    const pairsArray = [...pairs.values()]
+
+    const calls = pairsArray.map(({ contract, spender }) => ({
+      target: contract,
+      callData: approvalIface.encodeFunctionData("allowance", [
+        ownerAddress,
+        spender,
+      ]),
+    }))
+
+    const aggregateData = multicallInterface.encodeFunctionData(
+      "tryBlockAndAggregate",
+      [false, calls],
+    )
+
+    const raw = await this.provider.call({
+      to: MULTICALL3_ADDRESS,
+      data: aggregateData,
+    })
+
+    const [, , returnData] = multicallInterface.decodeFunctionResult(
+      "tryBlockAndAggregate",
+      raw,
+    )
+
+    const abiCoder = new AbiCoder()
+    const results = pairsArray.map(({ contract, spender }, index) => {
+      try {
+        const { success, returnData: data } = returnData[index]
+        if (!success || !data || data === "0x") {
+          return { contract, spender, allowance: BigInt(0) }
+        }
+        const [value] = abiCoder.decode(["uint256"], data)
+        return { contract, spender, allowance: value as bigint }
+      } catch {
+        return { contract, spender, allowance: BigInt(0) }
+      }
+    })
+
+    const allowances = results.filter((r) => r.allowance > BigInt(0))
+    await storageWithTtl.set(cacheKey, allowances, ERC20_ALLOWANCES_CACHE_TTL)
+    return allowances
+  }
+
+  /**
+   * Set (or revoke) an ERC20 allowance by broadcasting an approve(spender, amount) tx.
+   * Pass amount = BigInt(0) to revoke. Invalidates the allowances cache on success.
+   */
+  public async setERC20Allowance(
+    identity: SignIdentity,
+    contractAddress: string,
+    spender: string,
+    amount: bigint,
+    chainId: ChainId,
+  ): Promise<void> {
+    const erc20 = new Contract(
+      contractAddress,
+      ERC20_APPROVAL_ABI,
+      this.provider,
+    )
+    const fromAddress = await ethereumService.getAddress(identity)
+    const nonce = await this.provider.getTransactionCount(fromAddress)
+
+    const trs = await erc20.approve.populateTransaction(spender, amount)
+
+    const feeData = await this.provider.getFeeData()
+    if (!feeData.maxFeePerGas || !feeData.maxPriorityFeePerGas) {
+      throw new Error("setERC20Allowance: gas fee data is missing")
+    }
+
+    const gasUsed = await this.provider.estimateGas({
+      to: contractAddress,
+      from: fromAddress,
+      data: trs.data,
+    })
+
+    const trs_request: EthSignTransactionRequest = {
+      to: contractAddress,
+      value: ZERO,
+      data: [trs.data],
+      nonce: BigInt(nonce),
+      gas: gasUsed,
+      max_priority_fee_per_gas: feeData.maxPriorityFeePerGas,
+      max_fee_per_gas: feeData.maxFeePerGas,
+      chain_id: BigInt(chainId),
+    }
+
+    const signedTx = await chainFusionSignerService.ethSignTransaction(
+      identity,
+      trs_request,
+    )
+    const response = await this.provider.broadcastTransaction(signedTx)
+    await response.wait()
+
+    // Invalidate cached allowances so the next read reflects the new state
+    const cacheKey = `ERC20_Allowances_${fromAddress.toLowerCase()}_${this.chainId}`
+    await storageWithTtl.set(cacheKey, [], 1)
   }
 }

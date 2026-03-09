@@ -143,6 +143,10 @@ const AuthenticationMachine =
               target: "SignUpWithGoogle",
               actions: ["assignEmail", "assignIsEmbed"],
             },
+            AUTH_WITH_II: {
+              target: "SignUpWithII",
+              actions: ["assignAuthSession"],
+            },
             AUTHENTICATED: {
               actions: "assignAuthSession",
               target: "End",
@@ -208,6 +212,26 @@ const AuthenticationMachine =
             ],
           },
         },
+        SignUpWithGoogle: {
+          invoke: {
+            src: "AuthWithGoogleMachine",
+            id: "AuthWithGoogleMachine",
+            data: (_, event: Extract<Events, { type: "AUTH_WITH_GOOGLE" }>) => {
+              return { jwt: event.data.jwt }
+            },
+            onDone: [
+              {
+                cond: "isExistingAccount",
+                actions: "assignAuthSession",
+                target: "checkPasskeys",
+              },
+              {
+                actions: "assignAuthSession",
+                target: "AuthSelectionSignUp",
+              },
+            ],
+          },
+        },
         AuthWithII: {
           invoke: {
             id: "AuthWithIIService",
@@ -225,13 +249,10 @@ const AuthenticationMachine =
             ],
           },
         },
-        SignUpWithGoogle: {
+        SignUpWithII: {
           invoke: {
-            src: "AuthWithGoogleMachine",
-            id: "AuthWithGoogleMachine",
-            data: (_, event: Extract<Events, { type: "AUTH_WITH_GOOGLE" }>) => {
-              return { jwt: event.data.jwt }
-            },
+            id: "AuthWithIIService",
+            src: () => signWithIIService(),
             onDone: [
               {
                 cond: "isExistingAccount",

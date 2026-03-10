@@ -24,7 +24,7 @@ import {
   CKBTC_CANISTER_ID,
   ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
-import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import { useSWR, useSWRWithTimestamp, mutate } from "@nfid/swr"
 
 import { NFIDTheme } from "frontend/App"
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
@@ -44,6 +44,7 @@ import { ModalType } from "frontend/features/transfer-modal/types"
 import { getAllVaults } from "frontend/features/vaults/services"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
+import { ttlCacheService } from "@nfid/client-db"
 
 interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   pageTitle?: string
@@ -84,6 +85,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 }) => {
   const location = useLocation()
   const navigate = useNavigate()
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [isRefreshDisabled, setIsRefreshDisabled] = useState(false)
 
   const isNftDetails = Boolean(
     useMatch(
@@ -254,6 +257,32 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     send("SHOW")
   }
 
+  const refreshPortfolio = async () => {
+    if (isRefreshing || isRefreshDisabled) return
+    setIsRefreshing(true)
+
+    await ttlCacheService.invalidateAll()
+    await mutate("tokens")
+
+    await Promise.all([
+      mutate("initedTokens"),
+      mutate("stakedTokens"),
+      mutate("nftList"),
+      mutate((key) => typeof key === "string" && key.startsWith('["nftList"')),
+      mutate((key) => typeof key === "string" && key.startsWith('["activity"')),
+    ])
+
+    await Promise.all([
+      mutate("fullUsdValue"),
+      mutate("ftUsdValue"),
+      mutate("nftTotalPrice"),
+    ])
+
+    setIsRefreshing(false)
+    setIsRefreshDisabled(true)
+    setTimeout(() => setIsRefreshDisabled(false), 60000)
+  }
+
   const isUsdBalanceLoading = isUsdLoading || !fullUsdBalance
 
   return (
@@ -330,6 +359,9 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
                 onSwapClick={onSwapClick}
                 onConvertClick={onConvertClick}
                 onStakeClick={onStakeClick}
+                refreshPortfolio={refreshPortfolio}
+                isRefreshing={isRefreshing}
+                isRefreshDisabled={isRefreshDisabled}
                 address={authState.getUserIdData().publicKey}
               />
               <BtcBanner

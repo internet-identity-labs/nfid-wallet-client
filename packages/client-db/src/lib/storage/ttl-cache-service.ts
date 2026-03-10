@@ -84,6 +84,10 @@ export class TtlCacheService {
   async invalidate(keys: string[]): Promise<void> {
     await Promise.all(keys.map((key) => this.storage.remove(key)))
   }
+
+  async invalidateAll(): Promise<void> {
+    await this.storage.clear()
+  }
 }
 
 export const ttlCacheService = new TtlCacheService(storageWithTtl)

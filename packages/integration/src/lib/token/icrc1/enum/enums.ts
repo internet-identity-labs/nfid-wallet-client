@@ -7,6 +7,7 @@ export enum Category {
   ChainFusion = "ChainFusion",
   Community = "Community",
   ERC20 = "ERC20",
+  TESTNET = "Testnet",
 }
 
 export enum State {
@@ -35,18 +36,22 @@ export const isEvmToken = (chainId: ChainId): boolean => {
     chainId === ChainId.POL ||
     chainId === ChainId.BNB ||
     chainId === ChainId.BASE ||
-    chainId === ChainId.ARB
+    chainId === ChainId.ARB ||
+    chainId === ChainId.ETH_SEPOLIA ||
+    chainId === ChainId.POL_AMOY ||
+    chainId === ChainId.BNB_TESTNET ||
+    chainId === ChainId.BASE_SEPOLIA ||
+    chainId === ChainId.ARB_SEPOLIA
   )
 }
 
-export const isNonIcrc1Token = (chainId: ChainId): boolean => {
+export const isTestnetToken = (chainId: ChainId): boolean => {
   return (
-    chainId === ChainId.BTC ||
-    chainId === ChainId.ETH ||
-    chainId === ChainId.POL ||
-    chainId === ChainId.BNB ||
-    chainId === ChainId.BASE ||
-    chainId === ChainId.ARB
+    chainId === ChainId.ETH_SEPOLIA ||
+    chainId === ChainId.POL_AMOY ||
+    chainId === ChainId.BNB_TESTNET ||
+    chainId === ChainId.BASE_SEPOLIA ||
+    chainId === ChainId.ARB_SEPOLIA
   )
 }
 

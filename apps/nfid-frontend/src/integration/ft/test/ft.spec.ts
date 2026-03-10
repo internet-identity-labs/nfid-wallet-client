@@ -23,6 +23,9 @@ import { polygonErc20Service } from "frontend/integration/ethereum/polygon/pol-e
 import { baseErc20Service } from "frontend/integration/ethereum/base/base-erc20.service"
 import { arbitrumErc20Service } from "frontend/integration/ethereum/arbitrum/arbitrum-erc20.service"
 import { bnbErc20Service } from "frontend/integration/ethereum/bnb/bnb-erc20.service"
+import { arbSepoliaErc20Service } from "frontend/integration/ethereum/arbitrum/testnetwork/arb-sepolia-erc20.service"
+import { baseSepoliaErc20Service } from "frontend/integration/ethereum/base/testnetwork/base-sepolia-erc20.service"
+import { polygonAmoyErc20Service } from "frontend/integration/ethereum/polygon/testnetwork/pol-amoy-erc20.service"
 
 const userId = "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae"
 const principal = Principal.fromText(userId)
@@ -50,6 +53,15 @@ describe("ft test suite", () => {
         .spyOn(arbitrumErc20Service as any, "getTokensList")
         .mockResolvedValue([])
       jest.spyOn(bnbErc20Service as any, "getTokensList").mockResolvedValue([])
+      jest
+        .spyOn(arbSepoliaErc20Service as any, "getTokensList")
+        .mockResolvedValue([])
+      jest
+        .spyOn(baseSepoliaErc20Service as any, "getTokensList")
+        .mockResolvedValue([])
+      jest
+        .spyOn(polygonAmoyErc20Service as any, "getTokensList")
+        .mockResolvedValue([])
 
       jest
         .spyOn(icrc1StorageService as any, "getICRC1Canisters")
@@ -119,7 +131,7 @@ describe("ft test suite", () => {
 
       const result: FT[] = await ftService.getTokens(userId)
 
-      expect(result.length).toEqual(11)
+      expect(result.length).toEqual(14)
       const icpResult = result.find(
         (r) => r.getTokenName() === "Internet Computer",
       )
@@ -150,7 +162,10 @@ describe("ft test suite", () => {
       expect(result[7].getTokenName()).toEqual("NFID Wallet")
       expect(result[8].getTokenName()).toEqual("ckBTC")
       expect(result[9].getTokenName()).toEqual("ckETH")
-      expect(result[10].getTokenName()).toEqual("Chat")
+      expect(result[10].getTokenName()).toEqual("Polygon Amoy")
+      expect(result[11].getTokenName()).toEqual("Ethereum Sepolia")
+      expect(result[12].getTokenName()).toEqual("Ethereum Sepolia")
+      expect(result[13].getTokenName()).toEqual("Chat")
     })
 
     it("should calculate no usd balance change", async () => {
@@ -471,7 +486,7 @@ describe("ft test suite", () => {
 
       const result: FT[] = await ftService.getTokens(userId)
 
-      expect(result.length).toEqual(11)
+      expect(result.length).toEqual(14)
       expect(result[0].getTokenCategory()).toEqual(Category.Native)
       expect(result[1].getTokenCategory()).toEqual(Category.Native)
       expect(result[2].getTokenCategory()).toEqual(Category.Native)
@@ -482,7 +497,10 @@ describe("ft test suite", () => {
       expect(result[7].getTokenCategory()).toEqual(Category.ChainFusion)
       expect(result[8].getTokenCategory()).toEqual(Category.ChainFusion)
       expect(result[9].getTokenCategory()).toEqual(Category.Sns)
-      expect(result[10].getTokenCategory()).toEqual(Category.Spam)
+      expect(result[10].getTokenCategory()).toEqual(Category.TESTNET)
+      expect(result[11].getTokenCategory()).toEqual(Category.TESTNET)
+      expect(result[12].getTokenCategory()).toEqual(Category.TESTNET)
+      expect(result[13].getTokenCategory()).toEqual(Category.Spam)
     })
 
     it("should calculate USD balance", async function () {

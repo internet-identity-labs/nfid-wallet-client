@@ -1,5 +1,5 @@
 import { Spinner } from "packages/ui/src/atoms/spinner"
-import { Dispatch, FC, SetStateAction, useEffect, useState } from "react"
+import { Dispatch, FC, SetStateAction, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 
@@ -11,6 +11,7 @@ import {
   ChooseAccountModal,
   Skeleton,
   IGroupedSendAddress,
+  Input,
 } from "@nfid-frontend/ui"
 import {
   BTC_NATIVE_ID,
@@ -34,6 +35,8 @@ import {
   UserAddressPreview,
 } from "frontend/integration/address-book"
 import { ChooseAddressModal } from "packages/ui/src/molecules/choose-modal/address-modal"
+
+const MAX_NOTE_LENGTH = 60
 
 export interface TransferFTUiProps {
   tokens: FT[]
@@ -87,6 +90,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   searchAddress,
 }) => {
   const [isFromResponsive, setIsFromResponsive] = useState(false)
+  const [noteLength, setNoteLength] = useState(0)
   const {
     watch,
     register,
@@ -176,7 +180,19 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         searchAddress={searchAddress}
         token={token}
       />
-      <div className={clsx(isFromResponsive && "mb-[60px]")}>
+      <Input
+        type="text"
+        labelText="Note (optional)"
+        upperText={`${noteLength}/${MAX_NOTE_LENGTH}`}
+        placeholder="Write a note to your recipient"
+        inputClassName="!border-black dark:!border-zinc-500 h-[56px] text-sm placeholder:text-gray-400 dark:placeholder:text-zinc-500 dark:bg-zinc-800"
+        className="mb-[10px]"
+        maxLength={MAX_NOTE_LENGTH}
+        {...register("note", {
+          onChange: (e) => setNoteLength(e.currentTarget.value.length),
+        })}
+      />
+      <div className={clsx(isFromResponsive ? "mb-[60px]" : "mb-[58px]")}>
         <div className="flex justify-between">
           <div className="text-xs text-gray-500 dark:text-zinc-400">
             Network fee

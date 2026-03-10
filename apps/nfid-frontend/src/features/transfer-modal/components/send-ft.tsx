@@ -1,4 +1,4 @@
-import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { AccountIdentifier, Icrc1BlockIndex } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
@@ -53,6 +53,12 @@ import {
   addressBookFacade,
   FtSearchRequest,
 } from "frontend/integration/address-book"
+import { noteService } from "frontend/integration/note/note-service"
+import {
+  BtcNoteKey,
+  EvmNoteKey,
+  IcpNoteKey,
+} from "frontend/integration/note/note-key"
 
 const DEFAULT_TRANSFER_ERROR = "Something went wrong"
 
@@ -107,12 +113,14 @@ export const TransferFT = ({
     defaultValues: {
       amount: "",
       to: "",
+      note: "",
     },
   })
 
   const { watch } = formMethods
   const amount = watch("amount")
   const to = watch("to")
+  const note = watch("note")
 
   const isIdentityReady = !!identity && !isIdentityLoading
   const parsedAmount = Number(amount)
@@ -348,7 +356,13 @@ export const TransferFT = ({
       }
 
       sendEvmPromise
-        .then(() => {
+        .then((tx) => {
+          if (note.trim())
+            noteService.storeNote(
+              new EvmNoteKey(tx.hash, token.getChainId()),
+              note,
+            )
+
           setSuccessMessage(
             `Transaction ${amount} ${token.getTokenSymbol()} successful`,
           )
@@ -388,7 +402,9 @@ export const TransferFT = ({
           fee_satoshis: btcFee.getFee(),
           utxos: btcFee.getUtxos(),
         })
-        .then(() => {
+        .then((txHash) => {
+          if (note.trim()) noteService.storeNote(new BtcNoteKey(txHash), note)
+
           setSuccessMessage(
             `Transaction ${amount} ${token.getTokenSymbol()} successful`,
           )
@@ -507,6 +523,19 @@ export const TransferFT = ({
             setStatus(SendStatus.FAILED)
             return
           }
+
+          if (note.trim()) {
+            const blockId =
+              typeof res === "bigint"
+                ? res
+                : (res as { Ok: Icrc1BlockIndex }).Ok
+
+            noteService.storeNote(
+              new IcpNoteKey(blockId, token.getTokenAddress()),
+              note,
+            )
+          }
+
           setSuccessMessage(
             `Transaction ${amount} ${token.getTokenSymbol()} successful`,
           )
@@ -536,6 +565,7 @@ export const TransferFT = ({
     selectedVaultsAccountAddress,
     amount,
     to,
+    note,
     initedTokens,
     setErrorMessage,
     setSuccessMessage,

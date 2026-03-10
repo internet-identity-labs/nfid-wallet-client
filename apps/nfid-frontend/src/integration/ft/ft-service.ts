@@ -34,7 +34,7 @@ import { baseErc20Service } from "../ethereum/base/base-erc20.service"
 import { arbitrumErc20Service } from "../ethereum/arbitrum/arbitrum-erc20.service"
 import { tokenFactory } from "./token-creator/token-factory.service"
 
-const InitedTokens = "InitedTokens"
+export const INITED_TOKENS_CACHE_NAME = "InitedTokens_"
 export const TOKENS_REFRESH_INTERVAL = 30000
 export const PAGE_SIZE = 10
 
@@ -284,7 +284,7 @@ export class FtService {
   }
 
   private getCacheKey(principal: Principal): string {
-    return `${InitedTokens}_${principal.toText()}`
+    return `${INITED_TOKENS_CACHE_NAME}${principal.toText()}`
   }
 
   private async fetchInitedTokens(

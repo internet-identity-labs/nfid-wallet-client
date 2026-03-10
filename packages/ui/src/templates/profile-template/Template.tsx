@@ -11,6 +11,7 @@ import {
   useMemo,
   useContext,
   useEffect,
+  useCallback,
 } from "react"
 import { Outlet, useLocation, useNavigate, useMatch } from "react-router-dom"
 import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
@@ -45,6 +46,27 @@ import { getAllVaults } from "frontend/features/vaults/services"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
 import { ttlCacheService } from "@nfid/client-db"
+import { STAKED_TOKENS_CACHE_NAME } from "frontend/integration/staking/service/staking-service-impl"
+import {
+  EVM_ACTIVITIES_CACHE_NAME,
+  EVM_ERC20_ACTIVITIES_CACHE_NAME,
+} from "frontend/integration/ethereum/evm-transaction.service"
+import { ACTIVITY_CACHE_NAME } from "@nfid/integration/token/icrc1"
+import { ICP_NFT_GEEK_CACHE_NAME } from "frontend/integration/nft/geek/nft-geek-service"
+import { getAllActivity } from "frontend/features/activity/utils/activity"
+import { PAGINATION_ITEMS } from "frontend/features/activity/constants"
+import {
+  EVM_BALANCE_CACHE_NAME,
+  EVM_NFTS_CACHE_NAME,
+} from "frontend/integration/ethereum/evm.service"
+import { INITED_TOKENS_CACHE_NAME } from "frontend/integration/ft/ft-service"
+import { ICRC1_ORACLE_CACHE_NAME } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+import { ICRC1_REGISTRY_CACHE_NAME } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
+import {
+  ERC20_BALANCES_CACHE_NAME,
+  ERC20_TOKENS_CACHE_NAME,
+  ERC20_TOKENS_LIST_CACHE_NAME,
+} from "frontend/integration/ethereum/erc20-abstract.service"
 
 interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   pageTitle?: string
@@ -257,31 +279,61 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     send("SHOW")
   }
 
-  const refreshPortfolio = async () => {
+  const refreshPortfolio = useCallback(async () => {
     if (isRefreshing || isRefreshDisabled) return
     setIsRefreshing(true)
 
-    await ttlCacheService.invalidateAll()
-    await mutate("tokens")
+    switch (activeTab.name) {
+      case "Tokens":
+        await ttlCacheService.invalidate([
+          INITED_TOKENS_CACHE_NAME,
+          ICRC1_ORACLE_CACHE_NAME,
+          ICRC1_REGISTRY_CACHE_NAME,
+          EVM_BALANCE_CACHE_NAME,
+          ERC20_TOKENS_LIST_CACHE_NAME,
+          ERC20_TOKENS_CACHE_NAME,
+          ERC20_BALANCES_CACHE_NAME,
+        ])
+        await mutate("tokens")
+        await mutate("initedTokens")
+        await mutate("ftUsdValue")
+        break
+      case "NFTs":
+        await ttlCacheService.invalidate([
+          ICP_NFT_GEEK_CACHE_NAME,
+          EVM_NFTS_CACHE_NAME,
+        ])
+        await Promise.all([
+          mutate("nftList"),
+          mutate(
+            (key) => typeof key === "string" && key.startsWith('["nftList"'),
+          ),
+        ])
+        await mutate("nftTotalPrice")
+        break
+      case "Staking":
+        await ttlCacheService.invalidate([STAKED_TOKENS_CACHE_NAME])
+        await mutate("stakedTokens")
+        break
+      case "Activity":
+        await ttlCacheService.invalidate([
+          EVM_ACTIVITIES_CACHE_NAME,
+          EVM_ERC20_ACTIVITIES_CACHE_NAME,
+          ACTIVITY_CACHE_NAME,
+        ])
+        await getAllActivity(PAGINATION_ITEMS, initedTokens ?? [])
+        await mutate(
+          (key) => typeof key === "string" && key.startsWith('["activity"'),
+        )
+        break
+    }
 
-    await Promise.all([
-      mutate("initedTokens"),
-      mutate("stakedTokens"),
-      mutate("nftList"),
-      mutate((key) => typeof key === "string" && key.startsWith('["nftList"')),
-      mutate((key) => typeof key === "string" && key.startsWith('["activity"')),
-    ])
-
-    await Promise.all([
-      mutate("fullUsdValue"),
-      mutate("ftUsdValue"),
-      mutate("nftTotalPrice"),
-    ])
+    await mutate("fullUsdValue")
 
     setIsRefreshing(false)
     setIsRefreshDisabled(true)
     setTimeout(() => setIsRefreshDisabled(false), 60000)
-  }
+  }, [activeTab.name, isRefreshing, isRefreshDisabled])
 
   const isUsdBalanceLoading = isUsdLoading || !fullUsdBalance
 

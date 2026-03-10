@@ -54,7 +54,7 @@ import { IStakingDelegates, IStakingICPDelegates, TotalBalance } from "../types"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
 const NEURON_ERROR_TEXT = "No neuron for given NeuronId."
-export const stakedTokensCacheName = "StakedTokens"
+export const STAKED_TOKENS_CACHE_NAME = "StakedTokens"
 
 export class StakingServiceImpl implements StakingService {
   static readonly ICP_DELEGATES: IStakingICPDelegates = {
@@ -85,7 +85,7 @@ export class StakingServiceImpl implements StakingService {
     refetch?: boolean,
   ): Promise<Array<StakedToken> | undefined> {
     return ttlCacheService.getOrFetch<Array<StakedToken> | undefined>(
-      stakedTokensCacheName,
+      STAKED_TOKENS_CACHE_NAME,
       async () => {
         const identity = await delegation
         return this.fetchStakedTokens(identity, tokens)

@@ -81,8 +81,13 @@ export class TtlCacheService {
     return await fromCache(cache.value)
   }
 
-  async invalidate(keys: string[]): Promise<void> {
-    await Promise.all(keys.map((key) => this.storage.remove(key)))
+  async invalidate(prefixes: string[]): Promise<void> {
+    const db = await this.storage._db
+    const keys = await db.getAllKeys()
+    const matching = keys.filter((key: string) =>
+      prefixes.some((prefix) => key.startsWith(prefix)),
+    )
+    await db.removeAll(matching)
   }
 
   async invalidateAll(): Promise<void> {

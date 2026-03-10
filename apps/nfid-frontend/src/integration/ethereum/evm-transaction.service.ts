@@ -63,6 +63,9 @@ export interface EtherscanTokenTransaction {
   confirmations: string
 }
 
+export const EVM_ACTIVITIES_CACHE_NAME = "EVM_ACTIVITIES_"
+export const EVM_ERC20_ACTIVITIES_CACHE_NAME = "EVM_ERC20_ACTIVITIES_"
+
 export interface EVMTransactionService {
   getActivitiesRows(address: string): Promise<IActivityRow[]>
 }
@@ -81,7 +84,7 @@ export abstract class EVMTokenTransactionService implements EVMTransactionServic
   public async getActivitiesRows(address: string): Promise<IActivityRow[]> {
     const chainId = this.getChainId()
     const normalizedAddress = address.toLowerCase()
-    const cacheKey = `EVM_ERC20_ACTIVITIES_${chainId}_${normalizedAddress}`
+    const cacheKey = `${EVM_ERC20_ACTIVITIES_CACHE_NAME}${chainId}_${normalizedAddress}`
 
     return ttlCacheService.getOrFetch(
       cacheKey,
@@ -171,7 +174,7 @@ export abstract class EVMNativeTransactionService implements EVMTransactionServi
   public async getActivitiesRows(address: string): Promise<IActivityRow[]> {
     const chainId = this.getChainId()
     const normalizedAddress = address.toLowerCase()
-    const cacheKey = `EVM_ACTIVITIES_${chainId}_${normalizedAddress}`
+    const cacheKey = `${EVM_ACTIVITIES_CACHE_NAME}${chainId}_${normalizedAddress}`
 
     return ttlCacheService.getOrFetch(
       cacheKey,

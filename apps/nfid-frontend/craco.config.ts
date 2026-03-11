@@ -55,6 +55,16 @@ const setupCSP = () => {
         "https://api.etherscan.io/",
         "https://api-sepolia.etherscan.io/",
         "https://api.icexplorer.io/api/dashboard/search",
+        "https://eth.blockscout.com",
+        "https://base.blockscout.com",
+        "https://polygon.blockscout.com",
+        "https://arbitrum.blockscout.com",
+        "https://bsc.blockscout.com",
+        "https://eth-sepolia.blockscout.com",
+        "https://base-sepolia.blockscout.com",
+        "https://arbitrum-sepolia.blockscout.com",
+        "https://polygon-amoy.blockscout.com",
+        "https://bsc-testnet.blockscout.com",
       ],
       "worker-src": "'self' blob:",
       "img-src": ["'self' blob: data: content: https:"],
@@ -303,6 +313,16 @@ const config = {
         secure: true,
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/verify_email/, ""),
+      },
+      "/blockscout": {
+        target: "https://eth.blockscout.com",
+        router: (req: any) => {
+          const subdomain = req.path.split("/")[2]
+          return `https://${subdomain}.blockscout.com`
+        },
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/blockscout\/[^/]+/, ""),
       },
       "/nft_geek_api": {
         target: "https://api.nftgeek.app",

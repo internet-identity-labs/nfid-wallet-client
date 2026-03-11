@@ -132,6 +132,15 @@ export abstract class EVMService {
   protected provider: InfuraProvider
   protected readonly blockscoutBaseUrl: string | undefined = undefined
 
+  protected get resolvedBlockscoutBaseUrl(): string | undefined {
+    if (!this.blockscoutBaseUrl) return undefined
+    if (process.env.NODE_ENV !== "development") return this.blockscoutBaseUrl
+    const subdomain = this.blockscoutBaseUrl
+      .replace("https://", "")
+      .replace(".blockscout.com", "")
+    return `/blockscout/${subdomain}`
+  }
+
   constructor() {
     this.provider = new InfuraProvider(CHAIN_ID, INFURA_API_KEY)
   }
@@ -181,7 +190,7 @@ export abstract class EVMService {
   }
 
   public async getNFTs(address: string): Promise<EvmNftAsset[]> {
-    if (!this.blockscoutBaseUrl) return []
+    if (!this.resolvedBlockscoutBaseUrl) return []
 
     const network = await this.provider.getNetwork()
     const chainId = Number(network.chainId)
@@ -202,7 +211,7 @@ export abstract class EVMService {
     address: string,
     chainId: number,
   ): Promise<EvmNftAsset[]> {
-    const baseUrl = this.blockscoutBaseUrl
+    const baseUrl = this.resolvedBlockscoutBaseUrl
     if (!baseUrl) return []
 
     const nfts = await this.fetchNFTList(address, baseUrl, chainId)

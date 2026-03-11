@@ -149,7 +149,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
           </A>
           <ProfileContainer
             title="Details"
-            className="!px-[20px] !pt-[20px] sm:!px-[30px] sm:!pt-[20px] !pb-[7px] !m-0 flex-[100%] dark:text-white"
+            className="!px-0 !pt-[20px] md:!px-[30px] sm:!pt-[20px] !pb-[7px] !m-0 flex-[100%] dark:text-white"
             innerClassName="!p-0"
             titleClassName="!p-0 mb-[20px]"
           >
@@ -180,7 +180,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                     ID
                   </p>
                   <p
-                    className="text-sm"
+                    className="text-sm break-all"
                     id={`nft_id_${nft.getTokenId().replace(/\s/g, "")}`}
                   >
                     {nft.getTokenId()}
@@ -195,7 +195,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                   <p className="text-sm text-gray-400 dark:text-zinc-500 flex-shrink-0 flex-grow-0 basis-[160px]">
                     Collection ID
                   </p>
-                  <p className="text-sm" id={"collection-id"}>
+                  <p className="text-sm break-all" id={"collection-id"}>
                     {nft.getCollectionId()}
                   </p>
                 </div>
@@ -236,6 +236,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                     href={marketPlaceLink}
                     withGapBetweenChildren
                     target="_blank"
+                    className="break-all"
                   >
                     {marketPlaceLink}
                     <IconCmpExternalIcon className="mt-1" />
@@ -250,7 +251,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
         <>
           <ProfileContainer
             className={clsx(
-              "!p-[20px] sm:!p-[30px] mb-[20px] sm:mb-[30px] relative dark:text-white",
+              "!px-0 md:!px-[30px] !p-[20px] mb-[20px] sm:mb-[30px] relative dark:text-white",
               !about && !isAboutLoading && "hidden",
             )}
             innerClassName="!p-0"
@@ -268,7 +269,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
           </ProfileContainer>
           <ProfileContainer
             className={clsx(
-              "!p-[20px] sm:!p-[30px] mb-[20px] sm:mb-[30px] min-h-[250px] relative dark:text-white",
+              "!px-0 md:!px-[30px] mb-[20px] sm:mb-[30px] min-h-[250px] relative dark:text-white",
               (!properties.mappedValues || !properties.mappedValues.length) &&
                 !isPropertiesLoading &&
                 "hidden",

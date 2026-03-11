@@ -1,39 +1,59 @@
-// Load environment variables FIRST using require (not import, to avoid hoisting)
 const dotenv = require('dotenv');
 const path = require('path');
 const fs = require('fs');
 
-// Determine which .env file to use (defaults to .env.local)
-const envFile = process.env.ENV_FILE || '.env.local';
-const envPath = path.resolve(__dirname, '../../', envFile);
+function loadEnvForWebpack() {
+  const explicitEnvFile = process.env.ENV_FILE;
+  const env = process.env.ENV;
 
-// Load .env file if it exists
-if (fs.existsSync(envPath)) {
-  console.log(`[webpack] Loading environment from: ${envFile}`);
-  const result = dotenv.config({ path: envPath });
-  if (result.error) {
-    console.error(`[webpack] Error loading ${envFile}:`, result.error);
+  if (explicitEnvFile) {
+    const envPath = path.resolve(__dirname, '../../', explicitEnvFile);
+    if (fs.existsSync(envPath)) {
+      console.log(`[webpack] Loading environment from: ${explicitEnvFile}`);
+      const result = dotenv.config({ path: envPath });
+      if (result.error) {
+        console.error(`[webpack] Error loading ${explicitEnvFile}:`, result.error);
+      }
+    } else {
+      console.warn(
+        `[webpack] Warning: Environment file ${explicitEnvFile} not found at ${envPath}`,
+      );
+    }
+    return;
   }
-} else {
-  console.warn(`[webpack] Warning: Environment file ${envFile} not found at ${envPath}`);
+
+  if (!env || env === 'local') {
+    const envFile = '.env.local';
+    const envPath = path.resolve(__dirname, '../../', envFile);
+    if (fs.existsSync(envPath)) {
+      console.log(`[webpack] Loading environment from: ${envFile}`);
+      const result = dotenv.config({ path: envPath });
+      if (result.error) {
+        console.error(`[webpack] Error loading ${envFile}:`, result.error);
+      }
+    } else {
+      console.warn(
+        `[webpack] Warning: Environment file ${envFile} not found at ${envPath}`,
+      );
+    }
+    return;
+  }
 }
 
-// Now import everything else via require to avoid TS type issues
+loadEnvForWebpack();
+
 const { composePlugins, withNx } = require('@nx/webpack');
 const { withReact } = require('@nx/react');
 const TsConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const webpack = require('webpack');
-const { JEST_GLOBALS } = require('../../config/jest-globals');
 const { serviceConfig } = require('../../config/webpack-env.cjs');
 
-// Build the webpack config using Nx composable plugins (in JS to avoid TS type conflicts)
 const config = composePlugins(
   withNx(),
   withReact({
     svgr: true,
   }),
   (config) => {
-    // TypeScript path resolution
     config.resolve = config.resolve || {};
     config.resolve.plugins = config.resolve.plugins || [];
     config.resolve.plugins.push(
@@ -44,7 +64,6 @@ const config = composePlugins(
       })
     );
 
-    // Node.js polyfills for browser
     config.resolve.fallback = {
       ...config.resolve.fallback,
       assert: require.resolve('assert'),
@@ -60,11 +79,9 @@ const config = composePlugins(
       vm: require.resolve('vm-browserify'),
     };
 
-    // Modify Babel loader to process workspace packages
     config.module = config.module || { rules: [] };
     config.module.rules = config.module.rules || [];
 
-    // Find and modify babel-loader rules
     const modifyBabelLoader = (rule) => {
       if (rule.loader && typeof rule.loader === 'string' && rule.loader.includes('babel-loader')) {
         rule.exclude = /node_modules/;
@@ -90,7 +107,6 @@ const config = composePlugins(
 
     config.module.rules = config.module.rules.map(modifyBabelLoader);
 
-    // Plugins
     config.plugins = config.plugins || [];
     config.plugins.push(
       new webpack.DefinePlugin(serviceConfig),
@@ -100,10 +116,8 @@ const config = composePlugins(
       })
     );
 
-    // Ignore warnings
     config.ignoreWarnings = [/Failed to parse source map from/];
 
-    // DevServer configuration
     config.devServer = {
       ...config.devServer,
       open: false,

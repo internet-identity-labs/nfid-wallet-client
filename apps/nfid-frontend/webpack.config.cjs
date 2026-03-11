@@ -3,22 +3,44 @@ const dotenv = require('dotenv');
 const path = require('path');
 const fs = require('fs');
 
-// Determine which .env file to use (defaults to .env.local)
-const envFile = process.env.ENV_FILE || '.env.local';
-const envPath = path.resolve(__dirname, '../../', envFile);
-
-// Load .env file if it exists
-if (fs.existsSync(envPath)) {
-  console.log(`[webpack] Loading environment from: ${envFile}`);
-  const result = dotenv.config({ path: envPath });
-  if (result.error) {
-    console.error(`[webpack] Error loading ${envFile}:`, result.error);
+function loadEnvForWebpack() {
+  const explicitEnvFile = process.env.ENV_FILE;
+  const env = process.env.ENV;
+  if (explicitEnvFile) {
+    const envPath = path.resolve(__dirname, '../../', explicitEnvFile);
+    if (fs.existsSync(envPath)) {
+      console.log(`[webpack] Loading environment from: ${explicitEnvFile}`);
+      const result = dotenv.config({ path: envPath });
+      if (result.error) {
+        console.error(`[webpack] Error loading ${explicitEnvFile}:`, result.error);
+      }
+    } else {
+      console.warn(
+        `[webpack] Warning: Environment file ${explicitEnvFile} not found at ${envPath}`,
+      );
+    }
+    return;
   }
-} else {
-  console.warn(`[webpack] Warning: Environment file ${envFile} not found at ${envPath}`);
+  if (!env || env === 'local') {
+    const envFile = '.env.local';
+    const envPath = path.resolve(__dirname, '../../', envFile);
+    if (fs.existsSync(envPath)) {
+      console.log(`[webpack] Loading environment from: ${envFile}`);
+      const result = dotenv.config({ path: envPath });
+      if (result.error) {
+        console.error(`[webpack] Error loading ${envFile}:`, result.error);
+      }
+    } else {
+      console.warn(
+        `[webpack] Warning: Environment file ${envFile} not found at ${envPath}`,
+      );
+    }
+    return;
+  }
 }
 
-// Now import everything else via require to avoid TS type issues
+loadEnvForWebpack();
+
 const { composePlugins, withNx } = require('@nx/webpack');
 const { withReact } = require('@nx/react');
 const CspHtmlWebpackPlugin = require('@melloware/csp-webpack-plugin');
@@ -27,8 +49,6 @@ const webpack = require('webpack');
 const { serviceConfig } = require('../../config/webpack-env.cjs');
 const dfxJson = require('../../dfx.json');
 
-// Disable ESLint in webpack build to avoid conflicts with custom ESLint config
-// ESLint is still run via lint-staged and NX lint commands
 if (!process.env.DISABLE_ESLINT_PLUGIN) {
   process.env.DISABLE_ESLINT_PLUGIN = 'true';
 }
@@ -122,14 +142,12 @@ const setupCSP = () => {
   return [];
 };
 
-// Build the webpack config using Nx composable plugins (in JS to avoid TS type conflicts)
 const config = composePlugins(
   withNx(),
   withReact({
     svgr: true,
   }),
   (config) => {
-    // TypeScript path resolution
     config.resolve = config.resolve || {};
     config.resolve.plugins = config.resolve.plugins || [];
     config.resolve.plugins.push(
@@ -140,13 +158,11 @@ const config = composePlugins(
       })
     );
 
-    // Add webpack aliases
     config.resolve.alias = {
       ...config.resolve.alias,
       frontend: path.resolve(__dirname, 'src'),
     };
 
-    // Node.js polyfills for browser
     config.resolve.fallback = {
       ...config.resolve.fallback,
       assert: require.resolve('assert'),
@@ -162,19 +178,15 @@ const config = composePlugins(
       vm: require.resolve('vm-browserify'),
     };
 
-    // Extend module resolution
     config.resolve.modules = [
       ...(config.resolve.modules || ['node_modules']),
       path.resolve(__dirname, '../../node_modules'),
     ];
 
     config.resolve.extensions = ['.js', '.ts', '.jsx', '.tsx'];
-
-    // Modify Babel loader to process workspace packages
     config.module = config.module || { rules: [] };
     config.module.rules = config.module.rules || [];
 
-    // Find and modify babel-loader rules
     const modifyBabelLoader = (rule) => {
       if (rule.loader && typeof rule.loader === 'string' && rule.loader.includes('babel-loader')) {
         rule.exclude = /node_modules\/(?!(@dfinity\/ledger-icp)\/).*/;
@@ -199,17 +211,11 @@ const config = composePlugins(
     };
 
     config.module.rules = config.module.rules.map(modifyBabelLoader);
-
-    // Optimization settings
     config.optimization = {
       ...config.optimization,
       minimize: !isExampleBuild,
     };
-
-    // Plugins
     config.plugins = config.plugins || [];
-
-    // Define environment variables (skip for example builds)
     const canisterEnv = {
       ...(isExampleBuild ? {} : serviceConfig),
     };
@@ -226,28 +232,20 @@ const config = composePlugins(
       }),
       ...setupCSP()
     );
-
-    // Output configuration
     config.output = {
       ...config.output,
-      // Always serve built assets from the root so routes like /wallet/*
-      // still load /main.js, /main.css, etc. correctly.
       publicPath: '/',
       crossOriginLoading: 'anonymous',
     };
 
-    // Source maps for development
     config.devtool = !isProduction ? 'source-map' : false;
 
-    // Ignore warnings
     config.ignoreWarnings = [/Failed to parse source map from/];
 
-    // DevServer configuration
     config.devServer = {
       ...config.devServer,
       open: false,
       port: 9090,
-      // Ensure popups and postMessage flows keep working with COOP
       headers: {
         'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
       },

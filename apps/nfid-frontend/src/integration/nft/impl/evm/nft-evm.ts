@@ -96,6 +96,14 @@ export class EvmNftImpl implements NFT {
     return `${this.asset.chainId}:${this.asset.contract}:${this.asset.tokenId}`
   }
 
+  getChainId(): ChainId {
+    return this.asset.chainId
+  }
+
+  getNftStandard(): string {
+    return this.asset.type
+  }
+
   getTokenNumber(): number {
     return Number(this.asset.tokenId) || 0
   }

@@ -21,6 +21,7 @@ import { actorBuilder, hasOwnProperty } from "@nfid/integration"
 
 import { idlFactory } from "./idl/yumiNft"
 import { _SERVICE as YukuNftCanister } from "./idl/yumiNft.d"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 export class NftYumi extends NftImpl {
   private url: undefined | string
@@ -58,6 +59,14 @@ export class NftYumi extends NftImpl {
 
   getCollectionMarketPlaceLink(): string {
     return `https://yuku.app/market/${this.getCollectionId()}`
+  }
+
+  getChainId(): ChainId {
+    return ChainId.ICP
+  }
+
+  getNftStandard(): string {
+    return "EXT"
   }
 
   async getDetails(): Promise<NFTDetails> {

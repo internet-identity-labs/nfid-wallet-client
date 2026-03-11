@@ -19,6 +19,7 @@ import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
 
 import { NftImpl } from "../impl/nft-abstract"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 const principal = Principal.fromText(
   "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
@@ -63,6 +64,7 @@ describe("nft test suite", () => {
         "yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
       )
       expect(extNft.getMarketPlace()).toEqual("EXT")
+      expect(extNft.getChainId()).toEqual(ChainId.ICP)
       expect(extNft.getMillis()).toEqual(1721253726158)
       const extAssetPreview = extNft.getAssetPreview()
       expect(extAssetPreview?.format).toEqual("img")
@@ -122,6 +124,7 @@ describe("nft test suite", () => {
         "ubfjy-6qkor-uwiaa-aaaaa-byanl-4aqca-aacof-a",
       )
       expect(memecakeNft.getMarketPlace()).toEqual("MEMECAKE")
+      expect(memecakeNft.getChainId()).toEqual(ChainId.ICP)
       expect(memecakeNft.getMillis()).toEqual(1721253870829)
       const memcakeAsset = memecakeNft.getAssetPreview()
       expect(memcakeAsset?.format).toEqual("img")
@@ -301,6 +304,7 @@ describe("nft test suite", () => {
       expect(nft.getTokenFloorPriceUSDFormatted()).toEqual("0.18 USD")
       expect(nft.getTokenId()).toEqual(nftId)
       expect(nft.getMarketPlace()).toEqual("EXT")
+      expect(nft.getChainId()).toEqual(ChainId.ICP)
       expect(nft.getMillis()).toEqual(1721253726158)
 
       const assetPreview = nft.getAssetPreview()

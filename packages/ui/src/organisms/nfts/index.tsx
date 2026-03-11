@@ -20,6 +20,7 @@ import EmptyNFT from "./assets/empty.webp"
 
 import { GalleryNftSkeleton, TableNftSkeleton } from "../../atoms/skeleton"
 import { NFTDisplaySwitch } from "./nft-display-switch"
+import { getNetworkIcon } from "../../utils/network-icon"
 
 export interface INFTs extends HTMLAttributes<HTMLDivElement> {
   isLoading: boolean
@@ -182,7 +183,9 @@ export const NFTs: FC<INFTs> = ({
                         </p>
                       </>
                     ) : (
-                      "Unknown"
+                      <p className="text-xs text-gray-400 dark:text-zinc-500 leading-[20px]">
+                        Unknown floor price
+                      </p>
                     )}
                   </td>
                   <td>
@@ -229,18 +232,23 @@ export const NFTs: FC<INFTs> = ({
                   )}
                   key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
                 >
-                  <div className="relative rounded-[12px] overflow-hidden basis-[100%] flex items-center justify-center">
+                  <div className="relative rounded-[12px] overflow-hidden basis-[100%] flex items-center justify-center relative">
                     {nft.getError() ? (
-                      <ImageWithFallback
-                        alt={nft.getTokenName()}
-                        fallbackSrc={
-                          isDarkTheme
-                            ? IconNftPlaceholderDark
-                            : IconNftPlaceholder
-                        }
-                        src={"#"}
-                        className="object-cover aspect-square w-[80px] h-[80px]"
-                      />
+                      <>
+                        <ImageWithFallback
+                          alt={nft.getTokenName()}
+                          fallbackSrc={
+                            isDarkTheme
+                              ? IconNftPlaceholderDark
+                              : IconNftPlaceholder
+                          }
+                          src={"#"}
+                          className="object-cover aspect-square w-[80px] h-[80px]"
+                        />
+                        <div className="w-4.5 h-4.5 absolute right-2.5 bottom-2.5 rounded-[6px] bg-white dark:bg-zinc-800">
+                          {getNetworkIcon(nft.getChainId(), isDarkTheme, 18)}
+                        </div>
+                      </>
                     ) : nft.getAssetPreview()?.format === "video" ? (
                       <video
                         muted
@@ -250,16 +258,21 @@ export const NFTs: FC<INFTs> = ({
                         src={nft.getAssetPreview()?.url}
                       ></video>
                     ) : (
-                      <ImageWithFallback
-                        alt={nft.getTokenName()}
-                        fallbackSrc={
-                          isDarkTheme
-                            ? IconNftPlaceholderDark
-                            : IconNftPlaceholder
-                        }
-                        src={nft.getAssetPreview()?.url}
-                        className="object-cover w-full aspect-square"
-                      />
+                      <>
+                        <ImageWithFallback
+                          alt={nft.getTokenName()}
+                          fallbackSrc={
+                            isDarkTheme
+                              ? IconNftPlaceholderDark
+                              : IconNftPlaceholder
+                          }
+                          src={nft.getAssetPreview()?.url}
+                          className="object-cover w-full aspect-square"
+                        />
+                        <div className="w-4.5 h-4.5 absolute right-2.5 bottom-2.5 rounded-[6px] bg-white dark:bg-zinc-800">
+                          {getNetworkIcon(nft.getChainId(), isDarkTheme, 18)}
+                        </div>
+                      </>
                     )}
 
                     <div

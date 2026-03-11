@@ -8,6 +8,7 @@ import { mockGeekResponse } from "src/integration/nft/mock/mock"
 import { nftService } from "src/integration/nft/nft-service"
 
 import { exchangeRateService } from "@nfid/integration"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 const principal = Principal.fromText(
   "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
@@ -39,6 +40,7 @@ describe("nft test suite", () => {
         "yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a",
       )
       expect(extNft.getMarketPlace()).toEqual("EXT")
+      expect(extNft.getChainId()).toEqual(ChainId.ICP)
       expect(extNft.getMillis()).toEqual(1721253726158)
       const extAssetPreview = extNft.getAssetPreview()
       expect(extAssetPreview!.format).toEqual("img")

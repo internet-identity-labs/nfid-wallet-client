@@ -15,6 +15,7 @@ import { NFT, NFTDetails } from "src/integration/nft/nft"
 
 import { exchangeRateService } from "@nfid/integration"
 import { E8S } from "@nfid/integration/token/constants"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 const idlFactory = ({ IDL }: any) =>
   IDL.Service({
@@ -94,6 +95,10 @@ export abstract class NftImpl implements NFT {
   getMarketPlace(): MarketPlace {
     return this.marketPlace
   }
+
+  abstract getChainId(): ChainId
+
+  abstract getNftStandard(): string
 
   abstract getTokenMarketPlaceLink(): string
 

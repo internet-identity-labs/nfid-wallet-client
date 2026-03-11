@@ -6,12 +6,7 @@ import { useSWR } from "@nfid/swr"
 
 import { fetchNFT, fetchNFTs } from "frontend/features/collectibles/utils/util"
 import { useIdentity } from "frontend/hooks/identity"
-import {
-  transferEXT,
-  decodeTokenIdentifier,
-} from "frontend/integration/entrepot/ext"
-import { noteService } from "frontend/integration/note/note-service"
-import { IcpNoteKey } from "frontend/integration/note/note-key"
+import { transferEXT } from "frontend/integration/entrepot/ext"
 
 import { FormValues, SendStatus } from "../types"
 import { getAddressBookNftOptions, validateNftAddress } from "../utils"
@@ -45,11 +40,8 @@ export const TransferNFT = ({
     mode: "all",
     defaultValues: {
       to: "",
-      note: "",
     },
   })
-
-  const note = formMethods.watch("note")
 
   const { data: addresses } = useSWR("addressBook", async () =>
     addressBookFacade.findAll(),
@@ -85,14 +77,8 @@ export const TransferNFT = ({
 
       setIsSuccessOpen(true)
 
-      const tokenId = selectedNFT.getTokenId()
-
-      transferEXT(tokenId, identity, values.to)
+      transferEXT(selectedNFT.getTokenId(), identity, values.to)
         .then(() => {
-          if (note.trim()) {
-            const { index, canister } = decodeTokenIdentifier(tokenId)
-            noteService.storeNote(new IcpNoteKey(BigInt(index), canister), note)
-          }
           setSuccessMessage(
             `Transaction ${selectedNFT?.getTokenName()} successful`,
           )
@@ -108,7 +94,7 @@ export const TransferNFT = ({
           setStatus(SendStatus.FAILED)
         })
     },
-    [selectedNFT, setErrorMessage, setSuccessMessage, identity, note],
+    [selectedNFT, setErrorMessage, setSuccessMessage, identity],
   )
 
   return (

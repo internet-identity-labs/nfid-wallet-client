@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
-import { Dispatch, FC, SetStateAction, useState } from "react"
+import { Dispatch, FC, SetStateAction } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 
@@ -18,7 +18,6 @@ import {
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 
-const MAX_NOTE_LENGTH = 60
 import { NFT } from "frontend/integration/nft/nft"
 
 import { SendSuccessUi } from "./send-success"
@@ -64,7 +63,6 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
     formState: { errors },
   } = useFormContext()
   const to = watch("to")
-  const [noteLength, setNoteLength] = useState(0)
 
   return (
     <>
@@ -146,18 +144,6 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
           })}
           searchAddress={searchAddress}
           token={undefined}
-        />
-        <Input
-          type="text"
-          labelText="Note (optional)"
-          upperText={`${noteLength}/${MAX_NOTE_LENGTH}`}
-          placeholder="Write a note to your recipient"
-          inputClassName="!border-black dark:!border-zinc-500 h-[56px] text-sm placeholder:text-gray-400 dark:placeholder:text-zinc-500 dark:bg-zinc-800"
-          className="mb-[68px]"
-          maxLength={MAX_NOTE_LENGTH}
-          {...register("note", {
-            onChange: (e) => setNoteLength(e.currentTarget.value.length),
-          })}
         />
         <Button
           id={"sendButton"}

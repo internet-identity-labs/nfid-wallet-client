@@ -108,7 +108,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const location = useLocation()
   const navigate = useNavigate()
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const [isRefreshDisabled, setIsRefreshDisabled] = useState(false)
 
   const isNftDetails = Boolean(
     useMatch(
@@ -280,7 +279,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const refreshPortfolio = useCallback(async () => {
-    if (isRefreshing || isRefreshDisabled) return
+    if (isRefreshing) return
     setIsRefreshing(true)
 
     switch (activeTab.name) {
@@ -331,9 +330,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     await mutate("fullUsdValue")
 
     setIsRefreshing(false)
-    setIsRefreshDisabled(true)
-    setTimeout(() => setIsRefreshDisabled(false), 60000)
-  }, [activeTab.name, isRefreshing, isRefreshDisabled])
+  }, [activeTab.name, isRefreshing])
 
   const isUsdBalanceLoading = isUsdLoading || !fullUsdBalance
 
@@ -413,7 +410,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
                 onStakeClick={onStakeClick}
                 refreshPortfolio={refreshPortfolio}
                 isRefreshing={isRefreshing}
-                isRefreshDisabled={isRefreshDisabled}
                 address={authState.getUserIdData().publicKey}
               />
               <BtcBanner

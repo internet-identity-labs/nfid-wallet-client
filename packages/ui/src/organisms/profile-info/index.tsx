@@ -33,7 +33,6 @@ export interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   onStakeClick: () => void
   refreshPortfolio: () => void
   isRefreshing: boolean
-  isRefreshDisabled: boolean
   address?: string
 }
 
@@ -48,7 +47,6 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
   onStakeClick,
   refreshPortfolio,
   isRefreshing,
-  isRefreshDisabled,
   address,
 }) => {
   return (
@@ -74,10 +72,10 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
           >
             Account ID
           </div>
-          {isRefreshDisabled || isRefreshing ? (
+          {isRefreshing ? (
             <Tooltip
               className="z-[5]"
-              tip={<span>Please try in 1 minute</span>}
+              tip={<span>Please try again later</span>}
             >
               <div>
                 <IconCmpRefresh

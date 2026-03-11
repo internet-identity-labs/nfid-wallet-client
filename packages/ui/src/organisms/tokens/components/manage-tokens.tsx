@@ -20,7 +20,6 @@ import {
   Card,
   ImageWithFallback,
   IconNftPlaceholder,
-  Toggle,
 } from "@nfid-frontend/ui"
 import { ICRC1Error } from "@nfid/integration/token/icrc1/types"
 
@@ -52,8 +51,6 @@ interface ManageTokensProps {
     fee: bigint
   }>
   setLoadingToken: (value: FT | null) => void
-  hideZeroBalance: boolean
-  onZeroBalanceToggle: () => void
   manageBtnDisabled?: boolean
   className?: string
 }
@@ -63,8 +60,6 @@ export const ManageTokens: FC<ManageTokensProps> = ({
   onSubmitIcrc1Pair,
   onFetch,
   setLoadingToken,
-  hideZeroBalance,
-  onZeroBalanceToggle,
   manageBtnDisabled,
   className,
 }) => {
@@ -170,7 +165,7 @@ export const ManageTokens: FC<ManageTokensProps> = ({
           setModalStep(null)
           debouncedSearch("")
         }}
-        className="p-5 w-[95%] md:w-[450px] z-[100] !rounded-[24px]"
+        className="px-5 py-3 w-[95%] md:w-[450px] z-[100] !rounded-[24px]"
       >
         {modalStep === "manage" && (
           <motion.div
@@ -222,16 +217,7 @@ export const ManageTokens: FC<ManageTokensProps> = ({
               </Tooltip>
             </div>
             <div>
-              <div className="bg-gray-50 dark:bg-[#3F3F4680] rounded-[12px] mt-[28px] mb-[20px]">
-                <div className="h-[64px] px-4 flex items-center justify-between">
-                  <span className="dark:text-white">Hide zero balances</span>
-                  <Toggle
-                    isChecked={hideZeroBalance}
-                    onToggle={onZeroBalanceToggle}
-                  />
-                </div>
-              </div>
-              <div className="flex gap-[10px] mb-[10px]">
+              <div className="flex gap-[10px] mt-[10px] mb-[10px]">
                 <div className="relative w-full">
                   <Input
                     inputClassName="!border-black dark:!border-zinc-500"
@@ -255,7 +241,7 @@ export const ManageTokens: FC<ManageTokensProps> = ({
               </div>
               <div
                 className={clsx(
-                  "h-[294px] overflow-auto pr-[16px]",
+                  "h-[476px] overflow-auto pr-[16px]",
                   "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
                   "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
                   "dark:scrollbar-thumb-zinc-600 dark:scrollbar-track-[#242427]",

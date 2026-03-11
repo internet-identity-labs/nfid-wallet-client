@@ -30,6 +30,7 @@ const config = {
       "<rootDir>/mocks/fileMock.js",
     "\\.(css|less)$": "<rootDir>/mocks/fileMock.js",
     "^frontend/(.*)$": "<rootDir>/src/$1",
+    "^uuid$": "<rootDir>/../../__mocks__/uuid.js",
   },
   globalSetup: "./global-setup.js",
 }

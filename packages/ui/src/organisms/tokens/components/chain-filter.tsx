@@ -35,9 +35,14 @@ export interface ICRC1Metadata {
 interface ChainFilterProps {
   filter: string[]
   setFilter: (chains: string[]) => void
+  iconClassName?: string
 }
 
-export const ChainFilter: FC<ChainFilterProps> = ({ filter, setFilter }) => (
+export const ChainFilter: FC<ChainFilterProps> = ({
+  filter,
+  setFilter,
+  iconClassName,
+}) => (
   <FilterPopover
     title="Assets"
     align="end"
@@ -45,7 +50,12 @@ export const ChainFilter: FC<ChainFilterProps> = ({ filter, setFilter }) => (
     trigger={
       <div id={"filter-chains"} className="flex items-center justify-end">
         <div className="relative">
-          <IconCmpFilters className="w-[21px] h-[21px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white bg-transparent" />
+          <IconCmpFilters
+            className={clsx(
+              "w-[20px] h-[20px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white bg-transparent",
+              iconClassName,
+            )}
+          />
           <div
             className={clsx(
               "absolute w-2.5 h-2.5 bg-teal-600 dark:bg-teal-500 right-0 bottom-0 rounded-full border-2 border-white dark:border-[#141518]",

@@ -2,13 +2,6 @@ import BigNumber from "bignumber.js"
 import clsx from "clsx"
 import { HTMLAttributes, FC, useState, useMemo } from "react"
 import { FT } from "src/integration/ft/ft"
-
-import {
-  EVM_NATIVE,
-  BTC_NATIVE_ID,
-  ETH_NATIVE_ID,
-} from "@nfid/integration/token/constants"
-
 import { useDarkTheme } from "frontend/hooks"
 
 import SortAscendingIcon from "./assets/sort-ascending.svg"
@@ -23,6 +16,8 @@ import { ManageTokens } from "./components/manage-tokens"
 import { TokenInfoModal } from "./components/token-info-modal"
 import { ChainFilter } from "./components/chain-filter"
 import { SelectedToken } from "frontend/features/transfer-modal/types"
+import { IconCmpPortfolioOptions } from "../../atoms/icons"
+import { PortfolioOptions } from "./components/portfolio-options"
 
 export interface IProfileConstants {
   base: string
@@ -60,6 +55,14 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   onStakeClick: (value: SelectedToken) => void
   hideZeroBalance: boolean
   onZeroBalanceToggle: () => void
+  testnetEnabled: boolean
+  onTestnetToggle: () => void
+  arbitrumEnabled: boolean
+  onArbitrumToggle: () => void
+  baseEnabled: boolean
+  onBaseToggle: () => void
+  polygonEnabled: boolean
+  onPolygonToggle: () => void
 }
 
 export const Tokens: FC<TokensProps> = ({
@@ -78,8 +81,17 @@ export const Tokens: FC<TokensProps> = ({
   onStakeClick,
   hideZeroBalance,
   onZeroBalanceToggle,
+  testnetEnabled,
+  onTestnetToggle,
+  arbitrumEnabled,
+  onArbitrumToggle,
+  baseEnabled,
+  onBaseToggle,
+  polygonEnabled,
+  onPolygonToggle,
 }) => {
   const [token, setToken] = useState<FT | undefined>()
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [sorting, setSorting] = useState<Sorting>(Sorting.DEFAULT)
   const [isHovered, setIsHovered] = useState(false)
   const [loadingToken, setLoadingToken] = useState<FT | null>(null)
@@ -156,8 +168,16 @@ export const Tokens: FC<TokensProps> = ({
   return (
     <>
       <div className="relative flex flex-col">
-        <div className={clsx("flex justify-end", isLoading && "hidden")}>
-          <ChainFilter filter={filter} setFilter={setFilter} />
+        <div className={clsx("flex justify-end mb-1", isLoading && "hidden")}>
+          <ChainFilter
+            filter={filter}
+            setFilter={setFilter}
+            iconClassName="w-[24px] h-[24px]"
+          />
+          <IconCmpPortfolioOptions
+            className="ml-5 w-[24px] h-[24px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white bg-transparent"
+            onClick={() => setIsModalOpen(true)}
+          />
         </div>
         <div className="mb-[20px] overflow-x-auto scrollbar scrollbar-w-4 scrollbar-thumb-gray-300 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
           <table className="w-full text-left">
@@ -201,6 +221,10 @@ export const Tokens: FC<TokensProps> = ({
                 filteredTokens.map((token, index, arr) => (
                   <ActiveToken
                     hideZeroBalance={hideZeroBalance}
+                    testnetEnabled={testnetEnabled}
+                    arbitrumEnabled={arbitrumEnabled}
+                    baseEnabled={baseEnabled}
+                    polygonEnabled={polygonEnabled}
                     key={`token_${token.getTokenAddress()}_${token.getTokenState()}_${token.getChainId()}`}
                     token={token}
                     tokens={allTokens}
@@ -227,9 +251,21 @@ export const Tokens: FC<TokensProps> = ({
           onSubmitIcrc1Pair={onSubmitIcrc1Pair}
           onFetch={onFetch}
           setLoadingToken={setLoadingToken}
+          manageBtnDisabled={isLoading}
+        />
+        <PortfolioOptions
+          isOpen={isModalOpen}
+          setIsOpen={setIsModalOpen}
           hideZeroBalance={hideZeroBalance}
           onZeroBalanceToggle={onZeroBalanceToggle}
-          manageBtnDisabled={isLoading}
+          testnetEnabled={testnetEnabled}
+          onTestnetToggle={onTestnetToggle}
+          arbitrumEnabled={arbitrumEnabled}
+          onArbitrumToggle={onArbitrumToggle}
+          baseEnabled={baseEnabled}
+          onBaseToggle={onBaseToggle}
+          polygonEnabled={polygonEnabled}
+          onPolygonToggle={onPolygonToggle}
         />
       </div>
       <TokenInfoModal token={token} onClose={() => setToken(undefined)} />

@@ -9,6 +9,7 @@ import {
   EvmNftFloorPrice,
   evmNftFloorPriceService,
 } from "src/integration/nft/impl/evm/evm-nft-floor-price.service"
+import { evmNftTransactionService } from "src/integration/nft/impl/evm/evm-nft-transaction.service"
 import {
   AssetPreview,
   NFTTransactions,
@@ -149,10 +150,13 @@ export class EvmNftImpl implements NFT {
         url: resolveImageUrl(asset) ?? "",
         format: "img",
       }),
-      getTransactions: async (): Promise<NFTTransactions> => ({
-        activity: [],
-        isLastPage: true,
-      }),
+      getTransactions: (from: number): Promise<NFTTransactions> =>
+        evmNftTransactionService.getTransactions(
+          asset.chainId,
+          asset.contract,
+          asset.tokenId,
+          from,
+        ),
       getProperties: async (): Promise<TokenProperties> => ({
         mappedValues: (
           (asset.metadata as EvmNftMetadata | undefined)?.attributes ?? []

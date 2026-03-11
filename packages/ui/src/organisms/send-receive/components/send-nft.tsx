@@ -17,7 +17,6 @@ import {
 } from "@nfid-frontend/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
-
 import { NFT } from "frontend/integration/nft/nft"
 
 import { SendSuccessUi } from "./send-success"

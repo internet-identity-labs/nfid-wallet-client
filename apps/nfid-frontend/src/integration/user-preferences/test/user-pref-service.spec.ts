@@ -4,7 +4,7 @@ import { userPrefService } from "src/integration/user-preferences/user-pref-serv
 describe("userpref service test suite", () => {
   it("should get user preferences", async () => {
     await userPrefService.getUserPreferences().then(async (userPreferences) => {
-      expect(userPreferences.isHideZeroBalance()).toBe(false)
+      expect(userPreferences.isHideZeroBalance()).toBe(true)
       expect(userPreferences.getSlippage()).toBe(2)
       await userPreferences.setHideZeroBalance(true).then(() => {
         userPrefService.getUserPreferences().then((userPreferences) => {
@@ -12,7 +12,7 @@ describe("userpref service test suite", () => {
         })
         authStorage.get("userPreferences").then((userPreferencesString) => {
           expect(userPreferencesString).toBe(
-            '{"hideZeroBalance":true,"slippage":2}',
+            '{"hideZeroBalance":true,"slippage":2,\"testnetEnabled\":true,\"arbitrumEnabled\":true,\"baseEnabled\":true,\"polygonEnabled\":true}',
           )
         })
       })
@@ -22,7 +22,7 @@ describe("userpref service test suite", () => {
         })
         authStorage.get("userPreferences").then((userPreferencesString) => {
           expect(userPreferencesString).toBe(
-            '{"hideZeroBalance":true,"slippage":3}',
+            '{"hideZeroBalance":true,"slippage":3,\"testnetEnabled\":true,\"arbitrumEnabled\":true,\"baseEnabled\":true,\"polygonEnabled\":true}',
           )
         })
       })

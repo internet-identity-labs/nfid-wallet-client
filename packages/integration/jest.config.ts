@@ -12,6 +12,9 @@ export default {
       },
     ],
   },
+  moduleNameMapper: {
+    "^uuid$": "<rootDir>/../../__mocks__/uuid.js",
+  },
   moduleFileExtensions: ["ts", "js", "html"],
   coverageDirectory: "../../coverage/packages/integration",
   setupFiles: ["./src/setup-tests.ts"],

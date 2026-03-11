@@ -33,6 +33,9 @@ import { polygonErc20Service } from "../ethereum/polygon/pol-erc20.service"
 import { baseErc20Service } from "../ethereum/base/base-erc20.service"
 import { arbitrumErc20Service } from "../ethereum/arbitrum/arbitrum-erc20.service"
 import { tokenFactory } from "./token-creator/token-factory.service"
+import { arbSepoliaErc20Service } from "../ethereum/arbitrum/testnetwork/arb-sepolia-erc20.service"
+import { baseSepoliaErc20Service } from "../ethereum/base/testnetwork/base-sepolia-erc20.service"
+import { polygonAmoyErc20Service } from "../ethereum/polygon/testnetwork/pol-amoy-erc20.service"
 
 export const INITED_TOKENS_CACHE_NAME = "InitedTokens_"
 export const TOKENS_REFRESH_INTERVAL = 30000
@@ -117,19 +120,32 @@ export class FtService {
 
     const userCanisters = await icrc1RegistryService.getStoredUserTokens()
 
-    const [ethErc20Tokens, polErc20Tokens, baseErc20Tokens, arbErc20Tokens] =
-      await Promise.all([
-        ethErc20Service.getTokensList(),
-        polygonErc20Service.getTokensList(),
-        baseErc20Service.getTokensList(),
-        arbitrumErc20Service.getTokensList(),
-      ])
+    const [
+      ethErc20Tokens,
+      polErc20Tokens,
+      baseErc20Tokens,
+      arbErc20Tokens,
+      arbSepoliaErc20Tokens,
+      baseSepoliaErc20Tokens,
+      polAmoyErc20Tokens,
+    ] = await Promise.all([
+      ethErc20Service.getTokensList(),
+      polygonErc20Service.getTokensList(),
+      baseErc20Service.getTokensList(),
+      arbitrumErc20Service.getTokensList(),
+      arbSepoliaErc20Service.getTokensList(),
+      baseSepoliaErc20Service.getTokensList(),
+      polygonAmoyErc20Service.getTokensList(),
+    ])
 
     const allErc20Tokens = [
       ...ethErc20Tokens,
       ...polErc20Tokens,
       ...baseErc20Tokens,
       ...arbErc20Tokens,
+      ...arbSepoliaErc20Tokens,
+      ...baseSepoliaErc20Tokens,
+      ...polAmoyErc20Tokens,
     ]
 
     const nativeTokens: FT[] = [
@@ -146,6 +162,16 @@ export class FtService {
         ),
       ),
 
+      tokenFactory.getCreatorByChainID(ChainId.POL_AMOY).buildNative(
+        mapState(
+          userCanisters.find(
+            (c) => c.network === ChainId.POL_AMOY && c.ledger === EVM_NATIVE,
+          )?.state ?? {
+            Inactive: null,
+          },
+        ),
+      ),
+
       tokenFactory.getCreatorByChainID(ChainId.ARB).buildNative(
         mapState(
           userCanisters.find(
@@ -156,10 +182,31 @@ export class FtService {
         ),
       ),
 
+      tokenFactory.getCreatorByChainID(ChainId.ARB_SEPOLIA).buildNative(
+        mapState(
+          userCanisters.find(
+            (c) => c.network === ChainId.ARB_SEPOLIA && c.ledger === EVM_NATIVE,
+          )?.state ?? {
+            Inactive: null,
+          },
+        ),
+      ),
+
       tokenFactory.getCreatorByChainID(ChainId.BASE).buildNative(
         mapState(
           userCanisters.find(
             (c) => c.network === ChainId.BASE && c.ledger === EVM_NATIVE,
+          )?.state ?? {
+            Inactive: null,
+          },
+        ),
+      ),
+
+      tokenFactory.getCreatorByChainID(ChainId.BASE_SEPOLIA).buildNative(
+        mapState(
+          userCanisters.find(
+            (c) =>
+              c.network === ChainId.BASE_SEPOLIA && c.ledger === EVM_NATIVE,
           )?.state ?? {
             Inactive: null,
           },
@@ -464,8 +511,9 @@ export class FtService {
       [Category.Native]: 1,
       [Category.ERC20]: 6,
       [Category.Community]: 5,
-      [Category.Spam]: 8,
+      [Category.Spam]: 9,
       [Category.ChainFusionTestnet]: 7,
+      [Category.TESTNET]: 8,
     }
 
     const topNativeIds = [ICP_CANISTER_ID, BTC_NATIVE_ID, ETH_NATIVE_ID]

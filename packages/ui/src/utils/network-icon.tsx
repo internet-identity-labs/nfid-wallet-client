@@ -24,15 +24,18 @@ export const getNetworkIcon = (
       return <BtcNetworkIcon color={isDark ? "white" : "black"} size={size} />
 
     case ChainId.ARB:
+    case ChainId.ARB_SEPOLIA:
       return <ArbNetworkIcon color={isDark ? "white" : "black"} size={size} />
 
     case ChainId.BASE:
+    case ChainId.BASE_SEPOLIA:
       return <BaseNetworkIcon color={isDark ? "white" : "black"} size={size} />
 
     case ChainId.BNB:
       return <BnbNetworkIcon color={isDark ? "white" : "black"} size={size} />
 
     case ChainId.POL:
+    case ChainId.POL_AMOY:
       return <PolNetworkIcon color={isDark ? "white" : "black"} size={size} />
 
     default:

@@ -30,6 +30,10 @@ import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 const TokensPage = () => {
   const [hideZeroBalance, setHideZeroBalance] = useState(false)
+  const [testnetEnabled, setTestnetEnabled] = useState(false)
+  const [arbitrumEnabled, setArbitrumEnabled] = useState(false)
+  const [baseEnabled, setBaseEnabled] = useState(false)
+  const [polygonEnabled, setPolygontEnabled] = useState(false)
   const userRootPrincipalId = authState.getUserIdData().userId
   const globalServices = useContext(ProfileContext)
   const [, send] = useActor(globalServices.transferService)
@@ -140,6 +144,10 @@ const TokensPage = () => {
   useEffect(() => {
     userPrefService.getUserPreferences().then((userPref) => {
       setHideZeroBalance(userPref.isHideZeroBalance())
+      setTestnetEnabled(userPref.isTestnetEnabled())
+      setArbitrumEnabled(userPref.isArbitrumEnabled())
+      setBaseEnabled(userPref.isBaseEnabled())
+      setPolygontEnabled(userPref.isPolygonEnabled())
     })
   }, [])
 
@@ -147,6 +155,34 @@ const TokensPage = () => {
     userPrefService.getUserPreferences().then((userPref) => {
       userPref.setHideZeroBalance(!hideZeroBalance)
       setHideZeroBalance(!hideZeroBalance)
+    })
+  }
+
+  const onTestnetToggle = () => {
+    userPrefService.getUserPreferences().then((userPref) => {
+      userPref.setTestnetEnabled(!testnetEnabled)
+      setTestnetEnabled(!testnetEnabled)
+    })
+  }
+
+  const onArbitrumToggle = () => {
+    userPrefService.getUserPreferences().then((userPref) => {
+      userPref.setArbitrumEnabled(!arbitrumEnabled)
+      setArbitrumEnabled(!arbitrumEnabled)
+    })
+  }
+
+  const onBaseToggle = () => {
+    userPrefService.getUserPreferences().then((userPref) => {
+      userPref.setBaseEnabled(!baseEnabled)
+      setBaseEnabled(!baseEnabled)
+    })
+  }
+
+  const onPolygonToggle = () => {
+    userPrefService.getUserPreferences().then((userPref) => {
+      userPref.setPolygonEnabled(!polygonEnabled)
+      setPolygontEnabled(!polygonEnabled)
     })
   }
 
@@ -239,6 +275,14 @@ const TokensPage = () => {
           onStakeClick={onStakeClick}
           hideZeroBalance={hideZeroBalance}
           onZeroBalanceToggle={onZeroBalanceToggle}
+          testnetEnabled={testnetEnabled}
+          onTestnetToggle={onTestnetToggle}
+          arbitrumEnabled={arbitrumEnabled}
+          onArbitrumToggle={onArbitrumToggle}
+          baseEnabled={baseEnabled}
+          onBaseToggle={onBaseToggle}
+          polygonEnabled={polygonEnabled}
+          onPolygonToggle={onPolygonToggle}
         />
       </ProfileContainer>
     </>

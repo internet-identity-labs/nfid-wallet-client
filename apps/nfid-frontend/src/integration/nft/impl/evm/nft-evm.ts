@@ -16,6 +16,7 @@ import {
 } from "src/integration/nft/impl/nft-types"
 import { NftError } from "src/integration/nft/impl/nft-abstract"
 import { NFT, NFTDetails } from "src/integration/nft/nft"
+import { ETH_DECIMALS, TRIM_ZEROS } from "@nfid/integration/token/constants"
 
 const BLOCKSCOUT_CHAINS: Partial<Record<number, string>> = {
   [ChainId.ETH]: "eth",
@@ -136,7 +137,7 @@ export class EvmNftImpl implements NFT {
 
   getTokenFloorPriceFormatted(): string | undefined {
     if (!this.floorPrice) return undefined
-    return `${this.floorPrice.nativePrice.toFixed(4)} ${this.floorPrice.symbol}`
+    return `${this.floorPrice.nativePrice.toFixed(ETH_DECIMALS).replace(TRIM_ZEROS, "")} ${this.floorPrice.symbol}`
   }
 
   getTokenFloorPriceUSDFormatted(): string | undefined {

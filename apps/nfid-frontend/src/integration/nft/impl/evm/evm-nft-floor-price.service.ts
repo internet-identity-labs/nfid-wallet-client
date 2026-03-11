@@ -7,15 +7,16 @@ export interface EvmNftFloorPrice {
   symbol: string
 }
 
-const RESERVOIR_BASE_URLS: Partial<Record<number, string>> = {
-  [ChainId.ETH]: "https://api.reservoir.tools",
-  [ChainId.BASE]: "https://api-base.reservoir.tools",
-  [ChainId.POL]: "https://api-polygon.reservoir.tools",
-  [ChainId.ARB]: "https://api-arbitrum.reservoir.tools",
-  [ChainId.BNB]: "https://api-bsc.reservoir.tools",
+const MORALIS_CHAIN_MAP: Partial<Record<number, string>> = {
+  [ChainId.ETH]: "eth",
+  [ChainId.BASE]: "base",
+  [ChainId.POL]: "polygon",
+  [ChainId.ARB]: "arbitrum",
+  [ChainId.BNB]: "bsc",
 }
 
-const RESERVOIR_API_KEY = "demo-api-key"
+const MORALIS_API_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImYzYTJiZDUyLWJhY2QtNDhmMi1iZDU5LWIyNTM2ZDUxZjc3ZSIsIm9yZ0lkIjoiNTA0ODczIiwidXNlcklkIjoiNTE5NDkxIiwidHlwZUlkIjoiZTk5ODMxNGItMzZiYi00MTEzLTlhMjgtZWUwMmM2YWE5ZGU0IiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NzMyMzU4MTYsImV4cCI6NDkyODk5NTgxNn0.jlaTZDOiVwdRjVLBnrXg_W6y_4702t89qS0ec-92_Kg"
 const FLOOR_PRICE_CACHE_TTL = 5 * 60 * 1000
 
 class EvmNftFloorPriceService {
@@ -23,14 +24,14 @@ class EvmNftFloorPriceService {
     contract: string,
     chainId: number,
   ): Promise<EvmNftFloorPrice | undefined> {
-    const baseUrl = RESERVOIR_BASE_URLS[chainId]
-    if (!baseUrl) return undefined
+    const chain = MORALIS_CHAIN_MAP[chainId]
+    if (!chain) return undefined
 
     const cacheKey = `EVM_NFT_FLOOR_${chainId}_${contract.toLowerCase()}`
 
     return ttlCacheService.getOrFetch(
       cacheKey,
-      () => this.fetchFloorPrice(contract, baseUrl),
+      () => this.fetchFloorPrice(contract, chain),
       FLOOR_PRICE_CACHE_TTL,
       {
         serialize: JSON.stringify,
@@ -41,27 +42,27 @@ class EvmNftFloorPriceService {
 
   private async fetchFloorPrice(
     contract: string,
-    baseUrl: string,
+    chain: string,
   ): Promise<EvmNftFloorPrice | undefined> {
-    const url = new URL(`${baseUrl}/collections/v7`)
-    url.searchParams.set("contract", contract)
-    url.searchParams.set("limit", "1")
+    const url = new URL(
+      `https://deep-index.moralis.io/api/v2.2/nft/${contract}/floor-price`,
+    )
+    url.searchParams.set("chain", chain)
 
     const response = await fetch(url.toString(), {
-      headers: { "x-api-key": RESERVOIR_API_KEY },
+      headers: { "X-API-Key": MORALIS_API_KEY },
     })
 
     if (!response.ok) return undefined
 
     const data = await response.json()
-    const price = data.collections?.[0]?.floorAsk?.price
 
-    if (!price?.amount?.decimal) return undefined
+    if (!data.floor_price) return undefined
 
     return {
-      nativePrice: price.amount.decimal,
-      usdPrice: price.amount.usd ?? 0,
-      symbol: price.currency?.symbol ?? "ETH",
+      nativePrice: Number(data.floor_price),
+      usdPrice: Number(data.floor_price_usd ?? 0),
+      symbol: data.floor_price_currency ?? "ETH",
     }
   }
 }

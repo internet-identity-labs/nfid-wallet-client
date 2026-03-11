@@ -4,6 +4,7 @@ import { Events, Services, TransferMachineContext } from "./types"
 
 export const transferMachine = createMachine(
   {
+    predictableActionArguments: true,
     tsTypes: {} as import("./machine.typegen").Typegen0,
     schema: {
       events: {} as Events,

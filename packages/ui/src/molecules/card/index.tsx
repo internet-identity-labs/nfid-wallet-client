@@ -12,12 +12,13 @@ export enum CardType {
 
 export interface ICard {
   title?: string
-  text: string | ReactNode
+  text?: string | ReactNode
+  children?: ReactNode
   link?: {
     text: string
     url: string
   }
-  classNames?: string
+  className?: string
   hasIcon?: boolean
   green?: boolean
   type?: CardType
@@ -27,16 +28,17 @@ export const Card = ({
   title,
   text,
   link,
-  classNames,
+  className,
   hasIcon = true,
   type = CardType.WARNING,
+  children,
 }: ICard) => (
   <div
     className={clsx(
       type === CardType.WARNING && "bg-orange-50 dark:bg-orange-500/10",
       type === CardType.NOTICE && "bg-green-50",
       "w-full p-[15px] my-3 rounded-[12px]",
-      classNames,
+      className,
     )}
   >
     {title && (
@@ -79,13 +81,13 @@ export const Card = ({
               )}
             />
           )}
-          <p
+          <div
             className={clsx(
               type === CardType.WARNING &&
                 "text-orange-900 dark:text-amber-600",
               type === CardType.NOTICE && "text-green-900",
               "text-sm",
-              classNames,
+              className,
             )}
           >
             {link && (
@@ -97,8 +99,8 @@ export const Card = ({
                 {link.text}&nbsp;
               </a>
             )}
-            {text}
-          </p>
+            {children ?? text}
+          </div>
         </div>
       </div>
     </div>

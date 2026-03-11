@@ -19,25 +19,21 @@ import { NftError } from "src/integration/nft/impl/nft-abstract"
 import { NFT, NFTDetails } from "src/integration/nft/nft"
 import { ETH_DECIMALS, TRIM_ZEROS } from "@nfid/integration/token/constants"
 
-const BLOCKSCOUT_CHAINS: Partial<Record<number, string>> = {
-  [ChainId.ETH]: "eth",
-  [ChainId.BASE]: "base",
-  [ChainId.POL]: "polygon",
-  [ChainId.ARB]: "arbitrum",
-  [ChainId.BNB]: "bsc",
-  [ChainId.ETH_SEPOLIA]: "eth-sepolia",
-  [ChainId.BASE_SEPOLIA]: "base-sepolia",
-  [ChainId.ARB_SEPOLIA]: "arbitrum-sepolia",
-  [ChainId.POL_AMOY]: "polygon-amoy",
-  [ChainId.BNB_TESTNET]: "bsc-testnet",
+const BLOCKSCOUT_URLS: Partial<Record<number, string>> = {
+  [ChainId.ETH]: "https://eth.blockscout.com",
+  [ChainId.BASE]: "https://base.blockscout.com",
+  [ChainId.POL]: "https://polygon.blockscout.com",
+  [ChainId.ARB]: "https://arbitrum.blockscout.com",
+  [ChainId.BNB]: "https://bsc.blockscout.com",
+  [ChainId.ETH_SEPOLIA]: "https://eth-sepolia.blockscout.com",
+  [ChainId.BASE_SEPOLIA]: "https://base-sepolia.blockscout.com",
+  [ChainId.ARB_SEPOLIA]: "https://arbitrum-sepolia.blockscout.com",
+  [ChainId.POL_AMOY]: "https://polygon-amoy.blockscout.com",
+  [ChainId.BNB_TESTNET]: "https://bsc-testnet.blockscout.com",
 }
 
 function getBlockscoutBaseUrl(chainId: number): string {
-  const chain = BLOCKSCOUT_CHAINS[chainId] ?? "eth"
-  if (process.env.NODE_ENV === "development") {
-    return `/blockscout/${chain}`
-  }
-  return `https://${chain}.blockscout.com`
+  return BLOCKSCOUT_URLS[chainId] ?? `https://eth.blockscout.com`
 }
 
 function resolveImageUrl(asset: EvmNftAsset): string | undefined {

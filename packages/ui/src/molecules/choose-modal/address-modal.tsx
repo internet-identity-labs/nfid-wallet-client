@@ -189,7 +189,7 @@ export const ChooseAddressModal = <T,>({
         </div>
         <Input
           type="text"
-          placeholder="Search by name or wallet address "
+          placeholder="Search by name or wallet address"
           inputClassName="!border-black dark:!border-zinc-500"
           icon={<IoIosSearch size="20" className="text-gray-400" />}
           onKeyUp={(e) => setSearchInput((e.target as HTMLInputElement).value)}

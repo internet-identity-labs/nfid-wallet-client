@@ -17,6 +17,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   inputClassName?: string
   disabled?: boolean
   innerText?: string
+  upperText?: string
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -36,22 +37,30 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       labelText,
       isErrorStyles,
       innerText,
+      upperText,
       ...inputProps
     },
     ref,
   ) => {
     return (
       <div className={clsx("rounded-[12px]", className)}>
-        {labelText && (
-          <Label
-            className={clsx(
-              "text-xs mb-1 inline-block dark:text-white",
-              inputProps.disabled && "!text-secondary dark:!text-zinc-700",
-            )}
-          >
-            {labelText}
-          </Label>
-        )}
+        <div className="flex items-center justify-between mb-1">
+          {labelText && (
+            <Label
+              className={clsx(
+                "text-xs inline-block dark:text-white",
+                inputProps.disabled && "!text-secondary dark:!text-zinc-700",
+              )}
+            >
+              {labelText}
+            </Label>
+          )}
+          {upperText && (
+            <p className="text-xs leading-4 text-secondary dark:text-zinc-400">
+              {upperText}
+            </p>
+          )}
+        </div>
         <div className={clsx("flex relative", small && "md:max-w-[340px]")}>
           {icon && (
             <div

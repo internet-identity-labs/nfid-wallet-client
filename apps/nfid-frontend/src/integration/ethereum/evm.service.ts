@@ -120,6 +120,8 @@ interface BlockscoutTransfersResponse {
 }
 
 const EVM_NFTS_CACHE_TTL = 30 * 1000
+export const EVM_NFTS_CACHE_NAME = "EVM_NFTS_"
+export const EVM_BALANCE_CACHE_NAME = "EVM_BALANCE_"
 
 const ERC721_TRANSFER_IFACE = new Interface([
   "function safeTransferFrom(address from, address to, uint256 tokenId)",
@@ -165,7 +167,7 @@ export abstract class EVMService {
   public async getBalance(address: Address): Promise<Balance> {
     const network = await this.provider.getNetwork()
     const chainId = Number(network.chainId)
-    const cacheKey = `EVM_BALANCE_${chainId}_${address.toLowerCase()}`
+    const cacheKey = `${EVM_BALANCE_CACHE_NAME}${chainId}_${address.toLowerCase()}`
 
     return ttlCacheService.getOrFetch(
       cacheKey,
@@ -185,7 +187,7 @@ export abstract class EVMService {
 
     const network = await this.provider.getNetwork()
     const chainId = Number(network.chainId)
-    const cacheKey = `EVM_NFTS_${chainId}_${address.toLowerCase()}`
+    const cacheKey = `${EVM_NFTS_CACHE_NAME}${chainId}_${address.toLowerCase()}`
 
     return ttlCacheService.getOrFetch(
       cacheKey,

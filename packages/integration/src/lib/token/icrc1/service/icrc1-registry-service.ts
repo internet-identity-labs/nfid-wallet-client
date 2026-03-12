@@ -6,7 +6,8 @@ import { authState } from "../../../authentication"
 import { State } from "../enum/enums"
 import { mapStateTS } from "../util"
 
-const icrc1RegistryCacheName = "ICRC1RegistryService.getCanistersByRoot"
+export const ICRC1_REGISTRY_CACHE_NAME =
+  "ICRC1RegistryService.getCanistersByRoot"
 
 export class Icrc1RegistryService {
   public async getStoredUserTokens(): Promise<Array<ICRC1>> {
@@ -52,7 +53,7 @@ export class Icrc1RegistryService {
 
   async getRegistryCacheName(): Promise<string> {
     const userCache = authState.getUserIdData()
-    return `${icrc1RegistryCacheName}${userCache.anchor}`
+    return `${ICRC1_REGISTRY_CACHE_NAME}${userCache.anchor}`
   }
 }
 

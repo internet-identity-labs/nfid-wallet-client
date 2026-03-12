@@ -80,8 +80,17 @@ const BLOCKSCOUT_URLS: Partial<Record<number, string>> = {
   [ChainId.BNB_TESTNET]: "https://bsc-testnet.blockscout.com",
 }
 
+/**
+ * In development webpack-dev-server proxies /blockscout/{subdomain}/...
+ * → https://{subdomain}.blockscout.com/... to bypass the browser CORS check.
+ */
 function blockscoutBaseUrl(chainId: number): string {
-  return BLOCKSCOUT_URLS[chainId] ?? "https://eth.blockscout.com"
+  const direct = BLOCKSCOUT_URLS[chainId] ?? "https://eth.blockscout.com"
+  if (process.env.NODE_ENV === "development") {
+    const subdomain = new URL(direct).hostname.split(".")[0]
+    return `/blockscout/${subdomain}`
+  }
+  return direct
 }
 
 // ─── Service ──────────────────────────────────────────────────────────────────

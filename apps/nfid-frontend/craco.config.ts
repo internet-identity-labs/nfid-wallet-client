@@ -55,16 +55,16 @@ const setupCSP = () => {
         "https://api.etherscan.io/",
         "https://api-sepolia.etherscan.io/",
         "https://api.icexplorer.io/api/dashboard/search",
-        // "https://eth.blockscout.com",
-        // "https://base.blockscout.com",
-        // "https://polygon.blockscout.com",
-        // "https://arbitrum.blockscout.com",
-        // "https://bsc.blockscout.com",
-        // "https://eth-sepolia.blockscout.com",
-        // "https://base-sepolia.blockscout.com",
-        // "https://arbitrum-sepolia.blockscout.com",
-        // "https://polygon-amoy.blockscout.com",
-        // "https://bsc-testnet.blockscout.com",
+        "https://eth.blockscout.com",
+        "https://base.blockscout.com",
+        "https://polygon.blockscout.com",
+        "https://arbitrum.blockscout.com",
+        "https://bsc.blockscout.com",
+        "https://eth-sepolia.blockscout.com",
+        "https://base-sepolia.blockscout.com",
+        "https://arbitrum-sepolia.blockscout.com",
+        "https://polygon-amoy.blockscout.com",
+        "https://bsc-testnet.blockscout.com",
       ],
       "worker-src": "'self' blob:",
       "img-src": ["'self' blob: data: content: https:"],
@@ -314,16 +314,76 @@ const config = {
         changeOrigin: true,
         pathRewrite: (path: string) => path.replace(/^\/verify_email/, ""),
       },
-      // "/blockscout": {
-      //   target: "https://eth.blockscout.com",
-      //   router: (req: any) => {
-      //     const subdomain = req.path.split("/")[2]
-      //     return `https://${subdomain}.blockscout.com`
-      //   },
-      //   secure: true,
-      //   changeOrigin: true,
-      //   pathRewrite: (path: string) => path.replace(/^\/blockscout\/[^/]+/, ""),
-      // },
+      // Reverse-proxy entries for Blockscout REST API.
+      // Browsers cannot call *.blockscout.com directly (no CORS headers).
+      // Each entry maps /blockscout/{chain}/... → https://{chain}.blockscout.com/...
+      "/blockscout/eth": {
+        target: "https://eth.blockscout.com",
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/blockscout\/eth/, ""),
+      },
+      "/blockscout/base": {
+        target: "https://base.blockscout.com",
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/blockscout\/base/, ""),
+      },
+      "/blockscout/polygon": {
+        target: "https://polygon.blockscout.com",
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) =>
+          path.replace(/^\/blockscout\/polygon/, ""),
+      },
+      "/blockscout/arbitrum": {
+        target: "https://arbitrum.blockscout.com",
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) =>
+          path.replace(/^\/blockscout\/arbitrum/, ""),
+      },
+      "/blockscout/bsc": {
+        target: "https://bsc.blockscout.com",
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) => path.replace(/^\/blockscout\/bsc/, ""),
+      },
+      "/blockscout/eth-sepolia": {
+        target: "https://eth-sepolia.blockscout.com",
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) =>
+          path.replace(/^\/blockscout\/eth-sepolia/, ""),
+      },
+      "/blockscout/base-sepolia": {
+        target: "https://base-sepolia.blockscout.com",
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) =>
+          path.replace(/^\/blockscout\/base-sepolia/, ""),
+      },
+      "/blockscout/arbitrum-sepolia": {
+        target: "https://arbitrum-sepolia.blockscout.com",
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) =>
+          path.replace(/^\/blockscout\/arbitrum-sepolia/, ""),
+      },
+      "/blockscout/polygon-amoy": {
+        target: "https://polygon-amoy.blockscout.com",
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) =>
+          path.replace(/^\/blockscout\/polygon-amoy/, ""),
+      },
+      "/blockscout/bsc-testnet": {
+        target: "https://bsc-testnet.blockscout.com",
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: (path: string) =>
+          path.replace(/^\/blockscout\/bsc-testnet/, ""),
+      },
       "/nft_geek_api": {
         target: "https://api.nftgeek.app",
         secure: true,

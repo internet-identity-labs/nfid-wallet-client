@@ -123,6 +123,31 @@ const EVM_NFTS_CACHE_TTL = 30 * 1000
 export const EVM_NFTS_CACHE_NAME = "EVM_NFTS_"
 export const EVM_BALANCE_CACHE_NAME = "EVM_BALANCE_"
 
+/**
+ * Build a Blockscout API URL, routing through the dev-server proxy in
+ * development to avoid the browser CORS restriction.
+ *
+ * Dev  (craco proxy):  /blockscout/bsc/api/v2/addresses/0x.../nft?type=...
+ * Prod (direct):       https://bsc.blockscout.com/api/v2/addresses/0x.../nft?type=...
+ *
+ * `new URL()` cannot parse relative paths without a base, so we use
+ * `URLSearchParams` for query-string building and plain string concatenation
+ * for the path.
+ */
+function buildBlockscoutUrl(
+  blockscoutBaseUrl: string,
+  apiPath: string,
+  params: Record<string, string> = {},
+): string {
+  const base =
+    process.env.NODE_ENV === "development"
+      ? `/blockscout/${new URL(blockscoutBaseUrl).hostname.split(".")[0]}`
+      : blockscoutBaseUrl
+
+  const qs = new URLSearchParams(params).toString()
+  return `${base}${apiPath}${qs ? `?${qs}` : ""}`
+}
+
 const ERC721_TRANSFER_IFACE = new Interface([
   "function safeTransferFrom(address from, address to, uint256 tokenId)",
 ])
@@ -204,10 +229,12 @@ export abstract class EVMService {
     address: string,
     chainId: number,
   ): Promise<EvmNftAsset[]> {
-    const baseUrl = this.blockscoutBaseUrl
-    if (!baseUrl) return []
-
-    const nfts = await this.fetchNFTList(address, baseUrl, chainId)
+    if (!this.blockscoutBaseUrl) return []
+    const nfts = await this.fetchNFTList(
+      address,
+      this.blockscoutBaseUrl,
+      chainId,
+    )
     if (nfts.length === 0) return nfts
 
     const ownedKeys = new Set(
@@ -215,7 +242,7 @@ export abstract class EVMService {
     )
     const timestamps = await this.fetchNFTTimestamps(
       address,
-      baseUrl,
+      this.blockscoutBaseUrl,
       ownedKeys,
     ).catch(() => new Map<string, number>())
 
@@ -236,15 +263,13 @@ export abstract class EVMService {
     let nextPageParams: Record<string, string> | null = null
 
     do {
-      const url = new URL(`${baseUrl}/api/v2/addresses/${address}/nft`)
-      url.searchParams.set("type", "ERC-721,ERC-1155,ERC-404")
-      if (nextPageParams) {
-        for (const [k, v] of Object.entries(nextPageParams)) {
-          url.searchParams.set(k, v)
-        }
-      }
+      const url = buildBlockscoutUrl(
+        baseUrl,
+        `/api/v2/addresses/${address}/nft`,
+        { type: "ERC-721,ERC-1155,ERC-404", ...(nextPageParams ?? {}) },
+      )
 
-      const response = await fetch(url.toString())
+      const response = await fetch(url)
       if (!response.ok) {
         throw new Error(
           `Blockscout API error: ${response.status} ${response.statusText}`,
@@ -284,18 +309,17 @@ export abstract class EVMService {
     let nextPageParams: Record<string, string> | null = null
 
     do {
-      const url = new URL(
-        `${baseUrl}/api/v2/addresses/${address}/token-transfers`,
+      const url = buildBlockscoutUrl(
+        baseUrl,
+        `/api/v2/addresses/${address}/token-transfers`,
+        {
+          type: "ERC-721,ERC-1155,ERC-404",
+          filter: "to",
+          ...(nextPageParams ?? {}),
+        },
       )
-      url.searchParams.set("type", "ERC-721,ERC-1155,ERC-404")
-      url.searchParams.set("filter", "to")
-      if (nextPageParams) {
-        for (const [k, v] of Object.entries(nextPageParams)) {
-          url.searchParams.set(k, v)
-        }
-      }
 
-      const response = await fetch(url.toString())
+      const response = await fetch(url)
       if (!response.ok) break
 
       const data: BlockscoutTransfersResponse = await response.json()

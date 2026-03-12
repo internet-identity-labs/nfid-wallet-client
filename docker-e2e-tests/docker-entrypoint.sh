@@ -40,6 +40,19 @@ ci_echo_info "Building NFID frontend ..." >&2
 ci_echo_debug "npx env-cmd -f .env.test nx build nfid-wallet-client" >&2
 npx env-cmd -f .env.test nx build nfid-wallet-client
 
+# Normalize asset URLs in the built index.html so deep links like /wallet/tokens
+# still load JS/CSS bundles from the root. This mirrors the logic used in
+# scripts/run-e2e-frontend.sh for local runs.
+INDEX_HTML="dist/apps/nfid-frontend/index.html"
+if [ -f "${INDEX_HTML}" ]; then
+  ci_echo_info "Normalizing asset URLs in ${INDEX_HTML} ..." >&2
+  perl -pi -e 's|href="styles.css"|href="/styles.css"|g;
+               s|href="main.css"|href="/main.css"|g;
+               s|src="runtime.js"|src="/runtime.js"|g;
+               s|src="styles.js"|src="/styles.js"|g;
+               s|src="main.js"|src="/main.js"|g;' "${INDEX_HTML}"
+fi
+
 ci_echo_info "Building NFID demo ..." >&2
 ci_echo_debug "npx env-cmd -f .env.test nx build nfid-demo" >&2
 npx env-cmd -f .env.test nx build nfid-demo

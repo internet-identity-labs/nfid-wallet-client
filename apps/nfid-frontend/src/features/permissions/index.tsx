@@ -50,7 +50,7 @@ const PermissionsPage: FC<PermissionsPageProps> = ({
   })
   const { initedTokens } = useTokensInit(tokens)
   const { isBtcAddressLoading } = useBtcAddress()
-  const { isEthAddressLoading, ethAddress } = useEthAddress()
+  const { isEthAddressLoading } = useEthAddress()
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -180,9 +180,7 @@ const PermissionsPage: FC<PermissionsPageProps> = ({
           identity={identity}
           identityLoading={identityLoading}
           dispatch={dispatch}
-          tokens={initedTokens}
           isBtcEthLoading={isBtcAddressLoading || isEthAddressLoading}
-          //fee={1}
         />
       </FormProvider>
       <ModalComponent

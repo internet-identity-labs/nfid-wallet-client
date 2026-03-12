@@ -47,7 +47,6 @@ export interface PermissionsProps {
   identityLoading: boolean
   dispatch: React.Dispatch<PermissionsStateAction>
   isBtcEthLoading: boolean
-  tokens?: FT[]
   fee?: bigint
 }
 
@@ -61,7 +60,6 @@ export const Permissions: FC<PermissionsProps> = ({
   identityLoading,
   dispatch,
   isBtcEthLoading,
-  tokens,
   fee,
 }) => {
   const isDarkTheme = useDarkTheme()
@@ -74,6 +72,7 @@ export const Permissions: FC<PermissionsProps> = ({
     useState<Allowance | null>(null)
   const [chosenUpdateAllowance, setChosenUpdateAllowance] =
     useState<Allowance | null>(null)
+  const [isFromResponsive, setIsFromResponsive] = useState(false)
 
   const { watch } = useFormContext()
   const amount = watch("amount")
@@ -374,17 +373,16 @@ export const Permissions: FC<PermissionsProps> = ({
           <p className="mb-1 text-xs dark:text-white">Approved amount</p>
           <ChooseFromToken
             modalType={IModalType.SEND}
-            id={"token-to-send-title"}
+            id={"token-allowance-to-update"}
             token={chosenUpdateAllowance?.token}
             fee={fee}
             usdRate={chosenUpdateAllowance?.token?.getTokenRateFormatted(
               amount || "0",
             )}
-            tokens={tokens}
-            title="Token to send"
+            title="Token allowance to update"
             isBtcEthLoading={isBtcEthLoading}
-            // isResponsive={isFromResponsive}
-            // setIsResponsive={setIsFromResponsive}
+            isResponsive={isFromResponsive}
+            setIsResponsive={setIsFromResponsive}
           />
           <div className="mt-5 flex gap-2.5">
             <Button

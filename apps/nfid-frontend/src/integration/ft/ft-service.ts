@@ -323,11 +323,35 @@ export class FtService {
       allowance: AllowanceDetailDTO
     }[],
   ): Promise<void> {
-    await Promise.all(
-      allowances.map(({ allowance, token }) =>
+    const icpAllowances = allowances.filter(
+      ({ token }) => token.getChainId() === ChainId.ICP,
+    )
+    const evmAllowances = allowances.filter(
+      ({ token }) => token.getChainId() !== ChainId.ICP,
+    )
+
+    const icpPromise = Promise.all(
+      icpAllowances.map(({ allowance, token }) =>
         token.revokeAllowance(delegationIdentity, allowance.to_spender),
       ),
     )
+
+    const evmChains = new Map<number, typeof evmAllowances>()
+    for (const allowance of evmAllowances) {
+      const chainId = allowance.token.getChainId()
+      if (!evmChains.has(chainId)) evmChains.set(chainId, [])
+      evmChains.get(chainId)!.push(allowance)
+    }
+
+    const evmPromise = Promise.all(
+      [...evmChains.values()].map(async (chainAllowances) => {
+        for (const { allowance, token } of chainAllowances) {
+          await token.revokeAllowance(delegationIdentity, allowance.to_spender)
+        }
+      }),
+    )
+
+    await Promise.all([icpPromise, evmPromise])
   }
 
   private getCacheKey(principal: Principal): string {

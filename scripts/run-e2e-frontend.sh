@@ -31,15 +31,13 @@ echo "Building NFID frontend for E2E..."
 npx env-cmd -f "${TMP_ENV_FILE}" nx build nfid-wallet-client
 
 # Ensure asset URLs in the built index.html are absolute so that when the
-# app is opened at /wallet/* the browser still loads main.css/js from "/".
+# app is opened at /wallet/* the browser still loads CSS/JS from "/".
 INDEX_HTML="dist/apps/nfid-frontend/index.html"
 if [ -f "${INDEX_HTML}" ]; then
   echo "Normalizing asset URLs in ${INDEX_HTML}..."
-  perl -pi -e 's|href="styles.css"|href="/styles.css"|g;
-               s|href="main.css"|href="/main.css"|g;
-               s|src="runtime.js"|src="/runtime.js"|g;
-               s|src="styles.js"|src="/styles.js"|g;
-               s|src="main.js"|src="/main.js"|g;' "${INDEX_HTML}"
+  # Any relative CSS/JS reference (no leading "/" or protocol) becomes root-based.
+  perl -pi -e 's|href="([^:/"][^"]*\.css)"|href="/$1"|g;
+               s|src="([^:/"][^"]*\.js)"|src="/$1"|g;' "${INDEX_HTML}"
 fi
 
 echo "Starting static server on port ${PORT}..."

@@ -54,6 +54,15 @@ if [[ "$TEST_TARGET" == "mobile" ]]; then
   ci_echo_debug "npx env-cmd -f .env.test nx build nfid-wallet-client" >&2
   npx env-cmd -f .env.test nx build nfid-wallet-client
 
+  # Normalize asset URLs in the built index.html so deep links like /wallet/tokens
+  # still load CSS/JS bundles from the root.
+  INDEX_HTML="dist/apps/nfid-frontend/index.html"
+  if [ -f "${INDEX_HTML}" ]; then
+    ci_echo_info "Normalizing asset URLs in ${INDEX_HTML} for mobile E2E ..." >&2
+    perl -pi -e 's|href="([^:/"][^"]*\.css)"|href="/$1"|g;
+                 s|src="([^:/"][^"]*\.js)"|src="/$1"|g;' "${INDEX_HTML}"
+  fi
+
   ci_echo_info "Running frontend on port '${FRONTEND_PORT}' ..." >&2
   ci_echo_debug "yarn serve -l ${FRONTEND_PORT} -s dist/apps/nfid-frontend > /dev/null 2>&1 &" >&2
   yarn serve -l ${FRONTEND_PORT} -s dist/apps/nfid-frontend >/dev/null 2>&1 &

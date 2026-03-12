@@ -40,6 +40,7 @@ import {
 } from "@nfid/integration/token/constants"
 import { KEY_ETH_ADDRESS } from "packages/integration/src/lib/authentication/storage"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { MORALIS_API_KEY } from "src/integration/nft/impl/evm/evm-nft-floor-price.service"
 
 export type SendEthFee = {
   gasUsed: bigint
@@ -91,9 +92,6 @@ export interface EvmNftAsset {
 
 // ─── Moralis NFT API ──────────────────────────────────────────────────────────
 
-const MORALIS_API_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjcyNTc3OTQyLTEwMzYtNGRjMS05ZjI2LTc1MjZiMmI2YzYyZiIsIm9yZ0lkIjoiNTA0ODc4IiwidXNlcklkIjoiNTE5NDk2IiwidHlwZUlkIjoiOTQ0MWFkNjQtMGRmMC00Zjc0LWEzYmItNzYwZWNjNmFjOTZiIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NzMyMzg5MDQsImV4cCI6NDkyODk5ODkwNH0.92XRvlhMdeBbvrfL3dR2FcVWFSQt0cymnZS5gwTNsF8"
-
 const MORALIS_CHAIN_MAP: Partial<Record<number, string>> = {
   [ChainId.ETH]: "eth",
   [ChainId.BASE]: "base",
@@ -129,6 +127,7 @@ interface MoralisTransferItem {
   block_timestamp: string
   token_address: string
   token_id: string
+  to_address?: string
 }
 
 interface MoralisTransfersResponse {
@@ -147,6 +146,14 @@ function normalizeMoralisType(
     default:
       return "ERC-721"
   }
+}
+
+function resolveIpfsUrl(url: string | undefined): string | undefined {
+  if (!url) return undefined
+  if (url.startsWith("ipfs://")) {
+    return `https://ipfs.io/ipfs/${url.slice(7)}`
+  }
+  return url
 }
 
 const EVM_NFTS_CACHE_TTL = 30 * 1000
@@ -292,9 +299,10 @@ export abstract class EVMService {
           supply: item.amount ?? "1",
           type: normalizeMoralisType(item.contract_type),
           metadata: item.normalized_metadata as EvmNftMetadata | undefined,
-          imageUrl:
+          imageUrl: resolveIpfsUrl(
             item.normalized_metadata?.image ?? item.media?.original_media_url,
-          animationUrl: item.normalized_metadata?.animation_url,
+          ),
+          animationUrl: resolveIpfsUrl(item.normalized_metadata?.animation_url),
           tokenName: item.name,
           tokenSymbol: item.symbol,
           chainId,
@@ -322,7 +330,6 @@ export abstract class EVMService {
       )
       url.searchParams.set("chain", chain)
       url.searchParams.set("format", "decimal")
-      url.searchParams.set("direction", "to")
       url.searchParams.set("limit", "100")
       if (cursor) url.searchParams.set("cursor", cursor)
 
@@ -334,6 +341,7 @@ export abstract class EVMService {
       const data: MoralisTransfersResponse = await response.json()
 
       for (const item of data.result) {
+        if (item.to_address?.toLowerCase() !== address.toLowerCase()) continue
         const key = `${item.token_address.toLowerCase()}:${item.token_id}`
         if (remaining.has(key) && !timestamps.has(key)) {
           timestamps.set(key, new Date(item.block_timestamp).getTime())

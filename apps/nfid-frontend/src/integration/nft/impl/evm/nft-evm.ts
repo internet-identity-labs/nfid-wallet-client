@@ -19,28 +19,32 @@ import { NftError } from "src/integration/nft/impl/nft-abstract"
 import { NFT, NFTDetails } from "src/integration/nft/nft"
 import { ETH_DECIMALS, TRIM_ZEROS } from "@nfid/integration/token/constants"
 
-const BLOCKSCOUT_URLS: Partial<Record<number, string>> = {
-  [ChainId.ETH]: "https://eth.blockscout.com",
-  [ChainId.BASE]: "https://base.blockscout.com",
-  [ChainId.POL]: "https://polygon.blockscout.com",
-  [ChainId.ARB]: "https://arbitrum.blockscout.com",
-  [ChainId.BNB]: "https://bsc.blockscout.com",
-  [ChainId.ETH_SEPOLIA]: "https://eth-sepolia.blockscout.com",
-  [ChainId.BASE_SEPOLIA]: "https://base-sepolia.blockscout.com",
-  [ChainId.ARB_SEPOLIA]: "https://arbitrum-sepolia.blockscout.com",
-  [ChainId.POL_AMOY]: "https://polygon-amoy.blockscout.com",
-  [ChainId.BNB_TESTNET]: "https://bsc-testnet.blockscout.com",
+const OPENSEA_CHAIN_MAP: Partial<Record<number, string>> = {
+  [ChainId.ETH]: "ethereum",
+  [ChainId.BASE]: "base",
+  [ChainId.POL]: "matic",
+  [ChainId.ARB]: "arbitrum",
+  [ChainId.BNB]: "bsc",
+  [ChainId.ETH_SEPOLIA]: "sepolia",
+  [ChainId.BASE_SEPOLIA]: "base_sepolia",
+  [ChainId.ARB_SEPOLIA]: "arbitrum_sepolia",
+  [ChainId.POL_AMOY]: "amoy",
+  [ChainId.BNB_TESTNET]: "bsc_testnet",
 }
 
-function getBlockscoutBaseUrl(chainId: number): string {
-  return BLOCKSCOUT_URLS[chainId] ?? `https://eth.blockscout.com`
+function resolveIpfsUrl(url: string | undefined): string | undefined {
+  if (!url) return undefined
+  if (url.startsWith("ipfs://")) {
+    return `https://ipfs.io/ipfs/${url.slice(7)}`
+  }
+  return url
 }
 
 function resolveImageUrl(asset: EvmNftAsset): string | undefined {
-  return (
+  return resolveIpfsUrl(
     asset.imageUrl ??
-    (asset.metadata as EvmNftMetadata | undefined)?.image ??
-    (asset.metadata as EvmNftMetadata | undefined)?.image_url
+      (asset.metadata as EvmNftMetadata | undefined)?.image ??
+      (asset.metadata as EvmNftMetadata | undefined)?.image_url,
   )
 }
 
@@ -85,13 +89,13 @@ export class EvmNftImpl implements NFT {
   }
 
   getTokenMarketPlaceLink(): string {
-    const base = getBlockscoutBaseUrl(this.asset.chainId)
-    return `${base}/token/${this.asset.contract}/instance/${this.asset.tokenId}`
+    const chain = OPENSEA_CHAIN_MAP[this.asset.chainId] ?? "ethereum"
+    return `https://opensea.io/assets/${chain}/${this.asset.contract}/${this.asset.tokenId}`
   }
 
   getCollectionMarketPlaceLink(): string {
-    const base = getBlockscoutBaseUrl(this.asset.chainId)
-    return `${base}/token/${this.asset.contract}`
+    const chain = OPENSEA_CHAIN_MAP[this.asset.chainId] ?? "ethereum"
+    return `https://opensea.io/assets/${chain}/${this.asset.contract}`
   }
 
   getTokenId(): string {

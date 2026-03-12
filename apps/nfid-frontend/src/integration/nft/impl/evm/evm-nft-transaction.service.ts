@@ -5,6 +5,7 @@ import {
   TransactionRecordView,
 } from "src/integration/nft/impl/nft-transaction-record"
 import { NFTTransactions } from "src/integration/nft/impl/nft-types"
+import { MORALIS_API_KEY } from "src/integration/nft/impl/evm/evm-nft-floor-price.service"
 
 // ─── Moralis API types ────────────────────────────────────────────────────────
 
@@ -62,9 +63,6 @@ const MORALIS_CHAIN_MAP: Partial<Record<number, string>> = {
   [ChainId.ARB]: "arbitrum",
   [ChainId.BNB]: "bsc",
 }
-
-const MORALIS_API_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjcyNTc3OTQyLTEwMzYtNGRjMS05ZjI2LTc1MjZiMmI2YzYyZiIsIm9yZ0lkIjoiNTA0ODc4IiwidXNlcklkIjoiNTE5NDk2IiwidHlwZUlkIjoiOTQ0MWFkNjQtMGRmMC00Zjc0LWEzYmItNzYwZWNjNmFjOTZiIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NzMyMzg5MDQsImV4cCI6NDkyODk5ODkwNH0.92XRvlhMdeBbvrfL3dR2FcVWFSQt0cymnZS5gwTNsF8"
 
 // ─── Service ──────────────────────────────────────────────────────────────────
 

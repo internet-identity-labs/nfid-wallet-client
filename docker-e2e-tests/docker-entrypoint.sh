@@ -36,30 +36,9 @@ ci_echo_info "Installing packages ..." >&2
 ci_echo_debug "yarn install --frozen-lockfile" >&2
 yarn install --frozen-lockfile
 
-ci_echo_info "Building NFID frontend ..." >&2
-ci_echo_debug "npx env-cmd -f .env.test nx build nfid-wallet-client" >&2
-npx env-cmd -f .env.test nx build nfid-wallet-client
-
-# Normalize asset URLs in the built index.html so deep links like /wallet/tokens
-# still load JS/CSS bundles from the root. This mirrors the logic used in
-# scripts/run-e2e-frontend.sh for local runs.
-INDEX_HTML="dist/apps/nfid-frontend/index.html"
-if [ -f "${INDEX_HTML}" ]; then
-  ci_echo_info "Normalizing asset URLs in ${INDEX_HTML} ..." >&2
-  perl -pi -e 's|href="styles.css"|href="/styles.css"|g;
-               s|href="main.css"|href="/main.css"|g;
-               s|src="runtime.js"|src="/runtime.js"|g;
-               s|src="styles.js"|src="/styles.js"|g;
-               s|src="main.js"|src="/main.js"|g;' "${INDEX_HTML}"
-fi
-
 ci_echo_info "Building NFID demo ..." >&2
 ci_echo_debug "npx env-cmd -f .env.test nx build nfid-demo" >&2
 npx env-cmd -f .env.test nx build nfid-demo
-
-ci_echo_info "Running frontend on port '${FRONTEND_PORT}' ..." >&2
-ci_echo_debug "yarn serve -l ${FRONTEND_PORT} -s dist/apps/nfid-frontend > /dev/null 2>&1 &" >&2
-yarn serve -l ${FRONTEND_PORT} -s dist/apps/nfid-frontend >/dev/null 2>&1 &
 
 ci_echo_info "Running Demo on port '${DEMO_PORT}' ..." >&2
 ci_echo_debug "yarn serve -l ${DEMO_PORT} -s dist/apps/nfid-demo > /dev/null 2>&1 &" >&2
@@ -70,9 +49,20 @@ ci_echo_debug "npx nx clean nfid-frontend-e2e" >&2
 npx nx clean nfid-frontend-e2e
 
 if [[ "$TEST_TARGET" == "mobile" ]]; then
+  # Mobile: build and serve the frontend directly on FRONTEND_PORT, as originally.
+  ci_echo_info "Building NFID frontend ..." >&2
+  ci_echo_debug "npx env-cmd -f .env.test nx build nfid-wallet-client" >&2
+  npx env-cmd -f .env.test nx build nfid-wallet-client
+
+  ci_echo_info "Running frontend on port '${FRONTEND_PORT}' ..." >&2
+  ci_echo_debug "yarn serve -l ${FRONTEND_PORT} -s dist/apps/nfid-frontend > /dev/null 2>&1 &" >&2
+  yarn serve -l ${FRONTEND_PORT} -s dist/apps/nfid-frontend >/dev/null 2>&1 &
+
   IS_HEADLESS='true' npx env-cmd -f .env.test nx test:mobile-e2e nfid-frontend-e2e "$@" || exit_code=$?
 else
-  IS_HEADLESS='true' npx env-cmd -f .env.test nx test:e2e nfid-frontend-e2e "$@" || exit_code=$?
+  # Desktop: reuse the local helper script that normalizes asset URLs and
+  # runs the E2E suite against a static build.
+  PORT="${FRONTEND_PORT}" ENV_FILE=".env.test" IS_HEADLESS='true' ./scripts/run-e2e-frontend.sh "$@" || exit_code=$?
 fi
 
 if [ "${exit_code}" -eq 0 ]; then

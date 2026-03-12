@@ -107,7 +107,6 @@ interface MoralisNftItem {
   amount?: string
   name?: string
   symbol?: string
-  possible_spam?: boolean
   normalized_metadata?: {
     name?: string
     description?: string
@@ -277,6 +276,7 @@ export abstract class EVMService {
       url.searchParams.set("chain", chain)
       url.searchParams.set("format", "decimal")
       url.searchParams.set("normalizeMetadata", "true")
+      url.searchParams.set("excludeSpam", "false")
       url.searchParams.set("limit", "100")
       if (cursor) url.searchParams.set("cursor", cursor)
 
@@ -292,7 +292,6 @@ export abstract class EVMService {
       const data: MoralisNftResponse = await response.json()
 
       for (const item of data.result) {
-        if (item.possible_spam) continue
         results.push({
           contract: item.token_address,
           tokenId: item.token_id,

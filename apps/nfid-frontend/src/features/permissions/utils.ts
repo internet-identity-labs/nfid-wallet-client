@@ -80,8 +80,6 @@ export const permissionsReducer = (
     case "UPDATE_ALLOWANCE": {
       const { token, address, amount } = action.payload
 
-      console.log("alllo reducer", amount)
-
       return {
         ...state,
         allowancesList: state.allowancesList.map((item) => {

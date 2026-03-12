@@ -22,7 +22,6 @@ import { Button } from "@nfid-frontend/ui"
 import toaster from "packages/ui/src/atoms/toast"
 import { ModalComponent } from "@nfid-frontend/ui"
 import { Spinner } from "packages/ui/src/atoms/spinner"
-import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { FormProvider, useForm } from "react-hook-form"
 import { FormValues } from "../transfer-modal/types"
 
@@ -49,8 +48,6 @@ const PermissionsPage: FC<PermissionsPageProps> = ({
     revalidateOnMount: false,
   })
   const { initedTokens } = useTokensInit(tokens)
-  const { isBtcAddressLoading } = useBtcAddress()
-  const { isEthAddressLoading } = useEthAddress()
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -180,7 +177,6 @@ const PermissionsPage: FC<PermissionsPageProps> = ({
           identity={identity}
           identityLoading={identityLoading}
           dispatch={dispatch}
-          isBtcEthLoading={isBtcAddressLoading || isEthAddressLoading}
         />
       </FormProvider>
       <ModalComponent

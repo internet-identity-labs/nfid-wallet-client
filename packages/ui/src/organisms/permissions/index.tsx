@@ -46,8 +46,6 @@ export interface PermissionsProps {
   identity?: SignIdentity
   identityLoading: boolean
   dispatch: React.Dispatch<PermissionsStateAction>
-  isBtcEthLoading: boolean
-  fee?: bigint
 }
 
 export const Permissions: FC<PermissionsProps> = ({
@@ -59,8 +57,6 @@ export const Permissions: FC<PermissionsProps> = ({
   identity,
   identityLoading,
   dispatch,
-  isBtcEthLoading,
-  fee,
 }) => {
   const isDarkTheme = useDarkTheme()
   const [sorting, setSorting] = useState<Sorting>(Sorting.DEFAULT)
@@ -375,12 +371,10 @@ export const Permissions: FC<PermissionsProps> = ({
             modalType={IModalType.SEND}
             id={"token-allowance-to-update"}
             token={chosenUpdateAllowance?.token}
-            fee={fee}
             usdRate={chosenUpdateAllowance?.token?.getTokenRateFormatted(
               amount || "0",
             )}
             title="Token allowance to update"
-            isBtcEthLoading={isBtcEthLoading}
             isResponsive={isFromResponsive}
             setIsResponsive={setIsFromResponsive}
           />

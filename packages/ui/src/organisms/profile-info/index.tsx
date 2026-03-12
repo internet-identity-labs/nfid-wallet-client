@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import { FC, HTMLAttributes } from "react"
 
 import {
@@ -8,6 +9,8 @@ import {
   CopyAddress,
   IconCmpConvertWhite,
   IconCmpStake,
+  IconCmpRefresh,
+  Tooltip,
 } from "@nfid-frontend/ui"
 
 import { Balance } from "./balance"
@@ -28,6 +31,8 @@ export interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   onSwapClick: () => void
   onConvertClick: () => void
   onStakeClick: () => void
+  refreshPortfolio: () => void
+  isRefreshing: boolean
   address?: string
 }
 
@@ -40,6 +45,8 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
   onSwapClick,
   onConvertClick,
   onStakeClick,
+  refreshPortfolio,
+  isRefreshing,
   address,
 }) => {
   return (
@@ -65,6 +72,26 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
           >
             Account ID
           </div>
+          {isRefreshing ? (
+            <Tooltip
+              className="z-[5]"
+              tip={<span>Please try again later</span>}
+            >
+              <div>
+                <IconCmpRefresh
+                  className={clsx(
+                    "w-4 h-4 ml-5 text-secondary cursor-not-allowed",
+                    isRefreshing && "animate-spin",
+                  )}
+                />
+              </div>
+            </Tooltip>
+          ) : (
+            <IconCmpRefresh
+              className="w-4 h-4 ml-5 cursor-pointer text-secondary"
+              onClick={refreshPortfolio}
+            />
+          )}
         </div>
         <Balance
           id={"totalBalance"}

@@ -16,7 +16,7 @@ import {
   ETH_NATIVE_ID,
 } from "@nfid/integration/token/constants"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
-import { icrc1OracleCacheName } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+import { ICRC1_ORACLE_CACHE_NAME } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
@@ -192,7 +192,7 @@ const TokensPage = () => {
       indexID !== "" ? indexID : undefined,
     )
     await icrc1Pair.storeSelf()
-    await storageWithTtl.remove(icrc1OracleCacheName)
+    await storageWithTtl.remove(ICRC1_ORACLE_CACHE_NAME)
     refetchTokens()
   }
 

@@ -40,7 +40,8 @@ export interface EvmAllowance {
 // Reference: https://medium.com/coinmonks/the-best-method-for-bulk-fetching-erc20-token-balances-99da12f4d839
 const MULTICALL3_ADDRESS = "0xcA11bde05977b3631167028862bE2a173976CA11"
 
-const ERC20_TOKENS_CACHE_KEY = "ERC20_TOKENS"
+export const ERC20_TOKENS_CACHE_NAME = "ERC20_TOKENS-"
+export const ERC20_BALANCES_CACHE_NAME = "ERC20_Balances_"
 const CACHE_TTL = 60 * 1000 // 60 seconds
 
 const MULTICALL3_ABI = [
@@ -50,7 +51,7 @@ const MULTICALL3_ABI = [
 
 export const ZERO = BigInt(0)
 
-const ERC20_TOKENS_LIST_CACHE_KEY = "ERC20_TokensList"
+export const ERC20_TOKENS_LIST_CACHE_NAME = "ERC20_TokensList"
 const ERC20_TOKENS_LIST_CACHE_TTL = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
 
 const ERC20_ALLOWANCES_CACHE_TTL = 60 * 1000 // 60 seconds
@@ -158,7 +159,7 @@ export abstract class Erc20Service {
     }
 
     const root = authState.getUserIdData().anchor
-    const cacheKey = `${ERC20_TOKENS_CACHE_KEY}-${root}-${this.chainId}`
+    const cacheKey = `${ERC20_TOKENS_CACHE_NAME}${root}-${this.chainId}`
 
     const cache = await storageWithTtl.getEvenExpired(cacheKey)
 
@@ -293,7 +294,8 @@ export abstract class Erc20Service {
     normalizedContracts: string[],
   ) {
     // Single cache key per address (not per token list)
-    const cacheKey = `ERC20_Balances_${normalizedAddress}_` + this.chainId
+    const cacheKey =
+      `${ERC20_BALANCES_CACHE_NAME}${normalizedAddress}_` + this.chainId
 
     // Check cache first
     const cache = await storageWithTtl.getEvenExpired(cacheKey)
@@ -631,7 +633,7 @@ export abstract class Erc20Service {
    */
   protected async getKnownTokensList(): Promise<ERC20TokenInfo[]> {
     return ttlCacheService.getOrFetch(
-      ERC20_TOKENS_LIST_CACHE_KEY,
+      ERC20_TOKENS_LIST_CACHE_NAME,
       () => this.fetchTokensList(),
       ERC20_TOKENS_LIST_CACHE_TTL,
       {

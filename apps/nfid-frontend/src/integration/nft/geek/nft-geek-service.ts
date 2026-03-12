@@ -5,10 +5,11 @@ import { DataStructure, MappedToken } from "src/integration/nft/geek/geek-types"
 import { ic } from "@nfid/integration"
 
 const NFT_GEEK_CACHE_TTL = 30 * 1000
+export const ICP_NFT_GEEK_CACHE_NAME = "ICP_NFT_GEEK_"
 
 export class NftGeekService {
   async getNftGeekData(userPrincipal: Principal): Promise<MappedToken[]> {
-    const cacheKey = `ICP_NFT_GEEK_${userPrincipal.toText()}`
+    const cacheKey = `${ICP_NFT_GEEK_CACHE_NAME}${userPrincipal.toText()}`
     return ttlCacheService.getOrFetch(
       cacheKey,
       () =>

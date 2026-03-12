@@ -37,7 +37,7 @@ import { arbSepoliaErc20Service } from "../ethereum/arbitrum/testnetwork/arb-sep
 import { baseSepoliaErc20Service } from "../ethereum/base/testnetwork/base-sepolia-erc20.service"
 import { polygonAmoyErc20Service } from "../ethereum/polygon/testnetwork/pol-amoy-erc20.service"
 
-const InitedTokens = "InitedTokens"
+export const INITED_TOKENS_CACHE_NAME = "InitedTokens_"
 export const TOKENS_REFRESH_INTERVAL = 30000
 export const PAGE_SIZE = 10
 
@@ -331,7 +331,7 @@ export class FtService {
   }
 
   private getCacheKey(principal: Principal): string {
-    return `${InitedTokens}_${principal.toText()}`
+    return `${INITED_TOKENS_CACHE_NAME}${principal.toText()}`
   }
 
   private async fetchInitedTokens(

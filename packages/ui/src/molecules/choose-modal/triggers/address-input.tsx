@@ -36,7 +36,7 @@ export const InputAddressTrigger = ({
         className={clsx(
           "outline-none bg-transparent w-full h-11",
           "text-sm",
-          "placeholder:text-gray-400 placeholder:text-zinc-400",
+          "placeholder:text-gray-400 dark:placeholder:text-zinc-500",
         )}
         placeholder={placeholder}
         onChangeCapture={(e: ChangeEvent<HTMLInputElement>) =>

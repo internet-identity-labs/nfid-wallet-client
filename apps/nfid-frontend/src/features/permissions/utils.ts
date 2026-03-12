@@ -23,6 +23,10 @@ export type PermissionsStateAction =
       type: "REMOVE_ALLOWANCE"
       payload: { token: FT; address: string }
     }
+  | {
+      type: "UPDATE_ALLOWANCE"
+      payload: { token: FT; address: string; amount: string }
+    }
 
 export const permissionsInitialState: PermissionsState = {
   page: 0,
@@ -70,6 +74,31 @@ export const permissionsReducer = (
               item.allowance.to_spender === address
             ),
         ),
+      }
+    }
+
+    case "UPDATE_ALLOWANCE": {
+      const { token, address, amount } = action.payload
+
+      console.log("alllo reducer", amount)
+
+      return {
+        ...state,
+        allowancesList: state.allowancesList.map((item) => {
+          if (
+            item.token.getTokenAddress() === token.getTokenAddress() &&
+            item.allowance.to_spender === address
+          ) {
+            const newAllowance = BigInt(
+              Math.round(Number(amount) * 10 ** item.token.getTokenDecimals()),
+            )
+            return {
+              ...item,
+              allowance: { ...item.allowance, allowance: newAllowance },
+            }
+          }
+          return item
+        }),
       }
     }
 

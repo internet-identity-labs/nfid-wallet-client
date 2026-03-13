@@ -22,6 +22,8 @@ import { Button } from "@nfid-frontend/ui"
 import toaster from "packages/ui/src/atoms/toast"
 import { ModalComponent } from "@nfid-frontend/ui"
 import { Spinner } from "packages/ui/src/atoms/spinner"
+import { FormProvider, useForm } from "react-hook-form"
+import { FormValues } from "../transfer-modal/types"
 
 type PermissionsPageProps = {
   walletTheme: NFIDTheme
@@ -46,6 +48,13 @@ const PermissionsPage: FC<PermissionsPageProps> = ({
     revalidateOnMount: false,
   })
   const { initedTokens } = useTokensInit(tokens)
+
+  const formMethods = useForm<FormValues>({
+    mode: "all",
+    defaultValues: {
+      amount: "",
+    },
+  })
 
   const revokeAll = async () => {
     try {
@@ -158,16 +167,18 @@ const PermissionsPage: FC<PermissionsPageProps> = ({
         )
       }
     >
-      <Permissions
-        allowances={flattenedAllowances}
-        isLoading={isLoading}
-        loadMore={loadMore}
-        isLoadingMore={state.isLoadingMore}
-        hasMore={state.hasMore}
-        identity={identity}
-        identityLoading={identityLoading}
-        dispatch={dispatch}
-      />
+      <FormProvider {...formMethods}>
+        <Permissions
+          allowances={flattenedAllowances}
+          isLoading={isLoading}
+          loadMore={loadMore}
+          isLoadingMore={state.isLoadingMore}
+          hasMore={state.hasMore}
+          identity={identity}
+          identityLoading={identityLoading}
+          dispatch={dispatch}
+        />
+      </FormProvider>
       <ModalComponent
         isVisible={isModalOpen}
         onClose={() => {

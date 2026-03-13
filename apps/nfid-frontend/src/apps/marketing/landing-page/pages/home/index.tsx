@@ -183,7 +183,7 @@ const HomeContent = ({
                 className="max-w-full"
                 loading="lazy"
                 src="/main.png"
-                alt="main"
+                alt="NFID Wallet hero"
               />
               <div className="absolute right-[20px] md:right-[75px] top-[120px] md:top-[240px] lg:top-[320px] xl:top-[430px]">
                 <ScrollMoveElement

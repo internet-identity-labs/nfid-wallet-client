@@ -3,12 +3,25 @@
   "engines": {
     "node": "^22.10.0"
   },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "packageManager": "yarn@1.22.22",
   "scripts": {
     "analyze": "source-map-explorer",
     "analyze:nfid-frontend": "yarn analyze 'dist/apps/nfid-frontend/static/js/*.js'",
     "build": "echo '💀 DONT REMOVE THIS 💀'",
     "dedupe:deps": "npx yarn-deduplicate yarn.lock",
+    "test:e2e:frontend": "./scripts/run-e2e-frontend.sh",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "yarn nx run-many --target=lint --all",
@@ -111,7 +124,6 @@
     "@babel/preset-react": "7.28.5",
     "@babel/preset-typescript": "7.28.5",
     "@chromatic-com/storybook": "1",
-    "@craco/craco": "6.4.3",
     "@melloware/csp-webpack-plugin": "6.0.4",
     "@nx/eslint": "21.4.1",
     "@nx/eslint-plugin": "21.4.1",
@@ -196,8 +208,7 @@
     "postcss": "8.5.6",
     "prettier": "3.7.4",
     "puppeteer": "24.34.0",
-    "react-dev-utils": "12.0.1",
-    "react-scripts": "5.0.1",
+    "react-refresh": "0.18.0",
     "serve": "14.2.5",
     "sha256": "0.2.0",
     "source-map-explorer": "2.5.3",

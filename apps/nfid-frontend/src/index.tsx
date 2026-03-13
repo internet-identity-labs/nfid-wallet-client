@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import { createRoot } from "react-dom/client"
 import { BrowserRouter as Router } from "react-router-dom"
 import { ToastContainer } from "react-toastify"

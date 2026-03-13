@@ -18,6 +18,9 @@ import toaster from "../../atoms/toast"
 import { Spinner } from "../../atoms/spinner"
 import { SignIdentity } from "@dfinity/agent"
 import { PermissionsStateAction } from "frontend/features/permissions/utils"
+import { ChooseFromToken } from "../send-receive/components/choose-from-token"
+import { IModalType } from "../send-receive/utils"
+import { useFormContext } from "react-hook-form"
 
 enum Sorting {
   DEFAULT = "DEFAULT",
@@ -60,12 +63,20 @@ export const Permissions: FC<PermissionsProps> = ({
   const [isHovered, setIsHovered] = useState(false)
   const [isHoveredAddress, setIsHoveredAddress] = useState(false)
   const [isRevokeLoading, setIsRevokeLoading] = useState(false)
-  const [chosenAllowance, setChosenAllowance] = useState<Allowance | null>(null)
+  const [isUpdateLoading, setIsUpdateLoading] = useState(false)
+  const [chosenRevokeAllowance, setChosenRevokeAllowance] =
+    useState<Allowance | null>(null)
+  const [chosenUpdateAllowance, setChosenUpdateAllowance] =
+    useState<Allowance | null>(null)
+  const [isFromResponsive, setIsFromResponsive] = useState(false)
+
+  const { watch } = useFormContext()
+  const amount = watch("amount")
 
   const handleRevoke = async () => {
-    if (!chosenAllowance || !identity) return
+    if (!chosenRevokeAllowance || !identity) return
 
-    const { token, address, amountFormatted } = chosenAllowance
+    const { token, address, amountFormatted } = chosenRevokeAllowance
     setIsRevokeLoading(true)
 
     try {
@@ -81,7 +92,30 @@ export const Permissions: FC<PermissionsProps> = ({
       toaster.error(`Revoke error. ${(e as Error).message}`)
     } finally {
       setIsRevokeLoading(false)
-      setChosenAllowance(null)
+      setChosenRevokeAllowance(null)
+    }
+  }
+
+  const updateAllowance = async () => {
+    if (!chosenUpdateAllowance || !identity) return
+
+    const { token, address } = chosenUpdateAllowance
+    setIsUpdateLoading(true)
+
+    try {
+      await token.updateAllowance(identity, address, amount)
+      toaster.success(
+        `Approval has been successfully updated to ${amount} ${token.getTokenSymbol()}`,
+      )
+      dispatch({
+        type: "UPDATE_ALLOWANCE",
+        payload: { token, address, amount },
+      })
+    } catch (e) {
+      toaster.error(`Approval update error. ${(e as Error).message}`)
+    } finally {
+      setIsUpdateLoading(false)
+      setChosenUpdateAllowance(null)
     }
   }
 
@@ -268,7 +302,8 @@ export const Permissions: FC<PermissionsProps> = ({
                     <PermissionsToken
                       key={`${allowance.token.getTokenName()}_${index}`}
                       allowance={allowance}
-                      onChooseAllowance={setChosenAllowance}
+                      setChosenRevokeAllowance={setChosenRevokeAllowance}
+                      setChosenUpdateAllowance={setChosenUpdateAllowance}
                     />
                   ))}
                 </tbody>
@@ -287,9 +322,9 @@ export const Permissions: FC<PermissionsProps> = ({
           </Button>
         )}
         <ModalComponent
-          isVisible={Boolean(chosenAllowance)}
+          isVisible={Boolean(chosenRevokeAllowance)}
           onClose={() => {
-            setChosenAllowance(null)
+            setChosenRevokeAllowance(null)
           }}
           className="p-5 w-[95%] md:w-[540px] z-[100] !rounded-[24px]"
         >
@@ -298,15 +333,15 @@ export const Permissions: FC<PermissionsProps> = ({
           </p>
           <p className="leading-[22px] dark:text-white">
             You are about to revoke the approval for{" "}
-            {chosenAllowance?.amountFormatted} previously granted to{" "}
-            {chosenAllowance?.address}.
+            {chosenRevokeAllowance?.amountFormatted} previously granted to{" "}
+            {chosenRevokeAllowance?.address}.
           </p>
           <div className="mt-5 flex justify-end gap-2.5">
             <Button
               type="stroke"
               isSmall
               className="w-[115px]"
-              onClick={() => setChosenAllowance(null)}
+              onClick={() => setChosenRevokeAllowance(null)}
             >
               Cancel
             </Button>
@@ -318,6 +353,46 @@ export const Permissions: FC<PermissionsProps> = ({
               icon={isRevokeLoading ? <Spinner /> : null}
             >
               Revoke
+            </Button>
+          </div>
+        </ModalComponent>
+        <ModalComponent
+          isVisible={Boolean(chosenUpdateAllowance)}
+          onClose={() => {
+            setChosenUpdateAllowance(null)
+          }}
+          className="p-5 w-[95%] md:w-[540px] z-[100] !rounded-[24px]"
+        >
+          <p className="text-[20px] leading-[22px] font-bold dark:text-white mb-5">
+            Update approved amount
+          </p>
+          <p className="mb-1 text-xs dark:text-white">Approved amount</p>
+          <ChooseFromToken
+            modalType={IModalType.SEND}
+            id={"token-allowance-to-update"}
+            token={chosenUpdateAllowance?.token}
+            usdRate={chosenUpdateAllowance?.token?.getTokenRateFormatted(
+              amount || "0",
+            )}
+            title="Token allowance to update"
+            isResponsive={isFromResponsive}
+            setIsResponsive={setIsFromResponsive}
+          />
+          <div className="mt-5 flex gap-2.5">
+            <Button
+              type="stroke"
+              className="w-[115px] w-full"
+              onClick={() => setChosenUpdateAllowance(null)}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="w-[115px] w-full"
+              onClick={updateAllowance}
+              disabled={identityLoading || !identity || isUpdateLoading}
+              icon={isUpdateLoading ? <Spinner /> : null}
+            >
+              Save
             </Button>
           </div>
         </ModalComponent>

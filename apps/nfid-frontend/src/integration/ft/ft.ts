@@ -88,4 +88,10 @@ export interface FT {
   getIcrc2Allowances(principal: Principal): Promise<Array<AllowanceDetailDTO>>
 
   revokeAllowance(identity: SignIdentity, spender: string): Promise<void>
+
+  updateAllowance(
+    identity: SignIdentity,
+    spender: string,
+    amount: string,
+  ): Promise<void>
 }

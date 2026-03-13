@@ -8,16 +8,23 @@ import {
   Skeleton,
 } from "@nfid-frontend/ui"
 import { Allowance } from "."
+import { getNetworkIcon } from "../../utils/network-icon"
+import { useDarkTheme } from "frontend/hooks"
+import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 interface PermissionsRowProps {
   allowance?: Allowance
-  onChooseAllowance: (a: Allowance) => void
+  setChosenRevokeAllowance: (a: Allowance) => void
+  setChosenUpdateAllowance: (a: Allowance) => void
 }
 
 export const PermissionsToken: FC<PermissionsRowProps> = ({
   allowance,
-  onChooseAllowance,
+  setChosenRevokeAllowance,
+  setChosenUpdateAllowance,
 }) => {
+  const isDarkTheme = useDarkTheme()
+
   if (!allowance) return null
   const { token, address, usdAmount, amountFormatted } = allowance
   return (
@@ -27,16 +34,21 @@ export const PermissionsToken: FC<PermissionsRowProps> = ({
         className="py-5 border-b border-gray-100 md:py-0 md:border-0"
       >
         <td className="flex md:items-center py-[10px] md:py-0 md:h-16 pr-[10px] md:pr-[30px] flex-grow min-w-0 w-[100%] md:w-auto mb-5 mt-2.5 md:mt-0 md:mb-0">
-          <div className="w-[24px] h-[24px] md:w-[40px] md:h-[40px] mr-[12px] rounded-full bg-zinc-50 mt-3 md:mt-0">
-            <ImageWithFallback
-              alt={`${token.getTokenSymbol()}`}
-              fallbackSrc={IconNftPlaceholder}
-              src={`${token.getTokenLogo()}`}
-              className={clsx(
-                "w-[24px] h-[24px] md:w-[40px] md:h-[40px]",
-                "rounded-full object-cover min-w-[24px] md:min-w-[40px]",
-              )}
-            />
+          <div className="relative w-[24px] h-[24px] md:w-[40px] md:h-[40px] mr-[12px] rounded-full bg-zinc-50 mt-3 md:mt-0">
+            <>
+              <ImageWithFallback
+                alt={`${token.getTokenSymbol()}`}
+                fallbackSrc={IconNftPlaceholder}
+                src={`${token.getTokenLogo()}`}
+                className={clsx(
+                  "w-[24px] h-[24px] md:w-[40px] md:h-[40px]",
+                  "rounded-full object-cover min-w-[24px] md:min-w-[40px]",
+                )}
+              />
+              <div className="absolute bottom-0 right-0 w-[18px] h-[18px] rounded-[6px] bg-white dark:bg-zinc-800">
+                {getNetworkIcon(allowance.token.getChainId(), isDarkTheme, 18)}
+              </div>
+            </>
           </div>
           <div className="md:overflow-hidden md:text-ellipsis md:whitespace-nowrap">
             <p
@@ -85,7 +97,7 @@ export const PermissionsToken: FC<PermissionsRowProps> = ({
               className="mt-2.5"
               type="stroke"
               isSmall
-              onClick={() => onChooseAllowance(allowance)}
+              onClick={() => setChosenRevokeAllowance(allowance)}
             >
               Revoke
             </Button>
@@ -121,13 +133,25 @@ export const PermissionsToken: FC<PermissionsRowProps> = ({
           className="hidden md:table-cell w-[24px] min-w-[30px] lg:min-w-[50px] lg:ps-[25px]"
           id={`${token.getTokenName()}_options`}
         >
-          <Button
-            type="stroke"
-            isSmall
-            onClick={() => onChooseAllowance(allowance)}
-          >
-            Revoke
-          </Button>
+          <div className="flex gap-2.5 justify-end">
+            {token.getTokenAddress() !== ICP_CANISTER_ID && (
+              <Button
+                type="stroke"
+                isSmall
+                onClick={() => setChosenUpdateAllowance(allowance)}
+              >
+                Update
+              </Button>
+            )}
+
+            <Button
+              type="stroke"
+              isSmall
+              onClick={() => setChosenRevokeAllowance(allowance)}
+            >
+              Revoke
+            </Button>
+          </div>
         </td>
       </tr>
     </>

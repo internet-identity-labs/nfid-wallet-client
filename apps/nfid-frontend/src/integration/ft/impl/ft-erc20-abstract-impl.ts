@@ -159,4 +159,18 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
       this.getChainId() as ChainId,
     )
   }
+
+  async updateAllowance(
+    identity: SignIdentity,
+    spender: string,
+    amount: string,
+  ): Promise<void> {
+    await this.getProvider().setERC20Allowance(
+      identity,
+      this.tokenAddress,
+      spender,
+      BigInt(Math.round(Number(amount) * 10 ** this.decimals)),
+      this.getChainId() as ChainId,
+    )
+  }
 }

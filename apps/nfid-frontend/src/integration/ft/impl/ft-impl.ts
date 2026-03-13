@@ -307,6 +307,21 @@ export class FTImpl implements FT {
     }
   }
 
+  async updateAllowance(
+    identity: SignIdentity,
+    spender: string,
+    amount: string,
+  ): Promise<void> {
+    if (this.tokenAddress === ICP_CANISTER_ID) return
+
+    const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
+    await icrc1Pair.setAllowance(
+      identity,
+      Principal.fromText(spender),
+      BigInt(Number(amount) * 10 ** this.decimals),
+    )
+  }
+
   protected async getBalance(globalPrincipal: Principal): Promise<void> {
     const icrc1Pair = new Icrc1Pair(this.tokenAddress, this.index)
 

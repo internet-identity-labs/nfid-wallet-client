@@ -7,6 +7,7 @@ import {
 } from "src/integration/nft/impl/nft-types"
 
 import { NftError } from "./impl/nft-abstract"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 export interface NFT {
   init(): Promise<NFT>
@@ -30,6 +31,8 @@ export interface NFT {
   getDetails(): Promise<NFTDetails>
   //we can not know asset type without call to host (probably)
   getAssetPreview(): AssetPreview | undefined
+  getChainId(): ChainId
+  getNftStandard(): string
   //TODO
   //transfer(): Promise<bigint>;
 }

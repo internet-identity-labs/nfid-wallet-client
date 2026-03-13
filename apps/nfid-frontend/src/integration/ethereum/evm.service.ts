@@ -40,6 +40,7 @@ import {
 } from "@nfid/integration/token/constants"
 import { KEY_ETH_ADDRESS } from "packages/integration/src/lib/authentication/storage"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { MORALIS_API_KEY } from "src/integration/nft/impl/evm/evm-nft-floor-price.service"
 
 export type SendEthFee = {
   gasUsed: bigint
@@ -89,34 +90,69 @@ export interface EvmNftAsset {
   acquiredAt?: number
 }
 
-interface BlockscoutNftItem {
-  id: string
-  token_type: "ERC-721" | "ERC-1155" | "ERC-404"
-  value: string
-  image_url?: string
-  animation_url?: string
-  metadata?: Record<string, unknown>
-  token: {
-    address_hash: string
+// ─── Moralis NFT API ──────────────────────────────────────────────────────────
+
+const MORALIS_CHAIN_MAP: Partial<Record<number, string>> = {
+  [ChainId.ETH]: "eth",
+  [ChainId.BASE]: "base",
+  [ChainId.POL]: "polygon",
+  [ChainId.ARB]: "arbitrum",
+  [ChainId.BNB]: "bsc",
+}
+
+interface MoralisNftItem {
+  token_address: string
+  token_id: string
+  contract_type: string
+  amount?: string
+  name?: string
+  symbol?: string
+  normalized_metadata?: {
     name?: string
-    symbol?: string
+    description?: string
+    image?: string
+    animation_url?: string
+    attributes?: Array<{ trait_type: string; value: string }>
+  }
+  media?: { original_media_url?: string }
+}
+
+interface MoralisNftResponse {
+  result: MoralisNftItem[]
+  cursor?: string | null
+}
+
+interface MoralisTransferItem {
+  block_timestamp: string
+  token_address: string
+  token_id: string
+  to_address?: string
+}
+
+interface MoralisTransfersResponse {
+  result: MoralisTransferItem[]
+  cursor?: string | null
+}
+
+function normalizeMoralisType(
+  contractType: string,
+): "ERC-721" | "ERC-1155" | "ERC-404" {
+  switch (contractType.toUpperCase()) {
+    case "ERC1155":
+      return "ERC-1155"
+    case "ERC404":
+      return "ERC-404"
+    default:
+      return "ERC-721"
   }
 }
 
-interface BlockscoutNftResponse {
-  items: BlockscoutNftItem[]
-  next_page_params: Record<string, string> | null
-}
-
-interface BlockscoutTransferItem {
-  timestamp: string
-  token: { address_hash: string }
-  total: { token_id?: string } | null
-}
-
-interface BlockscoutTransfersResponse {
-  items: BlockscoutTransferItem[]
-  next_page_params: Record<string, string> | null
+function resolveIpfsUrl(url: string | undefined): string | undefined {
+  if (!url) return undefined
+  if (url.startsWith("ipfs://")) {
+    return `https://ipfs.io/ipfs/${url.slice(7)}`
+  }
+  return url
 }
 
 const EVM_NFTS_CACHE_TTL = 30 * 1000
@@ -132,7 +168,6 @@ const ERC1155_TRANSFER_IFACE = new Interface([
 
 export abstract class EVMService {
   protected provider: InfuraProvider
-  protected readonly blockscoutBaseUrl: string | undefined = undefined
 
   constructor() {
     this.provider = new InfuraProvider(CHAIN_ID, INFURA_API_KEY)
@@ -183,15 +218,16 @@ export abstract class EVMService {
   }
 
   public async getNFTs(address: string): Promise<EvmNftAsset[]> {
-    if (!this.blockscoutBaseUrl) return []
-
     const network = await this.provider.getNetwork()
     const chainId = Number(network.chainId)
+    const chain = MORALIS_CHAIN_MAP[chainId]
+    if (!chain) return []
+
     const cacheKey = `${EVM_NFTS_CACHE_NAME}${chainId}_${address.toLowerCase()}`
 
     return ttlCacheService.getOrFetch(
       cacheKey,
-      () => this.fetchNFTs(address, chainId),
+      () => this.fetchNFTs(address, chain, chainId),
       EVM_NFTS_CACHE_TTL,
       {
         onBackgroundError: (error) =>
@@ -202,12 +238,10 @@ export abstract class EVMService {
 
   private async fetchNFTs(
     address: string,
+    chain: string,
     chainId: number,
   ): Promise<EvmNftAsset[]> {
-    const baseUrl = this.blockscoutBaseUrl
-    if (!baseUrl) return []
-
-    const nfts = await this.fetchNFTList(address, baseUrl, chainId)
+    const nfts = await this.fetchNFTList(address, chain, chainId)
     if (nfts.length === 0) return nfts
 
     const ownedKeys = new Set(
@@ -215,7 +249,7 @@ export abstract class EVMService {
     )
     const timestamps = await this.fetchNFTTimestamps(
       address,
-      baseUrl,
+      chain,
       ownedKeys,
     ).catch(() => new Map<string, number>())
 
@@ -229,89 +263,93 @@ export abstract class EVMService {
 
   private async fetchNFTList(
     address: string,
-    baseUrl: string,
+    chain: string,
     chainId: number,
   ): Promise<EvmNftAsset[]> {
     const results: EvmNftAsset[] = []
-    let nextPageParams: Record<string, string> | null = null
+    let cursor: string | null = null
 
     do {
-      const url = new URL(`${baseUrl}/api/v2/addresses/${address}/nft`)
-      url.searchParams.set("type", "ERC-721,ERC-1155,ERC-404")
-      if (nextPageParams) {
-        for (const [k, v] of Object.entries(nextPageParams)) {
-          url.searchParams.set(k, v)
-        }
-      }
+      const url = new URL(
+        `https://deep-index.moralis.io/api/v2.2/${address}/nft`,
+      )
+      url.searchParams.set("chain", chain)
+      url.searchParams.set("format", "decimal")
+      url.searchParams.set("normalizeMetadata", "true")
+      url.searchParams.set("excludeSpam", "false")
+      url.searchParams.set("limit", "100")
+      if (cursor) url.searchParams.set("cursor", cursor)
 
-      const response = await fetch(url.toString())
+      const response = await fetch(url.toString(), {
+        headers: { "X-API-Key": MORALIS_API_KEY },
+      })
       if (!response.ok) {
         throw new Error(
-          `Blockscout API error: ${response.status} ${response.statusText}`,
+          `Moralis NFT API error: ${response.status} ${response.statusText}`,
         )
       }
 
-      const data: BlockscoutNftResponse = await response.json()
+      const data: MoralisNftResponse = await response.json()
 
-      for (const item of data.items) {
+      for (const item of data.result) {
         results.push({
-          contract: item.token.address_hash,
-          tokenId: item.id,
-          supply: item.value,
-          type: item.token_type,
-          metadata: item.metadata as EvmNftMetadata | undefined,
-          imageUrl: item.image_url,
-          animationUrl: item.animation_url,
-          tokenName: item.token.name,
-          tokenSymbol: item.token.symbol,
+          contract: item.token_address,
+          tokenId: item.token_id,
+          supply: item.amount ?? "1",
+          type: normalizeMoralisType(item.contract_type),
+          metadata: item.normalized_metadata as EvmNftMetadata | undefined,
+          imageUrl: resolveIpfsUrl(
+            item.normalized_metadata?.image ?? item.media?.original_media_url,
+          ),
+          animationUrl: resolveIpfsUrl(item.normalized_metadata?.animation_url),
+          tokenName: item.name,
+          tokenSymbol: item.symbol,
           chainId,
         })
       }
 
-      nextPageParams = data.next_page_params ?? null
-    } while (nextPageParams)
+      cursor = data.cursor ?? null
+    } while (cursor)
 
     return results
   }
 
   private async fetchNFTTimestamps(
     address: string,
-    baseUrl: string,
+    chain: string,
     ownedKeys: Set<string>,
   ): Promise<Map<string, number>> {
     const timestamps = new Map<string, number>()
     const remaining = new Set(ownedKeys)
-    let nextPageParams: Record<string, string> | null = null
+    let cursor: string | null = null
 
     do {
       const url = new URL(
-        `${baseUrl}/api/v2/addresses/${address}/token-transfers`,
+        `https://deep-index.moralis.io/api/v2.2/${address}/nft/transfers`,
       )
-      url.searchParams.set("type", "ERC-721,ERC-1155,ERC-404")
-      url.searchParams.set("filter", "to")
-      if (nextPageParams) {
-        for (const [k, v] of Object.entries(nextPageParams)) {
-          url.searchParams.set(k, v)
-        }
-      }
+      url.searchParams.set("chain", chain)
+      url.searchParams.set("format", "decimal")
+      url.searchParams.set("limit", "100")
+      if (cursor) url.searchParams.set("cursor", cursor)
 
-      const response = await fetch(url.toString())
+      const response = await fetch(url.toString(), {
+        headers: { "X-API-Key": MORALIS_API_KEY },
+      })
       if (!response.ok) break
 
-      const data: BlockscoutTransfersResponse = await response.json()
+      const data: MoralisTransfersResponse = await response.json()
 
-      for (const item of data.items) {
-        const tokenId = item.total?.token_id
-        if (!tokenId) continue
-        const key = `${item.token.address_hash.toLowerCase()}:${tokenId}`
+      for (const item of data.result) {
+        if (item.to_address?.toLowerCase() !== address.toLowerCase()) continue
+        const key = `${item.token_address.toLowerCase()}:${item.token_id}`
         if (remaining.has(key) && !timestamps.has(key)) {
-          timestamps.set(key, new Date(item.timestamp).getTime())
+          timestamps.set(key, new Date(item.block_timestamp).getTime())
           remaining.delete(key)
         }
       }
 
-      nextPageParams = data.next_page_params ?? null
-    } while (nextPageParams && remaining.size > 0)
+      cursor = data.cursor ?? null
+    } while (cursor && remaining.size > 0)
 
     return timestamps
   }

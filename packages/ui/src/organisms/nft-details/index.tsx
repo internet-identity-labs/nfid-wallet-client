@@ -21,6 +21,8 @@ import { NFT } from "frontend/integration/nft/nft"
 import { A } from "../../atoms/custom-link"
 import ProfileContainer from "../../atoms/profile-container/Container"
 import { ModalComponent } from "@nfid-frontend/ui"
+import { getNetworkIcon } from "../../utils/network-icon"
+import { useDarkTheme } from "frontend/hooks"
 
 export interface NFTDetailsProps {
   nft: NFT
@@ -47,6 +49,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const marketPlaceLink = nft.getTokenMarketPlaceLink()
+  const isDarkTheme = useDarkTheme()
 
   return (
     <>
@@ -89,12 +92,17 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
           {isPreviewLoading ? (
             <Skeleton className="rounded-[24px] h-full w-full" />
           ) : !assetPreview.url ? (
-            <ImageWithFallback
-              src={"#"}
-              fallbackSrc={IconNftPlaceholder}
-              alt="NFT preview"
-              className="w-full"
-            />
+            <>
+              <ImageWithFallback
+                src={"#"}
+                fallbackSrc={IconNftPlaceholder}
+                alt="NFT preview"
+                className="w-full"
+              />
+              <div className="w-10 h-10 absolute right-2.5 bottom-2.5 rounded-[14px] bg-white dark:bg-zinc-800">
+                {getNetworkIcon(nft.getChainId(), isDarkTheme, 40)}
+              </div>
+            </>
           ) : assetPreview.format === "video" ? (
             <video
               muted
@@ -104,12 +112,17 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
               src={assetPreview.url}
             ></video>
           ) : (
-            <ImageWithFallback
-              src={nft.getError() ? "#" : assetPreview.url}
-              fallbackSrc={IconNftPlaceholder}
-              alt="NFT preview"
-              className="max-w-full max-h-full"
-            />
+            <>
+              <ImageWithFallback
+                src={nft.getError() ? "#" : assetPreview.url}
+                fallbackSrc={IconNftPlaceholder}
+                alt="NFT preview"
+                className="max-w-full max-h-full"
+              />
+              <div className="w-10 h-10 absolute right-2.5 bottom-2.5 rounded-[14px] bg-white dark:bg-zinc-800">
+                {getNetworkIcon(nft.getChainId(), isDarkTheme, 40)}
+              </div>
+            </>
           )}
         </div>
         <div
@@ -136,7 +149,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
           </A>
           <ProfileContainer
             title="Details"
-            className="!px-[20px] !pt-[20px] sm:!px-[30px] sm:!pt-[20px] !pb-[7px] !m-0 flex-[100%] dark:text-white"
+            className="!px-0 !pt-[20px] md:!px-[30px] sm:!pt-[20px] !pb-[7px] !m-0 flex-[100%] dark:text-white"
             innerClassName="!p-0"
             titleClassName="!p-0 mb-[20px]"
           >
@@ -154,7 +167,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                     Standard
                   </p>
                   <p className="text-sm" id={"token-standard"}>
-                    EXT
+                    {nft.getNftStandard()}
                   </p>
                 </div>
                 <div
@@ -167,7 +180,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                     ID
                   </p>
                   <p
-                    className="text-sm"
+                    className="text-sm break-all"
                     id={`nft_id_${nft.getTokenId().replace(/\s/g, "")}`}
                   >
                     {nft.getTokenId()}
@@ -182,7 +195,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                   <p className="text-sm text-gray-400 dark:text-zinc-500 flex-shrink-0 flex-grow-0 basis-[160px]">
                     Collection ID
                   </p>
-                  <p className="text-sm" id={"collection-id"}>
+                  <p className="text-sm break-all" id={"collection-id"}>
                     {nft.getCollectionId()}
                   </p>
                 </div>
@@ -197,7 +210,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                   </p>
                   <p>
                     {!nft.getTokenFloorPriceFormatted() ? (
-                      <span>Unknown</span>
+                      <span>Unknown floor price</span>
                     ) : (
                       <>
                         <span className="block text-sm">
@@ -223,6 +236,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
                     href={marketPlaceLink}
                     withGapBetweenChildren
                     target="_blank"
+                    className="break-all"
                   >
                     {marketPlaceLink}
                     <IconCmpExternalIcon className="mt-1" />
@@ -237,7 +251,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
         <>
           <ProfileContainer
             className={clsx(
-              "!p-[20px] sm:!p-[30px] mb-[20px] sm:mb-[30px] relative dark:text-white",
+              "!px-0 md:!px-[30px] !p-[20px] mb-[20px] sm:mb-[30px] relative dark:text-white",
               !about && !isAboutLoading && "hidden",
             )}
             innerClassName="!p-0"
@@ -255,7 +269,7 @@ export const NFTDetails: FC<NFTDetailsProps> = ({
           </ProfileContainer>
           <ProfileContainer
             className={clsx(
-              "!p-[20px] sm:!p-[30px] mb-[20px] sm:mb-[30px] min-h-[250px] relative dark:text-white",
+              "!px-0 md:!px-[30px] mb-[20px] sm:mb-[30px] min-h-[250px] relative dark:text-white",
               (!properties.mappedValues || !properties.mappedValues.length) &&
                 !isPropertiesLoading &&
                 "hidden",

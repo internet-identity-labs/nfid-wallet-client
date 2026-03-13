@@ -6,8 +6,6 @@ import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { EVMService } from "../evm.service"
 
 export class BaseService extends EVMService {
-  protected readonly blockscoutBaseUrl = "https://base.blockscout.com"
-
   constructor() {
     super()
     this.provider = new InfuraProvider(ChainId.BASE, INFURA_API_KEY)

@@ -147,7 +147,11 @@ export const NFTs: FC<INFTs> = ({
                             ? IconNftPlaceholderDark
                             : IconNftPlaceholder
                         }
-                        src={nft.getError() ? "#" : nft.getAssetPreview()?.url}
+                        src={
+                          nft.getError() || nft.getAssetPreview() === undefined
+                            ? "#"
+                            : nft.getAssetPreview()?.url
+                        }
                         className={clsx(
                           `w-[74px] h-[74px] object-cover rounded-[12px] my-[5px]`,
                         )}
@@ -233,7 +237,7 @@ export const NFTs: FC<INFTs> = ({
                   key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
                 >
                   <div className="relative rounded-[12px] overflow-hidden basis-[100%] flex items-center justify-center relative">
-                    {nft.getError() ? (
+                    {nft.getError() || nft.getAssetPreview() === undefined ? (
                       <>
                         <ImageWithFallback
                           alt={nft.getTokenName()}

@@ -8,6 +8,6 @@ export class FTERC20BaseSepoliaImpl extends FTERC20AbstractImpl {
   }
 
   getBlockExplorerLink(): string {
-    return `https://base-sepolia.blockscout.com/address/${this.tokenAddress}`
+    return `https://sepolia.basescan.org/token/${this.tokenAddress}`
   }
 }

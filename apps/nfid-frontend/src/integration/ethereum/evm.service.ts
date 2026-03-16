@@ -42,6 +42,8 @@ import { KEY_ETH_ADDRESS } from "packages/integration/src/lib/authentication/sto
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { MORALIS_API_KEY } from "src/integration/nft/impl/evm/evm-nft-floor-price.service"
 
+export type EvmNftStandard = "ERC-721" | "ERC-1155" | "ERC-404"
+
 export type SendEthFee = {
   gasUsed: bigint
   maxPriorityFeePerGas: bigint
@@ -80,7 +82,7 @@ export interface EvmNftAsset {
   contract: string
   tokenId: string
   supply: string
-  type: "ERC-721" | "ERC-1155" | "ERC-404"
+  type: EvmNftStandard
   metadata?: EvmNftMetadata
   imageUrl?: string
   animationUrl?: string
@@ -134,9 +136,7 @@ interface MoralisTransfersResponse {
   cursor?: string | null
 }
 
-function normalizeMoralisType(
-  contractType: string,
-): "ERC-721" | "ERC-1155" | "ERC-404" {
+function normalizeMoralisType(contractType: string): EvmNftStandard {
   switch (contractType.toUpperCase()) {
     case "ERC1155":
       return "ERC-1155"
@@ -658,28 +658,31 @@ export abstract class EVMService {
   ): Promise<SendEthFee> {
     const data = this.buildNFTTransferData(from, to, asset)
 
-    const gasUsed = await this.estimateGas({
-      from,
-      to: asset.contract as Address,
-      data,
-    })
+    let gasUsed: bigint
+    try {
+      gasUsed = await this.estimateGas({
+        from,
+        to: asset.contract as Address,
+        data,
+      })
+    } catch {
+      gasUsed = asset.type === "ERC-1155" ? BigInt(150_000) : BigInt(100_000)
+    }
 
     const feeData = await this.getFeeData()
-    if (!feeData.maxFeePerGas || !feeData.maxPriorityFeePerGas) {
-      throw new Error("getNFTTransferFee: Gas fee data is missing")
-    }
+    const maxPriorityFeePerGas =
+      feeData.maxPriorityFeePerGas ?? BigInt(2_000_000_000)
+    const maxFeePerGas =
+      feeData.maxFeePerGas ?? maxPriorityFeePerGas + BigInt(5_000_000_000)
 
     const baseFee = await this.getBaseFee()
 
     return {
       gasUsed,
-      maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
-      maxFeePerGas: feeData.maxFeePerGas,
+      maxPriorityFeePerGas,
+      maxFeePerGas,
       baseFeePerGas: baseFee,
-      ethereumNetworkFee: this.estimateTransaction(
-        gasUsed,
-        feeData.maxFeePerGas,
-      ),
+      ethereumNetworkFee: this.estimateTransaction(gasUsed, maxFeePerGas),
     }
   }
 

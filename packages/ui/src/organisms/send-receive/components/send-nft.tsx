@@ -9,11 +9,11 @@ import {
   IconCmpArrow,
   IconCmpArrowRight,
   IconCmpNFTPreview,
-  Input,
   IconNftPlaceholder,
   ChooseNftModal,
   Label,
   IGroupedSendAddress,
+  Skeleton,
 } from "@nfid-frontend/ui"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
@@ -25,6 +25,8 @@ import {
   UserAddressPreview,
 } from "frontend/integration/address-book"
 import { ChooseAddressModal } from "packages/ui/src/molecules/choose-modal/address-modal"
+import { Spinner } from "packages/ui/src/atoms/spinner"
+import { MarketPlace } from "frontend/integration/nft/enum/enums"
 
 export interface TransferNFTUiProps {
   isLoading: boolean
@@ -32,7 +34,6 @@ export interface TransferNFTUiProps {
   nfts: NFT[] | undefined
   setSelectedNFTId: Dispatch<SetStateAction<string>>
   selectedNFT: NFT | undefined
-  selectedReceiverWallet: string | undefined
   submit: (values: any) => Promise<Id | undefined>
   validateAddress: (value: string) => boolean | string
   isSuccessOpen: boolean
@@ -40,13 +41,16 @@ export interface TransferNFTUiProps {
   status: SendStatus
   addresses: IGroupedSendAddress[] | undefined
   searchAddress: (req: NftSearchRequest) => Promise<UserAddressPreview[]>
+  isFeeLoading?: boolean
+  feeError?: string
+  feeFormatted?: string
+  feeFormattedUsd?: string
 }
 
 export const TransferNFTUi: FC<TransferNFTUiProps> = ({
   nfts,
   setSelectedNFTId,
   selectedNFT,
-  selectedReceiverWallet,
   submit,
   validateAddress,
   isSuccessOpen,
@@ -54,6 +58,10 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
   status,
   addresses,
   searchAddress,
+  isFeeLoading,
+  feeError,
+  feeFormatted,
+  feeFormattedUsd,
 }) => {
   const {
     watch,
@@ -144,14 +152,65 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
           searchAddress={searchAddress}
           token={undefined}
         />
+        {selectedNFT && selectedNFT.getMarketPlace() === MarketPlace.EVM && (
+          <div>
+            <div className="flex justify-between">
+              <div className="text-xs text-gray-500 dark:text-zinc-400">
+                Network fee
+              </div>
+              <div>
+                <div className="text-right">
+                  <p
+                    className="text-xs leading-5 text-gray-600 dark:text-zinc-400"
+                    id="fee"
+                  >
+                    {isFeeLoading ? (
+                      <>
+                        <Skeleton className="w-[80px] h-5" />
+                        <span className="block mt-1 text-xs">
+                          <Skeleton className="w-[60px] h-4 ml-auto" />
+                        </span>
+                      </>
+                    ) : !feeFormatted ? null : (
+                      <>
+                        <span>{feeFormatted}</span>
+                        {feeFormattedUsd && (
+                          <span className="block mt-1 text-xs">
+                            {feeFormattedUsd}
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </p>
+                </div>
+              </div>
+            </div>
+            {feeError && (
+              <div className="mt-2 text-xs text-red-600 dark:text-red-500">
+                {feeError}
+              </div>
+            )}
+          </div>
+        )}
         <Button
           id={"sendButton"}
-          disabled={Boolean(errors["to"]?.message) || !to || !selectedNFT}
+          disabled={
+            !selectedNFT ||
+            Boolean(errors["to"]?.message) ||
+            !to ||
+            (selectedNFT?.getMarketPlace() === MarketPlace.EVM && !feeFormatted)
+          }
           className="absolute bottom-5 left-5 right-5 !w-auto"
           type="primary"
           block
           onClick={handleSubmit(submit)}
-          icon={<IconCmpArrow className="rotate-[135deg]" />}
+          icon={
+            isFeeLoading && !feeError ? (
+              <Spinner className="w-5 h-5 text-white" />
+            ) : (
+              <IconCmpArrow className="rotate-[135deg] !max-w-5 !max-h-5" />
+            )
+          }
         >
           Send
         </Button>

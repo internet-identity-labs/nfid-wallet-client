@@ -27,6 +27,7 @@ import {
 import { ChooseAddressModal } from "packages/ui/src/molecules/choose-modal/address-modal"
 import { Spinner } from "packages/ui/src/atoms/spinner"
 import { MarketPlace } from "frontend/integration/nft/enum/enums"
+import { FT } from "frontend/integration/ft/ft"
 
 export interface TransferNFTUiProps {
   isLoading: boolean
@@ -41,6 +42,7 @@ export interface TransferNFTUiProps {
   status: SendStatus
   addresses: IGroupedSendAddress[] | undefined
   searchAddress: (req: NftSearchRequest) => Promise<UserAddressPreview[]>
+  nativeToken?: FT
   isFeeLoading?: boolean
   feeError?: string
   feeFormatted?: string
@@ -58,6 +60,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
   status,
   addresses,
   searchAddress,
+  nativeToken,
   isFeeLoading,
   feeError,
   feeFormatted,
@@ -150,7 +153,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
             validate: (value) => validateAddress(value),
           })}
           searchAddress={searchAddress}
-          token={undefined}
+          token={nativeToken}
         />
         {selectedNFT && selectedNFT.getMarketPlace() === MarketPlace.EVM && (
           <div>

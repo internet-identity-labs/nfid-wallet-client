@@ -39,6 +39,7 @@ export interface FtSearchRequest {
 export interface NftSearchRequest {
   addressLike?: string
   nameOrAddressLike?: string
+  isEvm?: boolean
 }
 
 export interface SearchRequest {

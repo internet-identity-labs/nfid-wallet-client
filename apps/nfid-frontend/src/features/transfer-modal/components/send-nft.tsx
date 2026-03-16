@@ -90,14 +90,6 @@ export const TransferNFT = ({
     addressBookFacade.findAll(),
   )
 
-  const addressesOptions = useMemo(() => {
-    return getAddressBookNftOptions(addresses)
-  }, [addresses])
-
-  const searchNftAddress = async (req: NftSearchRequest) => {
-    return addressBookFacade.nftSearch(req)
-  }
-
   const { data: tokens = [] } = useSWRWithTimestamp("tokens", fetchTokens, {
     revalidateOnFocus: false,
     revalidateOnMount: false,
@@ -113,6 +105,18 @@ export const TransferNFT = ({
   const { data: selectedNFT, isLoading: isNftLoading } = useSWR(
     selectedNFTId ? ["nft", selectedNFTId] : null,
     ([, tokenId]: [string, string]) => fetchNFT(tokenId),
+  )
+
+  const isEvmNft = selectedNFT?.getMarketPlace() === MarketPlace.EVM
+
+  const addressesOptions = useMemo(() => {
+    return getAddressBookNftOptions(addresses, isEvmNft)
+  }, [addresses, isEvmNft])
+
+  const searchNftAddress = useCallback(
+    (req: NftSearchRequest) =>
+      addressBookFacade.nftSearch({ ...req, isEvm: isEvmNft }),
+    [isEvmNft],
   )
 
   const nativeGasToken = useMemo(() => {
@@ -289,6 +293,7 @@ export const TransferNFT = ({
         status={status}
         addresses={addressesOptions}
         searchAddress={searchNftAddress}
+        nativeToken={nativeGasToken}
         isFeeLoading={isFeeLoading}
         feeError={feeError}
         feeFormatted={feeFormatted}

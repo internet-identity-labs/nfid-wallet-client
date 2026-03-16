@@ -454,8 +454,20 @@ export const getAddressBookFtOptions = (
 
 export const getAddressBookNftOptions = (
   addresses: UserAddress[] | undefined,
+  isEvm = false,
 ): IGroupedSendAddress[] => {
   if (!addresses) return []
+
+  if (isEvm) {
+    return addresses
+      .filter((address) => !!address.evm)
+      .map((address) => ({
+        id: address.id,
+        title: address.name,
+        subTitle: address.evm ? truncateString(address.evm, 6, 4) : undefined,
+        value: address.evm,
+      }))
+  }
 
   return addresses
     .filter((address) => !!address.icpPrincipal)

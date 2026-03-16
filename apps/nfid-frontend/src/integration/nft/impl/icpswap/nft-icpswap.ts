@@ -20,6 +20,7 @@ import {
   ResponseResult_3,
   ResponseResult_5,
 } from "./idl/SwapNFT.d"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 export class NftIcpSwap extends NftImpl {
   private icsMetadata: IcsMetadata | undefined
@@ -39,6 +40,14 @@ export class NftIcpSwap extends NftImpl {
 
   getCollectionMarketPlaceLink(): string {
     return `https://app.icpswap.com/marketplace/NFT/${this.getCollectionId()}`
+  }
+
+  getChainId(): ChainId {
+    return ChainId.ICP
+  }
+
+  getNftStandard(): string {
+    return "EXT"
   }
 
   async getDetails(): Promise<NFTDetails> {

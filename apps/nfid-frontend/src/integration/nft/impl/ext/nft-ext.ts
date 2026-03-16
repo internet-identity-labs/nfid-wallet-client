@@ -10,6 +10,7 @@ import { NFTDetailsImpl, NftImpl } from "src/integration/nft/impl/nft-abstract"
 import { NFTDetails, TransactionRecord } from "src/integration/nft/nft"
 
 import { AssetPreview, TokenProperties } from "../nft-types"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 const TOKEN_API =
   "https://us-central1-entrepot-api.cloudfunctions.net/api/token"
@@ -35,6 +36,14 @@ export class NftExt extends NftImpl {
 
   getCollectionMarketPlaceLink(): string {
     return `https://toniq.io/marketplace/${this.getCollectionId()}`
+  }
+
+  getChainId(): ChainId {
+    return ChainId.ICP
+  }
+
+  getNftStandard(): string {
+    return "EXT"
   }
 }
 

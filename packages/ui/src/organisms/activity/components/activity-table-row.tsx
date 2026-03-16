@@ -37,6 +37,7 @@ import {
   UserAddressPreview,
 } from "frontend/integration/address-book"
 import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
+import { NoteIcon } from "packages/ui/src/atoms/icons/note"
 
 interface ErrorStage {
   buttonText: string
@@ -180,6 +181,7 @@ export const ActivityTableRow = ({
   nodeId,
   transaction,
   scanLink,
+  note,
   searchAddress,
 }: IActivityTableRow) => {
   const [contactFrom, setContactFrom] = useState<UserAddressPreview | null>(
@@ -187,6 +189,7 @@ export const ActivityTableRow = ({
   )
   const [contactTo, setContactTo] = useState<UserAddressPreview | null>(null)
   const isDarkTheme = useDarkTheme()
+  const [isNoteTooltipActive, setIsNoteTooltipActive] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { data: tokens = undefined } = useSWRWithTimestamp(
     "tokens",
@@ -258,7 +261,7 @@ export const ActivityTableRow = ({
         id={nodeId}
         className="relative items-center text-sm activity-row hover:bg-gray-50 dark:hover:bg-zinc-800"
       >
-        <td className="flex items-center sm:pl-[30px] w-[156px] min-w-[156px] sm:w-[30vw]">
+        <td className="flex items-center sm:pl-[30px] w-[156px] min-w-[156px] sm:w-[20vw]">
           <div
             className={clsx(
               "w-10 min-w-10 h-10 rounded-[12px] flex items-center justify-center relative",
@@ -285,7 +288,6 @@ export const ActivityTableRow = ({
             </p>
           </div>
         </td>
-
         {![
           IActivityAction.APPROVE,
           IActivityAction.MINT,
@@ -467,7 +469,7 @@ export const ActivityTableRow = ({
           </>
         )}
         {asset?.type === "ft" ? (
-          <td className="leading-5 pr-5 sm:pr-[30px] min-w-[60%] sm:min-w-auto sm:w-[30%] text-left sm:text-center">
+          <td className="leading-5 pr-5 sm:pr-[30px] min-w-[60%] sm:min-w-auto sm:w-[15%] text-left sm:text-center">
             <div className="flex items-center text-left">
               {action === IActivityAction.SWAP && (
                 <div className="mr-[24px] flex sm:hidden w-[28px]">
@@ -550,6 +552,45 @@ export const ActivityTableRow = ({
             </div>
           </td>
         )}
+        <td className="hidden sm:table-cell pr-[16px] w-[15%]">
+          {note && (
+            <p className="text-sm leading-5 dark:text-white leading-[20px] max-w-[180px]">
+              {note}
+            </p>
+          )}
+        </td>
+        <td className="sm:hidden">
+          {note && (
+            <Tooltip
+              align="start"
+              alignOffset={120}
+              arrowClassname="translate-x-[-15px] visible"
+              tip={
+                <span className="block max-w-[270px] sm:max-w-[320px]">
+                  Transaction note: <br />
+                  {note}
+                </span>
+              }
+            >
+              <div
+                onMouseEnter={() => setIsNoteTooltipActive(true)}
+                onMouseLeave={() => setIsNoteTooltipActive(false)}
+              >
+                <NoteIcon
+                  strokeColor={
+                    isNoteTooltipActive
+                      ? isDarkTheme
+                        ? "white"
+                        : "black"
+                      : isDarkTheme
+                        ? "#71717a"
+                        : "#9ca3af"
+                  }
+                />
+              </div>
+            </Tooltip>
+          )}
+        </td>
       </tr>
     )
   }

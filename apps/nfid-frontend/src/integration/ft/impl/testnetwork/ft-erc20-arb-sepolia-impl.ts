@@ -9,6 +9,6 @@ export class FTERC20ArbSepoliaImpl extends FTERC20AbstractImpl {
   }
 
   getBlockExplorerLink(): string {
-    return `https://arbitrum-sepolia.blockscout.com/address/${this.tokenAddress}`
+    return `https://sepolia.arbiscan.io/token/${this.tokenAddress}`
   }
 }

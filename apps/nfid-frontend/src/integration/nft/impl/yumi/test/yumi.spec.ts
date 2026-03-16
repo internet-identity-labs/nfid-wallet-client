@@ -8,6 +8,7 @@ import { mockGeekResponse } from "src/integration/nft/mock/mock"
 import { nftService } from "src/integration/nft/nft-service"
 
 import { exchangeRateService } from "@nfid/integration"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 const principal = Principal.fromText(
   "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
@@ -40,6 +41,7 @@ describe("yumi test suite", () => {
         "h5nvt-iykor-uwiaa-aaaaa-bya6v-yaqca-aaeoh-q",
       )
       expect(yumiNFT.getMarketPlace()).toEqual("YUMI")
+      expect(yumiNFT.getChainId()).toEqual(ChainId.ICP)
       expect(yumiNFT.getMillis()).toEqual(1721253579367)
       const yumiNftAssetPreview = yumiNFT.getAssetPreview()
       expect(yumiNftAssetPreview?.format).toEqual("img")

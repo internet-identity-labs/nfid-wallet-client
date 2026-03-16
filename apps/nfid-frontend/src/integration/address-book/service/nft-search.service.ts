@@ -5,7 +5,7 @@ export class NftSearchService {
   constructor(private readonly repository: AddressBookRepository) {}
 
   async search(request?: NftSearchRequest): Promise<UserAddressPreview[]> {
-    const type = AddressType.ICP_PRINCIPAL
+    const type = request?.isEvm ? AddressType.ETH : AddressType.ICP_PRINCIPAL
 
     if (request?.addressLike) {
       return this.repository.searchByAddressAndType(request.addressLike, type)

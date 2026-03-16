@@ -552,9 +552,9 @@ export const ActivityTableRow = ({
             </div>
           </td>
         )}
-        <td className="hidden sm:table-cell pl-[28px] pr-[30px] w-[15%]">
+        <td className="hidden sm:table-cell pr-[16px] w-[15%]">
           {note && (
-            <p className="text-sm leading-5 dark:text-white leading-[20px] truncate max-w-[120px]">
+            <p className="text-sm leading-5 dark:text-white leading-[20px] max-w-[180px]">
               {note}
             </p>
           )}

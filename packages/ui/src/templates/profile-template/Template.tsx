@@ -107,6 +107,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 }) => {
   const location = useLocation()
   const navigate = useNavigate()
+  const { isViewOnlyMode } = useContext(ProfileContext)
   const [isRefreshing, setIsRefreshing] = useState(false)
 
   const isNftDetails = Boolean(
@@ -116,10 +117,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   )
 
   const handleNavigateBack = () => {
-    const url = !isNftDetails
+    const pathname = !isNftDetails
       ? `${ProfileConstants.base}/${ProfileConstants.tokens}`
       : `${ProfileConstants.base}/${ProfileConstants.nfts}`
-    navigate(url)
+    navigate({ pathname, search: location.search })
   }
 
   const [hasUncompletedSwap, setHasUncompletedSwap] = useState(false)
@@ -145,10 +146,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         name: "Activity",
         title: <>Activity</>,
         path: `${ProfileConstants.base}/${ProfileConstants.activity}`,
-        hasNotification: hasUncompletedSwap,
+        hasNotification: hasUncompletedSwap && !isViewOnlyMode,
       },
     ]
-  }, [hasUncompletedSwap])
+  }, [hasUncompletedSwap, isViewOnlyMode])
 
   useEffect(() => {
     const checkTransactions = async () => {
@@ -422,7 +423,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
                 activeTab={activeTab?.name}
                 setActiveTab={(tabName) => {
                   const tab = tabs.find((t) => t.name === tabName)
-                  if (tab) navigate(tab.path)
+                  if (tab)
+                    navigate({ pathname: tab.path, search: location.search })
                 }}
               />
             </>

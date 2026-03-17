@@ -41,9 +41,9 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
   setWalletTheme,
 }) => {
   const isDarkTheme = useDarkTheme()
-  const globalServices = useContext(ProfileContext)
+  const { transferService, isViewOnlyMode } = useContext(ProfileContext)
   const [state, dispatch] = useReducer(nftReducer, nftInitialState)
-  const [, send] = useActor(globalServices.transferService)
+  const [, send] = useActor(transferService)
   const { tokenId } = useParams()
   const location = useLocation()
   const { currentPage } = location.state
@@ -154,7 +154,8 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
       walletTheme={walletTheme}
       setWalletTheme={setWalletTheme}
       headerMenu={
-        !nft.getError() && (
+        !nft.getError() &&
+        !isViewOnlyMode && (
           <div className="flex items-center space-x-4">
             <Tooltip tip="Send">
               <div

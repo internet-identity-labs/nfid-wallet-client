@@ -35,8 +35,8 @@ const TokensPage = () => {
   const [baseEnabled, setBaseEnabled] = useState(false)
   const [polygonEnabled, setPolygontEnabled] = useState(false)
   const userRootPrincipalId = authState.getUserIdData().userId
-  const globalServices = useContext(ProfileContext)
-  const [, send] = useActor(globalServices.transferService)
+  const { transferService, isViewOnlyMode } = useContext(ProfileContext)
+  const [, send] = useActor(transferService)
 
   const onSendClick = (selectedToken: SelectedToken) => {
     send({ type: "ASSIGN_VAULTS", data: false })
@@ -254,9 +254,11 @@ const TokensPage = () => {
             </p>
           </div>
         </div>
-        <div className="flex items-center flex-1 md:justify-end">
-          <ScanTokens triggerClassName="w-full sm:w-fit dark:text-white" />
-        </div>
+        {!isViewOnlyMode && (
+          <div className="flex items-center flex-1 md:justify-end">
+            <ScanTokens triggerClassName="w-full sm:w-fit dark:text-white" />
+          </div>
+        )}
       </div>
       <ProfileContainer>
         <Tokens

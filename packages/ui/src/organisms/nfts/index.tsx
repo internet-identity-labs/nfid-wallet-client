@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { useState, useMemo, HTMLAttributes, FC } from "react"
+import { useState, useMemo, HTMLAttributes, FC, useContext } from "react"
 import { IoIosSearch } from "react-icons/io"
 import { Link, useNavigate } from "react-router-dom"
 
@@ -21,6 +21,7 @@ import EmptyNFT from "./assets/empty.webp"
 import { GalleryNftSkeleton, TableNftSkeleton } from "../../atoms/skeleton"
 import { NFTDisplaySwitch } from "./nft-display-switch"
 import { getNetworkIcon } from "../../utils/network-icon"
+import { ProfileContext } from "frontend/provider"
 
 export interface INFTs extends HTMLAttributes<HTMLDivElement> {
   isLoading: boolean
@@ -45,6 +46,7 @@ export const NFTs: FC<INFTs> = ({
   onTransferNFT,
 }) => {
   const isDarkTheme = useDarkTheme()
+  const { isViewOnlyMode } = useContext(ProfileContext)
   const [search, setSearch] = useState("")
   const [display, setDisplay] = useState<"grid" | "table">("grid")
   const navigate = useNavigate()
@@ -193,7 +195,7 @@ export const NFTs: FC<INFTs> = ({
                     )}
                   </td>
                   <td>
-                    {!nft.getError() && (
+                    {!nft.getError() && !isViewOnlyMode && (
                       <div
                         className="p-[12px] w-[42px] ml-auto hover:bg-gray-100 dark:hover:bg-zinc-700 rounded-[12px]"
                         onClick={(e) => {

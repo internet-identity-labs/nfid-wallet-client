@@ -15,15 +15,19 @@ interface ProviderProps {
 
 export const ProfileContext = createContext({
   transferService: {} as TransferMachineActor,
+  isViewOnlyMode: false,
 })
 
 export const Provider: React.FC<ProviderProps> = ({ children }) => {
   const transferService: TransferMachineActor = useInterpret(transferMachine)
+  const isViewOnlyMode = Boolean(
+    new URLSearchParams(window.location.search).get("viewOnly"),
+  )
 
   return (
     <ParallaxProvider>
       <HelmetProvider>
-        <ProfileContext.Provider value={{ transferService }}>
+        <ProfileContext.Provider value={{ transferService, isViewOnlyMode }}>
           <RadixTooltip.Provider>{children}</RadixTooltip.Provider>
         </ProfileContext.Provider>
       </HelmetProvider>

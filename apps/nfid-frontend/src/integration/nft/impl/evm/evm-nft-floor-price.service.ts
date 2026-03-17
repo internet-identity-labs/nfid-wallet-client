@@ -7,15 +7,16 @@ export interface EvmNftFloorPrice {
   symbol: string
 }
 
-const RESERVOIR_BASE_URLS: Partial<Record<number, string>> = {
-  [ChainId.ETH]: "https://api.reservoir.tools",
-  [ChainId.BASE]: "https://api-base.reservoir.tools",
-  [ChainId.POL]: "https://api-polygon.reservoir.tools",
-  [ChainId.ARB]: "https://api-arbitrum.reservoir.tools",
-  [ChainId.BNB]: "https://api-bsc.reservoir.tools",
+const MORALIS_CHAIN_MAP: Partial<Record<number, string>> = {
+  [ChainId.ETH]: "eth",
+  [ChainId.BASE]: "base",
+  [ChainId.POL]: "polygon",
+  [ChainId.ARB]: "arbitrum",
+  [ChainId.BNB]: "bsc",
 }
 
-const RESERVOIR_API_KEY = "demo-api-key"
+export const MORALIS_API_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjFmYTAyMDM4LTg4YWQtNGY2Mi1hYjIzLTAzMTFmODk0MTMzOCIsIm9yZ0lkIjoiNTA1MDAzIiwidXNlcklkIjoiNTE5NjIyIiwidHlwZUlkIjoiNjFhNTNmOTYtZmY1Yy00ZTVjLWI2NTQtN2ZiNzYyOTg4ZjU0IiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NzMzMTg4MzYsImV4cCI6NDkyOTA3ODgzNn0.zGkAm3Jq5bwPjvg-WKZDb-wxszOISCTuqDos14juBaY"
 const FLOOR_PRICE_CACHE_TTL = 5 * 60 * 1000
 
 class EvmNftFloorPriceService {
@@ -23,7 +24,7 @@ class EvmNftFloorPriceService {
     contract: string,
     chainId: number,
   ): Promise<EvmNftFloorPrice | undefined> {
-    const baseUrl = RESERVOIR_BASE_URLS[chainId]
+    const baseUrl = MORALIS_CHAIN_MAP[chainId]
     if (!baseUrl) return undefined
 
     const cacheKey = `EVM_NFT_FLOOR_${chainId}_${contract.toLowerCase()}`
@@ -43,25 +44,25 @@ class EvmNftFloorPriceService {
     contract: string,
     baseUrl: string,
   ): Promise<EvmNftFloorPrice | undefined> {
-    const url = new URL(`${baseUrl}/collections/v7`)
-    url.searchParams.set("contract", contract)
-    url.searchParams.set("limit", "1")
+    const url = new URL(
+      `https://deep-index.moralis.io/api/v2.2/nft/${contract}/floor-price`,
+    )
+    url.searchParams.set("chain", baseUrl)
 
     const response = await fetch(url.toString(), {
-      headers: { "x-api-key": RESERVOIR_API_KEY },
+      headers: { "X-API-Key": MORALIS_API_KEY },
     })
 
     if (!response.ok) return undefined
 
     const data = await response.json()
-    const price = data.collections?.[0]?.floorAsk?.price
 
-    if (!price?.amount?.decimal) return undefined
+    if (!data.floor_price) return undefined
 
     return {
-      nativePrice: price.amount.decimal,
-      usdPrice: price.amount.usd ?? 0,
-      symbol: price.currency?.symbol ?? "ETH",
+      nativePrice: Number(data.floor_price),
+      usdPrice: Number(data.floor_price_usd ?? 0),
+      symbol: data.floor_price_currency ?? "ETH",
     }
   }
 }

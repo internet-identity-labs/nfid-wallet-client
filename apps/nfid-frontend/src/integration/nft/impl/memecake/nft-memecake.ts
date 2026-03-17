@@ -1,3 +1,4 @@
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { memeCakeTransactionMapper } from "src/integration/nft/impl/memecake/transaction/mamcake-transaction-mapper"
 import { TransactionApiResponse } from "src/integration/nft/impl/memecake/transaction/transaction-types"
 import {
@@ -35,6 +36,14 @@ export class NftMemeCake extends NftImpl {
       .toLowerCase()
       .replaceAll(" ", "")
     return `https://memecake.io/collection/${collectionName}`
+  }
+
+  getChainId(): ChainId {
+    return ChainId.ICP
+  }
+
+  getNftStandard(): string {
+    return "EXT"
   }
 }
 

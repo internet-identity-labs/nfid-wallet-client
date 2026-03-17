@@ -9,7 +9,6 @@ function loadEnvForWebpack() {
   if (explicitEnvFile) {
     const envPath = path.resolve(__dirname, '../../', explicitEnvFile);
     if (fs.existsSync(envPath)) {
-      console.log(`[webpack] Loading environment from: ${explicitEnvFile}`);
       const result = dotenv.config({ path: envPath });
       if (result.error) {
         console.error(`[webpack] Error loading ${explicitEnvFile}:`, result.error);

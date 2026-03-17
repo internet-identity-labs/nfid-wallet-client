@@ -3,10 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "npx craco start",
-    "build": "BUILD_PATH=../../dist/apps/nfid-demo npx craco build",
-    "test": "npx jest test --passWithNoTests",
-    "eject": "react-scripts eject",
+    "start": "nx serve nfid-demo",
+    "build": "nx build nfid-demo",
+    "test": "nx test nfid-demo",
     "serve": "npm start"
   },
   "browserslist": {

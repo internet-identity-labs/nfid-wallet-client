@@ -13,7 +13,7 @@ export const VaultAddressBar: React.FC<VaultAddressBarProps> = () => {
   return (
     <>
       <Card
-        classNames="mb-[30px]"
+        className="mb-[30px]"
         text={
           <>
             <b>NFID Vaults has grown up!</b> The Vaults you know and love are

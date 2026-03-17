@@ -5,6 +5,71 @@
   "projectType": "application",
   "tags": ["scope:app", "type:application", "layer:app"],
   "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "webpackConfig": "apps/nfid-frontend/webpack.config.cjs",
+        "outputPath": "dist/apps/nfid-frontend",
+        "index": "apps/nfid-frontend/public/index.html",
+        "main": "apps/nfid-frontend/src/index.tsx",
+        "tsConfig": "apps/nfid-frontend/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/nfid-frontend/public/assets",
+            "output": "assets"
+          },
+          {
+            "glob": "**/*",
+            "input": "apps/nfid-frontend/public/.well-known",
+            "output": ".well-known"
+          },
+          {
+            "glob": "sw.js",
+            "input": "apps/nfid-frontend/public",
+            "output": "."
+          },
+          {
+            "glob": "main.png",
+            "input": "apps/nfid-frontend/public",
+            "output": "."
+          },
+          {
+            "glob": "manifest.json",
+            "input": "apps/nfid-frontend/public",
+            "output": "."
+          }
+        ],
+        "styles": ["apps/nfid-frontend/src/index.css"],
+        "optimization": false,
+        "sourceMap": true
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "sourceMap": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        },
+        "example": {
+          "optimization": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/webpack:dev-server",
+      "options": {
+        "buildTarget": "nfid-wallet-client:build",
+        "port": 9090,
+        "hmr": true
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "nfid-wallet-client:build:production"
+        }
+      }
+    },
     "storybook": {
       "executor": "@nx/storybook:storybook",
       "options": {

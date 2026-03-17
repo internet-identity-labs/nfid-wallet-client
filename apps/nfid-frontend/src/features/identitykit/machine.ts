@@ -330,6 +330,9 @@ const machineServices = {
 }
 
 export const IdentityKitRPCMachine = createMachine(
-  machineConfig,
+  {
+    predictableActionArguments: true,
+    ...machineConfig,
+  },
   machineServices,
 )

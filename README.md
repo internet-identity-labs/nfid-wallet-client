@@ -178,19 +178,16 @@ Execute all end-to-end tests:
 npx env-cmd -f .env.test nx test:e2e nfid-frontend-e2e
 ```
 
-**Run a specific test by tag:**
+**Run a specific E2E test by tag:**
 
 ```bash
-npx env-cmd -f .env.test nx test:e2e nfid-frontend-e2e -- --cucumberOpts.tagExpression='@sendft'
+yarn test:e2e:frontend -- --cucumberOpts.tagExpression='@sendft'
 ```
 
 **Common test tags:**
 
 - `@sendft` - Send FT tests
 - `@assets` - Asset/token tests
-- `@desktop` - Desktop tests
-- `@mobile` - Mobile tests
-- `@skip` - Skipped tests
 
 **Combine multiple tags:**
 

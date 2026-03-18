@@ -1,7 +1,9 @@
 import clsx from "clsx"
 import React from "react"
 
-interface ListItemProps extends React.HTMLAttributes<HTMLDivElement> {
+type ListItemBaseProps = Omit<React.HTMLAttributes<HTMLDivElement>, "title">
+
+interface ListItemProps extends ListItemBaseProps {
   icon?: React.ReactNode
   title: string | React.ReactNode
   disabled?: boolean

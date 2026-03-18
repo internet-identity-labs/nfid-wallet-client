@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react"
 import { useSWR } from "@nfid/swr"
 import { PAGINATION_ITEMS } from "../constants"
 import { IActivityRow, IActivityRowGroup } from "../types"
-import { getAllActivity } from "../utils/activity"
+import { getAllActivity, getAllViewOnlyActivity } from "../utils/activity"
 import { groupActivityRowsByDate } from "../utils/row"
 import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 import { EVM_NATIVE, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
@@ -13,6 +13,8 @@ interface UseActivityFilterParams {
   tokenFilter: string[]
   chainFilter: string[]
   txFilter: string[]
+  viewOnlyAddress?: string
+  viewOnlyAddressType?: "icp" | "evm" | "btc" | null
 }
 
 export const useActivityFilter = ({
@@ -20,16 +22,31 @@ export const useActivityFilter = ({
   tokenFilter,
   chainFilter,
   txFilter,
+  viewOnlyAddress,
+  viewOnlyAddressType,
 }: UseActivityFilterParams) => {
   const [limit, setLimit] = useState(PAGINATION_ITEMS)
   const [activities, setActivities] = useState<IActivityRowGroup[]>([])
   const [isButtonLoading, setIsButtonLoading] = useState(false)
   const [hasMoreData, setHasMoreData] = useState(true)
   const [isFirstLoading, setIsFirstLoading] = useState(true)
+  const isViewOnly = !!viewOnlyAddress && !!viewOnlyAddressType
 
   const { data, isValidating } = useSWR(
-    activeTokens.length > 0 ? ["activity", limit] : null,
-    () => getAllActivity(limit, activeTokens),
+    isViewOnly
+      ? ["activity", viewOnlyAddress, limit]
+      : activeTokens.length > 0
+        ? ["activity", limit]
+        : null,
+    () =>
+      isViewOnly
+        ? getAllViewOnlyActivity(
+            limit,
+            activeTokens,
+            viewOnlyAddress,
+            viewOnlyAddressType,
+          )
+        : getAllActivity(limit, activeTokens),
     {
       revalidateOnMount: true,
       revalidateOnFocus: false,

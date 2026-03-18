@@ -58,6 +58,7 @@ export const navigationPopupLinks = [
   {
     icon: NavViewOnlyIcon,
     title: "View-only mode",
+    link: "",
     id: "nav-view-only",
   },
 ]

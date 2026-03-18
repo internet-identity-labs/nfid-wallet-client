@@ -188,7 +188,7 @@ const config = composePlugins(
 
     const modifyBabelLoader = (rule) => {
       if (rule.loader && typeof rule.loader === 'string' && rule.loader.includes('babel-loader')) {
-        rule.exclude = /node_modules\/(?!(@dfinity\/ledger-icp)\/).*/;
+        rule.exclude = /node_modules[\\/](?!(@dfinity[\\/]ledger-icp)[\\/]).*/;
         delete rule.include;
         return rule;
       }

@@ -16,6 +16,7 @@ import { nftService } from "frontend/integration/nft/nft-service"
 import { ProfileContext } from "frontend/provider"
 
 import { fetchTokens } from "../fungible-token/utils"
+import { ftService } from "frontend/integration/ft/ft-service"
 import { ModalType } from "../transfer-modal/types"
 import { fetchNFTs } from "./utils/util"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
@@ -24,26 +25,51 @@ const DEFAULT_LIMIT_PER_PAGE = 8
 
 const NFTsPage = () => {
   const globalServices = useContext(ProfileContext)
+  const { isViewOnlyMode, viewOnlyAddress, viewOnlyAddressType } =
+    globalServices
   const [nfts, setNfts] = useState<NFT[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [, send] = useActor(globalServices.transferService)
 
   const { data: allNfts, isLoading: isAllNFTsLoading } = useSWR(
-    "nftList",
-    () => fetchNFTs(),
+    isViewOnlyMode ? ["nftList", viewOnlyAddress] : "nftList",
+    () =>
+      isViewOnlyMode
+        ? nftService.getViewOnlyNFTs(viewOnlyAddress!, viewOnlyAddressType!)
+        : fetchNFTs(),
     { revalidateOnFocus: false, revalidateIfStale: false },
   )
 
   const { data, isLoading } = useSWR(
-    ["nftList", currentPage],
-    () => fetchNFTs(currentPage, DEFAULT_LIMIT_PER_PAGE),
+    isViewOnlyMode
+      ? ["nftList", viewOnlyAddress, currentPage]
+      : ["nftList", currentPage],
+    () =>
+      isViewOnlyMode
+        ? nftService.getViewOnlyNFTs(
+            viewOnlyAddress!,
+            viewOnlyAddressType!,
+            currentPage,
+            DEFAULT_LIMIT_PER_PAGE,
+          )
+        : fetchNFTs(currentPage, DEFAULT_LIMIT_PER_PAGE),
     { revalidateOnFocus: false, revalidateIfStale: false },
   )
 
-  const { data: tokens } = useSWRWithTimestamp("tokens", fetchTokens, {
-    revalidateOnFocus: false,
-    revalidateOnMount: false,
-  })
+  const { data: tokens } = useSWRWithTimestamp(
+    isViewOnlyMode ? ["tokens", viewOnlyAddress] : "tokens",
+    () => {
+      if (!isViewOnlyMode) return fetchTokens()
+      if (viewOnlyAddressType === "icp")
+        return ftService.getIcpViewOnlyTokens(viewOnlyAddress!)
+      if (viewOnlyAddressType === "btc") return ftService.getBtcViewOnlyTokens()
+      return ftService.getEvmViewOnlyTokens(viewOnlyAddress!)
+    },
+    {
+      revalidateOnFocus: false,
+      revalidateOnMount: false,
+    },
+  )
 
   const { initedTokens } = useTokensInit(tokens)
 
@@ -59,7 +85,11 @@ const NFTsPage = () => {
     isLoading: nftTotalPriceLoading,
     mutate,
   } = useSWR(
-    icp && allNfts?.items ? "nftTotalPrice" : null,
+    allNfts?.items
+      ? isViewOnlyMode
+        ? ["nftTotalPrice", viewOnlyAddress]
+        : "nftTotalPrice"
+      : null,
     () => nftService.getNFTsTotalPrice(allNfts?.items, icp),
     {
       revalidateOnFocus: false,

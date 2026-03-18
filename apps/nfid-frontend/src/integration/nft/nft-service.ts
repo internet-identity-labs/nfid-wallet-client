@@ -34,6 +34,10 @@ export class NftService {
     } catch {
       return []
     }
+    return this.getEVMNFTsByAddress(address)
+  }
+
+  async getEVMNFTsByAddress(address: string): Promise<NFT[]> {
     const services = [
       ethereumService,
       baseService,
@@ -50,6 +54,42 @@ export class NftService {
     const nfts = assets.map((asset) => new EvmNftImpl(asset))
     await Promise.all(nfts.map((nft) => nft.init()))
     return nfts
+  }
+
+  async getViewOnlyNFTs(
+    address: string,
+    addressType: "icp" | "evm" | "btc",
+    page: number = 1,
+    limitPerPage: number = Number.MAX_SAFE_INTEGER,
+  ): Promise<PaginatedResponse<NFT>> {
+    let rawData: NFT[] = []
+
+    if (addressType === "icp") {
+      rawData = await this.getICPNFTs(Principal.fromText(address))
+    } else if (addressType === "evm") {
+      rawData = await this.getEVMNFTsByAddress(address)
+    }
+
+    const nftsWithoutPrice = rawData.filter(
+      (nft) => nft.getTokenFloorPriceUSD() === undefined || nft.getError(),
+    ).length
+    const totalItems = rawData.length
+    const totalPages = Math.ceil(totalItems / limitPerPage)
+    const startIndex = (page - 1) * limitPerPage
+    const endIndex = Math.min(startIndex + limitPerPage, totalItems)
+    const items = rawData
+      .slice(startIndex, endIndex)
+      .sort(
+        (a, b) => (b.getTokenFloorPrice() ?? 0) - (a.getTokenFloorPrice() ?? 0),
+      )
+
+    return {
+      items,
+      currentPage: page,
+      totalPages,
+      totalItems,
+      nftsWithoutPrice,
+    }
   }
 
   async getNFTs(
@@ -77,9 +117,7 @@ export class NftService {
     const items = rawData.slice(startIndex, endIndex)
 
     const sortedItems = items.sort(
-      (a, b) =>
-        Number(b.getTokenFloorPriceFormatted()) -
-        Number(a.getTokenFloorPriceFormatted()),
+      (a, b) => (b.getTokenFloorPrice() ?? 0) - (a.getTokenFloorPrice() ?? 0),
     )
 
     return {
@@ -117,27 +155,30 @@ export class NftService {
   > {
     if (!nfts || nfts.length === 0) return
 
-    await Promise.all(
-      nfts.map((nft) => (nft.isInited() ? Promise.resolve(nft) : nft.init())),
-    )
-
-    if (!icp) return
-
-    const tokenRate = await exchangeRateService.usdPriceForICRC1(
-      icp.getTokenAddress(),
-    )
-
-    if (!tokenRate) return
+    await Promise.all([
+      ...nfts.map((nft) =>
+        nft.isInited() ? Promise.resolve(nft) : nft.init(),
+      ),
+      exchangeRateService.cacheUsdIcpRate(),
+    ])
 
     const usdBalance = nfts
       .filter((nft) => !nft.getError())
       .map((nft) => BigNumber(nft.getTokenFloorPriceUSD()?.toFixed(2) ?? 0))
       .reduce((sum, usd) => sum.plus(usd), new BigNumber(0))
 
+    if (!icp) return { value: usdBalance.toString() }
+
+    const tokenRate = await exchangeRateService.usdPriceForICRC1(
+      icp.getTokenAddress(),
+    )
+
+    if (!tokenRate) return { value: usdBalance.toString() }
+
     const usdBalanceDayChange = icp.getUSDBalanceDayChange(usdBalance)
     const tokenRateDayChange = icp.getTokenRateDayChangePercent()
 
-    if (!usdBalanceDayChange) return
+    if (!usdBalanceDayChange) return { value: usdBalance.toString() }
 
     return {
       value: usdBalance.toString(),

@@ -29,21 +29,22 @@ class EvmNftFloorPriceService {
 
     const cacheKey = `EVM_NFT_FLOOR_${chainId}_${contract.toLowerCase()}`
 
-    return ttlCacheService.getOrFetch(
+    const result = await ttlCacheService.getOrFetch(
       cacheKey,
       () => this.fetchFloorPrice(contract, baseUrl),
       FLOOR_PRICE_CACHE_TTL,
       {
-        serialize: JSON.stringify,
-        deserialize: (v) => JSON.parse(v as string) as EvmNftFloorPrice,
+        serialize: (v) => JSON.stringify(v),
+        deserialize: (v) => JSON.parse(v as string) as EvmNftFloorPrice | null,
       },
     )
+    return result ?? undefined
   }
 
   private async fetchFloorPrice(
     contract: string,
     baseUrl: string,
-  ): Promise<EvmNftFloorPrice | undefined> {
+  ): Promise<EvmNftFloorPrice | null> {
     const url = new URL(
       `https://deep-index.moralis.io/api/v2.2/nft/${contract}/floor-price`,
     )
@@ -53,11 +54,11 @@ class EvmNftFloorPriceService {
       headers: { "X-API-Key": MORALIS_API_KEY },
     })
 
-    if (!response.ok) return undefined
+    if (!response.ok) return null
 
     const data = await response.json()
 
-    if (!data.floor_price) return undefined
+    if (!data.floor_price) return null
 
     return {
       nativePrice: Number(data.floor_price),

@@ -1,13 +1,15 @@
+import { Principal } from "@dfinity/principal"
 import { FC } from "react"
 
 import { ModalComponent } from "packages/ui/src/molecules/modal"
 import { Button, Input } from "@nfid-frontend/ui"
 import { useForm } from "react-hook-form"
 import {
-  validateICPAddress,
   validateBTCAddress,
   validateETHAddress,
+  validatePrincipalAddress,
 } from "frontend/features/transfer-modal/utils"
+import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 
 interface ViewOnlyFormValues {
   address: string
@@ -34,7 +36,10 @@ export const ViewOnlyModal: FC<ViewOnlyModalProps> = ({ isOpen, onCLose }) => {
   const address = watch("address")
 
   const openViewOnly = () => {
-    const url = new URL("/wallet/tokens", window.location.origin)
+    const url = new URL(
+      `${ProfileConstants.base}/${ProfileConstants.tokens}`,
+      window.location.origin,
+    )
     url.searchParams.set("viewOnly", address)
     window.open(url.toString(), "_blank")
   }
@@ -64,7 +69,7 @@ export const ViewOnlyModal: FC<ViewOnlyModalProps> = ({ isOpen, onCLose }) => {
           {...register("address", {
             required: "Address is required",
             validate: (value) => {
-              const isICP = validateICPAddress(value) === true
+              const isICP = validatePrincipalAddress(value) === true
               const isBTC = validateBTCAddress(value) === true
               const isEVM = validateETHAddress(value) === true
               return isICP || isBTC || isEVM || "Invalid wallet address"

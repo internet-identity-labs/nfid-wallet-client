@@ -107,7 +107,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 }) => {
   const location = useLocation()
   const navigate = useNavigate()
-  const { isViewOnlyMode } = useContext(ProfileContext)
+  const { isViewOnlyMode, viewOnlyAddress } = useContext(ProfileContext)
   const [isRefreshing, setIsRefreshing] = useState(false)
 
   const isNftDetails = Boolean(
@@ -152,6 +152,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }, [hasUncompletedSwap, isViewOnlyMode])
 
   useEffect(() => {
+    if (isViewOnlyMode) return
     const checkTransactions = async () => {
       const transactions = await swapTransactionService.getTransactions()
 
@@ -351,7 +352,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         walletTheme={walletTheme}
         setWalletTheme={setWalletTheme}
       />
-      <TransferModalCoordinator />
+      {!isViewOnlyMode && <TransferModalCoordinator />}
       <div
         className={clsx(
           "relative z-1 px-[16px]",
@@ -411,7 +412,11 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
                 onStakeClick={onStakeClick}
                 refreshPortfolio={refreshPortfolio}
                 isRefreshing={isRefreshing}
-                address={authState.getUserIdData().publicKey}
+                address={
+                  isViewOnlyMode
+                    ? (viewOnlyAddress ?? "")
+                    : authState.getUserIdData().publicKey
+                }
               />
               <BtcBanner
                 onBtcSwapClick={onBtcSwapClick}

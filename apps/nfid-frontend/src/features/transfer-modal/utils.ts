@@ -186,6 +186,15 @@ export const validateICRC1Address = (address: string): boolean | string => {
   }
 }
 
+export const validatePrincipalAddress = (address: string): boolean | string => {
+  try {
+    Principal.fromText(address)
+    return true
+  } catch {
+    return false
+  }
+}
+
 export const validateBTCAddress = (address: string): boolean | string => {
   const result = validate(address, Network.mainnet)
 

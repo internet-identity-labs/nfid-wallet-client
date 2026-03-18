@@ -8,7 +8,11 @@ import {
   ftService,
   TOKENS_REFRESH_INTERVAL,
 } from "frontend/integration/ft/ft-service"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
+import {
+  ChainId,
+  isEvmToken,
+  State,
+} from "@nfid/integration/token/icrc1/enum/enums"
 import { useContext, useMemo } from "react"
 import { useActor } from "@xstate/react"
 import { ProfileContext } from "frontend/provider"
@@ -21,9 +25,18 @@ export const useTokensInit = (tokens: FT[] | undefined) => {
     () => tokens?.filter((token) => token.getTokenState() === State.Active),
     [tokens],
   )
-  const globalServices = useContext(ProfileContext)
-  const [state] = useActor(globalServices.transferService)
-  const addressesReady = !isBtcAddressLoading && !isEthAddressLoading
+
+  const {
+    isViewOnlyMode,
+    viewOnlyAddress,
+    viewOnlyAddressType,
+    transferService,
+  } = useContext(ProfileContext)
+
+  const [state] = useActor(transferService)
+
+  const addressesReady =
+    isViewOnlyMode || (!isBtcAddressLoading && !isEthAddressLoading)
 
   const {
     data: initedTokens,
@@ -32,19 +45,34 @@ export const useTokensInit = (tokens: FT[] | undefined) => {
   } = useSWRWithTimestamp(
     // TODO: do not block all the tokens if there is no eth/btc address!
     addressesReady && activeTokens && activeTokens.length > 0
-      ? "initedTokens"
+      ? isViewOnlyMode
+        ? ["initedTokens", viewOnlyAddress]
+        : "initedTokens"
       : null,
     async () => {
       if (!activeTokens) return
 
-      const { publicKey } = authState.getUserIdData()
-      const principal = Principal.fromText(publicKey)
-      const initedTokens = await ftService.getInitedTokens(
+      let principal: Principal
+      let viewOnlyAddressOverride: string | undefined
+
+      if (isViewOnlyMode) {
+        if (viewOnlyAddressType === "icp") {
+          principal = Principal.fromText(viewOnlyAddress!)
+        } else {
+          principal = Principal.anonymous()
+          viewOnlyAddressOverride = viewOnlyAddress!
+        }
+      } else {
+        const { publicKey } = authState.getUserIdData()
+        principal = Principal.fromText(publicKey)
+      }
+
+      return ftService.getInitedTokens(
         activeTokens,
         principal,
+        Boolean(isViewOnlyMode),
+        viewOnlyAddressOverride,
       )
-
-      return initedTokens
     },
     {
       revalidateOnFocus: false,
@@ -54,7 +82,9 @@ export const useTokensInit = (tokens: FT[] | undefined) => {
         state.value !== "Hidden" ? undefined : TOKENS_REFRESH_INTERVAL,
       keepPreviousData: true,
       onSuccess: () => {
-        mutateData("ftUsdValue")
+        mutateData(
+          isViewOnlyMode ? ["ftUsdValue", viewOnlyAddress] : "ftUsdValue",
+        )
         mutateData("fullUsdValue")
       },
     },

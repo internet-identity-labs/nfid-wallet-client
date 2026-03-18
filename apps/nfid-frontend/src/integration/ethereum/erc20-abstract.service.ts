@@ -158,7 +158,12 @@ export abstract class Erc20Service {
       return []
     }
 
-    const root = authState.getUserIdData().anchor
+    let root: string
+    try {
+      root = String(authState.getUserIdData().anchor)
+    } catch {
+      root = "anonymous"
+    }
     const cacheKey = `${ERC20_TOKENS_CACHE_NAME}${root}-${this.chainId}`
 
     const cache = await storageWithTtl.getEvenExpired(cacheKey)

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 
 import { Button } from "@nfid-frontend/ui"
 
-import { AppScreen, H2, P, Card } from "@nfid-frontend/ui"
+import { AppScreen, H2, P, CardBody } from "@nfid-frontend/ui"
 
 interface NotFoundProps extends React.DetailedHTMLProps<
   React.HTMLAttributes<HTMLDivElement>,
@@ -18,7 +18,7 @@ export const NotFound: React.FC<NotFoundProps> = ({ children, className }) => {
     <AppScreen isFocused>
       <main className={clsx("flex flex-1")}>
         <div className="container px-6 py-0 mx-auto sm:py-4">
-          <Card className="flex flex-col items-center justify-center h-full text-center">
+          <CardBody className="flex flex-col items-center justify-center h-full text-center">
             <H2 className="mb-4 capitalize dark:text-white">Page not found</H2>
 
             <div>
@@ -34,7 +34,7 @@ export const NotFound: React.FC<NotFoundProps> = ({ children, className }) => {
                 Return to Home
               </Button>
             </div>
-          </Card>
+          </CardBody>
         </div>
       </main>
     </AppScreen>

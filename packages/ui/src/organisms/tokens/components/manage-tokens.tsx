@@ -340,7 +340,7 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                   )}
                 </div>
                 <Card
-                  classNames="mb-0 mt-auto"
+                  className="mb-0 mt-auto"
                   text={
                     <>
                       <b>Token safety.</b> Always only import ICRC-1 tokens you

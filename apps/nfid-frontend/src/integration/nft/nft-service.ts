@@ -15,7 +15,7 @@ import { NFT } from "src/integration/nft/nft"
 
 import { exchangeRateService } from "@nfid/integration"
 
-import { FT } from "../ft/ft"
+import type { FT } from "../ft/ft"
 
 export class NftService {
   async getICPNFTs(userPrincipal: Principal): Promise<NFT[]> {

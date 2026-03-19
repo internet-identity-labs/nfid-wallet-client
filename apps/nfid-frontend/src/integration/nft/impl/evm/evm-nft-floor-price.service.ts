@@ -1,18 +1,11 @@
 import { ttlCacheService } from "@nfid/client-db"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { MORALIS_CHAIN_MAP } from "../../constants/constants"
 
 export interface EvmNftFloorPrice {
   nativePrice: number
   usdPrice: number
   symbol: string
-}
-
-const MORALIS_CHAIN_MAP: Partial<Record<number, string>> = {
-  [ChainId.ETH]: "eth",
-  [ChainId.BASE]: "base",
-  [ChainId.POL]: "polygon",
-  [ChainId.ARB]: "arbitrum",
-  [ChainId.BNB]: "bsc",
 }
 
 export const MORALIS_API_KEY =

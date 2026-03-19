@@ -6,6 +6,7 @@ import {
 } from "src/integration/nft/impl/nft-transaction-record"
 import { NFTTransactions } from "src/integration/nft/impl/nft-types"
 import { MORALIS_API_KEY } from "src/integration/nft/impl/evm/evm-nft-floor-price.service"
+import { MORALIS_CHAIN_MAP } from "../../constants/constants"
 
 // ─── Moralis API types ────────────────────────────────────────────────────────
 
@@ -55,14 +56,6 @@ export class EvmNftTransactionRecord extends TransactionRecordAbstract {
 }
 
 // ─── Moralis chain map ────────────────────────────────────────────────────────
-
-const MORALIS_CHAIN_MAP: Partial<Record<number, string>> = {
-  [ChainId.ETH]: "eth",
-  [ChainId.BASE]: "base",
-  [ChainId.POL]: "polygon",
-  [ChainId.ARB]: "arbitrum",
-  [ChainId.BNB]: "bsc",
-}
 
 // ─── Service ──────────────────────────────────────────────────────────────────
 

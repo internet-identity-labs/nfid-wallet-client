@@ -238,7 +238,7 @@ export const NFTs: FC<INFTs> = ({
                   )}
                   key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
                 >
-                  <div className="relative rounded-[12px] overflow-hidden basis-[100%] flex items-center justify-center relative">
+                  <div className="relative rounded-[12px] overflow-hidden basis-[100%] flex items-center justify-center relative min-h-[336px]">
                     {nft.getError() || nft.getAssetPreview() === undefined ? (
                       <>
                         <ImageWithFallback

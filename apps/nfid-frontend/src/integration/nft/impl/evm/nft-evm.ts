@@ -24,12 +24,10 @@ const OPENSEA_CHAIN_MAP: Partial<Record<number, string>> = {
   [ChainId.BASE]: "base",
   [ChainId.POL]: "matic",
   [ChainId.ARB]: "arbitrum",
-  [ChainId.BNB]: "bsc",
   [ChainId.ETH_SEPOLIA]: "sepolia",
   [ChainId.BASE_SEPOLIA]: "base_sepolia",
   [ChainId.ARB_SEPOLIA]: "arbitrum_sepolia",
   [ChainId.POL_AMOY]: "amoy",
-  [ChainId.BNB_TESTNET]: "bsc_testnet",
 }
 
 function resolveIpfsUrl(url: string | undefined): string | undefined {
@@ -57,6 +55,7 @@ export class EvmNftImpl implements NFT {
   constructor(private readonly asset: EvmNftAsset) {}
 
   async init(): Promise<NFT> {
+    if (this.inited) return this
     const imageUrl = resolveImageUrl(this.asset)
     if (imageUrl) {
       this.assetPreview = { url: imageUrl, format: "img" }

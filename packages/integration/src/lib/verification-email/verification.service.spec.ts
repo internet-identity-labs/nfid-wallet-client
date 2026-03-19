@@ -50,6 +50,7 @@ describe("Verification of email", () => {
 
   it("should exec sendVerification and receive success response", async () => {
     let publicKey = ""
+    let antiPhishingCode = ""
     const requestId = "requestId"
     const mockFetchPromise = Promise.resolve({
       text: () => JSON.stringify({ requestId }),
@@ -57,7 +58,10 @@ describe("Verification of email", () => {
     })
 
     global.fetch = jest.fn().mockImplementation((url, options) => {
-      publicKey = validateVerificationRequest(url, options)
+      ({ publicKey, antiPhishingCode } = validateVerificationRequest(
+        url,
+        options,
+      ))
       return mockFetchPromise
     })
 
@@ -68,6 +72,7 @@ describe("Verification of email", () => {
 
     expect(result).toMatchObject({
       requestId,
+      antiPhishingCode,
       keyPair: {
         publicKey,
         privateKey: expect.any(String),
@@ -276,7 +281,10 @@ describe("Verification of email", () => {
   })
 })
 
-function validateVerificationRequest(url: string, options: any): string {
+function validateVerificationRequest(
+  url: string,
+  options: any,
+): { publicKey: string; antiPhishingCode: string } {
   expect(url).toEqual(
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/send_verification_email",
   )
@@ -290,8 +298,11 @@ function validateVerificationRequest(url: string, options: any): string {
   expect(body).toMatchObject({
     email: testEmail,
     publicKey: expect.any(String),
+    antiPhishingCode: expect.stringMatching(
+      /^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{3}-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{3}$/,
+    ),
   })
-  return body.publicKey
+  return { publicKey: body.publicKey, antiPhishingCode: body.antiPhishingCode }
 }
 
 function validateVerifyRequest(url: string, options: any): void {

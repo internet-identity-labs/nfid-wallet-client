@@ -22,6 +22,7 @@ export interface AuthWithEmailMachineContext {
   verificationEmail: string
   keyPair: KeyPair
   requestId: string
+  antiPhishingCode?: string
   emailDelegation?: Ed25519KeyIdentity
   chainRoot?: DelegationChain
   delegation: DelegationIdentity
@@ -34,7 +35,7 @@ export type Events =
   | { type: "RESEND" }
   | {
       type: "done.invoke.sendVerificationEmail"
-      data: { keyPair: KeyPair; requestId: string }
+      data: { keyPair: KeyPair; requestId: string; antiPhishingCode: string }
     }
   | {
       type: "done.invoke.checkEmailVerification"
@@ -137,6 +138,7 @@ const AuthWithEmailMachine =
         assignVerificationData: assign((_, event) => ({
           keyPair: event.data.keyPair,
           requestId: event.data.requestId,
+          antiPhishingCode: event.data.antiPhishingCode,
         })),
         assignAuthSession: assign((_, event) => ({
           authSession: event.data,

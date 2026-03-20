@@ -1,14 +1,7 @@
+import type { Principal } from "@dfinity/principal"
 import type { ActorMethod } from "@dfinity/agent"
 import type { IDL } from "@dfinity/candid"
-import type { Principal } from "@dfinity/principal"
 
-export type BitcoinNetwork =
-  | { mainnet: null }
-  | { regtest: null }
-  | { testnet: null }
-export type BtcSelectUserUtxosFeeResult =
-  | { Ok: SelectedUtxosFeeResponse }
-  | { Err: SelectedUtxosFeeError }
 export type Category =
   | { Sns: null }
   | { Spam: null }
@@ -42,38 +35,37 @@ export interface ICRC1Request {
   index: [] | [string]
   symbol: string
 }
-
 export interface NeuronData {
   name: string
   date_added: bigint
   ledger: string
   neuron_id: string
 }
-export interface Outpoint {
-  txid: Uint8Array | number[]
-  vout: number
+export type LoginType = { Global: null } | { Anonymous: null }
+export type DiscoveryStatus =
+  | { New: null }
+  | { Updated: null }
+  | { Verified: null }
+  | { Spam: null }
+export interface DiscoveryVisitRequest {
+  derivation_origin: [] | [string]
+  hostname: string
+  login: LoginType
 }
-export type SelectedUtxosFeeError = { InternalError: { msg: string } }
-export interface SelectedUtxosFeeRequest {
-  network: BitcoinNetwork
-  amount_satoshis: bigint
-  min_confirmations: [] | [number]
-}
-export interface SelectedUtxosFeeResponse {
-  fee_satoshis: bigint
-  utxos: Array<Utxo>
-}
-export interface Utxo {
-  height: number
-  value: bigint
-  outpoint: Outpoint
+export interface DiscoveryApp {
+  id: number
+  derivation_origin: [] | [string]
+  hostname: string
+  url: [] | [string]
+  name: [] | [string]
+  image: [] | [string]
+  desc: [] | [string]
+  is_global: boolean
+  is_anonymous: boolean
+  unique_users: bigint
+  status: DiscoveryStatus
 }
 export interface _SERVICE {
-  allow_signing: ActorMethod<[], undefined>
-  btc_select_user_utxos_fee: ActorMethod<
-    [SelectedUtxosFeeRequest],
-    BtcSelectUserUtxosFeeResult
-  >
   count_icrc1_canisters: ActorMethod<[], bigint>
   get_all_icrc1_canisters: ActorMethod<[], Array<ICRC1>>
   get_all_neurons: ActorMethod<[], Array<NeuronData>>
@@ -84,7 +76,14 @@ export interface _SERVICE {
   set_operator: ActorMethod<[Principal], undefined>
   store_icrc1_canister: ActorMethod<[ICRC1Request], undefined>
   store_new_icrc1_canisters: ActorMethod<[Array<ICRC1>], undefined>
-  sync_controllers: ActorMethod<[], Array<string>>
+  store_discovery_app: ActorMethod<[DiscoveryVisitRequest], undefined>
+  is_unique: ActorMethod<[DiscoveryVisitRequest], boolean>
+  get_discovery_app_paginated: ActorMethod<
+    [bigint, bigint],
+    Array<DiscoveryApp>
+  >
+  replace_all_discovery_app: ActorMethod<[Array<DiscoveryApp>], undefined>
+  clear_discovery_apps: ActorMethod<[], undefined>
 }
 export declare const idlFactory: IDL.InterfaceFactory
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[]

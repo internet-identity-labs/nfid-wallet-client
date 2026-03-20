@@ -25,7 +25,7 @@ import { ProfileContext } from "frontend/provider"
 import { NotFound } from "@nfid-frontend/ui"
 import { ProfileTemplate } from "@nfid-frontend/ui"
 
-import { fetchNFT } from "../collectibles/utils/util"
+import { fetchNFT, fetchViewOnlyNFT } from "../collectibles/utils/util"
 import { ModalType } from "../transfer-modal/types"
 import { nftInitialState, nftReducer } from "./utils"
 
@@ -41,26 +41,45 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
   setWalletTheme,
 }) => {
   const isDarkTheme = useDarkTheme()
-  const { transferService, isViewOnlyMode } = useContext(ProfileContext)
+  const {
+    transferService,
+    isViewOnlyMode,
+    viewOnlyAddress,
+    viewOnlyAddressType,
+  } = useContext(ProfileContext)
   const [state, dispatch] = useReducer(nftReducer, nftInitialState)
   const [, send] = useActor(transferService)
   const { tokenId } = useParams()
   const location = useLocation()
-  const { currentPage } = location.state
+  const currentPage = location.state?.currentPage
 
   const { data: nft, isLoading } = useSWR(
     tokenId ? ["nft", tokenId] : null,
     ([, tokenId]: [string, string]) =>
-      fetchNFT(tokenId, currentPage, DEFAULT_LIMIT_PER_PAGE),
+      isViewOnlyMode && viewOnlyAddress && viewOnlyAddressType
+        ? fetchViewOnlyNFT(
+            tokenId,
+            viewOnlyAddress,
+            viewOnlyAddressType,
+            currentPage,
+            DEFAULT_LIMIT_PER_PAGE,
+          )
+        : fetchNFT(tokenId, currentPage, DEFAULT_LIMIT_PER_PAGE),
   )
 
   const getDetails = useCallback(async () => {
     if (!tokenId) return
 
-    const nftDetails = await fetchNFT(
-      tokenId,
-      currentPage,
-      DEFAULT_LIMIT_PER_PAGE,
+    const nftDetails = await (
+      isViewOnlyMode && viewOnlyAddress && viewOnlyAddressType
+        ? fetchViewOnlyNFT(
+            tokenId,
+            viewOnlyAddress,
+            viewOnlyAddressType,
+            currentPage,
+            DEFAULT_LIMIT_PER_PAGE,
+          )
+        : fetchNFT(tokenId, currentPage, DEFAULT_LIMIT_PER_PAGE)
     ).then((data) => data?.getDetails())
     if (nftDetails) {
       try {
@@ -124,7 +143,7 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
         dispatch({ type: "SET_LOADING", key: "transactions", isLoading: false })
       }
     }
-  }, [tokenId, currentPage])
+  }, [tokenId, currentPage, isViewOnlyMode, viewOnlyAddress])
 
   useEffect(() => {
     getDetails()

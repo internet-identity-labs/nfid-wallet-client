@@ -209,6 +209,24 @@ export class NftService {
     if (!nft) throw new Error("NFT not found")
     return nft
   }
+
+  async getViewOnlyNFTByTokenId(
+    id: string,
+    address: string,
+    addressType: "icp" | "evm" | "btc",
+    pages: number = 1,
+    limit: number = Number.MAX_SAFE_INTEGER,
+  ): Promise<NFT | undefined> {
+    const nftList = await this.getViewOnlyNFTs(
+      address,
+      addressType,
+      1,
+      pages * limit,
+    )
+    const nft = nftList.items.find((nft) => nft.getTokenId() === id)?.init()
+    if (!nft) throw new Error("NFT not found")
+    return nft
+  }
 }
 
 export const nftService = new NftService()

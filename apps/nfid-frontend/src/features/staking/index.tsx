@@ -1,23 +1,35 @@
 import { useActor } from "@xstate/react"
 import { Staking } from "packages/ui/src/organisms/staking"
 import { useContext } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 
 import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { ftService } from "frontend/integration/ft/ft-service"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
 import { ProfileContext } from "frontend/provider"
 
 import { ModalType } from "../transfer-modal/types"
-import { fetchStakedTokens } from "./utils"
 import { fetchTokens } from "../fungible-token/utils"
+import { fetchStakedTokens, fetchViewOnlyStakedTokens } from "./utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 const StakingPage = () => {
   const navigate = useNavigate()
-  const globalServices = useContext(ProfileContext)
-  const [, send] = useActor(globalServices.transferService)
+  const {
+    isViewOnlyMode,
+    viewOnlyAddress,
+    viewOnlyAddressType,
+    transferService,
+  } = useContext(ProfileContext)
+  const [, send] = useActor(transferService)
+  const { search } = useLocation()
+
+  const navigateWithSearch = (to: unknown) => {
+    if (typeof to === "string") return navigate({ pathname: to, search })
+    return navigate(to as never)
+  }
 
   const onStakeClick = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
@@ -26,16 +38,38 @@ const StakingPage = () => {
     send("SHOW")
   }
 
-  const { data: tokens } = useSWRWithTimestamp("tokens", fetchTokens, {
-    revalidateOnFocus: false,
-    revalidateOnMount: false,
-  })
+  const { data: tokens } = useSWRWithTimestamp(
+    isViewOnlyMode ? ["tokens", viewOnlyAddress] : "tokens",
+    () => {
+      if (!isViewOnlyMode) return fetchTokens()
+      if (viewOnlyAddressType === "icp")
+        return ftService.getIcpViewOnlyTokens(viewOnlyAddress!)
+      return Promise.resolve([])
+    },
+    {
+      revalidateOnFocus: false,
+      revalidateOnMount: isViewOnlyMode,
+    },
+  )
 
   const { initedTokens } = useTokensInit(tokens)
 
+  const isNonIcpViewOnly = isViewOnlyMode && viewOnlyAddressType !== "icp"
+
   const { data: stakedTokens, isLoading } = useSWRWithTimestamp(
-    initedTokens ? "stakedTokens" : null,
-    () => fetchStakedTokens(initedTokens!, false),
+    isNonIcpViewOnly
+      ? ["stakedTokens", viewOnlyAddress]
+      : initedTokens
+        ? isViewOnlyMode
+          ? ["stakedTokens", viewOnlyAddress]
+          : "stakedTokens"
+        : null,
+    () =>
+      isNonIcpViewOnly
+        ? Promise.resolve([])
+        : isViewOnlyMode
+          ? fetchViewOnlyStakedTokens(viewOnlyAddress!, initedTokens!)
+          : fetchStakedTokens(initedTokens!, false),
     {
       revalidateOnFocus: false,
     },
@@ -48,9 +82,9 @@ const StakingPage = () => {
       isLoading={isLoading}
       stakedTokens={stakedTokens}
       links={ProfileConstants}
-      navigate={navigate}
+      navigate={navigateWithSearch}
       totalBalances={totalBalances}
-      onStakeClick={onStakeClick}
+      onStakeClick={isViewOnlyMode ? undefined : onStakeClick}
     />
   )
 }

@@ -64,6 +64,15 @@ export class NftService {
   ): Promise<PaginatedResponse<NFT>> {
     let rawData: NFT[] = []
 
+    if (addressType === "btc")
+      return {
+        items: [],
+        currentPage: page,
+        totalPages: 0,
+        totalItems: 0,
+        nftsWithoutPrice: 0,
+      }
+
     if (addressType === "icp") {
       rawData = await this.getICPNFTs(Principal.fromText(address))
     } else if (addressType === "evm") {

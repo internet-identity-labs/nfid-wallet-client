@@ -1,8 +1,9 @@
-import { SignIdentity } from "@dfinity/agent"
+import { AnonymousIdentity, SignIdentity } from "@dfinity/agent"
 import { Followees as IcpFollowees } from "@dfinity/nns"
 import { Principal } from "@dfinity/principal"
 import { Followees } from "@dfinity/sns/dist/candid/sns_governance"
 
+import { listNNSFunctions } from "@nfid/integration"
 import { ICP_ROOT_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
@@ -22,6 +23,16 @@ export const fetchStakedTokens = async (tokens: FT[], refetch?: boolean) => {
   )
 }
 
+export const fetchViewOnlyStakedTokens = async (
+  address: string,
+  tokens: FT[],
+) => {
+  return await stakingService.getViewOnlyStakedTokens(
+    Principal.fromText(address),
+    tokens,
+  )
+}
+
 export const fetchDelegates = async (
   identity?: SignIdentity,
   root?: Principal,
@@ -32,6 +43,14 @@ export const fetchDelegates = async (
     return stakingService.getICPDelegates()
   }
   return stakingService.getDelegates(identity, root)
+}
+
+export const fetchViewOnlyDelegates = async (root?: Principal) => {
+  if (!root || root.toText() === ICP_ROOT_CANISTER_ID) return
+  return listNNSFunctions({
+    identity: new AnonymousIdentity(),
+    rootCanisterId: root,
+  })
 }
 
 export const isSNSFollowees = (

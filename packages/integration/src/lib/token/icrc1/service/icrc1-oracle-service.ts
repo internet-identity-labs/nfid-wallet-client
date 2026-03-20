@@ -5,6 +5,8 @@ import { ttlCacheService } from "@nfid/client-db"
 import { idlFactory } from "../../../_ic_api/icrc1_oracle"
 import {
   BtcSelectUserUtxosFeeResult,
+  DiscoveryApp,
+  DiscoveryVisitRequest,
   ICRC1,
   ICRC1Request,
   SelectedUtxosFeeRequest,
@@ -15,9 +17,17 @@ import {
   agentBaseConfig,
   iCRC1OracleActor,
 } from "../../../actors"
-import { ICRC1 as ICRC1Data } from "../types"
+import {
+  DiscoveryAppData,
+  DiscoveryAppStatus,
+  DiscoveryVisitData,
+  ICRC1 as ICRC1Data,
+} from "../types"
 
 export const ICRC1_ORACLE_CACHE_NAME = "ICRC1OracleService.getICRC1Canisters"
+export const DISCOVERY_APPS_CACHE_NAME =
+  "ICRC1OracleService.getDiscoveryAppPaginated"
+const DISCOVERY_APPS_TTL = 24 * 60 * 60 * 1000
 
 export class ICRC1OracleService {
   async addICRC1Canister(data: ICRC1Data): Promise<void> {
@@ -95,6 +105,60 @@ export class ICRC1OracleService {
       agent: HttpAgent.createSync({ ...agentBaseConfig, identity }),
     })
     await actor.allow_signing()
+  }
+
+  async storeDiscoveryApp(data: DiscoveryVisitData): Promise<void> {
+    const request: DiscoveryVisitRequest = {
+      derivation_origin:
+        data.derivationOrigin !== undefined ? [data.derivationOrigin] : [],
+      hostname: data.hostname,
+      login: data.login === "Global" ? { Global: null } : { Anonymous: null },
+    }
+    const unique = await iCRC1OracleActor.is_unique(request)
+    if (!unique) return
+    await iCRC1OracleActor.store_discovery_app(request)
+  }
+
+  async isUnique(data: DiscoveryVisitData): Promise<boolean> {
+    const request: DiscoveryVisitRequest = {
+      derivation_origin:
+        data.derivationOrigin !== undefined ? [data.derivationOrigin] : [],
+      hostname: data.hostname,
+      login: data.login === "Global" ? { Global: null } : { Anonymous: null },
+    }
+    return await iCRC1OracleActor.is_unique(request)
+  }
+
+  async getDiscoveryAppPaginated(
+    offset: bigint,
+    limit: bigint,
+  ): Promise<DiscoveryAppData[]> {
+    const cacheKey = `${DISCOVERY_APPS_CACHE_NAME}:${offset}:${limit}`
+    return ttlCacheService.getOrFetch(
+      cacheKey,
+      () =>
+        iCRC1OracleActor
+          .get_discovery_app_paginated(offset, limit)
+          .then((apps) => apps.map(this.mapDiscoveryApp)),
+      DISCOVERY_APPS_TTL,
+    )
+  }
+
+  private mapDiscoveryApp(app: DiscoveryApp): DiscoveryAppData {
+    const statusKey = Object.keys(app.status)[0] as DiscoveryAppStatus
+    return {
+      id: app.id,
+      derivationOrigin: app.derivation_origin[0],
+      hostname: app.hostname,
+      url: app.url[0],
+      name: app.name[0],
+      image: app.image[0],
+      desc: app.desc[0],
+      isGlobal: app.is_global,
+      isAnonymous: app.is_anonymous,
+      uniqueUsers: app.unique_users,
+      status: statusKey,
+    }
   }
 
   serializeCanisters(canister: Array<ICRC1>): string {

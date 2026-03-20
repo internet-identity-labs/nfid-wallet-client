@@ -2,6 +2,13 @@ import type { Principal } from "@dfinity/principal"
 import type { ActorMethod } from "@dfinity/agent"
 import type { IDL } from "@dfinity/candid"
 
+export type BitcoinNetwork =
+  | { mainnet: null }
+  | { regtest: null }
+  | { testnet: null }
+export type BtcSelectUserUtxosFeeResult =
+  | { Ok: SelectedUtxosFeeResponse }
+  | { Err: SelectedUtxosFeeError }
 export type Category =
   | { Sns: null }
   | { Spam: null }
@@ -65,7 +72,31 @@ export interface DiscoveryApp {
   unique_users: bigint
   status: DiscoveryStatus
 }
+export interface Outpoint {
+  txid: Uint8Array | number[]
+  vout: number
+}
+export type SelectedUtxosFeeError = { InternalError: { msg: string } }
+export interface SelectedUtxosFeeRequest {
+  network: BitcoinNetwork
+  amount_satoshis: bigint
+  min_confirmations: [] | [number]
+}
+export interface SelectedUtxosFeeResponse {
+  fee_satoshis: bigint
+  utxos: Array<Utxo>
+}
+export interface Utxo {
+  height: number
+  value: bigint
+  outpoint: Outpoint
+}
 export interface _SERVICE {
+  allow_signing: ActorMethod<[], undefined>
+  btc_select_user_utxos_fee: ActorMethod<
+    [SelectedUtxosFeeRequest],
+    BtcSelectUserUtxosFeeResult
+  >
   count_icrc1_canisters: ActorMethod<[], bigint>
   get_all_icrc1_canisters: ActorMethod<[], Array<ICRC1>>
   get_all_neurons: ActorMethod<[], Array<NeuronData>>

@@ -1,8 +1,4 @@
-export const idlFactory = ({ IDL }) => {
-  const Conf = IDL.Record({
-    operator: IDL.Opt(IDL.Principal),
-    im_canister: IDL.Opt(IDL.Principal),
-  })
+export const idlFactory = ({ IDL }: any) => {
   const Category = IDL.Variant({
     Sns: IDL.Null,
     Spam: IDL.Null,
@@ -64,7 +60,43 @@ export const idlFactory = ({ IDL }) => {
     unique_users: IDL.Nat64,
     status: DiscoveryStatus,
   })
+  const BitcoinNetwork = IDL.Variant({
+    mainnet: IDL.Null,
+    regtest: IDL.Null,
+    testnet: IDL.Null,
+  })
+  const SelectedUtxosFeeRequest = IDL.Record({
+    network: BitcoinNetwork,
+    amount_satoshis: IDL.Nat64,
+    min_confirmations: IDL.Opt(IDL.Nat32),
+  })
+  const Outpoint = IDL.Record({
+    txid: IDL.Vec(IDL.Nat8),
+    vout: IDL.Nat32,
+  })
+  const Utxo = IDL.Record({
+    height: IDL.Nat32,
+    value: IDL.Nat64,
+    outpoint: Outpoint,
+  })
+  const SelectedUtxosFeeResponse = IDL.Record({
+    fee_satoshis: IDL.Nat64,
+    utxos: IDL.Vec(Utxo),
+  })
+  const SelectedUtxosFeeError = IDL.Variant({
+    InternalError: IDL.Record({ msg: IDL.Text }),
+  })
+  const BtcSelectUserUtxosFeeResult = IDL.Variant({
+    Ok: SelectedUtxosFeeResponse,
+    Err: SelectedUtxosFeeError,
+  })
   return IDL.Service({
+    allow_signing: IDL.Func([], [], []),
+    btc_select_user_utxos_fee: IDL.Func(
+      [SelectedUtxosFeeRequest],
+      [BtcSelectUserUtxosFeeResult],
+      [],
+    ),
     count_icrc1_canisters: IDL.Func([], [IDL.Nat64], ["query"]),
     get_all_icrc1_canisters: IDL.Func([], [IDL.Vec(ICRC1)], ["query"]),
     get_all_neurons: IDL.Func([], [IDL.Vec(NeuronData)], ["query"]),
@@ -89,11 +121,4 @@ export const idlFactory = ({ IDL }) => {
     replace_all_discovery_app: IDL.Func([IDL.Vec(DiscoveryApp)], [], []),
     clear_discovery_apps: IDL.Func([], [], []),
   })
-}
-export const init = ({ IDL }) => {
-  const Conf = IDL.Record({
-    operator: IDL.Opt(IDL.Principal),
-    im_canister: IDL.Opt(IDL.Principal),
-  })
-  return [IDL.Opt(Conf)]
 }

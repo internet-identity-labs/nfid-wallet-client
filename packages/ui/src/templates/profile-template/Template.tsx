@@ -17,6 +17,7 @@ import { Outlet, useLocation, useNavigate, useMatch } from "react-router-dom"
 import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
 import { SwapStage } from "src/integration/swap/types/enums"
 import useSWRImmutable from "swr/immutable"
+import { Principal } from "@dfinity/principal"
 
 import { ArrowButton, Loader, TabsSwitcher, Tooltip } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
@@ -34,10 +35,12 @@ import {
   navigationPopupLinks,
 } from "frontend/apps/identity-manager/profile/routes"
 import { fetchNFTs } from "frontend/features/collectibles/utils/util"
+import { nftService } from "frontend/integration/nft/nft-service"
 import {
   fetchTokens,
   getFullUsdValue,
 } from "frontend/features/fungible-token/utils"
+import { ftService } from "frontend/integration/ft/ft-service"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
@@ -107,7 +110,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 }) => {
   const location = useLocation()
   const navigate = useNavigate()
-  const { isViewOnlyMode, viewOnlyAddress } = useContext(ProfileContext)
+  const { isViewOnlyMode, viewOnlyAddress, viewOnlyAddressType } =
+    useContext(ProfileContext)
   const [isRefreshing, setIsRefreshing] = useState(false)
 
   const isNftDetails = Boolean(
@@ -176,9 +180,17 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   const hasVaults = useMemo(() => !!vaults?.length, [vaults])
 
-  const { data: tokens = [] } = useSWRWithTimestamp("tokens", fetchTokens, {
-    revalidateOnFocus: false,
-  })
+  const { data: tokens = [] } = useSWRWithTimestamp(
+    isViewOnlyMode ? ["tokens", viewOnlyAddress] : "tokens",
+    () => {
+      if (!isViewOnlyMode) return fetchTokens()
+      if (viewOnlyAddressType === "icp")
+        return ftService.getIcpViewOnlyTokens(viewOnlyAddress!)
+      if (viewOnlyAddressType === "btc") return ftService.getBtcViewOnlyTokens()
+      return ftService.getEvmViewOnlyTokens(viewOnlyAddress!)
+    },
+    { revalidateOnFocus: false },
+  )
 
   const { initedTokens } = useTokensInit(tokens)
 
@@ -209,9 +221,28 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     )
   }, [nfts, initedTokens, isWallet, btc, eth])
 
+  const isViewOnly = isViewOnlyMode && viewOnlyAddress && viewOnlyAddressType
+
   const { data: fullUsdBalance, isLoading: isUsdLoading } = useSWR(
-    isReady ? "fullUsdValue" : null,
-    async () => getFullUsdValue(nfts?.items!, initedTokens!),
+    isReady || (isViewOnly && initedTokens)
+      ? isViewOnlyMode
+        ? ["fullUsdValue", viewOnlyAddress]
+        : "fullUsdValue"
+      : null,
+    async () => {
+      if (isViewOnly) {
+        const viewOnlyNfts = await nftService.getViewOnlyNFTs(
+          viewOnlyAddress!,
+          viewOnlyAddressType!,
+        )
+        const principal =
+          viewOnlyAddressType === "icp"
+            ? Principal.fromText(viewOnlyAddress!)
+            : Principal.anonymous()
+        return getFullUsdValue(viewOnlyNfts.items, initedTokens!, principal)
+      }
+      return getFullUsdValue(nfts?.items!, initedTokens!)
+    },
     { revalidateOnFocus: false },
   )
 

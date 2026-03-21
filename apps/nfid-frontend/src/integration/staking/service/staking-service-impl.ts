@@ -252,22 +252,20 @@ export class StakingServiceImpl implements StakingService {
     })
   }
 
-  async getStakingUSDBalance(tokens: FT[]): Promise<
-    | {
-        value: string
-        dayChangePercent?: string
-        dayChange?: string
-        dayChangePositive?: boolean
-        value24h?: string
-      }
-    | undefined
-  > {
+  async getStakingUSDBalance(
+    tokens: FT[],
+    viewOnlyPrincipal?: Principal,
+  ): Promise<{
+    value: string
+    dayChangePercent: string
+    dayChange: string
+    dayChangePositive: boolean
+    value24h: string
+  }> {
     try {
-      const stakedTokens = await this.getStakedTokens(
-        getWalletDelegation(),
-        tokens,
-        false,
-      )
+      const stakedTokens = viewOnlyPrincipal
+        ? await this.getViewOnlyStakedTokens(viewOnlyPrincipal, tokens)
+        : await this.getStakedTokens(getWalletDelegation(), tokens, false)
 
       if (!stakedTokens || stakedTokens.length === 0) {
         return {
@@ -291,12 +289,10 @@ export class StakingServiceImpl implements StakingService {
       }
 
       const totalBalance = new BigNumber(totalBalances.total)
-      const dayChange = new BigNumber(0)
-
       return {
         value: totalBalance.toFixed(2),
         dayChangePercent: "0.00",
-        dayChange: dayChange.toFixed(2),
+        dayChange: "0.00",
         dayChangePositive: true,
         value24h: totalBalance.toFixed(2),
       }

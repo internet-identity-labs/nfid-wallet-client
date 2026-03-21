@@ -1,5 +1,4 @@
 import { ttlCacheService } from "@nfid/client-db"
-import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { MORALIS_CHAIN_MAP } from "../../constants/constants"
 
 export interface EvmNftFloorPrice {

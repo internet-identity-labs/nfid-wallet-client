@@ -85,7 +85,9 @@ export const useTokensInit = (tokens: FT[] | undefined) => {
         mutateData(
           isViewOnlyMode ? ["ftUsdValue", viewOnlyAddress] : "ftUsdValue",
         )
-        mutateData("fullUsdValue")
+        mutateData(
+          isViewOnlyMode ? ["fullUsdValue", viewOnlyAddress] : "fullUsdValue",
+        )
       },
     },
   )

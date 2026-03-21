@@ -33,6 +33,7 @@ import {
 import { getLegacyThirdPartyAuthSession } from "../../services"
 import { PublicProfileButton } from "../public-profile-button"
 import { ApproveIcGetDelegationSdkResponse } from "./types"
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 export interface IAuthChooseAccount {
   onReset: () => void
@@ -156,6 +157,12 @@ export const AuthChooseAccount = ({
             : undefined,
         )
 
+        void icrc1OracleService.storeDiscoveryApp({
+          derivationOrigin: authRequest.derivationOrigin,
+          hostname: authRequest.hostname,
+          login: "Anonymous",
+        })
+
         const authSession: ThirdPartyAuthSession = {
           anchor: (await fetchProfile()).anchor,
           signedDelegation: anonymousDelegation,
@@ -204,6 +211,12 @@ export const AuthChooseAccount = ({
           ? Number(authRequest.maxTimeToLive / BigInt(1000000))
           : undefined,
       )
+
+      void icrc1OracleService.storeDiscoveryApp({
+        derivationOrigin: authRequest.derivationOrigin,
+        hostname: authRequest.hostname,
+        login: "Global",
+      })
 
       const authSession: ThirdPartyAuthSession = {
         anchor: (await fetchProfile()).anchor,

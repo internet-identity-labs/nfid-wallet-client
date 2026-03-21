@@ -42,9 +42,6 @@ export const AuthEmailPending: React.FC<AuthEmailFlowProps> = ({
             <p className="text-xs font-semibold uppercase tracking-wide text-orange-900 dark:text-amber-600">
               Anti-phishing code
             </p>
-            <Tooltip tip="Verify this code matches the one in your email before clicking any links.">
-              <IconCmpInfo className="cursor-pointer w-3.5 h-3.5 shrink-0 text-orange-900 dark:text-amber-600" />
-            </Tooltip>
           </div>
           <p className="font-mono font-bold tracking-widest text-xl text-orange-900 dark:text-amber-600 text-center">
             {antiPhishingCode}

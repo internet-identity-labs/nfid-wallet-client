@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import { motion } from "framer-motion"
 import { NavDisconnectIcon } from "packages/ui/src/atoms/icons/nav-disconnect"
-import { HTMLAttributes, FC } from "react"
+import { HTMLAttributes, FC, useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 
 import { Skeleton } from "@nfid-frontend/ui"
@@ -12,6 +12,7 @@ import { useDarkTheme } from "frontend/hooks"
 import { INavigationPopupLinks } from "../profile-header"
 import { renderLink, shouldRenderLink } from "./renderLinks"
 import { ThemeSwitcher } from "./theme-switcher"
+import { ViewOnlyModal } from "./view-only-modal"
 
 export interface IAuthenticatedPopup extends HTMLAttributes<HTMLDivElement> {
   onSignOut: () => void
@@ -47,6 +48,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
   const navigate = useNavigate()
   const location = useLocation()
   const isDarkTheme = useDarkTheme()
+  const [isViewOnlyModalOpen, setIsViewOnlyModalOpen] = useState(false)
 
   return (
     <>
@@ -105,7 +107,15 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
                   profileConstants,
                 ),
               )
-              .map((linkItem) => renderLink(linkItem, navigate, isDarkTheme))}
+              .map((linkItem) =>
+                renderLink(linkItem, navigate, isDarkTheme, () =>
+                  setIsViewOnlyModalOpen(true),
+                ),
+              )}
+            <ViewOnlyModal
+              isOpen={isViewOnlyModalOpen}
+              onCLose={() => setIsViewOnlyModalOpen(false)}
+            />
             <div className="my-[8px] bg-gray-100 dark:bg-zinc-700 h-[1px]"></div>
             <div
               id="nav-logout"

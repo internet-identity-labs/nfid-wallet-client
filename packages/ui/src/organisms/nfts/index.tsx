@@ -1,7 +1,7 @@
 import clsx from "clsx"
-import { useState, useMemo, HTMLAttributes, FC } from "react"
+import { useState, useMemo, HTMLAttributes, FC, useContext } from "react"
 import { IoIosSearch } from "react-icons/io"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 
 import {
   IconCmpArrow,
@@ -21,6 +21,7 @@ import EmptyNFT from "./assets/empty.webp"
 import { GalleryNftSkeleton, TableNftSkeleton } from "../../atoms/skeleton"
 import { NFTDisplaySwitch } from "./nft-display-switch"
 import { getNetworkIcon } from "../../utils/network-icon"
+import { ProfileContext } from "frontend/provider"
 
 export interface INFTs extends HTMLAttributes<HTMLDivElement> {
   isLoading: boolean
@@ -45,9 +46,11 @@ export const NFTs: FC<INFTs> = ({
   onTransferNFT,
 }) => {
   const isDarkTheme = useDarkTheme()
+  const { isViewOnlyMode } = useContext(ProfileContext)
   const [search, setSearch] = useState("")
   const [display, setDisplay] = useState<"grid" | "table">("grid")
   const navigate = useNavigate()
+  const { search: locationSearch } = useLocation()
 
   const nftsFiltered = useMemo(() => searchTokens(nfts, search), [nfts, search])
 
@@ -125,7 +128,10 @@ export const NFTs: FC<INFTs> = ({
                   key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
                   onClick={() =>
                     navigate(
-                      `${links.base}/${links.nfts}/${nft.getTokenId()}`,
+                      {
+                        pathname: `${links.base}/${links.nfts}/${nft.getTokenId()}`,
+                        search: locationSearch,
+                      },
                       { state: { currentPage } },
                     )
                   }
@@ -193,7 +199,7 @@ export const NFTs: FC<INFTs> = ({
                     )}
                   </td>
                   <td>
-                    {!nft.getError() && (
+                    {!nft.getError() && !isViewOnlyMode && (
                       <div
                         className="p-[12px] w-[42px] ml-auto hover:bg-gray-100 dark:hover:bg-zinc-700 rounded-[12px]"
                         onClick={(e) => {
@@ -226,7 +232,10 @@ export const NFTs: FC<INFTs> = ({
             return (
               <Link
                 key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
-                to={`${links.base}/${links.nfts}/${nft.getTokenId()}`}
+                to={{
+                  pathname: `${links.base}/${links.nfts}/${nft.getTokenId()}`,
+                  search: locationSearch,
+                }}
                 state={{ currentPage }}
               >
                 <div
@@ -236,7 +245,7 @@ export const NFTs: FC<INFTs> = ({
                   )}
                   key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
                 >
-                  <div className="relative rounded-[12px] overflow-hidden basis-[100%] flex items-center justify-center relative">
+                  <div className="relative rounded-[12px] overflow-hidden basis-[100%] flex items-center justify-center relative min-h-[336px]">
                     {nft.getError() || nft.getAssetPreview() === undefined ? (
                       <>
                         <ImageWithFallback

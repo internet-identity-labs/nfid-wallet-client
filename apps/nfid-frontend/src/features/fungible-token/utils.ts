@@ -154,6 +154,10 @@ export const filterNotActiveNotZeroBalancesTokens = async (
   return [...icrc1Tokens, ...allErc20Tokens]
 }
 
-export const getFullUsdValue = async (nfts: NFT[], ft: FT[]) => {
-  return portfolioService.getPortfolioUSDBalance(nfts, ft)
+export const getFullUsdValue = async (
+  nfts: NFT[],
+  ft: FT[],
+  viewOnlyPrincipal?: Principal,
+) => {
+  return portfolioService.getPortfolioUSDBalance(nfts, ft, viewOnlyPrincipal)
 }

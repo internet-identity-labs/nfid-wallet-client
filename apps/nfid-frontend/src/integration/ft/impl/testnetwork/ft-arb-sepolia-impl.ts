@@ -36,9 +36,11 @@ export class FTArbSepoliaImpl extends FTEvmAbstractImpl {
     return arbSepoliaService
   }
 
-  public async getBalance(): Promise<void> {
+  public async fetchEvmBalance(viewOnlyAddress?: string): Promise<void> {
     try {
-      this.tokenBalance = await this.getProvider().getQuickBalance()
+      this.tokenBalance = viewOnlyAddress
+        ? await this.getProvider().getBalance(viewOnlyAddress)
+        : await this.getProvider().getQuickBalance()
     } catch (e) {
       console.error(
         "Arbitrum Sepolia balance fetch error: ",

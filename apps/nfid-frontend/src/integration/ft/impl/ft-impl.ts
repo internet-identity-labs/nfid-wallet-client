@@ -59,7 +59,10 @@ export class FTImpl implements FT {
     this.tokenChainId = ChainId.ICP
   }
 
-  async init(globalPrincipal: Principal): Promise<FT> {
+  async init(
+    globalPrincipal: Principal,
+    _viewOnlyAddress?: string,
+  ): Promise<FT> {
     await this.getBalance(globalPrincipal)
     return this
   }

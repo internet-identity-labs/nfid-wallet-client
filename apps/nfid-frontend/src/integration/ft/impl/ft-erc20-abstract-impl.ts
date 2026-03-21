@@ -37,8 +37,8 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
 
   public abstract getProvider(): Erc20Service
 
-  async init(_: Principal): Promise<FT> {
-    await this.getBalance()
+  async init(_: Principal, viewOnlyAddress?: string): Promise<FT> {
+    await this.fetchErc20Balance(viewOnlyAddress)
     return this
   }
 
@@ -54,9 +54,12 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
       .map((c) => c.ledger)
   }
 
-  public async getBalance(): Promise<void> {
-    const ethAddress = await ethereumService.getQuickAddress()
-    const ledgers = await this.getTokens()
+  public async fetchErc20Balance(viewOnlyAddress?: string): Promise<void> {
+    const ethAddress =
+      viewOnlyAddress ?? (await ethereumService.getQuickAddress())
+    const ledgers = viewOnlyAddress
+      ? [this.tokenAddress]
+      : await this.getTokens()
 
     const [balances, usdBalances] = await Promise.all([
       this.getProvider().getMultipleTokenBalances(ethAddress, ledgers),

@@ -3,6 +3,7 @@ import { NavPermissionsIcon } from "packages/ui/src/atoms/icons/nav-permissions"
 import { NavVaultsIcon } from "packages/ui/src/atoms/icons/nav-vaults"
 import { NavWalletIcon } from "packages/ui/src/atoms/icons/nav-wallet"
 import { NavAddressBookIcon } from "packages/ui/src/atoms/icons/nav-book"
+import { NavViewOnlyIcon } from "packages/ui/src/atoms/icons/nav-view-only"
 
 export const ProfileConstants = {
   base: "/wallet",
@@ -53,5 +54,11 @@ export const navigationPopupLinks = [
     title: "Permissions",
     link: ProfileConstants.permissions,
     id: "nav-permissions",
+  },
+  {
+    icon: NavViewOnlyIcon,
+    title: "View-only mode",
+    link: "",
+    id: "nav-view-only",
   },
 ]

@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { useClickOutside } from "packages/utils/src/index"
-import { FC, SVGProps, useState } from "react"
+import { FC, SVGProps, useContext, useState } from "react"
 
 import {
   IconCmpWarning,
@@ -14,6 +14,7 @@ import { NFIDTheme } from "frontend/App"
 import { useDarkTheme } from "frontend/hooks"
 
 import AuthenticatedPopup from "../navigation-popup"
+import { ProfileContext } from "frontend/provider"
 
 export interface INavigationPopupLinks {
   icon: FC<{ strokeColor?: string }> & SVGProps<SVGSVGElement>
@@ -60,6 +61,7 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
   const [isMenuVisible, setIsMenuVisible] = useState(false)
   const popupRef = useClickOutside(() => setIsMenuVisible(false))
   const isDarkTheme = useDarkTheme()
+  const { isViewOnlyMode } = useContext(ProfileContext)
 
   return (
     <>
@@ -76,27 +78,28 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
         ) : (
           <NFIDLogoMain assetsLink={assetsLink} />
         )}
-
-        <div className={clsx("relative")} ref={popupRef} id="profile">
-          <BurgerMenu
-            isOpened={isMenuVisible}
-            onClick={() => setIsMenuVisible(!isMenuVisible)}
-            walletTheme={walletTheme!}
-          />
-          {isMenuVisible && (
-            <AuthenticatedPopup
-              onSignOut={logout}
-              anchor={anchor}
-              links={links}
-              assetsLink={assetsLink}
-              hasVaults={hasVaults}
-              profileConstants={profileConstants}
-              isOpen={isMenuVisible}
+        {!isViewOnlyMode && (
+          <div className={clsx("relative")} ref={popupRef} id="profile">
+            <BurgerMenu
+              isOpened={isMenuVisible}
+              onClick={() => setIsMenuVisible(!isMenuVisible)}
               walletTheme={walletTheme!}
-              setWalletTheme={setWalletTheme!}
             />
-          )}
-        </div>
+            {isMenuVisible && (
+              <AuthenticatedPopup
+                onSignOut={logout}
+                anchor={anchor}
+                links={links}
+                assetsLink={assetsLink}
+                hasVaults={hasVaults}
+                profileConstants={profileConstants}
+                isOpen={isMenuVisible}
+                walletTheme={walletTheme!}
+                setWalletTheme={setWalletTheme!}
+              />
+            )}
+          </div>
+        )}
       </div>
       {isEmailOutOfSync && (
         <div className="px-4 sm:px-[30px] mb-5">

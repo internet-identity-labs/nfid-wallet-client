@@ -1,4 +1,4 @@
-import { SignIdentity } from "@dfinity/agent"
+import { AnonymousIdentity, SignIdentity } from "@dfinity/agent"
 import { NeuronId as NeuronICPId, NeuronInfo, Topic } from "@dfinity/nns"
 import { NetworkEconomics } from "@dfinity/nns/dist/types/types/governance_converters"
 import { Principal } from "@dfinity/principal"
@@ -97,6 +97,54 @@ export class StakingServiceImpl implements StakingService {
         deserialize: (v) => this.deserializeStakes(v as string, tokens),
       },
     )
+  }
+
+  async getViewOnlyStakedTokens(
+    principal: Principal,
+    tokens: FT[],
+  ): Promise<StakedToken[] | undefined> {
+    const snsTokens = tokens.filter(
+      (token) => token.getTokenCategory() === Category.Sns,
+    )
+
+    const snsPromises = snsTokens
+      .map((token) => {
+        if (!token.getRootSnsCanister()) return undefined
+        return this.getViewOnlyStakedSnsNeurons(token, principal)
+      })
+      .filter((s): s is Promise<StakedToken | undefined> => s !== undefined)
+
+    const results = await Promise.all(snsPromises)
+    return results.filter((t): t is StakedToken => t !== undefined)
+  }
+
+  private async getViewOnlyStakedSnsNeurons(
+    token: FT,
+    principal: Principal,
+  ): Promise<StakedToken | undefined> {
+    try {
+      const rootCanisterId = token.getRootSnsCanister()!
+      const [neurons, snsParams] = await Promise.all([
+        querySnsNeurons({
+          identity: principal,
+          rootCanisterId,
+          certified: false,
+        }),
+        nervousSystemParameters({
+          rootCanisterId,
+          identity: new AnonymousIdentity(),
+          certified: false,
+        }),
+      ])
+      const params = new StakeSnsParamsCalculatorImpl(token, snsParams)
+      const nfidN = neurons
+        .filter((neuron) => neuron.cached_neuron_stake_e8s > BigInt(0))
+        .map((neuron) => new NfidSNSNeuronImpl(neuron, token, params))
+      return nfidN.length ? new StakedTokenImpl(token, nfidN) : undefined
+    } catch (e) {
+      console.debug("getViewOnlyStakedSnsNeurons error: ", e)
+      return undefined
+    }
   }
 
   private async fetchStakedTokens(
@@ -204,22 +252,20 @@ export class StakingServiceImpl implements StakingService {
     })
   }
 
-  async getStakingUSDBalance(tokens: FT[]): Promise<
-    | {
-        value: string
-        dayChangePercent?: string
-        dayChange?: string
-        dayChangePositive?: boolean
-        value24h?: string
-      }
-    | undefined
-  > {
+  async getStakingUSDBalance(
+    tokens: FT[],
+    viewOnlyPrincipal?: Principal,
+  ): Promise<{
+    value: string
+    dayChangePercent: string
+    dayChange: string
+    dayChangePositive: boolean
+    value24h: string
+  }> {
     try {
-      const stakedTokens = await this.getStakedTokens(
-        getWalletDelegation(),
-        tokens,
-        false,
-      )
+      const stakedTokens = viewOnlyPrincipal
+        ? await this.getViewOnlyStakedTokens(viewOnlyPrincipal, tokens)
+        : await this.getStakedTokens(getWalletDelegation(), tokens, false)
 
       if (!stakedTokens || stakedTokens.length === 0) {
         return {
@@ -243,12 +289,10 @@ export class StakingServiceImpl implements StakingService {
       }
 
       const totalBalance = new BigNumber(totalBalances.total)
-      const dayChange = new BigNumber(0)
-
       return {
         value: totalBalance.toFixed(2),
         dayChangePercent: "0.00",
-        dayChange: dayChange.toFixed(2),
+        dayChange: "0.00",
         dayChangePositive: true,
         value24h: totalBalance.toFixed(2),
       }

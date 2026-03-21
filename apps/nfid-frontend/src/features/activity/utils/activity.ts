@@ -1,7 +1,10 @@
 import { IActivityRow } from "../types"
 import { getBtcActivitiesRows } from "frontend/integration/bitcoin/services/btc-transaction-service"
 import { ethTransactionService } from "frontend/integration/ethereum/eth/eth-transaction.service"
-import { getIcrc1ActivitiesRows } from "./icrc1-activity"
+import {
+  getIcrc1ActivitiesRows,
+  getIcpViewOnlyActivitiesRows,
+} from "./icrc1-activity"
 import { getSwapActivitiesRows } from "./swap-activity"
 import { fetchBtcAddress } from "frontend/util/fetch-btc-address"
 import { fetchEthAddress } from "frontend/util/fetch-eth-address"
@@ -58,6 +61,38 @@ export const getAllActivity = async (
   await noteService.populateNotes(activitiesArray)
 
   return activitiesArray
+}
+
+export const getAllViewOnlyActivity = async (
+  limit: number,
+  activeTokens: FT[],
+  address: string,
+  addressType: "icp" | "evm" | "btc",
+): Promise<IActivityRow[]> => {
+  if (addressType === "btc") {
+    return getBtcActivitiesRows(address)
+  }
+
+  if (addressType === "evm") {
+    const [
+      ethActivities,
+      ethErc20Activities,
+      arbitrumErc20Activities,
+      polygonErc20Activities,
+      arbitrumActivities,
+      polygonActivities,
+    ] = await fetchEvmActivitiesSequentially(address)
+    return [
+      ...ethActivities,
+      ...ethErc20Activities,
+      ...arbitrumErc20Activities,
+      ...polygonErc20Activities,
+      ...arbitrumActivities,
+      ...polygonActivities,
+    ]
+  }
+
+  return getIcpViewOnlyActivitiesRows(address, limit, activeTokens)
 }
 
 const fetchEvmActivitiesSequentially = async (

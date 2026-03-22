@@ -7,6 +7,7 @@ import { ArbitrumTokenBuilder } from "./arbitrum-builder-impl"
 import { ArbSepoliaTokenBuilder } from "./testnetwork/arb-sepolia-builder-impl"
 import { BaseTokenBuilder } from "./base-builder-impl"
 import { BaseSepoliaTokenBuilder } from "./testnetwork/base-sepolia-builder-impl"
+import { EthSepoliaTokenBuilder } from "./testnetwork/eth-sepolia-builder-impl"
 import { BnbTokenBuilder } from "./bnb-builder-impl"
 import { BitcoinTokenBuilder } from "./bitcoin-builder-impl"
 import { ICRC1TokenBuilder } from "./icrc1-builder-impl"
@@ -16,6 +17,7 @@ import { ERC20TokenInfo } from "frontend/integration/ethereum/erc20-abstract.ser
 export class TokenFactoryService {
   private builders = new Map<ChainId, TokenBuilder<ICRC1 | ERC20TokenInfo>>([
     [ChainId.ETH, new EthereumTokenBuilder()],
+    [ChainId.ETH_SEPOLIA, new EthSepoliaTokenBuilder()],
     [ChainId.POL, new PolygonTokenBuilder()],
     [ChainId.POL_AMOY, new PolygonAmoyTokenBuilder()],
     [ChainId.ARB, new ArbitrumTokenBuilder()],

@@ -26,6 +26,7 @@ import { bnbErc20Service } from "frontend/integration/ethereum/bnb/bnb-erc20.ser
 import { arbSepoliaErc20Service } from "frontend/integration/ethereum/arbitrum/testnetwork/arb-sepolia-erc20.service"
 import { baseSepoliaErc20Service } from "frontend/integration/ethereum/base/testnetwork/base-sepolia-erc20.service"
 import { polygonAmoyErc20Service } from "frontend/integration/ethereum/polygon/testnetwork/pol-amoy-erc20.service"
+import { ethSepoliaErc20Service } from "frontend/integration/ethereum/eth/testnetwork/eth-sepolia-erc20.service"
 
 const userId = "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae"
 const principal = Principal.fromText(userId)
@@ -61,6 +62,9 @@ describe("ft test suite", () => {
         .mockResolvedValue([])
       jest
         .spyOn(polygonAmoyErc20Service as any, "getTokensList")
+        .mockResolvedValue([])
+      jest
+        .spyOn(ethSepoliaErc20Service as any, "getTokensList")
         .mockResolvedValue([])
 
       jest
@@ -131,7 +135,7 @@ describe("ft test suite", () => {
 
       const result: FT[] = await ftService.getTokens(userId)
 
-      expect(result.length).toEqual(14)
+      expect(result.length).toEqual(15)
       const icpResult = result.find(
         (r) => r.getTokenName() === "Internet Computer",
       )
@@ -165,7 +169,8 @@ describe("ft test suite", () => {
       expect(result[10].getTokenName()).toEqual("Polygon Amoy")
       expect(result[11].getTokenName()).toEqual("Ethereum Sepolia")
       expect(result[12].getTokenName()).toEqual("Ethereum Sepolia")
-      expect(result[13].getTokenName()).toEqual("Chat")
+      expect(result[13].getTokenName()).toEqual("Ethereum Sepolia")
+      expect(result[14].getTokenName()).toEqual("Chat")
     })
 
     it("should calculate no usd balance change", async () => {
@@ -486,7 +491,7 @@ describe("ft test suite", () => {
 
       const result: FT[] = await ftService.getTokens(userId)
 
-      expect(result.length).toEqual(14)
+      expect(result.length).toEqual(15)
       expect(result[0].getTokenCategory()).toEqual(Category.Native)
       expect(result[1].getTokenCategory()).toEqual(Category.Native)
       expect(result[2].getTokenCategory()).toEqual(Category.Native)
@@ -500,7 +505,8 @@ describe("ft test suite", () => {
       expect(result[10].getTokenCategory()).toEqual(Category.TESTNET)
       expect(result[11].getTokenCategory()).toEqual(Category.TESTNET)
       expect(result[12].getTokenCategory()).toEqual(Category.TESTNET)
-      expect(result[13].getTokenCategory()).toEqual(Category.Spam)
+      expect(result[13].getTokenCategory()).toEqual(Category.TESTNET)
+      expect(result[14].getTokenCategory()).toEqual(Category.Spam)
     })
 
     it("should calculate USD balance", async function () {

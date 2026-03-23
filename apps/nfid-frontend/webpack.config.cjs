@@ -278,7 +278,8 @@ const config = composePlugins(
 
     config.devtool = !isProduction ? "eval-cheap-module-source-map" : false
 
-    config.cache = isProduction
+    const useFilesystemCache = process.env.WEBPACK_FS_CACHE === "1"
+    config.cache = useFilesystemCache
       ? {
           type: "filesystem",
           buildDependencies: {

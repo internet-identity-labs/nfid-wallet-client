@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js"
+import { Principal } from "@dfinity/principal"
 
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
@@ -12,6 +13,7 @@ export class PortfolioService {
   async getPortfolioUSDBalance(
     nfts: NFT[],
     ft: FT[],
+    viewOnlyPrincipal?: Principal,
   ): Promise<
     | {
         value: string
@@ -26,22 +28,20 @@ export class PortfolioService {
     const [ftUSDBalance, nftUSDBalance, stakingBalance] = await Promise.all([
       ftService.getFTUSDBalance(ft),
       nftService.getNFTsTotalPrice(nfts, icp),
-      stakingService.getStakingUSDBalance(ft),
+      stakingService.getStakingUSDBalance(ft, viewOnlyPrincipal),
     ])
 
     const ftValue = ftUSDBalance?.value || "0"
     const ftValue24h = ftUSDBalance?.value24h || "0"
-
     const nftValue = nftUSDBalance?.value || "0"
     const nftValue24h = nftUSDBalance?.value24h || "0"
-
     const stakingValue = stakingBalance?.value || "0"
     const stakingValue24h = stakingBalance?.value24h || "0"
 
     const valueSum = new BigNumber(ftValue).plus(nftValue).plus(stakingValue)
-    const valueSum24h = BigNumber(
-      new BigNumber(ftValue24h).plus(nftValue24h).plus(stakingValue24h),
-    )
+    const valueSum24h = new BigNumber(ftValue24h)
+      .plus(nftValue24h)
+      .plus(stakingValue24h)
 
     return {
       value: valueSum.toString(),

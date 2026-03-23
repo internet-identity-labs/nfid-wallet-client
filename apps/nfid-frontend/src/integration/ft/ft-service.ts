@@ -26,7 +26,8 @@ import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1
 import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
 import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
-import { mapState } from "@nfid/integration/token/icrc1/util"
+import { mapCategory, mapState } from "@nfid/integration/token/icrc1/util"
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 import { ethErc20Service } from "../ethereum/eth/eth-erc20.service"
 import { polygonErc20Service } from "../ethereum/polygon/pol-erc20.service"
@@ -244,15 +245,115 @@ export class FtService {
     return this.sortTokens([...icrc1Tokens, ...nativeTokens, ...erc20Tokens])
   }
 
+  async getBtcViewOnlyTokens(): Promise<FT[]> {
+    return [tokenFactory.getCreatorByChainID(ChainId.BTC).buildNative()]
+  }
+
+  async getIcpViewOnlyTokens(address: string): Promise<FT[]> {
+    const defaultActiveIds = [
+      ICP_CANISTER_ID,
+      NFIDW_CANISTER_ID,
+      CKBTC_CANISTER_ID,
+      CKETH_LEDGER_CANISTER_ID,
+    ]
+    const principal = Principal.fromText(address)
+    const oracleTokens = await icrc1OracleService.getICRC1Canisters()
+
+    const buildToken = (icrc1: (typeof oracleTokens)[0], state: State) =>
+      tokenFactory.getCreatorByChainID(ChainId.ICP).buildTokens({
+        decimals: icrc1.decimals,
+        fee: icrc1.fee,
+        ledger: icrc1.ledger,
+        name: icrc1.name,
+        symbol: icrc1.symbol,
+        logo: icrc1.logo[0],
+        index: icrc1.index[0],
+        rootCanisterId: icrc1.root_canister_id[0],
+        state,
+        category: mapCategory(icrc1.category),
+      })
+
+    const inactiveOracleTokens = oracleTokens.filter(
+      (icrc1) => !defaultActiveIds.includes(icrc1.ledger),
+    )
+    const inactiveFtTokens = inactiveOracleTokens.map((icrc1) =>
+      buildToken(icrc1, State.Inactive),
+    )
+    const scanned = await this.filterNotActiveNotZeroBalancesTokens(
+      inactiveFtTokens,
+      principal,
+    )
+    const scannedIds = new Set(scanned.map((t) => t.getTokenAddress()))
+
+    const allTokens = oracleTokens.map((icrc1) => {
+      if (defaultActiveIds.includes(icrc1.ledger))
+        return buildToken(icrc1, State.Active)
+      if (scannedIds.has(icrc1.ledger)) return buildToken(icrc1, State.Active)
+      return buildToken(icrc1, State.Inactive)
+    })
+    return this.sortTokens(allTokens)
+  }
+
+  async getEvmViewOnlyTokens(address: string): Promise<FT[]> {
+    const delay = (ms: number) =>
+      new Promise((resolve) => setTimeout(resolve, ms))
+
+    const arbTokens =
+      await arbitrumErc20Service.getTokensWithNonZeroBalance(address)
+    await delay(500)
+    const polTokens =
+      await polygonErc20Service.getTokensWithNonZeroBalance(address)
+    await delay(500)
+    const baseTokens =
+      await baseErc20Service.getTokensWithNonZeroBalance(address)
+    await delay(500)
+    const ethTokens = await ethErc20Service.getTokensWithNonZeroBalance(address)
+
+    const nativeTokens: FT[] = [
+      tokenFactory.getCreatorByChainID(ChainId.ETH).buildNative(),
+      tokenFactory.getCreatorByChainID(ChainId.POL).buildNative(State.Active),
+      tokenFactory.getCreatorByChainID(ChainId.ARB).buildNative(State.Active),
+      tokenFactory.getCreatorByChainID(ChainId.BASE).buildNative(State.Active),
+    ]
+
+    const erc20Tokens: FT[] = [
+      ...arbTokens.map((t) =>
+        tokenFactory
+          .getCreatorByChainID(ChainId.ARB)
+          .buildTokens(t, State.Active),
+      ),
+      ...polTokens.map((t) =>
+        tokenFactory
+          .getCreatorByChainID(ChainId.POL)
+          .buildTokens(t, State.Active),
+      ),
+      ...baseTokens.map((t) =>
+        tokenFactory
+          .getCreatorByChainID(ChainId.BASE)
+          .buildTokens(t, State.Active),
+      ),
+      ...ethTokens.map((t) =>
+        tokenFactory
+          .getCreatorByChainID(ChainId.ETH)
+          .buildTokens(t, State.Active),
+      ),
+    ]
+
+    return this.sortTokens([...nativeTokens, ...erc20Tokens])
+  }
+
   public async getInitedTokens(
     tokens: FT[],
     principal: Principal,
     refetch?: boolean,
+    viewOnlyAddress?: string,
   ): Promise<FT[]> {
-    const cacheKey = this.getCacheKey(principal)
+    const cacheKey = viewOnlyAddress
+      ? `${INITED_TOKENS_CACHE_NAME}viewOnly_${viewOnlyAddress}`
+      : this.getCacheKey(principal)
     return ttlCacheService.getOrFetch(
       cacheKey,
-      () => this.fetchInitedTokens(tokens, principal),
+      () => this.fetchInitedTokens(tokens, principal, viewOnlyAddress),
       TOKENS_REFRESH_INTERVAL,
       {
         forceRefetch: Boolean(refetch),
@@ -375,8 +476,11 @@ export class FtService {
   private async fetchInitedTokens(
     tokens: FT[],
     principal: Principal,
+    viewOnlyAddress?: string,
   ): Promise<FT[]> {
-    return Promise.all(tokens.map((token) => token.init(principal)))
+    return Promise.all(
+      tokens.map((token) => token.init(principal, viewOnlyAddress)),
+    )
   }
 
   private serializeTokensData(tokens: FT[]): string {

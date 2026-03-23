@@ -1,5 +1,5 @@
 import { Activity } from "packages/ui/src/organisms/activity"
-import { useMemo, useState } from "react"
+import { useContext, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
@@ -7,11 +7,13 @@ import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { useActivityFilter } from "./hooks/filter"
 
+import { ProfileContext } from "frontend/provider"
 import { fetchTokens } from "../fungible-token/utils"
 import {
   addressBookFacade,
   SearchRequest,
 } from "frontend/integration/address-book"
+import { ftService } from "frontend/integration/ft/ft-service"
 
 const ActivityPage = () => {
   const { state } = useLocation()
@@ -20,10 +22,24 @@ const ActivityPage = () => {
   const [chainFilter, setChainFilter] = useState<string[]>([])
   const [txFilter, setTxFilter] = useState<string[]>([])
 
-  const { data: tokens = [] } = useSWRWithTimestamp("tokens", fetchTokens, {
-    revalidateOnFocus: false,
-    revalidateOnMount: false,
-  })
+  const { isViewOnlyMode, viewOnlyAddress, viewOnlyAddressType } =
+    useContext(ProfileContext)
+
+  const { data: tokens = [] } = useSWRWithTimestamp(
+    isViewOnlyMode ? ["tokens", viewOnlyAddress] : "tokens",
+    () => {
+      if (!isViewOnlyMode) return fetchTokens()
+
+      if (viewOnlyAddressType === "icp")
+        return ftService.getIcpViewOnlyTokens(viewOnlyAddress!)
+      if (viewOnlyAddressType === "btc") return ftService.getBtcViewOnlyTokens()
+      return ftService.getEvmViewOnlyTokens(viewOnlyAddress!)
+    },
+    {
+      revalidateOnFocus: false,
+      revalidateOnMount: false,
+    },
+  )
 
   const activeTokens = useMemo(() => {
     return tokens.filter((token) => token.getTokenState() === State.Active)
@@ -34,6 +50,10 @@ const ActivityPage = () => {
     tokenFilter,
     chainFilter,
     txFilter,
+    viewOnlyAddress: isViewOnlyMode
+      ? (viewOnlyAddress ?? undefined)
+      : undefined,
+    viewOnlyAddressType: isViewOnlyMode ? viewOnlyAddressType : null,
   })
 
   const searchAddress = async (req: SearchRequest) => {

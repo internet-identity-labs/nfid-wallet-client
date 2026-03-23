@@ -12,7 +12,7 @@ import { ArrowButton } from "packages/ui/src/molecules/button/arrow-button"
 import CopyAddress from "packages/ui/src/molecules/copy-address"
 import { useDisableScroll } from "packages/ui/src/molecules/modal/hooks/disable-scroll"
 import { Tooltip } from "packages/ui/src/molecules/tooltip"
-import { FC, useMemo, useState } from "react"
+import { FC, useContext, useMemo, useState } from "react"
 
 import { mutate } from "@nfid/swr"
 
@@ -31,6 +31,7 @@ import {
 import { getFormattedPeriod } from "../../send-receive/utils"
 import { StakingDelegates } from "./staking-delegation"
 import { FT } from "frontend/integration/ft/ft"
+import { ProfileContext } from "frontend/provider"
 
 export interface SidePanelOption {
   option: NFIDNeuron
@@ -61,6 +62,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
   initedTokens,
 }) => {
   const isDarkTheme = useDarkTheme()
+  const { isViewOnlyMode } = useContext(ProfileContext)
   const [isStakingDelegatesOpen, setIsStakingDelegatesOpen] = useState(false)
   useDisableScroll(isOpen)
   const [isLoading, setIsLoading] = useState(false)
@@ -416,36 +418,39 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       )}
                     </div>
                   )}
-                  {}
-                  <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
-                  <Button
-                    id={"sidePanel-lock_unlock_Button"}
-                    icon={
-                      isLoading ? (
-                        <Spinner className="w-5 h-5 text-gray-300 dark:text-white" />
-                      ) : null
-                    }
-                    disabled={isLoading}
-                    onClick={
-                      sidePanelOption.state === StakingState.Unlocking
-                        ? stopUnlocking
-                        : sidePanelOption.state === StakingState.Locked
-                          ? startUnlocking
-                          : openRedeemModal
-                    }
-                    className={clsx("w-full mt-[20px]")}
-                    type={
-                      sidePanelOption.state === StakingState.Available
-                        ? "primary"
-                        : "stroke"
-                    }
-                  >
-                    {sidePanelOption.state === StakingState.Unlocking
-                      ? "Stop unlocking"
-                      : sidePanelOption.state === StakingState.Locked
-                        ? "Start unlocking"
-                        : "Redeem stake"}
-                  </Button>
+                  {!isViewOnlyMode && (
+                    <>
+                      <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
+                      <Button
+                        id={"sidePanel-lock_unlock_Button"}
+                        icon={
+                          isLoading ? (
+                            <Spinner className="w-5 h-5 text-gray-300 dark:text-white" />
+                          ) : null
+                        }
+                        disabled={isLoading}
+                        onClick={
+                          sidePanelOption.state === StakingState.Unlocking
+                            ? stopUnlocking
+                            : sidePanelOption.state === StakingState.Locked
+                              ? startUnlocking
+                              : openRedeemModal
+                        }
+                        className={clsx("w-full mt-[20px]")}
+                        type={
+                          sidePanelOption.state === StakingState.Available
+                            ? "primary"
+                            : "stroke"
+                        }
+                      >
+                        {sidePanelOption.state === StakingState.Unlocking
+                          ? "Stop unlocking"
+                          : sidePanelOption.state === StakingState.Locked
+                            ? "Start unlocking"
+                            : "Redeem stake"}
+                      </Button>
+                    </>
+                  )}
                 </div>
                 {followees && (
                   <div className="border border-gray-200 dark:border-zinc-700 rounded-3xl px-[30px] py-[20px] relative mt-[20px]">

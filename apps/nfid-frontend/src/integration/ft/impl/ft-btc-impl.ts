@@ -14,6 +14,7 @@ import {
 } from "@nfid/integration/token/constants"
 import { exchangeRateService } from "@nfid/integration"
 import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
+import { bitcoinCanisterService } from "frontend/integration/bitcoin/services/bitcoin-canister.service"
 import { FT } from "../ft"
 import { SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
@@ -37,14 +38,16 @@ export class FTBitcoinImpl extends FTImpl {
     this.tokenChainId = ChainId.BTC
   }
 
-  async init(): Promise<FT> {
-    await this.getBalance()
+  async init(_principal: Principal, viewOnlyAddress?: string): Promise<FT> {
+    await this.fetchBtcBalance(viewOnlyAddress)
     return this
   }
 
-  public async getBalance(): Promise<void> {
+  public async fetchBtcBalance(viewOnlyAddress?: string): Promise<void> {
     try {
-      this.tokenBalance = await bitcoinService.getQuickBalance()
+      this.tokenBalance = viewOnlyAddress
+        ? await bitcoinCanisterService.getBalanceQuery(viewOnlyAddress)
+        : await bitcoinService.getQuickBalance()
     } catch (e) {
       console.error("BitcoinService error: ", (e as Error).message)
       return

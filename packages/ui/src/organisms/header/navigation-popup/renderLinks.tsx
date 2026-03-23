@@ -60,16 +60,24 @@ export const renderLink = (
   linkItem: INavigationPopupLinks,
   navigate: ReturnType<typeof useNavigate>,
   isDarkTheme: boolean,
+  onOpenViewOnlyModal: () => void,
 ) => {
   const isExternalLink = linkItem.id === "nav-knowledge-base"
+  const isModal = linkItem.id === "nav-view-only"
   const LinkComponent = isExternalLink ? "a" : "div"
   const linkProps = isExternalLink
     ? { href: linkItem.link, target: "_blank" }
-    : {
-        onClick: () => {
-          navigate(linkItem.link)
-        },
-      }
+    : !isModal
+      ? {
+          onClick: () => {
+            navigate(linkItem.link)
+          },
+        }
+      : {
+          onClick: () => {
+            onOpenViewOnlyModal()
+          },
+        }
 
   return (
     <Fragment key={linkItem.id}>

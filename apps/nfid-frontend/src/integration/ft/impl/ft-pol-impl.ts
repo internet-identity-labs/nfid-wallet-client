@@ -39,9 +39,11 @@ export class FTPolygonImpl extends FTEvmAbstractImpl {
     return polygonService
   }
 
-  public async getBalance(): Promise<void> {
+  public async fetchEvmBalance(viewOnlyAddress?: string): Promise<void> {
     try {
-      this.tokenBalance = await this.getProvider().getQuickBalance()
+      this.tokenBalance = viewOnlyAddress
+        ? await this.getProvider().getBalance(viewOnlyAddress)
+        : await this.getProvider().getQuickBalance()
     } catch (e) {
       console.error("Polygon balance fetch error: ", (e as Error).message)
       return

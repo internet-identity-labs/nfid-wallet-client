@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { HTMLAttributes, FC, useState } from "react"
+import { HTMLAttributes, FC, useState, useContext } from "react"
 import { FT } from "src/integration/ft/ft"
 
 import { Skeleton, IDropdownPosition } from "@nfid-frontend/ui"
@@ -13,6 +13,7 @@ import { IProfileConstants } from ".."
 import { AssetDropdown } from "./asset-dropdown"
 import { TokenIdentity } from "./token-identity"
 import { SelectedToken } from "frontend/features/transfer-modal/types"
+import { ProfileContext } from "frontend/provider"
 
 interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   token: FT
@@ -57,6 +58,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   ...props
 }) => {
   const [isTokenProcessed, setIsTokenProcessed] = useState(false)
+  const { isViewOnlyMode } = useContext(ProfileContext)
   const tokenRateDayChange = token.getTokenRateDayChangePercent()
   const balance = token.getTokenBalance()
   const usdBalance = token.getUSDBalanceFormatted(false)
@@ -171,22 +173,24 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         className="w-[24px] min-w-[30px] lg:min-w-[50px] lg:ps-[25px]"
         id={`${token.getTokenName()}_options`}
       >
-        <AssetDropdown
-          token={token}
-          tokens={tokens}
-          profileConstants={profileConstants}
-          onSendClick={onSendClick}
-          onSwapClick={onSwapClick}
-          onConvertToBtc={onConvertToBtc}
-          onConvertToCkBtc={onConvertToCkBtc}
-          onConvertToEth={onConvertToEth}
-          onConvertToCkEth={onConvertToCkEth}
-          onStakeClick={onStakeClick}
-          setToken={setToken}
-          dropdownPosition={dropdownPosition}
-          setIsTokenProcessed={setIsTokenProcessed}
-          isTokenProcessed={isTokenProcessed || loadingToken === token}
-        />
+        {!isViewOnlyMode && (
+          <AssetDropdown
+            token={token}
+            tokens={tokens}
+            profileConstants={profileConstants}
+            onSendClick={onSendClick}
+            onSwapClick={onSwapClick}
+            onConvertToBtc={onConvertToBtc}
+            onConvertToCkBtc={onConvertToCkBtc}
+            onConvertToEth={onConvertToEth}
+            onConvertToCkEth={onConvertToCkEth}
+            onStakeClick={onStakeClick}
+            setToken={setToken}
+            dropdownPosition={dropdownPosition}
+            setIsTokenProcessed={setIsTokenProcessed}
+            isTokenProcessed={isTokenProcessed || loadingToken === token}
+          />
+        )}
       </td>
     </tr>
   )

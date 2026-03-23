@@ -18,6 +18,7 @@ export const getNetworkIcon = (
       return <IcpNetworkIcon color={isDark ? "white" : "black"} size={size} />
 
     case ChainId.ETH:
+    case ChainId.ETH_SEPOLIA:
       return <EthNetworkIcon color={isDark ? "white" : "black"} size={size} />
 
     case ChainId.BTC:

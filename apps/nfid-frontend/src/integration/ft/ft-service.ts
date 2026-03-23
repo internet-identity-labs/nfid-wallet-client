@@ -37,6 +37,7 @@ import { tokenFactory } from "./token-creator/token-factory.service"
 import { arbSepoliaErc20Service } from "../ethereum/arbitrum/testnetwork/arb-sepolia-erc20.service"
 import { baseSepoliaErc20Service } from "../ethereum/base/testnetwork/base-sepolia-erc20.service"
 import { polygonAmoyErc20Service } from "../ethereum/polygon/testnetwork/pol-amoy-erc20.service"
+import { ethSepoliaErc20Service } from "../ethereum/eth/testnetwork/eth-sepolia-erc20.service"
 
 export const INITED_TOKENS_CACHE_NAME = "InitedTokens_"
 export const TOKENS_REFRESH_INTERVAL = 30000
@@ -129,6 +130,7 @@ export class FtService {
       arbSepoliaErc20Tokens,
       baseSepoliaErc20Tokens,
       polAmoyErc20Tokens,
+      ethSepoliaErc20Tokens,
     ] = await Promise.all([
       ethErc20Service.getTokensList(),
       polygonErc20Service.getTokensList(),
@@ -137,6 +139,7 @@ export class FtService {
       arbSepoliaErc20Service.getTokensList(),
       baseSepoliaErc20Service.getTokensList(),
       polygonAmoyErc20Service.getTokensList(),
+      ethSepoliaErc20Service.getTokensList(),
     ])
 
     const allErc20Tokens = [
@@ -147,6 +150,7 @@ export class FtService {
       ...arbSepoliaErc20Tokens,
       ...baseSepoliaErc20Tokens,
       ...polAmoyErc20Tokens,
+      ...ethSepoliaErc20Tokens,
     ]
 
     const nativeTokens: FT[] = [
@@ -208,6 +212,16 @@ export class FtService {
           userCanisters.find(
             (c) =>
               c.network === ChainId.BASE_SEPOLIA && c.ledger === EVM_NATIVE,
+          )?.state ?? {
+            Inactive: null,
+          },
+        ),
+      ),
+
+      tokenFactory.getCreatorByChainID(ChainId.ETH_SEPOLIA).buildNative(
+        mapState(
+          userCanisters.find(
+            (c) => c.network === ChainId.ETH_SEPOLIA && c.ledger === EVM_NATIVE,
           )?.state ?? {
             Inactive: null,
           },

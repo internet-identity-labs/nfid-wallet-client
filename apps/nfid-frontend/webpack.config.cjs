@@ -190,6 +190,7 @@ const config = composePlugins(
     config.module.rules = config.module.rules || []
 
     const BABEL_EXCLUDE = /node_modules[/\\](?!(@dfinity\/ledger-icp)[/\\]).*/
+    const SOURCE_MAP_EXCLUDE = /node_modules/
 
     const modifyBabelLoader = (rule) => {
       if (
@@ -219,7 +220,35 @@ const config = composePlugins(
       return rule
     }
 
-    config.module.rules = config.module.rules.map(modifyBabelLoader)
+    const modifySourceMapLoader = (rule) => {
+      if (
+        rule.loader &&
+        typeof rule.loader === "string" &&
+        rule.loader.includes("source-map-loader")
+      ) {
+        rule.exclude = SOURCE_MAP_EXCLUDE
+        return rule
+      }
+      if (rule.oneOf) {
+        rule.oneOf = rule.oneOf.map(modifySourceMapLoader)
+      }
+      if (rule.use && Array.isArray(rule.use)) {
+        const hasSourceMapLoader = rule.use.some(
+          (loader) =>
+            typeof loader === "object" &&
+            loader.loader &&
+            loader.loader.includes("source-map-loader"),
+        )
+        if (hasSourceMapLoader) {
+          rule.exclude = SOURCE_MAP_EXCLUDE
+        }
+      }
+      return rule
+    }
+
+    config.module.rules = config.module.rules
+      .map(modifyBabelLoader)
+      .map(modifySourceMapLoader)
     config.optimization = {
       ...config.optimization,
       minimize: isProduction && !isExampleBuild,
@@ -249,12 +278,16 @@ const config = composePlugins(
 
     config.devtool = !isProduction ? "eval-cheap-module-source-map" : false
 
-    config.cache = {
-      type: "filesystem",
-      buildDependencies: {
-        config: [__filename],
-      },
-    }
+    config.cache = isProduction
+      ? {
+          type: "filesystem",
+          buildDependencies: {
+            config: [__filename],
+          },
+        }
+      : {
+          type: "memory",
+        }
     config.watchOptions = {
       ignored: ["**/dist/**", "**/.nx/**", "**/coverage/**"],
     }

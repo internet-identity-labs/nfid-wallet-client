@@ -4,10 +4,10 @@ const isProduction =
   process.env.FRONTEND_MODE === "production"
 
 module.exports = {
-  plugins: {
-    tailwindcss: {
+  plugins: [
+    require("tailwindcss")({
       config: join(__dirname, "tailwind.config.js"),
-    },
-    ...(isProduction ? { autoprefixer: {} } : {}),
-  },
+    }),
+    ...(isProduction ? [require("autoprefixer")()] : []),
+  ],
 }

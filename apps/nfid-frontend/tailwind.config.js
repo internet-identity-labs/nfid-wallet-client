@@ -1,17 +1,25 @@
-const { createGlobPatternsForDependencies } = require("@nx/react/tailwind")
 const defaultTheme = require("tailwindcss/defaultTheme")
 const { join } = require("path")
 const ANIMATION_DURATION = 1
 const HIDE_ANIMATION_DURATION = 0.3
 
-const dependencies = createGlobPatternsForDependencies(__dirname)
-console.log("apps/nfid-frontend/tailwind.config.js", { dependencies })
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    join(__dirname, "{src,public}/**/*!(*.stories|*.spec).{ts,tsx,html}"),
-    ...dependencies,
+    // App runtime sources
+    join(__dirname, "src/**/*.{ts,tsx,html}"),
+    join(__dirname, "public/**/*.html"),
+
+    // Runtime UI packages used by the app
+    join(__dirname, "../../packages/ui/src/**/*.{ts,tsx,html}"),
+    join(__dirname, "../../packages/ui-tailwind-core/src/**/*.{ts,tsx,html}"),
+
+    // Exclude non-runtime/test-only files to reduce scan churn
+    "!" + join(__dirname, "src/**/*.spec.{ts,tsx}"),
+    "!" + join(__dirname, "src/**/*.test.{ts,tsx}"),
+    "!" + join(__dirname, "src/**/*.stories.{ts,tsx,mdx}"),
+    "!" + join(__dirname, "../../apps/nfid-frontend-e2e/**"),
+    "!" + join(__dirname, "../../**/.storybook/**"),
   ],
   darkMode: "class",
   plugins: [

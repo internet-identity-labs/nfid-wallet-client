@@ -186,9 +186,11 @@ const config = composePlugins(
     config.module = config.module || { rules: [] };
     config.module.rules = config.module.rules || [];
 
+    const BABEL_EXCLUDE = /node_modules[/\\](?!(@dfinity\/ledger-icp)[/\\]).*/;
+
     const modifyBabelLoader = (rule) => {
       if (rule.loader && typeof rule.loader === 'string' && rule.loader.includes('babel-loader')) {
-        rule.exclude = /node_modules\/(?!(@dfinity\/ledger-icp)\/).*/;
+        rule.exclude = BABEL_EXCLUDE;
         delete rule.include;
         return rule;
       }
@@ -196,15 +198,13 @@ const config = composePlugins(
         rule.oneOf = rule.oneOf.map(modifyBabelLoader);
       }
       if (rule.use && Array.isArray(rule.use)) {
-        rule.use = rule.use.map((loader) => {
-          if (typeof loader === 'object' && loader.loader && loader.loader.includes('babel-loader')) {
-            return {
-              ...loader,
-              exclude: /node_modules\/(?!(@dfinity\/ledger-icp)\/).*/,
-            };
-          }
-          return loader;
-        });
+        const hasBabelLoader = rule.use.some(
+          (loader) => typeof loader === 'object' && loader.loader && loader.loader.includes('babel-loader')
+        );
+        if (hasBabelLoader) {
+          rule.exclude = BABEL_EXCLUDE;
+          delete rule.include;
+        }
       }
       return rule;
     };

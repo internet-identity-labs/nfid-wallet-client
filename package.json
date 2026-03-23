@@ -226,7 +226,7 @@
     "vm-browserify": "1.1.2",
     "wdio-video-reporter": "6.1.1",
     "webdriverio": "9.19.2",
-    "webpack": "5.105.0",
+    "webpack": "5.105.1",
     "whatwg-fetch": "3.6.20"
   },
   "resolutions": {

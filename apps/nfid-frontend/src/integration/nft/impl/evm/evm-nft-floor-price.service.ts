@@ -1,18 +1,10 @@
 import { ttlCacheService } from "@nfid/client-db"
-import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { MORALIS_CHAIN_MAP } from "../../constants/constants"
 
 export interface EvmNftFloorPrice {
   nativePrice: number
   usdPrice: number
   symbol: string
-}
-
-const MORALIS_CHAIN_MAP: Partial<Record<number, string>> = {
-  [ChainId.ETH]: "eth",
-  [ChainId.BASE]: "base",
-  [ChainId.POL]: "polygon",
-  [ChainId.ARB]: "arbitrum",
-  [ChainId.BNB]: "bsc",
 }
 
 export const MORALIS_API_KEY =
@@ -29,21 +21,22 @@ class EvmNftFloorPriceService {
 
     const cacheKey = `EVM_NFT_FLOOR_${chainId}_${contract.toLowerCase()}`
 
-    return ttlCacheService.getOrFetch(
+    const result = await ttlCacheService.getOrFetch(
       cacheKey,
       () => this.fetchFloorPrice(contract, baseUrl),
       FLOOR_PRICE_CACHE_TTL,
       {
-        serialize: JSON.stringify,
-        deserialize: (v) => JSON.parse(v as string) as EvmNftFloorPrice,
+        serialize: (v) => JSON.stringify(v),
+        deserialize: (v) => JSON.parse(v as string) as EvmNftFloorPrice | null,
       },
     )
+    return result ?? undefined
   }
 
   private async fetchFloorPrice(
     contract: string,
     baseUrl: string,
-  ): Promise<EvmNftFloorPrice | undefined> {
+  ): Promise<EvmNftFloorPrice | null> {
     const url = new URL(
       `https://deep-index.moralis.io/api/v2.2/nft/${contract}/floor-price`,
     )
@@ -53,11 +46,11 @@ class EvmNftFloorPriceService {
       headers: { "X-API-Key": MORALIS_API_KEY },
     })
 
-    if (!response.ok) return undefined
+    if (!response.ok) return null
 
     const data = await response.json()
 
-    if (!data.floor_price) return undefined
+    if (!data.floor_price) return null
 
     return {
       nativePrice: Number(data.floor_price),

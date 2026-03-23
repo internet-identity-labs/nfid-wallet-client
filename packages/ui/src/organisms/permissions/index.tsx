@@ -381,13 +381,13 @@ export const Permissions: FC<PermissionsProps> = ({
           <div className="mt-5 flex gap-2.5">
             <Button
               type="stroke"
-              className="w-[115px] w-full"
+              className="w-full"
               onClick={() => setChosenUpdateAllowance(null)}
             >
               Cancel
             </Button>
             <Button
-              className="w-[115px] w-full"
+              className="w-full"
               onClick={updateAllowance}
               disabled={identityLoading || !identity || isUpdateLoading}
               icon={isUpdateLoading ? <Spinner /> : null}

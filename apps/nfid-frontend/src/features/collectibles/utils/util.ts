@@ -47,3 +47,19 @@ export const fetchNFT = async (
   )
   return data
 }
+
+export const fetchViewOnlyNFT = async (
+  id: string,
+  viewOnlyAddress: string,
+  viewOnlyAddressType: "icp" | "evm" | "btc",
+  currentPage?: number,
+  limit?: number,
+) => {
+  return nftService.getViewOnlyNFTByTokenId(
+    id,
+    viewOnlyAddress,
+    viewOnlyAddressType,
+    currentPage,
+    limit,
+  )
+}

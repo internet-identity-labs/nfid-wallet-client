@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js"
 import clsx from "clsx"
-import { HTMLAttributes, FC, useState, useMemo } from "react"
+import { HTMLAttributes, FC, useState, useMemo, useContext } from "react"
 import { FT } from "src/integration/ft/ft"
 import { useDarkTheme } from "frontend/hooks"
 
@@ -18,6 +18,7 @@ import { ChainFilter } from "./components/chain-filter"
 import { SelectedToken } from "frontend/features/transfer-modal/types"
 import { IconCmpPortfolioOptions } from "../../atoms/icons"
 import { PortfolioOptions } from "./components/portfolio-options"
+import { ProfileContext } from "frontend/provider"
 
 export interface IProfileConstants {
   base: string
@@ -96,6 +97,7 @@ export const Tokens: FC<TokensProps> = ({
   const [isHovered, setIsHovered] = useState(false)
   const [loadingToken, setLoadingToken] = useState<FT | null>(null)
   const isDarkTheme = useDarkTheme()
+  const { isViewOnlyMode } = useContext(ProfileContext)
   const [filter, setFilter] = useState<string[]>([])
   const isLoading = isTokensLoading || initedTokens.length === 0
 
@@ -168,17 +170,19 @@ export const Tokens: FC<TokensProps> = ({
   return (
     <>
       <div className="relative flex flex-col">
-        <div className={clsx("flex justify-end mb-1", isLoading && "hidden")}>
-          <ChainFilter
-            filter={filter}
-            setFilter={setFilter}
-            iconClassName="w-[24px] h-[24px]"
-          />
-          <IconCmpPortfolioOptions
-            className="ml-5 w-[24px] h-[24px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white bg-transparent"
-            onClick={() => setIsModalOpen(true)}
-          />
-        </div>
+        {!isViewOnlyMode && (
+          <div className={clsx("flex justify-end mb-1", isLoading && "hidden")}>
+            <ChainFilter
+              filter={filter}
+              setFilter={setFilter}
+              iconClassName="w-[24px] h-[24px]"
+            />
+            <IconCmpPortfolioOptions
+              className="ml-5 w-[24px] h-[24px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white bg-transparent"
+              onClick={() => setIsModalOpen(true)}
+            />
+          </div>
+        )}
         <div className="mb-[20px] overflow-x-auto scrollbar scrollbar-w-4 scrollbar-thumb-gray-300 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
           <table className="w-full text-left">
             <thead className="text-secondary dark:text-zinc-500 h-[40px] hidden md:table-header-group">
@@ -245,14 +249,16 @@ export const Tokens: FC<TokensProps> = ({
             </tbody>
           </table>
         </div>
-        <ManageTokens
-          className="mx-auto w-fit"
-          tokens={allTokens}
-          onSubmitIcrc1Pair={onSubmitIcrc1Pair}
-          onFetch={onFetch}
-          setLoadingToken={setLoadingToken}
-          manageBtnDisabled={isLoading}
-        />
+        {!isViewOnlyMode && (
+          <ManageTokens
+            className="mx-auto w-fit"
+            tokens={allTokens}
+            onSubmitIcrc1Pair={onSubmitIcrc1Pair}
+            onFetch={onFetch}
+            setLoadingToken={setLoadingToken}
+            manageBtnDisabled={isLoading}
+          />
+        )}
         <PortfolioOptions
           isOpen={isModalOpen}
           setIsOpen={setIsModalOpen}

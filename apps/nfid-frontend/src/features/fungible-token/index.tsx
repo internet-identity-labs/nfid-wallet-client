@@ -34,9 +34,16 @@ const TokensPage = () => {
   const [arbitrumEnabled, setArbitrumEnabled] = useState(false)
   const [baseEnabled, setBaseEnabled] = useState(false)
   const [polygonEnabled, setPolygontEnabled] = useState(false)
-  const userRootPrincipalId = authState.getUserIdData().userId
-  const globalServices = useContext(ProfileContext)
-  const [, send] = useActor(globalServices.transferService)
+  const {
+    transferService,
+    isViewOnlyMode,
+    viewOnlyAddress,
+    viewOnlyAddressType,
+  } = useContext(ProfileContext)
+  const userRootPrincipalId = isViewOnlyMode
+    ? ""
+    : authState.getUserIdData().userId
+  const [, send] = useActor(transferService)
 
   const onSendClick = (selectedToken: SelectedToken) => {
     send({ type: "ASSIGN_VAULTS", data: false })
@@ -104,10 +111,22 @@ const TokensPage = () => {
   }
 
   const { data: tokens = undefined, mutate: refetchTokens } =
-    useSWRWithTimestamp("tokens", fetchTokens, {
-      revalidateOnFocus: false,
-      revalidateOnMount: false,
-    })
+    useSWRWithTimestamp(
+      isViewOnlyMode ? ["tokens", viewOnlyAddress] : "tokens",
+      () => {
+        if (!isViewOnlyMode) return fetchTokens()
+
+        if (viewOnlyAddressType === "icp")
+          return ftService.getIcpViewOnlyTokens(viewOnlyAddress!)
+        if (viewOnlyAddressType === "btc")
+          return ftService.getBtcViewOnlyTokens()
+        return ftService.getEvmViewOnlyTokens(viewOnlyAddress!)
+      },
+      {
+        revalidateOnFocus: false,
+        revalidateOnMount: isViewOnlyMode,
+      },
+    )
 
   const { initedTokens, isLoading: isTokensLoading } = useTokensInit(tokens)
 
@@ -132,7 +151,11 @@ const TokensPage = () => {
     isLoading: tokensUsdBalanceLoading,
     mutate: refetchFtUsdBalance,
   } = useSWR(
-    initedTokens && initedTokens.length > 0 ? "ftUsdValue" : null,
+    initedTokens && initedTokens.length > 0
+      ? isViewOnlyMode
+        ? ["ftUsdValue", viewOnlyAddress]
+        : "ftUsdValue"
+      : null,
     async () => ftService.getFTUSDBalance(initedTokens!),
     { revalidateOnFocus: false },
   )
@@ -142,6 +165,14 @@ const TokensPage = () => {
   }, [initedTokens, refetchFtUsdBalance])
 
   useEffect(() => {
+    if (isViewOnlyMode) {
+      setHideZeroBalance(true)
+      setTestnetEnabled(false)
+      setArbitrumEnabled(true)
+      setBaseEnabled(true)
+      setPolygontEnabled(true)
+      return
+    }
     userPrefService.getUserPreferences().then((userPref) => {
       setHideZeroBalance(userPref.isHideZeroBalance())
       setTestnetEnabled(userPref.isTestnetEnabled())
@@ -149,7 +180,7 @@ const TokensPage = () => {
       setBaseEnabled(userPref.isBaseEnabled())
       setPolygontEnabled(userPref.isPolygonEnabled())
     })
-  }, [])
+  }, [isViewOnlyMode])
 
   const onZeroBalanceToggle = () => {
     userPrefService.getUserPreferences().then((userPref) => {
@@ -254,9 +285,11 @@ const TokensPage = () => {
             </p>
           </div>
         </div>
-        <div className="flex items-center flex-1 md:justify-end">
-          <ScanTokens triggerClassName="w-full sm:w-fit dark:text-white" />
-        </div>
+        {!isViewOnlyMode && (
+          <div className="flex items-center flex-1 md:justify-end">
+            <ScanTokens triggerClassName="w-full sm:w-fit dark:text-white" />
+          </div>
+        )}
       </div>
       <ProfileContainer>
         <Tokens

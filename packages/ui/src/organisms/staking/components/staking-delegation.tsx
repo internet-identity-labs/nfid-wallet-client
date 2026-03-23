@@ -2,9 +2,10 @@ import { motion } from "framer-motion"
 import { Spinner } from "packages/ui/src/atoms/spinner"
 import { Button } from "packages/ui/src/molecules/button"
 import CopyAddress from "packages/ui/src/molecules/copy-address"
-import { FC } from "react"
+import { FC, useContext } from "react"
 
 import { IFollowees } from "frontend/integration/staking/types"
+import { ProfileContext } from "frontend/provider"
 
 export interface StakingDelegatesProps {
   followees: IFollowees
@@ -17,6 +18,8 @@ export const StakingDelegates: FC<StakingDelegatesProps> = ({
   isDelegateLoading,
   setIsModalOpen,
 }) => {
+  const { isViewOnlyMode } = useContext(ProfileContext)
+
   return (
     <motion.div
       key="VotingPanel"
@@ -47,20 +50,22 @@ export const StakingDelegates: FC<StakingDelegatesProps> = ({
               )}
             </div>
           ))}
-          <Button
-            icon={
-              isDelegateLoading ? (
-                <Spinner className="w-5 h-5 text-gray-300 dark:text-white" />
-              ) : null
-            }
-            disabled={isDelegateLoading}
-            block
-            type="stroke"
-            className="mt-[10px]"
-            onClick={() => setIsModalOpen(true)}
-          >
-            Update delegate
-          </Button>
+          {!isViewOnlyMode && (
+            <Button
+              icon={
+                isDelegateLoading ? (
+                  <Spinner className="w-5 h-5 text-gray-300 dark:text-white" />
+                ) : null
+              }
+              disabled={isDelegateLoading}
+              block
+              type="stroke"
+              className="mt-[10px]"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Update delegate
+            </Button>
+          )}
         </div>
       </div>
     </motion.div>

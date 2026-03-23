@@ -25,6 +25,7 @@ export function AuthEmailFlowCoordinator({
         <AuthEmailPending
           isIdentityKit={isIdentityKit}
           email={state.context.verificationEmail}
+          antiPhishingCode={state.context.antiPhishingCode}
           onBack={() => send({ type: "BACK" })}
           onResend={() => {
             send({ type: "RESEND" })

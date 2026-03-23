@@ -13,7 +13,11 @@ export type VerificationStatus = "success" | "invalid-token" | "link-required"
 export type VerificationMethod = "email"
 export type RequestId = string
 export type KeyPair = { publicKey: string; privateKey: string }
-export type SendVerificationResponse = { keyPair: KeyPair; requestId: string }
+export type SendVerificationResponse = {
+  keyPair: KeyPair
+  requestId: string
+  antiPhishingCode: string
+}
 export type SendVerificationEmailRequest = {
   verificationMethod: VerificationMethod
   emailAddress: string
@@ -31,6 +35,7 @@ export class VerificationIsInProgressError extends Error {
   }
 }
 
+const ANTI_PHISHING_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 const sendVerificationEmailEndpointUrl = "/send_verification_email"
 const checkVerificationEndpointUrl = "/check_verification"
 const verifyEmailEndpointUrl = "/verify_email"
@@ -63,7 +68,12 @@ export const verificationService = {
       : AWS_SEND_VERIFICATION_EMAIL
 
     const keyPair = await generateCryptoKeyPair()
-    const body = { email: emailAddress, publicKey: keyPair.publicKey }
+    const antiPhishingCode = generateAntiPhishingCode()
+    const body = {
+      email: emailAddress,
+      publicKey: keyPair.publicKey,
+      antiPhishingCode,
+    }
 
     const response = await fetch(url, {
       method: "POST",
@@ -81,7 +91,7 @@ export const verificationService = {
 
     const requestId = JSON.parse(text).requestId
 
-    return { keyPair, requestId }
+    return { keyPair, requestId, antiPhishingCode }
   },
 
   async verify(
@@ -218,4 +228,13 @@ async function exportKeyToPem(
   const pemExportedPublicKey = `-----BEGIN ${keyType}-----\n${exportedKeyBase64}\n-----END ${keyType}-----`
 
   return pemExportedPublicKey
+}
+
+function generateAntiPhishingCode(): string {
+  const bytes = crypto.getRandomValues(new Uint8Array(6))
+  const chars = Array.from(
+    bytes,
+    (b) => ANTI_PHISHING_CHARS[b % ANTI_PHISHING_CHARS.length],
+  )
+  return `${chars.slice(0, 3).join("")}-${chars.slice(3).join("")}`
 }

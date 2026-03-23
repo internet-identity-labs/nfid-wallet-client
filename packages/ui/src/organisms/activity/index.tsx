@@ -1,6 +1,6 @@
 import { SignIdentity } from "@dfinity/agent"
 import clsx from "clsx"
-import { FC, useState } from "react"
+import { FC, useContext, useState } from "react"
 
 import {
   Button,
@@ -31,6 +31,7 @@ import {
   SearchRequest,
   UserAddressPreview,
 } from "frontend/integration/address-book"
+import { ProfileContext } from "frontend/provider"
 
 type IFilter = {
   tx: string[]
@@ -101,6 +102,7 @@ export const Activity: FC<ActivityProps> = ({
     chain: [],
     token: [],
   })
+  const { isViewOnlyMode } = useContext(ProfileContext)
 
   const showSkeleton =
     isFirstLoading ||
@@ -111,92 +113,96 @@ export const Activity: FC<ActivityProps> = ({
 
   return (
     <>
-      <div className={clsx("flex justify-end", showSkeleton && "hidden")}>
-        <FilterPopover
-          align="end"
-          className="!min-w-[384px]"
-          trigger={
-            <div
-              id={"filter-ft"}
-              className="flex items-center justify-end p-[10px] rounded-md md:bg-white dark:md:bg-[#141518] px-5 sm:px-[30px]"
-            >
-              <div className="relative">
-                <IconCmpFilters className="w-[21px] h-[21px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white" />
-                <div
-                  className={clsx(
-                    "absolute w-2.5 h-2.5 bg-teal-600 dark:bg-teal-500 right-0 bottom-0 rounded-full border-2 border-white dark:border-[#141518]",
-                    tokenFilter.length > 0 ||
-                      chainFilter.length > 0 ||
-                      txFilter.length > 0
-                      ? "block"
-                      : "hidden",
-                  )}
-                ></div>
+      {!isViewOnlyMode && (
+        <div className={clsx("flex justify-end", showSkeleton && "hidden")}>
+          <FilterPopover
+            align="end"
+            className="!min-w-[384px]"
+            trigger={
+              <div
+                id={"filter-ft"}
+                className="flex items-center justify-end p-[10px] rounded-md md:bg-white dark:md:bg-[#141518] px-5 sm:px-[30px]"
+              >
+                <div className="relative">
+                  <IconCmpFilters className="w-[21px] h-[21px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white" />
+                  <div
+                    className={clsx(
+                      "absolute w-2.5 h-2.5 bg-teal-600 dark:bg-teal-500 right-0 bottom-0 rounded-full border-2 border-white dark:border-[#141518]",
+                      tokenFilter.length > 0 ||
+                        chainFilter.length > 0 ||
+                        txFilter.length > 0
+                        ? "block"
+                        : "hidden",
+                    )}
+                  ></div>
+                </div>
               </div>
-            </div>
-          }
-          onReset={() => {
-            setTokenFilter([])
-            setChainFilter([])
-            setTxFilter([])
-            setFilter({ tx: [], chain: [], token: [] })
-          }}
-          onApply={() => {
-            setTokenFilter(filter.token)
-            setChainFilter(filter.chain)
-            setTxFilter(filter.tx)
-          }}
-        >
-          <div className="mb-2.5">
-            <p className="mb-1 text-xs">Network</p>
-            <DropdownSelect
-              options={chainOptions}
-              selectedValues={filter.chain}
-              setSelectedValues={(chain) =>
-                setFilter((prev) => ({ ...prev, chain }))
-              }
-              placeholder="All networks"
-              placeholderIcon={AllNetworksIcon}
-            />
-          </div>
-          <div className="mb-2.5">
-            <p className="mb-1 text-xs">Assets</p>
-            <DropdownSelect
-              id={"number_of_filters"}
-              selectedValues={filter.token}
-              setSelectedValues={(token) =>
-                setFilter((prev) => ({ ...prev, token }))
-              }
-              isMultiselect={true}
-              options={tokens.map((token: FT) => {
-                const address = token.getTokenAddress()
-                const chainId = token.getChainId()
-                const value =
-                  address === EVM_NATIVE || address === ETH_NATIVE_ID
-                    ? `${address}_${chainId}`
-                    : address.toLowerCase()
-
-                return {
-                  label: token.getTokenName(),
-                  value,
-                  icon: token.getTokenLogo(),
-                  symbol: token.getTokenSymbol(),
-                  chainId,
+            }
+            onReset={() => {
+              setTokenFilter([])
+              setChainFilter([])
+              setTxFilter([])
+              setFilter({ tx: [], chain: [], token: [] })
+            }}
+            onApply={() => {
+              setTokenFilter(filter.token)
+              setChainFilter(filter.chain)
+              setTxFilter(filter.tx)
+            }}
+          >
+            <div className="mb-2.5">
+              <p className="mb-1 text-xs">Network</p>
+              <DropdownSelect
+                options={chainOptions}
+                selectedValues={filter.chain}
+                setSelectedValues={(chain) =>
+                  setFilter((prev) => ({ ...prev, chain }))
                 }
-              })}
-            />
-          </div>
-          <div className="mb-2.5">
-            <p className="mb-1 text-xs">Transaction type</p>
-            <DropdownSelect
-              options={txOptions}
-              selectedValues={filter.tx}
-              setSelectedValues={(tx) => setFilter((prev) => ({ ...prev, tx }))}
-              placeholder="All"
-            />
-          </div>
-        </FilterPopover>
-      </div>
+                placeholder="All networks"
+                placeholderIcon={AllNetworksIcon}
+              />
+            </div>
+            <div className="mb-2.5">
+              <p className="mb-1 text-xs">Assets</p>
+              <DropdownSelect
+                id={"number_of_filters"}
+                selectedValues={filter.token}
+                setSelectedValues={(token) =>
+                  setFilter((prev) => ({ ...prev, token }))
+                }
+                isMultiselect={true}
+                options={tokens.map((token: FT) => {
+                  const address = token.getTokenAddress()
+                  const chainId = token.getChainId()
+                  const value =
+                    address === EVM_NATIVE || address === ETH_NATIVE_ID
+                      ? `${address}_${chainId}`
+                      : address.toLowerCase()
+
+                  return {
+                    label: token.getTokenName(),
+                    value,
+                    icon: token.getTokenLogo(),
+                    symbol: token.getTokenSymbol(),
+                    chainId,
+                  }
+                })}
+              />
+            </div>
+            <div className="mb-2.5">
+              <p className="mb-1 text-xs">Transaction type</p>
+              <DropdownSelect
+                options={txOptions}
+                selectedValues={filter.tx}
+                setSelectedValues={(tx) =>
+                  setFilter((prev) => ({ ...prev, tx }))
+                }
+                placeholder="All"
+              />
+            </div>
+          </FilterPopover>
+        </div>
+      )}
       {showEmpty ? (
         <ActivityEmpty />
       ) : (

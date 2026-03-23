@@ -5,17 +5,20 @@ import {
 } from "@nfid/integration/token/icrc1/enum/enums"
 import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
 
-import { ETH_DECIMALS, EVM_NATIVE } from "@nfid/integration/token/constants"
+import {
+  CKETH_LEDGER_CANISTER_ID,
+  ETH_DECIMALS,
+  EVM_NATIVE,
+} from "@nfid/integration/token/constants"
 
 import {
-  ArbSepoliaService,
-  arbSepoliaService,
-} from "frontend/integration/ethereum/arbitrum/testnetwork/arb-sepolia.service"
+  EthSepoliaService,
+  ethSepoliaService,
+} from "frontend/integration/ethereum/eth/testnetwork/eth-sepolia.service"
 import { FTEvmAbstractImpl } from "../ft-evm-abstract-impl"
 import { exchangeRateService } from "@nfid/integration"
-import { CKETH_LEDGER_CANISTER_ID } from "@nfid/integration/token/constants"
 
-export class FTArbSepoliaImpl extends FTEvmAbstractImpl {
+export class FTEthSepoliaImpl extends FTEvmAbstractImpl {
   constructor(state: State) {
     super({
       ledger: EVM_NATIVE,
@@ -29,21 +32,19 @@ export class FTArbSepoliaImpl extends FTEvmAbstractImpl {
       fee: BigInt(0),
       rootCanisterId: undefined,
     })
-    this.tokenChainId = ChainId.ARB_SEPOLIA
+    this.tokenChainId = ChainId.ETH_SEPOLIA
   }
 
-  public getProvider(): ArbSepoliaService {
-    return arbSepoliaService
+  public getProvider(): EthSepoliaService {
+    return ethSepoliaService
   }
 
-  public async fetchEvmBalance(viewOnlyAddress?: string): Promise<void> {
+  public async getBalance(): Promise<void> {
     try {
-      this.tokenBalance = viewOnlyAddress
-        ? await this.getProvider().getBalance(viewOnlyAddress)
-        : await this.getProvider().getQuickBalance()
+      this.tokenBalance = await this.getProvider().getQuickBalance()
     } catch (e) {
       console.error(
-        "Arbitrum Sepolia balance fetch error: ",
+        "Ethereum Sepolia balance fetch error: ",
         (e as Error).message,
       )
       return

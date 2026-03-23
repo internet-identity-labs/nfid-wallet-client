@@ -17,14 +17,16 @@ import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 export abstract class FTEvmAbstractImpl extends FTImpl {
   public abstract getProvider(): EVMService
 
-  async init(): Promise<FT> {
-    await this.getBalance()
+  async init(_principal: Principal, viewOnlyAddress?: string): Promise<FT> {
+    await this.fetchEvmBalance(viewOnlyAddress)
     return this
   }
 
-  public async getBalance(): Promise<void> {
+  public async fetchEvmBalance(viewOnlyAddress?: string): Promise<void> {
     try {
-      this.tokenBalance = await this.getProvider().getQuickBalance()
+      this.tokenBalance = viewOnlyAddress
+        ? await this.getProvider().getBalance(viewOnlyAddress)
+        : await this.getProvider().getQuickBalance()
     } catch (e) {
       console.error("Ethereum balance fetch error: ", (e as Error).message)
       return

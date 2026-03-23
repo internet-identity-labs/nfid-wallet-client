@@ -12,7 +12,7 @@ import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 import { FeeResponse } from "./utils"
 
 export interface FT {
-  init(principal: Principal): Promise<FT>
+  init(principal: Principal, viewOnlyAddress?: string): Promise<FT>
 
   isInited(): boolean
 

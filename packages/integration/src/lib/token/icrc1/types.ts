@@ -75,3 +75,27 @@ export interface AllowanceDetailDTO {
   allowance: bigint
   expires_at: bigint | undefined
 }
+
+export type DiscoveryLoginType = "Global" | "Anonymous"
+
+export type DiscoveryAppStatus = "New" | "Updated" | "Verified" | "Spam"
+
+export interface DiscoveryVisitData {
+  derivationOrigin?: string
+  hostname: string
+  login: DiscoveryLoginType
+}
+
+export interface DiscoveryAppData {
+  id: number
+  derivationOrigin?: string
+  hostname: string
+  url?: string
+  name?: string
+  image?: string
+  desc?: string
+  isGlobal: boolean
+  isAnonymous: boolean
+  uniqueUsers: bigint
+  status: DiscoveryAppStatus
+}

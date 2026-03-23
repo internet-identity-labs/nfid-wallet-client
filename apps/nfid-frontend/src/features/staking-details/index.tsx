@@ -9,39 +9,66 @@ import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { useIdentity } from "frontend/hooks/identity"
+import { ftService } from "frontend/integration/ft/ft-service"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
 import { ProfileContext } from "frontend/provider"
 
 import { fetchTokens } from "../fungible-token/utils"
-import { fetchDelegates, fetchStakedTokens } from "../staking/utils"
+import {
+  fetchDelegates,
+  fetchStakedTokens,
+  fetchViewOnlyDelegates,
+  fetchViewOnlyStakedTokens,
+} from "../staking/utils"
 import { ModalType } from "../transfer-modal/types"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 const StakingDetailsPage = () => {
   const { tokenSymbol } = useParams()
-  const { identity } = useIdentity()
+  const {
+    isViewOnlyMode,
+    viewOnlyAddress,
+    viewOnlyAddressType,
+    transferService,
+  } = useContext(ProfileContext)
+  const [, send] = useActor(transferService)
+  const { identity } = useIdentity(isViewOnlyMode)
 
-  const { data: tokens = [] } = useSWRWithTimestamp("tokens", fetchTokens, {
-    revalidateOnFocus: false,
-    revalidateOnMount: false,
-  })
+  const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
+    isViewOnlyMode ? ["tokens", viewOnlyAddress] : "tokens",
+    () => {
+      if (!isViewOnlyMode) return fetchTokens()
+      if (viewOnlyAddressType === "icp")
+        return ftService.getIcpViewOnlyTokens(viewOnlyAddress!)
+      return Promise.resolve([])
+    },
+    {
+      revalidateOnFocus: false,
+      revalidateOnMount: isViewOnlyMode,
+    },
+  )
 
-  const { initedTokens } = useTokensInit(tokens)
+  const { initedTokens, isLoading: isInitedLoading } = useTokensInit(tokens)
 
   const token = useMemo(() => {
     return tokens.find((t) => t.getTokenSymbol() === tokenSymbol)
   }, [tokens, tokenSymbol])
 
-  const globalServices = useContext(ProfileContext)
-  const [, send] = useActor(globalServices.transferService)
-
-  const { data: stakedTokens, isLoading } = useSWRWithTimestamp(
-    initedTokens ? "stakedTokens" : null,
-    () => fetchStakedTokens(initedTokens!, false),
-    {
-      revalidateOnFocus: false,
-    },
-  )
+  const { data: stakedTokens, isLoading: isStakedLoading } =
+    useSWRWithTimestamp(
+      initedTokens
+        ? isViewOnlyMode
+          ? ["stakedTokens", viewOnlyAddress]
+          : "stakedTokens"
+        : null,
+      () =>
+        isViewOnlyMode
+          ? fetchViewOnlyStakedTokens(viewOnlyAddress!, initedTokens!)
+          : fetchStakedTokens(initedTokens!, false),
+      {
+        revalidateOnFocus: false,
+      },
+    )
 
   const stakedToken = useMemo(() => {
     return stakedTokens?.find(
@@ -50,11 +77,20 @@ const StakingDetailsPage = () => {
   }, [stakedTokens, tokenSymbol])
 
   const { data: delegates } = useSWR(
-    stakedToken && tokenSymbol && identity
-      ? ["stakedTokenDelegates", tokenSymbol]
+    stakedToken && tokenSymbol
+      ? isViewOnlyMode
+        ? ["stakedTokenDelegates", tokenSymbol, "viewOnly"]
+        : identity
+          ? ["stakedTokenDelegates", tokenSymbol]
+          : null
       : null,
     () =>
-      fetchDelegates(identity, stakedToken?.getToken().getRootSnsCanister()),
+      isViewOnlyMode
+        ? fetchViewOnlyDelegates(stakedToken?.getToken().getRootSnsCanister())
+        : fetchDelegates(
+            identity,
+            stakedToken?.getToken().getRootSnsCanister(),
+          ),
     { revalidateOnFocus: false },
   )
 
@@ -99,7 +135,7 @@ const StakingDetailsPage = () => {
       onRedeemOpen={onRedeemOpen}
       stakedToken={stakedToken}
       initedTokens={initedTokens}
-      isLoading={isLoading}
+      isLoading={isTokensLoading || isInitedLoading || isStakedLoading}
       identity={identity}
       delegates={delegates}
       updateDelegates={updateDelegates}

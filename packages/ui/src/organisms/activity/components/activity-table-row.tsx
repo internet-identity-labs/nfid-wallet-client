@@ -5,7 +5,7 @@ import { A } from "packages/ui/src/atoms/custom-link"
 import { Spinner } from "packages/ui/src/atoms/spinner"
 import CopyAddress from "packages/ui/src/molecules/copy-address"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
-import { useEffect, useMemo, useState } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
 import { errorHandlerFactory } from "src/integration/swap/errors/handler-factory"
 import { ContactSupportError } from "src/integration/swap/errors/types/contact-support-error"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
@@ -38,6 +38,7 @@ import {
 } from "frontend/integration/address-book"
 import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
 import { NoteIcon } from "packages/ui/src/atoms/icons/note"
+import { ProfileContext } from "frontend/provider"
 
 interface ErrorStage {
   buttonText: string
@@ -191,6 +192,7 @@ export const ActivityTableRow = ({
   const isDarkTheme = useDarkTheme()
   const [isNoteTooltipActive, setIsNoteTooltipActive] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const { isViewOnlyMode } = useContext(ProfileContext)
   const { data: tokens = undefined } = useSWRWithTimestamp(
     "tokens",
     fetchTokens,
@@ -201,6 +203,7 @@ export const ActivityTableRow = ({
   )
 
   useEffect(() => {
+    if (isViewOnlyMode) return
     const getContact = async () => {
       if (from) {
         const contactFrom = await searchAddress({ address: from })
@@ -214,7 +217,7 @@ export const ActivityTableRow = ({
     }
 
     getContact()
-  }, [])
+  }, [isViewOnlyMode])
 
   const currentToken = useMemo(() => {
     if (asset.type !== "ft" || !tokens) return

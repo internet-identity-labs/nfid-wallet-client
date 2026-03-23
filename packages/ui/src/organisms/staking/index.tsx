@@ -28,7 +28,7 @@ export interface StakingProps {
   }
   navigate: NavigateFunction
   totalBalances?: TotalBalance
-  onStakeClick: () => void
+  onStakeClick?: () => void
 }
 
 export const Staking: FC<StakingProps> = ({
@@ -196,13 +196,20 @@ export const Staking: FC<StakingProps> = ({
                   )}
                   src={EmptyStaking}
                 />
-                <p className="leading-[18px] mb-[20px] text-sm md:max-w-[400px] lg:max-w-[460px] dark:text-zinc-500">
-                  Stake your tokens to collect rewards for participating in
-                  governance and helping to decentralize Web3 ecosystems.
-                </p>
-                <Button onClick={onStakeClick} className="w-full md:w-[120px]">
-                  Stake
-                </Button>
+                {onStakeClick && (
+                  <>
+                    <p className="leading-[18px] mb-[20px] text-sm md:max-w-[400px] lg:max-w-[460px] dark:text-zinc-500">
+                      Stake your tokens to collect rewards for participating in
+                      governance and helping to decentralize Web3 ecosystems.
+                    </p>
+                    <Button
+                      onClick={onStakeClick}
+                      className="w-full md:w-[120px]"
+                    >
+                      Stake
+                    </Button>
+                  </>
+                )}
               </ProfileContainer>
             )}
           </Table>

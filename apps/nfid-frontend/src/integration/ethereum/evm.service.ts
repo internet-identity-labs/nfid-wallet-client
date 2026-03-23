@@ -41,6 +41,7 @@ import {
 import { KEY_ETH_ADDRESS } from "packages/integration/src/lib/authentication/storage"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { MORALIS_API_KEY } from "src/integration/nft/impl/evm/evm-nft-floor-price.service"
+import { MORALIS_CHAIN_MAP } from "../nft/constants/constants"
 
 export type EvmNftStandard = "ERC-721" | "ERC-1155" | "ERC-404"
 
@@ -90,16 +91,6 @@ export interface EvmNftAsset {
   tokenSymbol?: string
   chainId: number
   acquiredAt?: number
-}
-
-// ─── Moralis NFT API ──────────────────────────────────────────────────────────
-
-const MORALIS_CHAIN_MAP: Partial<Record<number, string>> = {
-  [ChainId.ETH]: "eth",
-  [ChainId.BASE]: "base",
-  [ChainId.POL]: "polygon",
-  [ChainId.ARB]: "arbitrum",
-  [ChainId.BNB]: "bsc",
 }
 
 interface MoralisNftItem {

@@ -1,12 +1,19 @@
 import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
 
-import { Button, IconCmpArrow, IconCmpDoubleSpinner } from "@nfid-frontend/ui"
+import {
+  Button,
+  IconCmpArrow,
+  IconCmpDoubleSpinner,
+  IconCmpInfo,
+  Tooltip,
+} from "@nfid-frontend/ui"
 
 export interface AuthEmailFlowProps {
   email: string
   onBack: () => void
   onResend: () => void
   isIdentityKit?: boolean
+  antiPhishingCode?: string
 }
 
 export const AuthEmailPending: React.FC<AuthEmailFlowProps> = ({
@@ -14,6 +21,7 @@ export const AuthEmailPending: React.FC<AuthEmailFlowProps> = ({
   onBack,
   onResend,
   isIdentityKit,
+  antiPhishingCode,
 }) => {
   return (
     <div className="flex flex-col flex-1 w-full h-full text-sm text-center dark:text-white">
@@ -28,6 +36,18 @@ export const AuthEmailPending: React.FC<AuthEmailFlowProps> = ({
         account, you’ll find a magic link that will sign you in. You may need to
         check your spam folder if you don’t see it.
       </p>
+      {antiPhishingCode && (
+        <div className="mt-4 mx-auto w-full max-w-xs rounded-xl px-4 py-3 bg-orange-50 dark:bg-orange-500/10">
+          <div className="flex items-center justify-center gap-1.5 mb-1">
+            <p className="text-xs font-semibold uppercase tracking-wide text-orange-900 dark:text-amber-600">
+              Anti-phishing code
+            </p>
+          </div>
+          <p className="font-mono font-bold tracking-widest text-xl text-orange-900 dark:text-amber-600 text-center">
+            {antiPhishingCode}
+          </p>
+        </div>
+      )}
       <p className="mt-[30px]">Still can’t find the email?</p>
       <Button
         onClick={onResend}

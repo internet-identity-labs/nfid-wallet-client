@@ -130,8 +130,8 @@ export class ICRC1OracleService {
   }
 
   async getDiscoveryAppPaginated(
-    offset: bigint,
-    limit: bigint,
+    offset: bigint = BigInt(0),
+    limit: bigint = BigInt(Number.MAX_SAFE_INTEGER),
   ): Promise<DiscoveryAppData[]> {
     const cacheKey = `${DISCOVERY_APPS_CACHE_NAME}:${offset}:${limit}`
     return ttlCacheService.getOrFetch(

@@ -1,0 +1,35 @@
+import { ProfileTemplate } from "@nfid-frontend/ui"
+import { Discovery } from "packages/ui/src/organisms/discovery"
+import { useSWR } from "@nfid/swr"
+import { FC } from "react"
+import { NFIDTheme } from "frontend/App"
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+
+type DiscoveryPageProps = {
+  walletTheme: NFIDTheme
+  setWalletTheme: (theme: NFIDTheme) => void
+}
+
+const DiscoveryPage: FC<DiscoveryPageProps> = ({
+  walletTheme,
+  setWalletTheme,
+}) => {
+  const { data: discoveryApps = [], isLoading } = useSWR(
+    "discoveryApps",
+    async () => icrc1OracleService.getDiscoveryAppPaginated(),
+  )
+
+  return (
+    <ProfileTemplate
+      showBackButton
+      pageTitle="Discovery"
+      className="dark:text-white"
+      walletTheme={walletTheme}
+      setWalletTheme={setWalletTheme}
+    >
+      <Discovery discoveryApps={discoveryApps} isLoading={isLoading} />
+    </ProfileTemplate>
+  )
+}
+
+export default DiscoveryPage

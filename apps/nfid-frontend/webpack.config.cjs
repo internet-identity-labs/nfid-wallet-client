@@ -212,7 +212,7 @@ const config = composePlugins(
     config.module.rules = config.module.rules.map(modifyBabelLoader);
     config.optimization = {
       ...config.optimization,
-      minimize: !isExampleBuild,
+      minimize: isProduction && !isExampleBuild,
     };
     config.plugins = config.plugins || [];
     const canisterEnv = {
@@ -237,7 +237,17 @@ const config = composePlugins(
       crossOriginLoading: 'anonymous',
     };
 
-    config.devtool = !isProduction ? 'source-map' : false;
+    config.devtool = !isProduction ? 'eval-cheap-module-source-map' : false;
+
+    config.cache = {
+      type: 'filesystem',
+      buildDependencies: {
+        config: [__filename],
+      },
+    };
+    config.watchOptions = {
+      ignored: ['**/dist/**', '**/.nx/**', '**/coverage/**'],
+    };
 
     config.ignoreWarnings = [/Failed to parse source map from/];
 

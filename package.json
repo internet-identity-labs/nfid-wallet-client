@@ -173,7 +173,6 @@
     "@wdio/types": "9.19.2",
     "allure-commandline": "2.34.1",
     "assert": "2.1.0",
-    "autoprefixer": "10.4.23",
     "babel-loader": "10.0.0",
     "babel-plugin-polyfill-regenerator": "0.6.5",
     "buffer": "6.0.3",

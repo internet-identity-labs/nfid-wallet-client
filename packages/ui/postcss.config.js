@@ -8,6 +8,5 @@ module.exports = {
     require("tailwindcss")({
       config: join(__dirname, "tailwind.config.js"),
     }),
-    ...(isProduction ? [require("autoprefixer")()] : []),
   ],
 }

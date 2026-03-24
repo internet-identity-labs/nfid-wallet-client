@@ -58,6 +58,87 @@ const DFX_PORT = dfxJson.networks.local.bind.split(":")[1]
 const isExampleBuild = process.env.EXAMPLE_BUILD === "1"
 const isProduction = process.env.FRONTEND_MODE === "production"
 
+const removeAutoprefixerPlugin = (plugins) => {
+  if (!Array.isArray(plugins)) {
+    return plugins
+  }
+
+  return plugins.filter((plugin) => {
+    const pluginName = plugin?.postcssPlugin || plugin?.name
+    return pluginName !== "autoprefixer"
+  })
+}
+
+const normalizeAndFilterPlugins = (plugins) => {
+  if (!plugins) {
+    return plugins
+  }
+
+  if (Array.isArray(plugins)) {
+    return removeAutoprefixerPlugin(plugins)
+  }
+
+  if (typeof plugins === "function") {
+    return (...args) => removeAutoprefixerPlugin(plugins(...args))
+  }
+
+  return plugins
+}
+
+const removeAutoprefixerFromRule = (rule) => {
+  if (rule.oneOf) {
+    rule.oneOf = rule.oneOf.map(removeAutoprefixerFromRule)
+  }
+
+  if (Array.isArray(rule.use)) {
+    rule.use = rule.use.map((loader) => {
+      if (
+        typeof loader === "object" &&
+        typeof loader.loader === "string" &&
+        loader.loader.includes("postcss-loader")
+      ) {
+        const postcssOptions = loader.options?.postcssOptions
+        if (typeof postcssOptions === "function") {
+          return {
+            ...loader,
+            options: {
+              ...loader.options,
+              postcssOptions: (...args) => {
+                const resolved = postcssOptions(...args)
+                if (!resolved || typeof resolved !== "object") {
+                  return resolved
+                }
+
+                return {
+                  ...resolved,
+                  plugins: normalizeAndFilterPlugins(resolved.plugins),
+                }
+              },
+            },
+          }
+        }
+
+        if (postcssOptions && typeof postcssOptions === "object") {
+          return {
+            ...loader,
+            options: {
+              ...loader.options,
+              postcssOptions: {
+                ...postcssOptions,
+                plugins: normalizeAndFilterPlugins(postcssOptions.plugins),
+              },
+            },
+          }
+        }
+      }
+
+      return loader
+    })
+  }
+
+  return rule
+}
+
 const setupCSP = () => {
   if (isProduction) {
     const cspConfigPolicy = {
@@ -249,6 +330,7 @@ const config = composePlugins(
     config.module.rules = config.module.rules
       .map(modifyBabelLoader)
       .map(modifySourceMapLoader)
+      .map(removeAutoprefixerFromRule)
     config.optimization = {
       ...config.optimization,
       minimize: isProduction && !isExampleBuild,

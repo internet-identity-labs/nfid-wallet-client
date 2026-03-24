@@ -48,6 +48,53 @@ const TsConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const webpack = require('webpack');
 const { serviceConfig } = require('../../config/webpack-env.cjs');
 
+const removeAutoprefixerPlugin = (plugins) => {
+  if (!Array.isArray(plugins)) {
+    return plugins;
+  }
+
+  return plugins.filter((plugin) => {
+    const pluginName = plugin?.postcssPlugin || plugin?.name;
+    return pluginName !== 'autoprefixer';
+  });
+};
+
+const removeAutoprefixerFromRule = (rule) => {
+  if (rule.oneOf) {
+    rule.oneOf = rule.oneOf.map(removeAutoprefixerFromRule);
+  }
+
+  if (Array.isArray(rule.use)) {
+    rule.use = rule.use.map((loader) => {
+      if (
+        typeof loader === 'object' &&
+        typeof loader.loader === 'string' &&
+        loader.loader.includes('postcss-loader') &&
+        loader.options?.postcssOptions
+      ) {
+        const postcssOptions = loader.options.postcssOptions;
+
+        if (Array.isArray(postcssOptions.plugins)) {
+          return {
+            ...loader,
+            options: {
+              ...loader.options,
+              postcssOptions: {
+                ...postcssOptions,
+                plugins: removeAutoprefixerPlugin(postcssOptions.plugins),
+              },
+            },
+          };
+        }
+      }
+
+      return loader;
+    });
+  }
+
+  return rule;
+};
+
 const config = composePlugins(
   withNx(),
   withReact({
@@ -105,7 +152,9 @@ const config = composePlugins(
       return rule;
     };
 
-    config.module.rules = config.module.rules.map(modifyBabelLoader);
+    config.module.rules = config.module.rules
+      .map(modifyBabelLoader)
+      .map(removeAutoprefixerFromRule);
 
     config.plugins = config.plugins || [];
     config.plugins.push(

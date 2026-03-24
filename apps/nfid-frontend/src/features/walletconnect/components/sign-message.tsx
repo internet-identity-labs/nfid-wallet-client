@@ -9,6 +9,11 @@ import {
 import { WalletConnectSignSimpleMessage } from "./sign-simple-message"
 import { WalletConnectSignTypedData } from "./sign-typed-data"
 import { WalletConnectSignTransaction } from "./sign-transaction"
+import { WalletConnectApproveAllowance } from "./approve-allowance"
+
+const APPROVE_ALLOWANCE_DATA = "0x095ea7b3"
+const INCREASE_ALLOWANCE_DATA = "0x39509351"
+const DECREASE_ALLOWANCE_DATA = "0xa457c2d7"
 
 interface WalletConnectSignMessageProps {
   request: SignClientTypes.EventArguments["session_request"]
@@ -20,6 +25,7 @@ interface WalletConnectSignMessageProps {
   validationStatus: ValidationStatus
   chainId: string
   fee?: WCGasData
+  ethAddress: string | null
 }
 
 export const WalletConnectSignMessage: React.FC<
@@ -34,6 +40,7 @@ export const WalletConnectSignMessage: React.FC<
   validationStatus,
   chainId,
   fee,
+  ethAddress,
 }) => {
   const method = request.params.request.method
   const params = request.params.request.params
@@ -45,19 +52,42 @@ export const WalletConnectSignMessage: React.FC<
 
   if (isTransaction) {
     const [tx] = params as [EthereumTransactionParams]
-    return (
-      <WalletConnectSignTransaction
-        transaction={tx}
-        dAppOrigin={dAppOrigin}
-        isLoading={isLoading}
-        onSign={onSign}
-        onCancel={onCancel}
-        error={error}
-        validationStatus={validationStatus}
-        chainId={chainId}
-        fee={fee}
-      />
-    )
+    const isApproval =
+      tx.data?.startsWith(APPROVE_ALLOWANCE_DATA) ||
+      tx.data?.startsWith(INCREASE_ALLOWANCE_DATA) ||
+      tx.data?.startsWith(DECREASE_ALLOWANCE_DATA)
+
+    if (isApproval) {
+      return (
+        <WalletConnectApproveAllowance
+          transaction={tx}
+          dAppOrigin={dAppOrigin}
+          isLoading={isLoading}
+          onSign={onSign}
+          onCancel={onCancel}
+          error={error}
+          validationStatus={validationStatus}
+          chainId={chainId}
+          fee={fee}
+          ethAddress={ethAddress}
+        />
+      )
+    } else {
+      return (
+        <WalletConnectSignTransaction
+          transaction={tx}
+          dAppOrigin={dAppOrigin}
+          isLoading={isLoading}
+          onSign={onSign}
+          onCancel={onCancel}
+          error={error}
+          validationStatus={validationStatus}
+          chainId={chainId}
+          fee={fee}
+          ethAddress={ethAddress}
+        />
+      )
+    }
   }
 
   if (isTypedData) {

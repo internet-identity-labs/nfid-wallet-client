@@ -107,6 +107,7 @@ export interface _SERVICE {
   set_operator: ActorMethod<[Principal], undefined>
   store_icrc1_canister: ActorMethod<[ICRC1Request], undefined>
   store_new_icrc1_canisters: ActorMethod<[Array<ICRC1>], undefined>
+  count_discovery_apps: ActorMethod<[], bigint>
   store_discovery_app: ActorMethod<[DiscoveryVisitRequest], undefined>
   is_unique: ActorMethod<[DiscoveryVisitRequest], boolean>
   get_discovery_app_paginated: ActorMethod<

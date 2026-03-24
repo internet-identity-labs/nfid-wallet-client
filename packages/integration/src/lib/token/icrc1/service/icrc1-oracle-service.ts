@@ -25,9 +25,6 @@ import {
 } from "../types"
 
 export const ICRC1_ORACLE_CACHE_NAME = "ICRC1OracleService.getICRC1Canisters"
-export const DISCOVERY_APPS_CACHE_NAME =
-  "ICRC1OracleService.getDiscoveryAppPaginated"
-const DISCOVERY_APPS_TTL = 24 * 60 * 60 * 1000
 
 export class ICRC1OracleService {
   async addICRC1Canister(data: ICRC1Data): Promise<void> {
@@ -116,6 +113,7 @@ export class ICRC1OracleService {
     }
     const unique = await iCRC1OracleActor.is_unique(request)
     if (!unique) return
+
     await iCRC1OracleActor.store_discovery_app(request)
   }
 
@@ -129,19 +127,13 @@ export class ICRC1OracleService {
     return await iCRC1OracleActor.is_unique(request)
   }
 
-  async getDiscoveryAppPaginated(
-    offset: bigint = BigInt(0),
-    limit: bigint = BigInt(Number.MAX_SAFE_INTEGER),
-  ): Promise<DiscoveryAppData[]> {
-    const cacheKey = `${DISCOVERY_APPS_CACHE_NAME}:${offset}:${limit}`
-    return ttlCacheService.getOrFetch(
-      cacheKey,
-      () =>
-        iCRC1OracleActor
-          .get_discovery_app_paginated(offset, limit)
-          .then((apps) => apps.map(this.mapDiscoveryApp)),
-      DISCOVERY_APPS_TTL,
+  async getDiscoveryApps(): Promise<DiscoveryAppData[]> {
+    const total = await iCRC1OracleActor.count_discovery_apps()
+    const items = await iCRC1OracleActor.get_discovery_app_paginated(
+      BigInt(0),
+      total,
     )
+    return items.map(this.mapDiscoveryApp)
   }
 
   private mapDiscoveryApp(app: DiscoveryApp): DiscoveryAppData {

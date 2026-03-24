@@ -111,6 +111,7 @@ export const idlFactory = ({ IDL }: any) => {
     set_operator: IDL.Func([IDL.Principal], [], []),
     store_icrc1_canister: IDL.Func([ICRC1Request], [], []),
     store_new_icrc1_canisters: IDL.Func([IDL.Vec(ICRC1)], [], []),
+    count_discovery_apps: IDL.Func([], [IDL.Nat64], ["query"]),
     store_discovery_app: IDL.Func([DiscoveryVisitRequest], [], []),
     is_unique: IDL.Func([DiscoveryVisitRequest], [IDL.Bool], ["query"]),
     get_discovery_app_paginated: IDL.Func(

@@ -1,7 +1,12 @@
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { FC, useMemo, useState } from "react"
 
-import { Button, Input } from "@nfid-frontend/ui"
+import {
+  Button,
+  IconNftPlaceholder,
+  ImageWithFallback,
+  Input,
+} from "@nfid-frontend/ui"
 
 import { useDarkTheme } from "frontend/hooks"
 import { DiscoveryAppData } from "@nfid/integration/token/icrc1/types"
@@ -153,25 +158,31 @@ export const Discovery: FC<DiscoveryProps> = ({ discoveryApps, isLoading }) => {
                   )}
                 >
                   <div className="rounded-[12px] overflow-hidden relative h-[175px]">
-                    <img
-                      src={app.image}
+                    <ImageWithFallback
                       alt={app.name}
-                      className="object-cover w-full h-full"
-                    />
-                    <div
+                      src={`${app.image || "#"}`}
+                      fallbackSrc={IconNftPlaceholder}
                       className={clsx(
-                        "absolute top-0 left-0 right-0 m-auto z-2 flex items-center justify-center w-full h-full p-5 text-center",
-                        "bg-white/60 dark:bg-zinc-500/60",
-                        "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
-                        "text-sm leading-5 overflow-hidden rounded-[12px]",
+                        "w-full h-full",
+                        app.image ? "object-cover" : "object-contain",
                       )}
-                      style={{
-                        backdropFilter: "blur(10px)",
-                        WebkitBackdropFilter: "blur(10px)",
-                      }}
-                    >
-                      {app.desc}
-                    </div>
+                    />
+                    {app.desc && (
+                      <div
+                        className={clsx(
+                          "absolute top-0 left-0 right-0 m-auto z-2 flex items-center justify-center w-full h-full p-5 text-center",
+                          "bg-white/60 dark:bg-zinc-500/60",
+                          "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+                          "text-sm leading-5 overflow-hidden rounded-[12px]",
+                        )}
+                        style={{
+                          backdropFilter: "blur(10px)",
+                          WebkitBackdropFilter: "blur(10px)",
+                        }}
+                      >
+                        {app.desc}
+                      </div>
+                    )}
                   </div>
                   <div className="px-2.5 pt-3 pb-[15px]">
                     <div className="flex justify-between items-center mb-1 gap-2.5">

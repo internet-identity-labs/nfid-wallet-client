@@ -16,8 +16,10 @@ const DiscoveryPage: FC<DiscoveryPageProps> = ({
 }) => {
   const { data: discoveryApps = [], isLoading } = useSWR(
     "discoveryApps",
-    async () => icrc1OracleService.getDiscoveryAppPaginated(),
+    async () => icrc1OracleService.getDiscoveryApps(),
   )
+
+  console.log("discoveryApps", discoveryApps)
 
   return (
     <ProfileTemplate

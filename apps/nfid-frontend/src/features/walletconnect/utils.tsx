@@ -9,6 +9,7 @@ import UnknownIcon from "./assets/unverified.svg"
 import { ETH_DECIMALS, TRIM_ZEROS } from "@nfid/integration/token/constants"
 import { formatUsdAmount } from "frontend/util/format-usd-amount"
 import BigNumber from "bignumber.js"
+import { AbiCoder } from "ethers"
 
 export const formatValue = (value?: string, chainId?: ChainId): string => {
   const gasTokenSymbol = getEvmGasTokenSymbol(chainId || ChainId.ETH)
@@ -213,4 +214,20 @@ export const renderTypedDataFields = (data: any, level = 0): JSX.Element[] => {
   }
 
   return fields
+}
+
+export const decodeAllowanceData = (
+  data?: string,
+): { spender: string; amount: bigint } | null => {
+  if (!data || data.length < 10) return null
+  try {
+    const abiCoder = new AbiCoder()
+    const [spender, amount] = abiCoder.decode(
+      ["address", "uint256"],
+      `0x${data.slice(10)}`,
+    )
+    return { spender, amount: BigInt(amount.toString()) }
+  } catch {
+    return null
+  }
 }

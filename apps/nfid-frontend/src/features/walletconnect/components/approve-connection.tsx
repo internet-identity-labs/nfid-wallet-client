@@ -90,20 +90,15 @@ export const WalletConnectApproveConnection: React.FC<
       <p className="text-xs text-gray-500 dark:text-zinc-500 leading-[18px] my-1">
         Allow this site to request payments and view your balances.
       </p>
-
       <div className="flex items-center justify-between h-[54px] border-b border-gray-100 dark:border-zinc-400">
-        <span className="text-sm text-gray-400 dark:text-zinc-400">
-          Network
-        </span>
+        <span className="text-sm dark:text-white">Network</span>
         <div className="flex items-center gap-2">
           {getNetworkIcon(getNetworkId(chains[0]), isDarkTheme, 24)}
           <span className="text-sm dark:text-white">{networkName}</span>
         </div>
       </div>
       <div className="flex items-center justify-between h-[54px]">
-        <span className="text-sm text-gray-400 dark:text-zinc-400">
-          Wallet address
-        </span>
+        <span className="text-sm dark:text-white">Wallet address</span>
         {!ethAddress ? (
           <Skeleton className="w-[80px] h-4" />
         ) : (

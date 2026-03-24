@@ -76,15 +76,13 @@ export const WalletConnectSignSimpleMessage: React.FC<
       isPrimaryDisabled={isLoading || !!error}
     >
       <div className="flex items-center justify-between h-[54px] border-b border-gray-100 dark:border-zinc-400">
-        <span className="text-sm text-gray-400 dark:text-zinc-400">
-          Network
-        </span>
+        <span className="text-sm dark:text-white">Network</span>
         <div className="flex items-center gap-2">
           {getNetworkIcon(getNetworkId(chainId), isDarkTheme, 24)}
           <span className="text-sm dark:text-white">{networkName}</span>
         </div>
       </div>
-      <p className="text-sm text-gray-400 dark:text-zinc-400 pt-[18px] pb-[10px]">
+      <p className="text-sm dark:text-white pt-[18px] pb-[10px]">
         Message to sign
       </p>
       <div className="bg-white border border-gray-200 rounded-[12px] dark:border-zinc-400 overflow-hidden">

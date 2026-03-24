@@ -88,7 +88,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           onStakeClick={onStakeClick}
           onConvertToCkEth={onConvertToCkEth}
           onConvertToEth={onConvertToEth}
-          withActions
+          withActions={!isViewOnlyMode}
         />
       </td>
       <td

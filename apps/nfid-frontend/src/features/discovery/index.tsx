@@ -19,8 +19,6 @@ const DiscoveryPage: FC<DiscoveryPageProps> = ({
     async () => icrc1OracleService.getDiscoveryApps(),
   )
 
-  console.log("discoveryApps", discoveryApps)
-
   return (
     <ProfileTemplate
       showBackButton

@@ -23,6 +23,7 @@ import {
   ComponentData,
   InteractiveMethodService,
 } from "./interactive-method.service"
+import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 
 export interface AccountsComponentData extends ComponentData {
   publicProfile: Account
@@ -137,6 +138,11 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     if (!auth.delegationIdentity) throw new Error("No delegation identity")
 
     if (accountKeyIdentity.type === AccountType.GLOBAL) {
+      void icrc1OracleService.storeDiscoveryApp({
+        derivationOrigin: origin,
+        hostname: origin,
+        login: "Global",
+      })
       const del = await getGlobalDelegationChain(
         auth.delegationIdentity,
         icrc34Dto.targets,
@@ -151,6 +157,11 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     }
 
     if (accountKeyIdentity.type === AccountType.SESSION) {
+      void icrc1OracleService.storeDiscoveryApp({
+        derivationOrigin: icrc34Dto.derivationOrigin ?? origin,
+        hostname: origin,
+        login: "Anonymous",
+      })
       return await getAnonymousDelegation(
         icrc34Dto.derivationOrigin ?? origin,
         new Uint8Array(sessionPublicKey.toDer()),
@@ -162,6 +173,11 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     }
 
     if (accountKeyIdentity.type === AccountType.SESSION_WITHOUT_DERIVATION) {
+      void icrc1OracleService.storeDiscoveryApp({
+        derivationOrigin: icrc34Dto.derivationOrigin ?? origin,
+        hostname: origin,
+        login: "Anonymous",
+      })
       return await getAnonymousDelegation(
         origin,
         new Uint8Array(sessionPublicKey.toDer()),
@@ -173,6 +189,11 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     }
 
     if (accountKeyIdentity.type === AccountType.ANONYMOUS_LEGACY) {
+      void icrc1OracleService.storeDiscoveryApp({
+        derivationOrigin: icrc34Dto.derivationOrigin ?? origin,
+        hostname: origin,
+        login: "Anonymous",
+      })
       const legacyAuthSession = await getLegacyThirdPartyAuthSession({
         derivationOrigin: icrc34Dto.derivationOrigin,
         hostname: origin,

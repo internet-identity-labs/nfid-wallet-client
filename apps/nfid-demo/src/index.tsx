@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import { StrictMode } from "react"
 import * as ReactDOM from "react-dom/client"
 import { HelmetProvider } from "react-helmet-async"

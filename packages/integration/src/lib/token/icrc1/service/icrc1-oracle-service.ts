@@ -127,15 +127,17 @@ export class ICRC1OracleService {
     return await iCRC1OracleActor.is_unique(request)
   }
 
-  async getDiscoveryAppPaginated(
-    offset: bigint,
-    limit: bigint,
-  ): Promise<DiscoveryAppData[]> {
-    const apps = await iCRC1OracleActor.get_discovery_app_paginated(
-      offset,
-      limit,
+  async getDiscoveryApps(pageSize = 25): Promise<DiscoveryAppData[]> {
+    const total = await iCRC1OracleActor.count_discovery_apps()
+    const pages = await Promise.all(
+      Array.from({ length: Math.ceil(Number(total) / pageSize) }, (_, i) =>
+        iCRC1OracleActor.get_discovery_app_paginated(
+          BigInt(i * pageSize),
+          BigInt(pageSize),
+        ),
+      ),
     )
-    return apps.map(this.mapDiscoveryApp)
+    return pages.flat().map(this.mapDiscoveryApp)
   }
 
   private mapDiscoveryApp(app: DiscoveryApp): DiscoveryAppData {

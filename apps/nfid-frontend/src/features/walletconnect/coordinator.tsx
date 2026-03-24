@@ -466,6 +466,7 @@ export default function WalletConnectCoordinator() {
           onSign={handleSign}
           onCancel={handleCancelSign}
           error={error}
+          ethAddress={ethAddress}
           validationStatus={
             request.verifyContext.verified.validation ?? "UNKNOWN"
           }

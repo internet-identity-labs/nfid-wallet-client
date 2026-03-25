@@ -111,7 +111,9 @@ export const WalletConnectApproveConnection: React.FC<
           <div className="flex items-center justify-between h-[54px] border-b border-gray-100 dark:border-zinc-400">
             <span className="text-sm dark:text-white">Network</span>
             <div className="flex items-center gap-2">
-              {getAvailableChains(optionalChains).map((chain) =>
+              {getAvailableChains([
+                ...new Set([...requiredChains, ...optionalChains]),
+              ]).map((chain) =>
                 getNetworkIcon(getNetworkId(chain), isDarkTheme, 24),
               )}
             </div>

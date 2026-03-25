@@ -35,7 +35,10 @@ export const AddressBookDropdown: FC<AddressBookDropdownProps> = ({
         position={dropdownPosition}
         className={"!rounded-[12px]"}
         triggerElement={
-          <IconCmpDots className="mx-auto transition-all cursor-pointer text-secondary hover:text-black dark:text-zinc-400 dark:hover:text-white" />
+          <IconCmpDots
+            id={"options_button"}
+            className="mx-auto transition-all cursor-pointer text-secondary hover:text-black dark:text-zinc-400 dark:hover:text-white"
+          />
         }
       >
         <DropdownOption

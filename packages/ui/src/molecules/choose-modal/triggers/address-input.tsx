@@ -53,7 +53,7 @@ export const InputAddressTrigger = ({
         )}
         onClick={onShowModal}
       >
-        <IconCmpArrowRight />
+        <IconCmpArrowRight id={"addressBook"} />
       </div>
     </div>
     <div

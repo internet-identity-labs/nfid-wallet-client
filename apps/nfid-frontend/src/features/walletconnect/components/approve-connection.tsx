@@ -5,8 +5,8 @@ import { WalletConnectPromptTemplate } from "./prompt-template"
 import { Card, CopyAddress, Skeleton, Tooltip } from "@nfid-frontend/ui"
 import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
 import {
+  getAvailableChains,
   getNetworkId,
-  getNetworkName,
   getStatusIcon,
   getStatusText,
 } from "../utils"
@@ -37,7 +37,6 @@ export const WalletConnectApproveConnection: React.FC<
   const isDarkTheme = useDarkTheme()
   const eip155Namespace = optionalNamespaces?.eip155
   const chains = eip155Namespace?.chains || []
-  const networkName = chains.length > 0 ? getNetworkName(chains[0]) : "Ethereum"
   const dAppOrigin = dAppMetadata.url
     ? new URL(dAppMetadata.url).hostname
     : "Unknown"
@@ -93,8 +92,9 @@ export const WalletConnectApproveConnection: React.FC<
       <div className="flex items-center justify-between h-[54px] border-b border-gray-100 dark:border-zinc-400">
         <span className="text-sm dark:text-white">Network</span>
         <div className="flex items-center gap-2">
-          {getNetworkIcon(getNetworkId(chains[0]), isDarkTheme, 24)}
-          <span className="text-sm dark:text-white">{networkName}</span>
+          {getAvailableChains(chains).map((chain) =>
+            getNetworkIcon(getNetworkId(chain), isDarkTheme, 24),
+          )}
         </div>
       </div>
       <div className="flex items-center justify-between h-[54px]">

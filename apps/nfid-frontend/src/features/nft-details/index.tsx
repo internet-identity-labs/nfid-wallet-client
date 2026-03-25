@@ -52,6 +52,7 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
   const { tokenId } = useParams()
   const location = useLocation()
   const currentPage = location.state?.currentPage
+  const limitPerPage = currentPage ? DEFAULT_LIMIT_PER_PAGE : undefined
 
   const { data: nft, isLoading } = useSWR(
     tokenId ? ["nft", tokenId] : null,
@@ -62,13 +63,9 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
             viewOnlyAddress,
             viewOnlyAddressType,
             currentPage,
-            currentPage ? DEFAULT_LIMIT_PER_PAGE : undefined,
+            limitPerPage,
           )
-        : fetchNFT(
-            tokenId,
-            currentPage,
-            currentPage ? DEFAULT_LIMIT_PER_PAGE : undefined,
-          ),
+        : fetchNFT(tokenId, currentPage, limitPerPage),
   )
 
   const getDetails = useCallback(async () => {
@@ -81,13 +78,9 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
             viewOnlyAddress,
             viewOnlyAddressType,
             currentPage,
-            currentPage ? DEFAULT_LIMIT_PER_PAGE : undefined,
+            limitPerPage,
           )
-        : fetchNFT(
-            tokenId,
-            currentPage,
-            currentPage ? DEFAULT_LIMIT_PER_PAGE : undefined,
-          )
+        : fetchNFT(tokenId, currentPage, limitPerPage)
     ).then((data) => data?.getDetails())
     if (nftDetails) {
       try {

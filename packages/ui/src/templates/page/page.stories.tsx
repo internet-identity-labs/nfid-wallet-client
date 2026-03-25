@@ -1,12 +1,18 @@
 import type { StoryFn, Meta } from "@storybook/react"
-import { withRouter } from "storybook-addon-remix-react-router"
+import { MemoryRouter } from "react-router-dom"
 
 import { Page } from "./page"
 
 const Story: Meta<typeof Page> = {
   component: Page,
   title: "Templates/Page",
-  decorators: [withRouter],
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
 }
 export default Story
 

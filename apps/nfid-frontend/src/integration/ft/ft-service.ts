@@ -598,7 +598,11 @@ export class FtService {
     | undefined
   > {
     const price = ft
-      .filter((ft) => ft.getUSDBalance()?.gt(0))
+      .filter(
+        (ft) =>
+          ft.getTokenCategory() !== Category.TESTNET &&
+          ft.getUSDBalance()?.gt(0),
+      )
       .map((ft) => ({
         usdBalance: ft.getUSDBalance()?.toFixed(2),
         usdBalanceDayChange: ft.getUSDBalanceDayChange(),

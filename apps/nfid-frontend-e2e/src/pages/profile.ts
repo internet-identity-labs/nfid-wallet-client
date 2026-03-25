@@ -53,7 +53,7 @@ export class Profile extends Page {
       },
       {
         timeout: 170000,
-        timeoutMsg: "Balance wasn't loaded in 100sec",
+        timeoutMsg: "Balance wasn't loaded in 170sec",
       },
     )
   }

@@ -1,5 +1,5 @@
 import { Meta } from "@storybook/react"
-import { withRouter } from "storybook-addon-remix-react-router"
+import { MemoryRouter } from "react-router-dom"
 
 import { ApproveTemplate } from "./index"
 
@@ -7,7 +7,13 @@ const meta: Meta = {
   title: "Templates/ApproveTemplate",
   component: ApproveTemplate,
   argTypes: {},
-  decorators: [withRouter],
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
   parameters: {
     controls: { expanded: true },
   },

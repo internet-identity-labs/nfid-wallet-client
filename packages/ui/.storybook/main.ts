@@ -8,7 +8,6 @@ const config: StorybookConfig = {
   addons: [
     "@storybook/addon-essentials",
     "@nx/react/plugins/storybook",
-    "storybook-addon-remix-react-router",
     "@chromatic-com/storybook",
   ],
 

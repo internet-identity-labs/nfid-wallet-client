@@ -62,9 +62,13 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
             viewOnlyAddress,
             viewOnlyAddressType,
             currentPage,
-            DEFAULT_LIMIT_PER_PAGE,
+            currentPage ? DEFAULT_LIMIT_PER_PAGE : undefined,
           )
-        : fetchNFT(tokenId, currentPage, DEFAULT_LIMIT_PER_PAGE),
+        : fetchNFT(
+            tokenId,
+            currentPage,
+            currentPage ? DEFAULT_LIMIT_PER_PAGE : undefined,
+          ),
   )
 
   const getDetails = useCallback(async () => {
@@ -77,9 +81,13 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
             viewOnlyAddress,
             viewOnlyAddressType,
             currentPage,
-            DEFAULT_LIMIT_PER_PAGE,
+            currentPage ? DEFAULT_LIMIT_PER_PAGE : undefined,
           )
-        : fetchNFT(tokenId, currentPage, DEFAULT_LIMIT_PER_PAGE)
+        : fetchNFT(
+            tokenId,
+            currentPage,
+            currentPage ? DEFAULT_LIMIT_PER_PAGE : undefined,
+          )
     ).then((data) => data?.getDetails())
     if (nftDetails) {
       try {

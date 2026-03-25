@@ -432,11 +432,13 @@ export default function WalletConnectCoordinator() {
 
   //  1. Approve connection screen
   if (proposal) {
+    console.debug("WC Approve connection proposal data: ", proposal)
     return (
       <WalletConnectTemplate isApproveRequestInProgress={false}>
         <WalletConnectApproveConnection
           dAppMetadata={proposal.params.proposer.metadata}
           optionalNamespaces={proposal.params.optionalNamespaces}
+          requiredNamespaces={proposal.params.requiredNamespaces}
           validationStatus={
             proposal.verifyContext.verified.validation ?? "UNKNOWN"
           }

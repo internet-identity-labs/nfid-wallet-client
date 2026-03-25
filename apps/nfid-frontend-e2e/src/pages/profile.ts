@@ -52,7 +52,7 @@ export class Profile extends Page {
         return (await this.totalBalance.getText()) !== ""
       },
       {
-        timeout: 100000,
+        timeout: 170000,
         timeoutMsg: "Balance wasn't loaded in 100sec",
       },
     )

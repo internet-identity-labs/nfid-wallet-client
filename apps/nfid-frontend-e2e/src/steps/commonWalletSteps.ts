@@ -6,10 +6,12 @@ import HomePage from "../pages/home-page.js"
 import Nft from "../pages/nft.js"
 import Profile from "../pages/profile.js"
 import Staking from "../pages/staking.js"
+import AddressBook from "../pages/addressBook"
+import Page from "../pages/page"
 
 type TabConfig = Parameters<typeof Assets.waitUntilElementsLoadedProperly>
 
-When(/^User goes to (.*) tab$/, async (tab: string) => {
+When(/^User goes to (.*) (?:tab|page)$/, async (tab: string) => {
   const tabMap: Record<string, TabConfig> = {
     Activity: [Assets.activityTab, Activity.filterButton],
     NFTs: [Assets.NFTtab, Nft.randomTokenOnNFTtab],
@@ -45,7 +47,9 @@ Then(
       await element.click()
     }
 
-    const windows: { [key: string]: () => Promise<void> } = {
+    const windows: {
+      [key: string]: () => Promise<void> | Promise<ChainablePromiseElement>
+    } = {
       Receive: async () => await Assets.receiveDialog(),
       Send: async () => await Assets.sendDialog(),
       "Send nft": async () => await Assets.sendNFTDialog(),
@@ -56,8 +60,14 @@ Then(
         await clickWithWait(await Assets.tokenOptionsButton(optionalArg)),
       Swap: async () => await clickWithWait(Assets.swapButton),
       Stake: async () => await Staking.stakeButton.click(),
+      Menu: async () => Profile.menuButton.click(),
     }
     await (windows[window]?.() ||
       Promise.reject(new Error(`Unknown dialog window: ${window}`)))
   },
 )
+
+When(/^User clicks the Back button$/, async () => {
+  await Page.backButton.click()
+  await Profile.waitUntilBalanceLoaded()
+})

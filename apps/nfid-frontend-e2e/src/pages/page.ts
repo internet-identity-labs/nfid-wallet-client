@@ -7,6 +7,10 @@ export class Page {
     return $("#slider")
   }
 
+  get backButton() {
+    return $(`#backButton`)
+  }
+
   async openBaseUrl() {
     await browser.url("/")
   }

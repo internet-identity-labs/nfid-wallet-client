@@ -85,6 +85,16 @@ export class Assets extends Page {
     )
   }
 
+  get addressBook() {
+    return $(`#nav-address-book`)
+  }
+
+  async addressBookItemInSend(name: string, address: string) {
+    return $(
+      `//div[starts-with(@id, "address_") and .//p[normalize-space()="${name}"] and .//p[normalize-space()="${address}"]]`,
+    )
+  }
+
   async tokenOptionsButton(tokenName: string) {
     return $(`#${tokenName}_options`)
   }
@@ -157,6 +167,10 @@ export class Assets extends Page {
 
   get priceImpactCheckBox() {
     return $("#price-impact")
+  }
+
+  get addressBookSend() {
+    return $(`#addressBook`)
   }
 
   async openAssetOptionsOnSR() {

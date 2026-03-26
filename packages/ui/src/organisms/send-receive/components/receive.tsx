@@ -127,7 +127,7 @@ export const Receive: FC<ReceiveProps> = ({
           )}
         </div>
         <p className="text-xs tracking-[0.16px] text-gray-400 dark:text-zinc-500 mt-1 font-inter">
-          Use this address for transactions on Ethereum, Base, Arbitrum, BNB,
+          Use this address for transactions on Ethereum, Base, Arbitrum,
           <br className="hidden sm:block" />
           and Polygon networks.
         </p>

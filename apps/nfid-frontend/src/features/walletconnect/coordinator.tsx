@@ -17,6 +17,27 @@ import { INFURA_API_KEY } from "@nfid/integration/token/constants"
 import { WalletConnectTemplate } from "./components/template"
 import { WCGasData } from "./types"
 
+function WalletConnectAuthenticationScreen() {
+  const [authState] = useMachine(NFIDAuthMachine)
+
+  if (authState.matches("AuthenticationMachine")) {
+    return (
+      <AuthenticationCoordinator
+        isIdentityKit
+        actor={
+          authState.children
+            ?.AuthenticationMachine as AuthenticationMachineActor
+        }
+        loader={<BlurredLoader isLoading loadingMessage="Authenticating..." />}
+      />
+    )
+  }
+
+  return (
+    <BlurredLoader isLoading loadingMessage="Initializing authentication..." />
+  )
+}
+
 export default function WalletConnectCoordinator() {
   const [uri, setUri] = useState<string | null>(null)
   const [requestId, setRequestId] = useState<number | null>(null)
@@ -30,7 +51,6 @@ export default function WalletConnectCoordinator() {
   const [isConnecting, setIsConnecting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [ethAddress, setEthAddress] = useState<string | null>(null)
-  const [authState] = useMachine(NFIDAuthMachine)
   const [fee, setFee] = useState<WCGasData | undefined>()
 
   // Parse URL parameters - can be either URI for new connection or requestId/sessionTopic for signing
@@ -40,7 +60,7 @@ export default function WalletConnectCoordinator() {
     const requestIdParam = urlParams.get("requestId")
     const sessionTopicParam = urlParams.get("sessionTopic")
 
-    if (uriParam && uriParam.startsWith("wc:")) {
+    if (uriParam?.startsWith("wc:")) {
       // New connection request
       setUri(uriParam)
     } else if (requestIdParam && sessionTopicParam) {
@@ -61,7 +81,7 @@ export default function WalletConnectCoordinator() {
   }, [])
 
   // Check authentication status
-  const { isAuthenticated } = useAuthentication()
+  const { isAuthenticated, cacheLoaded } = useAuthentication()
   // Load Ethereum address when authenticated
   useEffect(() => {
     if (isAuthenticated && !ethAddress) {
@@ -132,6 +152,13 @@ export default function WalletConnectCoordinator() {
           console.log(
             "WalletConnectCoordinator: Request found in pending requests",
             { requestId, sessionTopic },
+          )
+          return
+        }
+
+        if (!walletConnectService.hasSession(sessionTopic)) {
+          setError(
+            "WalletConnect session expired. Please reconnect the wallet in your dApp and try again.",
           )
         }
       } catch (err) {
@@ -504,36 +531,25 @@ export default function WalletConnectCoordinator() {
     )
   }
 
-  // 5. Authentication screen if not authenticated
-  if (!isAuthenticated) {
-    if (authState.matches("AuthenticationMachine")) {
-      return (
-        <WalletConnectTemplate isApproveRequestInProgress={false}>
-          <AuthenticationCoordinator
-            isIdentityKit
-            actor={
-              authState.children
-                .AuthenticationMachine as AuthenticationMachineActor
-            }
-            loader={
-              <BlurredLoader isLoading loadingMessage="Authenticating..." />
-            }
-          />
-        </WalletConnectTemplate>
-      )
-    }
-
+  // 5. Wait until auth cache is loaded
+  if (!cacheLoaded) {
     return (
       <WalletConnectTemplate isApproveRequestInProgress={false}>
-        <BlurredLoader
-          isLoading
-          loadingMessage="Initializing authentication..."
-        />
+        <BlurredLoader isLoading loadingMessage="Initializing..." />
       </WalletConnectTemplate>
     )
   }
 
-  // 6. Loading state screen
+  // 6. Authentication screen if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <WalletConnectTemplate isApproveRequestInProgress={false}>
+        <WalletConnectAuthenticationScreen />
+      </WalletConnectTemplate>
+    )
+  }
+
+  // 7. Loading state screen
   return (
     <WalletConnectTemplate isApproveRequestInProgress={false}>
       <BlurredLoader isLoading loadingMessage="Initializing..." />

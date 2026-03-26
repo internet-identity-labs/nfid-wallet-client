@@ -8,7 +8,6 @@ import { ArbSepoliaTokenBuilder } from "./testnetwork/arb-sepolia-builder-impl"
 import { BaseTokenBuilder } from "./base-builder-impl"
 import { BaseSepoliaTokenBuilder } from "./testnetwork/base-sepolia-builder-impl"
 import { EthSepoliaTokenBuilder } from "./testnetwork/eth-sepolia-builder-impl"
-import { BnbTokenBuilder } from "./bnb-builder-impl"
 import { BitcoinTokenBuilder } from "./bitcoin-builder-impl"
 import { ICRC1TokenBuilder } from "./icrc1-builder-impl"
 import { ICRC1 } from "@nfid/integration/token/icrc1/types"
@@ -24,7 +23,6 @@ export class TokenFactoryService {
     [ChainId.ARB_SEPOLIA, new ArbSepoliaTokenBuilder()],
     [ChainId.BASE, new BaseTokenBuilder()],
     [ChainId.BASE_SEPOLIA, new BaseSepoliaTokenBuilder()],
-    [ChainId.BNB, new BnbTokenBuilder()],
     [ChainId.BTC, new BitcoinTokenBuilder()],
     [ChainId.ICP, new ICRC1TokenBuilder()],
   ])

@@ -38,19 +38,25 @@ export const interactiveMethodServices: Map<string, InteractiveMethodService> =
     ],
   )
 
-export const validateRequest = async (
-  context: IdentityKitRPCMachineContext,
-) => {
+function getActiveRequest(context?: IdentityKitRPCMachineContext) {
+  if (!context) throw new GenericError("RPC context is missing")
   if (!context.activeRequest) throw new GenericError("No active requests")
-  if (!context.activeRequest.data.method) throw new GenericError("No method")
+  return context.activeRequest
+}
+
+export const validateRequest = async (
+  context?: IdentityKitRPCMachineContext,
+) => {
+  const activeRequest = getActiveRequest(context)
+  if (!activeRequest.data?.method) throw new GenericError("No method")
 
   if (
-    context.activeRequest.data?.params &&
-    "derivationOrigin" in (context.activeRequest.data as any)?.params
+    activeRequest.data?.params &&
+    "derivationOrigin" in activeRequest.data?.params
   ) {
     const response = await validateDerivationOrigin(
-      context.activeRequest.origin ?? origin,
-      String((context.activeRequest.data.params as any).derivationOrigin),
+      activeRequest.origin ?? origin,
+      String((activeRequest.data.params as any).derivationOrigin),
     )
 
     if (response.result === "invalid") {
@@ -58,10 +64,10 @@ export const validateRequest = async (
     }
   }
 
-  const isSilent = silentMethodServices.has(context.activeRequest.data.method)
+  const isSilent = silentMethodServices.has(activeRequest.data.method)
   const service = isSilent
-    ? silentMethodServices.get(context.activeRequest.data.method)
-    : interactiveMethodServices.get(context.activeRequest.data.method)
+    ? silentMethodServices.get(activeRequest.data.method)
+    : interactiveMethodServices.get(activeRequest.data.method)
 
   if (!service) throw new NotSupportedError()
 
@@ -72,34 +78,30 @@ export const validateRequest = async (
 }
 
 export const executeSilentMethod = async (
-  context: IdentityKitRPCMachineContext,
+  context?: IdentityKitRPCMachineContext,
 ) => {
-  if (!context.activeRequest) throw new Error("No active request")
-  const service = silentMethodServices.get(context.activeRequest.data.method)
+  const activeRequest = getActiveRequest(context)
+  const service = silentMethodServices.get(activeRequest.data.method)
   if (!service) throw new NotSupportedError()
-  return service.executeMethod(context.activeRequest)
+  return service.executeMethod(activeRequest)
 }
 
 export const getInteractiveMethodData = async (
-  context: IdentityKitRPCMachineContext,
+  context?: IdentityKitRPCMachineContext,
 ) => {
-  if (!context.activeRequest) throw new Error("No active request")
-  const service = interactiveMethodServices.get(
-    context.activeRequest.data.method,
-  )
+  const activeRequest = getActiveRequest(context)
+  const service = interactiveMethodServices.get(activeRequest.data.method)
   if (!service) throw new NotSupportedError()
-  return service.invokeAndGetComponentData(context.activeRequest)
+  return service.invokeAndGetComponentData(activeRequest)
 }
 
 export const executeInteractiveMethod = async (
-  context: IdentityKitRPCMachineContext,
+  context: IdentityKitRPCMachineContext | undefined,
   event: { type: string; data?: unknown },
 ) => {
-  if (!context.activeRequest) throw new Error("No active request")
-  const service = interactiveMethodServices.get(
-    context.activeRequest.data.method,
-  )
+  const activeRequest = getActiveRequest(context)
+  const service = interactiveMethodServices.get(activeRequest.data.method)
   if (!service) throw new NotSupportedError()
 
-  return service.onApprove(context.activeRequest, event.data)
+  return service.onApprove(activeRequest, event.data)
 }

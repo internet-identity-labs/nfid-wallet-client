@@ -12,7 +12,9 @@ import { authState } from "@nfid/integration"
 import {
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
+  CKSEPOLIA_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
+  EVM_NATIVE,
 } from "@nfid/integration/token/constants"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { ICRC1_ORACLE_CACHE_NAME } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
@@ -98,6 +100,17 @@ const TokensPage = () => {
     send("SHOW")
   }
 
+  const onConvertToCkSepoliaEth = () => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
+    send({
+      type: "ASSIGN_SELECTED_FT",
+      data: { address: EVM_NATIVE, chainId: ChainId.ETH_SEPOLIA },
+    })
+    send("SHOW")
+  }
+
   const onConvertToEth = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
@@ -105,6 +118,17 @@ const TokensPage = () => {
     send({
       type: "ASSIGN_SELECTED_FT",
       data: { address: CKETH_LEDGER_CANISTER_ID, chainId: ChainId.ICP },
+    })
+    send("SHOW")
+  }
+
+  const onConvertToSepoliaEth = () => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
+    send({
+      type: "ASSIGN_SELECTED_FT",
+      data: { address: CKSEPOLIA_LEDGER_CANISTER_ID, chainId: ChainId.ICP },
     })
     send("SHOW")
   }
@@ -265,6 +289,8 @@ const TokensPage = () => {
           onConvertToCkBtc={onConvertToCkBtc}
           onConvertToEth={onConvertToEth}
           onConvertToCkEth={onConvertToCkEth}
+          onConvertToSepoliaEth={onConvertToSepoliaEth}
+          onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
           onStakeClick={onStakeClick}
           hideZeroBalance={hideZeroBalance}
           onZeroBalanceToggle={onZeroBalanceToggle}

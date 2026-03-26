@@ -22,6 +22,8 @@ import {
 } from "./constants"
 import { getWalletDelegation } from "../facade/wallet"
 
+const SUPPORTED_METHODS = new Set<string>(ETH_METHODS)
+
 /**
  * WalletConnect Service for NFID Wallet using WalletKit
  *
@@ -109,10 +111,23 @@ export class WalletConnectService {
     this.walletKit.on(
       "session_request",
       async (request: SignClientTypes.EventArguments["session_request"]) => {
-        console.log(
-          "WalletConnect: Session request received",
-          request.params.request.method,
-        )
+        const method = request.params.request.method
+        console.log("WalletConnect: Session request received", method)
+
+        if (!SUPPORTED_METHODS.has(method)) {
+          await this.walletKit?.respondSessionRequest({
+            topic: request.topic,
+            response: {
+              id: request.id,
+              jsonrpc: "2.0",
+              error: {
+                code: -32601,
+                message: `Unsupported WalletConnect method: ${method}`,
+              },
+            },
+          })
+          return
+        }
 
         // Verify session exists and sync if needed
         const session = this.activeSessions.get(request.topic)
@@ -433,10 +448,6 @@ export class WalletConnectService {
         )
         break
       }
-      case "eth_sign": {
-        result = await this.handleEthSign(identity, params as [string, string])
-        break
-      }
       case "eth_signTransaction": {
         const [tx] = params as [EthereumTransactionParams]
         tx.chainId = chainId.split(":")[1]
@@ -459,8 +470,21 @@ export class WalletConnectService {
         )
         break
       }
-      default:
-        throw new Error(`Unsupported method: ${method}`)
+      default: {
+        await this.walletKit.respondSessionRequest({
+          topic: request.topic,
+          response: {
+            id: request.id,
+            jsonrpc: "2.0",
+            error: {
+              code: -32601,
+              message: `Unsupported WalletConnect method: ${method}`,
+            },
+          },
+        })
+        this.removePendingRequest(request.id)
+        return
+      }
     }
 
     // Send response back to WalletConnect using WalletKit
@@ -495,19 +519,6 @@ export class WalletConnectService {
       message = Buffer.from(messageHex, "utf8").toString("hex")
     }
     return await chainFusionSignerService.ethPersonalSign(identity, message)
-  }
-
-  /**
-   * Handle eth_sign request
-   */
-  private async handleEthSign(
-    identity: SignIdentity,
-    params: [string, string],
-  ): Promise<string> {
-    const [, hash] = params
-    // Canister expects hex string without 0x prefix
-    const hashHex = hash.startsWith("0x") ? hash.slice(2) : hash
-    return await chainFusionSignerService.ethSignPrehash(identity, hashHex)
   }
 
   /**

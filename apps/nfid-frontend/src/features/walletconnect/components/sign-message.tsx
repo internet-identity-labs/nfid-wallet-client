@@ -129,9 +129,6 @@ export const WalletConnectSignMessage: React.FC<
     } else {
       message = messageHex
     }
-  } else if (method === "eth_sign") {
-    const [, hash] = params as [string, string]
-    message = hash
   }
 
   return (

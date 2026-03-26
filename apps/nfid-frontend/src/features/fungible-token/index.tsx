@@ -128,7 +128,12 @@ const TokensPage = () => {
       },
     )
 
-  const { initedTokens, isLoading: isTokensLoading } = useTokensInit(tokens)
+  const { initedTokens, isLoading: isTokensLoading } = useTokensInit(tokens, {
+    testnetEnabled,
+    arbitrumEnabled,
+    baseEnabled,
+    polygonEnabled,
+  })
 
   const tokensOwnedQuantity = useMemo(() => {
     return initedTokens?.filter(

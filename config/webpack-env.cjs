@@ -108,6 +108,7 @@ const serviceConfig = {
   ),
   AWS_ECDSA_GET_ANONYMOUS: JSON.stringify(process.env.AWS_ECDSA_GET_ANONYMOUS),
   AWS_EXECUTE_CANDID: JSON.stringify(process.env.AWS_EXECUTE_CANDID),
+  ALCHEMY_API_KEY: JSON.stringify(process.env.ALCHEMY_API_KEY),
 }
 
 module.exports = {

@@ -17,7 +17,6 @@ export const WALLETCONNECT_METADATA = {
 export const ETH_METHODS = [
   "eth_sendTransaction",
   "eth_signTransaction",
-  "eth_sign",
   "personal_sign",
   "eth_signTypedData",
   "eth_signTypedData_v4",
@@ -37,7 +36,6 @@ export const NAMESPACES = {
     chains: [
       "eip155:1",
       "eip155:137",
-      "eip155:56",
       "eip155:8453",
       "eip155:42161",
       "eip155:11155111",

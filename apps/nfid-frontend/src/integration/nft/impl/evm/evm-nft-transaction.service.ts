@@ -1,35 +1,33 @@
-import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
-
 import {
   TransactionRecordAbstract,
   TransactionRecordView,
 } from "src/integration/nft/impl/nft-transaction-record"
 import { NFTTransactions } from "src/integration/nft/impl/nft-types"
-import { MORALIS_API_KEY } from "src/integration/nft/impl/evm/evm-nft-floor-price.service"
-import { MORALIS_CHAIN_MAP } from "../../constants/constants"
+import { ALCHEMY_API_KEY } from "src/integration/nft/impl/evm/evm-nft-floor-price.service"
+import { ALCHEMY_CHAIN_MAP } from "../../constants/constants"
 
-// ─── Moralis API types ────────────────────────────────────────────────────────
+// ─── Alchemy API types ────────────────────────────────────────────────────────
 
-interface MoralisNftTransfer {
-  block_timestamp: string
-  from_address?: string
-  to_address?: string
-  transaction_hash?: string
-  contract_type?: string
+interface AlchemyNftTransfer {
+  blockTimestamp: string
+  fromAddress?: string
+  toAddress?: string
+  transactionHash?: string
+  category?: string
 }
 
-interface MoralisNftTransfersResponse {
-  result: MoralisNftTransfer[]
-  cursor?: string | null
+interface AlchemyNftTransfersResponse {
+  nftTransfers: AlchemyNftTransfer[]
+  pageKey?: string | null
 }
 
 // ─── TransactionRecord implementation ────────────────────────────────────────
 
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
-function resolveType(transfer: MoralisNftTransfer): string {
-  const from = transfer.from_address?.toLowerCase()
-  const to = transfer.to_address?.toLowerCase()
+function resolveType(transfer: AlchemyNftTransfer): string {
+  const from = transfer.fromAddress?.toLowerCase()
+  const to = transfer.toAddress?.toLowerCase()
 
   if (!from || from === ZERO_ADDRESS) return "Mint"
   if (!to || to === ZERO_ADDRESS) return "Burn"
@@ -39,14 +37,14 @@ function resolveType(transfer: MoralisNftTransfer): string {
 export class EvmNftTransactionRecord extends TransactionRecordAbstract {
   private readonly view: TransactionRecordView
 
-  constructor(transfer: MoralisNftTransfer) {
+  constructor(transfer: AlchemyNftTransfer) {
     super()
     this.view = new TransactionRecordView(
       resolveType(transfer),
-      transfer.from_address,
-      transfer.to_address,
+      transfer.fromAddress,
+      transfer.toAddress,
       undefined,
-      new Date(transfer.block_timestamp),
+      new Date(transfer.blockTimestamp),
     )
   }
 
@@ -55,62 +53,52 @@ export class EvmNftTransactionRecord extends TransactionRecordAbstract {
   }
 }
 
-// ─── Moralis chain map ────────────────────────────────────────────────────────
-
 // ─── Service ──────────────────────────────────────────────────────────────────
 
 const PAGE_SIZE = 20
 
 class EvmNftTransactionService {
-  /**
-   * Fetch transfer history for a single NFT from the Moralis API.
-   *
-   * `page` is 0-based. Moralis uses cursor-based pagination so cursors for
-   * subsequent pages are cached internally after the first load.
-   */
   async getTransactions(
     chainId: number,
     contract: string,
     tokenId: string,
     page: number,
   ): Promise<NFTTransactions> {
-    const chain = MORALIS_CHAIN_MAP[chainId]
-    if (!chain) return { activity: [], isLastPage: true }
+    const network = ALCHEMY_CHAIN_MAP[chainId]
+    if (!network) return { activity: [], isLastPage: true }
 
-    const cursor = this.getCursor(chainId, contract, tokenId, page)
+    const pageKey = this.getCursor(chainId, contract, tokenId, page)
 
     const url = new URL(
-      `https://deep-index.moralis.io/api/v2.2/nft/${contract}/${tokenId}/transfers`,
+      `https://${network}.g.alchemy.com/nft/v3/${ALCHEMY_API_KEY}/getTransfersForContract`,
     )
-    url.searchParams.set("chain", chain)
-    url.searchParams.set("format", "decimal")
+    url.searchParams.set("contractAddress", contract)
+    url.searchParams.set("tokenId", tokenId)
     url.searchParams.set("limit", String(PAGE_SIZE))
-    if (cursor) url.searchParams.set("cursor", cursor)
+    if (pageKey) url.searchParams.set("pageKey", pageKey)
 
-    let data: MoralisNftTransfersResponse
+    let data: AlchemyNftTransfersResponse
     try {
-      const resp = await fetch(url.toString(), {
-        headers: { "X-API-Key": MORALIS_API_KEY },
-      })
+      const resp = await fetch(url.toString())
       if (!resp.ok) {
-        console.error(`Moralis NFT transfers error: ${resp.status}`)
+        console.error(`Alchemy NFT transfers error: ${resp.status}`)
         return { activity: [], isLastPage: true }
       }
       data = await resp.json()
     } catch (e) {
-      console.error("Moralis NFT transfers fetch failed:", e)
+      console.error("Alchemy NFT transfers fetch failed:", e)
       return { activity: [], isLastPage: true }
     }
 
-    const nextCursor = data.cursor ?? null
-    const isLastPage = !nextCursor
+    const nextPageKey = data.pageKey ?? null
+    const isLastPage = !nextPageKey
 
     if (!isLastPage) {
-      this.saveCursor(chainId, contract, tokenId, page + 1, nextCursor!)
+      this.saveCursor(chainId, contract, tokenId, page + 1, nextPageKey!)
     }
 
     return {
-      activity: data.result.map((t) => new EvmNftTransactionRecord(t)),
+      activity: data.nftTransfers.map((t) => new EvmNftTransactionRecord(t)),
       isLastPage,
     }
   }

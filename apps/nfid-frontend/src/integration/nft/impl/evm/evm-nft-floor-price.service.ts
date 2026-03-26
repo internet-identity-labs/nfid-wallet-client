@@ -1,5 +1,5 @@
 import { ttlCacheService } from "@nfid/client-db"
-import { MORALIS_CHAIN_MAP } from "../../constants/constants"
+import { ALCHEMY_CHAIN_MAP } from "../../constants/constants"
 
 export interface EvmNftFloorPrice {
   nativePrice: number
@@ -7,8 +7,7 @@ export interface EvmNftFloorPrice {
   symbol: string
 }
 
-export const MORALIS_API_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjFmYTAyMDM4LTg4YWQtNGY2Mi1hYjIzLTAzMTFmODk0MTMzOCIsIm9yZ0lkIjoiNTA1MDAzIiwidXNlcklkIjoiNTE5NjIyIiwidHlwZUlkIjoiNjFhNTNmOTYtZmY1Yy00ZTVjLWI2NTQtN2ZiNzYyOTg4ZjU0IiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NzMzMTg4MzYsImV4cCI6NDkyOTA3ODgzNn0.zGkAm3Jq5bwPjvg-WKZDb-wxszOISCTuqDos14juBaY"
+export const ALCHEMY_API_KEY = "dklZjRDysISvaWkI6eOMj"
 const FLOOR_PRICE_CACHE_TTL = 5 * 60 * 1000
 
 class EvmNftFloorPriceService {
@@ -16,14 +15,14 @@ class EvmNftFloorPriceService {
     contract: string,
     chainId: number,
   ): Promise<EvmNftFloorPrice | undefined> {
-    const baseUrl = MORALIS_CHAIN_MAP[chainId]
-    if (!baseUrl) return undefined
+    const network = ALCHEMY_CHAIN_MAP[chainId]
+    if (!network) return undefined
 
     const cacheKey = `EVM_NFT_FLOOR_${chainId}_${contract.toLowerCase()}`
 
     const result = await ttlCacheService.getOrFetch(
       cacheKey,
-      () => this.fetchFloorPrice(contract, baseUrl),
+      () => this.fetchFloorPrice(contract, network),
       FLOOR_PRICE_CACHE_TTL,
       {
         serialize: (v) => JSON.stringify(v),
@@ -35,27 +34,27 @@ class EvmNftFloorPriceService {
 
   private async fetchFloorPrice(
     contract: string,
-    baseUrl: string,
+    network: string,
   ): Promise<EvmNftFloorPrice | null> {
     const url = new URL(
-      `https://deep-index.moralis.io/api/v2.2/nft/${contract}/floor-price`,
+      `https://${network}.g.alchemy.com/nft/v3/${ALCHEMY_API_KEY}/getFloorPrice`,
     )
-    url.searchParams.set("chain", baseUrl)
+    url.searchParams.set("contractAddress", contract)
 
-    const response = await fetch(url.toString(), {
-      headers: { "X-API-Key": MORALIS_API_KEY },
-    })
+    const response = await fetch(url.toString())
 
     if (!response.ok) return null
 
     const data = await response.json()
 
-    if (!data.floor_price) return null
+    const marketplace = data.openSea ?? data.looksRare ?? data.blur ?? data.x2y2
+
+    if (!marketplace?.floorPrice) return null
 
     return {
-      nativePrice: Number(data.floor_price),
-      usdPrice: Number(data.floor_price_usd ?? 0),
-      symbol: data.floor_price_currency ?? "ETH",
+      nativePrice: Number(marketplace.floorPrice),
+      usdPrice: Number(marketplace.floorPriceUsd ?? 0),
+      symbol: marketplace.priceCurrency ?? "ETH",
     }
   }
 }

@@ -14,7 +14,7 @@ import {
   State,
 } from "@nfid/integration/token/icrc1/enum/enums"
 import { useContext, useMemo } from "react"
-import { useActor } from "@xstate/react"
+import { useActorSnapshot } from "frontend/hooks/use-actor-snapshot"
 import { ProfileContext } from "frontend/provider"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
 
@@ -33,7 +33,7 @@ export const useTokensInit = (tokens: FT[] | undefined) => {
     transferService,
   } = useContext(ProfileContext)
 
-  const [state] = useActor(transferService)
+  const [state] = useActorSnapshot(transferService)
 
   const addressesReady =
     isViewOnlyMode || (!isBtcAddressLoading && !isEthAddressLoading)

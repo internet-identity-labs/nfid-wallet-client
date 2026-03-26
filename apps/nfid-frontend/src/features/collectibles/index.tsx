@@ -1,4 +1,3 @@
-import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { NFTs } from "packages/ui/src/organisms/nfts"
@@ -13,6 +12,7 @@ import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { searchTokens } from "frontend/features/collectibles/utils/util"
 import { NFT } from "frontend/integration/nft/nft"
 import { nftService } from "frontend/integration/nft/nft-service"
+import { useActorSnapshot } from "frontend/hooks/use-actor-snapshot"
 import { ProfileContext } from "frontend/provider"
 
 import { fetchTokens } from "../fungible-token/utils"
@@ -29,7 +29,7 @@ const NFTsPage = () => {
     globalServices
   const [nfts, setNfts] = useState<NFT[]>([])
   const [currentPage, setCurrentPage] = useState(1)
-  const [, send] = useActor(globalServices.transferService)
+  const [, send] = useActorSnapshot(globalServices.transferService)
 
   const { data: allNfts, isLoading: isAllNFTsLoading } = useSWR(
     isViewOnlyMode ? ["nftList", viewOnlyAddress] : "nftList",
@@ -107,7 +107,7 @@ const NFTsPage = () => {
       send({ type: "CHANGE_TOKEN_TYPE", data: "nft" })
       send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
 
-      send("SHOW")
+      send({ type: "SHOW" })
     },
     [send],
   )

@@ -1,4 +1,3 @@
-import { useActor } from "@xstate/react"
 import { motion } from "framer-motion"
 import toaster from "packages/ui/src/atoms/toast"
 import { useDisableScroll } from "packages/ui/src/molecules/modal/hooks/disable-scroll"
@@ -11,6 +10,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { authState } from "@nfid/integration"
 
 import { userPrefService } from "frontend/integration/user-preferences/user-pref-service"
+import { useActorSnapshot } from "frontend/hooks/use-actor-snapshot"
 import { ProfileContext } from "frontend/provider"
 
 import { ConvertBTC } from "./components/convert"
@@ -26,7 +26,7 @@ export const TransferModalCoordinator = () => {
   const [successMessage, setSuccessMessage] = useState<string | undefined>()
   const [hideZeroBalance, setHideZeroBalance] = useState(false)
   const globalServices = useContext(ProfileContext)
-  const [state, send] = useActor(globalServices.transferService)
+  const [state, send] = useActorSnapshot(globalServices.transferService)
   const [hasSwapError, setHasSwapError] = useState(false)
   const [hasBtcError, setHasBtcError] = useState(false)
   const [isConvertSuccess, setIsConvertSuccess] = useState(false)

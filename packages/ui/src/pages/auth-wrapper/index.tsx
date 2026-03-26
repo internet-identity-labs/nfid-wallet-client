@@ -43,11 +43,11 @@ export const AuthWrapper: React.FC<AuthWrapperProps> = ({
   switch (true) {
     case isAuthenticated: {
       const isExpired = isDelegationExpired(authState?.get().delegationIdentity)
-      if (isExpired) return <Navigate to="/?auth=true" />
+      if (isExpired) return <Navigate to="/" />
       return <>{children}</>
     }
     case cacheLoaded && !isAuthenticated:
-      return <Navigate to="/?auth=true" />
+      return <Navigate to="/" />
     default:
       return <BlurredLoader loadingMessage="loading auth session" />
   }

@@ -1,4 +1,3 @@
-import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import React, { useCallback, useContext } from "react"
 
@@ -12,6 +11,7 @@ import {
 } from "@nfid-frontend/ui"
 
 import { ModalType } from "frontend/features/transfer-modal/types"
+import { useActorSnapshot } from "frontend/hooks/use-actor-snapshot"
 import { useAllWallets } from "frontend/integration/wallet/hooks/use-all-wallets"
 import { ProfileContext } from "frontend/provider"
 
@@ -35,7 +35,7 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   isArchived,
 }: VaultsWalletsTableRowProps) => {
   const globalServices = useContext(ProfileContext)
-  const [, send] = useActor(globalServices.transferService)
+  const [, send] = useActorSnapshot(globalServices.transferService)
   const { wallets } = useAllWallets()
 
   const onSendFromVaultWallet = useCallback(() => {

@@ -1,13 +1,9 @@
 import { useState, useEffect, useRef } from "react"
 
+const GSI_SCRIPT_SRC = "https://accounts.google.com/gsi/client"
+
 export interface UseLoadGsiScriptOptions {
-  /**
-   * Callback fires on load [gsi](https://accounts.google.com/gsi/client) script success
-   */
   onScriptLoadSuccess?: () => void
-  /**
-   * Callback fires on load [gsi](https://accounts.google.com/gsi/client) script failure
-   */
   onScriptLoadError?: () => void
 }
 
@@ -15,8 +11,9 @@ export default function useLoadGsiScript({
   onScriptLoadSuccess,
   onScriptLoadError,
 }: UseLoadGsiScriptOptions = {}): boolean {
-  const [scriptLoadedSuccessfully, setScriptLoadedSuccessfully] =
-    useState(false)
+  const [scriptLoadedSuccessfully, setScriptLoadedSuccessfully] = useState(
+    () => typeof window !== "undefined" && !!window.google?.accounts?.id,
+  )
 
   const onScriptLoadSuccessRef = useRef(onScriptLoadSuccess)
   onScriptLoadSuccessRef.current = onScriptLoadSuccess
@@ -25,24 +22,39 @@ export default function useLoadGsiScript({
   onScriptLoadErrorRef.current = onScriptLoadError
 
   useEffect(() => {
-    const scriptTag = document.createElement("script")
-    scriptTag.src = "https://accounts.google.com/gsi/client"
-    scriptTag.async = true
-    scriptTag.defer = true
-    scriptTag.onload = () => {
+    const notifySuccess = () => {
       setScriptLoadedSuccessfully(true)
       onScriptLoadSuccessRef.current?.()
     }
-    scriptTag.onerror = () => {
+
+    const notifyError = () => {
       setScriptLoadedSuccessfully(false)
       onScriptLoadErrorRef.current?.()
     }
 
-    document.body.appendChild(scriptTag)
+    const existing = document.querySelector<HTMLScriptElement>(
+      `script[src="${GSI_SCRIPT_SRC}"]`,
+    )
 
-    return () => {
-      document.body.removeChild(scriptTag)
+    if (existing) {
+      if (window.google?.accounts?.id) {
+        notifySuccess()
+      } else {
+        existing.addEventListener("load", notifySuccess, { once: true })
+        existing.addEventListener("error", notifyError, { once: true })
+      }
+      return
     }
+
+    const scriptTag = document.createElement("script")
+    scriptTag.src = GSI_SCRIPT_SRC
+    scriptTag.async = true
+    scriptTag.defer = true
+    scriptTag.onload = notifySuccess
+    scriptTag.onerror = notifyError
+
+    document.body.appendChild(scriptTag)
+    return () => {}
   }, [])
 
   return scriptLoadedSuccessfully

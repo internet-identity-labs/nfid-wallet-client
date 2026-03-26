@@ -1,4 +1,4 @@
-import { useActor } from "@xstate/react"
+import { useActorSnapshot } from "frontend/hooks/use-actor-snapshot"
 import { motion } from "framer-motion"
 import { decodeJwt } from "jose"
 import toaster from "packages/ui/src/atoms/toast"
@@ -49,7 +49,7 @@ export default function AuthenticationCoordinator({
 }) {
   const { loginWithRecovery } = useAuthentication()
   const { storageProfile, storageProfileLoading } = useLoadProfileFromStorage()
-  const [state, send] = useActor(actor)
+  const [state, send] = useActorSnapshot(actor)
   const [isPasskeyLoading, setIsPasskeyLoading] = useState(false)
   const [is2FALoading, setIs2FALoading] = useState(false)
   const [isOtherOptionsLoading, setIsOtherOptionsLoading] = useState(false)

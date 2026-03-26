@@ -1,4 +1,3 @@
-import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import { BtcBanner } from "packages/ui/src/molecules/btc-banner"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
@@ -47,6 +46,7 @@ import { TransferModalCoordinator } from "frontend/features/transfer-modal/coord
 import { ModalType } from "frontend/features/transfer-modal/types"
 import { getAllVaults } from "frontend/features/vaults/services"
 import { useProfile } from "frontend/integration/identity-manager/queries"
+import { useActorSnapshot } from "frontend/hooks/use-actor-snapshot"
 import { ProfileContext } from "frontend/provider"
 import { ttlCacheService } from "@nfid/client-db"
 import { STAKED_TOKENS_CACHE_NAME } from "frontend/integration/staking/service/staking-service-impl"
@@ -265,20 +265,20 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   const globalServices = useContext(ProfileContext)
 
-  const [, send] = useActor(globalServices.transferService)
+  const [, send] = useActorSnapshot(globalServices.transferService)
 
   const onSendClick = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const onReceiveClick = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.RECEIVE })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const onSwapClick = () => {
@@ -286,7 +286,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.SWAP })
     send({ type: "ASSIGN_SELECTED_TARGET_FT", data: "" })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const onBtcSwapClick = () => {
@@ -294,21 +294,21 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.SWAP })
     send({ type: "ASSIGN_SELECTED_TARGET_FT", data: CKBTC_CANISTER_ID })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const onConvertClick = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const onStakeClick = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.STAKE })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const refreshPortfolio = useCallback(async () => {

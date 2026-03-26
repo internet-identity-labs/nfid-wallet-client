@@ -1,4 +1,3 @@
-import { useActor } from "@xstate/react"
 import { Staking } from "packages/ui/src/organisms/staking"
 import { useContext } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
@@ -8,6 +7,7 @@ import { useSWRWithTimestamp } from "@nfid/swr"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { ftService } from "frontend/integration/ft/ft-service"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
+import { useActorSnapshot } from "frontend/hooks/use-actor-snapshot"
 import { ProfileContext } from "frontend/provider"
 
 import { ModalType } from "../transfer-modal/types"
@@ -23,7 +23,7 @@ const StakingPage = () => {
     viewOnlyAddressType,
     transferService,
   } = useContext(ProfileContext)
-  const [, send] = useActor(transferService)
+  const [, send] = useActorSnapshot(transferService)
   const { search } = useLocation()
 
   const navigateWithSearch = (to: unknown) => {
@@ -35,7 +35,7 @@ const StakingPage = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.STAKE })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const { data: tokens } = useSWRWithTimestamp(

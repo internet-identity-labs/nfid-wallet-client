@@ -1,4 +1,4 @@
-import { useActor } from "@xstate/react"
+import { useActorSnapshot } from "frontend/hooks/use-actor-snapshot"
 import { AuthEmailVerified } from "packages/ui/src/organisms/authentication/email-verified"
 import { AuthEmailError } from "packages/ui/src/organisms/authentication/error"
 import { AuthEmailPending } from "packages/ui/src/organisms/authentication/pending-verification"
@@ -15,7 +15,7 @@ export function AuthEmailFlowCoordinator({
   actor,
   isIdentityKit = false,
 }: AuthEmailFlowCoordinatorProps) {
-  const [state, send] = useActor(actor)
+  const [state, send] = useActorSnapshot(actor)
 
   switch (true) {
     case state.matches("SendVerificationEmail"):

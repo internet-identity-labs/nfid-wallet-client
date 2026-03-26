@@ -69,7 +69,7 @@
     "@walletconnect/sign-client": "2.23.8",
     "@walletconnect/types": "2.23.8",
     "@walletconnect/utils": "2.23.8",
-    "@xstate/react": "3.2.2",
+    "@xstate/react": "^5",
     "base64url": "3.0.1",
     "bip39": "3.1.0",
     "bitcoin-address-validation": "3.0.0",
@@ -111,7 +111,7 @@
     "usergeek-ic-js": "1.0.6",
     "uuid": "13.0.0",
     "wouter": "3.9.0",
-    "xstate": "4.38.3"
+    "xstate": "^5"
   },
   "devDependencies": {
     "@babel/core": "7.28.5",

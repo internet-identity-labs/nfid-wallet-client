@@ -1,4 +1,3 @@
-import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import { NFTDetails } from "packages/ui/src/organisms/nft-details"
 import {
@@ -21,6 +20,7 @@ import { useSWR } from "@nfid/swr"
 
 import { NFIDTheme } from "frontend/App"
 import { useDarkTheme } from "frontend/hooks"
+import { useActorSnapshot } from "frontend/hooks/use-actor-snapshot"
 import { ProfileContext } from "frontend/provider"
 import { NotFound } from "@nfid-frontend/ui"
 import { ProfileTemplate } from "@nfid-frontend/ui"
@@ -48,7 +48,7 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
     viewOnlyAddressType,
   } = useContext(ProfileContext)
   const [state, dispatch] = useReducer(nftReducer, nftInitialState)
-  const [, send] = useActor(transferService)
+  const [, send] = useActorSnapshot(transferService)
   const { tokenId } = useParams()
   const location = useLocation()
   const currentPage = location.state?.currentPage
@@ -158,7 +158,7 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
       send({ type: "CHANGE_TOKEN_TYPE", data: "nft" })
       send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
 
-      send("SHOW")
+      send({ type: "SHOW" })
     },
     [nft, send],
   )

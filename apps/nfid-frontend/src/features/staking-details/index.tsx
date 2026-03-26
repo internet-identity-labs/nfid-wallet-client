@@ -1,6 +1,5 @@
 import { NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
 import { hexStringToUint8Array } from "@dfinity/utils"
-import { useActor } from "@xstate/react"
 import { StakingDetails } from "packages/ui/src/organisms/staking/staking-details"
 import { useContext, useMemo } from "react"
 import { useParams } from "react-router-dom"
@@ -11,6 +10,7 @@ import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 import { useIdentity } from "frontend/hooks/identity"
 import { ftService } from "frontend/integration/ft/ft-service"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
+import { useActorSnapshot } from "frontend/hooks/use-actor-snapshot"
 import { ProfileContext } from "frontend/provider"
 
 import { fetchTokens } from "../fungible-token/utils"
@@ -31,7 +31,7 @@ const StakingDetailsPage = () => {
     viewOnlyAddressType,
     transferService,
   } = useContext(ProfileContext)
-  const [, send] = useActor(transferService)
+  const [, send] = useActorSnapshot(transferService)
   const { identity } = useIdentity(isViewOnlyMode)
 
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
@@ -127,7 +127,7 @@ const StakingDetailsPage = () => {
   const onRedeemOpen = (id: string) => {
     send({ type: "CHANGE_DIRECTION", data: ModalType.REDEEM })
     send({ type: "ASSIGN_STAKE_ID", data: id })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   return (

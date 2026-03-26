@@ -13,38 +13,68 @@ interface SignInWithGoogleProps {
   button?: JSX.Element
 }
 
+declare global {
+  interface Window {
+    __NFID_GSI_INITIALIZED__?: boolean
+    __NFID_GSI_ON_LOGIN__?: LoginEventHandler
+  }
+}
+
+const useFedcmForPrompt =
+  typeof process !== "undefined" && process.env["NODE_ENV"] === "production"
+
 export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
   onLogin,
   button,
 }) => {
   const buttonRef = React.useRef<HTMLDivElement>(null)
+  const onLoginRef = React.useRef(onLogin)
+  onLoginRef.current = onLogin
 
-  const onScriptLoadSuccess = React.useCallback(() => {
-    window.google?.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: onLogin,
-      itp_support: true,
-      use_fedcm_for_prompt: true,
+  const scriptLoaded = useLoadGsiScript()
+
+  React.useLayoutEffect(() => {
+    if (!scriptLoaded || !GOOGLE_CLIENT_ID) return
+    const host = buttonRef.current
+    if (!host || !window.google?.accounts?.id) return
+
+    window.__NFID_GSI_ON_LOGIN__ = (response: CredentialResponse) => {
+      onLoginRef.current(response)
+    }
+    if (!window.__NFID_GSI_INITIALIZED__) {
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: (response: CredentialResponse) =>
+          window.__NFID_GSI_ON_LOGIN__?.(response),
+        itp_support: true,
+        use_fedcm_for_prompt: useFedcmForPrompt,
+      })
+      window.__NFID_GSI_INITIALIZED__ = true
+    }
+
+    host.replaceChildren()
+    window.google.accounts.id.renderButton(host, {
+      text: "continue_with",
+      shape: "rectangular",
+      theme: "outline",
+      type: "standard",
+      size: "large",
     })
-  }, [onLogin])
 
-  useLoadGsiScript({ onScriptLoadSuccess })
-
-  window.google?.accounts.id.renderButton(buttonRef.current, {
-    text: "continue_with",
-    shape: "rectangular",
-    theme: "outline",
-    type: "standard",
-    size: "large",
-  })
+    return () => {
+      host.replaceChildren()
+    }
+  }, [scriptLoaded])
 
   const onClick = React.useCallback(() => {
-    let el: any
+    let el: HTMLElement | undefined
     if (getBrowser() === "Chrome") {
-      el = buttonRef.current?.querySelector("div[role=button]")
-    } else el = buttonRef.current?.children[0].children[1].children[1]
+      el = buttonRef.current?.querySelector("div[role=button]") ?? undefined
+    } else {
+      const first = buttonRef.current?.children[0]?.children[1]?.children[1]
+      el = first instanceof HTMLElement ? first : undefined
+    }
 
-    //  @ts-ignore
     el?.click()
   }, [])
 

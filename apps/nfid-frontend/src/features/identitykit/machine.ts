@@ -37,10 +37,10 @@ const machineConfig = {
         ON_REQUEST: [
           {
             guard: "isRequestProcessing",
-            actions: ["assignRequest"],
+            actions: ["receiveRequest"],
           },
           {
-            actions: ["assignRequest", "moveQueue"],
+            actions: ["receiveRequest"],
           },
         ],
       },
@@ -282,12 +282,21 @@ const machineServices = {
     }) => !!context.activeRequest,
   },
   actions: {
-    assignRequest: assign(({ context, event }) => ({
-      requestsQueue: [
-        ...context.requestsQueue,
-        (event as unknown as { data: unknown }).data,
-      ],
-    })),
+    receiveRequest: assign(({ context, event }) => {
+      const req = (event as unknown as { data: unknown }).data
+
+      // In XState v5, multiple `assign` actions in one transition do not
+      // reliably see each other's updates. Make request activation atomic.
+      if (context.activeRequest) {
+        return {
+          requestsQueue: [...context.requestsQueue, req],
+        }
+      }
+
+      return {
+        activeRequest: req,
+      }
+    }),
     assignRequestMetadata: assign(({ event }) => ({
       activeRequestMetadata:
         (event as { output?: unknown; data?: unknown }).output ??

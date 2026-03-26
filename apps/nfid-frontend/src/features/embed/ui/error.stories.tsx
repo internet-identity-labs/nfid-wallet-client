@@ -1,5 +1,5 @@
 import type { StoryFn, Meta } from "@storybook/react"
-import { withRouter } from "storybook-addon-remix-react-router"
+import { MemoryRouter } from "react-router-dom"
 
 import { ScreenResponsive } from "@nfid-frontend/ui"
 
@@ -8,7 +8,13 @@ import { PageError } from "./error"
 const Story: Meta<typeof PageError> = {
   component: PageError,
   title: "Embed/Error",
-  decorators: [withRouter],
+  decorators: [
+    (Story) => (
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
 }
 export default Story
 

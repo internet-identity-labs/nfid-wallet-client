@@ -58,6 +58,7 @@ When(/^Verifying that user is logged in$/, async () => {
             timeoutMsg: "Menu button wasn't clickable after 15sec",
           })
         }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {}
       if (await Profile.menuButton.isClickable()) return true
     },

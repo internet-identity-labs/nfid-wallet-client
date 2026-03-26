@@ -35,16 +35,17 @@ export class Page {
     let counter = 0
     try {
       await this.loader.waitForDisplayed({ timeout: 8000 })
-    } catch (e: any) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {
       return
     }
     while ((await this.loader.isDisplayed()) && counter < 5) {
       try {
         await this.loader.waitForDisplayed({ timeout: 3000 })
         await this.loader.waitForDisplayed({ timeout: 20000, reverse: true })
-      } catch (e: any) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (e) {
         ++counter
-        // console.log(e);
       }
     }
   }

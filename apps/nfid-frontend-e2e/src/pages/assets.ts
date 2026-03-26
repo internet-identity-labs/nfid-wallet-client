@@ -11,10 +11,6 @@ export class Assets extends Page {
     return $("#sendButton")
   }
 
-  get assetLabel() {
-    return "[id*='token_"
-  }
-
   get getSourceTokenBalance() {
     return $("#choose-from-token-balance")
   }
@@ -32,7 +28,7 @@ export class Assets extends Page {
   }
 
   async getBlockchain(label: string) {
-    let locator = $(
+    const locator = $(
       `[id^="token_${label.replace(/\s/g, "")}_"][id$="_category"]`,
     )
     await locator.waitForDisplayed({ timeout: 10000 })
@@ -94,7 +90,7 @@ export class Assets extends Page {
   }
 
   async tokenUSDPrice(tokenName: string) {
-    let locator = $(
+    const locator = $(
       `[id^="token_${tokenName.replace(/\s/g, "")}_"][id$="_price"]`,
     )
     await locator.waitForDisplayed()
@@ -102,7 +98,7 @@ export class Assets extends Page {
   }
 
   async tokenBalance(tokenName: string) {
-    let locator = $(
+    const locator = $(
       `(//td[starts-with(@id,"token_${tokenName.replace(/\s/g, "")}_") and contains(@id,"_balance")]/p)[1]`,
     )
     await locator.waitForDisplayed()
@@ -116,7 +112,7 @@ export class Assets extends Page {
   }
 
   async tokenUSDBalance(tokenName: string) {
-    let locator = $(`#token_${tokenName.replace(/\s/g, "")}_usd`)
+    const locator = $(`#token_${tokenName.replace(/\s/g, "")}_usd`)
     await locator.waitForDisplayed()
     return locator
   }
@@ -269,6 +265,7 @@ export class Assets extends Page {
           }
 
           return true
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
           await browser.refresh()
         }

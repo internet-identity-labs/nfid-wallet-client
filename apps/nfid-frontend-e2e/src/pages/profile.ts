@@ -52,10 +52,12 @@ export class Profile extends Page {
         try {
           await browser.waitUntil(
             async () => {
-              return await this.totalBalance.getText() !== ""
-            }, { timeout: 70000 },
+              return (await this.totalBalance.getText()) !== ""
+            },
+            { timeout: 70000 },
           )
           return true
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
           await browser.refresh()
           return false

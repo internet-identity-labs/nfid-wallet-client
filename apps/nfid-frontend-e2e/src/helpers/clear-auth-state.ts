@@ -18,5 +18,5 @@ export default async () => {
       return this.resetAuthState().then(done)
     }
   })
-  console.log("cleared auth state", { response })
+  console.warn("cleared auth state", { response })
 }

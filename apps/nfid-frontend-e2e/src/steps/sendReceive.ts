@@ -82,20 +82,20 @@ Then(
   /^Verifying that the Account ID is ([^"]*) and the Principal is ([^"]*)/,
   async function (account: string, principal: string) {
     const currentAddress = await Assets.getAccountId(true)
-    let currentPrincipal = await Assets.getAccountId(false)
+    const currentPrincipal = await Assets.getAccountId(false)
 
     await softAssertAll(
       async () =>
-        await expect(
-          (await (currentAddress.firstAddressPart.getText())) +
+        expect(
+          (await currentAddress.firstAddressPart.getText()) +
             "..." +
-            (await (currentAddress.secondAddressPart.getText())),
+            (await currentAddress.secondAddressPart.getText()),
         ).toEqual(account),
       async () =>
-        await expect(
-          (await (currentPrincipal.firstAddressPart.getText())) +
+        expect(
+          (await currentPrincipal.firstAddressPart.getText()) +
             "..." +
-            (await (currentPrincipal.secondAddressPart.getText())),
+            (await currentPrincipal.secondAddressPart.getText()),
         ).toEqual(principal),
     )
   },

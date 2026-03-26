@@ -46,7 +46,7 @@ export class Nft extends Page {
   }
 
   async switchToTable() {
-    const table = await $("#to-table")
+    const table = $("#to-table")
     await table.waitForDisplayed({
       timeout: 5000,
     })
@@ -54,7 +54,9 @@ export class Nft extends Page {
   }
 
   async nftDetails(token: string, collection: string) {
-    await (await this.getNftName(token, collection)).waitForDisplayed({
+    await (
+      await this.getNftName(token, collection)
+    ).waitForDisplayed({
       timeout: 30000,
     })
     await (await this.getNftName(token, collection)).click()

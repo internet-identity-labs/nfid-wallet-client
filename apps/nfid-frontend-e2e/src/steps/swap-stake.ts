@@ -123,7 +123,7 @@ When(
           return (
             (await Assets.getTargetAmountField.isDisplayed()) &&
             parseFloat(
-              await (await Assets.getTargetAmountField).getAttribute("value"),
+              await Assets.getTargetAmountField.getAttribute("value"),
             ) > 0
           )
         },
@@ -345,7 +345,7 @@ When(
 
 When(
   "User verifies user's staking values of the {token} token were changed correctly on details page",
-  async (tokenName: string) => {
+  async (_tokenName: string) => {
     await browser.waitUntil(
       async () => {
         await browser.refresh()
@@ -432,7 +432,7 @@ When(
 
 When(
   "System saves current user's staking values of the {token} token",
-  async (tokenName: string) => {
+  async (_tokenName: string) => {
     StakedTokenDetailsBalances.currentStakingBalance = Number(
       await (await Staking.stakingBalances("stakingBalance")).number(),
     )
@@ -569,7 +569,7 @@ When(
       [
         async () => {
           expect(StakingTransactionDetails.transactionID).toEqual(
-            await (await Staking.sidePanel().stakeID).getText(),
+            await Staking.sidePanel().stakeID.getText(),
           )
         },
         `Incorrect transaction ID in the side panel.

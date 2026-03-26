@@ -64,19 +64,19 @@ Then(
           seconds,
         )
         const timeDifference = Math.abs(now.getTime() - actualTime.getTime())
-        await (await Activity.rowActionType(tableRows[1])).waitForDisplayed(
-          {
-            timeout: 70000,
-            timeoutMsg: "List of transactions wasn't loaded in 70sec",
-          },
-        )
+        await (
+          await Activity.rowActionType(tableRows[1])
+        ).waitForDisplayed({
+          timeout: 70000,
+          timeoutMsg: "List of transactions wasn't loaded in 70sec",
+        })
         if (timeDifference > 200000) {
-          console.log(
+          console.warn(
             `Expected time: ${expectedTime}\n
             Actual time: ${actualDate}`,
           )
         }
-        return (timeDifference <= 200000)
+        return timeDifference <= 200000
       },
       {
         timeout: 200000,
@@ -103,5 +103,7 @@ When("User sets filter to {list}", async (filtersList: string[]) => {
     await browser.pause(500)
     await Activity.numberOfFilters.waitForDisplayed({ timeout: 20000 })
   }
-  expect(await Activity.numberOfFilters.getText()).toEqual(`${filtersList.length} selected`)
+  expect(await Activity.numberOfFilters.getText()).toEqual(
+    `${filtersList.length} selected`,
+  )
 })

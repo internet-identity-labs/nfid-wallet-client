@@ -4,11 +4,10 @@ import { chromeBrowser } from "./src/browserOptions.js"
 export const isDebug = process.env.DEBUG === "true"
 export const hostName = process.env.HOST_NAME
 export const hostPath = process.env.HOST_PATH
-export const baseURL = process.env.NFID_PROVIDER_URL
-  ? process.env.NFID_PROVIDER_URL
-  : "http://localhost:9090"
+export const baseURL = process.env.NFID_PROVIDER_URL ?? "http://localhost:9090"
 export const isMobile = (): boolean => {
-  return !!browser?.requestedCapabilities?.["goog:chromeOptions"]?.mobileEmulation;
+  return !!browser?.requestedCapabilities?.["goog:chromeOptions"]
+    ?.mobileEmulation
 }
 
 export const config: WebdriverIO.Config = {
@@ -71,7 +70,7 @@ export const config: WebdriverIO.Config = {
     // <boolean> fail if there are any undefined or pending steps
     strict: false,
     // <string> (expression) only execute the features or scenarios with tags matching the expression
-    tagExpression: "not @pending and not @mobile",
+    tags: "not @pending and not @mobile",
     // <number> timeout for step definitions
     timeout: 280000,
     // <boolean> Enable this config to treat undefined definitions as warnings.

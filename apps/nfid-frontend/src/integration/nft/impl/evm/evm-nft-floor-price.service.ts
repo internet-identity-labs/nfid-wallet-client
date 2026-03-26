@@ -7,7 +7,6 @@ export interface EvmNftFloorPrice {
   symbol: string
 }
 
-export const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY as string
 const FLOOR_PRICE_CACHE_TTL = 5 * 60 * 1000
 
 class EvmNftFloorPriceService {

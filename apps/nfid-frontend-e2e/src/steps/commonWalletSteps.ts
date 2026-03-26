@@ -7,6 +7,7 @@ import Nft from "../pages/nft.js"
 import Profile from "../pages/profile.js"
 import Staking from "../pages/staking.js"
 import Page from "../pages/page"
+import AddressBook from "../pages/addressBook"
 
 type TabConfig = Parameters<typeof Assets.waitUntilElementsLoadedProperly>
 
@@ -28,6 +29,7 @@ When(/^User goes to (.*) (?:tab|page)$/, async (tab: string) => {
         },
       },
     ],
+    AddressBook: [Assets.addressBook, AddressBook.addContactButton],
   }
   await Assets.waitUntilElementsLoadedProperly(tabMap[tab][0], tabMap[tab][1])
 })

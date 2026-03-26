@@ -403,6 +403,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
             <div className="sticky left-0 flex items-center space-x-2">
               {showBackButton && (
                 <ArrowButton
+                  id={"backButton"}
                   buttonClassName="py-[7px] dark:hover:bg-zinc-700"
                   onClick={handleNavigateBack}
                   iconClassName="text-black dark:text-white"

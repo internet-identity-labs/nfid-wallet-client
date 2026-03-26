@@ -31,6 +31,7 @@ export const AddressBookRow: FC<AddressBookRowProps> = ({
         className="py-5 text-black border-b border-gray-100 dark:border-zinc-600 md:py-0 md:border-0 dark:text-white h-[65px]"
       >
         <td
+          id={`address_${address.id}_name`}
           className={clsx(
             "flex flex-grow md:items-center",
             "py-[10px] md:py-0 md:h-16 pr-[10px] md:pr-[30px]",

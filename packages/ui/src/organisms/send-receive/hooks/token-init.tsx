@@ -9,29 +9,69 @@ import {
   TOKENS_REFRESH_INTERVAL,
 } from "frontend/integration/ft/ft-service"
 import {
+  isTestnetToken,
   ChainId,
-  isEvmToken,
   State,
 } from "@nfid/integration/token/icrc1/enum/enums"
-import { useContext, useMemo } from "react"
+import { useContext, useEffect, useMemo, useRef, useState } from "react"
 import { useActor } from "@xstate/react"
 import { ProfileContext } from "frontend/provider"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
+import { userPrefService } from "src/integration/user-preferences/user-pref-service"
 
-export const useTokensInit = (tokens: FT[] | undefined) => {
+interface ChainPrefs {
+  testnetEnabled?: boolean
+  arbitrumEnabled?: boolean
+  baseEnabled?: boolean
+  polygonEnabled?: boolean
+}
+
+export const useTokensInit = (
+  tokens: FT[] | undefined,
+  chainPrefs?: ChainPrefs,
+) => {
   const { isEthAddressLoading } = useEthAddress()
   const { isBtcAddressLoading } = useBtcAddress()
-  const activeTokens = useMemo(
-    () => tokens?.filter((token) => token.getTokenState() === State.Active),
-    [tokens],
-  )
-
   const {
     isViewOnlyMode,
     viewOnlyAddress,
     viewOnlyAddressType,
     transferService,
   } = useContext(ProfileContext)
+  const isMounted = useRef(false)
+  const [enabledTestnet, setEnabledTestnet] = useState(false)
+  const [enabledArbitrum, setEnabledArbitrum] = useState(true)
+  const [enabledBase, setEnabledBase] = useState(true)
+  const [enabledPolygon, setEnabledPolygon] = useState(true)
+
+  useEffect(() => {
+    if (isViewOnlyMode || chainPrefs !== undefined) return
+    userPrefService.getUserPreferences().then((prefs) => {
+      setEnabledTestnet(prefs.isTestnetEnabled())
+      setEnabledArbitrum(prefs.isArbitrumEnabled())
+      setEnabledBase(prefs.isBaseEnabled())
+      setEnabledPolygon(prefs.isPolygonEnabled())
+    })
+  }, [isViewOnlyMode, chainPrefs])
+
+  const testnetEnabled = chainPrefs?.testnetEnabled ?? enabledTestnet
+  const arbitrumEnabled = chainPrefs?.arbitrumEnabled ?? enabledArbitrum
+  const baseEnabled = chainPrefs?.baseEnabled ?? enabledBase
+  const polygonEnabled = chainPrefs?.polygonEnabled ?? enabledPolygon
+
+  const activeTokens = useMemo(
+    () =>
+      tokens?.filter((token) => {
+        if (token.getTokenState() !== State.Active) return false
+        const chainId = token.getChainId()
+        if (!testnetEnabled && isTestnetToken(chainId)) return false
+        if (!arbitrumEnabled && chainId === ChainId.ARB) return false
+        if (!baseEnabled && chainId === ChainId.BASE) return false
+        if (!polygonEnabled && chainId === ChainId.POL) return false
+        return true
+      }),
+    [tokens, testnetEnabled, arbitrumEnabled, baseEnabled, polygonEnabled],
+  )
 
   const [state] = useActor(transferService)
 
@@ -91,6 +131,14 @@ export const useTokensInit = (tokens: FT[] | undefined) => {
       },
     },
   )
+
+  useEffect(() => {
+    if (!isMounted.current || activeTokens) {
+      isMounted.current = true
+      return
+    }
+    mutate()
+  }, [activeTokens])
 
   return { initedTokens, mutate, isLoading }
 }

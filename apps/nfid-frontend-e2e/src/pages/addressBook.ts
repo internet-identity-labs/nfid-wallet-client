@@ -35,9 +35,9 @@ export class AddressBook extends Page {
     )
   }
 
-  async addressRowByAddress(address: string, type: AddressType) {
+  async addressRowByAddress(shortAddress: string, type: AddressType) {
     return $(
-      `//tr[.//td[contains(@id, "_${type}")]//*[contains(normalize-space(), "${address}")]]`,
+      `//tr[.//td[contains(@id, "_${type}") and contains(normalize-space(.), "${shortAddress}")]]`,
     )
   }
 

@@ -38,6 +38,7 @@ Then(/^User selects ([^"]*) from send options/, async (currency: string) => {
             await it.click()
           },
         )
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         await Assets.tokenToSendBackButton.click()
       }
@@ -86,14 +87,14 @@ Then(
 
     await softAssertAll(
       async () => {
-        await expect(
+        expect(
           (await currentAddress.firstAddressPart.getText()) +
             "..." +
             (await currentAddress.secondAddressPart.getText()),
         ).toEqual(account)
       },
       async () => {
-        await expect(
+        expect(
           (await currentPrincipal.firstAddressPart.getText()) +
             "..." +
             (await currentPrincipal.secondAddressPart.getText()),
@@ -115,7 +116,7 @@ Then(
   /^There is a contact with name "([^"]+)" and address ([^"]+)$/,
   async (name: string, address: string) => {
     const formatedShortAddress = `${address.slice(0, 6)}...${address.slice(-4)}`
-    await expect(
+    expect(
       (
         await Assets.addressBookItemInSend(name, formatedShortAddress)
       ).isDisplayed(),

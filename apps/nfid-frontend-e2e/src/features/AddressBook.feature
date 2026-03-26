@@ -1,4 +1,4 @@
-Feature: Activity tab
+Feature: Address Book
   As a user, I want to add a contact to the address book
 
   @addressbook @desktop

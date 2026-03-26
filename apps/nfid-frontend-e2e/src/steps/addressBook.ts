@@ -4,6 +4,7 @@ import AddressBook, {
   type AddressType,
   addressTypes,
 } from "../pages/addressBook"
+import { softAssertAll } from "../helpers/assertions"
 
 const isAddressType = (value: string): value is AddressType =>
   addressTypes.includes(value as AddressType)
@@ -36,14 +37,30 @@ Then(
     if (!isAddressType(addressType)) {
       throw new Error(`Unsupported address type: ${addressType}`)
     }
+    const formatedShortAddress = `${address.slice(0, 6)}...${address.slice(-4)}`
 
-    await expect(
-      await (await AddressBook.addressRowByName(name)).isDisplayed(),
-    ).toBeTruthy()
-    await expect(
-      await (
-        await AddressBook.addressRowByAddress(address, addressType)
-      ).isDisplayed(),
-    ).toBeTruthy()
+    await softAssertAll(
+      [
+        async () => {
+          expect(
+            await (await AddressBook.addressRowByName(name)).isDisplayed(),
+          ).toBeTruthy()
+        },
+        `Contact with name ${name} not found in Address Book`,
+      ],
+      [
+        async () => {
+          expect(
+            await (
+              await AddressBook.addressRowByAddress(
+                formatedShortAddress,
+                addressType,
+              )
+            ).isDisplayed(),
+          ).toBeTruthy()
+        },
+        `Contact with address ${address} not found in Address Book`,
+      ],
+    )
   },
 )

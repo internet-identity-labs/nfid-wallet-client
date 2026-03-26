@@ -14,7 +14,6 @@ import { AbiCoder } from "ethers"
 const SUPPORTED_CHAINS = new Set([
   "eip155:1",
   "eip155:137",
-  "eip155:56",
   "eip155:8453",
   "eip155:42161",
 ])

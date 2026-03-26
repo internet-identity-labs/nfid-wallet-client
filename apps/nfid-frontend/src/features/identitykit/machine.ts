@@ -383,18 +383,19 @@ const machineServices = {
     sendResponse: fromPromise(async ({ input }) => {
       const { context, event } = input as {
         context: IdentityKitRPCMachineContext
-        event: { data?: unknown }
+        event: { data?: unknown; output?: unknown; error?: unknown }
       }
       const request = context.activeRequest
       const parent = window.opener || window.parent
+      const payload = event.output ?? event.data
 
       if (!request) return
 
-      if (event.data instanceof NoActionError) {
+      if (payload instanceof NoActionError) {
         return
       }
 
-      if (event.data instanceof Error || event.data instanceof GenericError) {
+      if (payload instanceof Error || payload instanceof GenericError) {
         parent.postMessage(
           {
             origin: context.activeRequest!.origin,
@@ -402,13 +403,13 @@ const machineServices = {
             id: context.activeRequest!.data.id,
             error: {
               code: 3001,
-              message: (event.data as Error)?.message ?? "Unknown error",
+              message: (payload as Error)?.message ?? "Unknown error",
             },
           },
           request.origin,
         )
       } else {
-        parent.postMessage(event.data, request.origin)
+        parent.postMessage(payload, request.origin)
       }
     }),
   },

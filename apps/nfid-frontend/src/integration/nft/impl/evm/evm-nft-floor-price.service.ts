@@ -7,7 +7,7 @@ export interface EvmNftFloorPrice {
   symbol: string
 }
 
-export const ALCHEMY_API_KEY = "dklZjRDysISvaWkI6eOMj"
+export const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY as string
 const FLOOR_PRICE_CACHE_TTL = 5 * 60 * 1000
 
 class EvmNftFloorPriceService {
@@ -36,25 +36,29 @@ class EvmNftFloorPriceService {
     contract: string,
     network: string,
   ): Promise<EvmNftFloorPrice | null> {
-    const url = new URL(
-      `https://${network}.g.alchemy.com/nft/v3/${ALCHEMY_API_KEY}/getFloorPrice`,
-    )
-    url.searchParams.set("contractAddress", contract)
+    try {
+      const url = new URL(
+        `https://${network}.g.alchemy.com/nft/v3/${ALCHEMY_API_KEY}/getFloorPrice`,
+      )
+      url.searchParams.set("contractAddress", contract)
 
-    const response = await fetch(url.toString())
+      const response = await fetch(url.toString())
+      if (!response.ok) return null
 
-    if (!response.ok) return null
+      const data = await response.json()
+      const marketplace =
+        data.openSea ?? data.looksRare ?? data.blur ?? data.x2y2
 
-    const data = await response.json()
+      if (!marketplace?.floorPrice) return null
 
-    const marketplace = data.openSea ?? data.looksRare ?? data.blur ?? data.x2y2
-
-    if (!marketplace?.floorPrice) return null
-
-    return {
-      nativePrice: Number(marketplace.floorPrice),
-      usdPrice: Number(marketplace.floorPriceUsd ?? 0),
-      symbol: marketplace.priceCurrency ?? "ETH",
+      return {
+        nativePrice: Number(marketplace.floorPrice),
+        usdPrice: Number(marketplace.floorPriceUsd ?? 0),
+        symbol: marketplace.priceCurrency ?? "ETH",
+      }
+    } catch (e) {
+      console.error("Alchemy floor price fetch failed:", e)
+      return null
     }
   }
 }

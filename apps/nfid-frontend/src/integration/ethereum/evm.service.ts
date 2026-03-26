@@ -40,7 +40,7 @@ import {
 } from "@nfid/integration/token/constants"
 import { KEY_ETH_ADDRESS } from "packages/integration/src/lib/authentication/storage"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
-import { ALCHEMY_API_KEY } from "src/integration/nft/impl/evm/evm-nft-floor-price.service"
+const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY as string
 import { ALCHEMY_CHAIN_MAP } from "../nft/constants/constants"
 
 export type EvmNftStandard = "ERC-721" | "ERC-1155" | "ERC-404"
@@ -265,43 +265,48 @@ export abstract class EVMService {
     const results: EvmNftAsset[] = []
     let pageKey: string | null = null
 
-    do {
-      const url = new URL(
-        `https://${alchemyNetwork}.g.alchemy.com/nft/v3/${ALCHEMY_API_KEY}/getNFTsForOwner`,
-      )
-      url.searchParams.set("owner", address)
-      url.searchParams.set("withMetadata", "true")
-      url.searchParams.set("pageSize", "100")
-      if (pageKey) url.searchParams.set("pageKey", pageKey)
-
-      const response = await fetch(url.toString())
-      if (!response.ok) {
-        throw new Error(
-          `Alchemy NFT API error: ${response.status} ${response.statusText}`,
+    try {
+      do {
+        const url = new URL(
+          `https://${alchemyNetwork}.g.alchemy.com/nft/v3/${ALCHEMY_API_KEY}/getNFTsForOwner`,
         )
-      }
+        url.searchParams.set("owner", address)
+        url.searchParams.set("withMetadata", "true")
+        url.searchParams.set("pageSize", "100")
+        if (pageKey) url.searchParams.set("pageKey", pageKey)
 
-      const data: AlchemyNftResponse = await response.json()
+        const response = await fetch(url.toString())
+        if (!response.ok) {
+          console.error(
+            `Alchemy NFT API error: ${response.status} ${response.statusText}`,
+          )
+          return results
+        }
 
-      for (const item of data.ownedNfts) {
-        results.push({
-          contract: item.contract.address,
-          tokenId: item.tokenId,
-          supply: item.balance ?? "1",
-          type: normalizeAlchemyType(item.contract.tokenType),
-          metadata: item.raw?.metadata as EvmNftMetadata | undefined,
-          imageUrl: resolveIpfsUrl(
-            item.image?.cachedUrl ?? item.image?.originalUrl,
-          ),
-          animationUrl: resolveIpfsUrl(item.raw?.metadata?.animation_url),
-          tokenName: item.contract.name,
-          tokenSymbol: item.contract.symbol,
-          chainId,
-        })
-      }
+        const data: AlchemyNftResponse = await response.json()
 
-      pageKey = data.pageKey ?? null
-    } while (pageKey)
+        for (const item of data.ownedNfts) {
+          results.push({
+            contract: item.contract.address,
+            tokenId: item.tokenId,
+            supply: item.balance ?? "1",
+            type: normalizeAlchemyType(item.contract.tokenType),
+            metadata: item.raw?.metadata as EvmNftMetadata | undefined,
+            imageUrl: resolveIpfsUrl(
+              item.image?.cachedUrl ?? item.image?.originalUrl,
+            ),
+            animationUrl: resolveIpfsUrl(item.raw?.metadata?.animation_url),
+            tokenName: item.contract.name,
+            tokenSymbol: item.contract.symbol,
+            chainId,
+          })
+        }
+
+        pageKey = data.pageKey ?? null
+      } while (pageKey)
+    } catch (e) {
+      console.error("Alchemy getNFTsForOwner failed:", e)
+    }
 
     return results
   }
@@ -315,32 +320,41 @@ export abstract class EVMService {
     const remaining = new Set(ownedKeys)
     let pageKey: string | null = null
 
-    do {
-      const url = new URL(
-        `https://${alchemyNetwork}.g.alchemy.com/nft/v3/${ALCHEMY_API_KEY}/getTransfersForOwner`,
-      )
-      url.searchParams.set("owner", address)
-      url.searchParams.set("transferType", "TO")
-      url.searchParams.set("pageSize", "100")
-      if (pageKey) url.searchParams.set("pageKey", pageKey)
+    try {
+      do {
+        const url = new URL(
+          `https://${alchemyNetwork}.g.alchemy.com/nft/v3/${ALCHEMY_API_KEY}/getTransfersForOwner`,
+        )
+        url.searchParams.set("owner", address)
+        url.searchParams.set("transferType", "TO")
+        url.searchParams.set("pageSize", "100")
+        if (pageKey) url.searchParams.set("pageKey", pageKey)
 
-      const response = await fetch(url.toString())
-      if (!response.ok) break
-
-      const data: AlchemyTransfersResponse = await response.json()
-
-      for (const item of data.nftTransfers) {
-        if (item.toAddress?.toLowerCase() !== address.toLowerCase()) continue
-        const contractAddress = item.rawContract?.address?.toLowerCase() ?? ""
-        const key = `${contractAddress}:${item.tokenId}`
-        if (remaining.has(key) && !timestamps.has(key)) {
-          timestamps.set(key, new Date(item.blockTimestamp).getTime())
-          remaining.delete(key)
+        const response = await fetch(url.toString())
+        if (!response.ok) {
+          console.error(
+            `Alchemy getTransfersForOwner error: ${response.status} ${response.statusText}`,
+          )
+          break
         }
-      }
 
-      pageKey = data.pageKey ?? null
-    } while (pageKey && remaining.size > 0)
+        const data: AlchemyTransfersResponse = await response.json()
+
+        for (const item of data.nftTransfers) {
+          if (item.toAddress?.toLowerCase() !== address.toLowerCase()) continue
+          const contractAddress = item.rawContract?.address?.toLowerCase() ?? ""
+          const key = `${contractAddress}:${item.tokenId}`
+          if (remaining.has(key) && !timestamps.has(key)) {
+            timestamps.set(key, new Date(item.blockTimestamp).getTime())
+            remaining.delete(key)
+          }
+        }
+
+        pageKey = data.pageKey ?? null
+      } while (pageKey && remaining.size > 0)
+    } catch (e) {
+      console.error("Alchemy getTransfersForOwner failed:", e)
+    }
 
     return timestamps
   }

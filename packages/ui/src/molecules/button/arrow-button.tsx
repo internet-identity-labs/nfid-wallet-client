@@ -5,6 +5,7 @@ import { Button } from "."
 import { ReactComponent as ArrowLeft } from "../../atoms/icons/arrow.svg"
 
 interface ArrowButtonProps {
+  id?: string
   direction?: "left" | "right" | "top" | "bottom"
   onClick?: () => void
   buttonClassName?: string
@@ -12,6 +13,7 @@ interface ArrowButtonProps {
 }
 
 export const ArrowButton: React.FC<ArrowButtonProps> = ({
+  id,
   direction = "right",
   onClick,
   buttonClassName,
@@ -20,6 +22,7 @@ export const ArrowButton: React.FC<ArrowButtonProps> = ({
   return (
     <Button onClick={onClick} className={buttonClassName} type="ghost">
       <ArrowLeft
+        id={id}
         className={clsx(
           direction === "right" && "",
           direction === "left" && "transform rotate-180",

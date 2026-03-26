@@ -273,6 +273,7 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
           Cancel
         </Button>
         <Button
+          id={"approve_addContact"}
           isSmall
           className="w-full h-full"
           onClick={handleSubmit(submit)}

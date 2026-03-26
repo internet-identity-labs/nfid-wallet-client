@@ -38,6 +38,7 @@ Then(/^User selects ([^"]*) from send options/, async (currency: string) => {
             await it.click()
           },
         )
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         await Assets.tokenToSendBackButton.click()
       }
@@ -82,21 +83,43 @@ Then(
   /^Verifying that the Account ID is ([^"]*) and the Principal is ([^"]*)/,
   async function (account: string, principal: string) {
     const currentAddress = await Assets.getAccountId(true)
-    let currentPrincipal = await Assets.getAccountId(false)
+    const currentPrincipal = await Assets.getAccountId(false)
 
     await softAssertAll(
-      async () =>
-        await expect(
-          (await (currentAddress.firstAddressPart.getText())) +
+      async () => {
+        expect(
+          (await currentAddress.firstAddressPart.getText()) +
             "..." +
-            (await (currentAddress.secondAddressPart.getText())),
-        ).toEqual(account),
-      async () =>
-        await expect(
-          (await (currentPrincipal.firstAddressPart.getText())) +
+            (await currentAddress.secondAddressPart.getText()),
+        ).toEqual(account)
+      },
+      async () => {
+        expect(
+          (await currentPrincipal.firstAddressPart.getText()) +
             "..." +
-            (await (currentPrincipal.secondAddressPart.getText())),
-        ).toEqual(principal),
+            (await currentPrincipal.secondAddressPart.getText()),
+        ).toEqual(principal)
+      },
     )
+  },
+)
+
+When(
+  /^User clicks the AddressBook button the on Send dialog window$/,
+  async () => {
+    await Assets.addressBookSend.click()
+    await Assets.backButton.isDisplayed()
+  },
+)
+
+Then(
+  /^There is a contact with name "([^"]+)" and address ([^"]+)$/,
+  async (name: string, address: string) => {
+    const formatedShortAddress = `${address.slice(0, 6)}...${address.slice(-4)}`
+    expect(
+      (
+        await Assets.addressBookItemInSend(name, formatedShortAddress)
+      ).isDisplayed(),
+    ).toBeTruthy()
   },
 )

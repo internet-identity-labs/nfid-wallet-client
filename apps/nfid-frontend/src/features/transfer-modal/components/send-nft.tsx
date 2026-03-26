@@ -34,24 +34,20 @@ import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.serv
 import { baseService } from "frontend/integration/ethereum/base/base.service"
 import { arbitrumService } from "frontend/integration/ethereum/arbitrum/arbitrum.service"
 import { polygonService } from "frontend/integration/ethereum/polygon/polygon.service"
-import { bnbService } from "frontend/integration/ethereum/bnb/bnb.service"
 import { ethSepoliaService } from "frontend/integration/ethereum/eth/testnetwork/eth-sepolia.service"
 import { baseSepoliaService } from "frontend/integration/ethereum/base/testnetwork/base-sepolia.service"
 import { arbSepoliaService } from "frontend/integration/ethereum/arbitrum/testnetwork/arb-sepolia.service"
 import { polygonAmoyService } from "frontend/integration/ethereum/polygon/testnetwork/pol-amoy.service"
-import { bnbTestnetService } from "frontend/integration/ethereum/bnb/testnetwork/bnb-testnet.service"
 
 const EVM_SERVICE_MAP: Partial<Record<number, EVMService>> = {
   [ChainId.ETH]: ethereumService,
   [ChainId.BASE]: baseService,
   [ChainId.ARB]: arbitrumService,
   [ChainId.POL]: polygonService,
-  [ChainId.BNB]: bnbService,
   [ChainId.ETH_SEPOLIA]: ethSepoliaService,
   [ChainId.BASE_SEPOLIA]: baseSepoliaService,
   [ChainId.ARB_SEPOLIA]: arbSepoliaService,
   [ChainId.POL_AMOY]: polygonAmoyService,
-  [ChainId.BNB_TESTNET]: bnbTestnetService,
 }
 
 interface ITransferNFT {

@@ -4,7 +4,6 @@ import { Cache } from "node-ts-cache"
 import { integrationCache } from "packages/integration/src/cache"
 import { arbitrumService } from "frontend/integration/ethereum/arbitrum/arbitrum.service"
 import { baseService } from "frontend/integration/ethereum/base/base.service"
-import { bnbService } from "frontend/integration/ethereum/bnb/bnb.service"
 import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
 import { polygonService } from "frontend/integration/ethereum/polygon/polygon.service"
 import { EvmNftImpl } from "src/integration/nft/impl/evm/nft-evm"
@@ -37,13 +36,12 @@ export class NftService {
     return this.getEVMNFTsByAddress(address)
   }
 
-  async getEVMNFTsByAddress(address: string): Promise<NFT[]> {
+  private async getEVMNFTsByAddress(address: string): Promise<NFT[]> {
     const services = [
       ethereumService,
       baseService,
       polygonService,
       arbitrumService,
-      bnbService,
     ]
     const settled = await Promise.allSettled(
       services.map((svc) => svc.getNFTs(address)),

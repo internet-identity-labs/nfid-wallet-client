@@ -32,7 +32,7 @@ export class Assets extends Page {
   }
 
   async getBlockchain(label: string) {
-    let locator = $(
+    const locator = $(
       `[id^="token_${label.replace(/\s/g, "")}_"][id$="_category"]`,
     )
     await locator.waitForDisplayed({ timeout: 10000 })
@@ -89,12 +89,22 @@ export class Assets extends Page {
     )
   }
 
+  get addressBook() {
+    return $(`#nav-address-book`)
+  }
+
+  async addressBookItemInSend(name: string, address: string) {
+    return $(
+      `//div[starts-with(@id, "address_") and .//p[normalize-space()="${name}"] and .//p[normalize-space()="${address}"]]`,
+    )
+  }
+
   async tokenOptionsButton(tokenName: string) {
     return $(`#${tokenName}_options`)
   }
 
   async tokenUSDPrice(tokenName: string) {
-    let locator = $(
+    const locator = $(
       `[id^="token_${tokenName.replace(/\s/g, "")}_"][id$="_price"]`,
     )
     await locator.waitForDisplayed()
@@ -102,7 +112,7 @@ export class Assets extends Page {
   }
 
   async tokenBalance(tokenName: string) {
-    let locator = $(
+    const locator = $(
       `(//td[starts-with(@id,"token_${tokenName.replace(/\s/g, "")}_") and contains(@id,"_balance")]/p)[1]`,
     )
     await locator.waitForDisplayed()
@@ -116,7 +126,7 @@ export class Assets extends Page {
   }
 
   async tokenUSDBalance(tokenName: string) {
-    let locator = $(`#token_${tokenName.replace(/\s/g, "")}_usd`)
+    const locator = $(`#token_${tokenName.replace(/\s/g, "")}_usd`)
     await locator.waitForDisplayed()
     return locator
   }
@@ -161,6 +171,10 @@ export class Assets extends Page {
 
   get priceImpactCheckBox() {
     return $("#price-impact")
+  }
+
+  get addressBookSend() {
+    return $(`#addressBook`)
   }
 
   async openAssetOptionsOnSR() {

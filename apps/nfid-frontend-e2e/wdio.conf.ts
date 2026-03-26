@@ -44,6 +44,7 @@ export const config: WebdriverIO.Config = {
       {
         saveAllVideos: true,
         videoSlowdownMultiplier: 3,
+        videoFormat: "mp4",
         outputDir: "src/reporter/desktop/video",
       },
     ],

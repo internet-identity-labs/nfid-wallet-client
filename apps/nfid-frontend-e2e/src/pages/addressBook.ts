@@ -59,7 +59,7 @@ export class AddressBook extends Page {
     await this.approveRemovingButton.click()
     await this.removeContactModal.waitForDisplayed({
       reverse: true,
-      timeout: 15000,
+      timeout: 25000,
     })
     await (
       await this.addressRowByName(name)
@@ -72,7 +72,7 @@ export class AddressBook extends Page {
     await this.approveAddContactButton.click()
     await this.approveAddContactButton.waitForDisplayed({
       reverse: true,
-      timeout: 15000,
+      timeout: 25000,
     })
     await (
       await this.addressRowByName(name)

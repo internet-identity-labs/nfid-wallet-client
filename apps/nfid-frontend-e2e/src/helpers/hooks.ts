@@ -1,6 +1,7 @@
 import {
   After,
   AfterAll,
+  ITestCaseHookParameter,
   AfterStep,
   Before,
   BeforeAll,
@@ -13,6 +14,103 @@ import type { Browser as PuppeteerBrowser, ConsoleMessage } from "puppeteer"
 const baseURL = process.env.NFID_PROVIDER_URL ?? "http://localhost:9090"
 
 let browserLogs: string[] = []
+
+const getStepName = (step: ITestStepHookParameter): string =>
+  step.pickleStep?.text ?? "Unknown step"
+
+const getCaseLine = (scenario: ITestCaseHookParameter): number | undefined => {
+  const astNodeId = scenario.pickle.astNodeIds.at(-1)
+
+  if (!astNodeId) return undefined
+
+  const findLine = (
+    children: NonNullable<
+      NonNullable<
+        ITestCaseHookParameter["gherkinDocument"]["feature"]
+      >["children"]
+    >,
+  ): number | undefined => {
+    for (const child of children) {
+      if (child.scenario) {
+        if (child.scenario.id === astNodeId) {
+          return child.scenario.location?.line
+        }
+
+        for (const examples of child.scenario.examples ?? []) {
+          const exampleRow = examples.tableBody?.find(
+            (row) => row.id === astNodeId,
+          )
+
+          if (exampleRow) {
+            return exampleRow.location?.line
+          }
+        }
+      }
+
+      if (child.rule) {
+        const ruleLine = findLine(child.rule.children)
+
+        if (ruleLine) {
+          return ruleLine
+        }
+      }
+    }
+
+    return undefined
+  }
+
+  const featureChildren = scenario.gherkinDocument.feature?.children
+
+  if (!featureChildren) return undefined
+
+  return findLine(featureChildren)
+}
+
+const getExampleArguments = (
+  scenario: ITestCaseHookParameter,
+): Array<[string, string]> => {
+  const astNodeId = scenario.pickle.astNodeIds.at(-1)
+  const featureChildren = scenario.gherkinDocument.feature?.children
+
+  if (!astNodeId || !featureChildren) return []
+
+  const findArguments = (
+    children: NonNullable<
+      NonNullable<
+        ITestCaseHookParameter["gherkinDocument"]["feature"]
+      >["children"]
+    >,
+  ): Array<[string, string]> => {
+    for (const child of children) {
+      if (child.scenario) {
+        for (const examples of child.scenario.examples ?? []) {
+          const exampleRow = examples.tableBody?.find(
+            (row) => row.id === astNodeId,
+          )
+
+          if (!exampleRow) continue
+
+          return exampleRow.cells.map((cell, index) => [
+            examples.tableHeader?.cells[index]?.value ?? `arg${index + 1}`,
+            cell.value,
+          ])
+        }
+      }
+
+      if (child.rule) {
+        const ruleArguments = findArguments(child.rule.children)
+
+        if (ruleArguments.length) {
+          return ruleArguments
+        }
+      }
+    }
+
+    return []
+  }
+
+  return findArguments(featureChildren)
+}
 
 BeforeAll(async function () {
   if (process.env.DEMO_APPLICATION_URL)
@@ -33,17 +131,28 @@ BeforeAll(async function () {
   })
 })
 
-Before(async function (scenario) {
-  console.warn("Scenario: " + scenario.pickle.name)
+Before(async function (scenario: ITestCaseHookParameter) {
+  const scenarioLine = getCaseLine(scenario)
+  const caseReference = scenarioLine
+    ? `${scenario.pickle.uri}:${scenarioLine}`
+    : `${scenario.pickle.uri}:${scenario.pickle.id}`
+
+  console.warn(`Scenario: ${scenario.pickle.name} [${caseReference}]`)
+  allureReporter.addSubSuite(caseReference)
   allureReporter.addArgument("Browser", "Chrome")
   allureReporter.addArgument("Environment", baseURL)
   allureReporter.addArgument("Platform", process.platform)
+  allureReporter.addArgument("Case", caseReference)
+
+  for (const [name, value] of getExampleArguments(scenario)) {
+    allureReporter.addArgument(name, value)
+  }
 })
 
 AfterStep(async function (step: ITestStepHookParameter): Promise<void> {
   if (!step.pickleStep) return
   console.warn(
-    step.pickleStep.text +
+    getStepName(step) +
       " " +
       (step.result?.status === "PASSED"
         ? "\x1b[32mPASSED\x1b[0m"
@@ -56,6 +165,17 @@ AfterStep(async function (step: ITestStepHookParameter): Promise<void> {
       "text/plain",
     )
     browserLogs = []
+  }
+
+  try {
+    const screenshot = await browser.takeScreenshot()
+    allureReporter.addAttachment(
+      `Step Screenshot - ${getStepName(step)}`,
+      Buffer.from(screenshot, "base64"),
+      "image/png",
+    )
+  } catch (error) {
+    console.warn(`Failed to capture step screenshot: ${error}`)
   }
 })
 

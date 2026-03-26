@@ -17,7 +17,6 @@ export const WALLETCONNECT_METADATA = {
 export const ETH_METHODS = [
   "eth_sendTransaction",
   "eth_signTransaction",
-  "eth_sign",
   "personal_sign",
   "eth_signTypedData",
   "eth_signTypedData_v4",

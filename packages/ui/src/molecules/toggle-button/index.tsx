@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 interface IToggleButton {
   className?: string
@@ -19,10 +19,15 @@ export const ToggleButton: React.FC<IToggleButton> = ({
   id,
 }) => {
   const [value, setValue] = useState(defaultValue ?? false)
+  const onChangeRef = useRef(onChange)
 
   useEffect(() => {
-    onChange(value)
-  }, [onChange, value])
+    onChangeRef.current = onChange
+  }, [onChange])
+
+  useEffect(() => {
+    onChangeRef.current(value)
+  }, [value])
 
   return (
     <div

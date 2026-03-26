@@ -13,10 +13,8 @@ import {
   ChainId,
   State,
 } from "@nfid/integration/token/icrc1/enum/enums"
-import { useContext, useMemo } from "react"
 import { useActorSnapshot } from "frontend/hooks/use-actor-snapshot"
 import { useContext, useEffect, useMemo, useRef, useState } from "react"
-import { useActor } from "@xstate/react"
 import { ProfileContext } from "frontend/provider"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { userPrefService } from "src/integration/user-preferences/user-pref-service"

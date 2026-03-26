@@ -1,13 +1,14 @@
 import { defineParameterType } from "@cucumber/cucumber"
+import { addressTypes, type AddressType } from "../pages/addressBook"
 
 defineParameterType({
   name: "token",
   regexp: /\$NFIDW|\$ICP|\$BOOM/,
   transformer: (input: string) => {
     const map: Record<string, string> = {
-      "$NFIDW": "NFIDWallet",
-      "$ICP": "Internet Computer",
-      "$BOOM": "BOOM",
+      $NFIDW: "NFIDWallet",
+      $ICP: "Internet Computer",
+      $BOOM: "BOOM",
     }
     return map[input] || input
   },
@@ -18,12 +19,10 @@ defineParameterType({
   regexp: /[^,]+(?:\s*,\s*[^,]+)*/,
   transformer: (s: string) => {
     const map: Record<string, string> = {
-      "$NFIDW": "NFIDWallet",
-      "$ICP": "Internet Computer",
+      $NFIDW: "NFIDWallet",
+      $ICP: "Internet Computer",
     }
-    return s
-      .split(/\s*,\s*/)
-      .map(token => map[token] || token)
+    return s.split(/\s*,\s*/).map((token) => map[token] || token)
   },
 })
 
@@ -33,3 +32,8 @@ defineParameterType({
   transformer: (value: string) => value,
 })
 
+defineParameterType({
+  name: "addressType",
+  regexp: new RegExp(addressTypes.join("|")),
+  transformer: (value: string) => value as AddressType,
+})

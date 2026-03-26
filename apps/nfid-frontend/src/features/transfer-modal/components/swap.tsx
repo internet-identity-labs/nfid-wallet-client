@@ -27,7 +27,6 @@ import {
   TokensAvailableToSwap,
 } from "frontend/integration/ft/ft-service"
 import { swapService } from "frontend/integration/swap/service/swap-service"
-import { userPrefService } from "frontend/integration/user-preferences/user-pref-service"
 
 import { FormValues } from "../types"
 import {
@@ -38,6 +37,7 @@ import {
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { FeeResponse } from "frontend/integration/ft/utils"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { useUserPrefs } from "frontend/hooks/user-prefs"
 
 const QUOTE_REFETCH_TIMER = 30
 
@@ -48,7 +48,6 @@ interface ISwapFT {
   onError: (value: boolean) => void
   setErrorMessage: (message: string) => void
   setSuccessMessage: (message: string) => void
-  hideZeroBalance: boolean
 }
 
 export const SwapFT = ({
@@ -56,7 +55,6 @@ export const SwapFT = ({
   preselectedTargetTokenAddress,
   onClose,
   onError,
-  hideZeroBalance,
   setErrorMessage,
   setSuccessMessage,
 }: ISwapFT) => {
@@ -80,7 +78,7 @@ export const SwapFT = ({
     string | undefined
   >()
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
-  const [slippage, setSlippage] = useState(2)
+  const { slippage, setSlippage, hideZeroBalance } = useUserPrefs()
   const [providerError, setProviderError] = useState<
     ServiceUnavailableError | undefined
   >()
@@ -178,12 +176,6 @@ export const SwapFT = ({
       to: "",
     },
   })
-
-  useEffect(() => {
-    userPrefService.getUserPreferences().then((userPref) => {
-      setSlippage(userPref.getSlippage())
-    })
-  }, [])
 
   useEffect(() => {
     onError(Boolean(swapError))
@@ -401,12 +393,7 @@ export const SwapFT = ({
         onClose={onClose}
         quoteTimer={quoteTimer}
         slippage={slippage}
-        setSlippage={(value) => {
-          setSlippage(value)
-          userPrefService.getUserPreferences().then((userPref) => {
-            userPref.setSlippage(value)
-          })
-        }}
+        setSlippage={setSlippage}
         swapProviders={swapProviders}
         shroff={shroff}
         setProvider={setShroff}

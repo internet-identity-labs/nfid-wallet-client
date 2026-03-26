@@ -59,6 +59,7 @@ import {
   EvmNoteKey,
   IcpNoteKey,
 } from "frontend/integration/note/note-key"
+import { useUserPrefs } from "frontend/hooks/user-prefs"
 
 const DEFAULT_TRANSFER_ERROR = "Something went wrong"
 
@@ -72,7 +73,6 @@ interface ITransferFT {
   isVault: boolean
   preselectedAccountAddress: string
   onClose: () => void
-  hideZeroBalance: boolean
   setErrorMessage: (message: string) => void
   setSuccessMessage: (message: string) => void
   onError: (value: boolean) => void
@@ -83,7 +83,6 @@ export const TransferFT = ({
   preselectedToken = DEFAULT_SELECTED_TOKEN,
   preselectedAccountAddress = "",
   onClose,
-  hideZeroBalance,
   setErrorMessage,
   setSuccessMessage,
   onError,
@@ -103,6 +102,7 @@ export const TransferFT = ({
   const [fee, setFee] = useState<FeeResponse | undefined>()
   const [isFeeLoading, setIsFeeLoading] = useState(false)
   const skipFeeCalculation = useRef(false)
+  const { hideZeroBalance } = useUserPrefs()
 
   const triggerSkipCaclulation = useCallback(() => {
     skipFeeCalculation.current = true

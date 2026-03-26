@@ -3,8 +3,7 @@ import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { Balance } from "packages/ui/src/organisms/profile-info/balance"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import { ScanTokens } from "packages/ui/src/organisms/tokens/components/scan-tokens"
-import { useContext, useEffect, useMemo, useState } from "react"
-import { userPrefService } from "src/integration/user-preferences/user-pref-service"
+import { useContext, useEffect, useMemo } from "react"
 import useSWR from "swr"
 
 import { Skeleton } from "@nfid-frontend/ui"
@@ -27,13 +26,21 @@ import { ModalType, SelectedToken } from "../transfer-modal/types"
 import { fetchTokens } from "./utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { useUserPrefs } from "frontend/hooks/user-prefs"
 
 const TokensPage = () => {
-  const [hideZeroBalance, setHideZeroBalance] = useState(false)
-  const [testnetEnabled, setTestnetEnabled] = useState(false)
-  const [arbitrumEnabled, setArbitrumEnabled] = useState(false)
-  const [baseEnabled, setBaseEnabled] = useState(false)
-  const [polygonEnabled, setPolygontEnabled] = useState(false)
+  const {
+    hideZeroBalance,
+    testnetEnabled,
+    arbitrumEnabled,
+    baseEnabled,
+    polygonEnabled,
+    setHideZeroBalance,
+    setTestnetEnabled,
+    setArbitrumEnabled,
+    setBaseEnabled,
+    setPolygonEnabled,
+  } = useUserPrefs()
   const {
     transferService,
     isViewOnlyMode,
@@ -128,12 +135,7 @@ const TokensPage = () => {
       },
     )
 
-  const { initedTokens, isLoading: isTokensLoading } = useTokensInit(tokens, {
-    testnetEnabled,
-    arbitrumEnabled,
-    baseEnabled,
-    polygonEnabled,
-  })
+  const { initedTokens, isLoading: isTokensLoading } = useTokensInit(tokens)
 
   const tokensOwnedQuantity = useMemo(() => {
     return initedTokens?.filter(
@@ -169,58 +171,11 @@ const TokensPage = () => {
     refetchFtUsdBalance()
   }, [initedTokens, refetchFtUsdBalance])
 
-  useEffect(() => {
-    if (isViewOnlyMode) {
-      setHideZeroBalance(true)
-      setTestnetEnabled(false)
-      setArbitrumEnabled(true)
-      setBaseEnabled(true)
-      setPolygontEnabled(true)
-      return
-    }
-    userPrefService.getUserPreferences().then((userPref) => {
-      setHideZeroBalance(userPref.isHideZeroBalance())
-      setTestnetEnabled(userPref.isTestnetEnabled())
-      setArbitrumEnabled(userPref.isArbitrumEnabled())
-      setBaseEnabled(userPref.isBaseEnabled())
-      setPolygontEnabled(userPref.isPolygonEnabled())
-    })
-  }, [isViewOnlyMode])
-
-  const onZeroBalanceToggle = () => {
-    userPrefService.getUserPreferences().then((userPref) => {
-      userPref.setHideZeroBalance(!hideZeroBalance)
-      setHideZeroBalance(!hideZeroBalance)
-    })
-  }
-
-  const onTestnetToggle = () => {
-    userPrefService.getUserPreferences().then((userPref) => {
-      userPref.setTestnetEnabled(!testnetEnabled)
-      setTestnetEnabled(!testnetEnabled)
-    })
-  }
-
-  const onArbitrumToggle = () => {
-    userPrefService.getUserPreferences().then((userPref) => {
-      userPref.setArbitrumEnabled(!arbitrumEnabled)
-      setArbitrumEnabled(!arbitrumEnabled)
-    })
-  }
-
-  const onBaseToggle = () => {
-    userPrefService.getUserPreferences().then((userPref) => {
-      userPref.setBaseEnabled(!baseEnabled)
-      setBaseEnabled(!baseEnabled)
-    })
-  }
-
-  const onPolygonToggle = () => {
-    userPrefService.getUserPreferences().then((userPref) => {
-      userPref.setPolygonEnabled(!polygonEnabled)
-      setPolygontEnabled(!polygonEnabled)
-    })
-  }
+  const onZeroBalanceToggle = () => setHideZeroBalance(!hideZeroBalance)
+  const onTestnetToggle = () => setTestnetEnabled(!testnetEnabled)
+  const onArbitrumToggle = () => setArbitrumEnabled(!arbitrumEnabled)
+  const onBaseToggle = () => setBaseEnabled(!baseEnabled)
+  const onPolygonToggle = () => setPolygonEnabled(!polygonEnabled)
 
   const onSubmitIcrc1Pair = async (ledgerID: string, indexID: string) => {
     const icrc1Pair = new Icrc1Pair(

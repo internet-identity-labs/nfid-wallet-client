@@ -12,6 +12,7 @@ import { RPCComponent, RPCComponentsUI } from "./components/methods/method"
 import { RPCTemplate } from "./components/templates/template"
 import "./index.css"
 import { IdentityKitRPCMachine } from "./machine"
+import { debugWarn } from "frontend/utils/nfid-debug"
 
 const LOADING_MESSAGES = [
   "Fetching your crypto coordinates...",
@@ -32,6 +33,24 @@ export default function IdentityKitRPCCoordinator() {
   useEffect(() => {
     setIsFirstRender(false)
   }, [state])
+
+  useEffect(() => {
+    const authActor =
+      (state.children["AuthenticationMachine"] as
+        | AuthenticationMachineActor
+        | undefined) ??
+      (state.children[
+        "IdentityKitRPCMachine.Main.Authentication.Authenticate:invocation[0]"
+      ] as AuthenticationMachineActor | undefined)
+
+    debugWarn("[IdentityKitRPCCoordinator] state", {
+      matchesAuthenticate: !!state.matches("Main.Authentication.Authenticate"),
+      hasAuthActor: !!authActor,
+      activeRequestMethod: context?.activeRequest?.data?.method,
+      activeRequestOrigin: context?.activeRequest?.origin,
+      stateValue: state.value,
+    })
+  }, [context?.activeRequest?.origin, context?.activeRequest?.data, state])
 
   const isApproveRequestInProgress =
     context?.activeRequest?.data.method === "icrc49_call_canister"
@@ -56,6 +75,14 @@ export default function IdentityKitRPCCoordinator() {
             "IdentityKitRPCMachine.Main.Authentication.Authenticate:invocation[0]"
           ] as AuthenticationMachineActor | undefined)
         if (!authActor) {
+          debugWarn(
+            "[IdentityKitRPCCoordinator] Missing authActor for Authenticate",
+            {
+              stateValue: state.value,
+              activeRequestMethod: context?.activeRequest?.data?.method,
+              activeRequestOrigin: context?.activeRequest?.origin,
+            },
+          )
           return (
             <BlurredLoader
               isLoading

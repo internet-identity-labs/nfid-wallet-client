@@ -16,6 +16,7 @@ import {
   validateRequest,
 } from "./service/method/method.service"
 import { IdentityKitRPCMachineContext, RPCErrorResponse } from "./type"
+import { debugWarn } from "frontend/utils/nfid-debug"
 
 const machineConfig = {
   id: "IdentityKitRPCMachine",
@@ -388,6 +389,38 @@ const machineServices = {
       const request = context.activeRequest
       const parent = window.opener || window.parent
       const payload = event.output ?? event.data
+
+      const payloadPreview = (() => {
+        if (payload == null) return payload
+        if (payload instanceof Error || payload instanceof GenericError) {
+          return { name: (payload as Error).name, message: payload.message }
+        }
+        if (typeof payload === "object") {
+          const asObj = payload as Record<string, unknown>
+          return {
+            keys: Object.keys(asObj).slice(0, 20),
+            hasAuthSession: "authSession" in asObj,
+            hasJsonrpc: "jsonrpc" in asObj,
+            hasId: "id" in asObj,
+            hasError: "error" in asObj,
+            hasResult: "result" in asObj,
+          }
+        }
+        return payload
+      })()
+
+      debugWarn("[IdentityKitRPCMachine] sendResponse", {
+        requestMethod: context.activeRequest?.data?.method,
+        requestOrigin: context.activeRequest?.origin,
+        requestId: context.activeRequest?.data?.id,
+        usedOutput: event.output != null,
+        usedData: event.data != null,
+        payloadType: payload && typeof payload,
+        payloadIsError:
+          payload instanceof Error || payload instanceof GenericError,
+        payloadPreview,
+        hasParent: !!parent,
+      })
 
       if (!request) return
 

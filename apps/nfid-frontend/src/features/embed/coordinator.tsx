@@ -1,6 +1,6 @@
 import { useMachine } from "@xstate/react"
 import { ModalComponent } from "@nfid-frontend/ui"
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 
 import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
 
@@ -9,9 +9,28 @@ import { AuthenticationMachineActor } from "../authentication/root/root-machine"
 import { NFIDEmbedMachineV2 } from "./machine-v2"
 import { ProcedureApprovalCoordinator } from "./procedure-approval-coordinator"
 import { PageError } from "./ui/error"
+import { debugWarn } from "frontend/utils/nfid-debug"
 
 export default function NFIDEmbedCoordinator() {
   const [state, send] = useMachine(NFIDEmbedMachineV2)
+
+  useEffect(() => {
+    const authActor =
+      (state.children["AuthenticationMachine"] as
+        | AuthenticationMachineActor
+        | undefined) ??
+      (state.children["NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"] as
+        | AuthenticationMachineActor
+        | undefined)
+
+    debugWarn("[NFIDEmbedCoordinator] state", {
+      stateValue: state.value,
+      matchesAuthAuthenticate: state.matches("AUTH.Authenticate"),
+      hasAuthActor: !!authActor,
+      rpcMessageMethod: state.context.rpcMessage?.method,
+      authSessionPresent: !!state.context.authSession,
+    })
+  }, [send, state])
 
   const Component = useMemo(() => {
     switch (true) {
@@ -37,6 +56,15 @@ export default function NFIDEmbedCoordinator() {
             "NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
           ] as AuthenticationMachineActor | undefined)
         if (!authActor) {
+          debugWarn(
+            "[NFIDEmbedCoordinator] Missing authActor for AUTH.Authenticate",
+            {
+              stateValue: state.value,
+              rpcMethod: state.context.rpcMessage?.method,
+              rpcOrigin: state.context.rpcMessage?.origin,
+              authSessionPresent: !!state.context.authSession,
+            },
+          )
           return (
             <BlurredLoader
               isLoading

@@ -12,6 +12,7 @@ import { Application, authState, Chain } from "@nfid/integration"
 
 import { AuthSession } from "frontend/state/authentication"
 import { AuthorizingAppMeta } from "frontend/state/authorization"
+import { debugWarn } from "frontend/utils/nfid-debug"
 
 import { ApproveIcGetDelegationSdkResponse } from "../authentication/3rd-party/choose-account/types"
 import AuthenticationMachine, {
@@ -81,14 +82,14 @@ const sessionExpiryLogic = fromCallback(({ sendBack }) => {
   const timeoutIn = expiresIn * 0.8
   const now = Date.now()
 
-  console.debug("NFIDEmbedMachineV2 delegation expires at", {
+  debugWarn("NFIDEmbedMachineV2 delegation expires at", {
     expiresAt: new Date(now + expiresIn),
     timeoutAt: new Date(now + timeoutIn),
   })
 
   const timeout = setTimeout(
     () => {
-      console.debug("NFIDEmbedMachineV2 delegation expired")
+      debugWarn("NFIDEmbedMachineV2 delegation expired")
       sendBack({ type: "SESSION_EXPIRED" })
     },
     timeoutIn > ONE_DAY_IN_MS ? ONE_DAY_IN_MS : timeoutIn,
@@ -284,7 +285,6 @@ export const NFIDEmbedMachineV2 = createMachine(
         }
       }),
       assignAuthSession: assign(({ event }) => {
-        console.debug("assignAuthSession", { event })
         const out = (
           event as unknown as {
             output: AuthenticationContext | { authSession: AuthSession }
@@ -292,6 +292,16 @@ export const NFIDEmbedMachineV2 = createMachine(
         ).output
         const authSession =
           out && "authSession" in out ? out.authSession : undefined
+
+        debugWarn("[NFIDEmbedMachineV2] assignAuthSession", {
+          hasOutput: !!out,
+          authSessionPresent: !!authSession,
+          // Avoid logging the whole session object; it can be large.
+          authSessionKeys: authSession
+            ? Object.keys(authSession as Record<string, unknown>)
+            : [],
+        })
+
         return {
           authSession: authSession as AuthSession | undefined,
         }
@@ -309,18 +319,14 @@ export const NFIDEmbedMachineV2 = createMachine(
         const requesterDomain = window.location.ancestorOrigins
           ? window.location.ancestorOrigins[0]
           : window.document.referrer
-        console.debug("nfid_ready", {
-          origin: requesterDomain,
-        })
+        debugWarn("nfid_ready", { origin: requesterDomain })
         window.parent.postMessage({ type: "nfid_ready" }, requesterDomain)
       },
       nfid_authenticated: () => {
         const requesterDomain = window.location.ancestorOrigins
           ? window.location.ancestorOrigins[0]
           : window.document.referrer
-        console.debug("nfid_authenticated", {
-          origin: requesterDomain,
-        })
+        debugWarn("nfid_authenticated", { origin: requesterDomain })
         window.parent.postMessage(
           { type: "nfid_authenticated" },
           requesterDomain,
@@ -330,8 +336,7 @@ export const NFIDEmbedMachineV2 = createMachine(
         const { rpcMessage } = context
         if (!rpcMessage?.origin)
           throw new Error("nfid_unauthenticated: missing requestOrigin")
-
-        console.debug("nfid_authenticated")
+        debugWarn("nfid_unauthenticated", { origin: rpcMessage.origin })
         window.parent.postMessage(
           { type: "nfid_unauthenticated" },
           rpcMessage.origin,
@@ -346,8 +351,13 @@ export const NFIDEmbedMachineV2 = createMachine(
         const { origin, ...rpcMessage } = data as RPCResponse & {
           origin: string
         }
-
-        console.debug("sendRPCResponse", { rpcMessage })
+        debugWarn("[NFIDEmbedMachineV2] sendRPCResponse", {
+          origin,
+          rpcMessageId: (rpcMessage as RPCResponse).id,
+          rpcMessageError: (rpcMessage as RPCResponse).error,
+          rpcMessageHasResult: !!(rpcMessage as RPCResponse).result,
+          rpcMessageKeys: Object.keys(rpcMessage as Record<string, unknown>),
+        })
         window.parent.postMessage(rpcMessage, origin)
       },
       sendRPCCancelResponse: ({ context }) => {
@@ -374,9 +384,9 @@ export const NFIDEmbedMachineV2 = createMachine(
         const isAuthoApprovable = ["ic_renewDelegation"].includes(
           context.rpcMessage?.method ?? "",
         )
-        console.debug("NFIDEmbedMachineV2", {
+        debugWarn("NFIDEmbedMachineV2 isAutoApprovable", {
           isAuthoApprovable,
-          context,
+          method: context.rpcMessage?.method,
         })
         return ["ic_renewDelegation"].includes(context.rpcMessage?.method ?? "")
       },

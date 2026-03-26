@@ -1,14 +1,11 @@
-import { useMachine } from "@xstate/react"
 import { useCallback, useEffect, useState } from "react"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
 import { SignClientTypes } from "@walletconnect/types"
 
-import AuthenticationCoordinator from "../authentication/root/coordinator"
-import { AuthenticationMachineActor } from "../authentication/root/root-machine"
-import NFIDAuthMachine from "../authentication/nfid/nfid-machine"
 import { walletConnectService } from "frontend/integration/walletconnect"
 import { WalletConnectApproveConnection } from "./components/approve-connection"
+import { WalletConnectAuthenticationScreen } from "./components/authentication-screen"
 import { WalletConnectSignMessage } from "./components/sign-message"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
@@ -16,27 +13,6 @@ import { InfuraProvider } from "ethers"
 import { INFURA_API_KEY } from "@nfid/integration/token/constants"
 import { WalletConnectTemplate } from "./components/template"
 import { WCGasData } from "./types"
-
-function WalletConnectAuthenticationScreen() {
-  const [authState] = useMachine(NFIDAuthMachine)
-
-  if (authState.matches("AuthenticationMachine")) {
-    return (
-      <AuthenticationCoordinator
-        isIdentityKit
-        actor={
-          authState.children
-            ?.AuthenticationMachine as AuthenticationMachineActor
-        }
-        loader={<BlurredLoader isLoading loadingMessage="Authenticating..." />}
-      />
-    )
-  }
-
-  return (
-    <BlurredLoader isLoading loadingMessage="Initializing authentication..." />
-  )
-}
 
 export default function WalletConnectCoordinator() {
   const [uri, setUri] = useState<string | null>(null)

@@ -29,9 +29,13 @@ export default function NFIDEmbedCoordinator() {
         )
 
       case state.matches("AUTH.Authenticate"):
-        const authActor = state.children[
-          "NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
-        ] as AuthenticationMachineActor | undefined
+        const authActor =
+          (state.children["AuthenticationMachine"] as
+            | AuthenticationMachineActor
+            | undefined) ??
+          (state.children[
+            "NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
+          ] as AuthenticationMachineActor | undefined)
         if (!authActor) {
           return (
             <BlurredLoader

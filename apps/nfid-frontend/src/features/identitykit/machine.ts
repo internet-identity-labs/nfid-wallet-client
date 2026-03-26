@@ -103,6 +103,7 @@ const machineConfig = {
             Authenticate: {
               invoke: {
                 src: "AuthenticationMachine",
+                id: "AuthenticationMachine",
                 input: ({
                   context,
                 }: {

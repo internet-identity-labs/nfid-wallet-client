@@ -156,6 +156,7 @@ export const NFIDEmbedMachineV2 = createMachine(
           Authenticate: {
             invoke: {
               src: "AuthenticationMachine",
+              id: "AuthenticationMachine",
               input: ({ context: ctx }) => ctx as AuthenticationContext,
               onDone: [
                 {

@@ -48,14 +48,21 @@ export default function IdentityKitRPCCoordinator() {
 
     switch (true) {
       case state.matches("Main.Authentication.Authenticate"):
+        const authActor = state.children[
+          "IdentityKitRPCMachine.Main.Authentication.Authenticate:invocation[0]"
+        ] as AuthenticationMachineActor | undefined
+        if (!authActor) {
+          return (
+            <BlurredLoader
+              isLoading
+              loadingMessage={getRandomLoadingMessage()}
+            />
+          )
+        }
         return (
           <AuthenticationCoordinator
             isIdentityKit
-            actor={
-              state.children[
-                "IdentityKitRPCMachine.Main.Authentication.Authenticate:invocation[0]"
-              ] as AuthenticationMachineActor
-            }
+            actor={authActor}
             loader={
               <BlurredLoader
                 isLoading

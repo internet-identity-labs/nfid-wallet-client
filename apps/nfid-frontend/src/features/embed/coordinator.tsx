@@ -29,16 +29,18 @@ export default function NFIDEmbedCoordinator() {
         )
 
       case state.matches("AUTH.Authenticate"):
-        return (
-          <AuthenticationCoordinator
-            isEmbed
-            actor={
-              state.children[
-                "NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
-              ] as AuthenticationMachineActor
-            }
-          />
-        )
+        const authActor = state.children[
+          "NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
+        ] as AuthenticationMachineActor | undefined
+        if (!authActor) {
+          return (
+            <BlurredLoader
+              isLoading
+              loadingMessage="Preparing authentication..."
+            />
+          )
+        }
+        return <AuthenticationCoordinator isEmbed actor={authActor} />
       case state.matches("HANDLE_PROCEDURE.AWAIT_PROCEDURE_APPROVAL"):
         if (!state.context.rpcMessage) throw new Error("missing rpcMessage")
         if (!state.context.authSession) throw new Error("missing authSession")

@@ -151,7 +151,7 @@ function resolveIpfsUrl(url: string | undefined): string | undefined {
   return url
 }
 
-const EVM_NFTS_CACHE_TTL = 30 * 1000
+const EVM_NFTS_CACHE_TTL = 2 * 60 * 1000
 export const EVM_NFTS_CACHE_NAME = "EVM_NFTS_"
 export const EVM_BALANCE_CACHE_NAME = "EVM_BALANCE_"
 

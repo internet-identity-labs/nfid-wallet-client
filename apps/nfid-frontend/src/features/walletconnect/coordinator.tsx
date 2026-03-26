@@ -1,14 +1,11 @@
-import { useMachine } from "@xstate/react"
 import { useCallback, useEffect, useState } from "react"
 
 import { BlurredLoader } from "@nfid-frontend/ui"
 import { SignClientTypes } from "@walletconnect/types"
 
-import AuthenticationCoordinator from "../authentication/root/coordinator"
-import { AuthenticationMachineActor } from "../authentication/root/root-machine"
-import NFIDAuthMachine from "../authentication/nfid/nfid-machine"
 import { walletConnectService } from "frontend/integration/walletconnect"
 import { WalletConnectApproveConnection } from "./components/approve-connection"
+import { WalletConnectAuthenticationScreen } from "./components/authentication-screen"
 import { WalletConnectSignMessage } from "./components/sign-message"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
@@ -30,7 +27,6 @@ export default function WalletConnectCoordinator() {
   const [isConnecting, setIsConnecting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [ethAddress, setEthAddress] = useState<string | null>(null)
-  const [authState] = useMachine(NFIDAuthMachine)
   const [fee, setFee] = useState<WCGasData | undefined>()
 
   // Parse URL parameters - can be either URI for new connection or requestId/sessionTopic for signing
@@ -40,7 +36,7 @@ export default function WalletConnectCoordinator() {
     const requestIdParam = urlParams.get("requestId")
     const sessionTopicParam = urlParams.get("sessionTopic")
 
-    if (uriParam && uriParam.startsWith("wc:")) {
+    if (uriParam?.startsWith("wc:")) {
       // New connection request
       setUri(uriParam)
     } else if (requestIdParam && sessionTopicParam) {
@@ -61,7 +57,7 @@ export default function WalletConnectCoordinator() {
   }, [])
 
   // Check authentication status
-  const { isAuthenticated } = useAuthentication()
+  const { isAuthenticated, cacheLoaded } = useAuthentication()
   // Load Ethereum address when authenticated
   useEffect(() => {
     if (isAuthenticated && !ethAddress) {
@@ -132,6 +128,13 @@ export default function WalletConnectCoordinator() {
           console.log(
             "WalletConnectCoordinator: Request found in pending requests",
             { requestId, sessionTopic },
+          )
+          return
+        }
+
+        if (!walletConnectService.hasSession(sessionTopic)) {
+          setError(
+            "WalletConnect session expired. Please reconnect the wallet in your dApp and try again.",
           )
         }
       } catch (err) {
@@ -504,36 +507,25 @@ export default function WalletConnectCoordinator() {
     )
   }
 
-  // 5. Authentication screen if not authenticated
-  if (!isAuthenticated) {
-    if (authState.matches("AuthenticationMachine")) {
-      return (
-        <WalletConnectTemplate isApproveRequestInProgress={false}>
-          <AuthenticationCoordinator
-            isIdentityKit
-            actor={
-              authState.children
-                .AuthenticationMachine as AuthenticationMachineActor
-            }
-            loader={
-              <BlurredLoader isLoading loadingMessage="Authenticating..." />
-            }
-          />
-        </WalletConnectTemplate>
-      )
-    }
-
+  // 5. Wait until auth cache is loaded
+  if (!cacheLoaded) {
     return (
       <WalletConnectTemplate isApproveRequestInProgress={false}>
-        <BlurredLoader
-          isLoading
-          loadingMessage="Initializing authentication..."
-        />
+        <BlurredLoader isLoading loadingMessage="Initializing..." />
       </WalletConnectTemplate>
     )
   }
 
-  // 6. Loading state screen
+  // 6. Authentication screen if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <WalletConnectTemplate isApproveRequestInProgress={false}>
+        <WalletConnectAuthenticationScreen />
+      </WalletConnectTemplate>
+    )
+  }
+
+  // 7. Loading state screen
   return (
     <WalletConnectTemplate isApproveRequestInProgress={false}>
       <BlurredLoader isLoading loadingMessage="Initializing..." />

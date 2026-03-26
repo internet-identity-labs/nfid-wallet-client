@@ -26,17 +26,26 @@ function getRandomLoadingMessage() {
 
 export default function IdentityKitRPCCoordinator() {
   const [state, send] = useMachine(IdentityKitRPCMachine)
-  console.debug("IdentityKitRPCCoordinator", { state })
-  const isApproveRequestInProgress =
-    state.context.activeRequest?.data.method === "icrc49_call_canister"
-
+  const context = state?.context
   const [isFirstRender, setIsFirstRender] = useState(true)
 
   useEffect(() => {
     setIsFirstRender(false)
   }, [state])
 
-  const Component = useMemo(() => {
+  const isApproveRequestInProgress =
+    context?.activeRequest?.data.method === "icrc49_call_canister"
+
+  const component = useMemo(() => {
+    if (!context) {
+      return (
+        <BlurredLoader
+          isLoading={true}
+          loadingMessage="Initializing secure RPC channel..."
+        />
+      )
+    }
+
     switch (true) {
       case state.matches("Main.Authentication.Authenticate"):
         return (
@@ -64,8 +73,7 @@ export default function IdentityKitRPCCoordinator() {
               ) as RPCComponentsUI
             }
             props={{
-              onApprove: (data: any) =>
-                send({ type: "ON_APPROVE", data: data }),
+              onApprove: (data: unknown) => send({ type: "ON_APPROVE", data }),
               onReject: () => send({ type: "ON_CANCEL" }),
               onBack: async () => {
                 await authState.logout(false)
@@ -92,9 +100,9 @@ export default function IdentityKitRPCCoordinator() {
           <BlurredLoader isLoading loadingMessage={getRandomLoadingMessage()} />
         )
     }
-  }, [send, state])
+  }, [context, send, state])
 
-  if (!state.context.activeRequestMetadata && isFirstRender)
+  if (!context || (!context.activeRequestMetadata && isFirstRender))
     return (
       <BlurredLoader
         isLoading={true}
@@ -107,7 +115,7 @@ export default function IdentityKitRPCCoordinator() {
       <Helmet>
         <meta name="theme-color" content="#043E36" />
       </Helmet>
-      {Component}
+      {component}
     </RPCTemplate>
   )
 }

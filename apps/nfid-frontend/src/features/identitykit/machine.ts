@@ -19,7 +19,6 @@ import { IdentityKitRPCMachineContext, RPCErrorResponse } from "./type"
 
 const machineConfig = {
   id: "IdentityKitRPCMachine",
-  initial: "Initializing",
   context: {
     requestsQueue: [],
     activeRequest: undefined,

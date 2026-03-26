@@ -86,17 +86,17 @@ Then(
 
     await softAssertAll(
       async () => {
-        expect(
-          currentAddress.firstAddressPart.getText() +
+        await expect(
+          (await currentAddress.firstAddressPart.getText()) +
             "..." +
-            currentAddress.secondAddressPart.getText(),
+            (await currentAddress.secondAddressPart.getText()),
         ).toEqual(account)
       },
       async () => {
-        expect(
-          currentPrincipal.firstAddressPart.getText() +
+        await expect(
+          (await currentPrincipal.firstAddressPart.getText()) +
             "..." +
-            currentPrincipal.secondAddressPart.getText(),
+            (await currentPrincipal.secondAddressPart.getText()),
         ).toEqual(principal)
       },
     )
@@ -115,7 +115,7 @@ Then(
   /^There is a contact with name "([^"]+)" and address ([^"]+)$/,
   async (name: string, address: string) => {
     const formatedShortAddress = `${address.slice(0, 6)}...${address.slice(-4)}`
-    expect(
+    await expect(
       (
         await Assets.addressBookItemInSend(name, formatedShortAddress)
       ).isDisplayed(),

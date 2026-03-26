@@ -1,8 +1,8 @@
 import { Then, When } from "@cucumber/cucumber"
 import "../helpers/parameterTypes"
 import AddressBook, {
-  addressTypes,
   type AddressType,
+  addressTypes,
 } from "../pages/addressBook"
 
 const isAddressType = (value: string): value is AddressType =>
@@ -37,9 +37,13 @@ Then(
       throw new Error(`Unsupported address type: ${addressType}`)
     }
 
-    await (await AddressBook.addressRowByName(name)).isDisplayed()
-    await (
-      await AddressBook.addressRowByAddress(address, addressType)
-    ).isDisplayed()
+    await expect(
+      await (await AddressBook.addressRowByName(name)).isDisplayed(),
+    ).toBeTruthy()
+    await expect(
+      await (
+        await AddressBook.addressRowByAddress(address, addressType)
+      ).isDisplayed(),
+    ).toBeTruthy()
   },
 )

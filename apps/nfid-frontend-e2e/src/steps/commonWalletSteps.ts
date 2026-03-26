@@ -6,7 +6,6 @@ import HomePage from "../pages/home-page.js"
 import Nft from "../pages/nft.js"
 import Profile from "../pages/profile.js"
 import Staking from "../pages/staking.js"
-import AddressBook from "../pages/addressBook"
 import Page from "../pages/page"
 
 type TabConfig = Parameters<typeof Assets.waitUntilElementsLoadedProperly>

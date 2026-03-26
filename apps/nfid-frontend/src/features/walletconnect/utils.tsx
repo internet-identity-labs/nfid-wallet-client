@@ -11,6 +11,14 @@ import { formatUsdAmount } from "frontend/util/format-usd-amount"
 import BigNumber from "bignumber.js"
 import { AbiCoder } from "ethers"
 
+const SUPPORTED_CHAINS = new Set([
+  "eip155:1",
+  "eip155:137",
+  "eip155:56",
+  "eip155:8453",
+  "eip155:42161",
+])
+
 export const formatValue = (value?: string, chainId?: ChainId): string => {
   const gasTokenSymbol = getEvmGasTokenSymbol(chainId || ChainId.ETH)
   if (!value || value === "0x" || value === "0x0" || value === "0") {
@@ -125,7 +133,6 @@ export function getNetworkName(chainId: string): string {
   const chainIdMap: Record<string, string> = {
     "eip155:1": "Ethereum",
     "eip155:137": "Polygon",
-    "eip155:56": "BNB Smart Chain",
     "eip155:8453": "Base",
     "eip155:42161": "Arbitrum",
     "eip155:11155111": "Sepolia",
@@ -134,11 +141,14 @@ export function getNetworkName(chainId: string): string {
   return chainIdMap[chainId] || chainId
 }
 
+export function getAvailableChains(chains: string[]): string[] {
+  return chains.filter((chain) => SUPPORTED_CHAINS.has(chain))
+}
+
 export function getNetworkId(chainId: string): ChainId {
   const chainIdMap: Record<string, ChainId> = {
     "eip155:1": ChainId.ETH,
     "eip155:137": ChainId.POL,
-    "eip155:56": ChainId.BNB,
     "eip155:8453": ChainId.BASE,
     "eip155:42161": ChainId.ARB,
   }

@@ -28,6 +28,7 @@ import {
   CKETH_LEDGER_CANISTER_ID,
   ICP_CANISTER_ID,
   EVM_NATIVE,
+  CKSEPOLIA_LEDGER_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 import { mutate, mutateWithTimestamp } from "@nfid/swr"
@@ -364,6 +365,9 @@ export const getConversionTokenAddress = (source: string): string => {
 
   if (source === ETH_NATIVE_ID) return CKETH_LEDGER_CANISTER_ID
   if (source === CKETH_LEDGER_CANISTER_ID) return ETH_NATIVE_ID
+
+  if (source === EVM_NATIVE) return CKSEPOLIA_LEDGER_CANISTER_ID
+  if (source === CKSEPOLIA_LEDGER_CANISTER_ID) return EVM_NATIVE
 
   return CKBTC_CANISTER_ID
 }

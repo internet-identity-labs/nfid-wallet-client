@@ -13,23 +13,13 @@ import {
   ChainId,
   State,
 } from "@nfid/integration/token/icrc1/enum/enums"
-import { useContext, useEffect, useMemo, useRef, useState } from "react"
+import { useContext, useEffect, useMemo, useRef } from "react"
 import { useActor } from "@xstate/react"
 import { ProfileContext } from "frontend/provider"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
-import { userPrefService } from "src/integration/user-preferences/user-pref-service"
+import { useUserPrefs } from "frontend/hooks/user-prefs"
 
-interface ChainPrefs {
-  testnetEnabled?: boolean
-  arbitrumEnabled?: boolean
-  baseEnabled?: boolean
-  polygonEnabled?: boolean
-}
-
-export const useTokensInit = (
-  tokens: FT[] | undefined,
-  chainPrefs?: ChainPrefs,
-) => {
+export const useTokensInit = (tokens: FT[] | undefined) => {
   const { isEthAddressLoading } = useEthAddress()
   const { isBtcAddressLoading } = useBtcAddress()
   const {
@@ -39,25 +29,8 @@ export const useTokensInit = (
     transferService,
   } = useContext(ProfileContext)
   const isMounted = useRef(false)
-  const [enabledTestnet, setEnabledTestnet] = useState(false)
-  const [enabledArbitrum, setEnabledArbitrum] = useState(true)
-  const [enabledBase, setEnabledBase] = useState(true)
-  const [enabledPolygon, setEnabledPolygon] = useState(true)
-
-  useEffect(() => {
-    if (isViewOnlyMode || chainPrefs !== undefined) return
-    userPrefService.getUserPreferences().then((prefs) => {
-      setEnabledTestnet(prefs.isTestnetEnabled())
-      setEnabledArbitrum(prefs.isArbitrumEnabled())
-      setEnabledBase(prefs.isBaseEnabled())
-      setEnabledPolygon(prefs.isPolygonEnabled())
-    })
-  }, [isViewOnlyMode, chainPrefs])
-
-  const testnetEnabled = chainPrefs?.testnetEnabled ?? enabledTestnet
-  const arbitrumEnabled = chainPrefs?.arbitrumEnabled ?? enabledArbitrum
-  const baseEnabled = chainPrefs?.baseEnabled ?? enabledBase
-  const polygonEnabled = chainPrefs?.polygonEnabled ?? enabledPolygon
+  const { testnetEnabled, arbitrumEnabled, baseEnabled, polygonEnabled } =
+    useUserPrefs()
 
   const activeTokens = useMemo(
     () =>
@@ -133,7 +106,7 @@ export const useTokensInit = (
   )
 
   useEffect(() => {
-    if (!isMounted.current || activeTokens) {
+    if (!isMounted.current || !activeTokens) {
       isMounted.current = true
       return
     }

@@ -25,6 +25,8 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   onConvertToCkBtc: () => void
   onConvertToEth: () => void
   onConvertToCkEth: () => void
+  onConvertToSepoliaEth: () => void
+  onConvertToCkSepoliaEth: () => void
   onStakeClick: (value: SelectedToken) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
@@ -46,6 +48,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   onConvertToCkBtc,
   onConvertToEth,
   onConvertToCkEth,
+  onConvertToSepoliaEth,
+  onConvertToCkSepoliaEth,
   onStakeClick,
   setToken,
   dropdownPosition,
@@ -89,6 +93,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           onConvertToCkEth={onConvertToCkEth}
           onConvertToEth={onConvertToEth}
           withActions={!isViewOnlyMode}
+          onConvertToSepoliaEth={onConvertToSepoliaEth}
+          onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
         />
       </td>
       <td
@@ -184,6 +190,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
             onConvertToCkBtc={onConvertToCkBtc}
             onConvertToEth={onConvertToEth}
             onConvertToCkEth={onConvertToCkEth}
+            onConvertToSepoliaEth={onConvertToSepoliaEth}
+            onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
             onStakeClick={onStakeClick}
             setToken={setToken}
             dropdownPosition={dropdownPosition}

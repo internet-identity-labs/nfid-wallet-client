@@ -28,9 +28,11 @@ export const CKETH_NETWORK_FEE = BigInt(2000000000000)
 // export const CHAIN_ID = BigInt(11155111)
 // export const CKETH_LEDGER_CANISTER_ID = "apia6-jaaaa-aaaar-qabma-cai"
 // export const ETH_EXPLORER = "https://sepolia.etherscan.io/tx"
-// export const MINTER_ADDRESS = "0x2D39863d30716aaf2B7fFFd85Dd03Dda2BFC2E38"
-// export const CKETH_MINTER_CANISTER_ID = "jzenf-aiaaa-aaaar-qaa7q-cai"
-// export const CKETH_NETWORK_FEE = BigInt(10000000000)
+export const CKSEPOLIA_LEDGER_CANISTER_ID = "apia6-jaaaa-aaaar-qabma-cai"
+export const SEPOLIA_MINTER_ADDRESS =
+  "0x2D39863d30716aaf2B7fFFd85Dd03Dda2BFC2E38"
+export const CKSEPOLIA_MINTER_CANISTER_ID = "jzenf-aiaaa-aaaar-qaa7q-cai"
+export const CKSEPOLIA_NETWORK_FEE = BigInt(10000000000)
 
 export const POLYGON_ADDRESS = "0x0000000000000000000000000000000000001010"
 export const ICP_ROOT_CANISTER_ID = "r7inp-6aaaa-aaaaa-aaabq-cai"

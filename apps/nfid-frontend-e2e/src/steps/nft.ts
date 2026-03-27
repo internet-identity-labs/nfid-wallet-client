@@ -65,8 +65,8 @@ Then(
   async (
     type: string,
     date: string,
-    to: string,
     _from: string,
+    to: string,
     price: string,
   ) => {
     await softAssertAll(

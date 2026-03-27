@@ -80,12 +80,6 @@ export class Page {
       },
     ])
   }
-
-  loginUsingIframe(
-    profileType?: string,
-    targets?: string,
-    derivation?: string,
-  ) {}
 }
 
 export default new Page()

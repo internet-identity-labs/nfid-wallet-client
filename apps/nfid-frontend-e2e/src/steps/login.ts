@@ -2,12 +2,10 @@ import { Given, When } from "@cucumber/cucumber"
 
 import userClient from "../helpers/accounts-service.js"
 import clearAuthState from "../helpers/clear-auth-state.js"
-import DemoAppPage from "../pages/demoApp/demoApp-page.js"
 import HomePage from "../pages/home-page.js"
 import Profile from "../pages/profile.js"
 
 const pages = {
-  DemoTransactions: DemoAppPage,
   HomePage: HomePage,
 }
 

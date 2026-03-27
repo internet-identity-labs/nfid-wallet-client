@@ -41,10 +41,6 @@ export class AddressBook extends Page {
     )
   }
 
-  async addressName(name: string) {
-    return (await this.addressRowByName(name)).$(`td[id*="_name"] p`)
-  }
-
   async optionsButtonByName(name: string) {
     return (await this.addressRowByName(name)).$(`td[id*="_options"] svg`)
   }

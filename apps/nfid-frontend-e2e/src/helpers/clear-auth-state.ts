@@ -1,3 +1,7 @@
+type WindowWithResetAuthState = Window & {
+  resetAuthState?: () => Promise<unknown>
+}
+
 export default async () => {
   const root = $("#root")
 
@@ -11,12 +15,14 @@ export default async () => {
     },
   )
 
-  const response = await browser.executeAsync(function (done) {
-    // @ts-ignore
-    if (typeof this.resetAuthState === "function") {
-      // @ts-ignore
-      return this.resetAuthState().then(done)
+  const response = await browser.execute(async function () {
+    const authWindow = window as WindowWithResetAuthState
+
+    if (typeof authWindow.resetAuthState === "function") {
+      return await authWindow.resetAuthState()
     }
+
+    return "resetAuthState function is not available"
   })
   console.warn("cleared auth state", { response })
 }

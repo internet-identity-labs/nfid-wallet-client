@@ -62,7 +62,13 @@ Then(
 
 Then(
   /^Verifying that the first raw has the next values: type ([^"]*), date ([^"]*), from ([^"]*), to ([^"]*), price ([^"]*) in activity section$/,
-  async (type: string, date: string, to: string, price: string) => {
+  async (
+    type: string,
+    date: string,
+    to: string,
+    _from: string,
+    price: string,
+  ) => {
     await softAssertAll(
       async () =>
         expect(await Nft.getValueFromColumnAtFirstRow("Event type")).toContain(

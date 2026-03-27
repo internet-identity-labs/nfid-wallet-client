@@ -311,6 +311,7 @@ export const AddressBook: FC<AddressBookProps> = ({
               Cancel
             </Button>
             <Button
+              id={"approveRemoving"}
               type="red"
               isSmall
               className="w-[100px] h-full"

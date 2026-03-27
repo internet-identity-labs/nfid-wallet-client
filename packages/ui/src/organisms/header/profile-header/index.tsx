@@ -85,19 +85,17 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
               onClick={() => setIsMenuVisible(!isMenuVisible)}
               walletTheme={walletTheme!}
             />
-            {isMenuVisible && (
-              <AuthenticatedPopup
-                onSignOut={logout}
-                anchor={anchor}
-                links={links}
-                assetsLink={assetsLink}
-                hasVaults={hasVaults}
-                profileConstants={profileConstants}
-                isOpen={isMenuVisible}
-                walletTheme={walletTheme!}
-                setWalletTheme={setWalletTheme!}
-              />
-            )}
+            <AuthenticatedPopup
+              onSignOut={logout}
+              anchor={anchor}
+              links={links}
+              assetsLink={assetsLink}
+              hasVaults={hasVaults}
+              profileConstants={profileConstants}
+              isOpen={isMenuVisible}
+              walletTheme={walletTheme!}
+              setWalletTheme={setWalletTheme!}
+            />
           </div>
         )}
       </div>

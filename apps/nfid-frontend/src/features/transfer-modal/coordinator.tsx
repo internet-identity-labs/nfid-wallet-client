@@ -10,7 +10,6 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 
 import { authState } from "@nfid/integration"
 
-import { userPrefService } from "frontend/integration/user-preferences/user-pref-service"
 import { ProfileContext } from "frontend/provider"
 
 import { ConvertBTC } from "./components/convert"
@@ -24,7 +23,6 @@ import { SwapFT } from "./components/swap"
 export const TransferModalCoordinator = () => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [successMessage, setSuccessMessage] = useState<string | undefined>()
-  const [hideZeroBalance, setHideZeroBalance] = useState(false)
   const globalServices = useContext(ProfileContext)
   const [state, send] = useActor(globalServices.transferService)
   const [hasSwapError, setHasSwapError] = useState(false)
@@ -40,12 +38,6 @@ export const TransferModalCoordinator = () => {
     send({ type: "HIDE" })
     setIsConvertSuccess(false)
   }, [send])
-
-  useEffect(() => {
-    userPrefService.getUserPreferences().then((userPref) => {
-      setHideZeroBalance(userPref.isHideZeroBalance())
-    })
-  }, [])
 
   useDisableScroll(!state.matches("Hidden"))
 
@@ -100,7 +92,6 @@ export const TransferModalCoordinator = () => {
               isVault={state.context.isOpenedFromVaults}
               preselectedAccountAddress={state.context.sourceWalletAddress}
               onClose={hideModal}
-              hideZeroBalance={hideZeroBalance}
               setErrorMessage={setErrorMessage}
               setSuccessMessage={setSuccessMessage}
               onError={setHasBtcError}
@@ -136,7 +127,6 @@ export const TransferModalCoordinator = () => {
               preselectedTargetTokenAddress={state.context.selectedTargetFT}
               onClose={hideModal}
               onError={setHasSwapError}
-              hideZeroBalance={hideZeroBalance}
               setErrorMessage={setErrorMessage}
               setSuccessMessage={setSuccessMessage}
             />
@@ -208,7 +198,7 @@ export const TransferModalCoordinator = () => {
         )}
       </>
     ),
-    [state, publicKey, hideZeroBalance, hideModal],
+    [state, publicKey, hideModal],
   )
 
   const onTokenTypeChange = useCallback(

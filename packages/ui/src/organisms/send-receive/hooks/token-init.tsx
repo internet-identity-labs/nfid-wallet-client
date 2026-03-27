@@ -9,29 +9,42 @@ import {
   TOKENS_REFRESH_INTERVAL,
 } from "frontend/integration/ft/ft-service"
 import {
+  isTestnetToken,
   ChainId,
-  isEvmToken,
   State,
 } from "@nfid/integration/token/icrc1/enum/enums"
-import { useContext, useMemo } from "react"
+import { useContext, useEffect, useMemo, useRef } from "react"
 import { useActor } from "@xstate/react"
 import { ProfileContext } from "frontend/provider"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
+import { useUserPrefs } from "frontend/hooks/user-prefs"
 
 export const useTokensInit = (tokens: FT[] | undefined) => {
   const { isEthAddressLoading } = useEthAddress()
   const { isBtcAddressLoading } = useBtcAddress()
-  const activeTokens = useMemo(
-    () => tokens?.filter((token) => token.getTokenState() === State.Active),
-    [tokens],
-  )
-
   const {
     isViewOnlyMode,
     viewOnlyAddress,
     viewOnlyAddressType,
     transferService,
   } = useContext(ProfileContext)
+  const isMounted = useRef(false)
+  const { testnetEnabled, arbitrumEnabled, baseEnabled, polygonEnabled } =
+    useUserPrefs()
+
+  const activeTokens = useMemo(
+    () =>
+      tokens?.filter((token) => {
+        if (token.getTokenState() !== State.Active) return false
+        const chainId = token.getChainId()
+        if (!testnetEnabled && isTestnetToken(chainId)) return false
+        if (!arbitrumEnabled && chainId === ChainId.ARB) return false
+        if (!baseEnabled && chainId === ChainId.BASE) return false
+        if (!polygonEnabled && chainId === ChainId.POL) return false
+        return true
+      }),
+    [tokens, testnetEnabled, arbitrumEnabled, baseEnabled, polygonEnabled],
+  )
 
   const [state] = useActor(transferService)
 
@@ -91,6 +104,14 @@ export const useTokensInit = (tokens: FT[] | undefined) => {
       },
     },
   )
+
+  useEffect(() => {
+    if (!isMounted.current || !activeTokens) {
+      isMounted.current = true
+      return
+    }
+    mutate()
+  }, [activeTokens])
 
   return { initedTokens, mutate, isLoading }
 }

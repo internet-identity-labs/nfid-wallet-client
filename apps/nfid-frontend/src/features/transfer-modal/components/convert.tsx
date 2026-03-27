@@ -7,8 +7,10 @@ import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
+  CKSEPOLIA_LEDGER_CANISTER_ID,
   ETH_DECIMALS,
   ETH_NATIVE_ID,
+  EVM_NATIVE,
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
 import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
@@ -22,6 +24,7 @@ import {
   CkBtcToBtcFee,
 } from "frontend/integration/bitcoin/bitcoin.service"
 import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
+import { ethSepoliaService } from "frontend/integration/ethereum/eth/testnetwork/eth-sepolia.service"
 import {
   CkEthToEthFee,
   EthToCkEthFee,
@@ -36,6 +39,8 @@ import {
   updateCachedInitedTokens,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
+import { useUserPrefs } from "frontend/hooks/user-prefs"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 interface ConvertBTCProps {
   preselectedSourceTokenAddress: string | undefined
@@ -67,7 +72,7 @@ export const ConvertBTC = ({
     preselectedSourceTokenAddress || BTC_NATIVE_ID,
   )
   const { identity } = useIdentity()
-
+  const { testnetEnabled } = useUserPrefs()
   const [toTokenAddress, setToTokenAddress] = useState(
     getConversionTokenAddress(preselectedSourceTokenAddress ?? BTC_NATIVE_ID),
   )
@@ -88,15 +93,26 @@ export const ConvertBTC = ({
 
   const filteredTokens = useMemo(() => {
     if (!initedTokens) return
-    return initedTokens.filter((t) => {
+    return initedTokens.filter((t, _, arr) => {
       return (
         t.getTokenAddress() === ETH_NATIVE_ID ||
         t.getTokenAddress() === BTC_NATIVE_ID ||
         t.getTokenAddress() === CKETH_LEDGER_CANISTER_ID ||
-        t.getTokenAddress() === CKBTC_CANISTER_ID
+        t.getTokenAddress() === CKBTC_CANISTER_ID ||
+        (t.getTokenAddress() === CKSEPOLIA_LEDGER_CANISTER_ID &&
+          testnetEnabled &&
+          arr.find(
+            (t) =>
+              t.getTokenAddress() === EVM_NATIVE &&
+              t.getChainId() === ChainId.ETH_SEPOLIA,
+          )) ||
+        (t.getTokenAddress() === EVM_NATIVE &&
+          t.getChainId() === ChainId.ETH_SEPOLIA &&
+          testnetEnabled &&
+          arr.find((t) => t.getTokenAddress() === CKSEPOLIA_LEDGER_CANISTER_ID))
       )
     })
-  }, [initedTokens])
+  }, [initedTokens, testnetEnabled])
 
   useEffect(() => {
     setToTokenAddress(getConversionTokenAddress(fromTokenAddress))
@@ -168,10 +184,16 @@ export const ConvertBTC = ({
               .toFixed(ETH_DECIMALS)
               .replace(TRIM_ZEROS, "")
 
+            const service =
+              tokenAddress === EVM_NATIVE ||
+              tokenAddress === CKSEPOLIA_LEDGER_CANISTER_ID
+                ? ethSepoliaService
+                : ethereumService
+
             const fee =
-              tokenAddress === ETH_NATIVE_ID
-                ? await ethereumService.getEthToCkEthFee(identity, value)
-                : await ethereumService.getCkEthToEthFee(ethAddress, value)
+              tokenAddress === ETH_NATIVE_ID || tokenAddress === EVM_NATIVE
+                ? await service.getEthToCkEthFee(identity, value)
+                : await service.getCkEthToEthFee(ethAddress, value)
 
             setEthFee(fee)
           } catch (e) {
@@ -207,25 +229,21 @@ export const ConvertBTC = ({
     setIsSuccessOpen(true)
     setIsConvertSuccess(true)
 
-    if (
+    const isEthConvert =
       fromTokenAddress === ETH_NATIVE_ID ||
       fromTokenAddress === CKETH_LEDGER_CANISTER_ID
-    ) {
-      let convertResponse
+    const isSepoliaConvert =
+      fromTokenAddress === EVM_NATIVE ||
+      fromTokenAddress === CKSEPOLIA_LEDGER_CANISTER_ID
 
-      if (fromTokenAddress === ETH_NATIVE_ID) {
-        convertResponse = ethereumService.convertToCkEth(
-          identity,
-          amount,
-          ethFee as EthToCkEthFee,
-        )
-      } else {
-        convertResponse = ethereumService.convertFromCkEth(
-          ethAddress,
-          amount,
-          identity,
-        )
-      }
+    if (isEthConvert || isSepoliaConvert) {
+      const service = isSepoliaConvert ? ethSepoliaService : ethereumService
+      const isToCkEth =
+        fromTokenAddress === ETH_NATIVE_ID || fromTokenAddress === EVM_NATIVE
+
+      const convertResponse = isToCkEth
+        ? service.convertToCkEth(identity, amount, ethFee as EthToCkEthFee)
+        : service.convertFromCkEth(ethAddress, amount, identity)
 
       convertResponse
         .then(() => {
@@ -236,7 +254,10 @@ export const ConvertBTC = ({
 
           if (!initedTokens) return
 
-          if (fromToken.getTokenAddress() === CKETH_LEDGER_CANISTER_ID) {
+          const isCkToNative =
+            fromTokenAddress === CKETH_LEDGER_CANISTER_ID ||
+            fromTokenAddress === CKSEPOLIA_LEDGER_CANISTER_ID
+          if (isCkToNative) {
             getTokensWithUpdatedBalance(
               [fromTokenAddress, toTokenAddress],
               initedTokens,

@@ -41,7 +41,7 @@ export const WalletConnectSignSimpleMessage: React.FC<
 
   return (
     <WalletConnectPromptTemplate
-      title={method === "eth_sign" ? "Sign hash" : "Sign message"}
+      title="Sign message"
       subTitle={
         <div className="flex items-center justify-center gap-1 dark:text-white">
           Request from{" "}

@@ -40,8 +40,7 @@ import {
 } from "@nfid/integration/token/constants"
 import { KEY_ETH_ADDRESS } from "packages/integration/src/lib/authentication/storage"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
-import { MORALIS_API_KEY } from "src/integration/nft/impl/evm/evm-nft-floor-price.service"
-import { MORALIS_CHAIN_MAP } from "../nft/constants/constants"
+import { ALCHEMY_CHAIN_MAP } from "../nft/constants/constants"
 
 export type EvmNftStandard = "ERC-721" | "ERC-1155" | "ERC-404"
 
@@ -93,42 +92,47 @@ export interface EvmNftAsset {
   acquiredAt?: number
 }
 
-interface MoralisNftItem {
-  token_address: string
-  token_id: string
-  contract_type: string
-  amount?: string
-  name?: string
-  symbol?: string
-  normalized_metadata?: {
+interface AlchemyNftItem {
+  contract: {
+    address: string
     name?: string
-    description?: string
-    image?: string
-    animation_url?: string
-    attributes?: Array<{ trait_type: string; value: string }>
+    symbol?: string
+    tokenType: string
   }
-  media?: { original_media_url?: string }
+  tokenId: string
+  balance?: string
+  raw?: {
+    metadata?: {
+      name?: string
+      description?: string
+      image?: string
+      animation_url?: string
+      attributes?: Array<{ trait_type: string; value: string }>
+    }
+  }
+  image?: { cachedUrl?: string; originalUrl?: string }
+  name?: string
 }
 
-interface MoralisNftResponse {
-  result: MoralisNftItem[]
-  cursor?: string | null
+interface AlchemyNftResponse {
+  ownedNfts: AlchemyNftItem[]
+  pageKey?: string | null
 }
 
-interface MoralisTransferItem {
-  block_timestamp: string
-  token_address: string
-  token_id: string
-  to_address?: string
+interface AlchemyTransferItem {
+  blockTimestamp: string
+  rawContract?: { address?: string }
+  tokenId?: string
+  toAddress?: string
 }
 
-interface MoralisTransfersResponse {
-  result: MoralisTransferItem[]
-  cursor?: string | null
+interface AlchemyTransfersResponse {
+  nftTransfers: AlchemyTransferItem[]
+  pageKey?: string | null
 }
 
-function normalizeMoralisType(contractType: string): EvmNftStandard {
-  switch (contractType.toUpperCase()) {
+function normalizeAlchemyType(tokenType: string): EvmNftStandard {
+  switch (tokenType.toUpperCase()) {
     case "ERC1155":
       return "ERC-1155"
     case "ERC404":
@@ -146,7 +150,7 @@ function resolveIpfsUrl(url: string | undefined): string | undefined {
   return url
 }
 
-const EVM_NFTS_CACHE_TTL = 30 * 1000
+const EVM_NFTS_CACHE_TTL = 2 * 60 * 1000
 export const EVM_NFTS_CACHE_NAME = "EVM_NFTS_"
 export const EVM_BALANCE_CACHE_NAME = "EVM_BALANCE_"
 
@@ -159,6 +163,10 @@ const ERC1155_TRANSFER_IFACE = new Interface([
 
 export abstract class EVMService {
   protected provider: InfuraProvider
+  protected minterAddress: string = MINTER_ADDRESS
+  protected ckEthMinterCanisterId: string = CKETH_MINTER_CANISTER_ID
+  protected ckEthLedgerCanisterId: string = CKETH_LEDGER_CANISTER_ID
+  protected ckEthNetworkFee: bigint = CKETH_NETWORK_FEE
 
   constructor() {
     this.provider = new InfuraProvider(CHAIN_ID, INFURA_API_KEY)
@@ -211,14 +219,14 @@ export abstract class EVMService {
   public async getNFTs(address: string): Promise<EvmNftAsset[]> {
     const network = await this.provider.getNetwork()
     const chainId = Number(network.chainId)
-    const chain = MORALIS_CHAIN_MAP[chainId]
-    if (!chain) return []
+    const alchemyNetwork = ALCHEMY_CHAIN_MAP[chainId]
+    if (!alchemyNetwork) return []
 
     const cacheKey = `${EVM_NFTS_CACHE_NAME}${chainId}_${address.toLowerCase()}`
 
     return ttlCacheService.getOrFetch(
       cacheKey,
-      () => this.fetchNFTs(address, chain, chainId),
+      () => this.fetchNFTs(address, alchemyNetwork, chainId),
       EVM_NFTS_CACHE_TTL,
       {
         onBackgroundError: (error) =>
@@ -229,10 +237,10 @@ export abstract class EVMService {
 
   private async fetchNFTs(
     address: string,
-    chain: string,
+    alchemyNetwork: string,
     chainId: number,
   ): Promise<EvmNftAsset[]> {
-    const nfts = await this.fetchNFTList(address, chain, chainId)
+    const nfts = await this.fetchNFTList(address, alchemyNetwork, chainId)
     if (nfts.length === 0) return nfts
 
     const ownedKeys = new Set(
@@ -240,7 +248,7 @@ export abstract class EVMService {
     )
     const timestamps = await this.fetchNFTTimestamps(
       address,
-      chain,
+      alchemyNetwork,
       ownedKeys,
     ).catch(() => new Map<string, number>())
 
@@ -254,93 +262,102 @@ export abstract class EVMService {
 
   private async fetchNFTList(
     address: string,
-    chain: string,
+    alchemyNetwork: string,
     chainId: number,
   ): Promise<EvmNftAsset[]> {
     const results: EvmNftAsset[] = []
-    let cursor: string | null = null
+    let pageKey: string | null = null
 
-    do {
-      const url = new URL(
-        `https://deep-index.moralis.io/api/v2.2/${address}/nft`,
-      )
-      url.searchParams.set("chain", chain)
-      url.searchParams.set("format", "decimal")
-      url.searchParams.set("normalizeMetadata", "true")
-      url.searchParams.set("excludeSpam", "false")
-      url.searchParams.set("limit", "100")
-      if (cursor) url.searchParams.set("cursor", cursor)
-
-      const response = await fetch(url.toString(), {
-        headers: { "X-API-Key": MORALIS_API_KEY },
-      })
-      if (!response.ok) {
-        throw new Error(
-          `Moralis NFT API error: ${response.status} ${response.statusText}`,
+    try {
+      do {
+        const url = new URL(
+          `https://${alchemyNetwork}.g.alchemy.com/nft/v3/${ALCHEMY_API_KEY}/getNFTsForOwner`,
         )
-      }
+        url.searchParams.set("owner", address)
+        url.searchParams.set("withMetadata", "true")
+        url.searchParams.set("pageSize", "100")
+        if (pageKey) url.searchParams.set("pageKey", pageKey)
 
-      const data: MoralisNftResponse = await response.json()
+        const response = await fetch(url.toString())
+        if (!response.ok) {
+          console.error(
+            `Alchemy NFT API error: ${response.status} ${response.statusText}`,
+          )
+          return results
+        }
 
-      for (const item of data.result) {
-        results.push({
-          contract: item.token_address,
-          tokenId: item.token_id,
-          supply: item.amount ?? "1",
-          type: normalizeMoralisType(item.contract_type),
-          metadata: item.normalized_metadata as EvmNftMetadata | undefined,
-          imageUrl: resolveIpfsUrl(
-            item.normalized_metadata?.image ?? item.media?.original_media_url,
-          ),
-          animationUrl: resolveIpfsUrl(item.normalized_metadata?.animation_url),
-          tokenName: item.name,
-          tokenSymbol: item.symbol,
-          chainId,
-        })
-      }
+        const data: AlchemyNftResponse = await response.json()
 
-      cursor = data.cursor ?? null
-    } while (cursor)
+        for (const item of data.ownedNfts) {
+          results.push({
+            contract: item.contract.address,
+            tokenId: item.tokenId,
+            supply: item.balance ?? "1",
+            type: normalizeAlchemyType(item.contract.tokenType),
+            metadata: item.raw?.metadata as EvmNftMetadata | undefined,
+            imageUrl: resolveIpfsUrl(
+              item.image?.cachedUrl ?? item.image?.originalUrl,
+            ),
+            animationUrl: resolveIpfsUrl(item.raw?.metadata?.animation_url),
+            tokenName: item.contract.name,
+            tokenSymbol: item.contract.symbol,
+            chainId,
+          })
+        }
+
+        pageKey = data.pageKey ?? null
+      } while (pageKey)
+    } catch (e) {
+      console.error("Alchemy getNFTsForOwner failed:", e)
+    }
 
     return results
   }
 
   private async fetchNFTTimestamps(
     address: string,
-    chain: string,
+    alchemyNetwork: string,
     ownedKeys: Set<string>,
   ): Promise<Map<string, number>> {
     const timestamps = new Map<string, number>()
     const remaining = new Set(ownedKeys)
-    let cursor: string | null = null
+    let pageKey: string | null = null
 
-    do {
-      const url = new URL(
-        `https://deep-index.moralis.io/api/v2.2/${address}/nft/transfers`,
-      )
-      url.searchParams.set("chain", chain)
-      url.searchParams.set("format", "decimal")
-      url.searchParams.set("limit", "100")
-      if (cursor) url.searchParams.set("cursor", cursor)
+    try {
+      do {
+        const url = new URL(
+          `https://${alchemyNetwork}.g.alchemy.com/nft/v3/${ALCHEMY_API_KEY}/getTransfersForOwner`,
+        )
+        url.searchParams.set("owner", address)
+        url.searchParams.set("transferType", "TO")
+        url.searchParams.set("pageSize", "100")
+        if (pageKey) url.searchParams.set("pageKey", pageKey)
 
-      const response = await fetch(url.toString(), {
-        headers: { "X-API-Key": MORALIS_API_KEY },
-      })
-      if (!response.ok) break
-
-      const data: MoralisTransfersResponse = await response.json()
-
-      for (const item of data.result) {
-        if (item.to_address?.toLowerCase() !== address.toLowerCase()) continue
-        const key = `${item.token_address.toLowerCase()}:${item.token_id}`
-        if (remaining.has(key) && !timestamps.has(key)) {
-          timestamps.set(key, new Date(item.block_timestamp).getTime())
-          remaining.delete(key)
+        const response = await fetch(url.toString())
+        if (!response.ok) {
+          console.error(
+            `Alchemy getTransfersForOwner error: ${response.status} ${response.statusText}`,
+          )
+          break
         }
-      }
 
-      cursor = data.cursor ?? null
-    } while (cursor && remaining.size > 0)
+        const data: AlchemyTransfersResponse = await response.json()
+
+        for (const item of data.nftTransfers) {
+          if (item.toAddress?.toLowerCase() !== address.toLowerCase()) continue
+          const contractAddress = item.rawContract?.address?.toLowerCase() ?? ""
+          const key = `${contractAddress}:${item.tokenId}`
+          if (remaining.has(key) && !timestamps.has(key)) {
+            timestamps.set(key, new Date(item.blockTimestamp).getTime())
+            remaining.delete(key)
+          }
+        }
+
+        pageKey = data.pageKey ?? null
+      } while (pageKey && remaining.size > 0)
+    } catch (e) {
+      console.error("Alchemy getTransfersForOwner failed:", e)
+    }
 
     return timestamps
   }
@@ -387,7 +404,11 @@ export abstract class EVMService {
       baseFeePerGas: bigint
     },
   ) {
-    const ckEthContract = new Contract(MINTER_ADDRESS, CKETH_ABI, this.provider)
+    const ckEthContract = new Contract(
+      this.minterAddress,
+      CKETH_ABI,
+      this.provider,
+    )
 
     const address = await this.getAddress(identity)
 
@@ -444,8 +465,8 @@ export abstract class EVMService {
     }
 
     await this.approveTransfer(
-      CKETH_LEDGER_CANISTER_ID,
-      CKETH_MINTER_CANISTER_ID,
+      this.ckEthLedgerCanisterId,
+      this.ckEthMinterCanisterId,
       parsedAmount,
       identity,
     )
@@ -457,7 +478,7 @@ export abstract class EVMService {
 
     const ckEthMinter = CkETHMinterCanister.create({
       agent,
-      canisterId: Principal.fromText(CKETH_MINTER_CANISTER_ID),
+      canisterId: Principal.fromText(this.ckEthMinterCanisterId),
     })
 
     const result = await ckEthMinter.withdrawEth({
@@ -477,7 +498,7 @@ export abstract class EVMService {
       },
     }
 
-    transferICRC1(identity, CKETH_LEDGER_CANISTER_ID, transferArgs)
+    transferICRC1(identity, this.ckEthLedgerCanisterId, transferArgs)
 
     return result
   }
@@ -521,7 +542,11 @@ export abstract class EVMService {
     identity: SignIdentity,
     amount: string,
   ): Promise<EthToCkEthFee> {
-    const ckEthContract = new Contract(MINTER_ADDRESS, CKETH_ABI, this.provider)
+    const ckEthContract = new Contract(
+      this.minterAddress,
+      CKETH_ABI,
+      this.provider,
+    )
     const fromAddress = await this.getAddress(identity)
     const principalHex = encodePrincipalToEthAddress(identity.getPrincipal())
 
@@ -565,8 +590,10 @@ export abstract class EVMService {
       baseFeePerGas: baseFee,
       ethereumNetworkFee,
       amountToReceive:
-        parseEther(amount.toString()) - ethereumNetworkFee - CKETH_NETWORK_FEE,
-      icpNetworkFee: CKETH_NETWORK_FEE,
+        parseEther(amount.toString()) -
+        ethereumNetworkFee -
+        this.ckEthNetworkFee,
+      icpNetworkFee: this.ckEthNetworkFee,
     }
   }
 
@@ -576,7 +603,8 @@ export abstract class EVMService {
   ): Promise<CkEthToEthFee> {
     const parsedAmount = parseEther(amount.toString())
     const identityLabsFee = this.getIdentityLabsFee(parsedAmount)
-    const amountToReceive = parsedAmount - identityLabsFee - CKETH_NETWORK_FEE
+    const amountToReceive =
+      parsedAmount - identityLabsFee - this.ckEthNetworkFee
 
     const gasEstimate = await this.estimateGas({
       to,
@@ -597,7 +625,7 @@ export abstract class EVMService {
     return {
       ethereumNetworkFee,
       amountToReceive,
-      icpNetworkFee: CKETH_NETWORK_FEE * BigInt(2),
+      icpNetworkFee: this.ckEthNetworkFee * BigInt(2),
       identityLabsFee,
     }
   }

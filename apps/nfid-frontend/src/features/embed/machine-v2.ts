@@ -297,9 +297,10 @@ export const NFIDEmbedMachineV2 = createMachine(
           hasOutput: !!out,
           authSessionPresent: !!authSession,
           // Avoid logging the whole session object; it can be large.
-          authSessionKeys: authSession
-            ? Object.keys(authSession as Record<string, unknown>)
-            : [],
+          authSessionKeys:
+            authSession && typeof authSession === "object"
+              ? Object.keys(authSession as unknown as Record<string, unknown>)
+              : [],
         })
 
         return {
@@ -351,12 +352,17 @@ export const NFIDEmbedMachineV2 = createMachine(
         const { origin, ...rpcMessage } = data as RPCResponse & {
           origin: string
         }
+        const rpcAny = rpcMessage as unknown as {
+          error?: unknown
+          result?: unknown
+        }
+        const rpcObj = rpcMessage as unknown as Record<string, unknown>
         debugWarn("[NFIDEmbedMachineV2] sendRPCResponse", {
           origin,
           rpcMessageId: (rpcMessage as RPCResponse).id,
-          rpcMessageError: (rpcMessage as RPCResponse).error,
-          rpcMessageHasResult: !!(rpcMessage as RPCResponse).result,
-          rpcMessageKeys: Object.keys(rpcMessage as Record<string, unknown>),
+          rpcMessageError: rpcAny.error,
+          rpcMessageHasResult: rpcAny.result != null,
+          rpcMessageKeys: Object.keys(rpcObj),
         })
         window.parent.postMessage(rpcMessage, origin)
       },

@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import { motion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { NavDisconnectIcon } from "packages/ui/src/atoms/icons/nav-disconnect"
 import { HTMLAttributes, FC, useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
@@ -51,7 +51,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
   const [isViewOnlyModalOpen, setIsViewOnlyModalOpen] = useState(false)
 
   return (
-    <>
+    <AnimatePresence>
       {isOpen && (
         <motion.div
           key="AuthenticatedPopup"
@@ -62,7 +62,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.25, ease: "easeInOut" }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
         >
           <ThemeSwitcher
             walletTheme={walletTheme}
@@ -133,7 +133,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
           </div>
         </motion.div>
       )}
-    </>
+    </AnimatePresence>
   )
 }
 

@@ -40,7 +40,6 @@ import {
 } from "@nfid/integration/token/constants"
 import { KEY_ETH_ADDRESS } from "packages/integration/src/lib/authentication/storage"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
-const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY as string
 import { ALCHEMY_CHAIN_MAP } from "../nft/constants/constants"
 
 export type EvmNftStandard = "ERC-721" | "ERC-1155" | "ERC-404"
@@ -164,6 +163,10 @@ const ERC1155_TRANSFER_IFACE = new Interface([
 
 export abstract class EVMService {
   protected provider: InfuraProvider
+  protected minterAddress: string = MINTER_ADDRESS
+  protected ckEthMinterCanisterId: string = CKETH_MINTER_CANISTER_ID
+  protected ckEthLedgerCanisterId: string = CKETH_LEDGER_CANISTER_ID
+  protected ckEthNetworkFee: bigint = CKETH_NETWORK_FEE
 
   constructor() {
     this.provider = new InfuraProvider(CHAIN_ID, INFURA_API_KEY)
@@ -401,7 +404,11 @@ export abstract class EVMService {
       baseFeePerGas: bigint
     },
   ) {
-    const ckEthContract = new Contract(MINTER_ADDRESS, CKETH_ABI, this.provider)
+    const ckEthContract = new Contract(
+      this.minterAddress,
+      CKETH_ABI,
+      this.provider,
+    )
 
     const address = await this.getAddress(identity)
 
@@ -458,8 +465,8 @@ export abstract class EVMService {
     }
 
     await this.approveTransfer(
-      CKETH_LEDGER_CANISTER_ID,
-      CKETH_MINTER_CANISTER_ID,
+      this.ckEthLedgerCanisterId,
+      this.ckEthMinterCanisterId,
       parsedAmount,
       identity,
     )
@@ -471,7 +478,7 @@ export abstract class EVMService {
 
     const ckEthMinter = CkETHMinterCanister.create({
       agent,
-      canisterId: Principal.fromText(CKETH_MINTER_CANISTER_ID),
+      canisterId: Principal.fromText(this.ckEthMinterCanisterId),
     })
 
     const result = await ckEthMinter.withdrawEth({
@@ -491,7 +498,7 @@ export abstract class EVMService {
       },
     }
 
-    transferICRC1(identity, CKETH_LEDGER_CANISTER_ID, transferArgs)
+    transferICRC1(identity, this.ckEthLedgerCanisterId, transferArgs)
 
     return result
   }
@@ -535,7 +542,11 @@ export abstract class EVMService {
     identity: SignIdentity,
     amount: string,
   ): Promise<EthToCkEthFee> {
-    const ckEthContract = new Contract(MINTER_ADDRESS, CKETH_ABI, this.provider)
+    const ckEthContract = new Contract(
+      this.minterAddress,
+      CKETH_ABI,
+      this.provider,
+    )
     const fromAddress = await this.getAddress(identity)
     const principalHex = encodePrincipalToEthAddress(identity.getPrincipal())
 
@@ -579,8 +590,10 @@ export abstract class EVMService {
       baseFeePerGas: baseFee,
       ethereumNetworkFee,
       amountToReceive:
-        parseEther(amount.toString()) - ethereumNetworkFee - CKETH_NETWORK_FEE,
-      icpNetworkFee: CKETH_NETWORK_FEE,
+        parseEther(amount.toString()) -
+        ethereumNetworkFee -
+        this.ckEthNetworkFee,
+      icpNetworkFee: this.ckEthNetworkFee,
     }
   }
 
@@ -590,7 +603,8 @@ export abstract class EVMService {
   ): Promise<CkEthToEthFee> {
     const parsedAmount = parseEther(amount.toString())
     const identityLabsFee = this.getIdentityLabsFee(parsedAmount)
-    const amountToReceive = parsedAmount - identityLabsFee - CKETH_NETWORK_FEE
+    const amountToReceive =
+      parsedAmount - identityLabsFee - this.ckEthNetworkFee
 
     const gasEstimate = await this.estimateGas({
       to,
@@ -611,7 +625,7 @@ export abstract class EVMService {
     return {
       ethereumNetworkFee,
       amountToReceive,
-      icpNetworkFee: CKETH_NETWORK_FEE * BigInt(2),
+      icpNetworkFee: this.ckEthNetworkFee * BigInt(2),
       identityLabsFee,
     }
   }

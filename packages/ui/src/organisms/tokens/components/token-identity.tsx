@@ -12,10 +12,12 @@ import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
+  CKSEPOLIA_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
+  EVM_NATIVE,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
-import { Category } from "@nfid/integration/token/icrc1/enum/enums"
+import { Category, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
 import { useDarkTheme } from "frontend/hooks"
 import { SelectedToken } from "frontend/features/transfer-modal/types"
@@ -26,6 +28,8 @@ interface TokenIdentityProps extends HTMLAttributes<HTMLDivElement> {
   onConvertToCkBtc?: () => void
   onConvertToEth?: () => void
   onConvertToCkEth?: () => void
+  onConvertToSepoliaEth?: () => void
+  onConvertToCkSepoliaEth?: () => void
   onStakeClick?: (value: SelectedToken) => void
   withNetwork?: boolean
   withActions?: boolean
@@ -39,6 +43,8 @@ export const TokenIdentity: FC<TokenIdentityProps> = ({
   onConvertToCkBtc,
   onConvertToEth,
   onConvertToCkEth,
+  onConvertToSepoliaEth,
+  onConvertToCkSepoliaEth,
   onStakeClick,
   withNetwork = true,
   withActions = false,
@@ -103,6 +109,19 @@ export const TokenIdentity: FC<TokenIdentityProps> = ({
                   </span>
                 </>
               )}
+              {token.getTokenAddress() === EVM_NATIVE &&
+                token.getChainId() === ChainId.ETH_SEPOLIA && (
+                  <>
+                    <span className="block mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+                    <span
+                      className="flex items-center text-xs cursor-pointer text-primaryButtonColor dark:text-teal-500"
+                      onClick={onConvertToCkSepoliaEth}
+                    >
+                      <IconCmpConvert className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor dark:text-teal-500" />
+                      Convert to ckSepoliaETH
+                    </span>
+                  </>
+                )}
               {token.getTokenAddress() === CKBTC_CANISTER_ID && (
                 <>
                   <span className="block mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
@@ -124,6 +143,18 @@ export const TokenIdentity: FC<TokenIdentityProps> = ({
                   >
                     <IconCmpConvert className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor dark:text-teal-500" />
                     Convert to ETH
+                  </span>
+                </>
+              )}
+              {token.getTokenAddress() === CKSEPOLIA_LEDGER_CANISTER_ID && (
+                <>
+                  <span className="block mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+                  <span
+                    className="flex items-center text-xs cursor-pointer text-primaryButtonColor dark:text-teal-500"
+                    onClick={onConvertToSepoliaEth}
+                  >
+                    <IconCmpConvert className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor dark:text-teal-500" />
+                    Convert to Sepolia ETH
                   </span>
                 </>
               )}

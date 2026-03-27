@@ -7,7 +7,9 @@ import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
+  CKSEPOLIA_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
+  EVM_NATIVE,
 } from "@nfid/integration/token/constants"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
@@ -77,11 +79,15 @@ export const ConvertUi: FC<ConvertUiProps> = ({
   } = useFormContext()
 
   const amount = watch("amount")
-  const fee =
+  const isEthLike =
     fromToken?.getTokenAddress() === ETH_NATIVE_ID ||
-    fromToken?.getTokenAddress() === CKETH_LEDGER_CANISTER_ID
-      ? getEthConversionFee(ethFee)
-      : getBtcConversionFee(btcFee)
+    fromToken?.getTokenAddress() === CKETH_LEDGER_CANISTER_ID ||
+    fromToken?.getTokenAddress() === EVM_NATIVE ||
+    fromToken?.getTokenAddress() === CKSEPOLIA_LEDGER_CANISTER_ID
+
+  const fee = isEthLike
+    ? getEthConversionFee(ethFee)
+    : getBtcConversionFee(btcFee)
 
   if (isTokenLoading || !fromToken || !toToken)
     return (
@@ -170,7 +176,8 @@ export const ConvertUi: FC<ConvertUiProps> = ({
           fee={fee}
           tokens={tokens}
           ethFee={
-            fromToken.getTokenAddress() === ETH_NATIVE_ID
+            fromToken.getTokenAddress() === ETH_NATIVE_ID ||
+            fromToken.getTokenAddress() === EVM_NATIVE
               ? (ethFee as EthToCkEthFee)
               : undefined
           }

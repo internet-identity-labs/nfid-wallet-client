@@ -155,10 +155,24 @@ const ThirdPartyAuthMachine = createMachine(
         ).data,
       })),
 
-      assignAuthSession: assign(({ event }) => ({
-        authSession: (event as unknown as { output: RootAuthenticationContext })
-          .output.authSession as AuthSession,
-      })),
+      assignAuthSession: assign(({ event }) => {
+        const e = event as unknown as {
+          output?: RootAuthenticationContext | AuthSession
+          data?: AuthSession
+        }
+
+        // Prefer a RootAuthenticationContext-style output if present,
+        // otherwise fall back to the AuthSession data payload (main-branch behavior).
+        const out = e.output
+        const authSession =
+          out && typeof out === "object" && "authSession" in out
+            ? (out as RootAuthenticationContext).authSession
+            : e.data
+
+        return {
+          authSession: authSession as AuthSession | undefined,
+        }
+      }),
 
       assignError: assign(({ event }) => ({
         error: (event as unknown as { error: Error }).error,

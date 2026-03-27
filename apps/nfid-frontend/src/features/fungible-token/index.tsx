@@ -3,8 +3,7 @@ import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { Balance } from "packages/ui/src/organisms/profile-info/balance"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import { ScanTokens } from "packages/ui/src/organisms/tokens/components/scan-tokens"
-import { useContext, useEffect, useMemo, useState } from "react"
-import { userPrefService } from "src/integration/user-preferences/user-pref-service"
+import { useContext, useEffect, useMemo } from "react"
 import useSWR from "swr"
 
 import { Skeleton } from "@nfid-frontend/ui"
@@ -13,7 +12,9 @@ import { authState } from "@nfid/integration"
 import {
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
+  CKSEPOLIA_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
+  EVM_NATIVE,
 } from "@nfid/integration/token/constants"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 import { ICRC1_ORACLE_CACHE_NAME } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
@@ -27,13 +28,21 @@ import { ModalType, SelectedToken } from "../transfer-modal/types"
 import { fetchTokens } from "./utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { useUserPrefs } from "frontend/hooks/user-prefs"
 
 const TokensPage = () => {
-  const [hideZeroBalance, setHideZeroBalance] = useState(false)
-  const [testnetEnabled, setTestnetEnabled] = useState(false)
-  const [arbitrumEnabled, setArbitrumEnabled] = useState(false)
-  const [baseEnabled, setBaseEnabled] = useState(false)
-  const [polygonEnabled, setPolygontEnabled] = useState(false)
+  const {
+    hideZeroBalance,
+    testnetEnabled,
+    arbitrumEnabled,
+    baseEnabled,
+    polygonEnabled,
+    setHideZeroBalance,
+    setTestnetEnabled,
+    setArbitrumEnabled,
+    setBaseEnabled,
+    setPolygonEnabled,
+  } = useUserPrefs()
   const {
     transferService,
     isViewOnlyMode,
@@ -91,6 +100,17 @@ const TokensPage = () => {
     send("SHOW")
   }
 
+  const onConvertToCkSepoliaEth = () => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
+    send({
+      type: "ASSIGN_SELECTED_FT",
+      data: { address: EVM_NATIVE, chainId: ChainId.ETH_SEPOLIA },
+    })
+    send("SHOW")
+  }
+
   const onConvertToEth = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
@@ -98,6 +118,17 @@ const TokensPage = () => {
     send({
       type: "ASSIGN_SELECTED_FT",
       data: { address: CKETH_LEDGER_CANISTER_ID, chainId: ChainId.ICP },
+    })
+    send("SHOW")
+  }
+
+  const onConvertToSepoliaEth = () => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
+    send({
+      type: "ASSIGN_SELECTED_FT",
+      data: { address: CKSEPOLIA_LEDGER_CANISTER_ID, chainId: ChainId.ICP },
     })
     send("SHOW")
   }
@@ -128,12 +159,7 @@ const TokensPage = () => {
       },
     )
 
-  const { initedTokens, isLoading: isTokensLoading } = useTokensInit(tokens, {
-    testnetEnabled,
-    arbitrumEnabled,
-    baseEnabled,
-    polygonEnabled,
-  })
+  const { initedTokens, isLoading: isTokensLoading } = useTokensInit(tokens)
 
   const tokensOwnedQuantity = useMemo(() => {
     return initedTokens?.filter(
@@ -169,58 +195,11 @@ const TokensPage = () => {
     refetchFtUsdBalance()
   }, [initedTokens, refetchFtUsdBalance])
 
-  useEffect(() => {
-    if (isViewOnlyMode) {
-      setHideZeroBalance(true)
-      setTestnetEnabled(false)
-      setArbitrumEnabled(true)
-      setBaseEnabled(true)
-      setPolygontEnabled(true)
-      return
-    }
-    userPrefService.getUserPreferences().then((userPref) => {
-      setHideZeroBalance(userPref.isHideZeroBalance())
-      setTestnetEnabled(userPref.isTestnetEnabled())
-      setArbitrumEnabled(userPref.isArbitrumEnabled())
-      setBaseEnabled(userPref.isBaseEnabled())
-      setPolygontEnabled(userPref.isPolygonEnabled())
-    })
-  }, [isViewOnlyMode])
-
-  const onZeroBalanceToggle = () => {
-    userPrefService.getUserPreferences().then((userPref) => {
-      userPref.setHideZeroBalance(!hideZeroBalance)
-      setHideZeroBalance(!hideZeroBalance)
-    })
-  }
-
-  const onTestnetToggle = () => {
-    userPrefService.getUserPreferences().then((userPref) => {
-      userPref.setTestnetEnabled(!testnetEnabled)
-      setTestnetEnabled(!testnetEnabled)
-    })
-  }
-
-  const onArbitrumToggle = () => {
-    userPrefService.getUserPreferences().then((userPref) => {
-      userPref.setArbitrumEnabled(!arbitrumEnabled)
-      setArbitrumEnabled(!arbitrumEnabled)
-    })
-  }
-
-  const onBaseToggle = () => {
-    userPrefService.getUserPreferences().then((userPref) => {
-      userPref.setBaseEnabled(!baseEnabled)
-      setBaseEnabled(!baseEnabled)
-    })
-  }
-
-  const onPolygonToggle = () => {
-    userPrefService.getUserPreferences().then((userPref) => {
-      userPref.setPolygonEnabled(!polygonEnabled)
-      setPolygontEnabled(!polygonEnabled)
-    })
-  }
+  const onZeroBalanceToggle = () => setHideZeroBalance(!hideZeroBalance)
+  const onTestnetToggle = () => setTestnetEnabled(!testnetEnabled)
+  const onArbitrumToggle = () => setArbitrumEnabled(!arbitrumEnabled)
+  const onBaseToggle = () => setBaseEnabled(!baseEnabled)
+  const onPolygonToggle = () => setPolygonEnabled(!polygonEnabled)
 
   const onSubmitIcrc1Pair = async (ledgerID: string, indexID: string) => {
     const icrc1Pair = new Icrc1Pair(
@@ -310,6 +289,8 @@ const TokensPage = () => {
           onConvertToCkBtc={onConvertToCkBtc}
           onConvertToEth={onConvertToEth}
           onConvertToCkEth={onConvertToCkEth}
+          onConvertToSepoliaEth={onConvertToSepoliaEth}
+          onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
           onStakeClick={onStakeClick}
           hideZeroBalance={hideZeroBalance}
           onZeroBalanceToggle={onZeroBalanceToggle}

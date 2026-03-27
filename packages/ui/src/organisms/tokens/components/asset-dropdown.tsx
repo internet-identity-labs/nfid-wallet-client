@@ -25,7 +25,9 @@ import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
+  CKSEPOLIA_LEDGER_CANISTER_ID,
   ETH_NATIVE_ID,
+  EVM_NATIVE,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { Category, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
@@ -47,6 +49,8 @@ type AssetDropdownProps = {
   onConvertToCkBtc: () => void
   onConvertToEth: () => void
   onConvertToCkEth: () => void
+  onConvertToSepoliaEth: () => void
+  onConvertToCkSepoliaEth: () => void
   onStakeClick: (value: SelectedToken) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
@@ -64,6 +68,8 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
   onConvertToCkBtc,
   onConvertToEth,
   onConvertToCkEth,
+  onConvertToSepoliaEth,
+  onConvertToCkSepoliaEth,
   onStakeClick,
   setToken,
   dropdownPosition,
@@ -145,6 +151,16 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             handler={onConvertToCkEth}
           />
         )}
+        {token.getTokenAddress() === EVM_NATIVE &&
+          token.getChainId() === ChainId.ETH_SEPOLIA && (
+            <DropdownOption
+              label="Convert"
+              icon={
+                isDarkTheme ? IconSvgConvertActionWhite : IconSvgConvertAction
+              }
+              handler={onConvertToCkSepoliaEth}
+            />
+          )}
         {token.getTokenAddress() === CKETH_LEDGER_CANISTER_ID && (
           <DropdownOption
             label="Convert"
@@ -152,6 +168,15 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
               isDarkTheme ? IconSvgConvertActionWhite : IconSvgConvertAction
             }
             handler={onConvertToEth}
+          />
+        )}
+        {token.getTokenAddress() === CKSEPOLIA_LEDGER_CANISTER_ID && (
+          <DropdownOption
+            label="Convert"
+            icon={
+              isDarkTheme ? IconSvgConvertActionWhite : IconSvgConvertAction
+            }
+            handler={onConvertToSepoliaEth}
           />
         )}
         {(token.getTokenCategory() === Category.Sns ||

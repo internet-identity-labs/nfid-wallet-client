@@ -53,6 +53,8 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   onConvertToCkBtc: () => void
   onConvertToEth: () => void
   onConvertToCkEth: () => void
+  onConvertToSepoliaEth: () => void
+  onConvertToCkSepoliaEth: () => void
   onStakeClick: (value: SelectedToken) => void
   hideZeroBalance: boolean
   onZeroBalanceToggle: () => void
@@ -79,6 +81,8 @@ export const Tokens: FC<TokensProps> = ({
   onConvertToCkBtc,
   onConvertToEth,
   onConvertToCkEth,
+  onConvertToSepoliaEth,
+  onConvertToCkSepoliaEth,
   onStakeClick,
   hideZeroBalance,
   onZeroBalanceToggle,
@@ -243,6 +247,8 @@ export const Tokens: FC<TokensProps> = ({
                     onConvertToCkBtc={onConvertToCkBtc}
                     onConvertToEth={onConvertToEth}
                     onConvertToCkEth={onConvertToCkEth}
+                    onConvertToSepoliaEth={onConvertToSepoliaEth}
+                    onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
                   />
                 ))
               )}

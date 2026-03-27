@@ -93,17 +93,23 @@ export const ConvertBTC = ({
 
   const filteredTokens = useMemo(() => {
     if (!initedTokens) return
-    return initedTokens.filter((t) => {
+    return initedTokens.filter((t, _, arr) => {
       return (
         t.getTokenAddress() === ETH_NATIVE_ID ||
         t.getTokenAddress() === BTC_NATIVE_ID ||
         t.getTokenAddress() === CKETH_LEDGER_CANISTER_ID ||
         t.getTokenAddress() === CKBTC_CANISTER_ID ||
         (t.getTokenAddress() === CKSEPOLIA_LEDGER_CANISTER_ID &&
-          testnetEnabled) ||
+          testnetEnabled &&
+          arr.find(
+            (t) =>
+              t.getTokenAddress() === EVM_NATIVE &&
+              t.getChainId() === ChainId.ETH_SEPOLIA,
+          )) ||
         (t.getTokenAddress() === EVM_NATIVE &&
           t.getChainId() === ChainId.ETH_SEPOLIA &&
-          testnetEnabled)
+          testnetEnabled &&
+          arr.find((t) => t.getTokenAddress() === CKSEPOLIA_LEDGER_CANISTER_ID))
       )
     })
   }, [initedTokens, testnetEnabled])

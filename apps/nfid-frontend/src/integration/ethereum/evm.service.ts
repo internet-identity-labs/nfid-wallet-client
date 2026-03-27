@@ -89,7 +89,6 @@ export interface EvmNftAsset {
   tokenName?: string
   tokenSymbol?: string
   chainId: number
-  acquiredAt?: number
 }
 
 interface AlchemyNftItem {
@@ -116,18 +115,6 @@ interface AlchemyNftItem {
 
 interface AlchemyNftResponse {
   ownedNfts: AlchemyNftItem[]
-  pageKey?: string | null
-}
-
-interface AlchemyTransferItem {
-  blockTimestamp: string
-  rawContract?: { address?: string }
-  tokenId?: string
-  toAddress?: string
-}
-
-interface AlchemyTransfersResponse {
-  nftTransfers: AlchemyTransferItem[]
   pageKey?: string | null
 }
 
@@ -240,24 +227,7 @@ export abstract class EVMService {
     alchemyNetwork: string,
     chainId: number,
   ): Promise<EvmNftAsset[]> {
-    const nfts = await this.fetchNFTList(address, alchemyNetwork, chainId)
-    if (nfts.length === 0) return nfts
-
-    const ownedKeys = new Set(
-      nfts.map((n) => `${n.contract.toLowerCase()}:${n.tokenId}`),
-    )
-    const timestamps = await this.fetchNFTTimestamps(
-      address,
-      alchemyNetwork,
-      ownedKeys,
-    ).catch(() => new Map<string, number>())
-
-    return nfts.map((nft) => ({
-      ...nft,
-      acquiredAt: timestamps.get(
-        `${nft.contract.toLowerCase()}:${nft.tokenId}`,
-      ),
-    }))
+    return this.fetchNFTList(address, alchemyNetwork, chainId)
   }
 
   private async fetchNFTList(
@@ -312,54 +282,6 @@ export abstract class EVMService {
     }
 
     return results
-  }
-
-  private async fetchNFTTimestamps(
-    address: string,
-    alchemyNetwork: string,
-    ownedKeys: Set<string>,
-  ): Promise<Map<string, number>> {
-    const timestamps = new Map<string, number>()
-    const remaining = new Set(ownedKeys)
-    let pageKey: string | null = null
-
-    try {
-      do {
-        const url = new URL(
-          `https://${alchemyNetwork}.g.alchemy.com/nft/v3/${ALCHEMY_API_KEY}/getTransfersForOwner`,
-        )
-        url.searchParams.set("owner", address)
-        url.searchParams.set("transferType", "TO")
-        url.searchParams.set("pageSize", "100")
-        if (pageKey) url.searchParams.set("pageKey", pageKey)
-
-        const response = await fetch(url.toString())
-        if (!response.ok) {
-          console.error(
-            `Alchemy getTransfersForOwner error: ${response.status} ${response.statusText}`,
-          )
-          break
-        }
-
-        const data: AlchemyTransfersResponse = await response.json()
-
-        for (const item of data.nftTransfers) {
-          if (item.toAddress?.toLowerCase() !== address.toLowerCase()) continue
-          const contractAddress = item.rawContract?.address?.toLowerCase() ?? ""
-          const key = `${contractAddress}:${item.tokenId}`
-          if (remaining.has(key) && !timestamps.has(key)) {
-            timestamps.set(key, new Date(item.blockTimestamp).getTime())
-            remaining.delete(key)
-          }
-        }
-
-        pageKey = data.pageKey ?? null
-      } while (pageKey && remaining.size > 0)
-    } catch (e) {
-      console.error("Alchemy getTransfersForOwner failed:", e)
-    }
-
-    return timestamps
   }
 
   public async getQuickBalance(): Promise<Balance> {

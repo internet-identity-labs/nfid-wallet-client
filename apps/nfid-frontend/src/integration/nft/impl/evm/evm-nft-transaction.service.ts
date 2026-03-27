@@ -3,7 +3,6 @@ import {
   TransactionRecordView,
 } from "src/integration/nft/impl/nft-transaction-record"
 import { NFTTransactions } from "src/integration/nft/impl/nft-types"
-const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY as string
 import { ALCHEMY_CHAIN_MAP } from "../../constants/constants"
 
 // ─── Alchemy API types ────────────────────────────────────────────────────────

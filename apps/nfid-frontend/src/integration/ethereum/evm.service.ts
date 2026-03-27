@@ -40,7 +40,6 @@ import {
 } from "@nfid/integration/token/constants"
 import { KEY_ETH_ADDRESS } from "packages/integration/src/lib/authentication/storage"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
-const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY as string
 import { ALCHEMY_CHAIN_MAP } from "../nft/constants/constants"
 
 export type EvmNftStandard = "ERC-721" | "ERC-1155" | "ERC-404"

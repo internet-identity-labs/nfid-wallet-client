@@ -18,6 +18,7 @@ import {
 } from "ethers"
 import { ttlCacheService } from "@nfid/client-db"
 import { agentBaseConfig } from "packages/integration/src/lib/actors"
+import { getInfuraProvider } from "./infura-provider-registry"
 
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 
@@ -34,7 +35,6 @@ import {
   MINTER_ADDRESS,
   CKETH_MINTER_CANISTER_ID,
   CKETH_NETWORK_FEE,
-  INFURA_API_KEY,
   CHAIN_ID,
   CKETH_LEDGER_CANISTER_ID,
 } from "@nfid/integration/token/constants"
@@ -169,7 +169,7 @@ export abstract class EVMService {
   protected ckEthNetworkFee: bigint = CKETH_NETWORK_FEE
 
   constructor() {
-    this.provider = new InfuraProvider(CHAIN_ID, INFURA_API_KEY)
+    this.provider = getInfuraProvider(CHAIN_ID)
   }
 
   public async getQuickAddress() {

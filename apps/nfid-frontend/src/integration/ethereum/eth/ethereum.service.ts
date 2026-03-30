@@ -1,14 +1,14 @@
 import { InfuraProvider } from "ethers"
-
-import { INFURA_API_KEY, CHAIN_ID } from "@nfid/integration/token/constants"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { EVMService } from "../evm.service"
+import { getInfuraProvider } from "../infura-provider-registry"
 
 export class EthereumService extends EVMService {
   protected provider: InfuraProvider
 
   constructor() {
     super()
-    this.provider = new InfuraProvider(CHAIN_ID, INFURA_API_KEY)
+    this.provider = getInfuraProvider(ChainId.ETH)
   }
 }
 

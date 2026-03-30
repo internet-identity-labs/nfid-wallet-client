@@ -33,6 +33,8 @@ export interface TtlGetOrFetchOptions<T> {
  * @param ttlMillis - fixed TTL in ms, or a factory function for dynamic TTL
  */
 export class TtlCacheService {
+  private inFlight = new Map<string, Promise<unknown>>()
+
   constructor(private storage: TtlStorage<unknown>) {}
 
   async getOrFetch<T>(
@@ -62,19 +64,35 @@ export class TtlCacheService {
     const cache = await this.storage.getEvenExpired(key)
 
     if (!cache) {
-      const value = await fetcher()
-      await store(value)
-      return value
+      const existing = this.inFlight.get(key)
+      if (existing) return existing as Promise<T>
+
+      const promise = fetcher()
+        .then(async (value) => {
+          await store(value)
+          return value
+        })
+        .finally(() => this.inFlight.delete(key))
+
+      this.inFlight.set(key, promise)
+      return promise as Promise<T>
     }
 
     if (cache.expired) {
-      fetcher()
-        .then(store)
-        .catch(
-          onBackgroundError ??
-            ((err) =>
-              console.error("TtlCacheService: background refresh failed", err)),
-        )
+      if (!this.inFlight.has(key)) {
+        const refresh = fetcher()
+          .then(store)
+          .catch(
+            onBackgroundError ??
+              ((err) =>
+                console.error(
+                  "TtlCacheService: background refresh failed",
+                  err,
+                )),
+          )
+          .finally(() => this.inFlight.delete(key))
+        this.inFlight.set(key, refresh)
+      }
       return await fromCache(cache.value)
     }
 

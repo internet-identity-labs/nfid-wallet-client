@@ -1,14 +1,11 @@
-import { InfuraProvider } from "ethers"
-
-import { INFURA_API_KEY } from "@nfid/integration/token/constants"
-
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { EVMService } from "../../evm.service"
+import { getInfuraProvider } from "../../infura-provider-registry"
 
 export class BaseSepoliaService extends EVMService {
   constructor() {
     super()
-    this.provider = new InfuraProvider(ChainId.BASE_SEPOLIA, INFURA_API_KEY)
+    this.provider = getInfuraProvider(ChainId.BASE_SEPOLIA)
   }
 }
 

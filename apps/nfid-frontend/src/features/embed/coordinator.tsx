@@ -6,12 +6,12 @@ import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
 
 import AuthenticationCoordinator from "../authentication/root/coordinator"
 import { AuthenticationMachineActor } from "../authentication/root/root-machine"
-import { NFIDEmbedMachineV2 } from "./machine-v2"
+import { NFIDEmbedMachine } from "./machine"
 import { ProcedureApprovalCoordinator } from "./procedure-approval-coordinator"
 import { PageError } from "./ui/error"
 
 export default function NFIDEmbedCoordinator() {
-  const [state, send] = useMachine(NFIDEmbedMachineV2)
+  const [state, send] = useMachine(NFIDEmbedMachine)
   console.debug("NFIDEmbedCoordinator")
 
   const Component = useMemo(() => {
@@ -36,7 +36,7 @@ export default function NFIDEmbedCoordinator() {
             isEmbed
             actor={
               state.children[
-                "NFIDEmbedMachineV2.AUTH.Authenticate:invocation[0]"
+                "NFIDEmbedMachine.AUTH.Authenticate:invocation[0]"
               ] as AuthenticationMachineActor
             }
           />

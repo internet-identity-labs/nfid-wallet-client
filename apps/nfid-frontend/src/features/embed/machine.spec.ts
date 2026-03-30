@@ -1,7 +1,7 @@
-import { NFIDEmbedMachineV2 } from "./machine-v2"
+import { NFIDEmbedMachine } from "./machine"
 
-describe("NFIDEmbedMachineV2", () => {
+describe("NFIDEmbedMachine", () => {
   it("should work", () => {
-    expect(NFIDEmbedMachineV2).toBeDefined()
+    expect(NFIDEmbedMachine).toBeDefined()
   })
 })

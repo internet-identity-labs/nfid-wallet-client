@@ -434,10 +434,19 @@ export abstract class Erc20Service {
 
       // Execute all calls in one request using provider.call (read-only)
       // This is much more efficient than individual calls
-      const result = await this.provider.call({
-        to: MULTICALL3_ADDRESS,
-        data: aggregateData,
-      })
+      let result: string
+      try {
+        result = await this.provider.call({
+          to: MULTICALL3_ADDRESS,
+          data: aggregateData,
+        })
+      } catch {
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        result = await this.provider.call({
+          to: MULTICALL3_ADDRESS,
+          data: aggregateData,
+        })
+      }
 
       // Decode the result
       const [, returnData] = multicallInterface.decodeFunctionResult(

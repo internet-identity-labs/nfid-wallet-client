@@ -65,7 +65,7 @@ Then(
   async (
     type: string,
     date: string,
-    from: string,
+    _from: string,
     to: string,
     price: string,
   ) => {
@@ -90,7 +90,6 @@ Then(
         expect(await Nft.getValueFromColumnAtFirstRow("Price")).toContain(
           price,
         ),
-      // TODO BUG - "From" field is empty () => expect(await Nft.getValueFromColumnAtFirstRow("From")).toContain(price)
     )
   },
 )

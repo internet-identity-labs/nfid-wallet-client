@@ -88,7 +88,7 @@ Then(
         if (!isMobile()) {
           await browser.waitUntil(
             async () => {
-              let currentBalance = (
+              const currentBalance = (
                 await (await Assets.tokenUSDBalance(tokenName)).getText()
               )
                 .trim()
@@ -104,7 +104,7 @@ Then(
       },
       [
         async () =>
-          await expect(
+          expect(
             (await (await Assets.tokenBalance(tokenName)).getText())
               .split("\n")
               .map((s) => s.trim())
@@ -114,7 +114,7 @@ Then(
       ],
       [
         async () =>
-          await expect(
+          expect(
             (await (await Assets.getCurrency(tokenName)).getText())
               .split("\n")
               .map((s) => s.trim())
@@ -125,7 +125,7 @@ Then(
       [
         async () => {
           if (!isMobile()) {
-            await expect(
+            expect(
               (await (await Assets.getBlockchain(category)).getText())
                 .split("\n")
                 .map((s) => s.trim())

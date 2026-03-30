@@ -6,11 +6,13 @@ import HomePage from "../pages/home-page.js"
 import Nft from "../pages/nft.js"
 import Profile from "../pages/profile.js"
 import Staking from "../pages/staking.js"
-import AddressBook from "../pages/addressBook"
 import Page from "../pages/page"
+import AddressBook from "../pages/addressBook"
+
+type TabConfig = Parameters<typeof Assets.waitUntilElementsLoadedProperly>
 
 When(/^User goes to (.*) (?:tab|page)$/, async (tab: string) => {
-  const tabMap: { [key: string]: any } = {
+  const tabMap: Record<string, TabConfig> = {
     Activity: [Assets.activityTab, Activity.filterButton],
     NFTs: [Assets.NFTtab, Nft.randomTokenOnNFTtab],
     Staking: [

@@ -80,7 +80,7 @@ export class EvmNftImpl implements NFT {
   }
 
   getMillis(): number {
-    return this.asset.acquiredAt ?? 0
+    return 0
   }
 
   getMarketPlace(): MarketPlace {

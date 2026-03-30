@@ -13,6 +13,54 @@ All machines are pure statecharts; IO and side effects are expressed through nam
 
 ---
 
+## Architecture diagram
+
+```mermaid
+flowchart TD
+  subgraph uiSurfaces [UI_surfaces]
+    authCoordinator[AuthenticationCoordinator]
+    thirdPartyCoordinator[ThirdPartyAuthCoordinator]
+    nfidCoordinator[NFIDAuthCoordinator]
+    embedCoordinator[NFIDEmbedCoordinator]
+    identityKitUI[IdentityKit_UI]
+    transferUI[Transfer_UI]
+  end
+
+  subgraph machines [XState_machines]
+    authRoot[AuthenticationMachine]
+    emailAuth[AuthWithEmailMachine]
+    googleAuth[AuthWithGoogleMachine]
+    thirdPartyAuth[ThirdPartyAuthMachine]
+    nfidAuth[NFIDAuthMachine]
+    embedMachine[NFIDEmbedMachine]
+    identityKitMachine[IdentityKitRPCMachine]
+    transferMachine[TransferMachine]
+  end
+
+  %% UI -> machines
+  authCoordinator --> authRoot
+  thirdPartyCoordinator --> thirdPartyAuth
+  nfidCoordinator --> nfidAuth
+  embedCoordinator --> embedMachine
+  identityKitUI --> identityKitMachine
+  transferUI --> transferMachine
+
+  %% Machine composition (invokes)
+  authRoot -->|"invoke"| emailAuth
+  authRoot -->|"invoke"| googleAuth
+
+  thirdPartyAuth -->|"invoke"| authRoot
+  nfidAuth -->|"invoke"| authRoot
+  embedMachine -->|"invoke"| authRoot
+  identityKitMachine -->|"invoke"| authRoot
+
+  %% Coordinators render shared auth UI during invoked auth
+  thirdPartyCoordinator -.-> authCoordinator
+  nfidCoordinator -.-> authCoordinator
+  embedCoordinator -.-> authCoordinator
+  identityKitUI -.-> authCoordinator
+```
+
 ## Auth domain
 
 ### `authentication/root/root-machine.ts` – `AuthenticationMachine`

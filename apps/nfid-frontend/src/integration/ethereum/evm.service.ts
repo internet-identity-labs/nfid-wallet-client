@@ -192,7 +192,14 @@ export abstract class EVMService {
 
     return ttlCacheService.getOrFetch(
       cacheKey,
-      () => this.provider.getBalance(address),
+      async () => {
+        try {
+          return await this.provider.getBalance(address)
+        } catch {
+          await new Promise((resolve) => setTimeout(resolve, 1000))
+          return await this.provider.getBalance(address)
+        }
+      },
       () => 20000 + Math.floor(Math.random() * 10000),
       {
         serialize: (v) => v.toString(),
@@ -223,14 +230,6 @@ export abstract class EVMService {
   }
 
   private async fetchNFTs(
-    address: string,
-    alchemyNetwork: string,
-    chainId: number,
-  ): Promise<EvmNftAsset[]> {
-    return this.fetchNFTList(address, alchemyNetwork, chainId)
-  }
-
-  private async fetchNFTList(
     address: string,
     alchemyNetwork: string,
     chainId: number,

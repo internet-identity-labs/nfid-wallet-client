@@ -70,6 +70,7 @@ import {
   ERC20_TOKENS_CACHE_NAME,
   ERC20_TOKENS_LIST_CACHE_NAME,
 } from "frontend/integration/ethereum/erc20-abstract.service"
+import { useUserPrefs } from "frontend/hooks/user-prefs"
 
 interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   pageTitle?: string
@@ -110,6 +111,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 }) => {
   const location = useLocation()
   const navigate = useNavigate()
+  const { testnetEnabled } = useUserPrefs()
   const { isViewOnlyMode, viewOnlyAddress, viewOnlyAddressType } =
     useContext(ProfileContext)
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -353,7 +355,11 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
           EVM_ERC20_ACTIVITIES_CACHE_NAME,
           ACTIVITY_CACHE_NAME,
         ])
-        await getAllActivity(PAGINATION_ITEMS, initedTokens ?? [])
+        await getAllActivity(
+          PAGINATION_ITEMS,
+          initedTokens ?? [],
+          testnetEnabled,
+        )
         await mutate(
           (key) => typeof key === "string" && key.startsWith('["activity"'),
         )

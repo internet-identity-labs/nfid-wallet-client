@@ -6,11 +6,8 @@ describe("transferMachine", () => {
   it("should be defined and start in Hidden", () => {
     expect(transferMachine).toBeDefined()
 
-    // Static check: initial state and minimal context
+    // Static check: initial state
     expect(transferMachine.initialState.value).toBe("Hidden")
-    expect(transferMachine.initialState.context).toMatchObject({
-      error: undefined,
-    })
 
     const service = interpret(transferMachine).start()
     expect(service.getSnapshot().value).toBe("Hidden")

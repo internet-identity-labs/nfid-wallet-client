@@ -3,7 +3,7 @@ import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { Balance } from "packages/ui/src/organisms/profile-info/balance"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import { ScanTokens } from "packages/ui/src/organisms/tokens/components/scan-tokens"
-import { useContext, useEffect, useMemo } from "react"
+import { useContext, useMemo, memo } from "react"
 import useSWR from "swr"
 
 import { Skeleton } from "@nfid-frontend/ui"
@@ -30,7 +30,7 @@ import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/toke
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { useUserPrefs } from "frontend/hooks/user-prefs"
 
-const TokensPage = () => {
+const TokensPage = memo(() => {
   const {
     hideZeroBalance,
     testnetEnabled,
@@ -177,11 +177,7 @@ const TokensPage = () => {
     ).length
   }, [initedTokens])
 
-  const {
-    data: tokensUsdBalance,
-    isLoading: tokensUsdBalanceLoading,
-    mutate: refetchFtUsdBalance,
-  } = useSWR(
+  const { data: tokensUsdBalance, isLoading: tokensUsdBalanceLoading } = useSWR(
     initedTokens && initedTokens.length > 0
       ? isViewOnlyMode
         ? ["ftUsdValue", viewOnlyAddress]
@@ -190,10 +186,6 @@ const TokensPage = () => {
     async () => ftService.getFTUSDBalance(initedTokens!),
     { revalidateOnFocus: false },
   )
-
-  useEffect(() => {
-    refetchFtUsdBalance()
-  }, [initedTokens, refetchFtUsdBalance])
 
   const onZeroBalanceToggle = () => setHideZeroBalance(!hideZeroBalance)
   const onTestnetToggle = () => setTestnetEnabled(!testnetEnabled)
@@ -306,6 +298,6 @@ const TokensPage = () => {
       </ProfileContainer>
     </>
   )
-}
+})
 
 export default TokensPage

@@ -2,7 +2,7 @@ import { NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
 import { hexStringToUint8Array } from "@dfinity/utils"
 import { useActor } from "@xstate/react"
 import { StakingDetails } from "packages/ui/src/organisms/staking/staking-details"
-import { useContext, useMemo } from "react"
+import { useContext, useMemo, memo } from "react"
 import { useParams } from "react-router-dom"
 
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
@@ -23,7 +23,7 @@ import {
 import { ModalType } from "../transfer-modal/types"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
-const StakingDetailsPage = () => {
+const StakingDetailsPage = memo(() => {
   const { tokenSymbol } = useParams()
   const {
     isViewOnlyMode,
@@ -147,6 +147,6 @@ const StakingDetailsPage = () => {
       }
     />
   )
-}
+})
 
 export default StakingDetailsPage

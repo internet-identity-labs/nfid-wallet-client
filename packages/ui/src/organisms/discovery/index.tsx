@@ -26,7 +26,7 @@ enum DiscoverySorting {
 }
 
 interface DiscoveryProps {
-  discoveryApps: DiscoveryAppData[]
+  discoveryApps?: DiscoveryAppData[]
   isLoading: boolean
 }
 
@@ -210,7 +210,8 @@ export const Discovery: FC<DiscoveryProps> = ({ discoveryApps, isLoading }) => {
               disabled={isLoading}
               className={clsx(
                 "block mx-auto mt-[20px]",
-                (discoveryApps.length <= appsToShow ||
+                (!discoveryApps ||
+                  discoveryApps.length <= appsToShow ||
                   !discoveryApps.length ||
                   isLoading) &&
                   "hidden",

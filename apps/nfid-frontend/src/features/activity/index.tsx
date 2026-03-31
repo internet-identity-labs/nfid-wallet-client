@@ -1,5 +1,5 @@
 import { Activity } from "packages/ui/src/organisms/activity"
-import { useContext, useMemo, useState } from "react"
+import { useContext, useMemo, useState, memo } from "react"
 import { useLocation } from "react-router-dom"
 
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
@@ -15,7 +15,7 @@ import {
 } from "frontend/integration/address-book"
 import { ftService } from "frontend/integration/ft/ft-service"
 
-const ActivityPage = () => {
+const ActivityPage = memo(() => {
   const { state } = useLocation()
   const initialFilter = state?.canisterId ? [state.canisterId] : []
   const [tokenFilter, setTokenFilter] = useState<string[]>(initialFilter)
@@ -76,6 +76,6 @@ const ActivityPage = () => {
       searchAddress={searchAddress}
     />
   )
-}
+})
 
 export default ActivityPage

@@ -28,7 +28,7 @@ export const useTokensInit = (tokens: FT[] | undefined) => {
     viewOnlyAddressType,
     transferService,
   } = useContext(ProfileContext)
-  const isMounted = useRef(false)
+  const initialFetchDone = useRef(false)
   const { testnetEnabled, arbitrumEnabled, baseEnabled, polygonEnabled } =
     useUserPrefs()
 
@@ -105,13 +105,23 @@ export const useTokensInit = (tokens: FT[] | undefined) => {
     },
   )
 
+  const activeTokensKey = useMemo(
+    () =>
+      activeTokens
+        ?.map((t) => t.getTokenAddress())
+        .sort()
+        .join(",") ?? "",
+    [activeTokens],
+  )
+
   useEffect(() => {
-    if (!isMounted.current || !activeTokens) {
-      isMounted.current = true
+    if (!activeTokens?.length) return
+    if (!initialFetchDone.current) {
+      initialFetchDone.current = true
       return
     }
     mutate()
-  }, [activeTokens])
+  }, [activeTokensKey])
 
   return { initedTokens, mutate, isLoading }
 }

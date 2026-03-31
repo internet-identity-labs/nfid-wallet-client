@@ -3,7 +3,14 @@ import clsx from "clsx"
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { NFTs } from "packages/ui/src/organisms/nfts"
 import { Balance } from "packages/ui/src/organisms/profile-info/balance"
-import { useCallback, useContext, useState, useEffect, useMemo } from "react"
+import {
+  useCallback,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+  memo,
+} from "react"
 
 import { Button, Skeleton } from "@nfid-frontend/ui"
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
@@ -23,7 +30,7 @@ import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/toke
 
 const DEFAULT_LIMIT_PER_PAGE = 8
 
-const NFTsPage = () => {
+const NFTsPage = memo(() => {
   const globalServices = useContext(ProfileContext)
   const { isViewOnlyMode, viewOnlyAddress, viewOnlyAddressType } =
     globalServices
@@ -211,6 +218,6 @@ const NFTsPage = () => {
       </ProfileContainer>
     </>
   )
-}
+})
 
 export default NFTsPage

@@ -22,18 +22,15 @@ When(
   async (anchor: number) => {
     await HomePage.continueWithRecoveryPhraseButton.click()
     await HomePage.recoveryPhraseTextArea.setValue(
-      (
-        await userClient.takeStaticUserByAnchor(anchor)
-      ).seed,
+      (await userClient.takeStaticUserByAnchor(anchor)).seed,
     )
     await HomePage.submitRecoveryPhraseButton.click()
     try {
       await HomePage.skipSecureWalletButton.waitForDisplayed({
         timeout: 8000,
       })
-    } catch (e) {
-      /*empty*/
-    }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {}
     if (await HomePage.skipSecureWalletButton.isDisplayed())
       await HomePage.skipSecureWalletButton.click()
   },

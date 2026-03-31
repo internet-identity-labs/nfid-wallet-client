@@ -25,6 +25,7 @@ import {
 } from "../types"
 
 export const ICRC1_ORACLE_CACHE_NAME = "ICRC1OracleService.getICRC1Canisters"
+export const DISCOVERY_APPS_CACHE_NAME = "ICRC1OracleService.getICRC1Canisters"
 
 export class ICRC1OracleService {
   async addICRC1Canister(data: ICRC1Data): Promise<void> {
@@ -128,6 +129,27 @@ export class ICRC1OracleService {
   }
 
   async getDiscoveryApps(pageSize = 25): Promise<DiscoveryAppData[]> {
+    return ttlCacheService.getOrFetch(
+      DISCOVERY_APPS_CACHE_NAME,
+      () => this.fetchDiscoveryApps(pageSize),
+      5 * 60 * 1000,
+      {
+        serialize: (apps) =>
+          JSON.stringify(
+            apps.map((a) => ({ ...a, uniqueUsers: String(a.uniqueUsers) })),
+          ),
+        deserialize: (stored) =>
+          (JSON.parse(stored as string) as Array<any>).map((a) => ({
+            ...a,
+            uniqueUsers: BigInt(a.uniqueUsers),
+          })),
+      },
+    )
+  }
+
+  private async fetchDiscoveryApps(
+    pageSize: number,
+  ): Promise<DiscoveryAppData[]> {
     const total = await iCRC1OracleActor.count_discovery_apps()
     const pages = await Promise.all(
       Array.from({ length: Math.ceil(Number(total) / pageSize) }, (_, i) =>

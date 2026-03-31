@@ -11,10 +11,6 @@ export class Assets extends Page {
     return $("#sendButton")
   }
 
-  get assetLabel() {
-    return "[id*='token_"
-  }
-
   get getSourceTokenBalance() {
     return $("#choose-from-token-balance")
   }
@@ -283,6 +279,7 @@ export class Assets extends Page {
           }
 
           return true
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
           await browser.refresh()
         }

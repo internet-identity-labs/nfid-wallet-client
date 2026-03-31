@@ -21,6 +21,7 @@ export const config = Object.assign({}, desktopConfig, {
       {
         saveAllVideos: true,
         videoSlowdownMultiplier: 3,
+        videoFormat: "mp4",
         outputDir: "src/reporter/mobile/video",
       },
     ],

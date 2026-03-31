@@ -1,6 +1,6 @@
 {
   "name": "nfid-frontend-e2e",
-  "$schema": "node_modules/nx/schemas/project-schema.json",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/nfid-frontend-e2e/src",
   "projectType": "application",
   "tags": ["scope:e2e", "type:application", "layer:app"],

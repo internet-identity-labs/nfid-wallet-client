@@ -15,7 +15,7 @@
 - add `const auth = ` in front of line `await browser.addVirtualWebAuth...`, this will save the authenticator id
 - in the end of this step add `const creds = await browser.getWebauthnCredentials(auth)`, you may also add `console.log(JSON.stringify(creds.toString))` next line to see the actual credentials
 - after the above lines added add finish one `await browser.debug()` to stop wdio scenario, so you can check the info
-- run this particular scenario with cmd `npx nx test:e2e nfid-frontend-e2e --cucumberOpts.tagExpression='@runthis'`
+- run this particular scenario with cmd `npx nx test:e2e nfid-frontend-e2e --cucumberOpts.tags='@runthis'`
 - once stop on debug, check the IndexedDb within wdio browser (F12->Application->IndexedDb->profile-db->profile-store->account), copy it
 - add info from IndexedDb in your test user JSON within `account` tag (make sure there is anchor appears, it should match the seed phrase)
 - grab the credentials from logs and add them within `credentials` tag for your test user

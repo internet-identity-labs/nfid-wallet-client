@@ -120,16 +120,16 @@ describe("Bitcoin Service", () => {
     expect(fee.bitcointNetworkFee.utxos).not.toHaveLength(0)
   })
 
-  it.skip("should return a CkBtcToBtc fee", async () => {
+  it("should return a CkBtcToBtc fee", async () => {
     // Given
     const identity: SignIdentity = Ed25519KeyIdentity.fromParsedJson(IDENTITY)
-    const amount: string = "0.00001"
+    const amount: string = "0.0001"
 
     // When
     const fee = await bitcoinService.getCkBtcToBtcFee(identity, amount)
 
     // Then
-    expect(fee.identityLabsFee).toBe(BigInt(9))
+    expect(fee.identityLabsFee).toBe(BigInt(88))
     expect(fee.bitcointNetworkFee.fee_satoshis).not.toBeNull()
     expect(fee.bitcointNetworkFee.utxos).toHaveLength(0)
   })

@@ -8,7 +8,7 @@ set -euo pipefail
 #
 # Usage:
 #   ./scripts/run-e2e-frontend.sh
-#   ./scripts/run-e2e-frontend.sh -- --cucumberOpts.tagExpression='@sendft'
+#   ./scripts/run-e2e-frontend.sh -- --cucumberOpts.tags='@sendft'
 #
 # Env:
 #   ENV_FILE (optional) - defaults to .env.test

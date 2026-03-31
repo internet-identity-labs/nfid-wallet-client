@@ -32,7 +32,7 @@ const machineConfig = {
     componentData: {},
     error: undefined,
   } as IdentityKitRPCMachineContext,
-  type: "parallel" as any,
+  type: "parallel" as const,
   states: {
     RPCReceiverV3: {
       invoke: {
@@ -270,7 +270,7 @@ const machineServices = {
     prepareFailedResponse: prepareFailedResponseEffect,
   },
   services: {
-    RPCReceiverV3,
+    RPCReceiverV3: ((...args: any[]) => (RPCReceiverV3 as any)(...args)) as any,
     executeSilentMethod,
     validateRequest,
     getInteractiveMethodData,
@@ -291,6 +291,12 @@ const machineServices = {
 export const IdentityKitRPCMachine = createMachine(
   {
     predictableActionArguments: true,
+    tsTypes: {} as import("./machine.typegen").Typegen0,
+    schema: {
+      context: {} as IdentityKitRPCMachineContext,
+      // Narrow event typing later if desired; keep `any` to avoid breaking changes.
+      events: {} as any,
+    },
     ...machineConfig,
   },
   machineServices,

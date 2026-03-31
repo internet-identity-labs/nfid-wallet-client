@@ -478,7 +478,6 @@ export class FtService {
     principal: Principal,
     viewOnlyAddress?: string,
   ): Promise<FT[]> {
-    console.log("inittt")
     return Promise.all(
       tokens.map((token) => token.init(principal, viewOnlyAddress)),
     )

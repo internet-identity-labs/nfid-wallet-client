@@ -2,6 +2,10 @@ import { fail } from "assert"
 
 import { readFile as readJSONFile } from "./fileops.js"
 
+type WindowWithAuthState = Window & {
+  setAuthState?: (authState: TestUser["authstate"]) => Promise<string | Error>
+}
+
 /**
  * The Subject interface declares a set of methods for managing subscribers.
  */
@@ -48,44 +52,31 @@ class UserService implements UserActions {
     fail("All users borrowed")
   }
 
-  public releaseUser(user: TestUser) {
-    this.userMap.set(user, false)
-    this.notify()
-  }
-
   async setAuth(anchor: number) {
-    let testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
-    let errors: string[] = []
+    const testUser: TestUser = await userClient.takeStaticUserByAnchor(anchor)
+    const errors: string[] = []
     await browser.waitUntil(
       async () => {
         await browser.pause(1000)
-        let executeResult = await browser.executeAsync(function (
-          authState,
-          done,
-        ) {
-          // @ts-ignore
-          if (typeof setAuthState === "function") {
+        const executeResult = await browser.execute(async function (authState) {
+          const authWindow = window as WindowWithAuthState
+
+          if (typeof authWindow.setAuthState === "function") {
             try {
-              // @ts-ignore
-              setAuthState(authState)
-                .then(async function (functionResult: Promise<string | Error>) {
-                  done(String(await functionResult))
-                })
-                .catch(function (error: Error) {
-                  done("error: " + error.message)
-                })
+              return String(await authWindow.setAuthState(authState))
             } catch (e) {
               let errorMessage
               if (e instanceof Error)
                 errorMessage = `setAuthState error: ${e.message}`
               else errorMessage = `setAuthState got unknown error}`
-              done(errorMessage)
+              return errorMessage
             }
-          } else done("setAuthState function is not available")
-        },
-        testUser.authstate)
+          }
+
+          return "setAuthState function is not available"
+        }, testUser.authstate)
         errors.push(String(executeResult))
-        let state = await this.getAuthStateFromDB()
+        const state = await this.getAuthStateFromDB()
         errors.push(...state.errors)
         return (
           state.identity?.toString() ==
@@ -108,119 +99,64 @@ class UserService implements UserActions {
     delegation: string | null
     errors: string[]
   }> {
-    return await browser.executeAsync(function (done) {
-      let errors: string[] = []
-      const dbRequest = indexedDB.open("authstate")
-      dbRequest.onerror = (event) => {
-        const request = event.target as IDBRequest
-        const errorMessage = request.error
-          ? request.error.message
-          : "Unknown error"
-        errors.push(`Can't get "authstate" db. Error: ${errorMessage}`)
-        done({ identity: null, delegation: null, errors })
-      }
-      dbRequest.onsuccess = (event) => {
-        const db = (event.target as IDBRequest<IDBDatabase>).result
-        const transaction = db.transaction(["ic-keyval"], "readonly")
-        const objectStore = transaction.objectStore("ic-keyval")
+    return await browser.execute(async function () {
+      const errors: string[] = []
+      const db = await new Promise<IDBDatabase>((resolve, reject) => {
+        const dbRequest = indexedDB.open("authstate")
 
-        const promises = ["identity", "delegation"].map(
-          (key) =>
-            new Promise((resolve, reject) => {
-              const request = objectStore.get(key)
-              request.onsuccess = () => {
-                resolve(request.result !== undefined ? request.result : null)
-              }
-              request.onerror = () => {
-                const errorMsg = `Can't get ${key} value. Error: ${
-                  request.error ? request.error.message : "Unknown error"
-                }`
-                errors.push(errorMsg)
-                reject(errorMsg)
-              }
-            }),
-        )
-        Promise.all(promises)
-          .then(([identity, delegation]) => {
-            done({
-              identity: identity as string | null,
-              delegation: delegation as string | null,
-              errors,
-            })
-          })
-          .catch((error) => {
-            errors.push(error)
-            done({ identity: null, delegation: null, errors })
-          })
-      }
-    })
-  }
+        dbRequest.onerror = (event) => {
+          const request = event.target as IDBRequest
+          const errorMessage = request.error
+            ? request.error.message
+            : "Unknown error"
+          reject(`Can't get "authstate" db. Error: ${errorMessage}`)
+        }
 
-  async checkDatabaseExists(dbName: string): Promise<{
-    result: boolean
-    errors: string[]
-  }> {
-    return browser.executeAsync((dbName, done) => {
-      let errors: string[] = []
-      const request = indexedDB.open(dbName)
+        dbRequest.onsuccess = (event) => {
+          resolve((event.target as IDBRequest<IDBDatabase>).result)
+        }
+      }).catch((error) => {
+        errors.push(String(error))
+        return null
+      })
 
-      request.onupgradeneeded = function () {
-        errors.push(`Upgrade is needed for DB: ${dbName}, possibly not exists.`)
+      if (!db) {
+        return { identity: null, delegation: null, errors }
       }
 
-      request.onsuccess = function () {
-        request.result.close()
-        done({ result: true, errors: errors })
-      }
+      const transaction = db.transaction(["ic-keyval"], "readonly")
+      const objectStore = transaction.objectStore("ic-keyval")
 
-      request.onerror = function () {
-        errors.push(
-          `Error opening DB: ${dbName}. Error: ${
-            request.error ? request.error.message : "Unknown error"
-          }`,
-        )
-        done({ result: false, errors: errors })
-      }
+      const promises = ["identity", "delegation"].map(
+        (key) =>
+          new Promise<string | null>((resolve, reject) => {
+            const request = objectStore.get(key)
+            request.onsuccess = () => {
+              resolve(request.result !== undefined ? request.result : null)
+            }
+            request.onerror = () => {
+              const errorMsg = `Can't get ${key} value. Error: ${
+                request.error ? request.error.message : "Unknown error"
+              }`
+              errors.push(errorMsg)
+              reject(errorMsg)
+            }
+          }),
+      )
 
-      request.onblocked = function () {
-        errors.push(
-          `Opening DB: ${dbName} is blocked, likely open connections.`,
-        )
-      }
-    }, dbName)
-  }
+      try {
+        const [identity, delegation] = await Promise.all(promises)
 
-  async waitForDBAndDeleteDB(
-    waitForDB: string,
-    deleteDB: string,
-  ): Promise<{
-    result: boolean
-    errors: string[]
-  }> {
-    let errors: string[] = []
-    await browser.pause(1000)
-    await this.checkDatabaseExists(waitForDB).then(async (it) => {
-      errors.push(...it.errors)
-      if (!it.result) {
-        await browser.executeAsync((deleteDB, done) => {
-          const deleteRequest = indexedDB.deleteDatabase(deleteDB)
-          deleteRequest.onsuccess = function () {
-            done(true)
-          }
-          deleteRequest.onerror = function () {
-            errors.push(`Can't delete ${deleteDB}`)
-            done(false)
-          }
-        }, deleteDB)
-        await browser.refresh()
+        return {
+          identity,
+          delegation,
+          errors,
+        }
+      } catch (error) {
+        errors.push(String(error))
+        return { identity: null, delegation: null, errors }
       }
     })
-    let recheckResults = await this.checkDatabaseExists(waitForDB)
-    errors.push(...recheckResults.errors)
-    return {
-      result: recheckResults.result,
-      errors: errors,
-    }
   }
 
   /**
@@ -236,28 +172,28 @@ class UserService implements UserActions {
   public attach(observer: Observer): void {
     const isExist = this.observers.includes(observer)
     if (isExist) {
-      return console.info("Subject: Observer has been attached already.")
+      return console.warn("Subject: Observer has been attached already.")
     }
 
-    console.info("Subject: Attached an observer.")
+    console.warn("Subject: Attached an observer.")
     this.observers.push(observer)
   }
 
   public detach(observer: Observer): void {
     const observerIndex = this.observers.indexOf(observer)
     if (observerIndex === -1) {
-      return console.info("Subject: Nonexistent observer.")
+      return console.warn("Subject: Nonexistent observer.")
     }
 
     this.observers.splice(observerIndex, 1)
-    console.info("Subject: Detached an observer.")
+    console.warn("Subject: Detached an observer.")
   }
 
   /**
    * Trigger an update in each subscriber.
    */
   public notify(): void {
-    console.info("Subject: Notifying observers...")
+    console.warn("Subject: Notifying observers...")
     for (const observer of this.observers) {
       observer.update(this)
     }

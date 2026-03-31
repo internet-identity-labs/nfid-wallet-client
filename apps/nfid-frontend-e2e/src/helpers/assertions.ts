@@ -7,7 +7,7 @@ class Assertions {
   ): Promise<void> {
     try {
       await assertion()
-    } catch (e: any) {
+    } catch (e) {
       const originalMessage = e instanceof Error ? e.message : String(e)
       const fullMessage = message
         ? `❌ ${message}\n\n${originalMessage}`

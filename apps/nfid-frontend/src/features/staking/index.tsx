@@ -1,6 +1,6 @@
 import { useActor } from "@xstate/react"
 import { Staking } from "packages/ui/src/organisms/staking"
-import { useContext } from "react"
+import { useContext, memo } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 
 import { useSWRWithTimestamp } from "@nfid/swr"
@@ -15,7 +15,7 @@ import { fetchTokens } from "../fungible-token/utils"
 import { fetchStakedTokens, fetchViewOnlyStakedTokens } from "./utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
-const StakingPage = () => {
+const StakingPage = memo(() => {
   const navigate = useNavigate()
   const {
     isViewOnlyMode,
@@ -87,6 +87,6 @@ const StakingPage = () => {
       onStakeClick={isViewOnlyMode ? undefined : onStakeClick}
     />
   )
-}
+})
 
 export default StakingPage

@@ -25,7 +25,7 @@ import {
 } from "../types"
 
 export const ICRC1_ORACLE_CACHE_NAME = "ICRC1OracleService.getICRC1Canisters"
-export const DISCOVERY_APPS_CACHE_NAME = "ICRC1OracleService.getICRC1Canisters"
+export const DISCOVERY_APPS_CACHE_NAME = "ICRC1OracleService.getDiscoveryApss"
 
 export class ICRC1OracleService {
   async addICRC1Canister(data: ICRC1Data): Promise<void> {

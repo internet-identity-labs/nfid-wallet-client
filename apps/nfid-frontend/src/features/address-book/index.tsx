@@ -6,7 +6,7 @@ import {
   UserAddressSaveRequest,
   UserAddressUpdateRequest,
 } from "frontend/integration/address-book"
-import { FC } from "react"
+import { FC, memo } from "react"
 import { NFIDTheme } from "frontend/App"
 
 type AddressBookPageProps = {
@@ -14,39 +14,38 @@ type AddressBookPageProps = {
   setWalletTheme: (theme: NFIDTheme) => void
 }
 
-const AddressBookPage: FC<AddressBookPageProps> = ({
-  walletTheme,
-  setWalletTheme,
-}) => {
-  const create = (request: UserAddressSaveRequest) =>
-    addressBookFacade.save(request)
+const AddressBookPage: FC<AddressBookPageProps> = memo(
+  ({ walletTheme, setWalletTheme }) => {
+    const create = (request: UserAddressSaveRequest) =>
+      addressBookFacade.save(request)
 
-  const update = (request: UserAddressUpdateRequest) =>
-    addressBookFacade.update(request)
+    const update = (request: UserAddressUpdateRequest) =>
+      addressBookFacade.update(request)
 
-  const remove = (id: string) => addressBookFacade.delete(id)
+    const remove = (id: string) => addressBookFacade.delete(id)
 
-  const { data: addresses, isLoading } = useSWR("addressBook", async () =>
-    addressBookFacade.findAll(),
-  )
+    const { data: addresses, isLoading } = useSWR("addressBook", async () =>
+      addressBookFacade.findAll(),
+    )
 
-  return (
-    <ProfileTemplate
-      showBackButton
-      pageTitle="Address book"
-      className="dark:text-white"
-      walletTheme={walletTheme}
-      setWalletTheme={setWalletTheme}
-    >
-      <AddressBook
-        addresses={addresses}
-        isLoading={isLoading}
-        onCreate={create}
-        onUpdate={update}
-        onRemove={remove}
-      />
-    </ProfileTemplate>
-  )
-}
+    return (
+      <ProfileTemplate
+        showBackButton
+        pageTitle="Address book"
+        className="dark:text-white"
+        walletTheme={walletTheme}
+        setWalletTheme={setWalletTheme}
+      >
+        <AddressBook
+          addresses={addresses}
+          isLoading={isLoading}
+          onCreate={create}
+          onUpdate={update}
+          onRemove={remove}
+        />
+      </ProfileTemplate>
+    )
+  },
+)
 
 export default AddressBookPage

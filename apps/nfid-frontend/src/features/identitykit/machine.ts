@@ -16,6 +16,11 @@ import {
   validateRequest,
 } from "./service/method/method.service"
 import { IdentityKitRPCMachineContext, RPCErrorResponse } from "./type"
+import {
+  prepareCancelResponseEffect,
+  prepareFailedResponseEffect,
+  sendResponseEffect,
+} from "./effects"
 
 const machineConfig = {
   id: "IdentityKitRPCMachine",
@@ -27,7 +32,7 @@ const machineConfig = {
     componentData: {},
     error: undefined,
   } as IdentityKitRPCMachineContext,
-  type: "parallel" as any,
+  type: "parallel" as const,
   states: {
     RPCReceiverV3: {
       invoke: {
@@ -262,69 +267,23 @@ const machineServices = {
         error: event.data,
       }
     }),
-    prepareFailedResponse: async (context: IdentityKitRPCMachineContext) => {
-      if (!context.activeRequest) throw new Error("No active request")
-
-      const response: RPCErrorResponse = {
-        origin: context.activeRequest.origin,
-        jsonrpc: context.activeRequest.data.jsonrpc,
-        id: context.activeRequest.data.id,
-        error: {
-          code: 1001,
-          message: "Unknown error",
-        },
-      }
-
-      return response
-    },
+    prepareFailedResponse: prepareFailedResponseEffect,
   },
   services: {
-    RPCReceiverV3,
+    RPCReceiverV3: ((...args: any[]) => (RPCReceiverV3 as any)(...args)) as any,
     executeSilentMethod,
     validateRequest,
     getInteractiveMethodData,
     executeInteractiveMethod,
     checkAuthenticationStatus,
     AuthenticationMachine,
-    prepareCancelResponse: async (context: IdentityKitRPCMachineContext) => {
-      if (!context.activeRequest) throw new Error("No active request")
-
-      const response: RPCErrorResponse = {
-        origin: context.activeRequest.origin,
-        jsonrpc: context.activeRequest.data.jsonrpc,
-        id: context.activeRequest.data.id,
-        error: {
-          code: 3001,
-          message: "Action aborted",
-        },
-      }
-
-      return response
-    },
+    prepareCancelResponse: prepareCancelResponseEffect,
     sendResponse: async (context: any, event: any) => {
-      const request = context.activeRequest
-      const parent = window.opener || window.parent
-
       if (event.data instanceof NoActionError) {
         return
       }
 
-      if (event.data instanceof Error || event.data instanceof GenericError) {
-        parent.postMessage(
-          {
-            origin: context.activeRequest.origin,
-            jsonrpc: context.activeRequest.data.jsonrpc,
-            id: context.activeRequest.data.id,
-            error: {
-              code: 3001,
-              message: event.data?.message ?? "Unknown error",
-            },
-          },
-          request.origin,
-        )
-      } else {
-        parent.postMessage(event.data, request.origin)
-      }
+      await sendResponseEffect(context, event)
     },
   },
 }
@@ -332,6 +291,12 @@ const machineServices = {
 export const IdentityKitRPCMachine = createMachine(
   {
     predictableActionArguments: true,
+    tsTypes: {} as import("./machine.typegen").Typegen0,
+    schema: {
+      context: {} as IdentityKitRPCMachineContext,
+      // Narrow event typing later if desired; keep `any` to avoid breaking changes.
+      events: {} as any,
+    },
     ...machineConfig,
   },
   machineServices,

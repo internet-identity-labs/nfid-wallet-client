@@ -45,6 +45,7 @@ loadEnvForWebpack();
 const { composePlugins, withNx } = require('@nx/webpack');
 const { withReact } = require('@nx/react');
 const TsConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+// Nx loads this file for the project graph; require() keeps `webpack` defined (default import from a TS config can be undefined under SWC).
 const webpack = require('webpack');
 const { serviceConfig } = require('../../config/webpack-env.cjs');
 

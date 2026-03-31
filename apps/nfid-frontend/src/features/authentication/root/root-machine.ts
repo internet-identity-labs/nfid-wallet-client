@@ -1,5 +1,7 @@
 import { ActorRefFrom, assign, createMachine } from "xstate"
 
+// Orchestrates top-level authentication flows (email, Google, II, other)
+// and post-auth onboarding steps (2FA, passkeys, recovery prompts).
 import AuthWithEmailMachine from "frontend/features/authentication/auth-selection/email-flow/machine"
 import AuthWithGoogleMachine from "frontend/features/authentication/auth-selection/google-flow/auth-with-google"
 import { AbstractAuthSession } from "frontend/state/authentication"
@@ -93,379 +95,408 @@ export interface Schema {
   context: AuthenticationContext
 }
 
-const AuthenticationMachine =
-  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWlQOwGs8B7Adz2wjADcBLAYzADoBldZAJ3SYGFMx6BHsgAOyAEa0ANrXQBPAMQRieZrTzViBNbACyxSVLAB1WZmNhxAQQyY8iUCOKxZtFQ5AAPRAEYATABsTACcABw+wQDMAAwALJEA7D4ArP6hADQgcoiRkX5MscHBCcGxyQnRoWEBsQC+tZloWLiEJOSUNAzMAEpgULSw6BzI6G54usj0mOpgSipqGlrMHH0DQyNjHk4uo+5IXojxQbEBoaGxftHB5akZWYjJoQlMydFvfjHnVQEJ9Y22LSIZAoVDojCYNiwLDARnouzwCisAFUACoACQA+sYAJLojEAcQA8oT8QAZACiW2crj2oG8CD8jwKiUKyT8fh8sROoWSmWyCFCkWCTDeosiPmiPh5AT8fxATRw+CB7VBXQhtmhsPhiNRmJxeO65N0hJRlP22xp9n29L8sVCzISrPZnO5fj5viuQVeb1eZT8xTqDXlAKVbRBnXBkMwmoE2uReP1mJNaPJ3SpO021sQgXt8Ud12dXNOvPuCASqSYPgC1ceCQCuQqkTlCsBYY6YOYUdMWHxxGIUCMc1UTHUmm06qw3cwvf7RgmUxm6ctHnpPh84qYkXKkXCkTt0T8CXdAsCTCSyTCoUue8qPmbIdawPbat6AFtiOgwFGwHhRvQNioQ4LGOyxgO+n5LvCK6IFekQhNEMrJAEt4lIUx4SsEXqir6bIBvezShk+qrguSnhrOoUBWHgUzEBwOoJriSboqmkGZnS2anA6TockWPLHo2lbVtWgqXLEdYBPhiqPiqEbMKR5F4JR1GYLR9F6oxGLkgAGtiLAotiABy+IYlYBk8GihJpua1JQVmCCnD4LxPPE5SeleR6lvWsRMO5fjhMUPxFMEkmtkRskTvwv4MCMYAsMgr5gAAIrJQEjos45SP26hTlRNEcKxtIHAgKQJPk64ROywSepKdz8jUjnBFKMp+SUAQRCFhEyR2EU-n+MVxQlyUdgoYAcBwtFMCIUgjAAZrRr5MJl-R4Dlym0QVVrscVlRwT8bxnFUeSVG6pYJEKZ4nJc4SxJK5QSXKJBUPA+wtp14bdWwnDcHwAhCKIEjSLI-KODZbFFaV6EciKoo1RUwnnB10nvWqn1cBt0EIHax52iEQWYaVdpiRUySI8qyPgr0-SDMM8LztMqjo3ZzVnj8JTJEK4rlD42MVEwh6RPWVYJKV1zJCTQavUjz6RhqMKxmDFq2VtnHRHD1xnaEbVRCWdUHkwyFCikpxRHu4v-ARUvEZ2thTjOA5gIzW2vMcxSJDuRTrkhx7XQUosnJhhsyqTbZW0wb4fl+ti9dFSsgIrYP0mUjkfHmKS2qcmvoQhyTQ28e7Xarh7B2F3XyYMFG5Sp+XWRmhX0my+QHoUh7xJrqQefyFTPDDUoxF5AvF11arflF-6fgNSWyY7RUSuyBTREh1xlK7W7HvW0QvFVvc7cksRSoP5NyXgEDT6u5y7ZrjrrjtKSRN75xnsEtqHVceQIxLD5k9LDs18udm2sebAc88ZVTFlud2A96i1CAA */
-  createMachine(
-    {
-      predictableActionArguments: true,
-      tsTypes: {} as import("./root-machine.typegen").Typegen0,
-      schema: { events: {}, context: {} } as Schema,
-      id: "auth-machine",
-      initial: "AuthSelection",
-      states: {
-        AuthSelection: {
-          on: {
-            AUTH_WITH_EMAIL: {
-              target: "EmailAuthentication",
-              actions: ["assignVerificationEmail", "assignIsEmbed"],
-            },
-            AUTH_WITH_GOOGLE: {
-              target: "AuthWithGoogle",
-              actions: ["assignEmail", "assignIsEmbed"],
-            },
-            AUTH_WITH_II: {
-              target: "AuthWithII",
-              actions: ["assignAuthSession"],
-            },
-            AUTH_WITH_OTHER: {
-              target: "OtherSignOptions",
-              actions: "assignIsEmbed",
-            },
-            AUTHENTICATED: {
-              actions: "assignAuthSession",
-              target: "End",
-            },
-            SIGN_UP: {
-              target: "AuthSelectionSignUp",
-            },
-            SIGN_IN_PASSKEY: {
-              actions: "assignAuthSession",
-              target: "checkRecovery8th",
-            },
-          },
+const authenticationMachineConfig = {
+  predictableActionArguments: true,
+  tsTypes: {} as import("./root-machine.typegen").Typegen0,
+  schema: { events: {}, context: {} } as Schema,
+  id: "auth-machine",
+  initial: "AuthSelection",
+  states: {
+    AuthSelection: {
+      on: {
+        AUTH_WITH_EMAIL: {
+          target: "EmailAuthentication",
+          actions: ["assignVerificationEmail", "assignIsEmbed"],
         },
-        AuthSelectionSignUp: {
-          on: {
-            AUTH_WITH_EMAIL: {
-              target: "SignUpWithEmail",
-              actions: ["assignVerificationEmail", "assignIsEmbed"],
-            },
-            AUTH_WITH_GOOGLE: {
-              target: "SignUpWithGoogle",
-              actions: ["assignEmail", "assignIsEmbed"],
-            },
-            AUTH_WITH_II: {
-              target: "SignUpWithII",
-              actions: ["assignAuthSession"],
-            },
-            AUTHENTICATED: {
-              actions: "assignAuthSession",
-              target: "End",
-            },
-            SIGN_IN: {
-              target: "AuthSelection",
-            },
-            SIGN_UP_WITH_PASSKEY: {
-              target: "SignUpPassKey",
-            },
-          },
+        AUTH_WITH_GOOGLE: {
+          target: "AuthWithGoogle",
+          actions: ["assignEmail", "assignIsEmbed"],
         },
-        SignUpPassKey: {
-          on: {
-            BACK: "AuthSelectionSignUp",
-            AUTHENTICATED: {
-              target: "End",
-              actions: "assignAuthSession",
-            },
-          },
+        AUTH_WITH_II: {
+          target: "AuthWithII",
+          actions: ["assignAuthSession"],
         },
-        SignInWithRecoveryPhrase: {
-          on: {
-            BACK: "OtherSignOptions",
-            AUTHENTICATED: {
-              target: "checkPasskeys6th",
-              actions: "assignAuthSession",
-            },
-          },
+        AUTH_WITH_OTHER: {
+          target: "OtherSignOptions",
+          actions: "assignIsEmbed",
         },
-        BackupWallet: {
-          on: {
-            SKIP: {
-              target: "End",
-            },
-            DONE: "BackupWalletSavePhrase",
-          },
+        AUTHENTICATED: {
+          actions: "assignAuthSession",
+          target: "End",
         },
-        BackupWalletSavePhrase: {
-          on: {
-            DONE: {
-              target: "End",
-            },
-          },
+        SIGN_UP: {
+          target: "AuthSelectionSignUp",
         },
-        AuthWithGoogle: {
-          invoke: {
-            src: "AuthWithGoogleMachine",
-            id: "AuthWithGoogleMachine",
-            data: (_, event: Extract<Events, { type: "AUTH_WITH_GOOGLE" }>) => {
-              return { jwt: event.data.jwt }
-            },
-            onDone: [
-              {
-                cond: "isExistingAccount",
-                actions: "assignAuthSession",
-                target: "check2FA",
-              },
-              {
-                actions: "assignAuthSession",
-                target: "AuthSelection",
-              },
-            ],
-          },
-        },
-        SignUpWithGoogle: {
-          invoke: {
-            src: "AuthWithGoogleMachine",
-            id: "AuthWithGoogleMachine",
-            data: (_, event: Extract<Events, { type: "AUTH_WITH_GOOGLE" }>) => {
-              return { jwt: event.data.jwt }
-            },
-            onDone: [
-              {
-                cond: "isExistingAccount",
-                actions: "assignAuthSession",
-                target: "checkPasskeys",
-              },
-              {
-                actions: "assignAuthSession",
-                target: "AuthSelectionSignUp",
-              },
-            ],
-          },
-        },
-        AuthWithII: {
-          invoke: {
-            id: "AuthWithIIService",
-            src: () => signWithIIService(),
-            onDone: [
-              {
-                cond: "isExistingAccount",
-                actions: "assignAuthSession",
-                target: "check2FA",
-              },
-              {
-                actions: "assignAuthSession",
-                target: "AuthSelection",
-              },
-            ],
-          },
-        },
-        SignUpWithII: {
-          invoke: {
-            id: "AuthWithIIService",
-            src: () => signWithIIService(),
-            onDone: [
-              {
-                cond: "isExistingAccount",
-                actions: "assignAuthSession",
-                target: "checkPasskeys",
-              },
-              {
-                actions: "assignAuthSession",
-                target: "AuthSelectionSignUp",
-              },
-            ],
-          },
-        },
-        SignUpWithEmail: {
-          invoke: {
-            src: "AuthWithEmailMachine",
-            id: "AuthWithEmailMachine",
-            data: (context) => ({
-              authRequest: context?.authRequest,
-              appMeta: context?.appMeta,
-              verificationEmail: context?.verificationEmail,
-            }),
-            onDone: [
-              { cond: "isReturn", target: "AuthSelectionSignUp" },
-              {
-                actions: "assignAuthSession",
-                target: "checkPasskeys",
-              },
-            ],
-          },
-        },
-        EmailAuthentication: {
-          invoke: {
-            src: "AuthWithEmailMachine",
-            id: "AuthWithEmailMachine",
-            data: (context) => ({
-              authRequest: context?.authRequest,
-              appMeta: context?.appMeta,
-              verificationEmail: context?.verificationEmail,
-            }),
-            onDone: [
-              { cond: "isReturn", target: "AuthSelection" },
-              {
-                actions: "assignAuthSession",
-                target: "check2FA",
-              },
-            ],
-          },
-        },
-        OtherSignOptions: {
-          on: {
-            BACK: "AuthSelection",
-            AUTHENTICATED: {
-              target: "End",
-              actions: "assignAuthSession",
-            },
-            AUTH_WITH_RECOVERY_PHRASE: {
-              target: "SignInWithRecoveryPhrase",
-            },
-          },
-        },
-        check2FA: {
-          invoke: {
-            src: "checkIf2FAEnabled",
-            id: "checkIf2FAEnabled",
-            onDone: [
-              {
-                cond: "is2FAEnabled",
-                target: "TwoFA",
-                actions: "assignAllowedDevices",
-              },
-              {
-                target: "checkPasskeys6th",
-                actions: "setShouldCheckRecoveryEvery8th",
-              },
-            ],
-          },
-        },
-        TwoFA: {
-          on: {
-            AUTHENTICATED: {
-              target: "checkRecovery8th",
-            },
-          },
-        },
-        checkPasskeys6th: {
-          invoke: {
-            src: (context) => shouldShowPasskeysEvery6thTime(context),
-            id: "shouldShowPasskeys6th",
-            onDone: [
-              {
-                actions: "assignShowPasskeys",
-                cond: "showPasskeys",
-                target: "AddPasskeys",
-              },
-              {
-                cond: (context) => !!context.shouldShowRecoveryEvery8th,
-                target: "checkRecovery8th",
-              },
-              { target: "End" },
-            ],
-          },
-        },
-        checkRecovery8th: {
-          invoke: {
-            src: () => shouldShowRecoveryPhraseEvery8thTime(),
-            id: "shouldShowRecovery8th",
-            onDone: [
-              {
-                actions: "assignShowRecovery",
-                cond: "showRecovery",
-                target: "BackupWallet",
-              },
-              { target: "End" },
-            ],
-          },
-        },
-        checkPasskeys: {
-          invoke: {
-            src: (context) => shouldShowPasskeys(context),
-            id: "shouldShowPasskeys",
-            onDone: [
-              {
-                actions: "assignShowPasskeys",
-                cond: "showPasskeys",
-                target: "AddPasskeys",
-              },
-              { target: "End" },
-            ],
-          },
-        },
-        AddPasskeys: {
-          on: {
-            BACK: "AuthSelection",
-            CONTINUE: {
-              target: "AddPasskeysSuccess",
-            },
-            SKIP: {
-              target: "End",
-            },
-          },
-        },
-        AddPasskeysSuccess: {
-          on: {
-            DONE: {
-              target: "End",
-            },
-          },
-        },
-        End: {
-          type: "final",
-          data: (context) => ({ ...context }),
+        SIGN_IN_PASSKEY: {
+          actions: "assignAuthSession",
+          target: "checkRecovery8th",
         },
       },
     },
-    {
-      guards: {
-        isExistingAccount: (_, event) => !!event?.data?.anchor,
-        isReturn: (_, event) => {
-          return !event.data
+    AuthSelectionSignUp: {
+      on: {
+        AUTH_WITH_EMAIL: {
+          target: "SignUpWithEmail",
+          actions: ["assignVerificationEmail", "assignIsEmbed"],
         },
-        is2FAEnabled: (_, event) => {
-          return !!event.data
+        AUTH_WITH_GOOGLE: {
+          target: "SignUpWithGoogle",
+          actions: ["assignEmail", "assignIsEmbed"],
         },
-        showPasskeys: (_, event) => {
-          const showPasskeys = event.data?.showPasskeys
-          if (showPasskeys === undefined) return true
-          return showPasskeys
+        AUTH_WITH_II: {
+          target: "SignUpWithII",
+          actions: ["assignAuthSession"],
         },
-        showRecovery: (_, event) => {
-          const showRecovery = event.data?.showRecovery
-          if (showRecovery === undefined) return true
-          return showRecovery
+        AUTHENTICATED: {
+          actions: "assignAuthSession",
+          target: "End",
         },
-      },
-      actions: {
-        setShouldCheckRecoveryEvery8th: assign(() => {
-          return {
-            shouldShowRecoveryEvery8th: true,
-          }
-        }),
-        assignAuthSession: assign((_, event) => {
-          return {
-            authSession: event.data,
-          }
-        }),
-        assignVerificationEmail: assign((_, event) => ({
-          verificationEmail: event.data.email,
-        })),
-        assignAllowedDevices: assign((_, event) => ({
-          allowedDevices: event.data?.allowedPasskeys,
-        })),
-        assignEmail: assign((_, event) => ({
-          email: event.data?.email,
-        })),
-        assignShowPasskeys: assign((_, event) => ({
-          showPasskeys: event.data?.showPasskeys,
-        })),
-        assignShowRecovery: assign((_, event) => ({
-          showRecovery: event.data?.showRecovery,
-        })),
-        assignIsEmbed: assign((_, event) => ({
-          isEmbed: event.data?.isEmbed,
-        })),
-      },
-      services: {
-        AuthWithEmailMachine,
-        AuthWithGoogleMachine,
-        checkIf2FAEnabled,
+        SIGN_IN: {
+          target: "AuthSelection",
+        },
+        SIGN_UP_WITH_PASSKEY: {
+          target: "SignUpPassKey",
+        },
       },
     },
-  )
+    SignUpPassKey: {
+      on: {
+        BACK: "AuthSelectionSignUp",
+        AUTHENTICATED: {
+          target: "End",
+          actions: "assignAuthSession",
+        },
+      },
+    },
+    SignInWithRecoveryPhrase: {
+      on: {
+        BACK: "OtherSignOptions",
+        AUTHENTICATED: {
+          target: "checkPasskeys6th",
+          actions: "assignAuthSession",
+        },
+      },
+    },
+    BackupWallet: {
+      on: {
+        SKIP: {
+          target: "End",
+        },
+        DONE: "BackupWalletSavePhrase",
+      },
+    },
+    BackupWalletSavePhrase: {
+      on: {
+        DONE: {
+          target: "End",
+        },
+      },
+    },
+    AuthWithGoogle: {
+      invoke: {
+        src: "AuthWithGoogleMachine",
+        id: "AuthWithGoogleMachine",
+        data: (
+          _: AuthenticationContext,
+          event: Extract<Events, { type: "AUTH_WITH_GOOGLE" }>,
+        ) => {
+          return { jwt: event.data.jwt }
+        },
+        onDone: [
+          {
+            cond: "isExistingAccount",
+            actions: "assignAuthSession",
+            target: "check2FA",
+          },
+          {
+            actions: "assignAuthSession",
+            target: "AuthSelection",
+          },
+        ],
+      },
+    },
+    SignUpWithGoogle: {
+      invoke: {
+        src: "AuthWithGoogleMachine",
+        id: "AuthWithGoogleMachine",
+        data: (
+          _: AuthenticationContext,
+          event: Extract<Events, { type: "AUTH_WITH_GOOGLE" }>,
+        ) => {
+          return { jwt: event.data.jwt }
+        },
+        onDone: [
+          {
+            cond: "isExistingAccount",
+            actions: "assignAuthSession",
+            target: "checkPasskeys",
+          },
+          {
+            actions: "assignAuthSession",
+            target: "AuthSelectionSignUp",
+          },
+        ],
+      },
+    },
+    AuthWithII: {
+      invoke: {
+        id: "AuthWithIIService",
+        src: () => signWithIIService(),
+        onDone: [
+          {
+            cond: "isExistingAccount",
+            actions: "assignAuthSession",
+            target: "check2FA",
+          },
+          {
+            actions: "assignAuthSession",
+            target: "AuthSelection",
+          },
+        ],
+      },
+    },
+    SignUpWithII: {
+      invoke: {
+        id: "AuthWithIIService",
+        src: () => signWithIIService(),
+        onDone: [
+          {
+            cond: "isExistingAccount",
+            actions: "assignAuthSession",
+            target: "checkPasskeys",
+          },
+          {
+            actions: "assignAuthSession",
+            target: "AuthSelectionSignUp",
+          },
+        ],
+      },
+    },
+    SignUpWithEmail: {
+      invoke: {
+        src: "AuthWithEmailMachine",
+        id: "AuthWithEmailMachine",
+        data: (context: AuthenticationContext) => ({
+          authRequest: context?.authRequest,
+          appMeta: context?.appMeta,
+          verificationEmail: context?.verificationEmail,
+        }),
+        onDone: [
+          { cond: "isReturn", target: "AuthSelectionSignUp" },
+          {
+            actions: "assignAuthSession",
+            target: "checkPasskeys",
+          },
+        ],
+      },
+    },
+    EmailAuthentication: {
+      invoke: {
+        src: "AuthWithEmailMachine",
+        id: "AuthWithEmailMachine",
+        data: (context: AuthenticationContext) => ({
+          authRequest: context?.authRequest,
+          appMeta: context?.appMeta,
+          verificationEmail: context?.verificationEmail,
+        }),
+        onDone: [
+          { cond: "isReturn", target: "AuthSelection" },
+          {
+            actions: "assignAuthSession",
+            target: "check2FA",
+          },
+        ],
+      },
+    },
+    OtherSignOptions: {
+      on: {
+        BACK: "AuthSelection",
+        AUTHENTICATED: {
+          target: "End",
+          actions: "assignAuthSession",
+        },
+        AUTH_WITH_RECOVERY_PHRASE: {
+          target: "SignInWithRecoveryPhrase",
+        },
+      },
+    },
+    check2FA: {
+      invoke: {
+        src: "checkIf2FAEnabled",
+        id: "checkIf2FAEnabled",
+        onDone: [
+          {
+            cond: "is2FAEnabled",
+            target: "TwoFA",
+            actions: "assignAllowedDevices",
+          },
+          {
+            target: "checkPasskeys6th",
+            actions: "setShouldCheckRecoveryEvery8th",
+          },
+        ],
+      },
+    },
+    TwoFA: {
+      on: {
+        AUTHENTICATED: {
+          target: "checkRecovery8th",
+        },
+      },
+    },
+    checkPasskeys6th: {
+      invoke: {
+        src: (context: AuthenticationContext) =>
+          shouldShowPasskeysEvery6thTime(context),
+        id: "shouldShowPasskeys6th",
+        onDone: [
+          {
+            actions: "assignShowPasskeys",
+            cond: "showPasskeys",
+            target: "AddPasskeys",
+          },
+          {
+            cond: (context: AuthenticationContext) =>
+              !!context.shouldShowRecoveryEvery8th,
+            target: "checkRecovery8th",
+          },
+          { target: "End" },
+        ],
+      },
+    },
+    checkRecovery8th: {
+      invoke: {
+        src: () => shouldShowRecoveryPhraseEvery8thTime(),
+        id: "shouldShowRecovery8th",
+        onDone: [
+          {
+            actions: "assignShowRecovery",
+            cond: "showRecovery",
+            target: "BackupWallet",
+          },
+          { target: "End" },
+        ],
+      },
+    },
+    checkPasskeys: {
+      invoke: {
+        src: (context: AuthenticationContext) => shouldShowPasskeys(context),
+        id: "shouldShowPasskeys",
+        onDone: [
+          {
+            actions: "assignShowPasskeys",
+            cond: "showPasskeys",
+            target: "AddPasskeys",
+          },
+          { target: "End" },
+        ],
+      },
+    },
+    AddPasskeys: {
+      on: {
+        BACK: "AuthSelection",
+        CONTINUE: {
+          target: "AddPasskeysSuccess",
+        },
+        SKIP: {
+          target: "End",
+        },
+      },
+    },
+    AddPasskeysSuccess: {
+      on: {
+        DONE: {
+          target: "End",
+        },
+      },
+    },
+    End: {
+      type: "final" as const,
+      data: (context: AuthenticationContext) => ({ ...context }),
+    },
+  },
+}
+
+const authenticationMachineOptions: Parameters<
+  typeof createMachine<AuthenticationContext, Events, any>
+>[1] = {
+  guards: {
+    isExistingAccount: (_: AuthenticationContext, event: any) =>
+      !!event?.data?.anchor,
+    isReturn: (_: AuthenticationContext, event: any) => {
+      return !event.data
+    },
+    is2FAEnabled: (_: AuthenticationContext, event: any) => {
+      return !!event.data
+    },
+    showPasskeys: (_: AuthenticationContext, event: any) => {
+      const showPasskeys = event.data?.showPasskeys
+      if (showPasskeys === undefined) return true
+      return showPasskeys
+    },
+    showRecovery: (_: AuthenticationContext, event: any) => {
+      const showRecovery = event.data?.showRecovery
+      if (showRecovery === undefined) return true
+      return showRecovery
+    },
+  },
+  actions: {
+    setShouldCheckRecoveryEvery8th: assign<AuthenticationContext, Events, any>(
+      () => {
+        return {
+          shouldShowRecoveryEvery8th: true,
+        }
+      },
+    ),
+    assignAuthSession: assign<AuthenticationContext, Events, any>(
+      (_: AuthenticationContext, event: any) => {
+        return {
+          authSession: event.data,
+        }
+      },
+    ),
+    assignVerificationEmail: assign<AuthenticationContext, Events, any>(
+      (_: AuthenticationContext, event: any) => ({
+        verificationEmail: event.data.email,
+      }),
+    ),
+    assignAllowedDevices: assign<AuthenticationContext, Events, any>(
+      (_: AuthenticationContext, event: any) => ({
+        allowedDevices: event.data?.allowedPasskeys,
+      }),
+    ),
+    assignEmail: assign<AuthenticationContext, Events, any>(
+      (_: AuthenticationContext, event: any) => ({
+        email: event.data?.email,
+      }),
+    ),
+    assignShowPasskeys: assign<AuthenticationContext, Events, any>(
+      (_: AuthenticationContext, event: any) => ({
+        showPasskeys: event.data?.showPasskeys,
+      }),
+    ),
+    assignShowRecovery: assign<AuthenticationContext, Events, any>(
+      (_: AuthenticationContext, event: any) => ({
+        showRecovery: event.data?.showRecovery,
+      }),
+    ),
+    assignIsEmbed: assign<AuthenticationContext, Events, any>(
+      (_: AuthenticationContext, event: any) => ({
+        isEmbed: event.data?.isEmbed,
+      }),
+    ),
+  },
+  services: {
+    AuthWithEmailMachine,
+    AuthWithGoogleMachine,
+    checkIf2FAEnabled,
+  },
+}
+
+const AuthenticationMachine = createMachine(
+  authenticationMachineConfig,
+  authenticationMachineOptions,
+)
 
 export type AuthenticationMachineActor = ActorRefFrom<
   typeof AuthenticationMachine

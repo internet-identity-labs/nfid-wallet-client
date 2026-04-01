@@ -191,8 +191,9 @@ export const Staking: FC<StakingProps> = ({
               >
                 <img
                   className={clsx(
-                    "w-[100vw] absolute right-[-1rem] mt-[120px] ",
-                    "sm:right-[-30px] md:mt-0 md:w-[40vw] top-0",
+                    "w-[100vw] right-[-1rem]",
+                    "sm:right-[-30px] mb-[20px] md:w-[40vw] top-0",
+                    "md:absolute md:mb-0",
                   )}
                   src={EmptyStaking}
                 />

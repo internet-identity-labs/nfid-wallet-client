@@ -28,7 +28,7 @@ import { FT } from "frontend/integration/ft/ft"
 import { IModalType } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { SendSuccessUi } from "./send-success"
-import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { ChainId, isEvmToken } from "@nfid/integration/token/icrc1/enum/enums"
 import clsx from "clsx"
 import {
   FtSearchRequest,
@@ -125,6 +125,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         error={error}
         isNativeBtc={token.getTokenAddress() === BTC_NATIVE_ID}
         isNativeEth={token.getTokenAddress() === ETH_NATIVE_ID}
+        duration={isEvmToken(token.getChainId()) ? 30 : 2}
       />
       <p className="mb-1 text-xs dark:text-white">Amount to send</p>
       <ChooseFromToken

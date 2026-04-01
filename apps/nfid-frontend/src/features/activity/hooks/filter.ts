@@ -7,6 +7,7 @@ import { groupActivityRowsByDate } from "../utils/row"
 import { ActivityAssetFT } from "packages/integration/src/lib/asset/types"
 import { EVM_NATIVE, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 import { FT } from "frontend/integration/ft/ft"
+import { useUserPrefs } from "frontend/hooks/user-prefs"
 
 interface UseActivityFilterParams {
   activeTokens: FT[]
@@ -30,6 +31,7 @@ export const useActivityFilter = ({
   const [isButtonLoading, setIsButtonLoading] = useState(false)
   const [hasMoreData, setHasMoreData] = useState(true)
   const [isFirstLoading, setIsFirstLoading] = useState(true)
+  const { testnetEnabled } = useUserPrefs()
   const isViewOnly = !!viewOnlyAddress && !!viewOnlyAddressType
 
   const { data, isValidating } = useSWR(
@@ -46,7 +48,7 @@ export const useActivityFilter = ({
             viewOnlyAddress,
             viewOnlyAddressType,
           )
-        : getAllActivity(limit, activeTokens),
+        : getAllActivity(limit, activeTokens, testnetEnabled),
     {
       revalidateOnMount: true,
       revalidateOnFocus: false,

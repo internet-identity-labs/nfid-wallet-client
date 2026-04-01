@@ -1,4 +1,4 @@
-import { assign, fromPromise, setup } from "xstate"
+import { assign, fromCallback, fromPromise, setup } from "xstate"
 
 import AuthenticationMachine, {
   AuthenticationContext,
@@ -290,10 +290,6 @@ const machineServices = {
     })),
     prepareFailedResponse: prepareFailedResponseEffect,
   },
-  services: {
-    RPCReceiverV3: ((...args: any[]) => (RPCReceiverV3 as any)(...args)) as any,
-    AuthenticationMachine,
-  },
 }
 
 export const IdentityKitRPCMachine = setup({
@@ -304,7 +300,10 @@ export const IdentityKitRPCMachine = setup({
   guards: machineServices.guards,
   actions: machineServices.actions,
   actors: {
-    RPCReceiverV3: machineServices.services.RPCReceiverV3 as any,
+    RPCReceiverV3: fromCallback(({ sendBack }) => {
+      const cleanup = (RPCReceiverV3 as any)()((evt: any) => sendBack(evt))
+      return () => cleanup?.()
+    }),
     validateRequest: fromPromise(
       async ({ input }: { input: IdentityKitRPCMachineContext }) =>
         validateRequest(input),

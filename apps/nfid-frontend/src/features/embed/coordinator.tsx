@@ -28,20 +28,6 @@ export default function NFIDEmbedCoordinator() {
 
   const Component = useMemo(() => {
     switch (true) {
-      case (state as any).matches("HANDLE_PROCEDURE.EXECUTE_PROCEDURE"):
-      case (state as any).matches("AUTH.CheckAppMeta"):
-      case (state as any).matches("AUTH.CheckAuthentication"):
-      default:
-        return (
-          <BlurredLoader
-            isLoading
-            loadingMessage={
-              state.context.rpcMessage?.method === "eth_accounts" &&
-              "Requesting account..."
-            }
-          />
-        )
-
       case (state as any).matches("AUTH.Authenticate"):
         return (
           <AuthenticationCoordinator
@@ -91,6 +77,20 @@ export default function NFIDEmbedCoordinator() {
             error={state.context.error}
             onCancel={() => send({ type: "CANCEL_ERROR" })}
             onRetry={() => send({ type: "RETRY" })}
+          />
+        )
+      case (state as any).matches("HANDLE_PROCEDURE.EXECUTE_PROCEDURE"):
+      case (state as any).matches("AUTH.CheckAppMeta"):
+      case (state as any).matches("AUTH.CheckAuthentication"):
+      case (state as any).matches("AUTH.Authenticated"):
+      default:
+        return (
+          <BlurredLoader
+            isLoading
+            loadingMessage={
+              state.context.rpcMessage?.method === "eth_accounts" &&
+              "Requesting account..."
+            }
           />
         )
     }

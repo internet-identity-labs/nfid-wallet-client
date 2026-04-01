@@ -217,23 +217,38 @@ const machineConfig = {
 
 const machineServices = {
   guards: {
-    isSilentRequest: (context: IdentityKitRPCMachineContext, event: any) => {
+    isSilentRequest: ({
+      context,
+      event,
+    }: {
+      context: IdentityKitRPCMachineContext
+      event: any
+    }) => {
       if (typeof event.data === "object" && "isSilent" in event.data)
         return !!event.data.isSilent
 
       return !!context.activeRequestMetadata?.isSilent
     },
-    shouldAuthenticate: (
-      _context: IdentityKitRPCMachineContext,
-      event: any,
-    ) => {
+    shouldAuthenticate: ({
+      event,
+    }: {
+      context: IdentityKitRPCMachineContext
+      event: any
+    }) => {
       return !!event.data.requiresAuthentication
     },
-    isRequestProcessing: (context: IdentityKitRPCMachineContext) => {
+    isRequestProcessing: ({
+      context,
+    }: {
+      context: IdentityKitRPCMachineContext
+    }) => {
       return !!context.activeRequest
     },
-    hasActiveRequest: (context: IdentityKitRPCMachineContext) =>
-      !!context.activeRequest,
+    hasActiveRequest: ({
+      context,
+    }: {
+      context: IdentityKitRPCMachineContext
+    }) => !!context.activeRequest,
   },
   actions: {
     debugAuthMachineDone: ({ event }: any) => {

@@ -1,5 +1,5 @@
 import { getExpirationDelay } from "packages/integration/src/lib/authentication/get-expiration"
-import { assign, fromCallback, fromPromise, setup } from "xstate"
+import { assign, fromCallback, fromPromise, setup, stateIn } from "xstate"
 
 import { ONE_DAY_IN_MS } from "@nfid/config"
 import { Application, authState, Chain } from "@nfid/integration"
@@ -315,13 +315,10 @@ const nfidEmbedMachineOptions = {
     sendRPCCancelResponse: sendRPCCancelResponseEffect,
   },
   guards: {
-    hasProcedure: (context: NFIDEmbedMachineContext) => !!context.rpcMessage,
-    isReady: (
-      _: NFIDEmbedMachineContext,
-      __: Events,
-      { state }: { state: { matches: (value: string) => boolean } },
-    ) => state.matches("HANDLE_PROCEDURE.READY"),
-    isAutoApprovable: (context: NFIDEmbedMachineContext) => {
+    hasProcedure: ({ context }: { context: NFIDEmbedMachineContext }) =>
+      !!context.rpcMessage,
+    isReady: stateIn({ HANDLE_PROCEDURE: "READY" }),
+    isAutoApprovable: ({ context }: { context: NFIDEmbedMachineContext }) => {
       const isAuthoApprovable = ["ic_renewDelegation"].includes(
         context.rpcMessage?.method ?? "",
       )

@@ -16,6 +16,12 @@ import { polygonErc20TransactionService } from "frontend/integration/ethereum/po
 import { delay } from "frontend/features/fungible-token/utils"
 import { FT } from "frontend/integration/ft/ft"
 import { noteService } from "frontend/integration/note/note-service"
+import { polygonAmoyTransactionService } from "frontend/integration/ethereum/polygon/testnetwork/pol-amoy-transaction.service"
+import { polygonAmoyErc20TransactionService } from "frontend/integration/ethereum/polygon/testnetwork/pol-amoy-erc20-transaction.service"
+import { arbSepoliaTransactionService } from "frontend/integration/ethereum/arbitrum/testnetwork/arb-sepolia-transaction.service"
+import { arbSepoliaErc20TransactionService } from "frontend/integration/ethereum/arbitrum/testnetwork/arb-sepolia-erc20-transaction.service"
+import { ethSepoliaTransactionService } from "frontend/integration/ethereum/eth/testnetwork/eth-sepolia-transaction.service"
+import { ethSepoliaErc20TransactionService } from "frontend/integration/ethereum/eth/testnetwork/eth-sepolia-erc20-transaction.service"
 
 export const nanoSecondsToDate = (nanoSeconds: bigint): Date => {
   const milliseconds = Number(nanoSeconds / BigInt(1000000))
@@ -25,6 +31,7 @@ export const nanoSecondsToDate = (nanoSeconds: bigint): Date => {
 export const getAllActivity = async (
   limit: number,
   activeTokens: FT[],
+  testnetEnabled: boolean,
 ): Promise<IActivityRow[]> => {
   const btcAddress = await fetchBtcAddress()
   const evmAddress = await fetchEthAddress()
@@ -34,7 +41,7 @@ export const getAllActivity = async (
       getIcrc1ActivitiesRows(limit, activeTokens),
       getSwapActivitiesRows(activeTokens),
       getBtcActivitiesRows(btcAddress),
-      fetchEvmActivitiesSequentially(evmAddress),
+      fetchEvmActivitiesSequentially(evmAddress, testnetEnabled),
     ])
 
   const [
@@ -44,6 +51,12 @@ export const getAllActivity = async (
     polygonErc20Activities,
     arbitrumActivities,
     polygonActivities,
+    polygonAmoyActivities,
+    polygonAmoyErc20Activities,
+    arbitrumSepoliaActivities,
+    arbitrumSepoliaErc20Activities,
+    ethSepoliaActivities,
+    ethSepoliaErc20Activities,
   ] = evmActivities
 
   const activitiesArray = [
@@ -56,6 +69,12 @@ export const getAllActivity = async (
     ...polygonErc20Activities,
     ...arbitrumActivities,
     ...polygonActivities,
+    ...polygonAmoyActivities,
+    ...polygonAmoyErc20Activities,
+    ...arbitrumSepoliaActivities,
+    ...arbitrumSepoliaErc20Activities,
+    ...ethSepoliaActivities,
+    ...ethSepoliaErc20Activities,
   ]
 
   await noteService.populateNotes(activitiesArray)
@@ -97,6 +116,7 @@ export const getAllViewOnlyActivity = async (
 
 const fetchEvmActivitiesSequentially = async (
   evmAddress: string,
+  testnetEnabled?: boolean,
 ): Promise<
   [
     Awaited<ReturnType<typeof ethTransactionService.getActivitiesRows>>,
@@ -109,6 +129,20 @@ const fetchEvmActivitiesSequentially = async (
       ReturnType<typeof polygonErc20TransactionService.getActivitiesRows>
     >,
     Awaited<ReturnType<typeof polygonTransactionService.getActivitiesRows>>,
+    Awaited<ReturnType<typeof polygonAmoyTransactionService.getActivitiesRows>>,
+    Awaited<
+      ReturnType<typeof polygonAmoyErc20TransactionService.getActivitiesRows>
+    >,
+
+    Awaited<ReturnType<typeof arbSepoliaTransactionService.getActivitiesRows>>,
+    Awaited<
+      ReturnType<typeof arbSepoliaErc20TransactionService.getActivitiesRows>
+    >,
+
+    Awaited<ReturnType<typeof ethSepoliaTransactionService.getActivitiesRows>>,
+    Awaited<
+      ReturnType<typeof ethSepoliaErc20TransactionService.getActivitiesRows>
+    >,
   ]
 > => {
   const ethActivities =
@@ -133,6 +167,39 @@ const fetchEvmActivitiesSequentially = async (
 
   const polygonErc20Activities =
     await polygonErc20TransactionService.getActivitiesRows(evmAddress)
+  await delay(350)
+
+  let polygonAmoyActivities = [] as IActivityRow[]
+  let polygonAmoyErc20Activities = [] as IActivityRow[]
+  let arbitrumSepoliaActivities = [] as IActivityRow[]
+  let arbitrumSepoliaErc20Activities = [] as IActivityRow[]
+  let ethSepoliaActivities = [] as IActivityRow[]
+  let ethSepoliaErc20Activities = [] as IActivityRow[]
+
+  if (testnetEnabled) {
+    polygonAmoyActivities =
+      await polygonAmoyTransactionService.getActivitiesRows(evmAddress)
+    await delay(350)
+
+    polygonAmoyErc20Activities =
+      await polygonAmoyErc20TransactionService.getActivitiesRows(evmAddress)
+    await delay(350)
+
+    arbitrumSepoliaActivities =
+      await arbSepoliaTransactionService.getActivitiesRows(evmAddress)
+    await delay(350)
+
+    arbitrumSepoliaErc20Activities =
+      await arbSepoliaErc20TransactionService.getActivitiesRows(evmAddress)
+    await delay(350)
+
+    ethSepoliaActivities =
+      await ethSepoliaTransactionService.getActivitiesRows(evmAddress)
+    await delay(350)
+
+    ethSepoliaErc20Activities =
+      await ethSepoliaErc20TransactionService.getActivitiesRows(evmAddress)
+  }
 
   return [
     ethActivities,
@@ -141,5 +208,11 @@ const fetchEvmActivitiesSequentially = async (
     polygonErc20Activities,
     arbitrumActivities,
     polygonActivities,
+    polygonAmoyActivities,
+    polygonAmoyErc20Activities,
+    arbitrumSepoliaActivities,
+    arbitrumSepoliaErc20Activities,
+    ethSepoliaActivities,
+    ethSepoliaErc20Activities,
   ]
 }

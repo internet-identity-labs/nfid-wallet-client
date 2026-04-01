@@ -10,19 +10,19 @@ type TransferMachineTypes = {
 
 const transferMachineOptions = {
   guards: {
-    isSendMachine: (context: TransferMachineContext) =>
+    isSendMachine: ({ context }: { context: TransferMachineContext }) =>
       context.direction === "send",
-    isSendFungible: (context: TransferMachineContext) =>
+    isSendFungible: ({ context }: { context: TransferMachineContext }) =>
       context.tokenType === "ft",
-    isReceiveMachine: (context: TransferMachineContext) =>
+    isReceiveMachine: ({ context }: { context: TransferMachineContext }) =>
       context.direction === "receive",
-    isSwapMachine: (context: TransferMachineContext) =>
+    isSwapMachine: ({ context }: { context: TransferMachineContext }) =>
       context.direction === "swap",
-    isConvertMachine: (context: TransferMachineContext) =>
+    isConvertMachine: ({ context }: { context: TransferMachineContext }) =>
       context.direction === "convert",
-    isStakeMachine: (context: TransferMachineContext) =>
+    isStakeMachine: ({ context }: { context: TransferMachineContext }) =>
       context.direction === "stake",
-    isRedeemMachine: (context: TransferMachineContext) =>
+    isRedeemMachine: ({ context }: { context: TransferMachineContext }) =>
       context.direction === "redeem",
   },
   actions: {
@@ -79,7 +79,15 @@ export const transferMachine = setup({
 } as any).createMachine({
   id: "TransferMachine",
   initial: "Hidden",
-  context: {} as TransferMachineContext,
+  context: {
+    direction: null,
+    tokenType: "ft",
+    sourceWalletAddress: "",
+    receiverWallet: "",
+    amount: "",
+    tokenStandard: "",
+    isOpenedFromVaults: false,
+  } as TransferMachineContext,
   on: {
     CHANGE_TOKEN_TYPE: {
       target: "#SendMachine.CheckSendType",

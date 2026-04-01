@@ -24,11 +24,11 @@ export function Wrapper({
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const authQuery = params.get("auth")
-    if (authQuery === "true" && isAuthenticated) {
+    if ((authQuery === "true" || isAuthModalVisible) && isAuthenticated) {
       setIsAuthModalVisible(false)
       navigate(`${ProfileConstants.base}/${ProfileConstants.tokens}`)
     }
-  }, [isAuthenticated, navigate])
+  }, [isAuthenticated, isAuthModalVisible, navigate])
 
   useEffect(() => {
     document.body.classList.add("homescreen")

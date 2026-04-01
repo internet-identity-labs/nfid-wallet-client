@@ -30,6 +30,7 @@
     "**/*.jsx",
     "**/*.ts",
     "**/*.tsx",
+    "**/*.json",
     "../../types/env",
     "../../apps/nfid-frontend/src/**/*.ts",
     "../../apps/nfid-frontend/src/**/*.tsx"

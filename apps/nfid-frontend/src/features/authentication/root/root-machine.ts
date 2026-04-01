@@ -349,7 +349,7 @@ const authenticationMachineConfig = {
       invoke: {
         src: "shouldShowPasskeys6th",
         id: "shouldShowPasskeys6th",
-        input: (args: any) => args.context,
+        input: ({ context }: any) => context,
         onDone: [
           {
             actions: "assignShowPasskeys",
@@ -357,7 +357,7 @@ const authenticationMachineConfig = {
             target: "AddPasskeys",
           },
           {
-            guard: (context: AuthenticationContext) =>
+            guard: ({ context }: { context: AuthenticationContext }) =>
               !!context.shouldShowRecoveryEvery8th,
             target: "checkRecovery8th",
           },
@@ -383,7 +383,7 @@ const authenticationMachineConfig = {
       invoke: {
         src: "shouldShowPasskeys",
         id: "shouldShowPasskeys",
-        input: (args: any) => args.context,
+        input: ({ context }: any) => context,
         onDone: [
           {
             actions: "assignShowPasskeys",

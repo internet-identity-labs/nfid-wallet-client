@@ -25,5 +25,13 @@
     "**/*.stories.jsx",
     "**/*.stories.tsx"
   ],
-  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "../../types/env"]
+  "include": [
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.ts",
+    "**/*.tsx",
+    "../../types/env",
+    "../../apps/nfid-frontend/src/**/*.ts",
+    "../../apps/nfid-frontend/src/**/*.tsx"
+  ]
 }

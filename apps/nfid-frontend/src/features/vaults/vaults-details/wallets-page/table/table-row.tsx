@@ -1,4 +1,4 @@
-import { useActor } from "@xstate/react"
+import { useSelector } from "@xstate/react"
 import clsx from "clsx"
 import React, { useCallback, useContext } from "react"
 
@@ -35,7 +35,11 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   isArchived,
 }: VaultsWalletsTableRowProps) => {
   const globalServices = useContext(ProfileContext)
-  const [, send] = useActor(globalServices.transferService)
+  const _snapshot = useSelector(
+    globalServices.transferService as any,
+    (s: any) => s,
+  )
+  const send = (event: any) => globalServices.transferService.send(event)
   const { wallets } = useAllWallets()
 
   const onSendFromVaultWallet = useCallback(() => {

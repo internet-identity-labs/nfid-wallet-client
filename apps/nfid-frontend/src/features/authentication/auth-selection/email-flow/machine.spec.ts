@@ -1,4 +1,4 @@
-import { interpret } from "xstate"
+import { getInitialSnapshot } from "xstate"
 
 import AuthWithEmailMachine from "./machine"
 
@@ -6,8 +6,7 @@ describe("AuthWithEmailMachine", () => {
   it("should be defined and start in SendVerificationEmail", () => {
     expect(AuthWithEmailMachine).toBeDefined()
 
-    const service = interpret(AuthWithEmailMachine).start()
-    expect(service.getSnapshot().value).toBe("SendVerificationEmail")
-    service.stop()
+    const snapshot = getInitialSnapshot(AuthWithEmailMachine)
+    expect(snapshot.value).toBe("SendVerificationEmail")
   })
 })

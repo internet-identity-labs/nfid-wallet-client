@@ -1,4 +1,4 @@
-import { interpret } from "xstate"
+import { getInitialSnapshot } from "xstate"
 
 import NFIDAuthMachine from "./nfid-machine"
 
@@ -7,10 +7,12 @@ describe("NFIDAuthMachine", () => {
     expect(NFIDAuthMachine).toBeDefined()
 
     // Static check: initial state
-    expect(NFIDAuthMachine.initialState.value).toBe("AuthenticationMachine")
+    expect(getInitialSnapshot(NFIDAuthMachine).value).toBe(
+      "AuthenticationMachine",
+    )
 
-    const service = interpret(NFIDAuthMachine).start()
-    expect(service.getSnapshot().value).toBe("AuthenticationMachine")
-    service.stop()
+    expect(getInitialSnapshot(NFIDAuthMachine).value).toBe(
+      "AuthenticationMachine",
+    )
   })
 })

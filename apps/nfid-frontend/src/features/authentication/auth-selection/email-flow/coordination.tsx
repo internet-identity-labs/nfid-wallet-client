@@ -1,4 +1,4 @@
-import { useActor } from "@xstate/react"
+import { useSelector } from "@xstate/react"
 import { AuthEmailVerified } from "packages/ui/src/organisms/authentication/email-verified"
 import { AuthEmailError } from "packages/ui/src/organisms/authentication/error"
 import { AuthEmailPending } from "packages/ui/src/organisms/authentication/pending-verification"
@@ -15,12 +15,13 @@ export function AuthEmailFlowCoordinator({
   actor,
   isIdentityKit = false,
 }: AuthEmailFlowCoordinatorProps) {
-  const [state, send] = useActor(actor)
+  const state = useSelector(actor as any, (s: any) => s) as any
+  const send = (event: any) => actor.send(event)
 
   switch (true) {
-    case state.matches("SendVerificationEmail"):
+    case (state as any).matches("SendVerificationEmail"):
       return <BlurredLoader isLoading />
-    case state.matches("PendingEmailVerification"):
+    case (state as any).matches("PendingEmailVerification"):
       return (
         <AuthEmailPending
           isIdentityKit={isIdentityKit}
@@ -32,7 +33,7 @@ export function AuthEmailFlowCoordinator({
           }}
         />
       )
-    case state.matches("Error"):
+    case (state as any).matches("Error"):
       return (
         <AuthEmailError
           onBack={() => send({ type: "BACK" })}
@@ -41,7 +42,7 @@ export function AuthEmailFlowCoordinator({
           }}
         />
       )
-    case state.matches("Authenticated"):
+    case (state as any).matches("Authenticated"):
       return (
         <AuthEmailVerified
           isIdentityKit={isIdentityKit}

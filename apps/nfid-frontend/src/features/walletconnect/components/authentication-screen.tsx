@@ -13,7 +13,7 @@ export function WalletConnectAuthenticationScreen() {
       <AuthenticationCoordinator
         isIdentityKit
         actor={
-          authState.children
+          (authState.children as any)
             ?.AuthenticationMachine as AuthenticationMachineActor
         }
         loader={<BlurredLoader isLoading loadingMessage="Authenticating..." />}

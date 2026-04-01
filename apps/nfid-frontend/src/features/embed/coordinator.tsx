@@ -1,6 +1,6 @@
 import { useMachine } from "@xstate/react"
 import { ModalComponent } from "@nfid-frontend/ui"
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 
 import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
 
@@ -12,13 +12,25 @@ import { PageError } from "./ui/error"
 
 export default function NFIDEmbedCoordinator() {
   const [state, send] = useMachine(NFIDEmbedMachine)
-  console.debug("NFIDEmbedCoordinator")
+
+  useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.debug("[/embed] NFIDEmbedMachine state", {
+      value: state.value,
+      method: state.context.rpcMessage?.method,
+      origin: state.context.rpcMessage?.origin,
+      hasAuthSession: !!state.context.authSession,
+      hasAppMeta: !!state.context.appMeta,
+      hasAuthRequest: !!state.context.authRequest,
+      error: state.context.error?.message,
+    })
+  }, [state.value])
 
   const Component = useMemo(() => {
     switch (true) {
-      case state.matches("HANDLE_PROCEDURE.EXECUTE_PROCEDURE"):
-      case state.matches("AUTH.CheckAppMeta"):
-      case state.matches("AUTH.CheckAuthentication"):
+      case (state as any).matches("HANDLE_PROCEDURE.EXECUTE_PROCEDURE"):
+      case (state as any).matches("AUTH.CheckAppMeta"):
+      case (state as any).matches("AUTH.CheckAuthentication"):
       default:
         return (
           <BlurredLoader
@@ -30,18 +42,17 @@ export default function NFIDEmbedCoordinator() {
           />
         )
 
-      case state.matches("AUTH.Authenticate"):
+      case (state as any).matches("AUTH.Authenticate"):
         return (
           <AuthenticationCoordinator
             isEmbed
             actor={
-              state.children[
-                "NFIDEmbedMachine.AUTH.Authenticate:invocation[0]"
-              ] as AuthenticationMachineActor
+              (state.children as any)
+                .AuthenticationMachine as AuthenticationMachineActor
             }
           />
         )
-      case state.matches("HANDLE_PROCEDURE.AWAIT_PROCEDURE_APPROVAL"):
+      case (state as any).matches("HANDLE_PROCEDURE.AWAIT_PROCEDURE_APPROVAL"):
         if (!state.context.rpcMessage) throw new Error("missing rpcMessage")
         if (!state.context.authSession) throw new Error("missing authSession")
 
@@ -74,7 +85,7 @@ export default function NFIDEmbedCoordinator() {
             onReject={() => send({ type: "CANCEL" })}
           />
         )
-      case state.matches("HANDLE_PROCEDURE.ERROR"):
+      case (state as any).matches("HANDLE_PROCEDURE.ERROR"):
         return (
           <PageError
             error={state.context.error}
@@ -87,7 +98,11 @@ export default function NFIDEmbedCoordinator() {
 
   return (
     <ModalComponent
-      onClose={() => send({ type: "CANCEL" })}
+      onClose={() => {
+        // eslint-disable-next-line no-console
+        console.debug("[/embed] user closed modal")
+        send({ type: "CANCEL" })
+      }}
       isVisible
       className="w-full !relative sm:!fixed"
     >

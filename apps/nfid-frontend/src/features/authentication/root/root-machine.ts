@@ -1,7 +1,4 @@
-import { ActorRefFrom, assign, createMachine } from "xstate"
-
-// Orchestrates top-level authentication flows (email, Google, II, other)
-// and post-auth onboarding steps (2FA, passkeys, recovery prompts).
+import { ActorRefFrom, assign, fromPromise, setup } from "xstate"
 import AuthWithEmailMachine from "frontend/features/authentication/auth-selection/email-flow/machine"
 import AuthWithGoogleMachine from "frontend/features/authentication/auth-selection/google-flow/auth-with-google"
 import { AbstractAuthSession } from "frontend/state/authentication"
@@ -43,24 +40,24 @@ export interface AuthenticationContext {
 }
 
 export type Events =
-  | { type: "done.invoke.AuthWithGoogleMachine"; data: AbstractAuthSession }
-  | { type: "done.invoke.AuthWithEmailMachine"; data: AbstractAuthSession }
-  | { type: "done.invoke.AuthWithIIService"; data: AbstractAuthSession }
+  | { type: "done.invoke.AuthWithGoogleMachine"; output: AbstractAuthSession }
+  | { type: "done.invoke.AuthWithEmailMachine"; output: AbstractAuthSession }
+  | { type: "done.invoke.AuthWithIIService"; output: AbstractAuthSession }
   | {
       type: "done.invoke.checkIf2FAEnabled"
-      data?: { allowedPasskeys: string[]; email?: string }
+      output?: { allowedPasskeys: string[]; email?: string }
     }
   | {
       type: "done.invoke.shouldShowPasskeys"
-      data?: { showPasskeys: boolean }
+      output?: { showPasskeys: boolean }
     }
   | {
       type: "done.invoke.shouldShowPasskeys6th"
-      data?: { showPasskeys: boolean }
+      output?: { showPasskeys: boolean }
     }
   | {
       type: "done.invoke.shouldShowRecovery8th"
-      data?: { showRecovery: boolean }
+      output?: { showRecovery: boolean }
     }
   | { type: "AUTH_WITH_EMAIL"; data: { email: string; isEmbed: boolean } }
   | { type: "CHOOSE_WALLET" }
@@ -90,17 +87,10 @@ export type Events =
       data?: AbstractAuthSession
     }
 
-export interface Schema {
-  events: Events
-  context: AuthenticationContext
-}
-
 const authenticationMachineConfig = {
-  predictableActionArguments: true,
-  tsTypes: {} as import("./root-machine.typegen").Typegen0,
-  schema: { events: {}, context: {} } as Schema,
   id: "auth-machine",
   initial: "AuthSelection",
+  context: (args: any) => ({ ...(args.input ?? {}) }) as AuthenticationContext,
   states: {
     AuthSelection: {
       on: {
@@ -196,15 +186,16 @@ const authenticationMachineConfig = {
       invoke: {
         src: "AuthWithGoogleMachine",
         id: "AuthWithGoogleMachine",
-        data: (
-          _: AuthenticationContext,
-          event: Extract<Events, { type: "AUTH_WITH_GOOGLE" }>,
-        ) => {
+        input: ({
+          event,
+        }: {
+          event: Extract<Events, { type: "AUTH_WITH_GOOGLE" }>
+        }) => {
           return { jwt: event.data.jwt }
         },
         onDone: [
           {
-            cond: "isExistingAccount",
+            guard: "isExistingAccount",
             actions: "assignAuthSession",
             target: "check2FA",
           },
@@ -219,15 +210,16 @@ const authenticationMachineConfig = {
       invoke: {
         src: "AuthWithGoogleMachine",
         id: "AuthWithGoogleMachine",
-        data: (
-          _: AuthenticationContext,
-          event: Extract<Events, { type: "AUTH_WITH_GOOGLE" }>,
-        ) => {
+        input: ({
+          event,
+        }: {
+          event: Extract<Events, { type: "AUTH_WITH_GOOGLE" }>
+        }) => {
           return { jwt: event.data.jwt }
         },
         onDone: [
           {
-            cond: "isExistingAccount",
+            guard: "isExistingAccount",
             actions: "assignAuthSession",
             target: "checkPasskeys",
           },
@@ -241,10 +233,10 @@ const authenticationMachineConfig = {
     AuthWithII: {
       invoke: {
         id: "AuthWithIIService",
-        src: () => signWithIIService(),
+        src: "AuthWithIIService",
         onDone: [
           {
-            cond: "isExistingAccount",
+            guard: "isExistingAccount",
             actions: "assignAuthSession",
             target: "check2FA",
           },
@@ -258,10 +250,10 @@ const authenticationMachineConfig = {
     SignUpWithII: {
       invoke: {
         id: "AuthWithIIService",
-        src: () => signWithIIService(),
+        src: "AuthWithIIService",
         onDone: [
           {
-            cond: "isExistingAccount",
+            guard: "isExistingAccount",
             actions: "assignAuthSession",
             target: "checkPasskeys",
           },
@@ -276,15 +268,19 @@ const authenticationMachineConfig = {
       invoke: {
         src: "AuthWithEmailMachine",
         id: "AuthWithEmailMachine",
-        data: (context: AuthenticationContext) => ({
+        input: ({ context }: { context: AuthenticationContext }) => ({
           authRequest: context?.authRequest,
           appMeta: context?.appMeta,
           verificationEmail: context?.verificationEmail,
         }),
         onDone: [
-          { cond: "isReturn", target: "AuthSelectionSignUp" },
           {
-            actions: "assignAuthSession",
+            actions: "debugInvokeDone",
+            guard: "isReturn",
+            target: "AuthSelectionSignUp",
+          },
+          {
+            actions: ["debugInvokeDone", "assignAuthSession"],
             target: "checkPasskeys",
           },
         ],
@@ -294,15 +290,19 @@ const authenticationMachineConfig = {
       invoke: {
         src: "AuthWithEmailMachine",
         id: "AuthWithEmailMachine",
-        data: (context: AuthenticationContext) => ({
+        input: ({ context }: { context: AuthenticationContext }) => ({
           authRequest: context?.authRequest,
           appMeta: context?.appMeta,
           verificationEmail: context?.verificationEmail,
         }),
         onDone: [
-          { cond: "isReturn", target: "AuthSelection" },
           {
-            actions: "assignAuthSession",
+            actions: "debugInvokeDone",
+            guard: "isReturn",
+            target: "AuthSelection",
+          },
+          {
+            actions: ["debugInvokeDone", "assignAuthSession"],
             target: "check2FA",
           },
         ],
@@ -324,9 +324,10 @@ const authenticationMachineConfig = {
       invoke: {
         src: "checkIf2FAEnabled",
         id: "checkIf2FAEnabled",
+        input: (args: any) => args.context,
         onDone: [
           {
-            cond: "is2FAEnabled",
+            guard: "is2FAEnabled",
             target: "TwoFA",
             actions: "assignAllowedDevices",
           },
@@ -346,17 +347,17 @@ const authenticationMachineConfig = {
     },
     checkPasskeys6th: {
       invoke: {
-        src: (context: AuthenticationContext) =>
-          shouldShowPasskeysEvery6thTime(context),
+        src: "shouldShowPasskeys6th",
         id: "shouldShowPasskeys6th",
+        input: (args: any) => args.context,
         onDone: [
           {
             actions: "assignShowPasskeys",
-            cond: "showPasskeys",
+            guard: "showPasskeys",
             target: "AddPasskeys",
           },
           {
-            cond: (context: AuthenticationContext) =>
+            guard: (context: AuthenticationContext) =>
               !!context.shouldShowRecoveryEvery8th,
             target: "checkRecovery8th",
           },
@@ -366,12 +367,12 @@ const authenticationMachineConfig = {
     },
     checkRecovery8th: {
       invoke: {
-        src: () => shouldShowRecoveryPhraseEvery8thTime(),
+        src: "shouldShowRecovery8th",
         id: "shouldShowRecovery8th",
         onDone: [
           {
             actions: "assignShowRecovery",
-            cond: "showRecovery",
+            guard: "showRecovery",
             target: "BackupWallet",
           },
           { target: "End" },
@@ -380,12 +381,13 @@ const authenticationMachineConfig = {
     },
     checkPasskeys: {
       invoke: {
-        src: (context: AuthenticationContext) => shouldShowPasskeys(context),
+        src: "shouldShowPasskeys",
         id: "shouldShowPasskeys",
+        input: (args: any) => args.context,
         onDone: [
           {
             actions: "assignShowPasskeys",
-            cond: "showPasskeys",
+            guard: "showPasskeys",
             target: "AddPasskeys",
           },
           { target: "End" },
@@ -412,91 +414,107 @@ const authenticationMachineConfig = {
     },
     End: {
       type: "final" as const,
-      data: (context: AuthenticationContext) => ({ ...context }),
+      output: ({ context }: { context: AuthenticationContext }) => ({
+        ...context,
+      }),
     },
   },
 }
 
-const authenticationMachineOptions: Parameters<
-  typeof createMachine<AuthenticationContext, Events, any>
->[1] = {
+const authenticationMachineOptions = {
   guards: {
-    isExistingAccount: (_: AuthenticationContext, event: any) =>
-      !!event?.data?.anchor,
-    isReturn: (_: AuthenticationContext, event: any) => {
-      return !event.data
+    isExistingAccount: ({ event }: any) => {
+      const payload = event?.output ?? event?.data
+      return !!payload?.anchor
     },
-    is2FAEnabled: (_: AuthenticationContext, event: any) => {
-      return !!event.data
+    isReturn: ({ event }: any) => {
+      return !(event?.output ?? event?.data)
     },
-    showPasskeys: (_: AuthenticationContext, event: any) => {
-      const showPasskeys = event.data?.showPasskeys
+    is2FAEnabled: ({ event }: any) => {
+      return !!(event?.output ?? event?.data)
+    },
+    showPasskeys: ({ event }: any) => {
+      const showPasskeys = event?.output?.showPasskeys
       if (showPasskeys === undefined) return true
       return showPasskeys
     },
-    showRecovery: (_: AuthenticationContext, event: any) => {
-      const showRecovery = event.data?.showRecovery
+    showRecovery: ({ event }: any) => {
+      const showRecovery = event?.output?.showRecovery
       if (showRecovery === undefined) return true
       return showRecovery
     },
   },
   actions: {
-    setShouldCheckRecoveryEvery8th: assign<AuthenticationContext, Events, any>(
-      () => {
-        return {
-          shouldShowRecoveryEvery8th: true,
-        }
-      },
-    ),
-    assignAuthSession: assign<AuthenticationContext, Events, any>(
-      (_: AuthenticationContext, event: any) => {
-        return {
-          authSession: event.data,
-        }
-      },
-    ),
-    assignVerificationEmail: assign<AuthenticationContext, Events, any>(
-      (_: AuthenticationContext, event: any) => ({
-        verificationEmail: event.data.email,
-      }),
-    ),
-    assignAllowedDevices: assign<AuthenticationContext, Events, any>(
-      (_: AuthenticationContext, event: any) => ({
-        allowedDevices: event.data?.allowedPasskeys,
-      }),
-    ),
-    assignEmail: assign<AuthenticationContext, Events, any>(
-      (_: AuthenticationContext, event: any) => ({
-        email: event.data?.email,
-      }),
-    ),
-    assignShowPasskeys: assign<AuthenticationContext, Events, any>(
-      (_: AuthenticationContext, event: any) => ({
-        showPasskeys: event.data?.showPasskeys,
-      }),
-    ),
-    assignShowRecovery: assign<AuthenticationContext, Events, any>(
-      (_: AuthenticationContext, event: any) => ({
-        showRecovery: event.data?.showRecovery,
-      }),
-    ),
-    assignIsEmbed: assign<AuthenticationContext, Events, any>(
-      (_: AuthenticationContext, event: any) => ({
-        isEmbed: event.data?.isEmbed,
-      }),
-    ),
+    debugInvokeDone: ({ event }: any) => {
+      try {
+        // eslint-disable-next-line no-console
+        console.debug("[AuthenticationMachine] invoke done", {
+          type: event?.type,
+          hasOutput: event?.output != null,
+          hasData: event?.data != null,
+          outputKeys: event?.output ? Object.keys(event.output) : null,
+          dataKeys: event?.data ? Object.keys(event.data) : null,
+        })
+      } catch (_e) {
+        // ignore
+      }
+    },
+    setShouldCheckRecoveryEvery8th: assign(() => ({
+      shouldShowRecoveryEvery8th: true,
+    })),
+    assignAuthSession: assign(({ event }: any) => ({
+      authSession: event.output ?? event.data,
+    })),
+    assignVerificationEmail: assign(({ event }: any) => ({
+      verificationEmail: event.data.email,
+    })),
+    assignAllowedDevices: assign(({ event }: any) => ({
+      allowedDevices: event.output?.allowedPasskeys,
+      email2FA: event.output?.email,
+    })),
+    assignEmail: assign(({ event }: any) => ({
+      email: event.data?.email,
+    })),
+    assignShowPasskeys: assign(({ event }: any) => ({
+      showPasskeys: event.output?.showPasskeys,
+    })),
+    assignShowRecovery: assign(({ event }: any) => ({
+      showRecovery: event.output?.showRecovery,
+    })),
+    assignIsEmbed: assign(({ event }: any) => ({
+      isEmbed: event.data?.isEmbed,
+    })),
   },
-  services: {
+  actors: {
     AuthWithEmailMachine,
     AuthWithGoogleMachine,
-    checkIf2FAEnabled,
+    AuthWithIIService: fromPromise(async () => signWithIIService()),
+    checkIf2FAEnabled: fromPromise(
+      async ({ input }: { input: AuthenticationContext }) =>
+        checkIf2FAEnabled(input),
+    ),
+    shouldShowPasskeys: fromPromise(
+      async ({ input }: { input: AuthenticationContext }) =>
+        shouldShowPasskeys(input),
+    ),
+    shouldShowPasskeys6th: fromPromise(
+      async ({ input }: { input: AuthenticationContext }) =>
+        shouldShowPasskeysEvery6thTime(input),
+    ),
+    shouldShowRecovery8th: fromPromise(async () =>
+      shouldShowRecoveryPhraseEvery8thTime(),
+    ),
   },
 }
 
-const AuthenticationMachine = createMachine(
-  authenticationMachineConfig,
-  authenticationMachineOptions,
-)
+const AuthenticationMachine = setup({
+  types: {} as {
+    context: AuthenticationContext
+    events: any
+    output: AuthenticationContext
+  },
+  ...authenticationMachineOptions,
+} as any).createMachine(authenticationMachineConfig as any)
 
 export type AuthenticationMachineActor = ActorRefFrom<
   typeof AuthenticationMachine

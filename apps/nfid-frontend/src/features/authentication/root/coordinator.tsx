@@ -1,4 +1,4 @@
-import { useActor } from "@xstate/react"
+import { useSelector } from "@xstate/react"
 import { motion } from "framer-motion"
 import { decodeJwt } from "jose"
 import toaster from "packages/ui/src/atoms/toast"
@@ -49,7 +49,8 @@ export default function AuthenticationCoordinator({
 }) {
   const { loginWithRecovery } = useAuthentication()
   const { storageProfile, storageProfileLoading } = useLoadProfileFromStorage()
-  const [state, send] = useActor(actor)
+  const state = useSelector(actor as any, (s: any) => s) as any
+  const send = useCallback((event: any) => actor.send(event), [actor])
   const [isPasskeyLoading, setIsPasskeyLoading] = useState(false)
   const [is2FALoading, setIs2FALoading] = useState(false)
   const [isOtherOptionsLoading, setIsOtherOptionsLoading] = useState(false)

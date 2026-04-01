@@ -1,4 +1,4 @@
-import { useActor } from "@xstate/react"
+import { useSelector } from "@xstate/react"
 import { motion } from "framer-motion"
 import toaster from "packages/ui/src/atoms/toast"
 import { useDisableScroll } from "packages/ui/src/molecules/modal/hooks/disable-scroll"
@@ -24,7 +24,14 @@ export const TransferModalCoordinator = () => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [successMessage, setSuccessMessage] = useState<string | undefined>()
   const globalServices = useContext(ProfileContext)
-  const [state, send] = useActor(globalServices.transferService)
+  const state = useSelector(
+    globalServices.transferService as any,
+    (s: any) => s,
+  ) as any
+  const send = useCallback(
+    (event: any) => globalServices.transferService.send(event),
+    [globalServices.transferService],
+  )
   const [hasSwapError, setHasSwapError] = useState(false)
   const [hasBtcError, setHasBtcError] = useState(false)
   const [isConvertSuccess, setIsConvertSuccess] = useState(false)

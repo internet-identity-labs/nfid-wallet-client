@@ -1,5 +1,5 @@
 import * as RadixTooltip from "@radix-ui/react-tooltip"
-import { useInterpret } from "@xstate/react"
+import { useActorRef } from "@xstate/react"
 import React, { createContext } from "react"
 import { HelmetProvider } from "react-helmet-async"
 import { ParallaxProvider } from "react-scroll-parallax"
@@ -34,7 +34,7 @@ export const ProfileContext = createContext({
 })
 
 export const Provider: React.FC<ProviderProps> = ({ children }) => {
-  const transferService: TransferMachineActor = useInterpret(transferMachine)
+  const transferService: TransferMachineActor = useActorRef(transferMachine)
   const viewOnlyAddress = new URLSearchParams(window.location.search).get(
     "viewOnly",
   )

@@ -1,24 +1,92 @@
-import { ActorRefFrom, assign, createMachine } from "xstate"
+import { ActorRefFrom, assign, setup } from "xstate"
 
-import { Events, Services, TransferMachineContext } from "./types"
+import type { Events, Services, TransferMachineContext } from "./types"
 
-const transferMachineConfig = {
-  predictableActionArguments: true,
-  tsTypes: {} as import("./machine.typegen").Typegen0,
-  schema: {
-    events: {} as Events,
-    context: {} as TransferMachineContext,
-    services: {} as Services,
+type TransferMachineTypes = {
+  context: TransferMachineContext
+  events: Events
+  services: Services
+}
+
+const transferMachineOptions = {
+  guards: {
+    isSendMachine: (context: TransferMachineContext) =>
+      context.direction === "send",
+    isSendFungible: (context: TransferMachineContext) =>
+      context.tokenType === "ft",
+    isReceiveMachine: (context: TransferMachineContext) =>
+      context.direction === "receive",
+    isSwapMachine: (context: TransferMachineContext) =>
+      context.direction === "swap",
+    isConvertMachine: (context: TransferMachineContext) =>
+      context.direction === "convert",
+    isStakeMachine: (context: TransferMachineContext) =>
+      context.direction === "stake",
+    isRedeemMachine: (context: TransferMachineContext) =>
+      context.direction === "redeem",
   },
+  actions: {
+    assignTokenType: assign(({ event }: any) => ({
+      tokenType: event?.data,
+    })),
+    assignDirection: assign(({ event }: any) => ({
+      direction: event?.data,
+    })),
+    assignAmount: assign(({ event }: any) => ({
+      amount: event?.data,
+    })),
+    assignSourceAccount: assign(({ event }: any) => ({
+      sourceAccount: event?.data,
+    })),
+    assignSourceWallet: assign(({ event }: any) => ({
+      sourceWalletAddress: event?.data,
+    })),
+    assignReceiverWallet: assign(({ event }: any) => ({
+      receiverWallet: event?.data,
+    })),
+    assignSelectedFT: assign(({ event }: any) => ({
+      selectedFT: event?.data,
+    })),
+    assignSelectedTargetFT: assign(({ event }: any) => ({
+      selectedTargetFT: event?.data,
+    })),
+    assignSelectedNFTId: assign(({ event }: any) => ({
+      selectedNFTId: event?.data,
+    })),
+    assignTransferObject: assign(({ event }: any) => ({
+      transferObject: event?.data,
+    })),
+    assignTokenStandard: assign(({ event }: any) => ({
+      tokenStandard: event?.data,
+    })),
+    assignStakeId: assign(({ event }: any) => ({
+      stakeId: event?.data,
+    })),
+    assignIsVault: assign(({ event }: any) => ({
+      isOpenedFromVaults: event?.data,
+    })),
+    assignError: assign({
+      // @ts-ignore
+      error: (_: TransferMachineContext, event: { data: unknown }) =>
+        event.data,
+    }),
+  },
+}
+
+export const transferMachine = setup({
+  types: {} as TransferMachineTypes,
+  ...transferMachineOptions,
+} as any).createMachine({
   id: "TransferMachine",
   initial: "Hidden",
+  context: {} as TransferMachineContext,
   on: {
     CHANGE_TOKEN_TYPE: {
       target: "#SendMachine.CheckSendType",
       actions: "assignTokenType",
     },
     CHANGE_DIRECTION: {
-      target: "TransferModal",
+      target: ".TransferModal",
       actions: "assignDirection",
     },
     ASSIGN_SOURCE_ACCOUNT: {
@@ -70,27 +138,27 @@ const transferMachineConfig = {
       always: [
         {
           target: "SendMachine",
-          cond: "isSendMachine",
+          guard: "isSendMachine",
         },
         {
           target: "ReceiveMachine",
-          cond: "isReceiveMachine",
+          guard: "isReceiveMachine",
         },
         {
           target: "SwapMachine",
-          cond: "isSwapMachine",
+          guard: "isSwapMachine",
         },
         {
           target: "ConvertMachine",
-          cond: "isConvertMachine",
+          guard: "isConvertMachine",
         },
         {
           target: "StakeMachine",
-          cond: "isStakeMachine",
+          guard: "isStakeMachine",
         },
         {
           target: "RedeemMachine",
-          cond: "isRedeemMachine",
+          guard: "isRedeemMachine",
         },
       ],
     },
@@ -107,7 +175,7 @@ const transferMachineConfig = {
           always: [
             {
               target: "#SendMachine.SendFT",
-              cond: "isSendFungible",
+              guard: "isSendFungible",
             },
             {
               target: "#SendMachine.SendNFT",
@@ -134,88 +202,15 @@ const transferMachineConfig = {
     },
     TransferSuccess: {
       on: {
-        HIDE: "Hidden",
+        HIDE: "#TransferMachine.Hidden",
       },
     },
     SwapSuccess: {
       on: {
-        HIDE: "Hidden",
+        HIDE: "#TransferMachine.Hidden",
       },
     },
   },
-}
-
-const transferMachineOptions: Parameters<
-  typeof createMachine<TransferMachineContext, Events, any>
->[1] = {
-  guards: {
-    isSendMachine: (context: TransferMachineContext) =>
-      context.direction === "send",
-    isSendFungible: (context: TransferMachineContext) =>
-      context.tokenType === "ft",
-    isReceiveMachine: (context: TransferMachineContext) =>
-      context.direction === "receive",
-    isSwapMachine: (context: TransferMachineContext) =>
-      context.direction === "swap",
-    isConvertMachine: (context: TransferMachineContext) =>
-      context.direction === "convert",
-    isStakeMachine: (context: TransferMachineContext) =>
-      context.direction === "stake",
-    isRedeemMachine: (context: TransferMachineContext) =>
-      context.direction === "redeem",
-  },
-  actions: {
-    assignTokenType: assign((_, event: any) => ({
-      tokenType: event?.data,
-    })),
-    assignDirection: assign((_, event: any) => ({
-      direction: event?.data,
-    })),
-    assignAmount: assign((_, event: any) => ({
-      amount: event?.data,
-    })),
-    assignSourceAccount: assign((_, event: any) => ({
-      sourceAccount: event?.data,
-    })),
-    assignSourceWallet: assign((_, event: any) => ({
-      sourceWalletAddress: event?.data,
-    })),
-    assignReceiverWallet: assign((_, event: any) => ({
-      receiverWallet: event?.data,
-    })),
-    assignSelectedFT: assign((_, event: any) => ({
-      selectedFT: event?.data,
-    })),
-    assignSelectedTargetFT: assign((_, event: any) => ({
-      selectedTargetFT: event?.data,
-    })),
-    assignSelectedNFTId: assign((_, event: any) => ({
-      selectedNFTId: event?.data,
-    })),
-    assignTransferObject: assign((_, event: any) => ({
-      transferObject: event?.data,
-    })),
-    assignTokenStandard: assign((_, event: any) => ({
-      tokenStandard: event?.data,
-    })),
-    assignStakeId: assign((_, event: any) => ({
-      stakeId: event?.data,
-    })),
-    assignIsVault: assign((_, event: any) => ({
-      isOpenedFromVaults: event?.data,
-    })),
-    assignError: assign({
-      // @ts-ignore
-      error: (_: TransferMachineContext, event: { data: unknown }) =>
-        event.data,
-    }),
-  },
-  services: {},
-}
-
-export const transferMachine = createMachine(
-  transferMachineConfig,
-  transferMachineOptions,
-)
+} as any)
 
 export type TransferMachineActor = ActorRefFrom<typeof transferMachine>

@@ -1,4 +1,4 @@
-import { useActor } from "@xstate/react"
+import { useSelector } from "@xstate/react"
 import { Staking } from "packages/ui/src/organisms/staking"
 import { useContext, memo } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
@@ -23,7 +23,8 @@ const StakingPage = memo(() => {
     viewOnlyAddressType,
     transferService,
   } = useContext(ProfileContext)
-  const [, send] = useActor(transferService)
+  const _snapshot = useSelector(transferService as any, (s: any) => s)
+  const send = (event: any) => transferService.send(event)
   const { search } = useLocation()
 
   const navigateWithSearch = (to: unknown) => {
@@ -35,7 +36,7 @@ const StakingPage = memo(() => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.STAKE })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const { data: tokens } = useSWRWithTimestamp(

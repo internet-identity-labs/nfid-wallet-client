@@ -19,22 +19,23 @@ export default function ThirdPartyAuthCoordinator({
 
   useEffect(() => {
     if (!onEnd) return
-    if (state.matches("End")) onEnd()
+    if ((state as any).matches("End")) onEnd()
   }, [onEnd, state])
 
   switch (true) {
-    case state.matches("AuthenticationMachine"):
+    case (state as any).matches("AuthenticationMachine"):
       return (
         <AuthenticationCoordinator
           actor={
-            state.children.AuthenticationMachine as AuthenticationMachineActor
+            (state.children as any)
+              .AuthenticationMachine as AuthenticationMachineActor
           }
         />
       )
-    case state.matches("Authorization"):
+    case (state as any).matches("Authorization"):
       return (
         <AuthChooseAccount
-          onReset={() => send("RESET")}
+          onReset={() => send({ type: "RESET" })}
           authRequest={state.context.authRequest as AuthorizationRequest}
           appMeta={state.context.appMeta}
           handleSelectAccount={(

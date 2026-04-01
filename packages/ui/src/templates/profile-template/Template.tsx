@@ -1,4 +1,4 @@
-import { useActor } from "@xstate/react"
+import { useSelector } from "@xstate/react"
 import clsx from "clsx"
 import { BtcBanner } from "packages/ui/src/molecules/btc-banner"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
@@ -265,20 +265,24 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   const globalServices = useContext(ProfileContext)
 
-  const [, send] = useActor(globalServices.transferService)
+  const _snapshot = useSelector(
+    globalServices.transferService as any,
+    (s: any) => s,
+  )
+  const send = (event: any) => globalServices.transferService.send(event)
 
   const onSendClick = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const onReceiveClick = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.RECEIVE })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const onSwapClick = () => {
@@ -286,7 +290,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.SWAP })
     send({ type: "ASSIGN_SELECTED_TARGET_FT", data: "" })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const onBtcSwapClick = () => {

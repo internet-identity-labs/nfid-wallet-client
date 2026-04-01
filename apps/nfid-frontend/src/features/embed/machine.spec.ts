@@ -1,5 +1,3 @@
-import { interpret } from "xstate"
-
 import { NFIDEmbedMachine } from "./machine"
 
 describe("NFIDEmbedMachine", () => {

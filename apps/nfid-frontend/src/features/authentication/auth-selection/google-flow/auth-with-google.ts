@@ -1,8 +1,8 @@
-import { ActorRefFrom, assign, createMachine } from "xstate"
+import { ActorRefFrom, assign, fromPromise, setup } from "xstate"
 
 import { GoogleAuthSession } from "frontend/state/authentication"
 import { AuthWithGoogleResult } from "../../auth-types"
-import { signWithGoogleService } from "./services"
+import { signWithGoogleService as signWithGoogleServiceImpl } from "./services"
 
 export interface AuthWithGoogleMachineContext {
   jwt: string
@@ -11,29 +11,48 @@ export interface AuthWithGoogleMachineContext {
 }
 
 export type Events =
-  | { type: "done.invoke.signWithGoogleService"; data: GoogleAuthSession }
+  | { type: "done.invoke.signWithGoogleService"; output: GoogleAuthSession }
   | {
       type: "End"
       data: AuthWithGoogleResult
     }
 
-export interface Schema {
-  events: Events
-  context: AuthWithGoogleMachineContext
+const AuthWithGoogleMachineOptions = {
+  actions: {
+    assignAuthSession: assign({
+      authSession: (_: AuthWithGoogleMachineContext, event: any) => {
+        console.debug("AuthWithGoogleMachine assignAuthSession", {
+          authSession: event.output,
+        })
+        return event.output
+      },
+    }),
+  },
+  actors: {
+    signWithGoogleService: fromPromise(
+      async ({ input }: { input: AuthWithGoogleMachineContext }) =>
+        signWithGoogleServiceImpl(input),
+    ),
+  },
 }
 
-const AuthWithGoogleMachineConfig = {
-  /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWgO4EstsoB7EgGxgDoAxMdAY0wGkwBPWAYghIDswq+XgDcSAawEAzekwDiZKOTAARMMPwMwAZTAAndZsSgADiViF8fIyAAeiAJwA2KgHYAHAEYATB48vHnj4ArF4ANCBsiF4ALC5U0R5BLl5usS4ADOlBjtEAvrnhaEQERKQU1Fr4ULwAkrzcfAJCohJU5tV1AOqEmPIkitp6BmDWpubolrzWdgj2AMxU9u5zXunJHulzOXPhkQix6VRzbqnRXo450Y726Xn54bwkEHDWRTglOGWUAnSMLOzwJAgMYWKxAmZnXaIDZxexwpxBJy+RwpRz3EBvPA9Yhkb5USodKZAkETMGgCEeRbwrzJLxzIKeRweKEIOZZKhJXwxaJs-zJdGYj448oCADCmDADDEACUwFB8LB0LpkKTeFp0CrUICTGZQUTyYgElS4S4kgkPPMXPYWUFotEOW50qk3HMPAlbgKMO9sV9qABRXgQUa61XTaEue1zex0uauoJOxxZFkuDxuKhZF1OJmJkIuT3FH24mDB8aTMMIPzG6O0+mMp0s+lV64xRFOu35fJAA */
-  predictableActionArguments: true,
-  tsTypes: {} as import("./auth-with-google.typegen").Typegen0,
-  schema: { events: {}, context: {} } as Schema,
+const AuthWithGoogleMachine = setup({
+  types: {} as any,
+  ...AuthWithGoogleMachineOptions,
+} as any).createMachine({
   id: "auth-with-goolge",
   initial: "FetchKeys",
+  context: (args: any) =>
+    ({
+      jwt: "",
+      ...(args.input ?? {}),
+    }) as AuthWithGoogleMachineContext,
   states: {
     FetchKeys: {
       invoke: {
         src: "signWithGoogleService",
         id: "signWithGoogleService",
+        input: (args: any) => args.context,
         onDone: {
           target: "End",
           actions: "assignAuthSession",
@@ -42,35 +61,12 @@ const AuthWithGoogleMachineConfig = {
     },
     End: {
       type: "final" as const,
-      data: (context: AuthWithGoogleMachineContext) => {
+      output: (context: AuthWithGoogleMachineContext) => {
         return context.authSession
       },
     },
   },
-}
-
-const AuthWithGoogleMachineOptions: Parameters<
-  typeof createMachine<AuthWithGoogleMachineContext, Events, any>
->[1] = {
-  actions: {
-    assignAuthSession: assign({
-      authSession: (_: AuthWithGoogleMachineContext, event: any) => {
-        console.debug("AuthWithGoogleMachine assignAuthSession", {
-          authSession: event.data,
-        })
-        return event.data
-      },
-    }),
-  },
-  services: {
-    signWithGoogleService,
-  },
-}
-
-const AuthWithGoogleMachine = createMachine(
-  AuthWithGoogleMachineConfig,
-  AuthWithGoogleMachineOptions,
-)
+} as any)
 
 export type AuthWithGoogleActor = ActorRefFrom<typeof AuthWithGoogleMachine>
 

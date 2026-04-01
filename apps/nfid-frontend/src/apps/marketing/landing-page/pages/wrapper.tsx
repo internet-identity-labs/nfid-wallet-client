@@ -22,6 +22,15 @@ export function Wrapper({
   const { isAuthenticated } = useAuthentication()
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const authQuery = params.get("auth")
+    if (authQuery === "true" && isAuthenticated) {
+      setIsAuthModalVisible(false)
+      navigate(`${ProfileConstants.base}/${ProfileConstants.tokens}`)
+    }
+  }, [isAuthenticated, navigate])
+
+  useEffect(() => {
     document.body.classList.add("homescreen")
     setThemeColor("#0E0F10")
 

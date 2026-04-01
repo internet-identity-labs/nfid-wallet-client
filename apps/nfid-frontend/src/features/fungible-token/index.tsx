@@ -1,4 +1,4 @@
-import { useActor } from "@xstate/react"
+import { useSelector } from "@xstate/react"
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { Balance } from "packages/ui/src/organisms/profile-info/balance"
 import { Tokens } from "packages/ui/src/organisms/tokens"
@@ -52,14 +52,15 @@ const TokensPage = memo(() => {
   const userRootPrincipalId = isViewOnlyMode
     ? ""
     : authState.getUserIdData().userId
-  const [, send] = useActor(transferService)
+  const _snapshot = useSelector(transferService as any, (s: any) => s)
+  const send = (event: any) => transferService.send(event)
 
   const onSendClick = (selectedToken: SelectedToken) => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
     send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const onSwapClick = (selectedToken: SelectedToken) => {
@@ -68,14 +69,14 @@ const TokensPage = memo(() => {
     send({ type: "CHANGE_DIRECTION", data: ModalType.SWAP })
     send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
     send({ type: "ASSIGN_SELECTED_TARGET_FT", data: "" })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const onConvertToCkBtc = () => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const onConvertToBtc = () => {
@@ -86,7 +87,7 @@ const TokensPage = memo(() => {
       type: "ASSIGN_SELECTED_FT",
       data: { address: CKBTC_CANISTER_ID, chainId: ChainId.ICP },
     })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const onConvertToCkEth = () => {
@@ -97,7 +98,7 @@ const TokensPage = memo(() => {
       type: "ASSIGN_SELECTED_FT",
       data: { address: ETH_NATIVE_ID, chainId: ChainId.ETH },
     })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const onConvertToCkSepoliaEth = () => {
@@ -108,7 +109,7 @@ const TokensPage = memo(() => {
       type: "ASSIGN_SELECTED_FT",
       data: { address: EVM_NATIVE, chainId: ChainId.ETH_SEPOLIA },
     })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const onConvertToEth = () => {
@@ -119,7 +120,7 @@ const TokensPage = memo(() => {
       type: "ASSIGN_SELECTED_FT",
       data: { address: CKETH_LEDGER_CANISTER_ID, chainId: ChainId.ICP },
     })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const onConvertToSepoliaEth = () => {
@@ -130,7 +131,7 @@ const TokensPage = memo(() => {
       type: "ASSIGN_SELECTED_FT",
       data: { address: CKSEPOLIA_LEDGER_CANISTER_ID, chainId: ChainId.ICP },
     })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const onStakeClick = (selectedToken: SelectedToken) => {
@@ -138,7 +139,7 @@ const TokensPage = memo(() => {
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.STAKE })
     send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
-    send("SHOW")
+    send({ type: "SHOW" })
   }
 
   const { data: tokens = undefined, mutate: refetchTokens } =

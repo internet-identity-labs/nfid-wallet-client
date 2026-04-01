@@ -24,7 +24,6 @@ import {
 
 const machineConfig = {
   id: "IdentityKitRPCMachine",
-  initial: "Initializing",
   context: {
     requestsQueue: [],
     activeRequest: undefined,

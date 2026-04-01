@@ -239,7 +239,24 @@ const nfidEmbedMachineOptions = {
       appMeta: {
         logo: event.data?.logo,
         name: event?.data?.name,
-        url: new URL(event?.data?.domain).host,
+        url: (() => {
+          const domain = event?.data?.domain
+          try {
+            if (!domain) return ""
+            const normalized =
+              typeof domain === "string" && !domain.includes("://")
+                ? `https://${domain}`
+                : domain
+            return new URL(normalized).host
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.debug("[/embed] assignAppMeta invalid domain", {
+              domain,
+              error: (e as Error)?.message,
+            })
+            return ""
+          }
+        })(),
       },
       authRequest: { ...context.authRequest, hostname: event?.data?.domain },
     })),

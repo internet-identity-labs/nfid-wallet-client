@@ -307,7 +307,7 @@ export const AuthChooseAccount = ({
                 </div>
               }
             >
-              <IconCmpInfo className="text-black" />
+              <IconCmpInfo className="text-black dark:text-white" />
             </Tooltip>
           </TooltipProvider>
         </div>

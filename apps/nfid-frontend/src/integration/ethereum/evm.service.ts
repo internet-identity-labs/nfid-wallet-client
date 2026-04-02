@@ -35,7 +35,6 @@ import {
   CKETH_MINTER_CANISTER_ID,
   CKETH_NETWORK_FEE,
   INFURA_API_KEY,
-  CHAIN_ID,
   CKETH_LEDGER_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { KEY_ETH_ADDRESS } from "packages/integration/src/lib/authentication/storage"
@@ -156,7 +155,7 @@ export abstract class EVMService {
   protected ckEthNetworkFee: bigint = CKETH_NETWORK_FEE
 
   constructor() {
-    this.provider = new InfuraProvider(CHAIN_ID, INFURA_API_KEY)
+    this.provider = new InfuraProvider(ChainId.ETH, INFURA_API_KEY)
   }
 
   public async getQuickAddress() {

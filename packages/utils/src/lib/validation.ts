@@ -8,6 +8,8 @@ enum IModalType {
   CONVERT_TO_CKBTC = "CONVERT_TO_CKBTC",
   CONVERT_TO_ETH = "CONVERT_TO_ETH",
   CONVERT_TO_CKETH = "CONVERT_TO_CKETH",
+  CONVERT_TO_SEPOLIA_ETH = "CONVERT_TO_SEPOLIA_ETH",
+  CONVERT_TO_SEPOLIA_CKETH = "CONVERT_TO_SEPOLIA_CKETH",
 }
 
 const MIN_CK_BTC_AMOUNT_TO_CONVERT = 0.00051
@@ -82,14 +84,16 @@ export const validateTransferAmountField =
     }
 
     if (
-      modalType === IModalType.CONVERT_TO_ETH &&
+      (modalType === IModalType.CONVERT_TO_ETH ||
+        modalType === IModalType.CONVERT_TO_SEPOLIA_ETH) &&
       valueNum.isLessThan(MIN_CK_ETH_AMOUNT_TO_CONVERT)
     ) {
       return `Amount can't be less than ${MIN_CK_ETH_AMOUNT_TO_CONVERT} ckETH.`
     }
 
     if (
-      modalType === IModalType.CONVERT_TO_CKETH &&
+      (modalType === IModalType.CONVERT_TO_CKETH ||
+        modalType === IModalType.CONVERT_TO_SEPOLIA_CKETH) &&
       valueNum.isLessThan(MIN_ETH_AMOUNT_TO_CONVERT)
     ) {
       return `Amount can't be less than ${MIN_ETH_AMOUNT_TO_CONVERT} ETH.`

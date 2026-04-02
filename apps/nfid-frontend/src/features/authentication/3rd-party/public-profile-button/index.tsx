@@ -31,7 +31,7 @@ export const PublicProfileButton = ({
 
   if (!publicProfile || isValidating || isLoading)
     return (
-      <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full bg-white rounded-xl">
+      <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full bg-white rounded-xl dark:bg-zinc-700">
         <Loader imageClasses="w-16" isLoading={true} fullscreen={false} />
       </div>
     )

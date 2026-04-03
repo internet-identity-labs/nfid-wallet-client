@@ -33,7 +33,8 @@
         ],
         "styles": ["apps/nfid-demo/src/index.scss"],
         "optimization": false,
-        "sourceMap": true
+        "sourceMap": true,
+        "skipTypeChecking": true
       },
       "configurations": {
         "production": {

@@ -17,7 +17,7 @@ export const Popover: React.FC<PopoverProps> = ({
 }) => {
   return (
     <RadixPopover.Root>
-      <RadixPopover.Trigger className={triggerClassName}>
+      <RadixPopover.Trigger asChild className={triggerClassName}>
         {trigger}
       </RadixPopover.Trigger>
       <RadixPopover.Content side={position} align={align} className="!z-30">

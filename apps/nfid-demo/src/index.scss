@@ -1,8 +1,10 @@
-@import "tailwindcss/components";
-@import "tailwindcss/base";
-@import "tailwindcss/utilities";
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-html {
-  scroll-behavior: smooth !important;
+@layer base {
+  html {
+    @apply font-sans antialiased;
+    scroll-behavior: smooth;
+  }
 }

@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js"
+import type { SourceInputCalculator } from "src/integration/swap/calculator/calculator"
 import { SwapAmountsReply } from "src/integration/swap/kong/idl/kong_backend.d"
 import { QuoteAbstract } from "src/integration/swap/quote/quote-abstract"
 

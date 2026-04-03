@@ -7,8 +7,9 @@ import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
 import { NFID } from "@nfid/embed"
-import { BaseKeyType } from "@nfid/embed/src/lib/types"
 import { useSWR } from "@nfid/swr"
+
+import type { NfidEmbedKeyType } from "../types/nf-embed-key"
 
 declare const NFID_PROVIDER_URL: string
 
@@ -20,8 +21,8 @@ interface AuthenticationContextProps {
   setIdentity: React.Dispatch<
     React.SetStateAction<DelegationIdentity | undefined>
   >
-  keyType: BaseKeyType
-  setKeyType: React.Dispatch<React.SetStateAction<BaseKeyType>>
+  keyType: NfidEmbedKeyType
+  setKeyType: React.Dispatch<React.SetStateAction<NfidEmbedKeyType>>
   derivationOrigin?: string
   setDerivationOrigin: React.Dispatch<React.SetStateAction<string | undefined>>
   config?: {
@@ -55,10 +56,10 @@ const isProd = origin.includes(".nfid.one")
 const derivationCanisterId = isDev
   ? CANISTER_IDS["nfid-demo"].dev
   : isStaging
-  ? CANISTER_IDS["nfid-demo"].stage
-  : isProd
-  ? CANISTER_IDS["nfid-demo"].ic
-  : undefined
+    ? CANISTER_IDS["nfid-demo"].stage
+    : isProd
+      ? CANISTER_IDS["nfid-demo"].ic
+      : undefined
 
 const derivationOrigin =
   derivationCanisterId && `https://${derivationCanisterId}.ic0.app`
@@ -71,7 +72,7 @@ export const AuthenticationProvider: React.FC<{
     string | undefined
   >(derivationOrigin)
 
-  const [keyType, setKeyType] = React.useState<BaseKeyType>("ECDSA")
+  const [keyType, setKeyType] = React.useState<NfidEmbedKeyType>("ECDSA")
 
   const { data: nfid, isLoading: isLoadingNFID } = useSWR(
     `nfid-${keyType}`,

@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js"
+import type { SourceInputCalculator } from "src/integration/swap/calculator/calculator"
 import { LiquidityError } from "src/integration/swap/errors/types"
 import { Quote } from "src/integration/swap/quote"
 import { PriceImpactStatus } from "src/integration/swap/types/enums"
@@ -162,8 +163,8 @@ export abstract class QuoteAbstract implements Quote {
       status: priceImpact.isGreaterThanOrEqualTo(-1)
         ? PriceImpactStatus.LOW
         : priceImpact.isGreaterThanOrEqualTo(-5)
-        ? PriceImpactStatus.MEDIUM
-        : PriceImpactStatus.HIGH,
+          ? PriceImpactStatus.MEDIUM
+          : PriceImpactStatus.HIGH,
     }
   }
 

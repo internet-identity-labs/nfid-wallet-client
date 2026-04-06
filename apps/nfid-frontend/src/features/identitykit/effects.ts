@@ -40,8 +40,9 @@ export const prepareCancelResponseEffect = async (
 export const sendResponseEffect = async (context: any, event: any) => {
   const request = context.activeRequest
   const parent = window.opener || window.parent
+  const payload = event?.output ?? event?.data
 
-  if (event.data instanceof Error || event.data instanceof GenericError) {
+  if (payload instanceof Error || payload instanceof GenericError) {
     parent.postMessage(
       {
         origin: context.activeRequest.origin,
@@ -49,12 +50,12 @@ export const sendResponseEffect = async (context: any, event: any) => {
         id: context.activeRequest.data.id,
         error: {
           code: 3001,
-          message: event.data?.message ?? "Unknown error",
+          message: payload?.message ?? "Unknown error",
         },
       },
       request.origin,
     )
   } else {
-    parent.postMessage(event.data, request.origin)
+    parent.postMessage(payload, request.origin)
   }
 }

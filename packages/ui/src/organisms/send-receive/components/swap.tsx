@@ -100,7 +100,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
 
   const amount = watch("amount")
 
-  if (isTokenLoading)
+  if (isTokenLoading && !isSuccessOpen)
     return (
       <BlurredLoader
         isLoading

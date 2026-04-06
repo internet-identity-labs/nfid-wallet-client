@@ -17,7 +17,7 @@ import {
 import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/other-sign-options.tsx"
 import { AuthSignInWithRecoveryPhrase } from "packages/ui/src/organisms/authentication/sign-in-with-recovery-phrase"
 import { AuthSignUpPassKey } from "packages/ui/src/organisms/authentication/sign-up-passkey"
-import { ReactNode, useCallback, useMemo, useState } from "react"
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 
 import { Button, IconCmpGoogle, IconCmpDfinity } from "@nfid-frontend/ui"
 import { getAllWalletsFromThisDevice } from "@nfid/integration"
@@ -60,6 +60,17 @@ export default function AuthenticationCoordinator({
   const [loginWithRecoveryLoading, setLoginWithRecoveryLoading] =
     useState(false)
   const [signUpWithPassKeyError, setSignUpWithPasskeyError] = useState("")
+
+  useEffect(() => {
+    if (!isEmbed) return
+    // eslint-disable-next-line no-console
+    console.debug("[/embed-auth] AuthenticationCoordinator snapshot", {
+      value: state.value,
+      contextIsEmbed: state.context?.isEmbed,
+      anchor: state.context?.authSession?.anchor,
+      hasAuthSession: !!state.context?.authSession,
+    })
+  }, [isEmbed, state.value, state.context?.authSession, state.context?.isEmbed])
 
   const onSelectGoogleAuth: LoginEventHandler = ({ credential }) => {
     send({

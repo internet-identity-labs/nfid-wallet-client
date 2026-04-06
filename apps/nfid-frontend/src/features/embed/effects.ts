@@ -31,11 +31,20 @@ export const nfidUnauthenticated = ({
   window.parent.postMessage({ type: "nfid_unauthenticated" }, rpcMessage.origin)
 }
 
-export const sendRPCResponseEffect = (
-  _: NFIDEmbedMachineContext,
-  { data }: any,
-) => {
-  const { origin, ...rpcMessage } = data
+export const sendRPCResponseEffect = ({ event }: { event: any }) => {
+  const data = event?.output ?? event?.data
+  if (!data || typeof data !== "object") {
+    console.error("sendRPCResponseEffect: missing payload", event)
+    return
+  }
+  const { origin, ...rpcMessage } = data as { origin: string } & Record<
+    string,
+    unknown
+  >
+  if (typeof origin !== "string" || !origin) {
+    console.error("sendRPCResponseEffect: missing origin", data)
+    return
+  }
 
   console.debug("sendRPCResponse", { rpcMessage })
   window.parent.postMessage(rpcMessage, origin)

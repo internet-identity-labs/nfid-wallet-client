@@ -26,8 +26,40 @@ export default function NFIDEmbedCoordinator() {
     })
   }, [state.value])
 
+  useEffect(() => {
+    const s = state as any
+    const uiBranch = s.matches("AUTH.Authenticate")
+      ? "AUTH.Authenticate → AuthenticationCoordinator"
+      : s.matches("HANDLE_PROCEDURE.AWAIT_PROCEDURE_APPROVAL")
+        ? "AWAIT_PROCEDURE_APPROVAL → ProcedureApproval"
+        : s.matches("HANDLE_PROCEDURE.ERROR")
+          ? "HANDLE_PROCEDURE.ERROR"
+          : s.matches("HANDLE_PROCEDURE.EXECUTE_PROCEDURE") ||
+              s.matches("AUTH.CheckAppMeta") ||
+              s.matches("AUTH.CheckAuthentication") ||
+              s.matches("AUTH.Authenticated")
+            ? "loader (busy / authenticated-wait)"
+            : "default-loader"
+    // eslint-disable-next-line no-console
+    console.debug("[/embed] NFIDEmbedCoordinator UI branch", {
+      uiBranch,
+      value: state.value,
+    })
+  }, [state])
+
   const Component = useMemo(() => {
     switch (true) {
+      case (state as any).matches("AUTH.CheckAppMeta"):
+      case (state as any).matches("AUTH.CheckAuthentication"):
+        return (
+          <BlurredLoader
+            isLoading
+            loadingMessage={
+              state.context.rpcMessage?.method === "eth_accounts" &&
+              "Requesting account..."
+            }
+          />
+        )
       case (state as any).matches("AUTH.Authenticate"):
         return (
           <AuthenticationCoordinator
@@ -40,7 +72,17 @@ export default function NFIDEmbedCoordinator() {
         )
       case (state as any).matches("HANDLE_PROCEDURE.AWAIT_PROCEDURE_APPROVAL"):
         if (!state.context.rpcMessage) throw new Error("missing rpcMessage")
-        if (!state.context.authSession) throw new Error("missing authSession")
+        if (!state.context.authSession) {
+          return (
+            <BlurredLoader
+              isLoading
+              loadingMessage={
+                state.context.rpcMessage?.method === "eth_accounts" &&
+                "Requesting account..."
+              }
+            />
+          )
+        }
 
         return (
           <ProcedureApprovalCoordinator

@@ -19,13 +19,11 @@ export type Events =
 
 const AuthWithGoogleMachineOptions = {
   actions: {
-    assignAuthSession: assign({
-      authSession: (_: AuthWithGoogleMachineContext, event: any) => {
-        console.debug("AuthWithGoogleMachine assignAuthSession", {
-          authSession: event.output,
-        })
-        return event.output
-      },
+    assignAuthSession: assign(({ event }: any) => {
+      console.debug("AuthWithGoogleMachine assignAuthSession", {
+        authSession: event.output,
+      })
+      return { authSession: event.output }
     }),
   },
   actors: {
@@ -42,6 +40,8 @@ const AuthWithGoogleMachine = setup({
 } as any).createMachine({
   id: "auth-with-goolge",
   initial: "FetchKeys",
+  output: ({ context }: { context: AuthWithGoogleMachineContext }) =>
+    context.authSession,
   context: (args: any) =>
     ({
       jwt: "",
@@ -52,7 +52,8 @@ const AuthWithGoogleMachine = setup({
       invoke: {
         src: "signWithGoogleService",
         id: "signWithGoogleService",
-        input: (args: any) => args.context,
+        input: ({ context }: { context: AuthWithGoogleMachineContext }) =>
+          context,
         onDone: {
           target: "End",
           actions: "assignAuthSession",
@@ -61,8 +62,15 @@ const AuthWithGoogleMachine = setup({
     },
     End: {
       type: "final" as const,
-      output: (context: AuthWithGoogleMachineContext) => {
-        return context.authSession
+      output: ({ context }: { context: AuthWithGoogleMachineContext }) => {
+        const session = context.authSession
+        // eslint-disable-next-line no-console
+        console.debug("[/embed-auth] AuthWithGoogleMachine End.output", {
+          hasAuthSession: !!session,
+          anchor: session?.anchor,
+          sessionSource: (session as { sessionSource?: string })?.sessionSource,
+        })
+        return session
       },
     },
   },

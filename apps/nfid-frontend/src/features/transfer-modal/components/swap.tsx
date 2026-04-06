@@ -40,6 +40,17 @@ import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { useUserPrefs } from "frontend/hooks/user-prefs"
 
 const QUOTE_REFETCH_TIMER = 30
+function resolveIcpFt(
+  address: string,
+  icpInited: FT[] | undefined,
+  catalogTokens: FT[],
+): FT | undefined {
+  const fromInited = icpInited?.find((t) => t.getTokenAddress() === address)
+  if (fromInited) return fromInited
+  return catalogTokens.find(
+    (t) => t.getTokenAddress() === address && t.getChainId() === ChainId.ICP,
+  )
+}
 
 interface ISwapFT {
   preselectedSourceTokenAddress: string | undefined
@@ -116,40 +127,37 @@ export const SwapFT = ({
 
   const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(tokens)
 
-  const filteredTokens = useMemo(() => {
+  const icpInitedTokens = useMemo(() => {
     if (!initedTokens) return
-    const filtered = initedTokens.filter(
+    return initedTokens.filter(
       (token: FT) => token.getChainId() === ChainId.ICP,
     )
+  }, [initedTokens])
+  const fromPickerTokens = useMemo(() => {
+    if (!icpInitedTokens) return
 
-    if (!hideZeroBalance) return filtered
+    if (!hideZeroBalance) return icpInitedTokens
 
-    const tokensWithBalance = filtered.filter(
+    return icpInitedTokens.filter(
       (token: FT) =>
         token.getTokenAddress() === ICP_CANISTER_ID ||
         token.getTokenBalance() !== BigInt(0),
     )
-    return tokensWithBalance
-  }, [initedTokens, hideZeroBalance])
+  }, [icpInitedTokens, hideZeroBalance])
 
   const [getTransaction, setGetTransaction] = useState<
     SwapTransaction | undefined
   >()
 
-  const fromToken = useMemo(() => {
-    if (!filteredTokens) return undefined
-    return filteredTokens.find(
-      (token: FT) => token.getTokenAddress() === fromTokenAddress,
-    )
-  }, [fromTokenAddress, filteredTokens])
+  const fromToken = useMemo(
+    () => resolveIcpFt(fromTokenAddress, icpInitedTokens, tokens),
+    [fromTokenAddress, icpInitedTokens, tokens],
+  )
 
-  const toToken = useMemo(() => {
-    return filteredTokens?.find(
-      (token: FT) =>
-        token.getTokenAddress() === toTokenAddress &&
-        token.getChainId() === ChainId.ICP,
-    )
-  }, [toTokenAddress, filteredTokens])
+  const toToken = useMemo(
+    () => resolveIcpFt(toTokenAddress, icpInitedTokens, tokens),
+    [toTokenAddress, icpInitedTokens, tokens],
+  )
 
   const filteredAllTokens = useMemo(() => {
     return tokens?.filter(
@@ -194,8 +202,10 @@ export const SwapFT = ({
   }, [fromTokenAddress, isEqual])
 
   const getProviders = useCallback(async () => {
-    if (!filteredTokens) return
-    const allFromTokens = filteredTokens.map((token) => token.getTokenAddress())
+    if (!fromPickerTokens) return
+    const allFromTokens = fromPickerTokens.map((token) =>
+      token.getTokenAddress(),
+    )
 
     try {
       const [tokensAvailableToSwapTo, providers] = await Promise.all([
@@ -223,7 +233,7 @@ export const SwapFT = ({
         setProviderError(error)
       }
     }
-  }, [fromTokenAddress, toTokenAddress, filteredTokens])
+  }, [fromTokenAddress, toTokenAddress, fromPickerTokens])
 
   useEffect(() => {
     getProviders()
@@ -372,14 +382,16 @@ export const SwapFT = ({
   return (
     <FormProvider {...formMethods}>
       <SwapFTUi
-        tokens={filteredTokens || []}
+        tokens={fromPickerTokens || []}
         allTokens={filteredAllTokens || []}
         toToken={toToken}
         fromToken={fromToken}
         setFromChosenToken={setFromTokenAddress}
         setToChosenToken={setToTokenAddress}
         loadingMessage={"Fetching supported tokens..."}
-        isTokenLoading={isTokensLoading || !fromToken || !toToken}
+        isTokenLoading={
+          !isSuccessOpen && (isTokensLoading || !fromToken || !toToken)
+        }
         submit={submit}
         isQuoteLoading={isQuoteLoading || isShroffLoading || isQuoteValidating}
         quote={quote}

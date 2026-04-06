@@ -12,7 +12,7 @@ export interface IPublicProfileButton {
   isAvailable: boolean
   selectedProfile: ProfileTypes
   setSelectedProfile: (value: ProfileTypes) => void
-  onError: () => void
+  onError: (error?: unknown) => void
 }
 export const PublicProfileButton = ({
   isAvailable,

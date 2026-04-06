@@ -179,6 +179,8 @@ const AuthWithEmailMachine = setup({
   ...AuthWithEmailMachineOptions,
 } as any).createMachine({
   ...AuthWithEmailMachineConfig,
+  output: ({ context }: { context: AuthWithEmailMachineContext }) =>
+    context.authSession,
   context: (args: any) =>
     ({
       verificationEmail: "",

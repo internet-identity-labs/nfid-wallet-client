@@ -16,20 +16,13 @@ import { NAMESPACES } from "./constants"
 
 import {
   WALLETCONNECT_PROJECT_ID,
-  WALLETCONNECT_METADATA,
+  getWalletConnectMetadata,
   ETH_METHODS,
   ETH_EVENTS,
 } from "./constants"
 import { getWalletDelegation } from "../facade/wallet"
 
 const SUPPORTED_METHODS = new Set<string>(ETH_METHODS)
-
-/**
- * WalletConnect Service for NFID Wallet using WalletKit
- *
- * This service handles WalletConnect protocol integration, allowing dApps
- * to connect to NFID Wallet and request transaction signing.
- */
 export class WalletConnectService {
   private walletKit: InstanceType<typeof WalletKit> | null = null
   private core: InstanceType<typeof Core> | null = null
@@ -42,10 +35,7 @@ export class WalletConnectService {
     number,
     SignClientTypes.EventArguments["session_request"]
   > = new Map()
-
-  /**
-   * Initialize WalletConnect WalletKit
-   */
+  // Initialize WalletConnect WalletKit
   async initialize(): Promise<void> {
     if (this.isInitialized) {
       return
@@ -60,7 +50,7 @@ export class WalletConnectService {
       // Initialize WalletKit with Core
       this.walletKit = await WalletKit.init({
         core: this.core,
-        metadata: WALLETCONNECT_METADATA,
+        metadata: getWalletConnectMetadata(),
       })
 
       this.setupEventHandlers()
@@ -76,10 +66,7 @@ export class WalletConnectService {
       throw error
     }
   }
-
-  /**
-   * Setup event handlers for WalletConnect events
-   */
+  // Setup event handlers for WalletConnect events
   private setupEventHandlers(): void {
     if (!this.walletKit) return
 
@@ -171,9 +158,7 @@ export class WalletConnectService {
     // Session expiration is handled automatically by WalletKit
   }
 
-  /**
-   * Load existing sessions from storage
-   */
+  // Load existing sessions from storage
   private loadExistingSessions(): void {
     if (!this.walletKit) return
 
@@ -185,25 +170,19 @@ export class WalletConnectService {
     })
   }
 
-  /**
-   * Get pending session proposal
-   */
+  // Get pending session proposal
   getPendingProposal():
     | SignClientTypes.EventArguments["session_proposal"]
     | null {
     return this.pendingProposal
   }
 
-  /**
-   * Clear pending proposal
-   */
+  // Clear pending proposal
   clearPendingProposal(): void {
     this.pendingProposal = null
   }
 
-  /**
-   * Approve session proposal (connect to dApp)
-   */
+  // Approve session proposal (connect to dApp)
   async approveSession(
     proposalId: number,
     accounts: string[],
@@ -249,9 +228,7 @@ export class WalletConnectService {
     }
   }
 
-  /**
-   * Reject session proposal
-   */
+  // Reject session proposal
   async rejectSession(proposalId: number): Promise<void> {
     if (!this.walletKit) {
       throw new Error("WalletConnect not initialized")
@@ -269,9 +246,7 @@ export class WalletConnectService {
     }
   }
 
-  /**
-   * Get Ethereum address from current identity
-   */
+  // Get Ethereum address from current identity
   async getEthereumAddress(): Promise<string> {
     try {
       const address = await ethereumService.getQuickAddress()
@@ -282,9 +257,7 @@ export class WalletConnectService {
     }
   }
 
-  /**
-   * Get all active sessions
-   */
+  // Get all active sessions
   getActiveSessions(): SessionTypes.Struct[] {
     // Sync with WalletKit storage
     if (this.walletKit) {
@@ -300,9 +273,7 @@ export class WalletConnectService {
     return Array.from(this.activeSessions.values())
   }
 
-  /**
-   * Check if a session with specific topic exists
-   */
+  // Check if a session with specific topic exists
   hasSession(topic: string): boolean {
     if (!this.walletKit) return false
 
@@ -313,9 +284,7 @@ export class WalletConnectService {
     )
   }
 
-  /**
-   * Disconnect session
-   */
+  // Disconnect session
   async disconnectSession(topic: string): Promise<void> {
     if (!this.walletKit) {
       throw new Error("WalletConnect not initialized")
@@ -333,10 +302,8 @@ export class WalletConnectService {
     }
   }
 
-  /**
-   * Connect via URI (for local testing or deep links)
-   * This allows connecting by pasting the WalletConnect URI from the QR code
-   */
+  // Connect via URI (for local testing or deep links)
+  // This allows connecting by pasting the WalletConnect URI from the QR code
   async connectViaUri(uri: string): Promise<void> {
     if (!this.walletKit) {
       throw new Error("WalletConnect not initialized")
@@ -351,25 +318,19 @@ export class WalletConnectService {
     }
   }
 
-  /**
-   * Get pending request by ID
-   */
+  // Get pending request by ID
   getPendingRequest(
     requestId: number,
   ): SignClientTypes.EventArguments["session_request"] | null {
     return this.pendingRequests.get(requestId) || null
   }
 
-  /**
-   * Get all pending requests
-   */
+  // Get all pending requests
   getAllPendingRequests(): SignClientTypes.EventArguments["session_request"][] {
     return Array.from(this.pendingRequests.values())
   }
 
-  /**
-   * Find pending request by ID and topic
-   */
+  // Find pending request by ID and topic
   findPendingRequest(
     requestId: number,
     topic: string,
@@ -381,9 +342,7 @@ export class WalletConnectService {
     return null
   }
 
-  /**
-   * Remove pending request
-   */
+  // Remove pending request
   removePendingRequest(requestId: number): void {
     this.pendingRequests.delete(requestId)
   }
@@ -391,20 +350,17 @@ export class WalletConnectService {
   /**
    * Get WalletKit instance (for advanced usage)
    */
+  // Get WalletKit instance (for advanced usage)
   getWalletKit(): InstanceType<typeof WalletKit> | null {
     return this.walletKit
   }
 
-  /**
-   * Check if WalletConnect is initialized
-   */
+  // Check if WalletConnect is initialized
   getInitialized(): boolean {
     return this.isInitialized
   }
 
-  /**
-   * Cleanup and disconnect all sessions
-   */
+  // Cleanup and disconnect all sessions
   async cleanup(): Promise<void> {
     if (!this.walletKit) return
 
@@ -421,9 +377,7 @@ export class WalletConnectService {
     this.isInitialized = false
   }
 
-  /**
-   * Handle WalletConnect session request
-   */
+  // Handle WalletConnect session request
   async handleSessionRequest(
     request: SignClientTypes.EventArguments["session_request"],
     userParams?: WCGasData,
@@ -501,9 +455,7 @@ export class WalletConnectService {
     this.removePendingRequest(request.id)
   }
 
-  /**
-   * Handle personal_sign request
-   */
+  // Handle personal_sign request
   private async handlePersonalSign(
     identity: SignIdentity,
     params: [string, string],
@@ -521,9 +473,7 @@ export class WalletConnectService {
     return await chainFusionSignerService.ethPersonalSign(identity, message)
   }
 
-  /**
-   * Handle eth_signTypedData_v4 request
-   */
+  // Handle eth_signTypedData_v4 request
   private async handleEthSignTypedData(
     identity: SignIdentity,
     params: [string, any],
@@ -601,9 +551,7 @@ export class WalletConnectService {
     return await chainFusionSignerService.ethSignPrehash(identity, hashHex)
   }
 
-  /**
-   * Prepare transaction request from Ethereum transaction params
-   */
+  // Prepare transaction request from Ethereum transaction params
   private async prepareTransactionRequest(
     tx: EthereumTransactionParams,
     userParams: WCGasData,
@@ -660,9 +608,7 @@ export class WalletConnectService {
     }
   }
 
-  /**
-   * Handle eth_signTransaction request
-   */
+  // Handle eth_signTransaction request
   private async handleEthSignTransaction(
     identity: SignIdentity,
     params: [EthereumTransactionParams],
@@ -676,9 +622,7 @@ export class WalletConnectService {
     )
   }
 
-  /**
-   * Handle eth_sendTransaction request
-   */
+  // Handle eth_sendTransaction request
   private async handleEthSendTransaction(
     identity: SignIdentity,
     params: [EthereumTransactionParams],

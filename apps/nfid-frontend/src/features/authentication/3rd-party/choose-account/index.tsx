@@ -3,7 +3,6 @@ import clsx from "clsx"
 import toaster from "packages/ui/src/atoms/toast"
 import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import React from "react"
 
 import {
   BlurredLoader,
@@ -40,6 +39,31 @@ export interface IAuthChooseAccount {
   appMeta: AuthorizingAppMeta
   authRequest: AuthorizationRequest
   handleSelectAccount: (data: ApproveIcGetDelegationSdkResponse) => void
+}
+
+function resolveDiscoveryHostname(
+  authRequest: AuthorizationRequest,
+  appMeta: AuthorizingAppMeta,
+): string {
+  const h = authRequest.hostname?.trim()
+  if (h) return h
+  const d = authRequest.derivationOrigin?.trim()
+  if (d) {
+    try {
+      return new URL(d).host
+    } catch {
+      /* invalid URL */
+    }
+  }
+  const raw = appMeta.url?.trim()
+  if (raw) {
+    try {
+      return new URL(raw.includes("://") ? raw : `https://${raw}`).host
+    } catch {
+      /* invalid URL */
+    }
+  }
+  return "localhost"
 }
 
 const HOT_FIX_V24_1_WRONG_HOSTNAMES = [
@@ -81,12 +105,20 @@ export const AuthChooseAccount = ({
 
   const { data: legacyAnonymousProfiles, isLoading: isAnonymousLoading } =
     useSWR(
-      [authRequest, "legacyAnonymousProfiles"],
-      ([authRequest]) => fetchAccountsService({ authRequest }),
+      [authRequest, appMeta, "legacyAnonymousProfiles"],
+      ([authRequest, appMeta]) =>
+        fetchAccountsService({
+          authRequest: {
+            ...authRequest,
+            hostname: resolveDiscoveryHostname(authRequest, appMeta),
+          },
+        }),
       {
-        onError: async () => {
-          await authState.reset(false)
-          onReset()
+        onError: (err) => {
+          console.error("AuthChooseAccount: legacyAnonymousProfiles", err)
+          toaster.error(
+            "Could not load legacy accounts. Anonymous sign-in is still available.",
+          )
         },
       },
     )
@@ -157,11 +189,13 @@ export const AuthChooseAccount = ({
             : undefined,
         )
 
-        void icrc1OracleService.storeDiscoveryApp({
-          derivationOrigin: authRequest.derivationOrigin,
-          hostname: authRequest.hostname,
-          login: "Anonymous",
-        })
+        void icrc1OracleService
+          .storeDiscoveryApp({
+            derivationOrigin: authRequest.derivationOrigin,
+            hostname: resolveDiscoveryHostname(authRequest, appMeta),
+            login: "Anonymous",
+          })
+          .catch((err) => console.error("storeDiscoveryApp (anonymous)", err))
 
         const authSession: ThirdPartyAuthSession = {
           anchor: (await fetchProfile()).anchor,
@@ -186,6 +220,7 @@ export const AuthChooseAccount = ({
       }
     },
     [
+      appMeta,
       authRequest.derivationOrigin,
       authRequest.hostname,
       authRequest.maxTimeToLive,
@@ -212,11 +247,13 @@ export const AuthChooseAccount = ({
           : undefined,
       )
 
-      void icrc1OracleService.storeDiscoveryApp({
-        derivationOrigin: authRequest.derivationOrigin,
-        hostname: authRequest.hostname,
-        login: "Global",
-      })
+      void icrc1OracleService
+        .storeDiscoveryApp({
+          derivationOrigin: authRequest.derivationOrigin,
+          hostname: resolveDiscoveryHostname(authRequest, appMeta),
+          login: "Global",
+        })
+        .catch((err) => console.error("storeDiscoveryApp (global)", err))
 
       const authSession: ThirdPartyAuthSession = {
         anchor: (await fetchProfile()).anchor,
@@ -240,6 +277,7 @@ export const AuthChooseAccount = ({
       setIsLoading(false)
     }
   }, [
+    appMeta,
     authRequest.derivationOrigin,
     authRequest.hostname,
     authRequest.maxTimeToLive,
@@ -333,9 +371,11 @@ export const AuthChooseAccount = ({
               selectedProfile={selectedProfile}
               setSelectedProfile={(value) => setSelectedProfile(value)}
               isAvailable={!!authRequest.targets?.length}
-              onError={async () => {
-                await authState.reset(false)
-                onReset()
+              onError={(err) => {
+                console.error("AuthChooseAccount: publicProfile", err)
+                toaster.error(
+                  "Could not load public profile. You can still connect anonymously.",
+                )
               }}
             />
           </div>

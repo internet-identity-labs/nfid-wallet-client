@@ -90,6 +90,9 @@ export type Events =
 const authenticationMachineConfig = {
   id: "auth-machine",
   initial: "AuthSelection",
+  output: ({ context }: { context: AuthenticationContext }) => ({
+    ...context,
+  }),
   context: (args: any) => ({ ...(args.input ?? {}) }) as AuthenticationContext,
   states: {
     AuthSelection: {
@@ -425,10 +428,44 @@ const authenticationMachineOptions = {
   guards: {
     isExistingAccount: ({ event }: any) => {
       const payload = event?.output ?? event?.data
-      return !!payload?.anchor
+      const result = !!payload?.anchor
+      try {
+        // eslint-disable-next-line no-console
+        console.debug(
+          "[/embed-auth] AuthenticationMachine guard isExistingAccount",
+          {
+            result,
+            eventType: event?.type,
+            hasOutput: event?.output != null,
+            hasData: event?.data != null,
+            anchor: payload?.anchor,
+            outputKeys:
+              payload && typeof payload === "object"
+                ? Object.keys(payload as object)
+                : null,
+          },
+        )
+      } catch (_e) {
+        // ignore
+      }
+      return result
     },
     isReturn: ({ event }: any) => {
-      return !(event?.output ?? event?.data)
+      const payload = event?.output ?? event?.data
+      const result = !payload
+      try {
+        // eslint-disable-next-line no-console
+        console.debug("[/embed-auth] AuthenticationMachine guard isReturn", {
+          result,
+          eventType: event?.type,
+          hasOutput: event?.output != null,
+          hasData: event?.data != null,
+          willRouteToAuthSelection: result,
+        })
+      } catch (_e) {
+        // ignore
+      }
+      return result
     },
     is2FAEnabled: ({ event }: any) => {
       return !!(event?.output ?? event?.data)
@@ -447,13 +484,15 @@ const authenticationMachineOptions = {
   actions: {
     debugInvokeDone: ({ event }: any) => {
       try {
+        const payload = event?.output ?? event?.data
         // eslint-disable-next-line no-console
-        console.debug("[AuthenticationMachine] invoke done", {
+        console.debug("[/embed-auth] AuthenticationMachine invoke done", {
           type: event?.type,
           hasOutput: event?.output != null,
           hasData: event?.data != null,
           outputKeys: event?.output ? Object.keys(event.output) : null,
           dataKeys: event?.data ? Object.keys(event.data) : null,
+          anchor: payload?.anchor,
         })
       } catch (_e) {
         // ignore
@@ -462,9 +501,32 @@ const authenticationMachineOptions = {
     setShouldCheckRecoveryEvery8th: assign(() => ({
       shouldShowRecoveryEvery8th: true,
     })),
-    assignAuthSession: assign(({ event }: any) => ({
-      authSession: event.output ?? event.data,
-    })),
+    assignAuthSession: assign(({ context, event }: any) => {
+      const authSession = event.output ?? event.data
+      const likelyEmbed =
+        context?.isEmbed ||
+        (typeof event?.type === "string" &&
+          event.type.includes("AuthWithGoogleMachine")) ||
+        (typeof event?.type === "string" &&
+          event.type.includes("AuthWithEmailMachine"))
+      if (likelyEmbed) {
+        try {
+          // eslint-disable-next-line no-console
+          console.debug(
+            "[/embed-auth] AuthenticationMachine assignAuthSession",
+            {
+              anchor: authSession?.anchor,
+              hasAuthSession: !!authSession,
+              eventType: event?.type,
+              contextIsEmbed: context?.isEmbed,
+            },
+          )
+        } catch (_e) {
+          // ignore
+        }
+      }
+      return { authSession }
+    }),
     assignVerificationEmail: assign(({ event }: any) => ({
       verificationEmail: event.data.email,
     })),

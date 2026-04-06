@@ -224,8 +224,9 @@ const machineServices = {
       context: IdentityKitRPCMachineContext
       event: any
     }) => {
-      if (typeof event.data === "object" && "isSilent" in event.data)
-        return !!event.data.isSilent
+      const meta = event?.output ?? event?.data
+      if (typeof meta === "object" && meta !== null && "isSilent" in meta)
+        return !!(meta as { isSilent: boolean }).isSilent
 
       return !!context.activeRequestMetadata?.isSilent
     },
@@ -235,7 +236,8 @@ const machineServices = {
       context: IdentityKitRPCMachineContext
       event: any
     }) => {
-      return !!event.data.requiresAuthentication
+      const meta = event?.output ?? event?.data
+      return !!meta?.requiresAuthentication
     },
     isRequestProcessing: ({
       context,
@@ -267,7 +269,7 @@ const machineServices = {
       requestsQueue: [...context.requestsQueue, event.data],
     })),
     assignRequestMetadata: assign(({ event }: any) => ({
-      activeRequestMetadata: event.data,
+      activeRequestMetadata: event?.output ?? event?.data,
     })),
     moveQueue: assign(({ context }: any) => ({
       requestsQueue:
@@ -283,10 +285,10 @@ const machineServices = {
       activeRequestMetadata: undefined,
     })),
     assignComponentData: assign(({ event }: any) => ({
-      componentData: event.data,
+      componentData: event?.output ?? event?.data,
     })),
     assignError: assign(({ event }: any) => ({
-      error: event.data,
+      error: event?.error ?? event?.data,
     })),
     prepareFailedResponse: prepareFailedResponseEffect,
   },
@@ -334,7 +336,8 @@ export const IdentityKitRPCMachine = setup({
     sendResponse: fromPromise(
       async ({ input }: { input: { context: any; event: any } }) => {
         const { context, event } = input
-        if (event.output instanceof NoActionError) return
+        const resolved = event?.output ?? event?.data
+        if (resolved instanceof NoActionError) return
         await sendResponseEffect(context, event)
       },
     ),

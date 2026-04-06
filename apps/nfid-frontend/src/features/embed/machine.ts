@@ -1,3 +1,4 @@
+import { DelegationIdentity } from "@dfinity/identity"
 import { getExpirationDelay } from "packages/integration/src/lib/authentication/get-expiration"
 import { assign, fromCallback, fromPromise, setup, stateIn } from "xstate"
 
@@ -162,6 +163,8 @@ const nfidEmbedMachineConfig = {
           entry: "nfid_authenticated",
           invoke: {
             src: "sessionExpiryWatcher",
+            input: ({ context }: { context: NFIDEmbedMachineContext }) =>
+              context,
             onError: {
               target: "Authenticate",
               actions: "nfid_unauthenticated",
@@ -274,10 +277,11 @@ const nfidEmbedMachineOptions = {
       },
     })),
     updateProcedure: assign(
-      ({ messageQueue }: NFIDEmbedMachineContext, _event: any) => {
+      ({ context }: { context: NFIDEmbedMachineContext }) => {
+        const messageQueue = context.messageQueue ?? []
         return {
           rpcMessage: messageQueue[0],
-          messageQueue: messageQueue.slice(1, messageQueue.length),
+          messageQueue: messageQueue.slice(1),
         }
       },
     ),
@@ -355,32 +359,83 @@ export const NFIDEmbedMachine = setup({
       async ({ input }: { input: { context: any; event: any } }) =>
         executeProcedureServiceImpl(input.context as any, input.event as any),
     ),
-    sessionExpiryWatcher: fromCallback(({ sendBack }) => {
-      const { delegationIdentity } = authState.get()
-      if (!delegationIdentity) {
-        sendBack({ type: "SESSION_EXPIRED" })
-        return
+    sessionExpiryWatcher: fromCallback(({ sendBack, input }) => {
+      const embedContext = input as NFIDEmbedMachineContext | undefined
+
+      const resolveDelegation = (): DelegationIdentity | undefined =>
+        authState.get().delegationIdentity ??
+        embedContext?.authSession?.delegationIdentity
+
+      let expiryTimer: ReturnType<typeof setTimeout> | undefined
+      let pollInterval: ReturnType<typeof setInterval> | undefined
+      let cancelled = false
+
+      const clearExpiryTimer = () => {
+        if (expiryTimer !== undefined) {
+          clearTimeout(expiryTimer)
+          expiryTimer = undefined
+        }
       }
 
-      const expiresIn = getExpirationDelay(delegationIdentity)
-      const timeoutIn = expiresIn * 0.8
+      const startExpiryTimer = (delegationIdentity: DelegationIdentity) => {
+        const expiresIn = getExpirationDelay(delegationIdentity)
+        const timeoutIn = expiresIn * 0.8
+        const now = Date.now()
 
-      const now = Date.now()
+        console.debug("NFIDEmbedMachine delegation expires at", {
+          expiresAt: new Date(now + expiresIn),
+          timeoutAt: new Date(now + timeoutIn),
+        })
 
-      console.debug("NFIDEmbedMachine delegation expires at", {
-        expiresAt: new Date(now + expiresIn),
-        timeoutAt: new Date(now + timeoutIn),
+        expiryTimer = setTimeout(
+          () => {
+            console.debug("NFIDEmbedMachine delegation expired")
+            sendBack({ type: "SESSION_EXPIRED" })
+          },
+          timeoutIn > ONE_DAY_IN_MS ? ONE_DAY_IN_MS : timeoutIn,
+        )
+      }
+
+      const tryStart = () => {
+        const d = resolveDelegation()
+        if (!d) return false
+        startExpiryTimer(d)
+        return true
+      }
+
+      if (tryStart()) {
+        return () => {
+          cancelled = true
+          clearExpiryTimer()
+        }
+      }
+      queueMicrotask(() => {
+        if (cancelled) return
+        if (tryStart()) return
+
+        let ticks = 0
+        const maxTicks = 40
+        pollInterval = setInterval(() => {
+          if (cancelled) return
+          ticks += 1
+          if (tryStart()) {
+            if (pollInterval !== undefined) clearInterval(pollInterval)
+            pollInterval = undefined
+            return
+          }
+          if (ticks >= maxTicks) {
+            if (pollInterval !== undefined) clearInterval(pollInterval)
+            pollInterval = undefined
+            sendBack({ type: "SESSION_EXPIRED" })
+          }
+        }, 50)
       })
 
-      const timeout = setTimeout(
-        () => {
-          console.debug("NFIDEmbedMachine delegation expired")
-          sendBack({ type: "SESSION_EXPIRED" })
-        },
-        timeoutIn > ONE_DAY_IN_MS ? ONE_DAY_IN_MS : timeoutIn,
-      )
-
-      return () => clearTimeout(timeout)
+      return () => {
+        cancelled = true
+        clearExpiryTimer()
+        if (pollInterval !== undefined) clearInterval(pollInterval)
+      }
     }),
   },
 } as any).createMachine({

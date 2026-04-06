@@ -1,4 +1,6 @@
 {
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
   "liveshare.launcherClient": "visualStudioCode",
   "cucumberautocomplete.steps": ["./apps/nfid-frontend-e2e/src/steps/*.ts"],
   "cucumberautocomplete.syncfeatures": "./apps/nfid-frontend-e2e/src/features/**/*.feature",

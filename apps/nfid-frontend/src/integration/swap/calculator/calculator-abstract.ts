@@ -1,3 +1,5 @@
+import type { SourceInputCalculator } from "src/integration/swap/calculator/calculator"
+
 export const WIDGET_FEE = 0.00875
 
 export abstract class CalculatorAbstract implements SourceInputCalculator {

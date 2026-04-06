@@ -14,7 +14,11 @@ import {
   Skeleton,
 } from "@nfid-frontend/ui"
 import { validateTransferAmountField } from "@nfid-frontend/utils"
-import { E8S } from "@nfid/integration/token/constants"
+import {
+  CKETH_NETWORK_FEE,
+  CKSEPOLIA_NETWORK_FEE,
+  E8S,
+} from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
@@ -103,7 +107,9 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       case IModalType.CONVERT_TO_BTC:
         return BigInt(10)
       case IModalType.CONVERT_TO_ETH:
-        return BigInt(10000000000)
+        return BigInt(CKETH_NETWORK_FEE)
+      case IModalType.CONVERT_TO_SEPOLIA_ETH:
+        return BigInt(CKSEPOLIA_NETWORK_FEE)
 
       case IModalType.SWAP:
         return fee === undefined ? undefined : getMaxAmountFee(userBalance, fee)

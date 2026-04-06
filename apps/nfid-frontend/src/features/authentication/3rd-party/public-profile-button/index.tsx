@@ -31,7 +31,7 @@ export const PublicProfileButton = ({
 
   if (!publicProfile || isValidating || isLoading)
     return (
-      <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full bg-white rounded-xl">
+      <div className="absolute top-0 left-0 flex items-center justify-center w-full h-full bg-white rounded-xl dark:bg-zinc-700">
         <Loader imageClasses="w-16" isLoading={true} fullscreen={false} />
       </div>
     )
@@ -39,8 +39,9 @@ export const PublicProfileButton = ({
   return (
     <div
       className={clsx(
-        "flex justify-between text-xs lowercase h-5 mt-5",
-        !isAvailable && "!text-gray-400 !pointer-events-none",
+        "flex justify-between text-xs lowercase h-5 mt-5 dark:text-white",
+        !isAvailable &&
+          "!text-gray-400 dark:!text-zinc-500 !pointer-events-none",
       )}
     >
       <div className="flex items-center">
@@ -54,13 +55,15 @@ export const PublicProfileButton = ({
         />
         <label
           htmlFor="profile_public"
-          className="ml-2 lowercase cursor-pointer"
+          className="ml-2 lowercase cursor-pointer dark:text-white"
         >
           {truncateString(publicProfile.principal.toString(), 6, 4)}
         </label>
       </div>
       {publicProfile?.balance ? (
-        <div className="uppercase">{publicProfile?.balance} ICP</div>
+        <div className="uppercase dark:text-white">
+          {publicProfile?.balance} ICP
+        </div>
       ) : null}
     </div>
   )

@@ -19,6 +19,7 @@ import {
   PoolsResult,
   SwapArgs,
 } from "src/integration/swap/kong/idl/kong_backend.d"
+import type { SourceInputCalculator } from "src/integration/swap/calculator/calculator"
 import { KongCalculator } from "src/integration/swap/kong/impl/kong-calculator"
 import { KongQuoteImpl } from "src/integration/swap/kong/impl/kong-quote-impl"
 import { KongSwapTransactionImpl } from "src/integration/swap/kong/impl/kong-swap-transaction-impl"

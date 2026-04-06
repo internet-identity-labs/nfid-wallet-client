@@ -50,7 +50,9 @@ export class TtlStorage<T> {
     if (!item) return null
 
     if (Date.now() > item.expiry) {
-      await db.remove(key)
+      if (key != null && String(key).trim() !== "") {
+        await db.remove(key)
+      }
       return null
     }
 
@@ -86,6 +88,7 @@ export class TtlStorage<T> {
   }
 
   public async remove(key: string): Promise<void> {
+    if (key == null || String(key).trim() === "") return
     const db = await this._db
     await db.remove(key)
   }

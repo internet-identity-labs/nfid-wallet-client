@@ -14,6 +14,7 @@ import {
 } from "@nfid/integration"
 import { IIAuthSession } from "frontend/state/authentication"
 
+import { NfidHttpError } from "frontend/integration/_common"
 import {
   fetchProfile,
   createNFIDProfile,
@@ -21,8 +22,7 @@ import {
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 
 export const identityProvider = "https://id.ai"
-//who knows why FE canister URL named like this....
-export const derivationOrigin = CANISTER_WITH_AT_LEAST_ONE_PASSKEY
+export const derivationOrigin = NFID_WALLET_CLIENT_CANISTER
 
 export async function signWithIIService(): Promise<IIAuthSession> {
   return new Promise((resolve, reject) => {
@@ -35,21 +35,30 @@ export async function signWithIIService(): Promise<IIAuthSession> {
             const identity = authClient.getIdentity() as SignIdentity
 
             try {
+              await replaceActorIdentity(im, identity)
+
               let profile
               try {
-                await replaceActorIdentity(im, identity)
                 profile = await fetchProfile()
-                await im.use_access_point([identity.getPrincipal().toString()])
-              } catch (_e) {
-                console.debug("creating new profile")
-                profile = await createNFIDProfile({
-                  delegationIdentity: identity,
-                  email: undefined,
-                  deviceType: DeviceType.InternetIdentity,
-                  name: identity.getPrincipal().toText(),
-                  icon: Icon.ii,
-                })
+              } catch (e) {
+                // Only create an NFID account when IM has no profile for this principal (404).
+                // Any other error, or running create after use_access_point failed, produced
+                // misleading canister errors (e.g. "Impossible to link this II anchor").
+                if (e instanceof NfidHttpError && e.code === 404) {
+                  console.debug("creating new profile after im.get_account 404")
+                  profile = await createNFIDProfile({
+                    delegationIdentity: identity,
+                    email: undefined,
+                    deviceType: DeviceType.InternetIdentity,
+                    name: identity.getPrincipal().toText(),
+                    icon: Icon.ii,
+                  })
+                } else {
+                  throw e
+                }
               }
+
+              await im.use_access_point([identity.getPrincipal().toString()])
 
               const session: IIAuthSession = {
                 sessionSource: "ii" as const,

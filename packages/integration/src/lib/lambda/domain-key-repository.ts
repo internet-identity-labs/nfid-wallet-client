@@ -17,7 +17,9 @@ export async function getFromStorage(key: string): Promise<any> {
   if (!item) throw new Error(`Value for key '${key}' not found.`)
 
   if (item.expired) {
-    await domainKeyStorage.remove(key)
+    if (key != null && String(key).trim() !== "") {
+      await domainKeyStorage.remove(key)
+    }
     throw new Error(`Value for key '${key}' has expired.`)
   }
 
@@ -30,5 +32,6 @@ export async function isPresentInStorage(key: string) {
 }
 
 export async function deleteFromStorage(key: string): Promise<void> {
+  if (key == null || String(key).trim() === "") return
   await domainKeyStorage.remove(key)
 }

@@ -176,9 +176,14 @@ export const AuthChooseAccount = ({
         const delegation = authState.get().delegationIdentity
         if (!delegation) throw new Error("No delegation identity")
 
-        const domain = useHostName
+        let domain = useHostName
           ? authRequest.hostname
           : (authRequest.derivationOrigin ?? authRequest.hostname)
+        // Embed often omits hostname/derivationOrigin; empty domain breaks lambda path
+        // (deleteFromStorage(undefined) → IDB "No key or key range specified").
+        if (!domain?.trim()) {
+          domain = resolveDiscoveryHostname(authRequest, appMeta)
+        }
 
         const anonymousDelegation = await getAnonymousDelegate(
           authRequest.sessionPublicKey,

@@ -109,6 +109,7 @@ export class IdbKeyVal implements KeyValueStore {
    * @returns void
    */
   public async remove(key: IDBValidKey) {
+    if (key == null || key === "") return
     return await _removeValue(this._db, this._storeName, key)
   }
 
@@ -121,7 +122,9 @@ export class IdbKeyVal implements KeyValueStore {
     if (keys.length === 0) return
     const tx = this._db.transaction(this._storeName, "readwrite")
     const store = tx.objectStore(this._storeName)
-    await Promise.all(keys.map((key) => store.delete(key)))
+    await Promise.all(
+      keys.filter((k) => k != null && k !== "").map((key) => store.delete(key)),
+    )
     await tx.done
   }
 

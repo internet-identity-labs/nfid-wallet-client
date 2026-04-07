@@ -26,17 +26,10 @@ function getRandomLoadingMessage() {
 
 export default function IdentityKitRPCCoordinator() {
   const [state, send] = useMachine(IdentityKitRPCMachine)
-  useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.debug("[/rpc] IdentityKitRPCMachine state", {
-      value: state.value,
-      method: state.context.activeRequest?.data?.method,
-      origin: state.context.activeRequest?.origin,
-      hasMetadata: !!state.context.activeRequestMetadata,
-      hasComponentData: !!state.context.componentData,
-      error: state.context.error?.message,
-    })
-  }, [state.value])
+  const matches = (value: string) =>
+    (state as unknown as { matches: (v: string) => boolean }).matches(value)
+  const children = (state as unknown as { children: Record<string, unknown> })
+    .children
   const isApproveRequestInProgress =
     state.context.activeRequest?.data.method === "icrc49_call_canister"
 
@@ -48,13 +41,12 @@ export default function IdentityKitRPCCoordinator() {
 
   const Component = useMemo(() => {
     switch (true) {
-      case (state as any).matches("Main.Authentication.Authenticate"):
+      case matches("Main.Authentication.Authenticate"):
         return (
           <AuthenticationCoordinator
             isIdentityKit
             actor={
-              (state.children as any)
-                .AuthenticationMachine as AuthenticationMachineActor
+              children.AuthenticationMachine as unknown as AuthenticationMachineActor
             }
             loader={
               <BlurredLoader
@@ -64,9 +56,7 @@ export default function IdentityKitRPCCoordinator() {
             }
           />
         )
-      case (state as any).matches(
-        "Main.InteractiveRequest.PromptInteractiveRequest",
-      ):
+      case matches("Main.InteractiveRequest.PromptInteractiveRequest"):
         return (
           <RPCComponent
             method={
@@ -87,7 +77,7 @@ export default function IdentityKitRPCCoordinator() {
             }}
           />
         )
-      case (state as any).matches("Main.InteractiveRequest.Error"):
+      case matches("Main.InteractiveRequest.Error"):
         return (
           <RPCComponentError
             onRetry={() => send({ type: "TRY_AGAIN" })}

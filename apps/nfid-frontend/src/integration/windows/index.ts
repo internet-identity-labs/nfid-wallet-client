@@ -81,7 +81,9 @@ export function getAppMetaFromQuery(): AuthorizingAppMeta {
 export const isIdentityClientAuthEvent = (
   event: unknown,
 ): event is MessageEvent<IdentityClientAuthEvent> => {
-  const msg = (event as any).data as unknown
+  if (typeof event !== "object" || event === null) return false
+  if (!("data" in event)) return false
+  const msg = (event as MessageEvent<unknown>).data
 
   console.debug("isIdentityClientAuthEvent", { msg })
 

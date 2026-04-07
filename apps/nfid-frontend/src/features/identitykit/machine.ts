@@ -122,7 +122,6 @@ const machineConfig = {
                 onDone: [
                   {
                     target: "CheckAuthentication",
-                    actions: ["debugAuthMachineDone"],
                   },
                 ],
               },
@@ -215,6 +214,16 @@ const machineConfig = {
   },
 }
 
+type IdentityKitRPCMachineTypes = {
+  context: IdentityKitRPCMachineContext
+  // Full event typing here is possible but large; keep it permissive while removing @ts-nocheck.
+  events: any
+  output: unknown
+}
+
+const act = <T extends string>(type: T) => ({ type }) as const
+const grd = <T extends string>(type: T) => ({ type }) as const
+
 const machineServices = {
   guards: {
     isSilentRequest: ({
@@ -253,18 +262,6 @@ const machineServices = {
     }) => !!context.activeRequest,
   },
   actions: {
-    debugAuthMachineDone: ({ event }: any) => {
-      try {
-        // eslint-disable-next-line no-console
-        console.debug("[/rpc] AuthenticationMachine done", {
-          type: event?.type,
-          hasOutput: event?.output != null,
-          outputKeys: event?.output ? Object.keys(event.output) : null,
-        })
-      } catch (_e) {
-        // ignore
-      }
-    },
     assignRequest: assign(({ context, event }: any) => ({
       requestsQueue: [...context.requestsQueue, event.data],
     })),
@@ -295,15 +292,16 @@ const machineServices = {
 }
 
 export const IdentityKitRPCMachine = setup({
-  types: {} as {
-    context: IdentityKitRPCMachineContext
-    events: any
-  },
-  guards: machineServices.guards,
-  actions: machineServices.actions,
+  types: {} as IdentityKitRPCMachineTypes,
+  guards: machineServices.guards as any,
+  actions: machineServices.actions as any,
   actors: {
     RPCReceiverV3: fromCallback(({ sendBack }) => {
-      const cleanup = (RPCReceiverV3 as any)()((evt: any) => sendBack(evt))
+      const cleanup = (
+        RPCReceiverV3 as unknown as () => (
+          send: (evt: unknown) => void,
+        ) => unknown
+      )()((evt: unknown) => sendBack(evt as any)) as void | (() => void)
       return () => cleanup?.()
     }),
     validateRequest: fromPromise(
@@ -342,7 +340,7 @@ export const IdentityKitRPCMachine = setup({
       },
     ),
   },
-} as any).createMachine({
+}).createMachine({
   ...machineConfig,
   context: {
     requestsQueue: [],
@@ -354,16 +352,16 @@ export const IdentityKitRPCMachine = setup({
   states: {
     RPCReceiverV3: {
       invoke: {
-        src: "RPCReceiverV3",
+        src: "RPCReceiverV3" as const,
       },
       on: {
         ON_REQUEST: [
           {
-            guard: "isRequestProcessing",
-            actions: ["assignRequest"],
+            guard: grd("isRequestProcessing"),
+            actions: [act("assignRequest")],
           },
           {
-            actions: ["assignRequest", "moveQueue"],
+            actions: [act("assignRequest"), act("moveQueue")],
           },
         ],
       },
@@ -375,27 +373,28 @@ export const IdentityKitRPCMachine = setup({
           always: [
             {
               target: "ValidateRequest",
-              guard: "hasActiveRequest",
+              guard: grd("hasActiveRequest"),
             },
           ],
         },
         ValidateRequest: {
           invoke: {
-            src: "validateRequest",
-            input: (args: any) => args.context,
+            src: "validateRequest" as const,
+            input: ({ context }: { context: IdentityKitRPCMachineContext }) =>
+              context,
             onDone: [
               {
-                actions: ["assignRequestMetadata"],
-                guard: "shouldAuthenticate",
+                actions: [act("assignRequestMetadata")],
+                guard: grd("shouldAuthenticate"),
                 target: "Authentication",
               },
               {
-                actions: ["assignRequestMetadata"],
-                guard: "isSilentRequest",
+                actions: [act("assignRequestMetadata")],
+                guard: grd("isSilentRequest"),
                 target: "ExecuteSilentRequest",
               },
               {
-                actions: ["assignRequestMetadata"],
+                actions: [act("assignRequestMetadata")],
                 target: "InteractiveRequest",
               },
             ],
@@ -407,11 +406,11 @@ export const IdentityKitRPCMachine = setup({
           states: {
             CheckAuthentication: {
               invoke: {
-                src: "checkAuthenticationStatus",
+                src: "checkAuthenticationStatus" as const,
                 onDone: [
                   {
                     target: "#IdentityKitRPCMachine.Main.ExecuteSilentRequest",
-                    guard: "isSilentRequest",
+                    guard: grd("isSilentRequest"),
                   },
                   {
                     target: "#IdentityKitRPCMachine.Main.InteractiveRequest",
@@ -422,7 +421,7 @@ export const IdentityKitRPCMachine = setup({
             },
             Authenticate: {
               invoke: {
-                src: "AuthenticationMachine",
+                src: "AuthenticationMachine" as const,
                 id: "AuthenticationMachine",
                 input: ({
                   context,
@@ -451,15 +450,19 @@ export const IdentityKitRPCMachine = setup({
           states: {
             PrepareComponentData: {
               invoke: {
-                src: "getInteractiveMethodData",
-                input: (args: any) => args.context,
+                src: "getInteractiveMethodData" as const,
+                input: ({
+                  context,
+                }: {
+                  context: IdentityKitRPCMachineContext
+                }) => context,
                 onDone: {
                   target: "PromptInteractiveRequest",
-                  actions: ["assignComponentData"],
+                  actions: [act("assignComponentData")],
                 },
                 onError: {
                   target: "Error",
-                  actions: ["assignError"],
+                  actions: [act("assignError")],
                 },
               },
             },
@@ -472,12 +475,16 @@ export const IdentityKitRPCMachine = setup({
             },
             CancelInteractiveRequest: {
               invoke: {
-                src: "prepareCancelResponse",
-                input: (args: any) => args.context,
+                src: "prepareCancelResponse" as const,
+                input: ({
+                  context,
+                }: {
+                  context: IdentityKitRPCMachineContext
+                }) => context,
                 onDone: "#IdentityKitRPCMachine.Main.SendResponse",
                 onError: {
                   target: "Error",
-                  actions: ["assignError"],
+                  actions: [act("assignError")],
                 },
               },
             },
@@ -537,5 +544,5 @@ export const IdentityKitRPCMachine = setup({
         },
       },
     },
-  },
-} as any)
+  } as any,
+})

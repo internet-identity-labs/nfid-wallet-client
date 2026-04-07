@@ -34,6 +34,7 @@ import { BlurredLoader } from "@nfid-frontend/ui"
 
 import { authWithAnchor } from "../auth-selection/other-sign-options/services"
 import { passkeyConnector } from "../auth-selection/passkey-flow/services"
+import type { Events as AuthenticationMachineEvents } from "./root-machine"
 import { AuthenticationMachineActor } from "./root-machine"
 
 export default function AuthenticationCoordinator({
@@ -49,8 +50,11 @@ export default function AuthenticationCoordinator({
 }) {
   const { loginWithRecovery } = useAuthentication()
   const { storageProfile, storageProfileLoading } = useLoadProfileFromStorage()
-  const state = useSelector(actor as any, (s: any) => s) as any
-  const send = useCallback((event: any) => actor.send(event), [actor])
+  const state = useSelector(actor, (s) => s)
+  const send = useCallback(
+    (event: AuthenticationMachineEvents) => actor.send(event),
+    [actor],
+  )
   const [isPasskeyLoading, setIsPasskeyLoading] = useState(false)
   const [is2FALoading, setIs2FALoading] = useState(false)
   const [isOtherOptionsLoading, setIsOtherOptionsLoading] = useState(false)
@@ -60,17 +64,6 @@ export default function AuthenticationCoordinator({
   const [loginWithRecoveryLoading, setLoginWithRecoveryLoading] =
     useState(false)
   const [signUpWithPassKeyError, setSignUpWithPasskeyError] = useState("")
-
-  useEffect(() => {
-    if (!isEmbed) return
-    // eslint-disable-next-line no-console
-    console.debug("[/embed-auth] AuthenticationCoordinator snapshot", {
-      value: state.value,
-      contextIsEmbed: state.context?.isEmbed,
-      anchor: state.context?.authSession?.anchor,
-      hasAuthSession: !!state.context?.authSession,
-    })
-  }, [isEmbed, state.value, state.context?.authSession, state.context?.isEmbed])
 
   const onSelectGoogleAuth: LoginEventHandler = ({ credential }) => {
     send({
@@ -254,8 +247,8 @@ export default function AuthenticationCoordinator({
     state.context.authSession?.anchor
 
   const renderAuthSteps = () => {
-    switch (true) {
-      case state.matches("AuthSelection"):
+    switch (state.value) {
+      case "AuthSelection":
         return (
           <motion.div
             key="AuthSelection"
@@ -318,7 +311,7 @@ export default function AuthenticationCoordinator({
             />
           </motion.div>
         )
-      case state.matches("AuthSelectionSignUp"):
+      case "AuthSelectionSignUp":
         return (
           <motion.div
             key="AuthSelectionSignUp"
@@ -378,7 +371,7 @@ export default function AuthenticationCoordinator({
             />
           </motion.div>
         )
-      case state.matches("SignUpPassKey"):
+      case "SignUpPassKey":
         return (
           <motion.div
             key="SignUpPassKey"
@@ -407,7 +400,7 @@ export default function AuthenticationCoordinator({
             />
           </motion.div>
         )
-      case state.matches("SignUpWithEmail"):
+      case "SignUpWithEmail":
         return (
           <motion.div
             key="EmailAuthentication"
@@ -423,7 +416,7 @@ export default function AuthenticationCoordinator({
             />
           </motion.div>
         )
-      case state.matches("EmailAuthentication"):
+      case "EmailAuthentication":
         return (
           <motion.div
             key="EmailAuthentication"
@@ -439,7 +432,7 @@ export default function AuthenticationCoordinator({
             />
           </motion.div>
         )
-      case state.matches("SignInWithRecoveryPhrase"):
+      case "SignInWithRecoveryPhrase":
         return (
           <motion.div
             key="SignInWithRecoveryPhrase"
@@ -464,7 +457,7 @@ export default function AuthenticationCoordinator({
             />
           </motion.div>
         )
-      case state.matches("BackupWallet"):
+      case "BackupWallet":
         return (
           <motion.div
             key="BackupWallet"
@@ -482,7 +475,7 @@ export default function AuthenticationCoordinator({
             />
           </motion.div>
         )
-      case state.matches("BackupWalletSavePhrase"):
+      case "BackupWalletSavePhrase":
         return (
           <motion.div
             key="BackupWalletSavePhrase"
@@ -506,7 +499,7 @@ export default function AuthenticationCoordinator({
             />
           </motion.div>
         )
-      case state.matches("OtherSignOptions"):
+      case "OtherSignOptions":
         return (
           <motion.div
             key="OtherSignOptions"
@@ -531,7 +524,7 @@ export default function AuthenticationCoordinator({
             />
           </motion.div>
         )
-      case state.matches("TwoFA"):
+      case "TwoFA":
         return (
           <motion.div
             key="TwoFA"
@@ -549,7 +542,7 @@ export default function AuthenticationCoordinator({
             />
           </motion.div>
         )
-      case state.matches("AddPasskeys"):
+      case "AddPasskeys":
         return (
           <motion.div
             key="AddPasskeys"
@@ -575,7 +568,7 @@ export default function AuthenticationCoordinator({
             />
           </motion.div>
         )
-      case state.matches("AddPasskeysSuccess"):
+      case "AddPasskeysSuccess":
         return (
           <motion.div
             key="AddPasskeysSuccess"
@@ -594,7 +587,6 @@ export default function AuthenticationCoordinator({
             />
           </motion.div>
         )
-      case state.matches("End"):
       default:
         return loader || <BlurredLoader isLoading />
     }

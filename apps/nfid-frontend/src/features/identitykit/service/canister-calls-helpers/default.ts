@@ -1,5 +1,6 @@
-import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp"
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
+import { Principal } from "@dfinity/principal"
 
 import { getBalance } from "@nfid/integration"
 
@@ -11,9 +12,17 @@ export const getDefaultMetadata = async (
 ): Promise<DefaultMetadata> => {
   const account = decodeIcrcAccount(message.data.params.sender)
 
+  const subAccountBytes = account.subaccount
+    ? Uint8Array.from(account.subaccount as number[])
+    : undefined
+  const subAccount = subAccountBytes
+    ? SubAccount.fromBytes(subAccountBytes)
+    : undefined
+  if (subAccount instanceof Error) throw subAccount
+
   const userAddress = AccountIdentifier.fromPrincipal({
-    principal: account.owner as any,
-    subAccount: account.subaccount as any,
+    principal: account.owner as unknown as Principal,
+    subAccount,
   }).toHex()
 
   const balance = await getBalance(userAddress)

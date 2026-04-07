@@ -22,7 +22,7 @@ import { DelegationIdentity } from "@dfinity/identity"
 import { Principal } from "@dfinity/principal"
 
 import { GenericError } from "./exception-handler.service"
-;(BigInt.prototype as any).toJSON = function () {
+BigInt.prototype.toJSON = function () {
   return this.toString()
 }
 
@@ -115,7 +115,7 @@ class CallCanisterService {
         throw new AgentError("Status buffer not found")
       }
       const statusArrayBuffer = toArrayBuffer(statusBuffer)
-      const status = new TextDecoder().decode(statusArrayBuffer as any)
+      const status = new TextDecoder().decode(statusArrayBuffer)
 
       switch (status) {
         case "replied":
@@ -130,7 +130,7 @@ class CallCanisterService {
             throw new AgentError("Reject code buffer not found")
           }
           const rejectCodeArrayBuffer = toArrayBuffer(rejectCodeBuffer)
-          const rejectCode = new Uint8Array(rejectCodeArrayBuffer as any)[0]
+          const rejectCode = new Uint8Array(rejectCodeArrayBuffer)[0]
 
           const rejectMessageBuffer = lookupResultToBuffer(
             certificate.lookup([...path, "reject_message"]) as LookupResult,
@@ -141,7 +141,7 @@ class CallCanisterService {
           const rejectMessageArrayBuffer = toArrayBuffer(rejectMessageBuffer)
 
           const rejectMessage = new TextDecoder().decode(
-            rejectMessageArrayBuffer as any,
+            rejectMessageArrayBuffer,
           )
 
           const error_code_buf = lookupResultToBuffer(
@@ -150,7 +150,7 @@ class CallCanisterService {
           const error_code = error_code_buf
             ? (() => {
                 const errorCodeArrayBuffer = toArrayBuffer(error_code_buf)
-                return new TextDecoder().decode(errorCodeArrayBuffer as any)
+                return new TextDecoder().decode(errorCodeArrayBuffer)
               })()
             : undefined
           throw new UpdateCallRejectedError(
@@ -196,7 +196,9 @@ class CallCanisterService {
 
     return {
       contentMap: requestDetails,
-      certificate: new Uint8Array(Cbor.encode((certificate as any).cert)),
+      certificate: new Uint8Array(
+        Cbor.encode((certificate as unknown as { cert: unknown }).cert),
+      ),
     }
   }
 }

@@ -1,3 +1,4 @@
+import type { DoneActorEvent, ErrorActorEvent } from "xstate"
 import { ActorRefFrom, assign, fromPromise, setup } from "xstate"
 
 import {
@@ -29,15 +30,19 @@ export interface ThirdPartyAuthMachineContext {
 }
 
 export type ThirdPartyAuthMachineEvents =
-  | { type: "done.invoke.handshake"; output: AuthorizationRequest }
-  | { type: "error.platform.handshake"; error: Error }
-  | { type: "done.invoke.getAppMeta"; output: AuthorizingAppMeta }
-  | { type: "error.platform.checkRuntime"; error: Error }
-  | { type: "done.invoke.AuthenticationMachine"; output: AuthSession }
-  | { type: "done.invoke.postDelegation"; output: void }
   | { type: "RETRY" }
   | { type: "CHOOSE_ACCOUNT"; data: ApproveIcGetDelegationSdkResponse }
   | { type: "RESET" }
+  | DoneActorEvent<AuthorizationRequest, "handshake">
+  | ErrorActorEvent<unknown, "handshake">
+  | DoneActorEvent<AuthorizingAppMeta, "getAppMeta">
+  | DoneActorEvent<AuthSession, "AuthenticationMachine">
+  | DoneActorEvent<void, "postDelegation">
+
+type ThirdPartyAuthMachineTypes = {
+  context: ThirdPartyAuthMachineContext
+  events: ThirdPartyAuthMachineEvents
+}
 
 const ThirdPartyAuthMachineConfig = {
   /** @xstate-layout N4IgpgJg5mDOIC5QEsIAcB0BlALgQwCccBiCAewDswNZ8drVNdCcBtABgF1FQ0zZkOZJR4gAHogCM7SQGYMs2QDYAHAFYVK9rOkB2ACwAaEAE9EOjLqX6VATmkAmG5JWyHSgL4fjjbPiIYABJ4FBCwABZ4ANbUAGJgOADG4aSUDBQAbmQxGJGhEdFgHNxIIHwCQiKlEgiytiqWurrsag4qSrpqui5qxma1Thitsvr6StqdTbZePuh+LEEhYZE58UkpYAQEZAQYaAA2eDgAZjsAtrlLBTHFouWCwhSiNZL6khhK0qq23eMtKg4+ogHK8hi1JM1XLoHA52FYZiBfMwAsF8itqABRLY7YgAJQxABVcQBNW6le6VJ7VYG2NRDBwjWSdIEIfTsWxg9hcuQuJTjFQIpH+HAYADiCQAgmg0ABZBJ4DBrZKpKgYZCZbLUGA4KWy+Vk3j8B5VUA1BkODD-BmdKEdWyA0yIfkYFRjMaSWEObqjQVzCUAVxw4TAFCEiSOjxleGS6rAKvSWRyeEDwdDyHD9ANZSNlOeiHq+iG+jUY00APYbVsLMktnkLn0uldWh+2grvswAaDO2QAC8I5QozGqPG1Rqkynuz2ilw7jnHnmEHY6y52OpNKM2boWSNdBh9LYDyXrB79CN2xhO+FJ-2KIPwrGR+rE9Rk12CL2ipISoaKvPqQgPTsIY7DZVw+XZCEWQbDk+UkD0uhPX5zwJAh-VoAARMAMnTONyFVJ9NQwHBUIwrCcLvWMswpP9TXzEs9xbNpdHsZR7BZDR3i5NQSzaJRFBLaYEQoMgIDgURGFnX8TXERAAFpZHYJQPnGNQT0kJRzRaFlZO4yxZFUlpTxGBs7HPZEcEk40qVohBZIcDRlPBJx1M03pHVqDk1HBJkVFeWQAQcWx9DM4VFjRQpLNzf87OkBRVPcV1PlaXR9OrL1LW8tRbHZH59IcEKFlRZZCkVBJkkimiZIAitty5DKuRkHR2n5AqUSudEMCxbYCAq6Salkly4o9VR3WS1L3IU+R7O5V5iyZTxvEROZzLC4qcnQtJeusqqNF3FxvXUoLFKC7dRksfcfldOpmuCxahQWcUdWlOV8C2hcYvYRz4reDS3C09zWneEZjysMYvT41qRUe3UXoVJVwje6LBvA76XL+tz+mdRL3U9b1btmJhQuh575QwDaqERmybELVROlpOoxg0+yWT4zjbGsEZAu4lQUshjAAGFg0SKIAElYBF44CDwM4wEpqqPqGhLRq9cb+mbBiDx+JQvNUdxz0vEMwxvCiKfJOc+sQTQlIU2lRl8n6bBZdQXVGT5fpcjp8aWjsJ3fPtKRN2Wzak7aajsDla1dMabAx4EZEsPiGX0L1WjGQSCYwFC0JwTDsMSIOfyshdNDpJpXTeaEtCcWPWQsVdujkVmmjhc8MVCOWantXcuniiDvmsFnVEsH4gvUdmazUVvsR64Oi+i+yGn04bEskMaa70Bp7HYU96lUGsBS8DwgA */
@@ -53,17 +58,17 @@ const ThirdPartyAuthMachineConfig = {
           states: {
             Fetch: {
               invoke: {
-                src: "handshake",
+                src: "handshake" as const,
                 id: "handshake",
                 onDone: [
                   {
-                    actions: "assignAuthRequest",
+                    actions: { type: "assignAuthRequest" } as const,
                     target: "Done",
                   },
                 ],
                 onError: {
                   target: "Error",
-                  actions: "assignError",
+                  actions: { type: "assignError" } as const,
                 },
               },
             },
@@ -80,11 +85,11 @@ const ThirdPartyAuthMachineConfig = {
           states: {
             Fetch: {
               invoke: {
-                src: "getAppMeta",
+                src: "getAppMeta" as const,
                 id: "getAppMeta",
                 onDone: [
                   {
-                    actions: "assignAppMeta",
+                    actions: { type: "assignAppMeta" } as const,
                     target: "Done",
                   },
                 ],
@@ -102,10 +107,10 @@ const ThirdPartyAuthMachineConfig = {
     },
     AuthenticationMachine: {
       invoke: {
-        src: "AuthenticationMachine",
+        src: "AuthenticationMachine" as const,
         id: "AuthenticationMachine",
         onDone: {
-          actions: "assignAuthSession",
+          actions: { type: "assignAuthSession" } as const,
           target: "Authorization",
         },
         input: ({ context }: { context: ThirdPartyAuthMachineContext }) => ({
@@ -118,7 +123,7 @@ const ThirdPartyAuthMachineConfig = {
     Authorization: {
       on: {
         CHOOSE_ACCOUNT: {
-          actions: "assignAuthoSession",
+          actions: { type: "assignAuthoSession" } as const,
           target: "End",
         },
         RESET: "Start",
@@ -126,8 +131,10 @@ const ThirdPartyAuthMachineConfig = {
     },
     End: {
       invoke: {
-        src: "postDelegation",
+        src: "postDelegation" as const,
         id: "postDelegation",
+        input: ({ context }: { context: ThirdPartyAuthMachineContext }) =>
+          context,
       },
       type: "final" as const,
     },
@@ -143,41 +150,75 @@ const ThirdPartyAuthMachineOptions = {
     getAppMeta: fromPromise(async () => getAppMeta()),
     postDelegation: fromPromise(
       async ({ input }: { input: ThirdPartyAuthMachineContext }) =>
-        postDelegation(input as any),
+        postDelegation(input),
     ),
     AuthenticationMachine,
   },
   actions: {
-    assignAuthRequest: assign(({ event }: any) => ({
-      authRequest: event.output,
+    assignAuthRequest: assign<
+      ThirdPartyAuthMachineContext,
+      ThirdPartyAuthMachineEvents,
+      undefined,
+      ThirdPartyAuthMachineEvents,
+      any
+    >(({ event }) => ({
+      authRequest: (event as DoneActorEvent<AuthorizationRequest, "handshake">)
+        .output,
     })),
-    assignAppMeta: assign(({ event }: any) => ({
-      appMeta: event.output,
+    assignAppMeta: assign<
+      ThirdPartyAuthMachineContext,
+      ThirdPartyAuthMachineEvents,
+      undefined,
+      ThirdPartyAuthMachineEvents,
+      any
+    >(({ event }) => ({
+      appMeta: (event as DoneActorEvent<AuthorizingAppMeta, "getAppMeta">)
+        .output,
     })),
-    assignAuthoSession: assign({
-      thirdPartyAuthSession: (_: ThirdPartyAuthMachineContext, event: any) =>
-        event.data,
-    }),
+    assignAuthoSession: assign<
+      ThirdPartyAuthMachineContext,
+      ThirdPartyAuthMachineEvents,
+      undefined,
+      ThirdPartyAuthMachineEvents,
+      any
+    >(({ event }: { event: ThirdPartyAuthMachineEvents }) => ({
+      thirdPartyAuthSession: (
+        event as Extract<
+          ThirdPartyAuthMachineEvents,
+          { type: "CHOOSE_ACCOUNT" }
+        >
+      ).data,
+    })),
 
-    assignAuthSession: assign({
-      authSession: (_: ThirdPartyAuthMachineContext, event: any) =>
-        event.output,
-    }),
+    assignAuthSession: assign<
+      ThirdPartyAuthMachineContext,
+      ThirdPartyAuthMachineEvents,
+      undefined,
+      ThirdPartyAuthMachineEvents,
+      any
+    >(({ event }: { event: ThirdPartyAuthMachineEvents }) => ({
+      authSession: (
+        event as DoneActorEvent<AuthSession, "AuthenticationMachine">
+      ).output,
+    })),
 
-    assignError: assign({
-      error: (_: ThirdPartyAuthMachineContext, event: any) => event.error,
-    }),
+    assignError: assign<
+      ThirdPartyAuthMachineContext,
+      ThirdPartyAuthMachineEvents,
+      undefined,
+      ThirdPartyAuthMachineEvents,
+      any
+    >(({ event }: { event: ThirdPartyAuthMachineEvents }) => ({
+      error: (event as ErrorActorEvent<unknown, "handshake">).error as Error,
+    })),
   },
   guards: {},
 }
 
 const ThirdPartyAuthMachine = setup({
-  types: {} as {
-    context: ThirdPartyAuthMachineContext
-    events: any
-  },
+  types: {} as ThirdPartyAuthMachineTypes,
   ...ThirdPartyAuthMachineOptions,
-} as any).createMachine(ThirdPartyAuthMachineConfig as any)
+}).createMachine(ThirdPartyAuthMachineConfig)
 
 export type IDPActor = ActorRefFrom<typeof ThirdPartyAuthMachine>
 export type ThirdPartyAuthMachineType = typeof ThirdPartyAuthMachine

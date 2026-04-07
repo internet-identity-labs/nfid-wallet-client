@@ -17,14 +17,35 @@ export type Events =
       data: AuthWithGoogleResult
     }
 
+type AuthWithGoogleMachineTypes = {
+  context: AuthWithGoogleMachineContext
+  events: Events
+  input: Partial<AuthWithGoogleMachineContext>
+  output: GoogleAuthSession
+}
+
 const AuthWithGoogleMachineOptions = {
   actions: {
-    assignAuthSession: assign(({ event }: any) => {
-      console.debug("AuthWithGoogleMachine assignAuthSession", {
-        authSession: event.output,
-      })
-      return { authSession: event.output }
+    assignAuthSession: assign<
+      AuthWithGoogleMachineContext,
+      Events,
+      undefined,
+      Events,
+      any
+    >({
+      authSession: ({ event }: { event: Events }) =>
+        (
+          event as Extract<
+            Events,
+            { type: "done.invoke.signWithGoogleService" }
+          >
+        ).output,
     }),
+    debugDone: ({ event }: { event: Events }) => {
+      console.debug("AuthWithGoogleMachine assignAuthSession", {
+        eventType: event.type,
+      })
+    },
   },
   actors: {
     signWithGoogleService: fromPromise(
@@ -35,28 +56,28 @@ const AuthWithGoogleMachineOptions = {
 }
 
 const AuthWithGoogleMachine = setup({
-  types: {} as any,
+  types: {} as AuthWithGoogleMachineTypes,
   ...AuthWithGoogleMachineOptions,
-} as any).createMachine({
+}).createMachine({
   id: "auth-with-goolge",
   initial: "FetchKeys",
   output: ({ context }: { context: AuthWithGoogleMachineContext }) =>
-    context.authSession,
-  context: (args: any) =>
+    context.authSession!,
+  context: ({ input }: { input?: Partial<AuthWithGoogleMachineContext> }) =>
     ({
       jwt: "",
-      ...(args.input ?? {}),
+      ...(input ?? {}),
     }) as AuthWithGoogleMachineContext,
   states: {
     FetchKeys: {
       invoke: {
-        src: "signWithGoogleService",
+        src: "signWithGoogleService" as const,
         id: "signWithGoogleService",
         input: ({ context }: { context: AuthWithGoogleMachineContext }) =>
           context,
         onDone: {
           target: "End",
-          actions: "assignAuthSession",
+          actions: ["debugDone", "assignAuthSession"],
         },
       },
     },
@@ -74,7 +95,7 @@ const AuthWithGoogleMachine = setup({
       },
     },
   },
-} as any)
+})
 
 export type AuthWithGoogleActor = ActorRefFrom<typeof AuthWithGoogleMachine>
 

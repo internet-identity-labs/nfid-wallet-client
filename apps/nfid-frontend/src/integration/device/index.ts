@@ -9,7 +9,7 @@ const PLATFORMS_WINDOWS = ["Win32", "Win64", "Windows", "WinCE"]
 const PLATFORMS_IOS = ["iPhone", "iPad", "iPod"]
 
 const parser = bowser.getParser(window.navigator.userAgent)
-const browser = (navigator as any).brave
+const browser = (navigator as unknown as { brave?: unknown }).brave
   ? { ...parser.getBrowser(), name: "Brave" }
   : parser.getBrowser()
 

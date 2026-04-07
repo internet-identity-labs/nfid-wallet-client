@@ -1,6 +1,6 @@
 import { useMachine } from "@xstate/react"
 import { ModalComponent } from "@nfid-frontend/ui"
-import { useEffect, useMemo } from "react"
+import { useMemo } from "react"
 
 import { BlurredLoader, ScreenResponsive } from "@nfid-frontend/ui"
 
@@ -12,45 +12,15 @@ import { PageError } from "./ui/error"
 
 export default function NFIDEmbedCoordinator() {
   const [state, send] = useMachine(NFIDEmbedMachine)
-
-  useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.debug("[/embed] NFIDEmbedMachine state", {
-      value: state.value,
-      method: state.context.rpcMessage?.method,
-      origin: state.context.rpcMessage?.origin,
-      hasAuthSession: !!state.context.authSession,
-      hasAppMeta: !!state.context.appMeta,
-      hasAuthRequest: !!state.context.authRequest,
-      error: state.context.error?.message,
-    })
-  }, [state.value])
-
-  useEffect(() => {
-    const s = state as any
-    const uiBranch = s.matches("AUTH.Authenticate")
-      ? "AUTH.Authenticate → AuthenticationCoordinator"
-      : s.matches("HANDLE_PROCEDURE.AWAIT_PROCEDURE_APPROVAL")
-        ? "AWAIT_PROCEDURE_APPROVAL → ProcedureApproval"
-        : s.matches("HANDLE_PROCEDURE.ERROR")
-          ? "HANDLE_PROCEDURE.ERROR"
-          : s.matches("HANDLE_PROCEDURE.EXECUTE_PROCEDURE") ||
-              s.matches("AUTH.CheckAppMeta") ||
-              s.matches("AUTH.CheckAuthentication") ||
-              s.matches("AUTH.Authenticated")
-            ? "loader (busy / authenticated-wait)"
-            : "default-loader"
-    // eslint-disable-next-line no-console
-    console.debug("[/embed] NFIDEmbedCoordinator UI branch", {
-      uiBranch,
-      value: state.value,
-    })
-  }, [state])
+  const matches = (value: string) =>
+    (state as unknown as { matches: (v: string) => boolean }).matches(value)
+  const children = (state as unknown as { children: Record<string, unknown> })
+    .children
 
   const Component = useMemo(() => {
     switch (true) {
-      case (state as any).matches("AUTH.CheckAppMeta"):
-      case (state as any).matches("AUTH.CheckAuthentication"):
+      case matches("AUTH.CheckAppMeta"):
+      case matches("AUTH.CheckAuthentication"):
         return (
           <BlurredLoader
             isLoading
@@ -60,17 +30,19 @@ export default function NFIDEmbedCoordinator() {
             }
           />
         )
-      case (state as any).matches("AUTH.Authenticate"):
+      case matches("AUTH.Authenticate"):
         return (
           <AuthenticationCoordinator
             isEmbed
             actor={
-              (state.children as any)
-                .AuthenticationMachine as AuthenticationMachineActor
+              (children.AuthenticationMachine ??
+                children[
+                  "AuthenticationMachine"
+                ]) as unknown as AuthenticationMachineActor
             }
           />
         )
-      case (state as any).matches("HANDLE_PROCEDURE.AWAIT_PROCEDURE_APPROVAL"):
+      case matches("HANDLE_PROCEDURE.AWAIT_PROCEDURE_APPROVAL"):
         if (!state.context.rpcMessage) throw new Error("missing rpcMessage")
         if (!state.context.authSession) {
           return (
@@ -91,7 +63,6 @@ export default function NFIDEmbedCoordinator() {
             authRequest={state.context.authRequest}
             rpcMessage={state.context.rpcMessage}
             onConfirm={(data) => {
-              console.debug("onConfirm", { data })
               send({ type: "APPROVE", data })
             }}
             onRequestICDelegation={(data) => {
@@ -101,9 +72,6 @@ export default function NFIDEmbedCoordinator() {
               })
             }}
             onRequestICTransfer={(data) => {
-              console.debug("ProcedureApprovalCoordinator.requestTransfer", {
-                data,
-              })
               send({
                 type: "APPROVE_IC_REQUEST_TRANSFER",
                 data: data,
@@ -113,7 +81,7 @@ export default function NFIDEmbedCoordinator() {
             onReject={() => send({ type: "CANCEL" })}
           />
         )
-      case (state as any).matches("HANDLE_PROCEDURE.ERROR"):
+      case matches("HANDLE_PROCEDURE.ERROR"):
         return (
           <PageError
             error={state.context.error}
@@ -121,10 +89,10 @@ export default function NFIDEmbedCoordinator() {
             onRetry={() => send({ type: "RETRY" })}
           />
         )
-      case (state as any).matches("HANDLE_PROCEDURE.EXECUTE_PROCEDURE"):
-      case (state as any).matches("AUTH.CheckAppMeta"):
-      case (state as any).matches("AUTH.CheckAuthentication"):
-      case (state as any).matches("AUTH.Authenticated"):
+      case matches("HANDLE_PROCEDURE.EXECUTE_PROCEDURE"):
+      case matches("AUTH.CheckAppMeta"):
+      case matches("AUTH.CheckAuthentication"):
+      case matches("AUTH.Authenticated"):
       default:
         return (
           <BlurredLoader
@@ -141,8 +109,6 @@ export default function NFIDEmbedCoordinator() {
   return (
     <ModalComponent
       onClose={() => {
-        // eslint-disable-next-line no-console
-        console.debug("[/embed] user closed modal")
         send({ type: "CANCEL" })
       }}
       isVisible

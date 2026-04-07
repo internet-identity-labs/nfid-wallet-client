@@ -44,8 +44,6 @@ export const ProcedureApprovalCoordinator: React.FC<
   onReset,
   onReject,
 }) => {
-  console.debug("ProcedureApprovalCoordinator", { rpcMessage })
-
   switch (true) {
     case ["ic_getDelegation"].includes(rpcMessage.method):
       return (

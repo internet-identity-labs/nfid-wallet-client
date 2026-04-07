@@ -8,13 +8,13 @@ import NFIDAuthMachine from "frontend/features/authentication/nfid/nfid-machine"
 export function WalletConnectAuthenticationScreen() {
   const [authState] = useMachine(NFIDAuthMachine)
 
-  if (authState.matches("AuthenticationMachine")) {
+  if (authState.value === "AuthenticationMachine") {
     return (
       <AuthenticationCoordinator
         isIdentityKit
         actor={
-          (authState.children as any)
-            ?.AuthenticationMachine as AuthenticationMachineActor
+          authState.children
+            .AuthenticationMachine as unknown as AuthenticationMachineActor
         }
         loader={<BlurredLoader isLoading loadingMessage="Authenticating..." />}
       />

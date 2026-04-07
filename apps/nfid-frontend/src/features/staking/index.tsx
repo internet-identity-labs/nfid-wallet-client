@@ -23,7 +23,7 @@ const StakingPage = memo(() => {
     viewOnlyAddressType,
     transferService,
   } = useContext(ProfileContext)
-  const _snapshot = useSelector(transferService as any, (s: any) => s)
+  const _snapshot = useSelector(transferService, (s) => s)
   const send = (event: any) => transferService.send(event)
   const { search } = useLocation()
 

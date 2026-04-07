@@ -30,6 +30,8 @@ import { AuthSession } from "frontend/state/authentication"
 
 import { AuthWithEmailMachineContext } from "./machine"
 
+const EMAIL_MAGIC_LINK_VERIFIED_KEY = "nfid.emailMagicLink.verified"
+
 export const sendVerificationEmail = async (
   context: AuthWithEmailMachineContext,
 ): Promise<SendVerificationResponse> => {
@@ -54,7 +56,13 @@ export const checkEmailVerification = async (
 
   return new Promise((resolve, reject) => {
     let nonce = 0
-    const int = setInterval(async () => {
+
+    const cleanup = (int: ReturnType<typeof setInterval>) => {
+      clearInterval(int)
+      window.removeEventListener("storage", onStorage)
+    }
+
+    const tick = async (int: ReturnType<typeof setInterval>) => {
       try {
         nonce++
         const res = await verificationService.checkVerification(
@@ -66,18 +74,29 @@ export const checkEmailVerification = async (
         )
 
         if (res) {
-          clearInterval(int)
+          cleanup(int)
           resolve(res)
         }
       } catch (e) {
         const isPending = e instanceof VerificationIsInProgressError
         if (!isPending) {
-          clearInterval(int)
+          cleanup(int)
           reject()
         }
       }
-    }, 3000)
+    }
+
+    const onStorage = (evt: StorageEvent) => {
+      if (evt.key !== EMAIL_MAGIC_LINK_VERIFIED_KEY) return
+      // Magic link completed in another tab → attempt immediate resolution.
+      void tick(int)
+    }
+
+    const int = setInterval(() => void tick(int), 3000)
     window.localStorage.setItem("emailIntervalId", int.toString())
+    window.addEventListener("storage", onStorage)
+    // Also attempt an immediate check without waiting for the first interval.
+    void tick(int)
   })
 }
 
@@ -98,6 +117,16 @@ export const verify = async (
 
   try {
     const status = await verificationService.verify(verificationMethod, token)
+    if (status === "success") {
+      try {
+        window.localStorage.setItem(
+          EMAIL_MAGIC_LINK_VERIFIED_KEY,
+          JSON.stringify({ token, at: Date.now() }),
+        )
+      } catch (_e) {
+        // ignore storage errors (e.g. private mode)
+      }
+    }
     return { status }
   } catch (e) {
     throw e

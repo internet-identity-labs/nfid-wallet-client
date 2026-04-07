@@ -1,3 +1,5 @@
+/// <reference path="./window-globals.d.ts" />
+
 declare const AWS_EXCHANGE_RATE: string
 declare const AWS_X_TWEET: string
 declare const AWS_ECDSA_REGISTER: string

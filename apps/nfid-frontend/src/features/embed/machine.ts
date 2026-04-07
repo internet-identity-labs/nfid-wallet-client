@@ -88,6 +88,12 @@ export type NFIDEmbedMachineContext = {
   messageQueue: Array<RPCMessage>
 }
 
+type NFIDEmbedMachineTypes = {
+  context: NFIDEmbedMachineContext
+  events: Events
+  output: unknown
+}
+
 const nfidEmbedMachineConfig = {
   /** @xstate-layout N4IgpgJg5mDOIC5QDkBiBJAIgUQLYCNIBZAQwGMALASwDswA1AJgDoAlABQGEB9V7T7OnrZWAYnasA8gMwBVPt04BBADIqA2gAYAuolAAHAPawqAFyqGaekAA9EAZgAsLRgDZXAdjeuAnIwCs-h72HgA0IACeDgAcrsya9rEesY4+Ho7urgC+WeFoWHiEEKSUtAwsHDx8AkIi4lIy8tiKqhoAjLpIIEYm5pbWdgj2w8z2Pm2Ompnjmv4+-uFRCI7RPqOMIYyrHpo+4045eRg4BMTk1HRMzEqyACoAEsycFGBkANZKAK6mLzTmZCQ+jRRFpOgZjGYLFYuoNGH5mGkfLtovY2sEPB5XItEG1US5NClXG4Mm0EocQPkTkUShdytc7o9nq8Pt9fv9AVCQR1rD1If0YQ4EsxVvZNG1XP5XKlktiEG1-ELGJNXG1GIw2hNieTKYUzqVLiwbg9rqywH8qADTGBRBBLGBmLQAG6GN72nWnYrnMpXI2PL4-M3sq0IJ2GS1Q0GgnkQoEDRDRBXMBWJJzRHZuNqyiYeNb+CZi0XzRjJHza466z36um+5i3ABOn1gpkwYEdFuttroDpoztdzHd1K9BvpxvrjebrfbIZ7YY5lkjOmjvShcblgRY8o8-kcmP8SvsSqzCpY8xR-lW0Wl6TLBQ9NO9hoZJoD5stkFEAGVsB+P+hJMhuGwAANdh0D4TAoy6XlYwFBAiX8BEfEcIJoi2TQMi3LN7H8exmDVUV7HcMUMMcG8qT1WkrnuJRkEwFRmgkaRsDkPg2GwJRMAATRBRcoJjFdYLaNJmAyJE8ycCV0VlS9cMcRIVkcSYcw8eUyIre9h2o2j6O4RjGlYpQAHUlHQW5dIaZimm4JR2EY+hVFEGy7OwSDwWXflQEGaIhOYLd1U0YICWwnxpMcNpmDaaIE3QvMpQlRg1LvIc6S0uiGIsljsGuYzTPMpjMus2ypHslRRGUZABA0Xi3L5aFPMQVIEIVCUnCVHc5icWUfEIkTutcEIJkRPNEsHKsqJotK8v0rLgP4O50vypobTtbtezdcskrGlhUp0vTLNY2bOHmqb9uwadnXDecdFc7p+I82wcQSRxmHcYIfCind0gCrrkgReLUVxfDUJGiiH2YHaFum5hDuOvbMtEMA6zrQw62YfQABtAQAMxR3B+w20bKO2ibdoyppoaAubbkh07ztnIEFzBW73Lqh65TC8Lok0LY0zcJwfBVUKWBUkJZhzeVsI8EHKyJ8GSZpzLodYKQxD4W5WE4m7oIE+q5Q2NZUUIrwDz2NJGFlYJnrC4ZSTGeYFVLXIKQJ0HNPlk7FZEFWypozgdK9yRWC1u7WcGeUpTw1V3GGHZJXNyJHuEwIhMSVYVhCHInZoQwIDgawB1d8ol1q1cAFolSTXZtw2bynASTME4QOFoiTRJPB3LYo4Sp2C5lsHKl4fhBGEVhi5g3XRSTUk9lrrd0QJWUOdGS8MT8XFUhWaWNOrBkx51tmNl6mLMUiiUBZCxvVQrnZYkCbnvPPfwt+Sn0nyZd5-TZC051Z7X7sGFSR9kIn1vufI8mhNCIVmGmfqao8zdyOLeQmYMayf0DN-K0e9-4NS5i9ISzgxhixVA3JYExAijAlNuIkaYcKxGfltEcjwxxNhbG2MgYAsGhxxJFJqiQ-ABACgqNMWZkIIUItud6sw77oXobLVBppXyAkgJw1ckVUijFPsMTwUp5giPIeIqhWwtxt1kWDCGHsmgqNggEeIYxXquHQmmNEujG5xQRIDbqOZiwqkdog8ifc3baQVuTPgHFOJWN1sEWxAttGOJUtEUK4VIor1xKKOS4pTGBMmnDcmRkTJmRyQoJyxVVARLZmFOIhEtgHgSMmdIWJG6XiSVFBUyFxQZD3JklK7tCkzUpkdamFi+BlLDgkDcKoO7vUUkSaSaIXofRzGmYIGw2hdPGkEoZM1laBxGTiLwHgIrt0IkiXcYRGlhQigs1J6FUTZEzkAA */
   id: "NFIDEmbedMachine",
@@ -252,11 +258,6 @@ const nfidEmbedMachineOptions = {
                 : domain
             return new URL(normalized).host
           } catch (e) {
-            // eslint-disable-next-line no-console
-            console.debug("[/embed] assignAppMeta invalid domain", {
-              domain,
-              error: (e as Error)?.message,
-            })
             return ""
           }
         })(),
@@ -285,25 +286,8 @@ const nfidEmbedMachineOptions = {
         }
       },
     ),
-    debugAuthMachineDone: ({ event }: any) => {
-      try {
-        // eslint-disable-next-line no-console
-        console.debug("[/embed] AuthenticationMachine done", {
-          type: event?.type,
-          hasOutput: event?.output != null,
-          outputKeys: event?.output ? Object.keys(event.output) : null,
-        })
-      } catch (_e) {
-        // ignore
-      }
-    },
     assignAuthSession: assign(({ event }: any) => {
       const authSession = event?.output?.authSession ?? event?.output
-      // eslint-disable-next-line no-console
-      console.debug("[/embed] assignAuthSession", {
-        hasAuthSession: !!authSession,
-        outputKeys: event?.output ? Object.keys(event.output) : null,
-      })
       return { authSession }
     }),
     queueRequest: assign(({ context, event }: any) => ({
@@ -323,29 +307,23 @@ const nfidEmbedMachineOptions = {
       !!context.rpcMessage,
     isReady: stateIn({ HANDLE_PROCEDURE: "READY" }),
     isAutoApprovable: ({ context }: { context: NFIDEmbedMachineContext }) => {
-      const isAuthoApprovable = ["ic_renewDelegation"].includes(
-        context.rpcMessage?.method ?? "",
-      )
-      console.debug("NFIDEmbedMachine", {
-        isAuthoApprovable,
-        context,
-      })
       return ["ic_renewDelegation"].includes(context.rpcMessage?.method ?? "")
     },
   },
 }
 
 export const NFIDEmbedMachine = setup({
-  types: {} as {
-    context: NFIDEmbedMachineContext
-    events: any
-  },
-  actions: nfidEmbedMachineOptions.actions,
-  guards: nfidEmbedMachineOptions.guards,
+  types: {} as NFIDEmbedMachineTypes,
+  actions: nfidEmbedMachineOptions.actions as any,
+  guards: nfidEmbedMachineOptions.guards as any,
   actors: {
     AuthenticationMachine,
     RPCReceiver: fromCallback(({ sendBack }) => {
-      const cleanup = (RPCReceiver as any)()((evt: any) => sendBack(evt))
+      const cleanup = (
+        RPCReceiver as unknown as () => (
+          send: (evt: unknown) => void,
+        ) => unknown
+      )()((evt: unknown) => sendBack(evt as any)) as void | (() => void)
       return () => cleanup?.()
     }),
     CheckAuthState: fromPromise(
@@ -380,16 +358,9 @@ export const NFIDEmbedMachine = setup({
       const startExpiryTimer = (delegationIdentity: DelegationIdentity) => {
         const expiresIn = getExpirationDelay(delegationIdentity)
         const timeoutIn = expiresIn * 0.8
-        const now = Date.now()
-
-        console.debug("NFIDEmbedMachine delegation expires at", {
-          expiresAt: new Date(now + expiresIn),
-          timeoutAt: new Date(now + timeoutIn),
-        })
 
         expiryTimer = setTimeout(
           () => {
-            console.debug("NFIDEmbedMachine delegation expired")
             sendBack({ type: "SESSION_EXPIRED" })
           },
           timeoutIn > ONE_DAY_IN_MS ? ONE_DAY_IN_MS : timeoutIn,
@@ -438,7 +409,7 @@ export const NFIDEmbedMachine = setup({
       }
     }),
   },
-} as any).createMachine({
+}).createMachine({
   ...nfidEmbedMachineConfig,
   states: {
     ...nfidEmbedMachineConfig.states,
@@ -475,7 +446,7 @@ export const NFIDEmbedMachine = setup({
             onDone: [
               {
                 target: "Authenticated",
-                actions: ["debugAuthMachineDone", "assignAuthSession"],
+                actions: ["assignAuthSession"],
               },
             ],
           },

@@ -46,7 +46,7 @@ export const useTokensInit = (tokens: FT[] | undefined) => {
     [tokens, testnetEnabled, arbitrumEnabled, baseEnabled, polygonEnabled],
   )
 
-  const state = useSelector(transferService as any, (s: any) => s) as any
+  const state = useSelector(transferService, (s) => s)
 
   const addressesReady =
     isViewOnlyMode || (!isBtcAddressLoading && !isEthAddressLoading)

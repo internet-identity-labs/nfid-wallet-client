@@ -14,27 +14,18 @@ export default function NFIDAuthCoordinator() {
   const navigate = useNavigate()
 
   React.useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.debug("[NFIDAuthCoordinator] state", {
-      value: state.value,
-      hasAuthSession: !!state.context?.authSession,
-    })
     if (state.value === "End" && state.context?.authSession) {
-      // eslint-disable-next-line no-console
-      console.debug("[NFIDAuthCoordinator] navigate", {
-        to: `${ProfileConstants.base}/${ProfileConstants.tokens}`,
-      })
       navigate(`${ProfileConstants.base}/${ProfileConstants.tokens}`)
     }
   }, [navigate, state.context?.authSession, state.value])
 
   switch (true) {
-    case (state as any).matches("AuthenticationMachine"):
+    case state.value === "AuthenticationMachine":
       return (
         <AuthenticationCoordinator
           actor={
-            (state.children as any)
-              .AuthenticationMachine as AuthenticationMachineActor
+            state.children
+              .AuthenticationMachine as unknown as AuthenticationMachineActor
           }
         />
       )

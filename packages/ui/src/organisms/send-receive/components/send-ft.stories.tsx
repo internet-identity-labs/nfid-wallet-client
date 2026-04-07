@@ -58,7 +58,7 @@ const Template: StoryFn<TransferFTUiProps> = (args) => {
 
 export const Default = Template.bind({})
 
-export const SendFTProps: any = {
+export const SendFTProps: TransferFTUiProps = {
   isLoading: false,
   isBalanceLoading: false,
   isFeeLoading: false,
@@ -68,8 +68,8 @@ export const SendFTProps: any = {
   decimals: 8,
   transferFee: 10000,
   preselectedTransferDestination: "",
-  tokenMetadata: [] as any,
-  tokenOptions: [] as any,
+  tokenMetadata: [] as unknown as TransferFTUiProps["tokenMetadata"],
+  tokenOptions: [] as unknown as TransferFTUiProps["tokenOptions"],
   setSelectedAccountAddress: () => {},
   selectedTokenCurrency: "ICP",
   selectedTokenBlockchain: "Internet Computer",

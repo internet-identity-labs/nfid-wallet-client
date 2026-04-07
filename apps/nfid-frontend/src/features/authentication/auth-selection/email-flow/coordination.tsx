@@ -15,13 +15,13 @@ export function AuthEmailFlowCoordinator({
   actor,
   isIdentityKit = false,
 }: AuthEmailFlowCoordinatorProps) {
-  const state = useSelector(actor as any, (s: any) => s) as any
+  const state = useSelector(actor, (s) => s)
   const send = (event: any) => actor.send(event)
 
-  switch (true) {
-    case (state as any).matches("SendVerificationEmail"):
+  switch (state.value) {
+    case "SendVerificationEmail":
       return <BlurredLoader isLoading />
-    case (state as any).matches("PendingEmailVerification"):
+    case "PendingEmailVerification":
       return (
         <AuthEmailPending
           isIdentityKit={isIdentityKit}
@@ -33,7 +33,7 @@ export function AuthEmailFlowCoordinator({
           }}
         />
       )
-    case (state as any).matches("Error"):
+    case "Error":
       return (
         <AuthEmailError
           onBack={() => send({ type: "BACK" })}
@@ -42,7 +42,7 @@ export function AuthEmailFlowCoordinator({
           }}
         />
       )
-    case (state as any).matches("Authenticated"):
+    case "Authenticated":
       return (
         <AuthEmailVerified
           isIdentityKit={isIdentityKit}

@@ -52,7 +52,7 @@ const TokensPage = memo(() => {
   const userRootPrincipalId = isViewOnlyMode
     ? ""
     : authState.getUserIdData().userId
-  const _snapshot = useSelector(transferService as any, (s: any) => s)
+  const _snapshot = useSelector(transferService, (s) => s)
   const send = (event: any) => transferService.send(event)
 
   const onSendClick = (selectedToken: SelectedToken) => {

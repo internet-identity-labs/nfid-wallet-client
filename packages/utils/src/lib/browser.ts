@@ -6,9 +6,11 @@ export const getBrowser = () => {
   switch (true) {
     case agent.indexOf("edge") > -1:
       return "Edge"
-    case agent.indexOf("opr") > -1 && !!(window as any).opr:
+    case agent.indexOf("opr") > -1 &&
+      !!(window as unknown as { opr?: unknown }).opr:
       return "Opera"
-    case agent.indexOf("chrome") > -1 && !!(window as any).chrome:
+    case agent.indexOf("chrome") > -1 &&
+      !!(window as unknown as { chrome?: unknown }).chrome:
       return "Chrome"
     case agent.indexOf("trident") > -1:
       return "IE"

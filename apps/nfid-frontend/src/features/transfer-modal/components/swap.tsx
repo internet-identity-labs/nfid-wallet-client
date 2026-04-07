@@ -40,14 +40,14 @@ import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { useUserPrefs } from "frontend/hooks/user-prefs"
 
 const QUOTE_REFETCH_TIMER = 30
-function resolveIcpFt(
+function resolveIcrcFt(
   address: string,
-  icpInited: FT[] | undefined,
-  catalogTokens: FT[],
+  icrcInited: FT[] | undefined,
+  allIcrcTokens: FT[],
 ): FT | undefined {
-  const fromInited = icpInited?.find((t) => t.getTokenAddress() === address)
+  const fromInited = icrcInited?.find((t) => t.getTokenAddress() === address)
   if (fromInited) return fromInited
-  return catalogTokens.find(
+  return allIcrcTokens.find(
     (t) => t.getTokenAddress() === address && t.getChainId() === ChainId.ICP,
   )
 }
@@ -127,36 +127,37 @@ export const SwapFT = ({
 
   const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(tokens)
 
-  const icpInitedTokens = useMemo(() => {
+  const icrcInitedTokens = useMemo(() => {
     if (!initedTokens) return
     return initedTokens.filter(
       (token: FT) => token.getChainId() === ChainId.ICP,
     )
   }, [initedTokens])
+
   const fromPickerTokens = useMemo(() => {
-    if (!icpInitedTokens) return
+    if (!icrcInitedTokens) return
 
-    if (!hideZeroBalance) return icpInitedTokens
+    if (!hideZeroBalance) return icrcInitedTokens
 
-    return icpInitedTokens.filter(
+    return icrcInitedTokens.filter(
       (token: FT) =>
         token.getTokenAddress() === ICP_CANISTER_ID ||
         token.getTokenBalance() !== BigInt(0),
     )
-  }, [icpInitedTokens, hideZeroBalance])
+  }, [icrcInitedTokens, hideZeroBalance])
 
   const [getTransaction, setGetTransaction] = useState<
     SwapTransaction | undefined
   >()
 
   const fromToken = useMemo(
-    () => resolveIcpFt(fromTokenAddress, icpInitedTokens, tokens),
-    [fromTokenAddress, icpInitedTokens, tokens],
+    () => resolveIcrcFt(fromTokenAddress, icrcInitedTokens, tokens),
+    [fromTokenAddress, icrcInitedTokens, tokens],
   )
 
   const toToken = useMemo(
-    () => resolveIcpFt(toTokenAddress, icpInitedTokens, tokens),
-    [toTokenAddress, icpInitedTokens, tokens],
+    () => resolveIcrcFt(toTokenAddress, icrcInitedTokens, tokens),
+    [toTokenAddress, icrcInitedTokens, tokens],
   )
 
   const filteredAllTokens = useMemo(() => {

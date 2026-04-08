@@ -311,6 +311,37 @@ export const getTokensWithUpdatedBalance = async (
   return updatedTokens
 }
 
+/** Apply refreshed `updates` onto `fullList` by token address (same length/order as fullList). */
+export const mergeUpdatedFtIntoTokenList = (
+  fullList: FT[],
+  updates: FT[],
+): FT[] => {
+  const byAddress = new Map(updates.map((t) => [t.getTokenAddress(), t]))
+  return fullList.map((t) => {
+    const next = byAddress.get(t.getTokenAddress())
+    return next ?? t
+  })
+}
+
+/**
+ * Writes balance updates into the `tokens` SWR cache without replacing the full catalog.
+ * `getTokensWithUpdatedBalance` only returns the subset passed in (e.g. inited tokens); replacing
+ * the cache with that list drops "Swap to" tokens that exist only in the catalog.
+ */
+export const mutateTokensCacheMergingBalances = (balanceUpdates: FT[]) => {
+  mutate(
+    "tokens",
+    (current: { data: FT[]; timestamp?: number } | FT[] | undefined) => {
+      const currentTokens = Array.isArray(current)
+        ? current
+        : (current?.data ?? [])
+      const merged = mergeUpdatedFtIntoTokenList(currentTokens, balanceUpdates)
+      return { data: merged, timestamp: Date.now() }
+    },
+    false,
+  )
+}
+
 export const getUpdatedInitedTokens = async (tokens: FT[]) => {
   const { publicKey } = authState.getUserIdData()
   const principal = Principal.fromText(publicKey)

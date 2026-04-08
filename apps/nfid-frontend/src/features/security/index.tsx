@@ -124,10 +124,10 @@ const SecurityPage: FC<SecurityPageProps> = memo(
     if (!profile) return <Loader isLoading={true} />
 
     const showCreatePasskeyOnCanister = devices?.passkeys.find(
-      (d) => d.origin === CANISTER_WITH_AT_LEAST_ONE_PASSKEY,
+      (d) => d.origin === NFID_WALLET_CLIENT_CANISTER,
     )
       ? undefined
-      : CANISTER_WITH_AT_LEAST_ONE_PASSKEY
+      : NFID_WALLET_CLIENT_CANISTER
 
     const hasActivePasskey =
       devices?.passkeys?.some((d) => !d.isLegacyDevice) ?? false

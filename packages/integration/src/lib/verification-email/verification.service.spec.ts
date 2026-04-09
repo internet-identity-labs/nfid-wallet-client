@@ -1,4 +1,3 @@
-import * as jose from "jose"
 import * as JwtService from "jsonwebtoken"
 
 import {
@@ -21,6 +20,14 @@ const keyPair = {
   privateKey: userPrivateKey,
 }
 
+let josePromise: Promise<typeof import("jose")> | undefined
+async function getJose() {
+  josePromise ??= new Function('return import("jose")')() as Promise<
+    typeof import("jose")
+  >
+  return josePromise
+}
+
 describe("Verification of email", () => {
   beforeEach(() => {
     jest.resetModules() // Resets the module registry before each test
@@ -28,9 +35,10 @@ describe("Verification of email", () => {
 
   it("should validate contract between jose and jsonwebtoken libs.", async () => {
     const keyPair = await generateCryptoKeyPair()
-    const privateKey = await jose.importPKCS8(keyPair.privateKey, "ES512")
+    const { importPKCS8, SignJWT } = await getJose()
+    const privateKey = await importPKCS8(keyPair.privateKey, "ES512")
 
-    const token = await new jose.SignJWT({ nonce: "0" })
+    const token = await new SignJWT({ nonce: "0" })
       .setProtectedHeader({ alg: "ES512" })
       .setIssuer("https://nfid.one")
       .setSubject(testEmail)

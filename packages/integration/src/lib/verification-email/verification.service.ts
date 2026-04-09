@@ -3,7 +3,6 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
-import * as jose from "jose"
 
 import { DEFAULT_DELEGATION_TTL } from "@nfid/config"
 
@@ -40,6 +39,23 @@ const sendVerificationEmailEndpointUrl = "/send_verification_email"
 const checkVerificationEndpointUrl = "/check_verification"
 const verifyEmailEndpointUrl = "/verify_email"
 const linkGoogleAccountEndpointUrl = "/link_google_account"
+
+let josePromise: Promise<typeof import("jose")> | undefined
+async function getJose() {
+  // In the browser we must avoid eval-like constructs (CSP). In Jest/Node (CJS)
+  // ts-jest transpiles `import()` to `require()`, so we need a runtime import.
+  const isJest =
+    typeof process !== "undefined" &&
+    !!process.env &&
+    !!process.env["JEST_WORKER_ID"]
+
+  josePromise ??= isJest
+    ? (new Function('return import("jose")')() as Promise<
+        typeof import("jose")
+      >)
+    : import("jose")
+  return josePromise
+}
 
 export const verificationService = {
   async linkGoogleAccount(token: string): Promise<void> {
@@ -152,8 +168,9 @@ export const verificationService = {
       : AWS_CHECK_VERIFICATION
 
     const ed25519KeyIdentity = Ed25519KeyIdentity.generate()
-    const privateKey = await jose.importPKCS8(keypair.privateKey, "ES512")
-    const token = await new jose.SignJWT({
+    const { importPKCS8, SignJWT } = await getJose()
+    const privateKey = await importPKCS8(keypair.privateKey, "ES512")
+    const token = await new SignJWT({
       nonce: "0",
       publicKey: ed25519KeyIdentity.toJSON()[0],
     })

@@ -20,12 +20,12 @@ const keyPair = {
   privateKey: userPrivateKey,
 }
 
-let josePromise: Promise<typeof import("jose")> | undefined
-async function getJose() {
-  josePromise ??= new Function('return import("jose")')() as Promise<
-    typeof import("jose")
-  >
-  return josePromise
+let josePromise: Promise<any> | undefined
+async function getJose(): Promise<typeof import("jose")> {
+  josePromise ??= Promise.resolve(
+    (eval("require") as NodeRequire)("jose-node-cjs-runtime"),
+  )
+  return josePromise as Promise<typeof import("jose")>
 }
 
 describe("Verification of email", () => {

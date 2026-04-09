@@ -14833,6 +14833,11 @@ jiti@^2.6.1:
   resolved "https://registry.yarnpkg.com/jiti/-/jiti-2.6.1.tgz#178ef2fc9a1a594248c20627cd820187a4d78d92"
   integrity sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==
 
+jose-node-cjs-runtime@5.10.0:
+  version "5.10.0"
+  resolved "https://registry.yarnpkg.com/jose-node-cjs-runtime/-/jose-node-cjs-runtime-5.10.0.tgz#25592afc3fa08015c1969299545b8526da7a6258"
+  integrity sha512-AKkESPGp/dC0wZFRiSg/5dCnNQIj+ro4XBJzl7YOiCn84crELPsZIgmnM3/szFgaurCIHBAlkHfRp83PZaKc0w==
+
 jose@6.2.2, jose@^6.0.8:
   version "6.2.2"
   resolved "https://registry.yarnpkg.com/jose/-/jose-6.2.2.tgz#d6b5279b89b3e88d531c202e3fbe351f39a44aac"

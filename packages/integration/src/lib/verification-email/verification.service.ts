@@ -40,8 +40,8 @@ const checkVerificationEndpointUrl = "/check_verification"
 const verifyEmailEndpointUrl = "/verify_email"
 const linkGoogleAccountEndpointUrl = "/link_google_account"
 
-let josePromise: Promise<typeof import("jose")> | undefined
-async function getJose() {
+let josePromise: Promise<any> | undefined
+async function getJose(): Promise<typeof import("jose")> {
   // In the browser we must avoid eval-like constructs (CSP). In Jest/Node (CJS)
   // ts-jest transpiles `import()` to `require()`, so we need a runtime import.
   const isJest =
@@ -49,12 +49,13 @@ async function getJose() {
     !!process.env &&
     !!process.env["JEST_WORKER_ID"]
 
+  // Browser/runtime: use ESM `jose@6` normally (CSP-safe).
+  // Jest (CJS): use a CJS runtime shim to avoid `--experimental-vm-modules`.
   josePromise ??= isJest
-    ? (new Function('return import("jose")')() as Promise<
-        typeof import("jose")
-      >)
+    ? Promise.resolve((eval("require") as NodeRequire)("jose-node-cjs-runtime"))
     : import("jose")
-  return josePromise
+
+  return josePromise as Promise<typeof import("jose")>
 }
 
 export const verificationService = {

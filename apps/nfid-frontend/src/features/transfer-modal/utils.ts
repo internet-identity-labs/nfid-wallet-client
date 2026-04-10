@@ -312,10 +312,7 @@ export const getTokensWithUpdatedBalance = async (
 }
 
 /** Apply refreshed `updates` onto `fullList` by token address (same length/order as fullList). */
-export const mergeUpdatedFtIntoTokenList = (
-  fullList: FT[],
-  updates: FT[],
-): FT[] => {
+const mergeUpdatedFtIntoTokenList = (fullList: FT[], updates: FT[]): FT[] => {
   const byAddress = new Map(updates.map((t) => [t.getTokenAddress(), t]))
   return fullList.map((t) => {
     const next = byAddress.get(t.getTokenAddress())

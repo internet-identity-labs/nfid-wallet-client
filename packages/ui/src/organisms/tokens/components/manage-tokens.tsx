@@ -247,11 +247,11 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                   "dark:scrollbar-thumb-zinc-600 dark:scrollbar-track-[#242427]",
                 )}
               >
-                {filteredTokens.map((token) => {
-                  if (!token.isHideable()) return
+                {filteredTokens.map((token, index) => {
+                  if (!token.isHideable()) return null
                   return (
                     <FilteredToken
-                      key={`${token.getTokenName()}_${token.getTokenAddress()}_${token.getChainId()}`}
+                      key={`${token.getTokenAddress()}_${token.getChainId()}_${token.getTokenState()}_${token.getTokenIndex() ?? ""}_${index}`}
                       token={token}
                       tokens={tokens}
                       setLoadingToken={setLoadingToken}

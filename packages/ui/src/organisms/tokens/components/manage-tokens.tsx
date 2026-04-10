@@ -221,7 +221,7 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                 <div className="relative w-full">
                   <Input
                     inputClassName="!border-black dark:!border-zinc-500"
-                    className="h-[40px] w-full"
+                    className="h-[40px] w-full !mb-0"
                     id="search"
                     placeholder="Search by token name"
                     icon={<IoIosSearch size="20" className="text-gray-400" />}
@@ -298,7 +298,6 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                   {...register("ledgerID", validationConfig)}
                 />
                 <Input
-                  className="mt-[22px]"
                   id="indexID"
                   labelText="Index canister ID (optional)"
                   errorText={
@@ -308,7 +307,7 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                   disabled={!!errors.ledgerID || !getValues("ledgerID").length}
                 />
                 {!errors.indexID && (
-                  <p className="text-gray-400 dark:text-zinc-400 text-xs mt-1 h-[16px]">
+                  <p className="text-gray-400 dark:text-zinc-400 text-xs mt-[-18px] h-[16px]">
                     Required to display transaction history
                   </p>
                 )}
@@ -340,7 +339,7 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                   )}
                 </div>
                 <Card
-                  className="mb-0 mt-auto"
+                  className="mt-auto mb-0"
                   text={
                     <>
                       <b>Token safety.</b> Always only import ICRC-1 tokens you

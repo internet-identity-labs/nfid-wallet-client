@@ -43,12 +43,12 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ref,
   ) => {
     return (
-      <div className={clsx("rounded-[12px]", className)}>
-        <div className="flex items-center justify-between mb-1">
+      <div className={clsx("rounded-[12px] mb-5 relative", className)}>
+        <div className="flex items-center justify-between">
           {labelText && (
             <Label
               className={clsx(
-                "text-xs inline-block dark:text-white",
+                "text-xs inline-block dark:text-white mb-1",
                 inputProps.disabled && "!text-secondary dark:!text-zinc-700",
               )}
             >
@@ -56,7 +56,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             </Label>
           )}
           {upperText && (
-            <p className="text-xs leading-4 text-secondary dark:text-zinc-400">
+            <p className="mb-1 text-xs leading-4 text-secondary dark:text-zinc-400">
               {upperText}
             </p>
           )}
@@ -119,12 +119,12 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             )}
           </span>
         </div>
-
         {errorText && (
           <div
             id={`${id}-error`}
             className={clsx(
-              "mt-1 text-xs text-red-base text-red-600 dark:text-red-500",
+              "mt-0.5 text-xs text-red-base text-red-600 dark:text-red-500",
+              "absolute left-0 top-[100%]",
             )}
           >
             {errorText}

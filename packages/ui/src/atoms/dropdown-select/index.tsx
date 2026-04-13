@@ -141,7 +141,7 @@ export const DropdownSelect = ({
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
         id={id}
       >
-        <p
+        <div
           className={clsx(
             "text-sm leading-5",
             (!isMultiselect || isAllSelected) && "hidden",
@@ -172,8 +172,8 @@ export const DropdownSelect = ({
           ) : (
             placeholder
           )}
-        </p>
-        <p
+        </div>
+        <div
           className={clsx(
             "text-sm leading-5",
             (isMultiselect || isAllSelected) && "hidden",
@@ -182,10 +182,10 @@ export const DropdownSelect = ({
           {selectedValues?.length
             ? options.find((o) => o.value === selectedValues[0])?.label
             : placeholder}
-        </p>
-        <p className={clsx("text-sm leading-5", !isAllSelected && "hidden")}>
+        </div>
+        <div className={clsx("text-sm leading-5", !isAllSelected && "hidden")}>
           All
-        </p>
+        </div>
         <img src={isDarkTheme ? ArrowWhite : Arrow} alt="arrow" />
       </div>
       {errorText && <p className="text-sm text-red-600">{errorText}</p>}

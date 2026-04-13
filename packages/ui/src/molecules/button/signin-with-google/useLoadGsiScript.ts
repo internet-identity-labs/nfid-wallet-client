@@ -25,24 +25,50 @@ export default function useLoadGsiScript({
   onScriptLoadErrorRef.current = onScriptLoadError
 
   useEffect(() => {
-    const scriptTag = document.createElement("script")
-    scriptTag.src = "https://accounts.google.com/gsi/client"
-    scriptTag.async = true
-    scriptTag.defer = true
-    scriptTag.onload = () => {
+    const w = window as unknown as {
+      google?: { accounts?: { id?: unknown } }
+      __nfidGsiScriptPromise?: Promise<void>
+    }
+
+    // If GSI is already available, treat as loaded.
+    if (w.google?.accounts?.id) {
       setScriptLoadedSuccessfully(true)
       onScriptLoadSuccessRef.current?.()
-    }
-    scriptTag.onerror = () => {
-      setScriptLoadedSuccessfully(false)
-      onScriptLoadErrorRef.current?.()
+      return
     }
 
-    document.body.appendChild(scriptTag)
+    // Ensure only a single script tag + load promise globally.
+    if (!w.__nfidGsiScriptPromise) {
+      w.__nfidGsiScriptPromise = new Promise<void>((resolve, reject) => {
+        const existing = document.querySelector<HTMLScriptElement>(
+          'script[src="https://accounts.google.com/gsi/client"]',
+        )
 
-    return () => {
-      document.body.removeChild(scriptTag)
+        if (existing) {
+          existing.addEventListener("load", () => resolve(), { once: true })
+          existing.addEventListener("error", () => reject(), { once: true })
+          return
+        }
+
+        const scriptTag = document.createElement("script")
+        scriptTag.src = "https://accounts.google.com/gsi/client"
+        scriptTag.async = true
+        scriptTag.defer = true
+        scriptTag.onload = () => resolve()
+        scriptTag.onerror = () => reject()
+        document.body.appendChild(scriptTag)
+      })
     }
+
+    w.__nfidGsiScriptPromise
+      .then(() => {
+        setScriptLoadedSuccessfully(true)
+        onScriptLoadSuccessRef.current?.()
+      })
+      .catch(() => {
+        setScriptLoadedSuccessfully(false)
+        onScriptLoadErrorRef.current?.()
+      })
   }, [])
 
   return scriptLoadedSuccessfully

@@ -19,24 +19,44 @@ export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
 }) => {
   const buttonRef = React.useRef<HTMLDivElement>(null)
 
-  const onScriptLoadSuccess = React.useCallback(() => {
-    window.google?.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: onLogin,
-      itp_support: true,
-      use_fedcm_for_prompt: true,
-    })
-  }, [onLogin])
+  const onLoginRef = React.useRef(onLogin)
+  onLoginRef.current = onLogin
 
-  useLoadGsiScript({ onScriptLoadSuccess })
+  const scriptLoadedSuccessfully = useLoadGsiScript()
 
-  window.google?.accounts.id.renderButton(buttonRef.current, {
-    text: "continue_with",
-    shape: "rectangular",
-    theme: "outline",
-    type: "standard",
-    size: "large",
-  })
+  React.useEffect(() => {
+    if (!scriptLoadedSuccessfully) return
+    if (!GOOGLE_CLIENT_ID) return
+    if (!window.google?.accounts?.id) return
+
+    const w = window as unknown as { __nfidGsiInitialized?: boolean }
+
+    // GSI warns if initialize() is called multiple times.
+    if (!w.__nfidGsiInitialized) {
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: (credential: CredentialResponse) =>
+          onLoginRef.current(credential),
+        itp_support: true,
+        use_fedcm_for_prompt: true,
+      })
+      w.__nfidGsiInitialized = true
+    }
+
+    const parent = buttonRef.current
+    if (!parent) return
+
+    // Avoid re-rendering into the same parent on every render.
+    if (parent.childNodes.length === 0) {
+      window.google.accounts.id.renderButton(parent, {
+        text: "continue_with",
+        shape: "rectangular",
+        theme: "outline",
+        type: "standard",
+        size: "large",
+      })
+    }
+  }, [scriptLoadedSuccessfully])
 
   const onClick = React.useCallback(() => {
     let el: any

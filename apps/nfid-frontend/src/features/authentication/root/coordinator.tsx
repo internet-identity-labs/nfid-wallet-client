@@ -60,8 +60,20 @@ export default function AuthenticationCoordinator({
     useState(false)
   const [signUpWithPassKeyError, setSignUpWithPasskeyError] = useState("")
 
+  const safeSend = useCallback(
+    (event: Parameters<typeof actor.send>[0]) => {
+      const snapshot: any = actor.getSnapshot?.()
+      const status = snapshot?.status
+      const done = snapshot?.done
+
+      if (status === "done" || status === "stopped" || done === true) return
+      actor.send(event as any)
+    },
+    [actor],
+  )
+
   const onSelectGoogleAuth: LoginEventHandler = ({ credential }) => {
-    send({
+    safeSend({
       type: "AUTH_WITH_GOOGLE",
       data: {
         jwt: credential,

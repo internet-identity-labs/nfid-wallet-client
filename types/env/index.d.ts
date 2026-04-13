@@ -52,3 +52,4 @@ declare const CK_BTC_MINTER_CANISTER_ID: string
 declare const FEE_PERCENT: string
 declare const FEE_ADDRESS: string
 declare const ALCHEMY_API_KEY: string
+declare const IC_EXPLORER_API_URL: string

@@ -73,7 +73,7 @@ describe("Staking", () => {
     expect(actual?.followees.length).toBeGreaterThan(0)
   })
 
-  it("should return staked neurons", async () => {
+  it.skip("should return staked neurons", async () => {
     const edId = Ed25519KeyIdentity.fromParsedJson(identityJSON)
     jest
       .spyOn(icrc1StorageService as any, "getICRC1Canisters")

@@ -77,8 +77,8 @@ const serviceConfig = {
   ECDSA_SIGNER_CANISTER_ID: JSON.stringify(
     process.env.ECDSA_SIGNER_CANISTER_ID,
   ),
-  CANISTER_WITH_AT_LEAST_ONE_PASSKEY: JSON.stringify(
-    process.env.CANISTER_WITH_AT_LEAST_ONE_PASSKEY,
+  NFID_WALLET_CLIENT_CANISTER: JSON.stringify(
+    process.env.NFID_WALLET_CLIENT_CANISTER,
   ),
   SWAP_TRS_STORAGE: JSON.stringify(process.env.SWAP_TRS_STORAGE),
   NFID_WALLET_CANISTER: JSON.stringify(process.env.NFID_WALLET_CANISTER),

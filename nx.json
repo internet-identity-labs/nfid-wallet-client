@@ -108,7 +108,7 @@
         "env": "DELEGATION_FACTORY"
       },
       {
-        "env": "CANISTER_WITH_AT_LEAST_ONE_PASSKEY"
+        "env": "NFID_WALLET_CLIENT_CANISTER"
       },
       {
         "env": "PASSKEY_STORAGE"

@@ -20,6 +20,10 @@ const serviceConfig = {
   SDK_GIT_HASH: JSON.stringify(sdkGitHash),
   CANISTER_IDS: JSON.stringify(canisterIds),
   NFID_PROVIDER_URL: JSON.stringify(process.env.NFID_PROVIDER_URL),
+  WALLETCONNECT_METADATA_URL: JSON.stringify(process.env.WALLETCONNECT_METADATA_URL),
+  WALLETCONNECT_METADATA_ICON_URL: JSON.stringify(
+    process.env.WALLETCONNECT_METADATA_ICON_URL,
+  ),
   IS_E2E_TEST: JSON.stringify(process.env.IS_E2E_TEST),
   IC_HOST: JSON.stringify(process.env.IC_HOST),
   II_MODE: JSON.stringify(process.env.II_MODE),

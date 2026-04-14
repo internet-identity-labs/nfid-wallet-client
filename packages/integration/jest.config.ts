@@ -14,6 +14,7 @@ export default {
   },
   moduleNameMapper: {
     "^uuid$": "<rootDir>/../../__mocks__/uuid.js",
+    "^jose$": "jose-node-cjs-runtime",
   },
   moduleFileExtensions: ["ts", "js", "html"],
   coverageDirectory: "../../coverage/packages/integration",

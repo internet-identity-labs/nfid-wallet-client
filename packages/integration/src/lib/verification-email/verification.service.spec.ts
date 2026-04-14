@@ -20,12 +20,18 @@ const keyPair = {
   privateKey: userPrivateKey,
 }
 
-let josePromise: Promise<any> | undefined
-async function getJose(): Promise<typeof import("jose")> {
-  josePromise ??= Promise.resolve(
-    (eval("require") as NodeRequire)("jose-node-cjs-runtime"),
-  )
-  return josePromise as Promise<typeof import("jose")>
+let josePromise: Promise<
+  Pick<typeof import("jose"), "importPKCS8" | "SignJWT">
+> | null = null
+
+async function getJose() {
+  if (!josePromise) {
+    josePromise = import("jose").catch((e) => {
+      josePromise = null
+      throw e
+    })
+  }
+  return josePromise
 }
 
 describe("Verification of email", () => {

@@ -9,8 +9,8 @@ export const WALLETCONNECT_PROJECT_ID = "a88bf3d112c5af8cecb8dc17ef373114"
 export const WALLETCONNECT_METADATA = {
   name: "NFID Wallet",
   description: "NFID Wallet - simple and secure wallet for Internet Computer",
-  url: "https://nfid.one",
-  icons: ["https://nfid.one/assets/nfid-wallet-og.png"],
+  url: WALLETCONNECT_METADATA_URL,
+  icons: [WALLETCONNECT_METADATA_ICON_URL],
 }
 
 // Supported Ethereum methods

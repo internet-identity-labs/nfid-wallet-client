@@ -31,6 +31,8 @@ declare const ICRC1_ORACLE_CANISTER_ID: string
 declare const DELEGATION_FACTORY: string
 declare const PASSKEY_STORAGE: string
 declare const NFID_PROVIDER_URL: string
+declare const WALLETCONNECT_METADATA_URL: string
+declare const WALLETCONNECT_METADATA_ICON_URL: string
 declare const PUB_SUB_CHANNEL_CANISTER_ID: string
 declare const SDK_GIT_HASH: string
 declare const SIGNIN_GOOGLE: string

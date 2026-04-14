@@ -26,6 +26,9 @@ export const JEST_GLOBALS = {
   LEDGER_CANISTER_ID: "ryjl3-tyaaa-aaaaa-aaaba-cai",
   CYCLES_MINTER_CANISTER_ID: "rkp4c-7iaaa-aaaaa-aaaca-cai",
   NFID_WALLET_CLIENT_CANISTER: "https://appqm-xiaaa-aaaak-akwaa-cai.icp0.io",
+  WALLETCONNECT_METADATA_URL: "http://localhost:9090",
+  WALLETCONNECT_METADATA_ICON_URL:
+    "http://localhost:9090/assets/nfid-wallet-og.png",
   VERIFY_PHONE_NUMBER:
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/verify/",
   AWS_SYMMETRIC:

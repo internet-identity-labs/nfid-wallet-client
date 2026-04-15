@@ -31,6 +31,8 @@ declare const ICRC1_ORACLE_CANISTER_ID: string
 declare const DELEGATION_FACTORY: string
 declare const PASSKEY_STORAGE: string
 declare const NFID_PROVIDER_URL: string
+declare const WALLETCONNECT_METADATA_URL: string
+declare const WALLETCONNECT_METADATA_ICON_URL: string
 declare const PUB_SUB_CHANNEL_CANISTER_ID: string
 declare const SDK_GIT_HASH: string
 declare const SIGNIN_GOOGLE: string
@@ -43,7 +45,7 @@ declare const AWS_SEND_VERIFICATION_EMAIL: string
 declare const AWS_LINK_GOOGLE_ACCOUNT: string
 declare const AWS_CHECK_VERIFICATION: string
 declare const AWS_VERIFY_EMAIL: string
-declare const CANISTER_WITH_AT_LEAST_ONE_PASSKEY: string
+declare const NFID_WALLET_CLIENT_CANISTER: string
 declare const PATRON_CANISTER_ID: string
 declare const CHAIN_FUSION_SIGNER_CANISTER_ID: string
 declare const BITCOIN_CANISTER_ID: string
@@ -52,3 +54,4 @@ declare const CK_BTC_MINTER_CANISTER_ID: string
 declare const FEE_PERCENT: string
 declare const FEE_ADDRESS: string
 declare const ALCHEMY_API_KEY: string
+declare const IC_EXPLORER_API_URL: string

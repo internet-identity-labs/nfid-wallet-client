@@ -121,11 +121,11 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
           />
           <ImageWithFallback
             alt="assetImg"
-            src={`${
+            src={
               isNativeBtc && status === SendStatus.COMPLETED
                 ? ConvertWaitIcon
                 : assetImg
-            }`}
+            }
             fallbackSrc={IconNftPlaceholder}
             className={clsx("absolute rounded-full", assetImageClassname)}
           />

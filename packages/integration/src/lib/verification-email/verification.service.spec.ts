@@ -1,3 +1,4 @@
+import { importPKCS8, SignJWT } from "jose"
 import * as JwtService from "jsonwebtoken"
 
 import {
@@ -20,20 +21,6 @@ const keyPair = {
   privateKey: userPrivateKey,
 }
 
-let josePromise: Promise<
-  Pick<typeof import("jose"), "importPKCS8" | "SignJWT">
-> | null = null
-
-async function getJose() {
-  if (!josePromise) {
-    josePromise = import("jose").catch((e) => {
-      josePromise = null
-      throw e
-    })
-  }
-  return josePromise
-}
-
 describe("Verification of email", () => {
   beforeEach(() => {
     jest.resetModules() // Resets the module registry before each test
@@ -41,7 +28,6 @@ describe("Verification of email", () => {
 
   it("should validate contract between jose and jsonwebtoken libs.", async () => {
     const keyPair = await generateCryptoKeyPair()
-    const { importPKCS8, SignJWT } = await getJose()
     const privateKey = await importPKCS8(keyPair.privateKey, "ES512")
 
     const token = await new SignJWT({ nonce: "0" })

@@ -73,4 +73,5 @@ export const JEST_GLOBALS = {
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/signin/v2",
   AWS_PUBLIC_KEY:
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/publickey",
+  IC_EXPLORER_API_URL: "https://api.icexplorer.io/api/dashboard/search",
 }

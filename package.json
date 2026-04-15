@@ -85,7 +85,8 @@
     "framer-motion": "12.38.0",
     "idb": "8.0.3",
     "immer": "11.1.4",
-    "jose": "4.15.5",
+    "jose": "6.2.2",
+    "jose-node-cjs-runtime": "5.10.0",
     "jotai": "2.19.0",
     "lodash": "4.18.1",
     "lottie-react": "2.4.1",
@@ -230,8 +231,12 @@
     "whatwg-fetch": "3.6.20"
   },
   "resolutions": {
+    "axios": "1.15.0",
+    "basic-ftp": "5.2.2",
     "handlebars": "4.7.9",
+    "lodash": "4.18.0",
     "prismjs": "1.30.0",
+    "serialize-javascript": "7.0.3",
     "http-proxy-middleware": "2.0.8",
     "esbuild": "0.25.9",
     "tmp": "0.2.5",

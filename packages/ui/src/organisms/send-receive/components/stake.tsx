@@ -159,7 +159,7 @@ export const StakeUi: FC<StakeUiProps> = ({
         isResponsive={isFromResponsive}
         setIsResponsive={setIsFromResponsive}
       />
-      <div className="h-4 mt-1 text-xs leading-4 text-red-600 dark:text-red-500">
+      <div className="h-4 mt-1 text-xs leading-4 text-red-600">
         {Boolean(errors["amount"]?.message) &&
           (errors["amount"]?.message as string)}
       </div>

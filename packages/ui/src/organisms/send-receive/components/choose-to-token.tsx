@@ -174,7 +174,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
                           ? "text-green-700 dark:text-teal-500"
                           : priceImpact?.status === PriceImpactStatus.MEDIUM
                             ? "text-orange-600 dark:text-amber-500"
-                            : "text-red-700 dark:text-red-500",
+                            : "text-red-600",
                       )}
                     >
                       ({priceImpact?.priceImpact})

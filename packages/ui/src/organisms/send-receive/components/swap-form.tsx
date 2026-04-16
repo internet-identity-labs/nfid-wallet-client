@@ -136,7 +136,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           tokensAvailableToSwap={tokensAvailableToSwap}
           fee={fee}
         />
-        <div className="h-4 mt-1 text-xs leading-4 text-red-600 dark:text-red-500">
+        <div className="h-4 mt-1 text-xs leading-4 text-red-600">
           {showLiquidityError
             ? showLiquidityError?.message
             : errors["amount"] && (errors["amount"]?.message as string)}
@@ -186,14 +186,14 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
               isChecked={isChecked}
               onChange={() => setIsChecked(!isChecked)}
               labelText="I understand liquidity is too low in this DEX to maintain a reasonable impact on price, and would like to proceed anyway."
-              labelClassName="!text-sm text-red-700 dark:text-red-500"
-              className="text-red-700 border-red-700 dark:text-red-500 dark:border-red-500 mt-[2px]"
+              labelClassName="!text-sm text-red-700"
+              className="text-red-700 border-red-700 mt-[2px]"
               overlayClassnames="!items-start"
             />
           </div>
         )}
         {slippageQuoteError && (
-          <div className="text-xs text-red-600 dark:text-red-500 mt-2.5">
+          <div className="text-xs text-red-600 mt-2.5">
             {slippageQuoteError}
           </div>
         )}

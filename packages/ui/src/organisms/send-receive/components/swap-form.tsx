@@ -186,8 +186,8 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
               isChecked={isChecked}
               onChange={() => setIsChecked(!isChecked)}
               labelText="I understand liquidity is too low in this DEX to maintain a reasonable impact on price, and would like to proceed anyway."
-              labelClassName="!text-sm text-red-700"
-              className="text-red-700 border-red-700 mt-[2px]"
+              labelClassName="!text-sm text-red-600"
+              className="text-red-600 border-red-600 mt-[2px]"
               overlayClassnames="!items-start"
             />
           </div>

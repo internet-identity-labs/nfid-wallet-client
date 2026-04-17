@@ -212,7 +212,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             </p>
           </div>
           {error && providerName && (
-            <div className="text-sm text-red-600 dark:text-red-500 max-w-[320px] mx-auto mb-[20px]">
+            <div className="text-sm text-red-600 max-w-[320px] mx-auto mb-[20px]">
               {error.getDisplayMessage(providerName)}
             </div>
           )}

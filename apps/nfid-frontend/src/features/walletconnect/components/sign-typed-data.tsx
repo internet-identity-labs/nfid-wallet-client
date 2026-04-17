@@ -119,7 +119,7 @@ export const WalletConnectSignTypedData: React.FC<
         </div>
       </div>
       {error && (
-        <div className="mt-1 text-xs leading-4 text-center text-red-600 dark:text-red-500 tracking-[0.16px] break-all">
+        <div className="mt-1 text-xs leading-4 text-center text-red-600 tracking-[0.16px] break-all">
           {error}
         </div>
       )}

@@ -233,7 +233,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       className={clsx(
         "border rounded-[12px] p-4 dark:bg-[#FFFFFF0D]",
         errors["amount"]
-          ? "ring border-red-600 dark:border-red-500 ring-red-100"
+          ? "ring border-red-600 ring-red-100"
           : "border-black dark:border-zinc-500",
         isResponsive ? "h-[168px]" : "h-[100px]",
       )}

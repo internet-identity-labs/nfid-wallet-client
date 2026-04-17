@@ -159,12 +159,11 @@ export const StakeUi: FC<StakeUiProps> = ({
         isResponsive={isFromResponsive}
         setIsResponsive={setIsFromResponsive}
       />
-      {Boolean(errors["amount"]?.message) && (
-        <div className="h-4 mt-1 text-xs leading-4 text-red-600 dark:text-red-500">
-          {errors["amount"]?.message as string}
-        </div>
-      )}
-      <p className="mt-[20px] mb-1 text-xs">Lock time</p>
+      <div className="h-4 mt-1 text-xs leading-4 text-red-600">
+        {Boolean(errors["amount"]?.message) &&
+          (errors["amount"]?.message as string)}
+      </div>
+      <p className="mt-1 mb-1 text-xs">Lock time</p>
       {isParamsLoading || !stakingParams ? (
         <Skeleton className="w-full h-[99px]" />
       ) : (

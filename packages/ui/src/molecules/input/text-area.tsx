@@ -42,9 +42,7 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
           {...props}
         />
         {errorText && (
-          <div className={clsx("text-sm py-1 text-red-600 dark:text-red-500")}>
-            {errorText}
-          </div>
+          <div className={clsx("text-sm py-1 text-red-600")}>{errorText}</div>
         )}
       </div>
     )

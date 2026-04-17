@@ -56,9 +56,7 @@ export const InputAddressTrigger = ({
         <IconCmpArrowRight id={"addressBook"} />
       </div>
     </div>
-    <div
-      className={clsx("absolute", "text-xs py-1 text-red dark:text-red-500")}
-    >
+    <div className={clsx("absolute", "text-xs py-1 text-red-600")}>
       {errorText}
     </div>
   </>

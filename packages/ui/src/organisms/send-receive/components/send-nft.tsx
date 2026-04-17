@@ -189,9 +189,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
               </div>
             </div>
             {feeError && (
-              <div className="mt-2 text-xs text-red-600 dark:text-red-500">
-                {feeError}
-              </div>
+              <div className="mt-2 text-xs text-red-600">{feeError}</div>
             )}
           </div>
         )}

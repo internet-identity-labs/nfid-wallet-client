@@ -84,7 +84,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               "rounded-[12px]",
               errorText || isErrorStyles
                 ? clsx(
-                    "border-red-600 dark:border-red-500 active:border-red-600 focus:border-red-600 ",
+                    "border-red-600 active:border-red-600 focus:border-red-600 ",
                     "active:bg-red-50",
                     "ring-red-100 focus:ring-[3px] active:ring-red-200 focus:ring-red-200 focus-within:ring-red-100 ",
                   )
@@ -123,7 +123,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <div
             id={`${id}-error`}
             className={clsx(
-              "mt-0.5 text-xs text-red-base text-red-600 dark:text-red-500",
+              "mt-0.5 text-xs text-red-base text-red-600",
               "absolute left-0 top-[100%]",
             )}
           >

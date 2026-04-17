@@ -143,7 +143,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         isResponsive={isFromResponsive}
         setIsResponsive={setIsFromResponsive}
       />
-      <div className="h-4 mt-1 text-xs leading-4 text-red-600 dark:text-red-500">
+      <div className="h-4 mt-1 text-xs leading-4 text-red-600">
         {errors["amount"]?.message as string}
       </div>
       {isVault && (
@@ -241,9 +241,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           </div>
         </div>
         {feeError && (
-          <div className="mt-2 text-xs text-red-600 dark:text-red-500">
-            {feeError}
-          </div>
+          <div className="mt-2 text-xs text-red-600">{feeError}</div>
         )}
       </div>
       <Button

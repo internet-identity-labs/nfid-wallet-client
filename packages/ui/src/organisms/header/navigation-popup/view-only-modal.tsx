@@ -77,7 +77,7 @@ export const ViewOnlyModal: FC<ViewOnlyModalProps> = ({ isOpen, onCLose }) => {
           })}
           isErrorStyles={Boolean(errors.address?.message)}
         />
-        <div className="absolute left-0 top-[100%] mt-1 text-xs text-red-600 text-red-base dark:text-red-500">
+        <div className="absolute left-0 top-[100%] mt-1 text-xs text-red-600">
           {errors.address?.message}
         </div>
       </div>

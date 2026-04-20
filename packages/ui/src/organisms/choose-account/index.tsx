@@ -86,7 +86,7 @@ export const ChooseAccount = ({
           ) : null}
         </div>
       )}
-      <div className="bg-gray-200 w-full h-[1px] my-[14px] dark:text-zinc-500" />
+      <div className="bg-gray-200 w-full h-[1px] my-[14px] dark:bg-zinc-500" />
       <p className="text-sm font-bold dark:text-white">
         Hide my wallet address
       </p>

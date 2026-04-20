@@ -112,7 +112,7 @@ const CallCanisterTransfer = (props: CallCanisterTransferProps) => {
           </div>
         </div>
         {metadata.isInsufficientBalance && (
-          <p className="flex flex-col justify-end flex-1 text-xs text-center text-red-600 dark:text-red-500">
+          <p className="flex flex-col justify-end flex-1 text-xs text-center text-red-600">
             Insufficient {metadata.symbol} balance
           </p>
         )}

@@ -58,6 +58,11 @@ const DFX_PORT = dfxJson.networks.local.bind.split(":")[1]
 const isExampleBuild = process.env.EXAMPLE_BUILD === "1"
 const isProduction = process.env.FRONTEND_MODE === "production"
 
+const icExplorerApiUrl =
+  isExampleBuild || isProduction
+    ? "https://api.icexplorer.io/api/dashboard/search"
+    : "/ic-explorer/api/dashboard/search"
+
 const removeAutoprefixerPlugin = (plugins) => {
   if (!Array.isArray(plugins)) {
     return plugins
@@ -173,7 +178,7 @@ const setupCSP = () => {
         "https://etherscan.io/",
         "https://api.etherscan.io/",
         "https://api-sepolia.etherscan.io/",
-        "https://api.icexplorer.io/api/dashboard/search",
+        "https://api.icexplorer.io",
         "https://*.g.alchemy.com",
       ],
       "worker-src": "'self' blob:",
@@ -338,6 +343,7 @@ const config = composePlugins(
     config.plugins = config.plugins || []
     const canisterEnv = {
       ...(isExampleBuild ? {} : serviceConfig),
+      IC_EXPLORER_API_URL: JSON.stringify(icExplorerApiUrl),
     }
 
     config.plugins.push(
@@ -385,6 +391,13 @@ const config = composePlugins(
         "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
       },
       proxy: [
+        {
+          context: ["/ic-explorer"],
+          target: "https://api.icexplorer.io",
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: { "^/ic-explorer": "" },
+        },
         {
           context: ["/api"],
           target: `http://0.0.0.0:${DFX_PORT}`,

@@ -4,8 +4,6 @@ import {
   IcExplorerResponse,
 } from "@nfid/integration"
 
-const IC_EXPLORER_API_URL = "https://api.icexplorer.io/api/dashboard/search"
-
 export class IcExplorerClient {
   @Cache(icExplorerAddressItemCacheIdb, { ttl: 2592000 }) // Cache for 30 days
   async find(keyword: string): Promise<IcExplorerResponse> {

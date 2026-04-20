@@ -2,9 +2,9 @@ import React from "react"
 import { ImSpinner } from "react-icons/im"
 
 import { Button, DropdownSelect } from "@nfid-frontend/ui"
-import { BaseKeyType } from "@nfid/embed/src/lib/types"
 
 import { useAuthentication } from "../../../../hooks/useAuthentication"
+import type { NfidEmbedKeyType } from "../../../../types/nf-embed-key"
 import { ExampleMethod } from "../../method"
 import { AuthenticationForm } from "./form"
 
@@ -55,7 +55,7 @@ export const AuthenticationExample = ({
       <DropdownSelect
         selectedValues={[keyType]}
         isMultiselect={false}
-        setSelectedValues={(value) => setKeyType(value[0] as BaseKeyType)}
+        setSelectedValues={(value) => setKeyType(value[0] as NfidEmbedKeyType)}
         options={[
           { label: "ECDSA", value: "ECDSA" },
           { label: "Ed25519", value: "Ed25519" },

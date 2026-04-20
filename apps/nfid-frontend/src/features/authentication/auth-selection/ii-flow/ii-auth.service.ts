@@ -21,8 +21,7 @@ import {
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 
 export const identityProvider = "https://id.ai"
-//who knows why FE canister URL named like this....
-export const derivationOrigin = CANISTER_WITH_AT_LEAST_ONE_PASSKEY
+export const derivationOrigin = NFID_WALLET_CLIENT_CANISTER
 
 export async function signWithIIService(): Promise<IIAuthSession> {
   return new Promise((resolve, reject) => {

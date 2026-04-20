@@ -69,6 +69,7 @@ const Example = ({
       submitButtonText="Update delegation"
       submitButtonId="buttonUpdateDelegation"
       isLoading={loading}
+      submitButtonDisabled={loading}
       onSubmit={handleUpdateGlobalDelegation}
     />
   )
@@ -107,8 +108,8 @@ export const UpdateDelegation = () => {
         error
           ? JSON.stringify({ error }, null, 2)
           : identity
-          ? JSON.stringify(identity, null, 2)
-          : "{}"
+            ? JSON.stringify(identity, null, 2)
+            : "{}"
       }
       example={
         <Example onError={setError} resetError={() => setError(undefined)} />

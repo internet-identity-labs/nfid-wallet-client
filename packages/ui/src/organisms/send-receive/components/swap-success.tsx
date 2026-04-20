@@ -135,8 +135,8 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
           {error
             ? `${providerName} ${getTitleAndButtonText(error)?.title} failed`
             : isCompleted
-            ? ""
-            : getTextStatusByStep(step)}
+              ? ""
+              : getTextStatusByStep(step)}
         </p>
       </div>
       <div className="relative flex items-center justify-center w-full">
@@ -212,7 +212,7 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
             </p>
           </div>
           {error && providerName && (
-            <div className="text-sm text-red-600 dark:text-red-500 max-w-[320px] mx-auto mb-[20px]">
+            <div className="text-sm text-red-600 max-w-[320px] mx-auto mb-[20px]">
               {error.getDisplayMessage(providerName)}
             </div>
           )}
@@ -225,7 +225,11 @@ export const SwapSuccessUi: FC<SwapSuccessProps> = ({
         block
         onClick={onClose}
       >
-        {getTitleAndButtonText(error)?.buttonText}
+        {error
+          ? getTitleAndButtonText(error)?.buttonText
+          : isCompleted
+            ? "Done"
+            : getTitleAndButtonText(undefined)?.buttonText}
       </Button>
     </div>
   )

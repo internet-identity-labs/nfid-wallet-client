@@ -80,7 +80,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
         title={`${selectedNFT?.getTokenName()}`}
         subTitle={`${selectedNFT?.getCollectionName()}`}
         onClose={onClose}
-        assetImg={`${selectedNFT?.getAssetPreview()?.url}`}
+        assetImg={selectedNFT?.getAssetPreview()?.url ?? ""}
         isOpen={isSuccessOpen}
         status={status}
         assetImageClassname="w-[102px] h-[102px] top-[161px] sm:w-[116px] sm:h-[116px] sm:top-[154px]"
@@ -189,9 +189,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
               </div>
             </div>
             {feeError && (
-              <div className="mt-2 text-xs text-red-600 dark:text-red-500">
-                {feeError}
-              </div>
+              <div className="mt-2 text-xs text-red-600">{feeError}</div>
             )}
           </div>
         )}

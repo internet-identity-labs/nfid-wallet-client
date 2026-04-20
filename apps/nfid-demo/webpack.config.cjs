@@ -60,6 +60,22 @@ const removeAutoprefixerPlugin = (plugins) => {
   });
 };
 
+const normalizeAndFilterPlugins = (plugins) => {
+  if (!plugins) {
+    return plugins;
+  }
+
+  if (Array.isArray(plugins)) {
+    return removeAutoprefixerPlugin(plugins);
+  }
+
+  if (typeof plugins === 'function') {
+    return (...args) => removeAutoprefixerPlugin(plugins(...args));
+  }
+
+  return plugins;
+};
+
 const removeAutoprefixerFromRule = (rule) => {
   if (rule.oneOf) {
     rule.oneOf = rule.oneOf.map(removeAutoprefixerFromRule);
@@ -70,19 +86,41 @@ const removeAutoprefixerFromRule = (rule) => {
       if (
         typeof loader === 'object' &&
         typeof loader.loader === 'string' &&
-        loader.loader.includes('postcss-loader') &&
-        loader.options?.postcssOptions
+        loader.loader.includes('postcss-loader')
       ) {
-        const postcssOptions = loader.options.postcssOptions;
+        const postcssOptions = loader.options?.postcssOptions;
 
-        if (Array.isArray(postcssOptions.plugins)) {
+        if (typeof postcssOptions === 'function') {
+          const wrapped = (...args) => {
+            const resolved = postcssOptions(...args);
+            if (!resolved || typeof resolved !== 'object') {
+              return resolved;
+            }
+
+            return {
+              ...resolved,
+              plugins: normalizeAndFilterPlugins(resolved.plugins),
+            };
+          };
+          Object.assign(wrapped, postcssOptions);
+
+          return {
+            ...loader,
+            options: {
+              ...loader.options,
+              postcssOptions: wrapped,
+            },
+          };
+        }
+
+        if (postcssOptions && typeof postcssOptions === 'object') {
           return {
             ...loader,
             options: {
               ...loader.options,
               postcssOptions: {
                 ...postcssOptions,
-                plugins: removeAutoprefixerPlugin(postcssOptions.plugins),
+                plugins: normalizeAndFilterPlugins(postcssOptions.plugins),
               },
             },
           };
@@ -103,6 +141,11 @@ const config = composePlugins(
   }),
   (config) => {
     config.resolve = config.resolve || {};
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      // Avoid resolving `frontend/hooks` to nfid-frontend (pulls the whole app into the build graph).
+      'frontend/hooks': path.resolve(__dirname, 'src/stubs/frontend-hooks.ts'),
+    };
     config.resolve.plugins = config.resolve.plugins || [];
     config.resolve.plugins.push(
       new TsConfigPathsPlugin({

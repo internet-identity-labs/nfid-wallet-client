@@ -169,7 +169,9 @@ const PermissionsPage: FC<PermissionsPageProps> = memo(
         <FormProvider {...formMethods}>
           <Permissions
             allowances={flattenedAllowances}
-            isLoading={isLoading}
+            isLoading={
+              isLoading || (!initialPage && state.allowancesList.length === 0)
+            }
             loadMore={loadMore}
             isLoadingMore={state.isLoadingMore}
             hasMore={state.hasMore}

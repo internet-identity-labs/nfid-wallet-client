@@ -20,7 +20,7 @@ export function ArrowPercentChange({
         {
           [positiveClassName || "text-green-600 dark:text-emerald-500"]:
             positive,
-          "text-red-600 dark:text-red-500": !positive,
+          "text-red-600": !positive,
         },
         className,
       )}

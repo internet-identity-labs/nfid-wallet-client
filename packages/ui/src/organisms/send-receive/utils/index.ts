@@ -13,8 +13,10 @@ import {
   BTC_NATIVE_ID,
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
+  CKSEPOLIA_LEDGER_CANISTER_ID,
   ETH_DECIMALS,
   ETH_NATIVE_ID,
+  EVM_NATIVE,
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
 
@@ -53,6 +55,8 @@ export enum IModalType {
   CONVERT_TO_CKBTC = "CONVERT_TO_CKBTC",
   CONVERT_TO_ETH = "CONVERT_TO_ETH",
   CONVERT_TO_CKETH = "CONVERT_TO_CKETH",
+  CONVERT_TO_SEPOLIA_ETH = "CONVERT_TO_SEPOLIA_ETH",
+  CONVERT_TO_SEPOLIA_CKETH = "CONVERT_TO_SEPOLIA_CKETH",
 }
 
 export const getTitleAndButtonText = (
@@ -229,6 +233,14 @@ export const getModalType = (fromToken?: FT, toToken?: FT) => {
     case fromToken?.getTokenAddress() === CKETH_LEDGER_CANISTER_ID &&
       toToken?.getTokenAddress() === ETH_NATIVE_ID:
       return IModalType.CONVERT_TO_ETH
+
+    case fromToken?.getTokenAddress() === EVM_NATIVE &&
+      toToken?.getTokenAddress() === CKSEPOLIA_LEDGER_CANISTER_ID:
+      return IModalType.CONVERT_TO_SEPOLIA_CKETH
+
+    case fromToken?.getTokenAddress() === CKSEPOLIA_LEDGER_CANISTER_ID &&
+      toToken?.getTokenAddress() === EVM_NATIVE:
+      return IModalType.CONVERT_TO_SEPOLIA_ETH
 
     default:
       return IModalType.CONVERT_TO_CKBTC

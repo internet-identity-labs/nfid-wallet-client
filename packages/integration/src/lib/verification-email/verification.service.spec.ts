@@ -1,4 +1,4 @@
-import * as jose from "jose"
+import { importPKCS8, SignJWT } from "jose"
 import * as JwtService from "jsonwebtoken"
 
 import {
@@ -28,9 +28,9 @@ describe("Verification of email", () => {
 
   it("should validate contract between jose and jsonwebtoken libs.", async () => {
     const keyPair = await generateCryptoKeyPair()
-    const privateKey = await jose.importPKCS8(keyPair.privateKey, "ES512")
+    const privateKey = await importPKCS8(keyPair.privateKey, "ES512")
 
-    const token = await new jose.SignJWT({ nonce: "0" })
+    const token = await new SignJWT({ nonce: "0" })
       .setProtectedHeader({ alg: "ES512" })
       .setIssuer("https://nfid.one")
       .setSubject(testEmail)

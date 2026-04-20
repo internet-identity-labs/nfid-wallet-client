@@ -14,6 +14,8 @@ import { hasOwnProperty, ICRC1TypeOracle, TransferArg } from "@nfid/integration"
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 
+import type { SourceInputCalculator } from "src/integration/swap/calculator/calculator"
+
 import { ContactSupportError } from "../errors/types/contact-support-error"
 import { SwapName } from "../types/enums"
 

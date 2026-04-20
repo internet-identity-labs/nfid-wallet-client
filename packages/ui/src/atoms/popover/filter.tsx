@@ -37,19 +37,19 @@ export const FilterPopover = ({
           {title && <p className="mb-1 text-xs leading-4">{title}</p>}
           {children}
           <div className={onApply ? "grid grid-cols-2 gap-5 mt-5" : "mt-5"}>
-            <RadixPopover.Close className="w-full">
+            <RadixPopover.Close asChild>
               <Button
                 onClick={onReset}
                 type="ghost"
                 block={true}
                 id="reset-filters-button"
-                className="text-teal-600"
+                className="w-full text-teal-600"
               >
                 Reset filter
               </Button>
             </RadixPopover.Close>
             {onApply && (
-              <RadixPopover.Close>
+              <RadixPopover.Close asChild>
                 <Button
                   onClick={onApply}
                   type="primary"

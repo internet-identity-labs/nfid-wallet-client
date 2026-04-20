@@ -155,6 +155,7 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
       <div>
         <Input
           inputClassName="h-[60px]"
+          className="mb-2.5"
           id="name"
           labelText="Name"
           placeholder="Enter name"

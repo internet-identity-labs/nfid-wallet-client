@@ -121,11 +121,11 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
           />
           <ImageWithFallback
             alt="assetImg"
-            src={`${
+            src={
               isNativeBtc && status === SendStatus.COMPLETED
                 ? ConvertWaitIcon
                 : assetImg
-            }`}
+            }
             fallbackSrc={IconNftPlaceholder}
             className={clsx("absolute rounded-full", assetImageClassname)}
           />
@@ -141,11 +141,7 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
         >
           {subTitle}
         </p>
-        {error && (
-          <div className="text-sm text-red-600 dark:text-red-500 mt-[30px]">
-            {error}
-          </div>
-        )}
+        {error && <div className="text-sm text-red-600 mt-[30px]">{error}</div>}
         <Button
           type="primary"
           block

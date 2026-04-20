@@ -1,11 +1,19 @@
 import { HTMLAttributes, useEffect, useState } from "react"
 
-export interface IImageWithFallbackProps
-  extends HTMLAttributes<HTMLImageElement> {
+export interface IImageWithFallbackProps extends HTMLAttributes<HTMLImageElement> {
   src?: string
   fallbackSrc: string | { src: string }
   alt?: string
 }
+
+const resolveFallback = (fallbackSrc: string | { src: string }) =>
+  typeof fallbackSrc === "object" ? fallbackSrc.src : fallbackSrc
+
+/** Avoids loading `/undefined` when callers stringify missing URLs with template literals. */
+const effectiveImageSrc = (
+  src: string | undefined,
+  fallbackSrc: string | { src: string },
+) => (src && src !== "undefined" ? src : resolveFallback(fallbackSrc))
 
 export const ImageWithFallback = ({
   src,
@@ -13,14 +21,16 @@ export const ImageWithFallback = ({
   alt,
   className,
 }: IImageWithFallbackProps) => {
-  const [imgSrc, setImgSrc] = useState(src)
+  const [imgSrc, setImgSrc] = useState(() =>
+    effectiveImageSrc(src, fallbackSrc),
+  )
 
   const handleError = () => {
-    setImgSrc(typeof fallbackSrc === "object" ? fallbackSrc.src : fallbackSrc)
+    setImgSrc(resolveFallback(fallbackSrc))
   }
 
   useEffect(() => {
-    setImgSrc(src)
+    setImgSrc(effectiveImageSrc(src, fallbackSrc))
   }, [src])
 
   return (

@@ -110,7 +110,7 @@ export const ConvertAnimation: React.FC<CustomAnimationProps> = ({
           "rounded-full w-[120px] h-[120px] z-[2] flex items-center justify-center",
           status !== SendStatus.PENDING &&
             stageClassnames[animationStage].imageWrapper,
-          status === SendStatus.FAILED && "bg-red-600 dark:bg-red-500",
+          status === SendStatus.FAILED && "bg-red-600",
         )}
       >
         {status !== SendStatus.PENDING ? (

@@ -43,8 +43,7 @@ export function Balance({
                   className={clsx("text-xs font-bold mr-2.5 self-end", {
                     "text-emerald-600 dark:text-emerald-500":
                       usdBalance.dayChangePositive,
-                    "text-red-600 dark:text-red-500":
-                      !usdBalance.dayChangePositive,
+                    "text-red-600": !usdBalance.dayChangePositive,
                   })}
                 >
                   {usdBalance.dayChangePositive && "+"}

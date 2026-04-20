@@ -70,7 +70,10 @@ export const Permissions: FC<PermissionsProps> = ({
     useState<Allowance | null>(null)
   const [isFromResponsive, setIsFromResponsive] = useState(false)
 
-  const { watch } = useFormContext()
+  const {
+    watch,
+    formState: { errors },
+  } = useFormContext()
   const amount = watch("amount")
 
   const handleRevoke = async () => {
@@ -378,7 +381,10 @@ export const Permissions: FC<PermissionsProps> = ({
             isResponsive={isFromResponsive}
             setIsResponsive={setIsFromResponsive}
           />
-          <div className="mt-5 flex gap-2.5">
+          <div className="h-4 mt-1 text-xs leading-4 text-red-600">
+            {errors["amount"] && (errors["amount"]?.message as string)}
+          </div>
+          <div className="mt-1 flex gap-2.5">
             <Button
               type="stroke"
               className="w-full"

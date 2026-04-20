@@ -307,7 +307,7 @@ export const AuthChooseAccount = ({
                 </div>
               }
             >
-              <IconCmpInfo className="text-black" />
+              <IconCmpInfo className="text-black dark:text-white" />
             </Tooltip>
           </TooltipProvider>
         </div>
@@ -319,12 +319,14 @@ export const AuthChooseAccount = ({
             "flex flex-col flex-1 font-inter bg-white",
             "border border-gray-200",
             "shadow-[0px_4px_10px_0px_rgba(0,0,0,0.02)]",
-            "mt-9",
+            "mt-9 dark:bg-zinc-700 dark:border-zinc-600",
           )}
         >
           <div className="px-5">
-            <p className="text-sm font-bold">Share NFID Wallet address</p>
-            <p className="mt-2 text-xs text-gray-500">
+            <p className="text-sm font-bold dark:text-white">
+              Share NFID Wallet address
+            </p>
+            <p className="mt-2 text-xs text-gray-500 dark:text-zinc-500">
               Allow this site to request payments and view your balances.
             </p>
             <PublicProfileButton
@@ -337,10 +339,12 @@ export const AuthChooseAccount = ({
               }}
             />
           </div>
-          <div className="bg-gray-200 w-full h-[1px] my-[14px]" />
+          <div className="bg-gray-200 dark:bg-zinc-500 w-full h-[1px] my-[14px]" />
           <div className="flex-1 px-5">
-            <p className="text-sm font-bold">Hide NFID Wallet address</p>
-            <p className="mt-2 text-xs text-gray-500">
+            <p className="text-sm font-bold dark:text-white">
+              Hide NFID Wallet address
+            </p>
+            <p className="mt-2 text-xs text-gray-500 dark:text-zinc-500">
               Connect anonymously to prevent this site from requesting payments
               and viewing your balances.
             </p>
@@ -348,7 +352,7 @@ export const AuthChooseAccount = ({
             {/* Legacy anonymous profiles */}
             {legacyAnonymousProfiles?.map((acc) => (
               <div
-                className="flex items-center h-5 mt-5 text-xs"
+                className="flex items-center h-5 mt-5 text-xs dark:text-white"
                 key={`legacy_persona_${acc.accountId}`}
               >
                 <RadioButton
@@ -369,7 +373,7 @@ export const AuthChooseAccount = ({
 
             {/* Anonymous profile */}
             {!legacyAnonymousProfiles?.length ? (
-              <div className="flex items-center h-5 mt-5 text-xs">
+              <div className="flex items-center h-5 mt-5 text-xs dark:text-white">
                 <RadioButton
                   id="profile_anonymous-1"
                   value="anonymous-1"
@@ -381,7 +385,7 @@ export const AuthChooseAccount = ({
                 />
                 <label
                   htmlFor="profile_anonymous-1"
-                  className="ml-2 cursor-pointer"
+                  className="ml-2 cursor-pointer dark:text-white"
                 >
                   Anonymous {appMeta.name} profile {isDerivationBug ? "1" : ""}
                 </label>
@@ -390,7 +394,7 @@ export const AuthChooseAccount = ({
 
             {/* Anonymous profile with derivation bug */}
             {!legacyAnonymousProfiles?.length && isDerivationBug ? (
-              <div className="flex items-center h-5 mt-4 text-xs">
+              <div className="flex items-center h-5 mt-4 text-xs dark:text-white">
                 <RadioButton
                   id="anonymous-2"
                   value="anonymous-2"
@@ -402,7 +406,7 @@ export const AuthChooseAccount = ({
                 />
                 <label
                   htmlFor="profile_anonymous-2"
-                  className="ml-2 cursor-pointer"
+                  className="ml-2 cursor-pointer dark:text-white"
                 >
                   Anonymous {appMeta.name} profile 2
                 </label>

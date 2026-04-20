@@ -1,6 +1,17 @@
 import { resetIntegrationCache } from "packages/integration/src/cache"
-import { SwapFTUi } from "packages/ui/src/organisms/send-receive/components/swap"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import {
+  SwapFTUi,
+  type SwapFTUiProps,
+  type SwapSuccessDisplaySnapshot,
+} from "packages/ui/src/organisms/send-receive/components/swap"
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FC,
+} from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import {
   DepositError,
@@ -17,7 +28,7 @@ import {
   ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
-import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useIdentity } from "frontend/hooks/identity"
@@ -32,6 +43,7 @@ import { FormValues } from "../types"
 import {
   getQuoteData,
   getTokensWithUpdatedBalance,
+  mutateTokensCacheMergingBalances,
   updateCachedInitedTokens,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
@@ -40,6 +52,13 @@ import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { useUserPrefs } from "frontend/hooks/user-prefs"
 
 const QUOTE_REFETCH_TIMER = 30
+
+type SwapFTWithSuccessSnapshotProps = SwapFTUiProps & {
+  swapSuccessDisplay?: SwapSuccessDisplaySnapshot | null
+}
+
+const SwapFTUiWithSnapshot =
+  SwapFTUi as unknown as FC<SwapFTWithSuccessSnapshotProps>
 
 interface ISwapFT {
   preselectedSourceTokenAddress: string | undefined
@@ -59,6 +78,8 @@ export const SwapFT = ({
   setSuccessMessage,
 }: ISwapFT) => {
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
+  const [swapSuccessDisplay, setSwapSuccessDisplay] =
+    useState<SwapSuccessDisplaySnapshot | null>(null)
   const [fromTokenAddress, setFromTokenAddress] = useState(ICP_CANISTER_ID)
   const [toTokenAddress, setToTokenAddress] = useState(NFIDW_CANISTER_ID)
   const [swapProviders, setSwapProviders] = useState<
@@ -136,20 +157,29 @@ export const SwapFT = ({
     SwapTransaction | undefined
   >()
 
-  const fromToken = useMemo(() => {
-    if (!filteredTokens) return undefined
-    return filteredTokens.find(
-      (token: FT) => token.getTokenAddress() === fromTokenAddress,
-    )
-  }, [fromTokenAddress, filteredTokens])
+  const resolveIcrcTokens = useCallback(
+    (address: string): FT | undefined => {
+      const isMatch = (token: FT) =>
+        token.getTokenAddress() === address &&
+        token.getChainId() === ChainId.ICP
+      return (
+        filteredTokens?.find(isMatch) ??
+        initedTokens?.find(isMatch) ??
+        tokens.find(isMatch)
+      )
+    },
+    [filteredTokens, initedTokens, tokens],
+  )
 
-  const toToken = useMemo(() => {
-    return filteredTokens?.find(
-      (token: FT) =>
-        token.getTokenAddress() === toTokenAddress &&
-        token.getChainId() === ChainId.ICP,
-    )
-  }, [toTokenAddress, filteredTokens])
+  const fromToken = useMemo(
+    () => resolveIcrcTokens(fromTokenAddress),
+    [fromTokenAddress, resolveIcrcTokens],
+  )
+
+  const toToken = useMemo(
+    () => resolveIcrcTokens(toTokenAddress),
+    [toTokenAddress, resolveIcrcTokens],
+  )
 
   const filteredAllTokens = useMemo(() => {
     return tokens?.filter(
@@ -334,6 +364,14 @@ export const SwapFT = ({
 
     if (!shroff || !identity) return
 
+    setSwapSuccessDisplay({
+      titleFrom: sourceAmount,
+      titleTo: targetAmount,
+      subTitleFrom: sourceUsdAmount,
+      subTitleTo: targetUsdAmount,
+      assetImgFrom: fromToken?.getTokenLogo() ?? "",
+      assetImgTo: toToken?.getTokenLogo() ?? "",
+    })
     setIsSuccessOpen(true)
 
     shroff
@@ -351,7 +389,7 @@ export const SwapFT = ({
           [fromTokenAddress, toTokenAddress],
           initedTokens,
         ).then((updatedTokens) => {
-          mutateWithTimestamp("tokens", updatedTokens, false)
+          mutateTokensCacheMergingBalances(updatedTokens)
           updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
         })
       })
@@ -367,11 +405,18 @@ export const SwapFT = ({
     setSuccessMessage,
     identity,
     mutateInitedTokens,
+    fromToken,
+    toToken,
   ])
+
+  const handleSwapClose = useCallback(() => {
+    setSwapSuccessDisplay(null)
+    onClose()
+  }, [onClose])
 
   return (
     <FormProvider {...formMethods}>
-      <SwapFTUi
+      <SwapFTUiWithSnapshot
         tokens={filteredTokens || []}
         allTokens={filteredAllTokens || []}
         toToken={toToken}
@@ -390,7 +435,8 @@ export const SwapFT = ({
         step={swapStep}
         error={swapError}
         isSuccessOpen={isSuccessOpen}
-        onClose={onClose}
+        onClose={handleSwapClose}
+        swapSuccessDisplay={swapSuccessDisplay}
         quoteTimer={quoteTimer}
         slippage={slippage}
         setSlippage={setSlippage}

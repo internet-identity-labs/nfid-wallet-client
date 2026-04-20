@@ -30,6 +30,16 @@ export enum SwapModal {
   SUCCESS = "success",
 }
 
+/** Frozen at swap submit so success UI stays stable when quote/tokens refresh after execution. */
+export interface SwapSuccessDisplaySnapshot {
+  titleFrom: string
+  titleTo: string
+  subTitleFrom: string
+  subTitleTo: string
+  assetImgFrom: string
+  assetImgTo: string
+}
+
 export interface SwapFTUiProps {
   tokens: FT[]
   allTokens: FT[]
@@ -58,6 +68,7 @@ export interface SwapFTUiProps {
   setProvider: (value: Shroff) => void
   tokensAvailableToSwap: TokensAvailableToSwap
   fee?: bigint
+  swapSuccessDisplay?: SwapSuccessDisplaySnapshot | null
 }
 
 export const SwapFTUi: FC<SwapFTUiProps> = ({
@@ -88,6 +99,7 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
   setProvider,
   tokensAvailableToSwap,
   fee,
+  swapSuccessDisplay,
 }) => {
   const [isResponsive, setIsResponsive] = useState(false)
   const [selectedShroff, setSelectedShroff] = useState<Shroff | undefined>()
@@ -121,12 +133,34 @@ export const SwapFTUi: FC<SwapFTUiProps> = ({
           transition={{ duration: 0.25, ease: "easeInOut" }}
         >
           <SwapSuccessUi
-            assetImgFrom={fromToken?.getTokenLogo() ?? ""}
-            assetImgTo={toToken?.getTokenLogo() ?? ""}
-            titleFrom={quote?.getSourceAmountPrettifiedWithSymbol()!}
-            titleTo={quote?.getTargetAmountPrettifiedWithSymbol()!}
-            subTitleFrom={quote?.getSourceAmountUSD()!}
-            subTitleTo={quote?.getTargetAmountUSD()!}
+            assetImgFrom={
+              swapSuccessDisplay?.assetImgFrom ??
+              fromToken?.getTokenLogo() ??
+              ""
+            }
+            assetImgTo={
+              swapSuccessDisplay?.assetImgTo ?? toToken?.getTokenLogo() ?? ""
+            }
+            titleFrom={
+              swapSuccessDisplay?.titleFrom ??
+              quote?.getSourceAmountPrettifiedWithSymbol() ??
+              ""
+            }
+            titleTo={
+              swapSuccessDisplay?.titleTo ??
+              quote?.getTargetAmountPrettifiedWithSymbol() ??
+              ""
+            }
+            subTitleFrom={
+              swapSuccessDisplay?.subTitleFrom ??
+              quote?.getSourceAmountUSD() ??
+              ""
+            }
+            subTitleTo={
+              swapSuccessDisplay?.subTitleTo ??
+              quote?.getTargetAmountUSD() ??
+              ""
+            }
             step={step}
             isOpen={isSuccessOpen}
             onClose={onClose}

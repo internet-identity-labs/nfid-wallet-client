@@ -149,7 +149,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
             )}
           </div>
           <div className="flex-[0_0_100%]"></div>
-          <p
+          <div
             className={clsx(
               "text-xs mt-2 text-gray-500 dark:text-zinc-400 leading-5 text-left",
             )}
@@ -174,7 +174,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
                           ? "text-green-700 dark:text-teal-500"
                           : priceImpact?.status === PriceImpactStatus.MEDIUM
                             ? "text-orange-600 dark:text-amber-500"
-                            : "text-red-700 dark:text-red-500",
+                            : "text-red-600",
                       )}
                     >
                       ({priceImpact?.priceImpact})
@@ -185,7 +185,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
             ) : (
               <Skeleton className="w-20 h-1 !bg-gray-200 dark:!bg-zinc-600 rounded-[4px]" />
             )}
-          </p>
+          </div>
           <div
             className={clsx(
               "mt-2 text-xs leading-5 text-gray-500 dark:text-zinc-400",

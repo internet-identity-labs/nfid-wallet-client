@@ -495,7 +495,7 @@ describe("Address Book", () => {
         // Second call: cache returns without invoking fetch
         expect(fetchSpy).toHaveBeenCalledTimes(1)
         expect(fetchSpy).toHaveBeenCalledWith(
-          "https://api.icexplorer.io/api/dashboard/search",
+          IC_EXPLORER_API_URL,
           expect.objectContaining({
             method: "POST",
             body: JSON.stringify({ keyword: "auadn-oqaaa-aaaaq-aacya-cai" }),

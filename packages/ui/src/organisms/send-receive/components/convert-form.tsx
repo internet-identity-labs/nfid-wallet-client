@@ -121,12 +121,10 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           setIsResponsive={setIsFromResponsive}
           fee={ethFee?.ethereumNetworkFee}
         />
-        {errors["amount"] && (
-          <div className="h-4 mt-1 text-xs leading-4 text-red-600">
-            {errors["amount"]?.message as string}
-          </div>
-        )}
-        <div className="relative mt-[30px] mb-1 text-xs text-gray-500">
+        <div className="h-4 mt-1 text-xs leading-4 text-red-600">
+          {errors["amount"] && (errors["amount"]?.message as string)}
+        </div>
+        <div className="relative mt-[14px] mb-1 text-xs text-gray-500">
           <span className="select-none">To</span>
           <div
             className={clsx(

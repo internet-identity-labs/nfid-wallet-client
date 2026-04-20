@@ -3,7 +3,7 @@ import {
   DelegationIdentity,
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
-import * as jose from "jose"
+import { importPKCS8, SignJWT } from "jose"
 
 import { DEFAULT_DELEGATION_TTL } from "@nfid/config"
 
@@ -152,8 +152,8 @@ export const verificationService = {
       : AWS_CHECK_VERIFICATION
 
     const ed25519KeyIdentity = Ed25519KeyIdentity.generate()
-    const privateKey = await jose.importPKCS8(keypair.privateKey, "ES512")
-    const token = await new jose.SignJWT({
+    const privateKey = await importPKCS8(keypair.privateKey, "ES512")
+    const token = await new SignJWT({
       nonce: "0",
       publicKey: ed25519KeyIdentity.toJSON()[0],
     })

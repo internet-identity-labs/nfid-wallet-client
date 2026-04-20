@@ -66,25 +66,33 @@ async function getFungibleActivityByTokenAndUser(
       return confirmations >= REQUIRED_CONFIRMATIONS
     })
     .map((tx) => {
-      const isReceived = tx.vout.some(
-        (vout) => vout.scriptpubkey_address === address,
-      )
       const isSent = tx.vin.some(
         (vin) => vin.prevout.scriptpubkey_address === address,
       )
 
-      const vout = tx.vout.find((vout) => vout.scriptpubkey_address === address)
-      const vin = tx.vin.find(
-        (vin) => vin.prevout.scriptpubkey_address === address,
-      )
+      if (isSent) {
+        const recipientVout =
+          tx.vout.find((v) => v.scriptpubkey_address !== address) ?? tx.vout[0]
+        return {
+          id: tx.txid,
+          date: tx.status.block_time,
+          from: address,
+          to: recipientVout.scriptpubkey_address,
+          transactionHash: tx.txid,
+          price: recipientVout.value,
+        }
+      }
 
+      const receivedVout = tx.vout.find(
+        (v) => v.scriptpubkey_address === address,
+      )
       return {
         id: tx.txid,
         date: tx.status.block_time,
-        to: isReceived ? address : tx.vout[0].scriptpubkey_address,
-        from: isSent ? address : tx.vin[0].prevout.scriptpubkey_address,
+        from: tx.vin[0].prevout.scriptpubkey_address,
+        to: address,
         transactionHash: tx.txid,
-        price: isReceived ? (vout?.value ?? 0) : (vin?.prevout.value ?? 0),
+        price: receivedVout?.value ?? 0,
       }
     })
   activities.push(...records)

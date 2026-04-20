@@ -130,8 +130,8 @@ export async function getGlobalDelegation(
     if (!isExpired) {
       return DelegationIdentity.fromDelegation(sessionKey, delegationChain)
     }
-    await integrationCache.removeItem(identityKey)
-    await integrationCache.removeItem(chainKey)
+    await integrationCache.setItem(identityKey, undefined, {})
+    await integrationCache.setItem(chainKey, undefined, {})
   }
 
   const sessionKey = Ed25519KeyIdentity.generate()

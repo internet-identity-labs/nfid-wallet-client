@@ -123,7 +123,15 @@ export async function getGlobalDelegation(
   if (identityKeyFromStorage && chainFromStorage) {
     const sessionKey = Ed25519KeyIdentity.fromJSON(identityKeyFromStorage)
     const delegationChain = DelegationChain.fromJSON(chainFromStorage)
-    return DelegationIdentity.fromDelegation(sessionKey, delegationChain)
+    const nowNs = BigInt(Date.now()) * BigInt(1_000_000)
+    const isExpired = delegationChain.delegations.some(
+      ({ delegation }) => delegation.expiration < nowNs,
+    )
+    if (!isExpired) {
+      return DelegationIdentity.fromDelegation(sessionKey, delegationChain)
+    }
+    await integrationCache.setItem(identityKey, undefined, {})
+    await integrationCache.setItem(chainKey, undefined, {})
   }
 
   const sessionKey = Ed25519KeyIdentity.generate()

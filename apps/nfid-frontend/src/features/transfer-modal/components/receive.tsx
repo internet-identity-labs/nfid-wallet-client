@@ -1,10 +1,7 @@
 import { AccountIdentifier } from "@dfinity/ledger-icp"
 import { Principal } from "@dfinity/principal"
-import toaster from "packages/ui/src/atoms/toast"
 import { Receive } from "packages/ui/src/organisms/send-receive/components/receive"
 import { useEffect, useState } from "react"
-
-import { btcDepositService } from "@nfid/integration/token/btc/service"
 
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
 
@@ -21,9 +18,7 @@ export const TransferReceive = ({
     preselectedAccountAddress,
   )
   const [accountId, setAccountId] = useState("")
-  const [autoConversionBtcAddress, setAutoConversionBtcAddress] =
-    useState<string>("")
-  const { btcAddress } = useBtcAddress()
+  const { btcAddress, autoConversionBtcAddress } = useBtcAddress()
   const { ethAddress } = useEthAddress()
 
   useEffect(() => {
@@ -34,32 +29,6 @@ export const TransferReceive = ({
       }).toHex(),
     )
   }, [publicKey])
-
-  const principalFromPublicKey = Principal.from(publicKey)
-
-  useEffect(() => {
-    let cancelled = false
-    const fetchBtcAddress = async () => {
-      try {
-        if (!principalFromPublicKey) return
-        const address = await btcDepositService.generateAddress(
-          principalFromPublicKey,
-        )
-        if (!cancelled) {
-          setAutoConversionBtcAddress(address)
-        }
-      } catch (_error) {
-        if (!cancelled) {
-          toaster.error("Failed to retrieve BTC address")
-          setAutoConversionBtcAddress("")
-        }
-      }
-    }
-    fetchBtcAddress()
-    return () => {
-      cancelled = true
-    }
-  }, [principalFromPublicKey])
 
   return (
     <div>

@@ -2,15 +2,17 @@ import { Principal } from "@dfinity/principal"
 import { authState } from "packages/integration/src/lib/authentication/auth-state"
 import { createContext, useCallback, useEffect, useState } from "react"
 
-import { btcDepositService } from "@nfid/integration/token/btc/service"
-
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { useBTCDepositsToMintCKBTCListener } from "frontend/hooks/btc-to-ckbtc"
-import { fetchBtcAddress as fetch } from "frontend/util/fetch-btc-address"
+import {
+  fetchBtcAddress as fetchBtc,
+  fetchAutoConversionBtc,
+} from "frontend/util/fetch-btc-address"
 
 type BtcAddressContextType = {
   btcAddress: string
   isBtcAddressLoading: boolean
+  autoConversionBtcAddress: string
   fetchBtcAddress: () => void
 }
 
@@ -25,11 +27,13 @@ export const BtcAddressProvider = ({
 }) => {
   const [btcAddress, setBtcAddress] = useState("")
   const [isBtcAddressLoading, setIsBtcAddressLoading] = useState(false)
+  const [autoConversionBtcAddress, setAutoConversionBtcAddress] = useState("")
+  const [isAutoConversionLoading, setIsAutoConversionLoading] = useState(false)
 
   const fetchBtcAddress = useCallback(() => {
     if (!btcAddress && !isBtcAddressLoading) {
       setIsBtcAddressLoading(true)
-      fetch()
+      fetchBtc()
         .then((addr) => {
           setBtcAddress(addr)
         })
@@ -37,15 +41,29 @@ export const BtcAddressProvider = ({
     }
   }, [btcAddress, isBtcAddressLoading])
 
+  const fetchAutoConversionAddress = useCallback(
+    (principal: Principal) => {
+      if (!autoConversionBtcAddress && !isAutoConversionLoading) {
+        setIsAutoConversionLoading(true)
+        fetchAutoConversionBtc(principal)
+          .then((addr) => {
+            setAutoConversionBtcAddress(addr)
+          })
+          .finally(() => setIsAutoConversionLoading(false))
+      }
+    },
+    [autoConversionBtcAddress, isAutoConversionLoading],
+  )
+
   const { isAuthenticated } = useAuthentication()
 
   useEffect(() => {
     if (isAuthenticated) {
       const principal = Principal.from(authState.getUserIdData().publicKey)
-      btcDepositService.generateAddress(principal)
       fetchBtcAddress()
+      fetchAutoConversionAddress(principal)
     }
-  }, [isAuthenticated, fetchBtcAddress])
+  }, [isAuthenticated, fetchBtcAddress, fetchAutoConversionAddress])
 
   useBTCDepositsToMintCKBTCListener(
     isAuthenticated
@@ -55,7 +73,12 @@ export const BtcAddressProvider = ({
 
   return (
     <BtcAddressContext.Provider
-      value={{ btcAddress, isBtcAddressLoading, fetchBtcAddress }}
+      value={{
+        btcAddress,
+        isBtcAddressLoading,
+        autoConversionBtcAddress,
+        fetchBtcAddress,
+      }}
     >
       {children}
     </BtcAddressContext.Provider>

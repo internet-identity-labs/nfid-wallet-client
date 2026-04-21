@@ -66,7 +66,13 @@ describe("ft test suite", () => {
       jest
         .spyOn(ethSepoliaErc20Service as any, "getTokensList")
         .mockResolvedValue([])
-
+      jest
+        .spyOn(exchangeRateService as any, "usdPriceForICRC1")
+        .mockResolvedValue({
+          value: BigNumber(0.1),
+          dayChangePercent: "0",
+          dayChangePercentPositive: true,
+        })
       jest
         .spyOn(icrc1StorageService as any, "getICRC1Canisters")
         .mockResolvedValue([

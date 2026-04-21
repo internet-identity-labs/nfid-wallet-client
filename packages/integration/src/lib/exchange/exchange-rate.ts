@@ -96,7 +96,7 @@ export class ExchangeRateService {
         dayChangePercentPositive: BigNumber(token.priceDayChange).gte(0),
       }
     } catch (e) {
-      console.error("usdPriceForICRC1 error: ", e)
+      console.debug("usdPriceForICRC1 error: ", e)
       return null
     }
   }

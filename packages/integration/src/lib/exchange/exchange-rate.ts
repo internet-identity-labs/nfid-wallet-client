@@ -44,7 +44,7 @@ export class ExchangeRateService {
 
   @Cache(integrationCache, { ttl: 120 })
   async getAllIcpTokens() {
-    const responseJson = await fetch("https://web2.icptokens.net/api/tokens")
+    const responseJson = await fetch("/icptokens/tokens")
     if (!responseJson.ok) return undefined
     const tokens: Array<{
       canister_id: string

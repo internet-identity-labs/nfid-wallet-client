@@ -171,7 +171,6 @@ const setupCSP = () => {
         "https://toniq.io",
         "https://stat.yuku.app",
         "https://memecake.io",
-        "https://web2.icptokens.net/api/tokens",
         "https://accounts.google.com/gsi/",
         "https://sepolia.infura.io/",
         "https://mainnet.infura.io/",
@@ -397,6 +396,13 @@ const config = composePlugins(
           secure: false,
           changeOrigin: true,
           pathRewrite: { "^/ic-explorer": "" },
+        },
+        {
+          context: ["/icptokens"],
+          target: "https://icptokens.net",
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/icptokens": "/api" },
         },
         {
           context: ["/api"],

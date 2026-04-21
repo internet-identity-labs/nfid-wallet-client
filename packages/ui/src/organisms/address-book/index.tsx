@@ -314,7 +314,7 @@ export const AddressBook: FC<AddressBookProps> = ({
               id={"approveRemoving"}
               type="red"
               isSmall
-              className="w-[100px] h-full"
+              className="min-w-[100px] h-full"
               onClick={submit}
               disabled={isRemoving}
               icon={isRemoving ? <Spinner /> : null}

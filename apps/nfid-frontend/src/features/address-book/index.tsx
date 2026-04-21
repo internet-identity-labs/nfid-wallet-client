@@ -1,6 +1,6 @@
 import { ProfileTemplate } from "@nfid-frontend/ui"
 import { AddressBook } from "packages/ui/src/organisms/address-book"
-import { useSWR } from "@nfid/swr"
+import { useSWR, mutate } from "@nfid/swr"
 import {
   addressBookFacade,
   UserAddressSaveRequest,
@@ -16,11 +16,15 @@ type AddressBookPageProps = {
 
 const AddressBookPage: FC<AddressBookPageProps> = memo(
   ({ walletTheme, setWalletTheme }) => {
-    const create = (request: UserAddressSaveRequest) =>
-      addressBookFacade.save(request)
+    const create = async (request: UserAddressSaveRequest) => {
+      await addressBookFacade.save(request)
+      await mutate("addressBook")
+    }
 
-    const update = (request: UserAddressUpdateRequest) =>
-      addressBookFacade.update(request)
+    const update = async (request: UserAddressUpdateRequest) => {
+      await addressBookFacade.update(request)
+      await mutate("addressBook")
+    }
 
     const remove = (id: string) => addressBookFacade.delete(id)
 

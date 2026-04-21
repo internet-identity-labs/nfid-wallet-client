@@ -1,6 +1,6 @@
 import toaster from "packages/ui/src/atoms/toast"
 import { TransferNFTUi } from "packages/ui/src/organisms/send-receive/components/send-nft"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 
 import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
@@ -38,6 +38,10 @@ import { ethSepoliaService } from "frontend/integration/ethereum/eth/testnetwork
 import { baseSepoliaService } from "frontend/integration/ethereum/base/testnetwork/base-sepolia.service"
 import { arbSepoliaService } from "frontend/integration/ethereum/arbitrum/testnetwork/arb-sepolia.service"
 import { polygonAmoyService } from "frontend/integration/ethereum/polygon/testnetwork/pol-amoy.service"
+import { useNavigate, useParams } from "react-router-dom"
+import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { useActor } from "@xstate/react"
+import { ProfileContext } from "frontend/provider"
 
 const EVM_SERVICE_MAP: Partial<Record<number, EVMService>> = {
   [ChainId.ETH]: ethereumService,
@@ -71,6 +75,10 @@ export const TransferNFT = ({
   const [fee, setFee] = useState<FeeResponse | undefined>()
   const [isFeeLoading, setIsFeeLoading] = useState(false)
   const [feeError, setFeeError] = useState<string | undefined>()
+  const { tokenId } = useParams()
+  const navigate = useNavigate()
+  const { transferService } = useContext(ProfileContext)
+  const [, send] = useActor(transferService)
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -189,6 +197,21 @@ export const TransferNFT = ({
     }
   }, [selectedNFT, to, ethAddress])
 
+  const successHandler = () => {
+    setSuccessMessage(`Transaction ${selectedNFT?.getTokenName()} successful`)
+    setStatus(SendStatus.COMPLETED)
+
+    if (Boolean(tokenId)) {
+      send({ type: "ASSIGN_SELECTED_FT", data: undefined })
+      send({ type: "ASSIGN_SELECTED_TARGET_FT", data: "" })
+      send({ type: "ASSIGN_SELECTED_NFT", data: "" })
+      send({ type: "CHANGE_TOKEN_TYPE", data: "ft" })
+      send({ type: "CHANGE_DIRECTION", data: null })
+      send({ type: "HIDE" })
+      navigate(`${ProfileConstants.base}/${ProfileConstants.nfts}`)
+    }
+  }
+
   const submit = useCallback(
     async (values: { to: string }) => {
       if (!selectedNFT) return toaster.error("No selected NFT")
@@ -219,12 +242,7 @@ export const TransferNFT = ({
             maxPriorityFeePerGas: ethFee.getMaxPriorityFeePerGas(),
             baseFeePerGas: ethFee.getBaseFeePerGas(),
           })
-          .then(() => {
-            setSuccessMessage(
-              `Transaction ${selectedNFT.getTokenName()} successful`,
-            )
-            setStatus(SendStatus.COMPLETED)
-          })
+          .then(successHandler)
           .catch((e) => {
             console.error(
               `Transfer error: ${
@@ -241,12 +259,7 @@ export const TransferNFT = ({
       setIsSuccessOpen(true)
 
       transferEXT(selectedNFT.getTokenId(), identity, values.to)
-        .then(() => {
-          setSuccessMessage(
-            `Transaction ${selectedNFT?.getTokenName()} successful`,
-          )
-          setStatus(SendStatus.COMPLETED)
-        })
+        .then(successHandler)
         .catch((e) => {
           console.error(
             `Transfer error: ${

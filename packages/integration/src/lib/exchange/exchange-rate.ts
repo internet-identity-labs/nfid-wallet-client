@@ -44,7 +44,7 @@ export class ExchangeRateService {
 
   @Cache(integrationCache, { ttl: 120 })
   async getAllIcpTokens() {
-    const responseJson = await fetch("https://web2.icptokens.net/api/tokens")
+    const responseJson = await fetch(`/icptokens/tokens`)
     if (!responseJson.ok) return undefined
     const tokens: Array<{
       canister_id: string
@@ -96,7 +96,7 @@ export class ExchangeRateService {
         dayChangePercentPositive: BigNumber(token.priceDayChange).gte(0),
       }
     } catch (e) {
-      console.error("usdPriceForICRC1 error: ", e)
+      console.debug("usdPriceForICRC1 error: ", e)
       return null
     }
   }

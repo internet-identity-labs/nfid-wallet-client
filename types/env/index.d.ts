@@ -55,3 +55,4 @@ declare const FEE_PERCENT: string
 declare const FEE_ADDRESS: string
 declare const ALCHEMY_API_KEY: string
 declare const IC_EXPLORER_API_URL: string
+declare const ICP_TOKENS_API_URL: string

@@ -63,6 +63,9 @@ const icExplorerApiUrl =
     ? "https://api.icexplorer.io/api/dashboard/search"
     : "/ic-explorer/api/dashboard/search"
 
+const icpTokensApiUrl =
+  isExampleBuild || isProduction ? "https://icptokens.net/api/tokens" : "/icp-tokens/api/tokens"
+
 const removeAutoprefixerPlugin = (plugins) => {
   if (!Array.isArray(plugins)) {
     return plugins
@@ -171,7 +174,7 @@ const setupCSP = () => {
         "https://toniq.io",
         "https://stat.yuku.app",
         "https://memecake.io",
-        "https://web2.icptokens.net/api/tokens",
+        "https://icptokens.net/api/tokens",
         "https://accounts.google.com/gsi/",
         "https://sepolia.infura.io/",
         "https://mainnet.infura.io/",
@@ -344,6 +347,7 @@ const config = composePlugins(
     const canisterEnv = {
       ...(isExampleBuild ? {} : serviceConfig),
       IC_EXPLORER_API_URL: JSON.stringify(icExplorerApiUrl),
+      ICP_TOKENS_API_URL: JSON.stringify(icpTokensApiUrl),
     }
 
     config.plugins.push(
@@ -397,6 +401,13 @@ const config = composePlugins(
           secure: false,
           changeOrigin: true,
           pathRewrite: { "^/ic-explorer": "" },
+        },
+        {
+          context: ["/icp-tokens"],
+          target: "https://icptokens.net",
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/icp-tokens": "" },
         },
         {
           context: ["/api"],

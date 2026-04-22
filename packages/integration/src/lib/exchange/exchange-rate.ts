@@ -46,8 +46,8 @@ export class ExchangeRateService {
   async getAllIcpTokens() {
     const TOKENS_API_BASE =
       FRONTEND_MODE === "development"
-        ? "https://icptokens.net/api"
-        : "/icptokens"
+        ? "/icptokens"
+        : "https://icptokens.net/api"
 
     const responseJson = await fetch(`${TOKENS_API_BASE}/tokens`)
     if (!responseJson.ok) return undefined

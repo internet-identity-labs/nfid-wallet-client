@@ -171,7 +171,7 @@ const setupCSP = () => {
         "https://toniq.io",
         "https://stat.yuku.app",
         "https://memecake.io",
-        "https://icptokens.net/api/tokens",
+        "https://icptokens.net",
         "https://accounts.google.com/gsi/",
         "https://sepolia.infura.io/",
         "https://mainnet.infura.io/",

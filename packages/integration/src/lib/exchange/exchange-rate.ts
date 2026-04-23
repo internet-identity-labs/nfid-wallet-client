@@ -44,16 +44,11 @@ export class ExchangeRateService {
 
   @Cache(integrationCache, { ttl: 120 })
   async getAllIcpTokens() {
-    const responseJson = await fetch("https://web2.icptokens.net/api/tokens")
-    if (!responseJson.ok) return undefined
-    const tokens: Array<{
-      canister_id: string
-      metrics: { price: { usd: string }; change: { "24h": { usd: string } } }
-    }> = await responseJson.json()
+    const tokens = await this.exchangeTokenNodeActor.getAllTokens()
     return tokens.map((el) => ({
-      address: el.canister_id,
-      price: Number(el.metrics.price.usd),
-      priceDayChange: Number(el.metrics.change["24h"].usd),
+      address: el.address,
+      price: el.priceUSD,
+      priceDayChange: el.priceUSDChange,
     }))
   }
 

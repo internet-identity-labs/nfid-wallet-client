@@ -44,11 +44,20 @@ export class ExchangeRateService {
 
   @Cache(integrationCache, { ttl: 120 })
   async getAllIcpTokens() {
-    const tokens = await this.exchangeTokenNodeActor.getAllTokens()
-    return tokens.map((el) => ({
-      address: el.address,
-      price: el.priceUSD,
-      priceDayChange: el.priceUSDChange,
+    const response = await fetch("https://api.icpswap.com/info/token/all")
+    if (!response.ok) return undefined
+    const json: {
+      code: number
+      data: Array<{
+        tokenLedgerId: string
+        price: string
+        priceChange24H: string
+      }>
+    } = await response.json()
+    return json.data.map((el) => ({
+      address: el.tokenLedgerId,
+      price: Number(el.price),
+      priceDayChange: Number(el.priceChange24H),
     }))
   }
 
@@ -65,22 +74,17 @@ export class ExchangeRateService {
 
       if (!token) {
         const tokenStorageCanister = await this.getTokenStorageCanister(ledger)
-        if (!tokenStorageCanister) {
-          return null
-        }
+        if (!tokenStorageCanister) return null
         const actorStorage = actorBuilder<ServiceToken>(
           tokenStorageCanister,
           IDL_TOKEN,
         )
-
         try {
           const result: PublicTokenOverview =
             await actorStorage.getToken(ledger)
           if (result.priceUSD === undefined) return null
-          return {
-            value: BigNumber(result.priceUSD),
-          }
-        } catch (e) {
+          return { value: BigNumber(result.priceUSD) }
+        } catch {
           return null
         }
       }

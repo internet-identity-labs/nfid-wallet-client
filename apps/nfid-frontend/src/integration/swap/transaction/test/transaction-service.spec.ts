@@ -4,12 +4,10 @@ import {
   Ed25519KeyIdentity,
 } from "@dfinity/identity"
 import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
-import { KongSwapTransactionImpl } from "src/integration/swap/kong/impl/kong-swap-transaction-impl"
 import { SwapStage } from "src/integration/swap/types/enums"
 
 import { authState } from "@nfid/integration"
 
-import { IcpSwapTransactionImpl } from "../../icpswap/impl/icp-swap-transaction-impl"
 import { SwapTransaction as SwapTransactionCandid } from "@nfid/integration/_ic_api/swap_trs_storage.d"
 import { SwapTransactionService } from "../transaction-service"
 
@@ -49,7 +47,7 @@ describe("SwapTransactionService", () => {
       stage: { Withdraw: null },
       end_time: [],
       transfer_nfid_id: [],
-      swap_provider: { Kong: null },
+      swap_provider: { IcpSwap: null },
     }
 
     const mockCompletedTransaction: SwapTransactionCandid = {
@@ -67,7 +65,7 @@ describe("SwapTransactionService", () => {
       stage: { Completed: null },
       end_time: [],
       transfer_nfid_id: [],
-      swap_provider: { Kong: null },
+      swap_provider: { IcpSwap: null },
     }
 
     const mockFailedTransaction: SwapTransactionCandid = {
@@ -85,7 +83,7 @@ describe("SwapTransactionService", () => {
       stage: { Withdraw: null } as any,
       end_time: [],
       transfer_nfid_id: [],
-      swap_provider: { Kong: null },
+      swap_provider: { IcpSwap: null },
     }
 
     const delegationIdentity = DelegationIdentity.fromDelegation(
@@ -108,7 +106,6 @@ describe("SwapTransactionService", () => {
 
     const result = await service.getTransactions()
 
-    expect(result[0]).toBeInstanceOf(KongSwapTransactionImpl)
     expect(result[0].getIsLoading()).toBe(true)
     expect(result[1].getIsLoading()).toBe(false)
     expect(result[2].getIsLoading()).toBe(false)

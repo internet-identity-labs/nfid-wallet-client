@@ -4,7 +4,6 @@ import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 
 import { Error as ErrorSwap } from "./icpswap/idl/SwapPool.d"
 
-//TODO make this ICP/Kong Specific
 export interface SwapTransaction {
   getProvider(): SwapName
 

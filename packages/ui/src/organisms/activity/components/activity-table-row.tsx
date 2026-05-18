@@ -62,28 +62,6 @@ export const getTooltipAndButtonText = (
 
   if (stage === SwapStage.Completed) return
 
-  if (
-    transaction.getSwapName() === SwapName.Kongswap &&
-    swapStages.has(stage)
-  ) {
-    return {
-      buttonText: "Contact support",
-      tooltipTitle: "swap",
-      tooltipMessage: "Please contact support.",
-    }
-  }
-
-  if (
-    transaction.getSwapName() === SwapName.Kongswap &&
-    withdrawStages.has(stage)
-  ) {
-    return {
-      buttonText: "Complete swap",
-      tooltipTitle: "swap",
-      tooltipMessage: "Continue your swap.",
-    }
-  }
-
   if (stage === SwapStage.Deposit || stage === SwapStage.TransferSwap) {
     return {
       buttonText: "Cancel swap",

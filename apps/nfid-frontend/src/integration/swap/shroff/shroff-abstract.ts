@@ -1,9 +1,8 @@
-import { ActorSubclass, SignIdentity } from "@dfinity/agent"
+import { SignIdentity } from "@dfinity/agent"
 import { Principal } from "@dfinity/principal"
 import BigNumber from "bignumber.js"
 import { DepositError, WithdrawError } from "src/integration/swap/errors/types"
-import { Account, ApproveArgs } from "src/integration/swap/kong/idl/icrc1.d"
-import type { _SERVICE as ICRC1ServiceIDL } from "src/integration/swap/kong/idl/icrc1.d"
+
 import { Quote } from "src/integration/swap/quote"
 import { Shroff } from "src/integration/swap/shroff"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
@@ -11,7 +10,7 @@ import { swapTransactionService } from "src/integration/swap/transaction/transac
 import { userPrefService } from "src/integration/user-preferences/user-pref-service"
 
 import { hasOwnProperty, ICRC1TypeOracle, TransferArg } from "@nfid/integration"
-import { TRIM_ZEROS } from "@nfid/integration/token/constants"
+import { Account } from "@dfinity/ledger-icp"
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 
 import type { SourceInputCalculator } from "src/integration/swap/calculator/calculator"
@@ -149,57 +148,57 @@ export abstract class ShroffAbstract implements Shroff {
     })
   }
 
-  protected abstract getICRCActor(): ActorSubclass<ICRC1ServiceIDL>
+  // protected abstract getICRCActor(): ActorSubclass<ICRC1ServiceIDL>
 
-  protected async icrc2approve(rootCanister: string): Promise<bigint> {
-    try {
-      const actorICRC2 = this.getICRCActor()
+  // protected async icrc2approve(rootCanister: string): Promise<bigint> {
+  //   try {
+  //     const actorICRC2 = this.getICRCActor()
 
-      const spender: Account = {
-        owner: Principal.fromText(rootCanister),
-        subaccount: [],
-      }
+  //     const spender: Account = {
+  //       owner: Principal.fromText(rootCanister),
+  //       subaccount: [],
+  //     }
 
-      const icrc2_approve_args: ApproveArgs = {
-        from_subaccount: [],
-        spender,
-        fee: [],
-        memo: [],
-        amount: BigInt(
-          this.requestedQuote!.getSourceSwapAmount()
-            .plus(Number(this.source.fee))
-            .toFixed(this.source.decimals)
-            .replace(TRIM_ZEROS, ""),
-        ),
-        created_at_time: [],
-        expected_allowance: [],
-        expires_at: [
-          {
-            timestamp_nanos: BigInt(Date.now() * 1_000_000 + 60_000_000_000),
-          },
-        ],
-      }
+  //     const icrc2_approve_args: ApproveArgs = {
+  //       from_subaccount: [],
+  //       spender,
+  //       fee: [],
+  //       memo: [],
+  //       amount: BigInt(
+  //         this.requestedQuote!.getSourceSwapAmount()
+  //           .plus(Number(this.source.fee))
+  //           .toFixed(this.source.decimals)
+  //           .replace(TRIM_ZEROS, ""),
+  //       ),
+  //       created_at_time: [],
+  //       expected_allowance: [],
+  //       expires_at: [
+  //         {
+  //           timestamp_nanos: BigInt(Date.now() * 1_000_000 + 60_000_000_000),
+  //         },
+  //       ],
+  //     }
 
-      const icrc2approve = await actorICRC2.icrc2_approve(icrc2_approve_args)
+  //     const icrc2approve = await actorICRC2.icrc2_approve(icrc2_approve_args)
 
-      if (hasOwnProperty(icrc2approve, "Err")) {
-        throw new ContactSupportError(JSON.stringify(icrc2approve.Err))
-      }
+  //     if (hasOwnProperty(icrc2approve, "Err")) {
+  //       throw new ContactSupportError(JSON.stringify(icrc2approve.Err))
+  //     }
 
-      return BigInt(icrc2approve.Ok)
-    } catch (e) {
-      console.error("Deposit error: " + e)
-      throw new ContactSupportError("Deposit error: " + e)
-    }
-  }
+  //     return BigInt(icrc2approve.Ok)
+  //   } catch (e) {
+  //     console.error("Deposit error: " + e)
+  //     throw new ContactSupportError("Deposit error: " + e)
+  //   }
+  // }
 
-  protected async icrc2supported(): Promise<boolean> {
-    const actorICRC2 = this.getICRCActor()
+  // protected async icrc2supported(): Promise<boolean> {
+  //   const actorICRC2 = this.getICRCActor()
 
-    return actorICRC2.icrc1_supported_standards().then((res) => {
-      return res
-        .map((standard) => standard.name)
-        .some((name) => name === "ICRC-2")
-    })
-  }
+  //   return actorICRC2.icrc1_supported_standards().then((res) => {
+  //     return res
+  //       .map((standard) => standard.name)
+  //       .some((name) => name === "ICRC-2")
+  //   })
+  // }
 }

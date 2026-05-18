@@ -52,9 +52,13 @@ export const Discovery: FC<DiscoveryProps> = ({ discoveryApps, isLoading }) => {
     const filtered = search
       ? discoveryApps.filter(
           (app) =>
-            app.status !== "Spam" && app.name?.toLowerCase().includes(query),
+            app.status !== "Spam" &&
+            app.status !== "New" &&
+            app.name?.toLowerCase().includes(query),
         )
-      : discoveryApps.filter((app) => app.status !== "Spam")
+      : discoveryApps.filter(
+          (app) => app.status !== "Spam" && app.status !== "New",
+        )
 
     if (sorting === DiscoverySorting.NAME) {
       filtered.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""))

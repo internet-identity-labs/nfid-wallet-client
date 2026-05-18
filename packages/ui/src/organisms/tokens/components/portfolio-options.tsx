@@ -61,6 +61,33 @@ export function PortfolioOptions({
         <div className="bg-gray-50 dark:bg-zinc-800 py-1 px-2.5 rounded-[12px]">
           <div className="h-[40px] flex items-center gap-2">
             <div className="w-[24px] h-[24px] bg-white dark:bg-zinc-900 rounded-[8px]">
+              {getNetworkIcon(ChainId.BTC, isDarkTheme, 24)}
+            </div>
+            <span className="dark:text-white">Bitcoin</span>
+            <div className="ml-auto">
+              <Toggle isDisabled={true} isChecked={true} />
+            </div>
+          </div>
+          <div className="h-[40px] flex items-center gap-2">
+            <div className="w-[24px] h-[24px] bg-white dark:bg-zinc-900 rounded-[8px]">
+              {getNetworkIcon(ChainId.ETH, isDarkTheme, 24)}
+            </div>
+            <span className="dark:text-white">Ethereum</span>
+            <div className="ml-auto">
+              <Toggle isDisabled={true} isChecked={true} />
+            </div>
+          </div>
+          <div className="h-[40px] flex items-center gap-2">
+            <div className="w-[24px] h-[24px] bg-white dark:bg-zinc-900 rounded-[8px]">
+              {getNetworkIcon(ChainId.ICP, isDarkTheme, 24)}
+            </div>
+            <span className="dark:text-white">Internet Computer</span>
+            <div className="ml-auto">
+              <Toggle isDisabled={true} isChecked={true} />
+            </div>
+          </div>
+          <div className="h-[40px] flex items-center gap-2">
+            <div className="w-[24px] h-[24px] bg-white dark:bg-zinc-900 rounded-[8px]">
               {getNetworkIcon(ChainId.ARB, isDarkTheme, 24)}
             </div>
             <span className="dark:text-white">Arbitrum</span>

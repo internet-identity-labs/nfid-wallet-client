@@ -4,7 +4,7 @@ import React from "react"
 import { Tooltip } from "@nfid-frontend/ui"
 
 interface ToggleProps {
-  onToggle: (state: boolean) => void
+  onToggle?: (state: boolean) => void
   isChecked?: boolean
   isDisabled?: boolean
   tooltip?: string
@@ -25,7 +25,7 @@ export const Toggle: React.FC<ToggleProps> = ({
     >
       <input
         type="checkbox"
-        onChange={(e) => onToggle(e.target.checked)}
+        onChange={(e) => onToggle?.(e.target.checked)}
         checked={isChecked}
         className="sr-only peer"
       />

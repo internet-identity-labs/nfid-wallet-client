@@ -1,4 +1,4 @@
-export const JEST_GLOBALS = {
+module.exports.JEST_GLOBALS = {
   Uint8Array,
   ArrayBuffer,
   INTERNET_IDENTITY_CANISTER_ID: "nprnb-waaaa-aaaaj-qax4a-cai",

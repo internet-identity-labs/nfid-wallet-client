@@ -1,4 +1,5 @@
-import { JEST_GLOBALS } from "../../config/jest-globals"
+ 
+const { JEST_GLOBALS } = require("../../config/jest-globals.cjs")
 
 export default {
   displayName: "integration",
@@ -13,7 +14,7 @@ export default {
     ],
   },
   moduleNameMapper: {
-    "^uuid$": "<rootDir>/../../__mocks__/uuid.js",
+    "^uuid$": "<rootDir>/../../__mocks__/uuid.cjs",
   },
   moduleFileExtensions: ["ts", "js", "html"],
   coverageDirectory: "../../coverage/packages/integration",

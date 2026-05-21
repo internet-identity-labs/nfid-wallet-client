@@ -1,33 +1,42 @@
-const defaultTheme = require("tailwindcss/defaultTheme")
-const { join } = require("path")
+import defaultTheme from "tailwindcss/defaultTheme"
+import { join, dirname } from "path"
+import { fileURLToPath } from "url"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
 const ANIMATION_DURATION = 1
 const HIDE_ANIMATION_DURATION = 0.3
 
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import forms from "../../packages/ui-tailwind-core/src/forms/index.js"
+import uiTailwindCore from "../../packages/ui-tailwind-core/src/index.js"
+import tailwindRadix from "tailwindcss-radix"
+import tailwindScrollbar from "tailwind-scrollbar"
+
+export default {
   content: [
-    // App runtime sources
     join(__dirname, "src/**/*.{ts,tsx,html}"),
     join(__dirname, "public/**/*.html"),
 
-    // Runtime UI packages used by the app
     join(__dirname, "../../packages/ui/src/**/*.{ts,tsx,html}"),
     join(__dirname, "../../packages/ui-tailwind-core/src/**/*.{ts,tsx,html}"),
 
-    // Exclude non-runtime/test-only files to reduce scan churn
     "!" + join(__dirname, "src/**/*.spec.{ts,tsx}"),
     "!" + join(__dirname, "src/**/*.test.{ts,tsx}"),
     "!" + join(__dirname, "src/**/*.stories.{ts,tsx,mdx}"),
     "!" + join(__dirname, "../../apps/nfid-frontend-e2e/**"),
     "!" + join(__dirname, "../../**/.storybook/**"),
   ],
+
   darkMode: "class",
+
   plugins: [
-    require("../../packages/ui-tailwind-core/src/forms"),
-    require("../../packages/ui-tailwind-core"),
-    require("tailwindcss-radix")(),
-    require("tailwind-scrollbar")({ nocompatible: true }),
+    forms,
+    uiTailwindCore,
+    tailwindRadix(),
+    tailwindScrollbar({ nocompatible: true }),
   ],
+
   theme: {
     extend: {
       fontFamily: {

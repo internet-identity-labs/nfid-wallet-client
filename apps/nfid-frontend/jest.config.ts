@@ -1,4 +1,6 @@
-import { JEST_GLOBALS } from "../../config/jest-globals"
+// require() used intentionally: Jest loads this file as CJS via ts-jest
+ 
+const { JEST_GLOBALS } = require("../../config/jest-globals.cjs")
 const config = {
   displayName: "nfid-frontend",
   preset: "../../jest.preset.js",
@@ -27,10 +29,10 @@ const config = {
   moduleDirectories: ["node_modules"],
   moduleNameMapper: {
     "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|did)$":
-      "<rootDir>/mocks/fileMock.js",
-    "\\.(css|less)$": "<rootDir>/mocks/fileMock.js",
+      "<rootDir>/mocks/fileMock.cjs",
+    "\\.(css|less)$": "<rootDir>/mocks/fileMock.cjs",
     "^frontend/(.*)$": "<rootDir>/src/$1",
-    "^uuid$": "<rootDir>/../../__mocks__/uuid.js",
+    "^uuid$": "<rootDir>/../../__mocks__/uuid.cjs",
   },
   globalSetup: "./global-setup.js",
 }

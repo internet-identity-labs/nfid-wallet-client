@@ -59,7 +59,7 @@
       }
     },
     "@nx/eslint:lint": {
-      "inputs": ["default", "{workspaceRoot}/eslint.config.cjs"],
+      "inputs": ["default", "{workspaceRoot}/eslint.config.js"],
       "cache": true
     }
   },

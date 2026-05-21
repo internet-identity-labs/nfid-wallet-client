@@ -1,11 +1,19 @@
-const { JEST_GLOBALS } = require("../../config/jest-globals.ts")
+// require() used intentionally: Jest loads this file as CJS via babel-jest
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { JEST_GLOBALS } = require("../../config/jest-globals.cjs")
 
-module.exports = {
+export default {
   displayName: "nfid-demo",
   preset: "../../jest.preset.js",
   transform: {
     "^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "@nx/react/plugins/jest",
-    "^.+\\.[tj]sx?$": ["babel-jest", { presets: ["@nx/react/babel"] }],
+
+    "^.+\\.[tj]sx?$": [
+      "babel-jest",
+      {
+        presets: ["@nx/react/babel"],
+      },
+    ],
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   coverageDirectory: "../../coverage/apps/nfid-demo",

@@ -1,4 +1,9 @@
 import type { StorybookConfig } from "@storybook/react-webpack5"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const config: StorybookConfig = {
   core: {},
@@ -25,14 +30,14 @@ const config: StorybookConfig = {
   webpackFinal: async (config) => {
     config.resolve!.fallback = {
       ...config.resolve!.fallback,
-      crypto: require.resolve("crypto-browserify"),
-      stream: require.resolve("stream-browserify"),
-      assert: require.resolve("assert/"),
-      http: require.resolve("stream-http"),
-      https: require.resolve("https-browserify"),
-      os: require.resolve("os-browserify/browser"),
-      url: require.resolve("url/"),
-      vm: require.resolve("vm-browserify"),
+      crypto: "crypto-browserify",
+      stream: "stream-browserify",
+      assert: "assert/",
+      http: "stream-http",
+      https: "https-browserify",
+      os: "os-browserify/browser",
+      url: "url/",
+      vm: "vm-browserify",
     }
 
     config.module!.rules!.push({
@@ -45,7 +50,7 @@ const config: StorybookConfig = {
   },
 }
 
-module.exports = config
+export default config
 
 // To customize your webpack configuration you can use the webpackFinal field.
 // Check https://storybook.js.org/docs/react/builders/webpack#extending-storybooks-webpack-config

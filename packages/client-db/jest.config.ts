@@ -1,4 +1,5 @@
-import { JEST_GLOBALS } from "../../config/jest-globals"
+ 
+const { JEST_GLOBALS } = require("../../config/jest-globals.cjs")
 
 export default {
   displayName: "client-db",

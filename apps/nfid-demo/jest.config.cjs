@@ -1,8 +1,6 @@
-// require() used intentionally: Jest loads this file as CJS via babel-jest
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { JEST_GLOBALS } = require("../../config/jest-globals.cjs")
 
-export default {
+module.exports = {
   displayName: "nfid-demo",
   preset: "../../jest.preset.js",
   transform: {

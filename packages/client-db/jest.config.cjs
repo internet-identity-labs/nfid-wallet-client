@@ -1,7 +1,6 @@
- 
 const { JEST_GLOBALS } = require("../../config/jest-globals.cjs")
 
-export default {
+module.exports = {
   displayName: "client-db",
   preset: "../../jest.preset.js",
   globals: { ...JEST_GLOBALS },

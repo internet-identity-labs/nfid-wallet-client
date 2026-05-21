@@ -12,6 +12,8 @@
   ],
   "exclude": [
     "jest.config.ts",
+    "eslint.config.js",
+    "eslint.config.cjs",
     "**/*.spec.ts",
     "**/*.test.ts",
     "**/*.spec.tsx",

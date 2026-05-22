@@ -1,7 +1,7 @@
 {
   "name": "@internet-identity-labs/nfid-frontend",
   "engines": {
-    "node": "^22.10.0"
+    "node": "22.20.0"
   },
   "type": "module",
   "browserslist": {
@@ -140,7 +140,6 @@
     "@storybook/core-server": "8.6.17",
     "@storybook/node-logger": "8.6.17",
     "@storybook/preset-create-react-app": "10.1.0",
-    "@storybook/react": "10.1.0",
     "@storybook/react-webpack5": "10.1.0",
     "@storybook/test": "8.6.17",
     "@storybook/theming": "8.6.17",

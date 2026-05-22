@@ -13,7 +13,6 @@
   "exclude": [
     "jest.config.ts",
     "eslint.config.js",
-    "eslint.config.cjs",
     "tailwind.config.js",
     "**/*.spec.ts",
     "**/*.test.ts",

@@ -5,7 +5,7 @@ import { SubmitHandler, useForm } from "react-hook-form"
 
 import { Button, Input, phoneRules } from "@nfid-frontend/ui"
 
-import ProfileTemplate from "../../templates/profile-template/Template"
+import ProfileTemplate from "../../../templates/profile-template/Template"
 
 interface IProfileAddPhoneNumber {
   responseError?: string

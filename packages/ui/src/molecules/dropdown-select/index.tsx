@@ -4,7 +4,7 @@ import { IoIosSearch } from "react-icons/io"
 
 import useClickOutside from "../../utils/use-click-outside"
 import { Input } from "../input"
-import Arrow from "./arrow.svg"
+import Arrow from "./arrow.svg?url"
 import { DropdownOption } from "./option"
 
 export interface IOption {

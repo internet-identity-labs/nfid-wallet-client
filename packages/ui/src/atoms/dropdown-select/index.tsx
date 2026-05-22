@@ -7,8 +7,8 @@ import { useDarkTheme } from "frontend/hooks"
 
 import { Input } from "../../molecules/input"
 import useClickOutside from "../../utils/use-click-outside"
-import ArrowWhite from "./arrow-white.svg"
-import Arrow from "./arrow.svg"
+import ArrowWhite from "./arrow-white.svg?url"
+import Arrow from "./arrow.svg?url"
 import { DropdownSelectOption } from "./option"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 

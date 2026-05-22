@@ -1,4 +1,4 @@
-import { Meta, StoryFn } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react-webpack5"
 
 import { EmptyCard, IEmptyCard } from "."
 import { ReactComponent as Policies } from "../../atoms/icons/policies.svg"

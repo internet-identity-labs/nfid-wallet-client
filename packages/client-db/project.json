@@ -23,7 +23,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "packages/client-db/jest.config.cjs"
+        "jestConfig": "packages/client-db/jest.config.ts"
       }
     }
   }

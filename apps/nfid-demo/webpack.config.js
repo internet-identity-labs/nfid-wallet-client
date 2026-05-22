@@ -118,7 +118,46 @@ const removeAutoprefixerFromRule = (rule) => {
   return rule
 }
 
-export default composePlugins(withNx(), withReact({ svgr: true }), (config) => {
+function withSvgr() {
+  return (config) => {
+    config.module.rules.forEach((r) => {
+      if (!r || typeof r !== "object" || !(r.test instanceof RegExp)) return
+      if (r.test.test("test.svg")) {
+        r.exclude = Array.isArray(r.exclude)
+          ? [...r.exclude, /\.svg$/]
+          : [r.exclude, /\.svg$/].filter(Boolean)
+      }
+    })
+    config.module.rules.push({
+      test: /\.svg$/,
+      oneOf: [
+        {
+          resourceQuery: /url/,
+          type: "asset/resource",
+          generator: { filename: "static/media/[name].[hash][ext]" },
+        },
+        {
+          issuer: /\.[jt]sx?$/,
+          use: [
+            {
+              loader: require.resolve("@svgr/webpack"),
+              options: {
+                svgo: false,
+                titleProp: true,
+                ref: true,
+                exportType: "named",
+                namedExport: "ReactComponent",
+              },
+            },
+          ],
+        },
+      ],
+    })
+    return config
+  }
+}
+
+export default composePlugins(withNx(), withReact(), withSvgr(), (config) => {
   config.resolve = config.resolve || {}
   config.resolve.alias = {
     ...config.resolve.alias,

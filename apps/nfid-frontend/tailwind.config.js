@@ -15,12 +15,15 @@ import tailwindScrollbar from "tailwind-scrollbar"
 
 export default {
   content: [
+    // App runtime sources
     join(__dirname, "src/**/*.{ts,tsx,html}"),
     join(__dirname, "public/**/*.html"),
 
+    // Runtime UI packages used by the app
     join(__dirname, "../../packages/ui/src/**/*.{ts,tsx,html}"),
     join(__dirname, "../../packages/ui-tailwind-core/src/**/*.{ts,tsx,html}"),
 
+    // Exclude non-runtime/test-only files to reduce scan churn
     "!" + join(__dirname, "src/**/*.spec.{ts,tsx}"),
     "!" + join(__dirname, "src/**/*.test.{ts,tsx}"),
     "!" + join(__dirname, "src/**/*.stories.{ts,tsx,mdx}"),

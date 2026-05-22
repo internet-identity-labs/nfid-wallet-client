@@ -3,7 +3,7 @@ import {
   ChainId,
   State,
 } from "@nfid/integration/token/icrc1/enum/enums"
-import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
+import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg?url"
 
 import { ETH_DECIMALS, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 import {

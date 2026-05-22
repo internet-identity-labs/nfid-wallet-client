@@ -244,319 +244,360 @@ const setupCSP = () => {
   return []
 }
 
-export default composePlugins(
-  withNx(),
-  withReact({
-    svgr: true,
-  }),
-  (config) => {
-    config.resolve = config.resolve || {}
-    config.resolve.plugins = config.resolve.plugins || []
-    config.resolve.plugins.push(
-      new TsConfigPathsPlugin({
-        configFile: path.resolve(__dirname, "tsconfig.json"),
-        extensions: [".ts", ".tsx", ".js", ".jsx"],
-        mainFields: ["module", "main"],
-      }),
-    )
+// @svgr/webpack v8 removed the pitch loader — it can no longer simultaneously export
+// a URL string as default AND a React component as ReactComponent from the same rule.
+// Solution: split into two oneOf branches:
+//   import X from "./file.svg?url"          → asset/resource (URL string) for src={}
+//   export { ReactComponent as X } from "…" → SVGR named export for <X />
+function withSvgr() {
+  return (config) => {
+    // Exclude SVG from any existing rule that would catch it (e.g. combined image/asset rule)
+    config.module.rules.forEach((r) => {
+      if (!r || typeof r !== "object" || !(r.test instanceof RegExp)) return
+      if (r.test.test("test.svg")) {
+        r.exclude = Array.isArray(r.exclude)
+          ? [...r.exclude, /\.svg$/]
+          : [r.exclude, /\.svg$/].filter(Boolean)
+      }
+    })
 
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      frontend: path.resolve(__dirname, "src"),
+    config.module.rules.push({
+      test: /\.svg$/,
+      oneOf: [
+        {
+          resourceQuery: /url/,
+          type: "asset/resource",
+          generator: { filename: "static/media/[name].[hash][ext]" },
+        },
+        {
+          issuer: /\.[jt]sx?$/,
+          use: [
+            {
+              loader: require.resolve("@svgr/webpack"),
+              options: {
+                svgo: false,
+                titleProp: true,
+                ref: true,
+                exportType: "named",
+                namedExport: "ReactComponent",
+              },
+            },
+          ],
+        },
+      ],
+    })
+
+    return config
+  }
+}
+
+export default composePlugins(withNx(), withReact(), withSvgr(), (config) => {
+  config.resolve = config.resolve || {}
+  config.resolve.plugins = config.resolve.plugins || []
+  config.resolve.plugins.push(
+    new TsConfigPathsPlugin({
+      configFile: path.resolve(__dirname, "tsconfig.json"),
+      extensions: [".ts", ".tsx", ".js", ".jsx"],
+      mainFields: ["module", "main"],
+    }),
+  )
+
+  config.resolve.alias = {
+    ...config.resolve.alias,
+    frontend: path.resolve(__dirname, "src"),
+  }
+
+  config.resolve.fallback = {
+    ...config.resolve.fallback,
+    assert: require.resolve("assert"),
+    buffer: require.resolve("buffer"),
+    events: require.resolve("events"),
+    stream: require.resolve("stream-browserify"),
+    util: require.resolve("util"),
+    https: require.resolve("https-browserify"),
+    http: require.resolve("stream-http"),
+    crypto: require.resolve("crypto-browserify"),
+    path: require.resolve("path-browserify"),
+    os: require.resolve("os-browserify/browser"),
+    vm: require.resolve("vm-browserify"),
+  }
+
+  config.resolve.modules = [
+    ...(config.resolve.modules || ["node_modules"]),
+    path.resolve(__dirname, "../../node_modules"),
+  ]
+
+  config.resolve.extensions = [".js", ".ts", ".jsx", ".tsx"]
+  config.module = config.module || { rules: [] }
+  config.module.rules = config.module.rules || []
+
+  const BABEL_EXCLUDE = /node_modules[/\\](?!(@dfinity\/ledger-icp)[/\\]).*/
+  const SOURCE_MAP_EXCLUDE = /node_modules/
+
+  const modifyBabelLoader = (rule) => {
+    if (
+      rule.loader &&
+      typeof rule.loader === "string" &&
+      rule.loader.includes("babel-loader")
+    ) {
+      rule.exclude = BABEL_EXCLUDE
+      delete rule.include
+      return rule
     }
-
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      assert: require.resolve("assert"),
-      buffer: require.resolve("buffer"),
-      events: require.resolve("events"),
-      stream: require.resolve("stream-browserify"),
-      util: require.resolve("util"),
-      https: require.resolve("https-browserify"),
-      http: require.resolve("stream-http"),
-      crypto: require.resolve("crypto-browserify"),
-      path: require.resolve("path-browserify"),
-      os: require.resolve("os-browserify/browser"),
-      vm: require.resolve("vm-browserify"),
+    if (rule.oneOf) {
+      rule.oneOf = rule.oneOf.map(modifyBabelLoader)
     }
-
-    config.resolve.modules = [
-      ...(config.resolve.modules || ["node_modules"]),
-      path.resolve(__dirname, "../../node_modules"),
-    ]
-
-    config.resolve.extensions = [".js", ".ts", ".jsx", ".tsx"]
-    config.module = config.module || { rules: [] }
-    config.module.rules = config.module.rules || []
-
-    const BABEL_EXCLUDE = /node_modules[/\\](?!(@dfinity\/ledger-icp)[/\\]).*/
-    const SOURCE_MAP_EXCLUDE = /node_modules/
-
-    const modifyBabelLoader = (rule) => {
-      if (
-        rule.loader &&
-        typeof rule.loader === "string" &&
-        rule.loader.includes("babel-loader")
-      ) {
+    if (rule.use && Array.isArray(rule.use)) {
+      const hasBabelLoader = rule.use.some(
+        (loader) =>
+          typeof loader === "object" &&
+          loader.loader &&
+          loader.loader.includes("babel-loader"),
+      )
+      if (hasBabelLoader) {
         rule.exclude = BABEL_EXCLUDE
         delete rule.include
-        return rule
       }
-      if (rule.oneOf) {
-        rule.oneOf = rule.oneOf.map(modifyBabelLoader)
-      }
-      if (rule.use && Array.isArray(rule.use)) {
-        const hasBabelLoader = rule.use.some(
-          (loader) =>
-            typeof loader === "object" &&
-            loader.loader &&
-            loader.loader.includes("babel-loader"),
-        )
-        if (hasBabelLoader) {
-          rule.exclude = BABEL_EXCLUDE
-          delete rule.include
-        }
-      }
+    }
+    return rule
+  }
+
+  const modifySourceMapLoader = (rule) => {
+    if (
+      rule.loader &&
+      typeof rule.loader === "string" &&
+      rule.loader.includes("source-map-loader")
+    ) {
+      rule.exclude = SOURCE_MAP_EXCLUDE
       return rule
     }
-
-    const modifySourceMapLoader = (rule) => {
-      if (
-        rule.loader &&
-        typeof rule.loader === "string" &&
-        rule.loader.includes("source-map-loader")
-      ) {
+    if (rule.oneOf) {
+      rule.oneOf = rule.oneOf.map(modifySourceMapLoader)
+    }
+    if (rule.use && Array.isArray(rule.use)) {
+      const hasSourceMapLoader = rule.use.some(
+        (loader) =>
+          typeof loader === "object" &&
+          loader.loader &&
+          loader.loader.includes("source-map-loader"),
+      )
+      if (hasSourceMapLoader) {
         rule.exclude = SOURCE_MAP_EXCLUDE
-        return rule
       }
-      if (rule.oneOf) {
-        rule.oneOf = rule.oneOf.map(modifySourceMapLoader)
-      }
-      if (rule.use && Array.isArray(rule.use)) {
-        const hasSourceMapLoader = rule.use.some(
-          (loader) =>
-            typeof loader === "object" &&
-            loader.loader &&
-            loader.loader.includes("source-map-loader"),
-        )
-        if (hasSourceMapLoader) {
-          rule.exclude = SOURCE_MAP_EXCLUDE
-        }
-      }
-      return rule
     }
+    return rule
+  }
 
-    config.module.rules = config.module.rules
-      .map(modifyBabelLoader)
-      .map(modifySourceMapLoader)
-      .map(removeAutoprefixerFromRule)
+  config.module.rules = config.module.rules
+    .map(modifyBabelLoader)
+    .map(modifySourceMapLoader)
+    .map(removeAutoprefixerFromRule)
 
-    config.optimization = {
-      ...config.optimization,
-      minimize: isProduction && !isExampleBuild,
-    }
+  config.optimization = {
+    ...config.optimization,
+    minimize: isProduction && !isExampleBuild,
+  }
 
-    config.plugins = config.plugins || []
-    const canisterEnv = {
-      ...(isExampleBuild ? {} : serviceConfig),
-      IC_EXPLORER_API_URL: JSON.stringify(icExplorerApiUrl),
-    }
+  config.plugins = config.plugins || []
+  const canisterEnv = {
+    ...(isExampleBuild ? {} : serviceConfig),
+    IC_EXPLORER_API_URL: JSON.stringify(icExplorerApiUrl),
+  }
 
-    config.plugins.push(
-      new webpack.DefinePlugin(canisterEnv),
-      new webpack.ProvidePlugin({
-        Buffer: [require.resolve("buffer/"), "Buffer"],
-        process: require.resolve("process/browser"),
-      }),
-      new webpack.IgnorePlugin({
-        contextRegExp: /^\.\/wordlists\/(?!english)/,
-        resourceRegExp: /bip39\/src$/,
-      }),
-      ...setupCSP(),
-    )
+  config.plugins.push(
+    new webpack.DefinePlugin(canisterEnv),
+    new webpack.ProvidePlugin({
+      Buffer: [require.resolve("buffer/"), "Buffer"],
+      process: require.resolve("process/browser"),
+    }),
+    new webpack.IgnorePlugin({
+      contextRegExp: /^\.\/wordlists\/(?!english)/,
+      resourceRegExp: /bip39\/src$/,
+    }),
+    ...setupCSP(),
+  )
 
-    config.output = {
-      ...config.output,
-      publicPath: "/",
-      crossOriginLoading: "anonymous",
-    }
+  config.output = {
+    ...config.output,
+    publicPath: "/",
+    crossOriginLoading: "anonymous",
+  }
 
-    config.devtool = !isProduction ? "eval-cheap-module-source-map" : false
+  config.devtool = !isProduction ? "eval-cheap-module-source-map" : false
 
-    const useFilesystemCache = process.env.WEBPACK_FS_CACHE === "1"
-    config.cache = useFilesystemCache
-      ? {
-          type: "filesystem",
-          buildDependencies: {
-            config: [__filename],
-          },
-        }
-      : {
-          type: "memory",
-        }
-
-    config.watchOptions = {
-      ignored: ["**/dist/**", "**/.nx/**", "**/coverage/**"],
-    }
-
-    config.ignoreWarnings = [/Failed to parse source map from/]
-
-    return {
-      ...config,
-      devServer: {
-        ...config.devServer,
-        open: false,
-        port: 9090,
-        headers: {
-          "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
+  const useFilesystemCache = process.env.WEBPACK_FS_CACHE === "1"
+  config.cache = useFilesystemCache
+    ? {
+        type: "filesystem",
+        buildDependencies: {
+          config: [__filename],
         },
-        proxy: [
-          {
-            context: ["/ic-explorer"],
-            target: "https://api.icexplorer.io",
-            secure: false,
-            changeOrigin: true,
-            pathRewrite: { "^/ic-explorer": "" },
-          },
-          {
-            context: ["/api"],
-            target: `http://0.0.0.0:${DFX_PORT}`,
-          },
-          {
-            context: ["/signin"],
-            target: process.env.AWS_SIGNIN_GOOGLE,
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/signin": "" },
-          },
-          {
-            context: ["/signin/v2"],
-            target: process.env.AWS_SIGNIN_GOOGLE_V2,
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/signin/v2": "" },
-          },
-          {
-            context: ["/symmetric"],
-            target: process.env.AWS_SYMMETRIC,
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/symmetric": "" },
-          },
-          {
-            context: ["/exchange-rate"],
-            target: process.env.AWS_EXCHANGE_RATE,
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/exchange-rate": "" },
-          },
-          {
-            context: ["/x/tweet"],
-            target: process.env.AWS_X_TWEET,
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/x/tweet": "" },
-          },
-          {
-            context: ["/signature"],
-            target: process.env.AWS_SIGNATURE_EVENT,
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/signature": "" },
-          },
-          {
-            context: ["/publickey"],
-            target: process.env.AWS_PUBLIC_KEY,
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/publickey": "" },
-          },
-          {
-            context: ["/ecdsa_register"],
-            target: process.env.AWS_ECDSA_REGISTER,
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/ecdsa_register": "" },
-          },
-          {
-            context: ["/ecdsa_register_address"],
-            target: process.env.AWS_ECDSA_REGISTER_ADDRESS,
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/ecdsa_register_address": "" },
-          },
-          {
-            context: ["/execute_candid"],
-            target: process.env.AWS_EXECUTE_CANDID,
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/execute_candid": "" },
-          },
-          {
-            context: ["/ecdsa_get_anonymous"],
-            target: process.env.AWS_ECDSA_GET_ANONYMOUS,
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/ecdsa_get_anonymous": "" },
-          },
-          {
-            context: ["/ecdsa_sign"],
-            target: process.env.AWS_ECDSA_SIGN,
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/ecdsa_sign": "" },
-          },
-          {
-            context: ["/passkey"],
-            target: process.env.AWS_PASSKEY,
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/passkey": "" },
-          },
-          {
-            context: ["/send_verification_email"],
-            target: process.env.AWS_SEND_VERIFICATION_EMAIL,
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/send_verification_email": "" },
-          },
-          {
-            context: ["/link_google_account"],
-            target: process.env.AWS_LINK_GOOGLE_ACCOUNT,
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/link_google_account": "" },
-          },
-          {
-            context: ["/check_verification"],
-            target: process.env.AWS_CHECK_VERIFICATION,
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/check_verification": "" },
-          },
-          {
-            context: ["/verify_email"],
-            target: process.env.AWS_VERIFY_EMAIL,
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/verify_email": "" },
-          },
-          {
-            context: ["/nft_geek_api"],
-            target: "https://api.nftgeek.app",
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/nft_geek_api": "/api" },
-          },
-          {
-            context: ["/toniq_io"],
-            target: "https://toniq.io",
-            secure: true,
-            changeOrigin: true,
-            pathRewrite: { "^/toniq_io": "/" },
-          },
-        ].filter((p) => p.target),
+      }
+    : {
+        type: "memory",
+      }
+
+  config.watchOptions = {
+    ignored: ["**/dist/**", "**/.nx/**", "**/coverage/**"],
+  }
+
+  config.ignoreWarnings = [/Failed to parse source map from/]
+
+  return {
+    ...config,
+    devServer: {
+      ...config.devServer,
+      open: false,
+      port: 9090,
+      headers: {
+        "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
       },
-    }
-  },
-)
+      proxy: [
+        {
+          context: ["/ic-explorer"],
+          target: "https://api.icexplorer.io",
+          secure: false,
+          changeOrigin: true,
+          pathRewrite: { "^/ic-explorer": "" },
+        },
+        {
+          context: ["/api"],
+          target: `http://0.0.0.0:${DFX_PORT}`,
+        },
+        {
+          context: ["/signin"],
+          target: process.env.AWS_SIGNIN_GOOGLE,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/signin": "" },
+        },
+        {
+          context: ["/signin/v2"],
+          target: process.env.AWS_SIGNIN_GOOGLE_V2,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/signin/v2": "" },
+        },
+        {
+          context: ["/symmetric"],
+          target: process.env.AWS_SYMMETRIC,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/symmetric": "" },
+        },
+        {
+          context: ["/exchange-rate"],
+          target: process.env.AWS_EXCHANGE_RATE,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/exchange-rate": "" },
+        },
+        {
+          context: ["/x/tweet"],
+          target: process.env.AWS_X_TWEET,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/x/tweet": "" },
+        },
+        {
+          context: ["/signature"],
+          target: process.env.AWS_SIGNATURE_EVENT,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/signature": "" },
+        },
+        {
+          context: ["/publickey"],
+          target: process.env.AWS_PUBLIC_KEY,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/publickey": "" },
+        },
+        {
+          context: ["/ecdsa_register"],
+          target: process.env.AWS_ECDSA_REGISTER,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/ecdsa_register": "" },
+        },
+        {
+          context: ["/ecdsa_register_address"],
+          target: process.env.AWS_ECDSA_REGISTER_ADDRESS,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/ecdsa_register_address": "" },
+        },
+        {
+          context: ["/execute_candid"],
+          target: process.env.AWS_EXECUTE_CANDID,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/execute_candid": "" },
+        },
+        {
+          context: ["/ecdsa_get_anonymous"],
+          target: process.env.AWS_ECDSA_GET_ANONYMOUS,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/ecdsa_get_anonymous": "" },
+        },
+        {
+          context: ["/ecdsa_sign"],
+          target: process.env.AWS_ECDSA_SIGN,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/ecdsa_sign": "" },
+        },
+        {
+          context: ["/passkey"],
+          target: process.env.AWS_PASSKEY,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/passkey": "" },
+        },
+        {
+          context: ["/send_verification_email"],
+          target: process.env.AWS_SEND_VERIFICATION_EMAIL,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/send_verification_email": "" },
+        },
+        {
+          context: ["/link_google_account"],
+          target: process.env.AWS_LINK_GOOGLE_ACCOUNT,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/link_google_account": "" },
+        },
+        {
+          context: ["/check_verification"],
+          target: process.env.AWS_CHECK_VERIFICATION,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/check_verification": "" },
+        },
+        {
+          context: ["/verify_email"],
+          target: process.env.AWS_VERIFY_EMAIL,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/verify_email": "" },
+        },
+        {
+          context: ["/nft_geek_api"],
+          target: "https://api.nftgeek.app",
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/nft_geek_api": "/api" },
+        },
+        {
+          context: ["/toniq_io"],
+          target: "https://toniq.io",
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/toniq_io": "/" },
+        },
+      ].filter((p) => p.target),
+    },
+  }
+})

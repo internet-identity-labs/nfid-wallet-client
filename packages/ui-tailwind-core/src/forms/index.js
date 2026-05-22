@@ -54,6 +54,12 @@ const forms = plugin.withOptions(function (options = { strategy: undefined }) {
           "&:focus": {
             outline: "2px solid transparent",
             "outline-offset": "2px",
+            // "--tw-ring-inset": "var(--tw-empty,/*!*/ /*!*/)",
+            // "--tw-ring-offset-width": "0px",
+            // "--tw-ring-offset-color": "#fff",
+            // "--tw-ring-color": theme("colors.blue.600", colors.blue[600]),
+            // "--tw-ring-offset-shadow": `var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color)`,
+            // "--tw-ring-shadow": `var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color)`,
             "box-shadow": `var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)`,
             "border-color": theme("colors.blue.600", colors.blue[600]),
           },
@@ -75,6 +81,9 @@ const forms = plugin.withOptions(function (options = { strategy: undefined }) {
         },
       },
       {
+        // Unfortunate hack until https://bugs.webkit.org/show_bug.cgi?id=198959 is fixed.
+        // This sucks because users can't change line-height with a utility on date inputs now.
+        // Reference: https://github.com/twbs/bootstrap/pull/31993
         base: ["::-webkit-date-and-time-value"],
         class: [".form-input::-webkit-date-and-time-value"],
         styles: {
@@ -82,6 +91,9 @@ const forms = plugin.withOptions(function (options = { strategy: undefined }) {
         },
       },
       {
+        // In Safari on macOS date time inputs are 4px taller than normal inputs
+        // This is because there is extra padding on the datetime-edit and datetime-edit-{part}-field pseudo elements
+        // See https://github.com/tailwindlabs/tailwindcss-forms/issues/95
         base: [
           "::-webkit-datetime-edit",
           "::-webkit-datetime-edit-year-field",

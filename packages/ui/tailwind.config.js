@@ -1,4 +1,4 @@
-import { createGlobPatternsForDependencies } from "@nx/react/tailwind.js"
+import { createGlobPatternsForDependencies } from "@nx/react/tailwind"
 import defaultTheme from "tailwindcss/defaultTheme"
 import path from "node:path"
 

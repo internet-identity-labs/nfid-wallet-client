@@ -1,4 +1,4 @@
-import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport"
+import { INITIAL_VIEWPORTS } from "storybook/viewport"
 
 import "./tailwind.css"
 
@@ -10,7 +10,7 @@ export const parameters = {
     },
   },
   viewport: {
-    viewports: INITIAL_VIEWPORTS,
+    options: INITIAL_VIEWPORTS,
   },
 }
 export const tags = ["autodocs"]

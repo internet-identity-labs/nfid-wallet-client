@@ -1,6 +1,8 @@
 import defaultTheme from "tailwindcss/defaultTheme"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+import forms from "../../packages/ui-tailwind-core/src/forms/index.js"
+import uiTailwindCore from "../../packages/ui-tailwind-core/src/index.js"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -23,10 +25,7 @@ export default {
 
   darkMode: "class",
 
-  plugins: [
-    (await import("../../packages/ui-tailwind-core/src/forms")).default,
-    (await import("../../packages/ui-tailwind-core")).default,
-  ],
+  plugins: [forms, uiTailwindCore],
 
   theme: {
     extend: {

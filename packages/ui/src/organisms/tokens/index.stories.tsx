@@ -1,5 +1,5 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
-import { Meta, StoryFn } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react-webpack5"
 import { useState } from "react"
 import { BrowserRouter as Router } from "react-router-dom"
 

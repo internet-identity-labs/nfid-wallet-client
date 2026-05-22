@@ -6,7 +6,7 @@ import { useDarkTheme } from "frontend/hooks"
 import { StakedToken } from "frontend/integration/staking/staked-token"
 import { TotalBalance } from "frontend/integration/staking/types"
 
-import DiamondIcon from "./assets/diamond.svg"
+import DiamondIcon from "./assets/diamond.svg?url"
 import EmptyStaking from "./assets/empty-staking.png"
 
 import { IconNftPlaceholder } from "../../atoms/icons"

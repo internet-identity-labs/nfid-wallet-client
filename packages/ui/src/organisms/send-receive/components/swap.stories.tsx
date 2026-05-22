@@ -1,5 +1,5 @@
 import { Principal } from "@dfinity/principal"
-import { Meta, StoryFn } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react-webpack5"
 import { FormProvider, useForm } from "react-hook-form"
 import BigNumber from "bignumber.js"
 import { Quote } from "src/integration/swap/quote"

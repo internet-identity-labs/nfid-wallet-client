@@ -1,7 +1,7 @@
 import { Button } from "packages/ui/src/molecules/button"
 import { FC } from "react"
 
-import WarningIcon from "../assets/swap-warning.svg"
+import WarningIcon from "../assets/swap-warning.svg?url"
 
 export interface ErrorModalProps {
   refresh: () => void

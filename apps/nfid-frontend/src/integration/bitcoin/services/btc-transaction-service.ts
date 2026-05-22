@@ -2,7 +2,7 @@ import { BTC_EXPLORER, BTC_NATIVE_ID } from "@nfid/integration/token/constants"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 
 import { IActivityRow } from "frontend/features/activity/types"
-import BtcIcon from "packages/ui/src/organisms/tokens/assets/bitcoin.svg"
+import BtcIcon from "packages/ui/src/organisms/tokens/assets/bitcoin.svg?url"
 
 import {
   FungibleActivityRecords,

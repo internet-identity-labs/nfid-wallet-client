@@ -1,14 +1,5 @@
 {
-  "plugins": [
-    {
-      "plugin": "@nx/webpack/plugin",
-      "options": {
-        "buildTargetName": "build",
-        "serveTargetName": "serve",
-        "previewTargetName": "preview"
-      }
-    }
-  ],
+  "plugins": [],
   "pluginsConfig": {
     "@nx/js": {
       "analyzeSourceFiles": true

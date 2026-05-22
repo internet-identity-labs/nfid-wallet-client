@@ -40,5 +40,4 @@ Icon
 
 # Storybook
 doctor-storybook.log
-storybook-migration-summary.md
-.claude/worktrees
+.claude

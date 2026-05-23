@@ -19,8 +19,12 @@ export default {
       "<rootDir>/../../node_modules/@icp-sdk/canisters/ckbtc/index.js",
     "^@icp-sdk/canisters/nns$":
       "<rootDir>/../../node_modules/@icp-sdk/canisters/nns/index.js",
+    "^@icp-sdk/canisters/cketh$":
+      "<rootDir>/../../node_modules/@icp-sdk/canisters/cketh/index.js",
     "^@icp-sdk/canisters/sns$":
       "<rootDir>/../../node_modules/@icp-sdk/canisters/sns/index.js",
+    "^@dfinity/agent$":
+      "<rootDir>/../../node_modules/@icp-sdk/core/lib/cjs/agent/index.js",
     "^@dfinity/utils$":
       "<rootDir>/../../node_modules/@dfinity/utils/dist/index.js",
     "^uuid$": "<rootDir>/../../__mocks__/uuid.ts",

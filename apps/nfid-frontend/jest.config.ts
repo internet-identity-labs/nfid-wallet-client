@@ -26,6 +26,8 @@ const config = {
   roots: ["src/"],
   moduleDirectories: ["node_modules"],
   moduleNameMapper: {
+    "^@icp-sdk/auth/client$":
+      "<rootDir>/../../__mocks__/@icp-sdk/auth/client.cjs",
     "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|did)(\\?.*)?$":
       "<rootDir>/mocks/fileMock.ts",
     "\\.(css|less)$": "<rootDir>/mocks/fileMock.ts",

@@ -1,9 +1,9 @@
 import { Principal } from "@icp-sdk/core/principal"
 import { BtсDepositService } from "../service"
-import { CkBTCMinterCanister } from "@icp-sdk/canisters/ckbtc"
+import { CkBtcMinterCanister } from "@icp-sdk/canisters/ckbtc"
 
 jest.mock("@icp-sdk/canisters/ckbtc", () => ({
-  CkBTCMinterCanister: {
+  CkBtcMinterCanister: {
     create: jest.fn().mockReturnValue({
       getBtcAddress: jest.fn().mockResolvedValue("btc-address-mock"),
       updateBalance: jest.fn().mockResolvedValue(undefined),
@@ -19,7 +19,7 @@ describe("BtсDepositService", () => {
 
   beforeEach(() => {
     service = new BtсDepositService()
-    minterMock = (CkBTCMinterCanister.create as jest.Mock).mock.results[0].value
+    minterMock = (CkBtcMinterCanister.create as jest.Mock).mock.results[0].value
   })
 
   test("generateAddress returns BTC address and logs success", async () => {

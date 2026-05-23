@@ -1,6 +1,7 @@
 import { Ed25519KeyIdentity } from "@icp-sdk/core/identity"
 import { JsonnableEd25519KeyIdentity } from "@icp-sdk/core/identity"
 import { Principal } from "@icp-sdk/core/principal"
+import { hexStringToUint8Array } from "@dfinity/utils"
 
 import { disburse, querySnsNeurons, stakeNeuron } from "../sns-governance.api"
 
@@ -12,20 +13,20 @@ const identityJSON: JsonnableEd25519KeyIdentity = [
   "2803f8e8547e0ed4deced3c645c9758fc72b6e61f60aa7b46f7705925b8a28fe",
 ]
 
-const identityJSONPublic: JsonnableEd25519KeyIdentity = [
-  "302a300506032b6570032100131aeb46319e402bb2930889ab86caf1175efe71e9f313a4c5f91bb91153f63e",
-  "0",
-]
+const publicKeyDerHex =
+  "302a300506032b6570032100131aeb46319e402bb2930889ab86caf1175efe71e9f313a4c5f91bb91153f63e"
 
 let neuronId: any
 //TODO temp tests. Will be moved to the FE folder
 describe("Staking", () => {
   jest.setTimeout(60000)
   it("should return neuron", async () => {
-    const edId = Ed25519KeyIdentity.fromParsedJson(identityJSONPublic)
+    const edPrincipal = Principal.selfAuthenticating(
+      hexStringToUint8Array(publicKeyDerHex),
+    )
 
     const neurons = await querySnsNeurons({
-      identity: edId.getPrincipal(),
+      identity: edPrincipal,
       rootCanisterId: Principal.fromText("m2blf-zqaaa-aaaaq-aaejq-cai"),
       certified: false,
     })

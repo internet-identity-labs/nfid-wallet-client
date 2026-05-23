@@ -3,7 +3,8 @@
   "compilerOptions": {
     "composite": true,
     "outDir": "../../dist/out-tsc",
-    "module": "ESNext",
+    "module": "CommonJS",
+    "moduleResolution": "node16",
     "types": ["jest", "node"],
     "declaration": true
   },

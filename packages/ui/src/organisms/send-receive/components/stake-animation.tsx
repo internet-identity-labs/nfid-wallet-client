@@ -5,9 +5,9 @@ import React, { useEffect, useState } from "react"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 
-import FailedIcon from "../assets/stake-failed.svg"
+import FailedIcon from "../assets/stake-failed.svg?url"
 import "../assets/stake-gradient.css"
-import SuccessIcon from "../assets/stake-success.svg"
+import SuccessIcon from "../assets/stake-success.svg?url"
 
 const HIDE_ANIMATION_DURATION = 0.3
 

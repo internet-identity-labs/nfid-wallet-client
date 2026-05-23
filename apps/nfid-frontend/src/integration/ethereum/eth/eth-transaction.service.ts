@@ -1,6 +1,6 @@
 import { ETH_DECIMALS, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 
-import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg"
+import EthIcon from "packages/ui/src/organisms/tokens/assets/ethereum.svg?url"
 
 import { EVMNativeTransactionService } from "../evm-transaction.service"
 

@@ -25,10 +25,10 @@ import {
   getUpdatedAddressBook,
 } from "frontend/features/transfer-modal/utils"
 
-import SortAscendingIcon from "../tokens/assets/sort-ascending.svg"
-import SortDefaultIcon from "../tokens/assets/sort-default.svg"
-import SortDescendingIcon from "../tokens/assets/sort-descending.svg"
-import SortHoverIcon from "../tokens/assets/sort-hover.svg"
+import SortAscendingIcon from "../tokens/assets/sort-ascending.svg?url"
+import SortDefaultIcon from "../tokens/assets/sort-default.svg?url"
+import SortDescendingIcon from "../tokens/assets/sort-descending.svg?url"
+import SortHoverIcon from "../tokens/assets/sort-hover.svg?url"
 
 enum AddressBookSorting {
   ASCENDING = "ASCENDING",

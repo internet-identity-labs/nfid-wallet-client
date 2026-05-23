@@ -1,6 +1,6 @@
-import { Meta, StoryFn } from "@storybook/react"
-import SecurityIcon from "packages/ui/src/atoms/icons/nav-security.svg"
-import VaultsIcon from "packages/ui/src/atoms/icons/nav-vaults.svg"
+import { Meta, StoryFn } from "@storybook/react-webpack5"
+import SecurityIcon from "packages/ui/src/atoms/icons/nav-security.svg?url"
+import VaultsIcon from "packages/ui/src/atoms/icons/nav-vaults.svg?url"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import { AuthenticatedPopup, IAuthenticatedPopup } from "."

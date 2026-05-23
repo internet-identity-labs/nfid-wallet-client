@@ -1,4 +1,4 @@
-import { Meta, StoryFn } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react-webpack5"
 import { IconCmpGoogle } from "packages/ui/src/atoms/icons"
 import { Button } from "packages/ui/src/molecules/button"
 

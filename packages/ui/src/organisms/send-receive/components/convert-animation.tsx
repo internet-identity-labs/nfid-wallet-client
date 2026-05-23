@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react"
 
 import { SendStatus } from "frontend/features/transfer-modal/types"
 
-import FailedIcon from "../assets/animation-failed.svg"
+import FailedIcon from "../assets/animation-failed.svg?url"
 import "../assets/animation-gradient.css"
 import ConvertWaitIcon from "../assets/convert-wait.png"
 

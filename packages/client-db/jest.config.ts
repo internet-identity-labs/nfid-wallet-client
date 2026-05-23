@@ -1,16 +1,11 @@
-import { JEST_GLOBALS } from "../../config/jest-globals"
+import { JEST_GLOBALS } from "../../config/jest-globals.js"
 
 export default {
   displayName: "client-db",
   preset: "../../jest.preset.js",
   globals: { ...JEST_GLOBALS },
   transform: {
-    "^.+\\.[tj]s$": [
-      "ts-jest",
-      {
-        tsconfig: "<rootDir>/tsconfig.spec.json",
-      },
-    ],
+    "^.+\\.[tj]s$": ["ts-jest", { tsconfig: "<rootDir>/tsconfig.spec.json" }],
   },
   moduleFileExtensions: ["ts", "js", "html"],
   coverageDirectory: "../../coverage/packages/client-db",

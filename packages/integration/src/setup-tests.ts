@@ -5,8 +5,11 @@ import "whatwg-fetch"
 
 jest.retryTimes(3, { logErrorsBeforeRetry: true })
 
-// Prefer Node's WebCrypto so ECDSA PKCS#8 imports work with `jose@6`.
-global.crypto = webcrypto as unknown as Crypto
+Object.defineProperty(global, "crypto", {
+  value: webcrypto as unknown as Crypto,
+  configurable: true,
+  writable: true,
+})
 
 global.TextEncoder = TextEncoder
 

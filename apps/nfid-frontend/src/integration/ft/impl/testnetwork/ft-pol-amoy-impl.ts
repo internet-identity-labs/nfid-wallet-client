@@ -3,7 +3,7 @@ import {
   ChainId,
   State,
 } from "@nfid/integration/token/icrc1/enum/enums"
-import PolygonIcon from "packages/ui/src/organisms/tokens/assets/polygon.svg"
+import PolygonIcon from "packages/ui/src/organisms/tokens/assets/polygon.svg?url"
 import BigNumber from "bignumber.js"
 
 import {

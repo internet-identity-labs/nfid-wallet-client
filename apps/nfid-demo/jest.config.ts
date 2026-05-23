@@ -1,6 +1,6 @@
-const { JEST_GLOBALS } = require("../../config/jest-globals.ts")
+import { JEST_GLOBALS } from "../../config/jest-globals.js"
 
-module.exports = {
+export default {
   displayName: "nfid-demo",
   preset: "../../jest.preset.js",
   transform: {
@@ -10,7 +10,5 @@ module.exports = {
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
   coverageDirectory: "../../coverage/apps/nfid-demo",
   setupFilesAfterEnv: ["./src/setupTests.ts"],
-  globals: {
-    ...JEST_GLOBALS,
-  },
+  globals: { ...JEST_GLOBALS },
 }

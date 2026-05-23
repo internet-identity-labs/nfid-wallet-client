@@ -3,7 +3,7 @@ import {
   ChainId,
   State,
 } from "@nfid/integration/token/icrc1/enum/enums"
-import BtcIcon from "packages/ui/src/organisms/tokens/assets/bitcoin.svg"
+import BtcIcon from "packages/ui/src/organisms/tokens/assets/bitcoin.svg?url"
 
 import { FTImpl } from "./ft-impl"
 import {

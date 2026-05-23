@@ -14,7 +14,7 @@ import { Tooltip, CenterEllipsis, ApplicationIcon } from "@nfid-frontend/ui"
 import { Blockchain } from "@nfid/integration/token/types"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { TableBase, TableHead, TableWrapper } from "../../atoms/table"
+import { TableBase, TableHead, TableWrapper } from "../../molecules/table"
 
 interface GridCellProps {
   className?: string

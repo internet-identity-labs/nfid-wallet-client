@@ -18,7 +18,7 @@ import { NFIDNeuron } from "frontend/integration/staking/nfid-neuron"
 import { StakingState } from "frontend/integration/staking/types"
 
 import { getFormattedPeriod } from "../../send-receive/utils"
-import DiamondIcon from "../assets/diamond.svg"
+import DiamondIcon from "../assets/diamond.svg?url"
 import { SidePanelOption } from "./staking-side-panel"
 
 export interface StakingOptionProps {

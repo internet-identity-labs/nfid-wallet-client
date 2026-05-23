@@ -1,5 +1,5 @@
 import { Principal } from "@dfinity/principal"
-import { Meta, StoryFn } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react-webpack5"
 import { ToggleButton } from "packages/ui/src/molecules/toggle-button"
 import { FormProvider, useForm } from "react-hook-form"
 

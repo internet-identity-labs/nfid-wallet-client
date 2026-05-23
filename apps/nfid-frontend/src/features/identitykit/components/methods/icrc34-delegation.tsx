@@ -5,8 +5,8 @@ import { Tooltip } from "@nfid-frontend/ui"
 
 import { ChooseAccount } from "@nfid-frontend/ui"
 
-import InvalidIcon from "../../assets/invalid.svg"
-import ValidIcon from "../../assets/valid.svg"
+import InvalidIcon from "../../assets/invalid.svg?url"
+import ValidIcon from "../../assets/valid.svg?url"
 import { VerificationReport } from "../../service/target.service"
 import { Account } from "../../type"
 import { RPCPromptTemplate } from "../templates/prompt-template"

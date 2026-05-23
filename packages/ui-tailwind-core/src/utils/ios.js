@@ -1,5 +1,5 @@
-const supportsTouchRule = "@supports (-webkit-touch-callout: none)";
-const webkitFillAvailable = "-webkit-fill-available";
+const supportsTouchRule = "@supports (-webkit-touch-callout: none)"
+const webkitFillAvailable = "-webkit-fill-available"
 
 const iosUtilities = {
   ".min-h-screen-ios": {
@@ -12,6 +12,6 @@ const iosUtilities = {
       height: webkitFillAvailable,
     },
   },
-};
+}
 
-module.exports = iosUtilities;
+export default iosUtilities

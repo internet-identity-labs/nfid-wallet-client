@@ -48,4 +48,4 @@ const blur = {
   "7xl": "128px ",
 }
 
-module.exports = { blur, fontSize, fontFamily, dropShadow, boxShadow }
+export { blur, fontSize, fontFamily, dropShadow, boxShadow }

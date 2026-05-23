@@ -1,9 +1,9 @@
-import { StoryFn, Meta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react-webpack5"
 import { BrowserRouter as Router } from "react-router-dom"
 
-import Icon from "../../pages/new-profile/assets/book-open.svg"
-
 import ProfileTemplate from "./Template"
+
+const Icon = undefined
 
 export default {
   title: "Templates/ProfileTemplate",

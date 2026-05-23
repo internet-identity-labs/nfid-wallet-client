@@ -1,4 +1,4 @@
-import { Meta, StoryFn } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react-webpack5"
 import { Button, IconCmpGoogle, IconCmpDfinity } from "@nfid-frontend/ui"
 
 import { withSignInDecorator } from "../../../decorators/sign-in"

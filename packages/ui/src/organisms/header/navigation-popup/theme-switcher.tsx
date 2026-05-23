@@ -5,12 +5,12 @@ import { FC } from "react"
 import { NFIDTheme } from "frontend/App"
 import { useDarkTheme } from "frontend/hooks"
 
-import darkDarkIcon from "../assets/dark-dark.svg"
-import darkIcon from "../assets/dark.svg"
-import lightDarkIcon from "../assets/light-dark.svg"
-import lightIcon from "../assets/light.svg"
-import systemDarkIcon from "../assets/system-dark.svg"
-import systemIcon from "../assets/system.svg"
+import darkDarkIcon from "../assets/dark-dark.svg?url"
+import darkIcon from "../assets/dark.svg?url"
+import lightDarkIcon from "../assets/light-dark.svg?url"
+import lightIcon from "../assets/light.svg?url"
+import systemDarkIcon from "../assets/system-dark.svg?url"
+import systemIcon from "../assets/system.svg?url"
 
 interface ThemeToggleProps {
   walletTheme: NFIDTheme
@@ -52,8 +52,8 @@ export const ThemeSwitcher: FC<ThemeToggleProps> = ({
             theme === NFIDTheme.LIGHT
               ? "Light"
               : theme === NFIDTheme.DARK
-              ? "Dark"
-              : "System"
+                ? "Dark"
+                : "System"
 
           return (
             <button

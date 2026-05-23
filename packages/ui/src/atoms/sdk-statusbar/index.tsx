@@ -1,12 +1,11 @@
 import clsx from "clsx"
 
-import loadingIcon from "./assets/loading.svg"
-import successGreenIcon from "./assets/success-green.svg"
+import loadingIcon from "./assets/loading.svg?url"
+import successGreenIcon from "./assets/success-green.svg?url"
 
-import logo from "../../assets/id.svg"
+import logo from "../../assets/id.svg?url"
 
-export interface SDKStatusbarProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface SDKStatusbarProps extends React.HTMLAttributes<HTMLDivElement> {
   isLoading: boolean
   isSuccess: boolean
 }

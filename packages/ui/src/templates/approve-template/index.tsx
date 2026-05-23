@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import successWhiteIcon from "./assets/success-white.svg"
+import successWhiteIcon from "./assets/success-white.svg?url"
 
 import { Button } from "../../molecules/button"
 import { SDKApplicationMeta } from "../../molecules/sdk-app-meta"

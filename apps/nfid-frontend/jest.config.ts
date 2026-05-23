@@ -1,4 +1,4 @@
-import { JEST_GLOBALS } from "../../config/jest-globals"
+import { JEST_GLOBALS } from "../../config/jest-globals.js"
 const config = {
   displayName: "nfid-frontend",
   preset: "../../jest.preset.js",
@@ -26,11 +26,11 @@ const config = {
   roots: ["src/"],
   moduleDirectories: ["node_modules"],
   moduleNameMapper: {
-    "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|did)$":
-      "<rootDir>/mocks/fileMock.js",
-    "\\.(css|less)$": "<rootDir>/mocks/fileMock.js",
+    "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|did)(\\?.*)?$":
+      "<rootDir>/mocks/fileMock.ts",
+    "\\.(css|less)$": "<rootDir>/mocks/fileMock.ts",
     "^frontend/(.*)$": "<rootDir>/src/$1",
-    "^uuid$": "<rootDir>/../../__mocks__/uuid.js",
+    "^uuid$": "<rootDir>/../../__mocks__/uuid.ts",
   },
   globalSetup: "./global-setup.js",
 }

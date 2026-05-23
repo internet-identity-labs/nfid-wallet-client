@@ -6,6 +6,7 @@
     "access": "public"
   },
   "description": "A Tailwind CSS plugin for NFID applications",
+  "type": "module",
   "main": "src/index.js",
   "files": [
     "src/*.js",

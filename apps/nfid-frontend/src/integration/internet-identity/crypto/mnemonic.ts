@@ -2059,12 +2059,9 @@ const ENGLISH_WORDS = [
  * @returns A random BIP39 mnemonic with 256 bits of entropy.
  */
 export function generate(): string {
-  const entropy = new Uint32Array(32)
+  const entropy = new Uint8Array(32)
   crypto.getRandomValues(entropy)
-  return entropyToMnemonic(
-    bytesToHex(new Uint8Array(entropy.buffer)),
-    ENGLISH_WORDS,
-  )
+  return entropyToMnemonic(bytesToHex(entropy), ENGLISH_WORDS)
 }
 
 /**

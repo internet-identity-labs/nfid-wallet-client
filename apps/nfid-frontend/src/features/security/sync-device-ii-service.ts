@@ -70,7 +70,7 @@ export class SyncDeviceIIService {
       }),
     })
     const { publicKey } = await publicKeyResponse.json()
-    const identity = Ed25519KeyIdentity.fromParsedJson([publicKey, "0"])
+    const identity = Ed25519KeyIdentity.fromParsedJson([publicKey, "00"])
 
     await addDevice(
       BigInt(profile.anchor),

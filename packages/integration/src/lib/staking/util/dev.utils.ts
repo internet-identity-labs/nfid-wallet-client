@@ -1,4 +1,4 @@
-import { nonNullish } from "@nfid-frontend/utils"
+import { nonNullish } from "@dfinity/utils"
 
 export const isNode = (): boolean =>
   typeof process !== "undefined" && nonNullish(process.versions?.node)

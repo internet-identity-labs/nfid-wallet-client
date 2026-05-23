@@ -10,7 +10,7 @@ import {
   SnsSwapCanister,
   SnsWrapper,
 } from "@icp-sdk/canisters/sns"
-import { createAgent } from "@nfid-frontend/utils"
+import { createAgent } from "@dfinity/utils"
 
 type CanisterIds = {
   rootCanisterId: Principal

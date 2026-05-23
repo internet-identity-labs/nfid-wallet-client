@@ -1,7 +1,7 @@
 import type { Agent, Identity } from "@icp-sdk/core/agent"
 import { IcpLedgerCanister } from "@icp-sdk/canisters/ledger/icp"
 import { Principal } from "@icp-sdk/core/principal"
-import { createAgent } from "@nfid-frontend/utils"
+import { createAgent } from "@dfinity/utils"
 
 import { logWithTimestamp } from "./util/dev.utils"
 

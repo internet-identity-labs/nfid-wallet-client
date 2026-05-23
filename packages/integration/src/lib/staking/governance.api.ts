@@ -8,7 +8,7 @@ import type {
 } from "@icp-sdk/canisters/nns"
 import { NnsGovernanceCanister, NeuronVisibility } from "@icp-sdk/canisters/nns"
 import { Principal } from "@icp-sdk/core/principal"
-import { createAgent, nowInBigIntNanoSeconds } from "@nfid-frontend/utils"
+import { createAgent, nowInBigIntNanoSeconds } from "@dfinity/utils"
 
 import { ledgerCanister } from "./icp-ledger.api"
 import { logWithTimestamp } from "./util/dev.utils"

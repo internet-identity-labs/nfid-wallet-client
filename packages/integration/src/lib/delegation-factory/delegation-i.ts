@@ -252,7 +252,7 @@ export async function createDelegationChain(
 ): Promise<DelegationChain> {
   return await DelegationChain.create(
     identity,
-    Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, "0"]).getPublicKey(),
+    Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, "00"]).getPublicKey(),
     expirationDate,
     options,
   )

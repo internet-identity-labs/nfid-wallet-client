@@ -1,4 +1,4 @@
-export const JEST_GLOBALS = {
+const JEST_GLOBALS = {
   Uint8Array,
   ArrayBuffer,
   INTERNET_IDENTITY_CANISTER_ID: "nprnb-waaaa-aaaaj-qax4a-cai",
@@ -75,3 +75,5 @@ export const JEST_GLOBALS = {
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/publickey",
   IC_EXPLORER_API_URL: "https://api.icexplorer.io/api/dashboard/search",
 }
+
+module.exports = { JEST_GLOBALS }

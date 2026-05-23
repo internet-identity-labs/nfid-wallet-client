@@ -1,7 +1,7 @@
-import type { Agent, Identity } from "@dfinity/agent"
-import { LedgerCanister } from "@dfinity/ledger-icp"
-import { Principal } from "@dfinity/principal"
-import { createAgent } from "@dfinity/utils"
+import type { Agent, Identity } from "@icp-sdk/core/agent"
+import { IcpLedgerCanister } from "@icp-sdk/canisters/ledger/icp"
+import { Principal } from "@icp-sdk/core/principal"
+import { createAgent } from "@nfid-frontend/utils"
 
 import { logWithTimestamp } from "./util/dev.utils"
 
@@ -12,7 +12,7 @@ export const ledgerCanister = async ({
   identity: Identity
   canisterId: Principal
 }): Promise<{
-  canister: LedgerCanister
+  canister: IcpLedgerCanister
   agent: Agent
 }> => {
   logWithTimestamp(`LC call...`)
@@ -21,7 +21,7 @@ export const ledgerCanister = async ({
     host: IC_HOST,
   })
 
-  const canister = LedgerCanister.create({
+  const canister = IcpLedgerCanister.create({
     agent,
     canisterId,
   })

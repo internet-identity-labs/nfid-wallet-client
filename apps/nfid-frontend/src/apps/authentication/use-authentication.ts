@@ -1,5 +1,5 @@
-import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
+import { DelegationChain, Ed25519KeyIdentity } from "@icp-sdk/core/identity"
+import { Principal } from "@icp-sdk/core/principal"
 import { atom, useAtom } from "jotai"
 import React from "react"
 import { Usergeek } from "usergeek-ic-js"

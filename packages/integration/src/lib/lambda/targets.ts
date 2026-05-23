@@ -2,12 +2,11 @@ import {
   Actor,
   ActorSubclass,
   Agent,
-  compare,
   HttpAgent,
   lookup_path,
-} from "@dfinity/agent"
-import { IDL } from "@dfinity/candid"
-import { Principal } from "@dfinity/principal"
+} from "@icp-sdk/core/agent"
+import { IDL } from "@icp-sdk/core/candid"
+import { Principal } from "@icp-sdk/core/principal"
 import crypto from "crypto"
 
 import { storageWithTtl } from "@nfid/client-db"
@@ -136,6 +135,10 @@ async function verifyCertifiedResponse(
   }
 }
 
-function equal(a: ArrayBuffer, b: ArrayBuffer): boolean {
-  return compare(new Uint8Array(a), new Uint8Array(b)) === 0
+function equal(a: Uint8Array, b: Uint8Array): boolean {
+  if (a.length !== b.length) return false
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false
+  }
+  return true
 }

@@ -1,6 +1,9 @@
-import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp"
-import { Principal } from "@dfinity/principal"
-import { hexStringToUint8Array, uint8ArrayToHexString } from "@dfinity/utils"
+import { AccountIdentifier, SubAccount } from "@icp-sdk/canisters/ledger/icp"
+import { Principal } from "@icp-sdk/core/principal"
+import {
+  hexStringToUint8Array,
+  uint8ArrayToHexString,
+} from "@nfid-frontend/utils"
 
 import {
   PolicyRegisterRequest,

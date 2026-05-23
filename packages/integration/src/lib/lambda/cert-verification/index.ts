@@ -1,21 +1,15 @@
-import {
-  Cbor,
-  Certificate,
-  HashTree,
-  reconstruct,
-  compare,
-} from "@dfinity/agent"
-import { PipeArrayBuffer, lebDecode } from "@dfinity/candid"
-import { Principal } from "@dfinity/principal"
+import { Cbor, Certificate, HashTree, reconstruct } from "@icp-sdk/core/agent"
+import { PipeArrayBuffer, lebDecode } from "@icp-sdk/core/candid"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { CertificateTimeError, CertificateVerificationError } from "./error"
 import { getLookupResultValue } from "./utils"
 
 export interface VerifyCertificationParams {
   canisterId: Principal
-  encodedCertificate: ArrayBuffer
-  encodedTree: ArrayBuffer
-  rootKey: ArrayBuffer
+  encodedCertificate: ArrayBuffer | Uint8Array
+  encodedTree: ArrayBuffer | Uint8Array
+  rootKey: ArrayBuffer | Uint8Array
   maxCertificateTimeOffsetMs: number
 }
 
@@ -28,11 +22,11 @@ export async function verifyCertification({
 }: VerifyCertificationParams): Promise<HashTree> {
   const nowMs = Date.now()
   const certificate = await Certificate.create({
-    certificate: encodedCertificate,
-    canisterId,
-    rootKey,
+    certificate: new Uint8Array(encodedCertificate),
+    principal: { canisterId },
+    rootKey: new Uint8Array(rootKey),
   })
-  const tree = Cbor.decode<HashTree>(encodedTree)
+  const tree = Cbor.decode<HashTree>(new Uint8Array(encodedTree))
   validateCertificateTime(certificate, maxCertificateTimeOffsetMs, nowMs)
   await validateTree(tree, certificate, canisterId)
 
@@ -44,7 +38,7 @@ function validateCertificateTime(
   maxCertificateTimeOffsetMs: number,
   nowMs: number,
 ): void {
-  const lookupResult = certificate.lookup(["time"])
+  const lookupResult = certificate.lookup_path(["time"])
   const value = getLookupResultValue(lookupResult)
 
   if (value) {
@@ -73,7 +67,7 @@ async function validateTree(
   canisterId: Principal,
 ): Promise<void> {
   const treeRootHash = await reconstruct(tree)
-  const certifiedData = certificate.lookup([
+  const certifiedData = certificate.lookup_path([
     "canister",
     canisterId.toUint8Array(),
     "certified_data",
@@ -91,6 +85,10 @@ async function validateTree(
   }
 }
 
-function equal(a: ArrayBuffer, b: ArrayBuffer): boolean {
-  return compare(new Uint8Array(a), new Uint8Array(b)) === 0
+function equal(a: Uint8Array, b: Uint8Array): boolean {
+  if (a.length !== b.length) return false
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false
+  }
+  return true
 }

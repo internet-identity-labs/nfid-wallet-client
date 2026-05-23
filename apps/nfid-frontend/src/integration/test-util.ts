@@ -1,10 +1,10 @@
-import * as Agent from "@dfinity/agent"
+import * as Agent from "@icp-sdk/core/agent"
 import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
-import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1"
+} from "@icp-sdk/core/identity"
+import { Secp256k1KeyIdentity } from "@icp-sdk/core/identity/secp256k1"
 
 import { actor, ii, im, replaceActorIdentity } from "@nfid/integration"
 

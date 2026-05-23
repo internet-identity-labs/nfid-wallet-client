@@ -1,5 +1,5 @@
-import { Actor, HttpAgent } from "@dfinity/agent"
-import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { Actor, HttpAgent } from "@icp-sdk/core/agent"
+import { Ed25519KeyIdentity } from "@icp-sdk/core/identity"
 
 import { HTTPAccountResponse } from "../_ic_api/identity_manager.d"
 import { idlFactory as passkeyIDL } from "../_ic_api/passkey_storage"

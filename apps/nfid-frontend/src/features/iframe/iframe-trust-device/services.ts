@@ -1,4 +1,4 @@
-import { WebAuthnIdentity } from "@dfinity/identity"
+import { WebAuthnIdentity } from "@icp-sdk/core/identity"
 
 import { setProfileToStorage } from "@nfid/integration"
 

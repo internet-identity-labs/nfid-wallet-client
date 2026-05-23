@@ -1,4 +1,4 @@
-import { Ed25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+import { Ed25519KeyIdentity } from "@icp-sdk/core/identity"
 import { mockIdentityA } from "@nfid/integration"
 import { ethErc20Service } from "./eth/eth-erc20.service"
 import { ETH_DECIMALS } from "@nfid/integration/token/constants"

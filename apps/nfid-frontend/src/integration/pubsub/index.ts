@@ -1,4 +1,4 @@
-import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
+import { DelegationChain, Ed25519KeyIdentity } from "@icp-sdk/core/identity"
 import { SWRConfiguration } from "swr"
 
 import { pubsub } from "@nfid/integration"

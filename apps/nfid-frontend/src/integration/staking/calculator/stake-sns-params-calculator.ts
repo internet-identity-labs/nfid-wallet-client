@@ -1,4 +1,5 @@
-import { SnsNervousSystemParameters } from "@dfinity/sns"
+import { type SnsGovernanceDid } from "@icp-sdk/canisters/sns"
+type SnsNervousSystemParameters = SnsGovernanceDid.NervousSystemParameters
 
 import { StakeParamsCalculatorImpl } from "./stake-params-calculator-impl"
 

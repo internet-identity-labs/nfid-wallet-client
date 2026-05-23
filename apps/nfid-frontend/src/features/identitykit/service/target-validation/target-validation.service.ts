@@ -1,4 +1,4 @@
-import { ActorSubclass } from "@dfinity/agent"
+import { ActorSubclass } from "@icp-sdk/core/agent"
 
 import { type _SERVICE as ConsentMessageCanister } from "../../idl/consent"
 import { originsTargetValidationService } from "./origins-target-validation.service"

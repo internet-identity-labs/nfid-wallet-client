@@ -1,6 +1,6 @@
-import { Agent, HttpAgent, Identity } from "@dfinity/agent"
-import { IDL } from "@dfinity/candid"
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import { Agent, HttpAgent, Identity } from "@icp-sdk/core/agent"
+import { IDL } from "@icp-sdk/core/candid"
+import { DelegationIdentity, Ed25519KeyIdentity } from "@icp-sdk/core/identity"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 
 import { WALLET_SESSION_TTL_1_MIN_IN_MS } from "@nfid/config"

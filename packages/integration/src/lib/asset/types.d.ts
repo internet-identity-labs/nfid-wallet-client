@@ -1,4 +1,4 @@
-import { DelegationIdentity } from "@dfinity/identity"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
 
 import { Asset } from "./asset"
 import { Category, ChainId } from "../token/icrc1/enum/enums"

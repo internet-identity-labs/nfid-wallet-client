@@ -1,13 +1,16 @@
-import type { Agent, Identity } from "@dfinity/agent"
-import { IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger-icrc"
-import { Principal } from "@dfinity/principal"
+import type { Agent, Identity } from "@icp-sdk/core/agent"
+import {
+  IcrcIndexCanister,
+  IcrcLedgerCanister,
+} from "@icp-sdk/canisters/ledger/icrc"
+import { Principal } from "@icp-sdk/core/principal"
 import {
   SnsGovernanceCanister,
   SnsRootCanister,
   SnsSwapCanister,
   SnsWrapper,
-} from "@dfinity/sns"
-import { createAgent } from "@dfinity/utils"
+} from "@icp-sdk/canisters/sns"
+import { createAgent } from "@nfid-frontend/utils"
 
 type CanisterIds = {
   rootCanisterId: Principal

@@ -1,5 +1,5 @@
-import { AuthClient } from "@dfinity/auth-client"
-import { DelegationIdentity } from "@dfinity/identity"
+import { AuthClient } from "@icp-sdk/auth/client"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
 
 import { authState, im } from "@nfid/integration"
 
@@ -7,25 +7,15 @@ import { IIAuthSession } from "frontend/state/authentication"
 
 import { fetchProfile } from "../identity-manager"
 
-export const signinWithII = async () => {
-  const authClient = await AuthClient.create()
-  return new Promise(async (resolve, reject) => {
-    authClient.login({
-      onSuccess: () => {
-        const delegation = authClient.getIdentity() as DelegationIdentity
-        resolve(delegation)
-      },
-      onError: (error) => {
-        console.error(error)
-        reject()
-      },
-      identityProvider:
-        FRONTEND_MODE === "development"
-          ? `https://${INTERNET_IDENTITY_CANISTER_ID}.ic0.app/#authorize`
-          : `https://identity.ic0.app/#authorize`,
-      windowOpenerFeatures: `toolbar=0,location=0,menubar=0,width=525,height=705`,
-    })
+export const signinWithII = async (): Promise<DelegationIdentity> => {
+  const authClient = new AuthClient({
+    identityProvider:
+      FRONTEND_MODE === "development"
+        ? `https://${INTERNET_IDENTITY_CANISTER_ID}.ic0.app/#authorize`
+        : `https://identity.ic0.app/#authorize`,
+    windowOpenerFeatures: `toolbar=0,location=0,menubar=0,width=525,height=705`,
   })
+  return (await authClient.signIn()) as DelegationIdentity
 }
 
 /**
@@ -33,7 +23,7 @@ export const signinWithII = async () => {
  * @returns an II powered auth session
  */
 export const getIIAuthSessionService = async () => {
-  const identity = (await signinWithII()) as DelegationIdentity
+  const identity = await signinWithII()
 
   // We must call use_access_point (idk y), and we need to update the global agent identity to do so. I don't love putting this global auth state here.
   await authState.set({ identity, delegationIdentity: identity })

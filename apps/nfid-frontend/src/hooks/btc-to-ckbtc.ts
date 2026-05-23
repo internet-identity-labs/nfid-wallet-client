@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { btcDepositService } from "@nfid/integration/token/btc/service"
 import { useEffect, useRef } from "react"

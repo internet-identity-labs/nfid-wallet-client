@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 import { authState } from "packages/integration/src/lib/authentication/auth-state"
 import { createContext, useCallback, useEffect, useState } from "react"
 

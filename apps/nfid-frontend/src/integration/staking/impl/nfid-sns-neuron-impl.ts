@@ -1,11 +1,10 @@
-import { SignIdentity } from "@dfinity/agent"
-import { NeuronState } from "@dfinity/nns"
-import { Principal } from "@dfinity/principal"
-import {
-  Followees,
-  Neuron,
-  NeuronId,
-} from "@dfinity/sns/dist/candid/sns_governance"
+import { SignIdentity } from "@icp-sdk/core/agent"
+import { NeuronState } from "@icp-sdk/canisters/nns"
+import { Principal } from "@icp-sdk/core/principal"
+import { type SnsGovernanceDid } from "@icp-sdk/canisters/sns"
+type Neuron = SnsGovernanceDid.Neuron
+type NeuronId = SnsGovernanceDid.NeuronId
+type Followees = SnsGovernanceDid.Followees
 import {
   bytesToHexString,
   hexStringToBytes,

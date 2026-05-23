@@ -1,5 +1,5 @@
-import { SignIdentity } from "@dfinity/agent"
-import { uint8ArrayToHexString } from "@dfinity/utils"
+import { SignIdentity } from "@icp-sdk/core/agent"
+import { uint8ArrayToHexString } from "@nfid-frontend/utils"
 import { useMemo } from "react"
 
 import { getAddress } from "frontend/util/get-address"

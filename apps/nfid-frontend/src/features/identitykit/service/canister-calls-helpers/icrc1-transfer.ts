@@ -1,5 +1,5 @@
-import { Agent, AnonymousIdentity, HttpAgent } from "@dfinity/agent"
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
+import { Agent, AnonymousIdentity, HttpAgent } from "@icp-sdk/core/agent"
+import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc"
 
 import { exchangeRateService } from "@nfid/integration"
 

@@ -1,11 +1,11 @@
-import { SignIdentity } from "@dfinity/agent"
+import { SignIdentity } from "@icp-sdk/core/agent"
 import {
   AccountIdentifier,
   checkAccountId,
   SubAccount,
-} from "@dfinity/ledger-icp"
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
-import { Principal } from "@dfinity/principal"
+} from "@icp-sdk/canisters/ledger/icp"
+import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { BlockIndex, Memo, TransferResult } from "../../_ic_api/ledger.d"
 import { ledgerWithIdentity } from "../../actors"

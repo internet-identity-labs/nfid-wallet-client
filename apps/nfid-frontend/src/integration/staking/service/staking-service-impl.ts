@@ -1,13 +1,16 @@
-import { AnonymousIdentity, SignIdentity } from "@dfinity/agent"
-import { NeuronId as NeuronICPId, NeuronInfo, Topic } from "@dfinity/nns"
-import { NetworkEconomics } from "@dfinity/nns/dist/types/types/governance_converters"
-import { Principal } from "@dfinity/principal"
-import { SnsNeuronId } from "@dfinity/sns"
+import { AnonymousIdentity, SignIdentity } from "@icp-sdk/core/agent"
 import {
-  NervousSystemParameters,
-  Neuron,
-} from "@dfinity/sns/dist/candid/sns_governance"
-import { hexStringToUint8Array } from "@dfinity/utils"
+  NeuronId as NeuronICPId,
+  NeuronInfo,
+  Topic,
+} from "@icp-sdk/canisters/nns"
+import { NetworkEconomics } from "@icp-sdk/canisters/nns"
+import { Principal } from "@icp-sdk/core/principal"
+import { type SnsGovernanceDid } from "@icp-sdk/canisters/sns"
+type NervousSystemParameters = SnsGovernanceDid.NervousSystemParameters
+type SnsNeuronId = SnsGovernanceDid.NeuronId
+type Neuron = SnsGovernanceDid.Neuron
+import { hexStringToUint8Array } from "@nfid-frontend/utils"
 import { BigNumber } from "bignumber.js"
 import {
   getNetworkEconomicsParameters,
@@ -420,11 +423,11 @@ export class StakingServiceImpl implements StakingService {
       10 ** token.getTokenDecimals(),
     )
 
-    const id = await stakeNeuron({
+    const id = (await stakeNeuron({
       stake: BigInt(amountInE8S.toFixed()),
       identity: delegation,
       canisterId: root,
-    })
+    })) as SnsNeuronId
 
     await autoStakeMaturity({
       neuronId: id,

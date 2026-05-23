@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { icrc1StorageService } from "../service/icrc1-storage-service"
 

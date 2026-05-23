@@ -1,4 +1,4 @@
-import { DelegationIdentity } from "@dfinity/identity"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
 
 import { authState } from "@nfid/integration"
 

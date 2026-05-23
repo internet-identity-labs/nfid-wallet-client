@@ -2,7 +2,7 @@ import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
+} from "@icp-sdk/core/identity"
 
 import { storageWithTtl } from "@nfid/client-db"
 import { ONE_HOUR_IN_MS } from "@nfid/config"

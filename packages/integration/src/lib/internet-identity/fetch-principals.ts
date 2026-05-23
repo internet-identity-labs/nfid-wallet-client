@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { authState } from "../authentication"
 import { getPublicKey } from "../delegation-factory/delegation-i"

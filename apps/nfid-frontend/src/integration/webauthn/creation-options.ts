@@ -1,4 +1,4 @@
-import { DerEncodedPublicKey } from "@dfinity/agent"
+import { DerEncodedPublicKey } from "@icp-sdk/core/agent"
 import { Buffer } from "buffer"
 import * as tweetnacl from "tweetnacl"
 

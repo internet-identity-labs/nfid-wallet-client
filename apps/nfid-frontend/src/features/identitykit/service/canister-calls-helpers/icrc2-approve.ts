@@ -1,5 +1,5 @@
-import { Agent, AnonymousIdentity, HttpAgent } from "@dfinity/agent"
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
+import { Agent, AnonymousIdentity, HttpAgent } from "@icp-sdk/core/agent"
+import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc"
 
 import { idlFactory as icrc1and2IDL } from "../../idl/token-pepe-ledger"
 import { _SERVICE as icrc1and2IDLService } from "../../idl/token-pepe-ledger_idl"

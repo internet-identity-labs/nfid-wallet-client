@@ -1,10 +1,10 @@
-import { DerEncodedPublicKey, Signature } from "@dfinity/agent"
+import { DerEncodedPublicKey, Signature } from "@icp-sdk/core/agent"
 import {
   Delegation,
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
+} from "@icp-sdk/core/identity"
 
 import { WALLET_SCOPE, WALLET_SESSION_TTL } from "@nfid/config"
 import {
@@ -37,9 +37,8 @@ export async function getWalletDelegation(
       [
         {
           delegation: new Delegation(
-            new Uint8Array(
-              delegation.signedDelegation.delegation.pubkey,
-            ).buffer,
+            new Uint8Array(delegation.signedDelegation.delegation.pubkey)
+              .buffer,
             delegation.signedDelegation.delegation.expiration,
             delegation.signedDelegation.delegation.targets,
           ),

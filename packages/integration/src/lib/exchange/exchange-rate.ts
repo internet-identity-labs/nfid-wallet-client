@@ -1,4 +1,4 @@
-import * as Agent from "@dfinity/agent"
+import * as Agent from "@icp-sdk/core/agent"
 import BigNumber from "bignumber.js"
 import { Cache } from "node-ts-cache"
 

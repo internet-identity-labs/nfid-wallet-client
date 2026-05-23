@@ -1,25 +1,23 @@
-// @ts-nocheck - TypeScript types for @dfinity/agent are too strict for this use case
+// @ts-nocheck - TypeScript types for @icp-sdk/core/agent are too strict for this use case
 import {
   Agent,
+  AgentError,
   blsVerify,
   CallRequest,
   Cbor,
   Certificate,
+  defaultStrategy,
   LookupResult,
   lookupResultToBuffer,
-  RequestId,
-  UpdateCallRejectedError,
-  v2ResponseBody,
-  v3ResponseBody,
-} from "@dfinity/agent"
-import { AgentError } from "@dfinity/agent/lib/cjs/errors"
-import {
-  defaultStrategy,
   pollForResponse,
-} from "@dfinity/agent/lib/cjs/polling"
-import { bufFromBufLike } from "@dfinity/candid"
-import { DelegationIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
+  RequestId,
+  v4ResponseBody,
+  v2ResponseBody,
+  isV4ResponseBody,
+} from "@icp-sdk/core/agent"
+import { bufFromBufLike } from "@icp-sdk/core/candid"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { GenericError } from "./exception-handler.service"
 ;(BigInt.prototype as any).toJSON = function () {
@@ -37,6 +35,22 @@ function toArrayBuffer(buffer: Uint8Array | RequestId): ArrayBuffer {
   }
   // RequestId is ArrayBuffer & {...}, so it's already an ArrayBuffer
   return buffer as ArrayBuffer
+}
+
+// Local shim: UpdateCallRejectedError removed from @icp-sdk/core, replaced by ErrorCode hierarchy
+class UpdateCallRejectedError extends Error {
+  constructor(
+    _cid: Principal,
+    _methodName: string,
+    _requestId: RequestId,
+    _response: unknown,
+    _rejectCode: number,
+    rejectMessage: string,
+    _errorCode?: string,
+  ) {
+    super(rejectMessage)
+    this.name = "UpdateCallRejectedError"
+  }
 }
 
 export interface CallCanisterRequest {
@@ -98,12 +112,12 @@ class CallCanisterService {
 
     let certificate: Certificate | undefined
 
-    if (response.body && (response.body as v3ResponseBody).certificate) {
-      const cert = (response.body as v3ResponseBody).certificate
+    if (response.body && isV4ResponseBody(response.body)) {
+      const cert = (response.body as v4ResponseBody).certificate
       certificate = await Certificate.create({
         certificate: bufFromBufLike(cert),
         rootKey: agent.rootKey,
-        canisterId: Principal.from(canisterId),
+        principal: { canisterId: Principal.from(canisterId) },
         blsVerify,
       })
       const path = [new TextEncoder().encode("request_status"), requestId]
@@ -121,8 +135,6 @@ class CallCanisterService {
         case "replied":
           break
         case "rejected": {
-          // Find rejection details in the certificate
-
           const rejectCodeBuffer = lookupResultToBuffer(
             certificate.lookup([...path, "reject_code"]) as LookupResult,
           )
@@ -181,17 +193,16 @@ class CallCanisterService {
 
     // Fall back to polling if we receive an Accepted response code
     if (response.status === 202) {
-      const pollStrategy = defaultStrategy()
-      // Contains the certificate and the reply from the boundary node
-      const response = await pollForResponse(
-        agent,
-        cid,
-        requestId,
-        pollStrategy,
-        undefined,
+      const pollResult = await pollForResponse(agent, cid, requestId, {
+        strategy: defaultStrategy(),
         blsVerify,
-      )
-      certificate = response.certificate
+      })
+      certificate = pollResult.certificate
+
+      return {
+        contentMap: requestDetails,
+        certificate: pollResult.rawCertificate,
+      }
     }
 
     return {

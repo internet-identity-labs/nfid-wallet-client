@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 
 const ORIGIN_VALIDATION_REGEX =
   /^(https:\/\/([\w-]+)(?:\.raw)?\.(?:ic0\.app|icp0\.io)|http:\/\/localhost:4200)$/

@@ -2,8 +2,8 @@ import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
+} from "@icp-sdk/core/identity"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { ONE_HOUR_IN_MS, ONE_MINUTE_IN_MS } from "@nfid/config"
 import {

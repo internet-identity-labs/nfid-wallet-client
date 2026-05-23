@@ -1,4 +1,4 @@
-import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { Ed25519KeyIdentity } from "@icp-sdk/core/identity"
 
 export const getPrincipalId = (pubkey: Array<number>): string | undefined => {
   try {

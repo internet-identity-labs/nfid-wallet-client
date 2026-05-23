@@ -1,10 +1,10 @@
-import { IDL } from "@dfinity/candid"
+import { IDL } from "@icp-sdk/core/candid"
 import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
-import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+} from "@icp-sdk/core/identity"
+import { JsonnableEd25519KeyIdentity } from "@icp-sdk/core/identity"
 import { expect } from "@jest/globals"
 
 import { getGlobalDelegationChain } from "../delegation-factory/delegation-i"

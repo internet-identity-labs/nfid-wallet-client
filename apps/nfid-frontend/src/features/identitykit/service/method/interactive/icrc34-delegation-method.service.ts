@@ -1,4 +1,4 @@
-import { DelegationChain, Ed25519PublicKey } from "@dfinity/identity"
+import { DelegationChain, Ed25519PublicKey } from "@icp-sdk/core/identity"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 import { getAnonymousDelegation } from "packages/integration/src/lib/delegation-factory/delegation-i"
 
@@ -214,13 +214,12 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     return () => targetService.getVerificationReport(targets, origin)
   }
 
-  private fromBase64(base64: string): ArrayBuffer {
+  private fromBase64(base64: string): Uint8Array {
     if (typeof globalThis.Buffer !== "undefined") {
-      return globalThis.Buffer.from(base64, "base64").buffer
+      return new Uint8Array(globalThis.Buffer.from(base64, "base64").buffer)
     }
     if (typeof globalThis.atob !== "undefined") {
       return Uint8Array.from(globalThis.atob(base64), (m) => m.charCodeAt(0))
-        .buffer
     }
     throw Error("Could not decode base64 string")
   }

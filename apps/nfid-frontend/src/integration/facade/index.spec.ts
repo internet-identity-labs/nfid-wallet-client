@@ -5,8 +5,8 @@ import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
+} from "@icp-sdk/core/identity"
+import { Principal } from "@icp-sdk/core/principal"
 
 import {
   Account,

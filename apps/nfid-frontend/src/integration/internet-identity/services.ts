@@ -1,4 +1,4 @@
-import { DelegationIdentity, WebAuthnIdentity } from "@dfinity/identity"
+import { DelegationIdentity, WebAuthnIdentity } from "@icp-sdk/core/identity"
 
 import {
   authState,
@@ -230,20 +230,20 @@ export async function registerService(
             pubKey,
           }
         : sessionSource === "ii"
-        ? {
-            deviceType: DeviceType.Unknown,
-            icon: "ii" as Icon,
-            device: "Internet Identity",
-            browser: delegationIdentity.getPrincipal().toString(),
-            pubKey,
-          }
-        : {
-            icon: getIcon(deviceInfo),
-            device: deviceInfo.newDeviceName,
-            browser: deviceInfo.browser.name ?? "Mobile",
-            pubKey,
-            deviceType: DeviceType.Unknown,
-          }
+          ? {
+              deviceType: DeviceType.Unknown,
+              icon: "ii" as Icon,
+              device: "Internet Identity",
+              browser: delegationIdentity.getPrincipal().toString(),
+              pubKey,
+            }
+          : {
+              icon: getIcon(deviceInfo),
+              device: deviceInfo.newDeviceName,
+              browser: deviceInfo.browser.name ?? "Mobile",
+              pubKey,
+              deviceType: DeviceType.Unknown,
+            }
     console.debug("RouterRegisterDeviceDecider handleRegister", {
       account,
       accessPoint,

@@ -1,4 +1,7 @@
-import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp"
+import {
+  AccountIdentifier,
+  IcpLedgerCanister,
+} from "@icp-sdk/canisters/ledger/icp"
 
 import { rosetta } from ".."
 import { restCall } from "../../rest/rest-call"
@@ -26,7 +29,7 @@ export async function getBalance(address: string): Promise<Balance> {
   if (address.startsWith("0x")) {
     return Promise.resolve(BigInt(0))
   }
-  return LedgerCanister.create().accountBalance({
+  return IcpLedgerCanister.create().accountBalance({
     accountIdentifier: AccountIdentifier.fromHex(address),
     certified: false,
   })

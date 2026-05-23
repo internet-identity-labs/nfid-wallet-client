@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
+import { DelegationChain, Ed25519KeyIdentity } from "@icp-sdk/core/identity"
 
 import {
   authState as authStateMock,

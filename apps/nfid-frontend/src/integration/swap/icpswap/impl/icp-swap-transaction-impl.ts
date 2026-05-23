@@ -1,4 +1,5 @@
-import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
+import { type IcpLedgerDid } from "@icp-sdk/canisters/ledger/icp"
+type Icrc1TransferError = IcpLedgerDid.Icrc1TransferError
 import { UUID } from "node:crypto"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { AbstractSwapTransaction } from "src/integration/swap/transaction/transaction-abstract"

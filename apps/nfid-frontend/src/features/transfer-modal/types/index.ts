@@ -1,4 +1,3 @@
-import { Icrc1BlockIndex } from "@dfinity/ledger-icp"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { Wallet } from "frontend/integration/wallet/hooks/use-all-wallets"
@@ -43,7 +42,7 @@ export interface ITransferResponse {
   errorMessage?: Error
   url?: string
   hash?: string
-  blockIndex?: Icrc1BlockIndex
+  blockIndex?: bigint
 }
 
 export type TransferMachineContext = {

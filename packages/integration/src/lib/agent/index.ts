@@ -1,7 +1,7 @@
-import * as Agent from "@dfinity/agent"
-import { HttpAgent, Identity, SubmitResponse } from "@dfinity/agent"
-import "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
+import * as Agent from "@icp-sdk/core/agent"
+import { HttpAgent, Identity, SubmitResponse } from "@icp-sdk/core/agent"
+import "@icp-sdk/core/identity"
+import { Principal } from "@icp-sdk/core/principal"
 
 export const ic = {
   host: IC_HOST || "https://ic0.app",

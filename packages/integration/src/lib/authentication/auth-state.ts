@@ -1,12 +1,12 @@
-import { AnonymousIdentity, Identity, SignIdentity } from "@dfinity/agent"
-import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+import { AnonymousIdentity, Identity, SignIdentity } from "@icp-sdk/core/agent"
+import { hexToBytes } from "@noble/hashes/utils"
 import {
   DelegationChain,
   DelegationIdentity,
   DER_COSE_OID,
   Ed25519KeyIdentity,
   wrapDER,
-} from "@dfinity/identity"
+} from "@icp-sdk/core/identity"
 import base64url from "base64url"
 import { BehaviorSubject, find, lastValueFrom, map } from "rxjs"
 
@@ -413,7 +413,7 @@ export async function getAllWalletsFromThisDevice(): Promise<ExistingWallet[]> {
         .map((s) => {
           return {
             credentialId: base64url.toBuffer(s.credentialId),
-            pubkey: wrapDER(fromHexString(s.publicKey), DER_COSE_OID) as any,
+            pubkey: wrapDER(hexToBytes(s.publicKey), DER_COSE_OID) as any,
             anchor: p.anchor,
           }
         }),

@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 import { FC } from "react"
 
 import { ModalComponent } from "packages/ui/src/molecules/modal"

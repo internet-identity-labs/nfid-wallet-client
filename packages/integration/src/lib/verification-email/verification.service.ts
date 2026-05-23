@@ -2,7 +2,7 @@ import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
+} from "@icp-sdk/core/identity"
 import { importPKCS8, SignJWT } from "jose"
 
 import { DEFAULT_DELEGATION_TTL } from "@nfid/config"

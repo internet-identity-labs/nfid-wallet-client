@@ -1,5 +1,5 @@
-import { AccountIdentifier } from "@dfinity/ledger-icp"
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
+import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp"
+import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc"
 
 import { getBalance } from "@nfid/integration"
 

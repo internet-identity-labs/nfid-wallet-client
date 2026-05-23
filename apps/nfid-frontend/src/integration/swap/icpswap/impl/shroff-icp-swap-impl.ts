@@ -1,7 +1,8 @@
-import * as Agent from "@dfinity/agent"
-import { HttpAgent, SignIdentity } from "@dfinity/agent"
-import { Account, SubAccount } from "@dfinity/ledger-icp"
-import { Principal } from "@dfinity/principal"
+import * as Agent from "@icp-sdk/core/agent"
+import { HttpAgent, SignIdentity } from "@icp-sdk/core/agent"
+import { SubAccount, type IcpLedgerDid } from "@icp-sdk/canisters/ledger/icp"
+type Account = IcpLedgerDid.Account
+import { Principal } from "@icp-sdk/core/principal"
 import BigNumber from "bignumber.js"
 import { idlFactory as SwapPoolIDL } from "src/integration/swap/icpswap/idl/SwapPool"
 import type { SourceInputCalculator } from "src/integration/swap/calculator/calculator"

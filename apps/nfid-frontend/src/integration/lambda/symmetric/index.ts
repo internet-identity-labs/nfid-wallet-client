@@ -1,7 +1,7 @@
-import { Cbor, QueryFields } from "@dfinity/agent"
-import { IDL } from "@dfinity/candid"
-import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
-import { DelegationIdentity } from "@dfinity/identity"
+import { Cbor, QueryFields } from "@icp-sdk/core/agent"
+import { IDL } from "@icp-sdk/core/candid"
+import { bytesToHex } from "@noble/hashes/utils"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
 import { createDecipheriv } from "browser-crypto"
 import { Buffer } from "buffer"
 
@@ -40,7 +40,7 @@ export async function getSymmetricKey(
   )
 
   const body = Cbor.encode(request.body)
-  const str = toHexString(body)
+  const str = bytesToHex(body)
 
   const response = await fetch(url, {
     method: "POST",

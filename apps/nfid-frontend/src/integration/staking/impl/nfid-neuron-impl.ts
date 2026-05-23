@@ -1,6 +1,8 @@
-import { SignIdentity } from "@dfinity/agent"
-import { NeuronState, Followees as IcpFollowees } from "@dfinity/nns"
-import { Followees, NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
+import { SignIdentity } from "@icp-sdk/core/agent"
+import { NeuronState, Followees as IcpFollowees } from "@icp-sdk/canisters/nns"
+import { type SnsGovernanceDid } from "@icp-sdk/canisters/sns"
+type Followees = SnsGovernanceDid.Followees
+type NeuronId = SnsGovernanceDid.NeuronId
 import BigNumber from "bignumber.js"
 import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
 

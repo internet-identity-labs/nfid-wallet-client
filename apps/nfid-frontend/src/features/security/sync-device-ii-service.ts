@@ -1,4 +1,4 @@
-import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { Ed25519KeyIdentity } from "@icp-sdk/core/identity"
 import toaster from "packages/ui/src/atoms/toast"
 
 import { RootWallet, DeviceType, authState, ic } from "@nfid/integration"

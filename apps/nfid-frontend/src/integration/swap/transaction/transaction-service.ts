@@ -1,5 +1,5 @@
-import * as Agent from "@dfinity/agent"
-import { HttpAgent } from "@dfinity/agent"
+import * as Agent from "@icp-sdk/core/agent"
+import { HttpAgent } from "@icp-sdk/core/agent"
 import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
 import { KongSwapTransactionImpl } from "src/integration/swap/kong/impl/kong-swap-transaction-impl"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"

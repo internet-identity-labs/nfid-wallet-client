@@ -1,6 +1,6 @@
-import { DerEncodedPublicKey } from "@dfinity/agent"
-import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
-import { WebAuthnIdentity } from "@dfinity/identity"
+import { DerEncodedPublicKey } from "@icp-sdk/core/agent"
+import { bytesToHex } from "@noble/hashes/utils"
+import { WebAuthnIdentity } from "@icp-sdk/core/identity"
 
 import {
   authState,
@@ -167,13 +167,12 @@ export async function checkTentativeDevice({
 
         const devices = await fetchAllDevices(BigInt(anchor))
         const addedDevice = devices.find((device) => {
-          const devicePublicKey = toHexString(
+          const devicePublicKey = bytesToHex(
             derFromPubkey(Array.from(new Uint8Array(device.pubkey))),
           )
 
           return (
-            devicePublicKey ===
-            toHexString(userIdentity?.getPublicKey().toDer())
+            devicePublicKey === bytesToHex(userIdentity?.getPublicKey().toDer())
           )
         })
 

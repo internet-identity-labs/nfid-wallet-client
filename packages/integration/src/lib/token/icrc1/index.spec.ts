@@ -1,8 +1,8 @@
 /**
  * @jest-environment jsdom
  */
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
+import { DelegationIdentity, Ed25519KeyIdentity } from "@icp-sdk/core/identity"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { generateDelegationIdentity, mockIdentityA } from "@nfid/integration"
 import { transferICRC1 } from "@nfid/integration/token/icrc1/index"
@@ -44,9 +44,8 @@ describe("ICRC1 suite", () => {
 
   it("Transfer", async () => {
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
-    const { delegationIdentity } = await generateDelegationIdentity(
-      mockedIdentity,
-    )
+    const { delegationIdentity } =
+      await generateDelegationIdentity(mockedIdentity)
     const transferArgs: TransferArg = {
       amount: BigInt(10),
       created_at_time: [],

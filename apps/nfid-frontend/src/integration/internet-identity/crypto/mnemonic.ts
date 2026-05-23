@@ -1,4 +1,4 @@
-import { toHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+import { bytesToHex } from "@noble/hashes/utils"
 import { entropyToMnemonic, validateMnemonic } from "bip39"
 
 // TODO: find a better way to do this
@@ -2061,7 +2061,10 @@ const ENGLISH_WORDS = [
 export function generate(): string {
   const entropy = new Uint32Array(32)
   crypto.getRandomValues(entropy)
-  return entropyToMnemonic(toHexString(entropy), ENGLISH_WORDS)
+  return entropyToMnemonic(
+    bytesToHex(new Uint8Array(entropy.buffer)),
+    ENGLISH_WORDS,
+  )
 }
 
 /**

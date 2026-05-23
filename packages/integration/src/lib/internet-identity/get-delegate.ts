@@ -1,9 +1,9 @@
-import { DerEncodedPublicKey, Signature } from "@dfinity/agent"
+import { DerEncodedPublicKey, Signature } from "@icp-sdk/core/agent"
 import {
   Delegation,
   DelegationChain,
   DelegationIdentity,
-} from "@dfinity/identity"
+} from "@icp-sdk/core/identity"
 
 import { PublicKey } from "../_ic_api/internet_identity.d"
 import { ii } from "../actors"

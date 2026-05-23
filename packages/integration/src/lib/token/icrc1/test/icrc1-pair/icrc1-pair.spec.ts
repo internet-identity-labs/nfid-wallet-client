@@ -5,9 +5,9 @@ import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
-import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
-import { Principal } from "@dfinity/principal"
+} from "@icp-sdk/core/identity"
+import { JsonnableEd25519KeyIdentity } from "@icp-sdk/core/identity"
+import { Principal } from "@icp-sdk/core/principal"
 
 import {
   authState,

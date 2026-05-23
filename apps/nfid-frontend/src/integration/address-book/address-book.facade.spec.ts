@@ -23,7 +23,7 @@ import {
   BOB_ENTITY,
   CHARLIE_ENTITY,
 } from "./address-book.mocks"
-import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { Ed25519KeyIdentity } from "@icp-sdk/core/identity"
 import { mockIdentityA } from "packages/integration/src/lib/identity/mocks"
 import { generateDelegationIdentity } from "packages/integration/src/lib/test-utils"
 import { authState } from "packages/integration/src/lib/authentication/auth-state"

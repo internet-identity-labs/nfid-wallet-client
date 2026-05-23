@@ -1,5 +1,7 @@
-import { Actor, type ActorSubclass, type Agent } from "@dfinity/agent"
-import { type InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
+import { Actor, type ActorSubclass, type Agent } from "@icp-sdk/core/agent"
+import { IDL } from "@icp-sdk/core/candid"
+
+type InterfaceFactory = IDL.InterfaceFactory
 
 class ActorService {
   public getActor<T>(

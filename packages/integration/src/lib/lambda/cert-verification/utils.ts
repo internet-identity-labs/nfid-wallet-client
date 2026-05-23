@@ -1,32 +1,34 @@
 import {
-  CertificateVerificationError,
   LookupResult,
-  LookupResultAbsent,
-  LookupResultFound,
-  LookupResultUnknown,
-} from "@dfinity/agent"
+  LookupPathResultAbsent,
+  LookupPathResultFound,
+  LookupPathResultUnknown,
+  LookupPathStatus,
+} from "@icp-sdk/core/agent"
+
+import { CertificateVerificationError } from "./error"
 
 const isLookupResultFound = (
   result: LookupResult,
-): result is LookupResultFound => {
-  return (result as LookupResultFound).value !== undefined
+): result is LookupPathResultFound => {
+  return (result as LookupPathResultFound).status === LookupPathStatus.Found
 }
 
 const isLookupResultUnknown = (
   result: LookupResult,
-): result is LookupResultUnknown => {
-  return (result as LookupResultUnknown).status === "unknown"
+): result is LookupPathResultUnknown => {
+  return (result as LookupPathResultUnknown).status === LookupPathStatus.Unknown
 }
 
 const isLookupResultAbsent = (
   result: LookupResult,
-): result is LookupResultAbsent => {
-  return (result as LookupResultAbsent).status === "absent"
+): result is LookupPathResultAbsent => {
+  return (result as LookupPathResultAbsent).status === LookupPathStatus.Absent
 }
 
 export const getLookupResultValue = (
   result: LookupResult,
-): ArrayBuffer | undefined => {
+): Uint8Array | undefined => {
   if (!result) {
     throw new CertificateVerificationError("Certified data couldn't be found")
   }
@@ -40,9 +42,7 @@ export const getLookupResultValue = (
   }
 
   if (isLookupResultFound(result)) {
-    if (result.value instanceof ArrayBuffer) {
-      return result.value
-    }
+    return result.value
   }
 
   throw new CertificateVerificationError(

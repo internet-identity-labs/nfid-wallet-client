@@ -1,11 +1,11 @@
-import { DerEncodedPublicKey, SignIdentity } from "@dfinity/agent"
-import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+import { DerEncodedPublicKey, SignIdentity } from "@icp-sdk/core/agent"
+import { hexToBytes } from "@noble/hashes/utils"
 import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
   WebAuthnIdentity,
-} from "@dfinity/identity"
+} from "@icp-sdk/core/identity"
 import { arrayBufferEqual } from "src/integration/identity/services"
 
 import {
@@ -145,7 +145,7 @@ export async function fetchRecoveryDevices(anchor: UserNumber) {
  * @return {*}
  */
 export function getSessionKey(secret: string) {
-  const blobReverse = fromHexString(secret)
+  const blobReverse = hexToBytes(secret)
   const sessionKey = Array.from(new Uint8Array(blobReverse))
   return sessionKey
 }

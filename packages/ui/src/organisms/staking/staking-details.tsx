@@ -1,5 +1,6 @@
-import { SignIdentity } from "@dfinity/agent"
-import { NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
+import { SignIdentity } from "@icp-sdk/core/agent"
+import { type SnsGovernanceDid } from "@icp-sdk/canisters/sns"
+type NeuronId = SnsGovernanceDid.NeuronId
 import clsx from "clsx"
 import { FC, useCallback, useState } from "react"
 import { useForm } from "react-hook-form"

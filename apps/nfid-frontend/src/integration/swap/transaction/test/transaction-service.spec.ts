@@ -2,8 +2,8 @@ import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
-import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+} from "@icp-sdk/core/identity"
+import { JsonnableEd25519KeyIdentity } from "@icp-sdk/core/identity"
 import { KongSwapTransactionImpl } from "src/integration/swap/kong/impl/kong-swap-transaction-impl"
 import { SwapStage } from "src/integration/swap/types/enums"
 

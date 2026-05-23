@@ -1,4 +1,4 @@
-import { PublicKey } from "@dfinity/agent"
+import { PublicKey } from "@icp-sdk/core/agent"
 
 import { DeviceData } from "../_ic_api/internet_identity.d"
 

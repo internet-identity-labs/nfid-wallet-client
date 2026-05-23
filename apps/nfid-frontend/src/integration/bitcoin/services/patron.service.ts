@@ -1,5 +1,5 @@
-import { SignIdentity } from "@dfinity/agent"
-import { Principal } from "@dfinity/principal"
+import { SignIdentity } from "@icp-sdk/core/agent"
+import { Principal } from "@icp-sdk/core/principal"
 import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
 import { SelectedUtxosFeeRequest } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
 

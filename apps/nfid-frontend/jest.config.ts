@@ -1,4 +1,4 @@
-import { JEST_GLOBALS } from "../../config/jest-globals.js"
+import { JEST_GLOBALS } from "../../config/jest-globals.cjs"
 const config = {
   displayName: "nfid-frontend",
   preset: "../../jest.preset.js",

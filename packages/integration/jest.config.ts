@@ -10,6 +10,7 @@ export default {
   moduleNameMapper: {
     "^uuid$": "<rootDir>/../../__mocks__/uuid.ts",
   },
+  transformIgnorePatterns: ["node_modules/(?!(@icp-sdk/auth)/)"],
   moduleFileExtensions: ["ts", "js", "html"],
   coverageDirectory: "../../coverage/packages/integration",
   setupFiles: ["./src/setup-tests.ts"],

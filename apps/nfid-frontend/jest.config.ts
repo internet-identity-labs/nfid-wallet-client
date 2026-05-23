@@ -11,7 +11,7 @@ const config = {
   transform: {
     "^.+\\.(ts|tsx|js|jsx)$": "ts-jest",
   },
-  transformIgnorePatterns: ["/node_modules/(?!(uuid)/)"],
+  transformIgnorePatterns: ["/node_modules/(?!(@icp-sdk/auth|uuid)/)"],
   collectCoverage: false,
   coverageThreshold: {
     global: {

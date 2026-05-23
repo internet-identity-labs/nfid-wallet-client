@@ -2,7 +2,9 @@ import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
+  Ed25519PublicKey,
 } from "@icp-sdk/core/identity"
+import { type DerEncodedPublicKey } from "@icp-sdk/core/agent"
 import { Principal } from "@icp-sdk/core/principal"
 
 import { ONE_HOUR_IN_MS, ONE_MINUTE_IN_MS } from "@nfid/config"
@@ -110,7 +112,9 @@ export async function ecdsaRegisterNewKeyPair(
 
   const delegationChainForLambda = await DelegationChain.create(
     identity,
-    Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, "00"]).getPublicKey(),
+    Ed25519PublicKey.fromDer(
+      new Uint8Array(fromHexString(lambdaPublicKey)) as DerEncodedPublicKey,
+    ),
     new Date(Date.now() + ONE_MINUTE_IN_MS * 10),
     { previous: identity.getDelegation() },
   )
@@ -154,12 +158,8 @@ export async function getLambdaPublicKey(
     } else {
       publicKey = response[0]
     }
-    const publicDelegation = Ed25519KeyIdentity.fromParsedJson([
-      publicKey,
-      "00",
-    ])
     const principal = Principal.selfAuthenticating(
-      new Uint8Array(publicDelegation.getPublicKey().toDer()),
+      new Uint8Array(fromHexString(publicKey)),
     )
 
     return principal.toText()

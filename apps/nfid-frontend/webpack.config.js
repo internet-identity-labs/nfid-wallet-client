@@ -305,6 +305,10 @@ export default composePlugins(withNx(), withReact(), withSvgr(), (config) => {
   config.resolve.alias = {
     ...config.resolve.alias,
     frontend: path.resolve(__dirname, "src"),
+    "@dfinity/agent": path.resolve(
+      __dirname,
+      "../../node_modules/@icp-sdk/core/lib/cjs/agent/index.js",
+    ),
   }
 
   config.resolve.fallback = {

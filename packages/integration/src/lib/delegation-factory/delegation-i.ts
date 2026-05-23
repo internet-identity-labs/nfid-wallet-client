@@ -2,7 +2,9 @@ import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
+  Ed25519PublicKey,
 } from "@icp-sdk/core/identity"
+import { type DerEncodedPublicKey } from "@icp-sdk/core/agent"
 
 import { storageWithTtl } from "@nfid/client-db"
 import { ONE_HOUR_IN_MS } from "@nfid/config"
@@ -252,7 +254,9 @@ export async function createDelegationChain(
 ): Promise<DelegationChain> {
   return await DelegationChain.create(
     identity,
-    Ed25519KeyIdentity.fromParsedJson([lambdaPublicKey, "00"]).getPublicKey(),
+    Ed25519PublicKey.fromDer(
+      Buffer.from(lambdaPublicKey, "hex") as unknown as DerEncodedPublicKey,
+    ),
     expirationDate,
     options,
   )

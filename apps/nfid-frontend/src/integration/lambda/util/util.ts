@@ -18,7 +18,9 @@ export async function getTransformedRequest(
     method_name: fields.methodName,
     arg: fields.arg,
     sender,
-    ingress_expiry: new Expiry(DEFAULT_INGRESS_EXPIRY_DELTA_IN_MSECS),
+    ingress_expiry: Expiry.fromDeltaInMilliseconds(
+      DEFAULT_INGRESS_EXPIRY_DELTA_IN_MSECS,
+    ),
   } as ReadRequest
   return await identity.transformRequest({
     request: {

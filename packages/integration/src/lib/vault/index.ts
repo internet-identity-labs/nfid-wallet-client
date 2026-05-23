@@ -47,9 +47,11 @@ export async function registerVault(
     description: typeof description === "undefined" ? [] : [description],
     name: vaultName,
   }
-  const vaultResponse = await vaultAPI.register_vault(request).catch((e) => {
-    throw new Error(`registerVault: ${e.message}`)
-  })
+  const vaultResponse = await vaultAPI
+    .register_vault(request)
+    .catch((e: any) => {
+      throw new Error(`registerVault: ${e.message}`)
+    })
   return candidToVault(vaultResponse)
 }
 
@@ -68,7 +70,7 @@ export async function getVaults(): Promise<Vault[]> {
   const address = getAddress(Principal.fromText(publicKey), hex)
   const response = await vaultAnonymous
     .get_vaults_by_address(address)
-    .catch((e) => {
+    .catch((e: any) => {
       throw new Error(`getVaults: ${e.message}`)
     })
   return response.map((v) => candidToVault(v))
@@ -98,7 +100,7 @@ export async function storeMember({
   }
   const response = await vaultAPI
     .store_member(vaultMemberRequest)
-    .catch((e) => {
+    .catch((e: any) => {
       throw new Error(`storeMember: ${e.message}`)
     })
   return candidToVault(response)
@@ -119,7 +121,7 @@ export async function registerWallet({
   }
   const response = await vaultAPI
     .register_wallet(walletRegisterRequest)
-    .catch((e) => {
+    .catch((e: any) => {
       throw new Error(`registerWallet: ${e.message}`)
     })
   return candidToWallet(response)
@@ -128,7 +130,7 @@ export async function registerWallet({
 export async function updateWallet(wallet: Wallet): Promise<Wallet> {
   const response = await vaultAPI
     .update_wallet(walletToCandid(wallet))
-    .catch((e) => {
+    .catch((e: any) => {
       throw new Error(`updateWallet: ${e.message}`)
     })
   return candidToWallet(response)
@@ -161,7 +163,7 @@ export async function registerPolicy({
   }
   const response = await vaultAPI
     .register_policy(policyRegisterRequest)
-    .catch((e) => {
+    .catch((e: any) => {
       throw new Error(`registerPolicy: ${e.message}`)
     })
   return candidToPolicy(response)
@@ -170,21 +172,21 @@ export async function registerPolicy({
 export async function updatePolicy(policy: Policy): Promise<Policy> {
   const response = await vaultAPI
     .update_policy(policyToCandid(policy))
-    .catch((e) => {
+    .catch((e: any) => {
       throw new Error(`updatePolicy: ${e.message}`)
     })
   return candidToPolicy(response)
 }
 
 export async function getWallets(vaultId: bigint): Promise<Wallet[]> {
-  const response = await vaultAPI.get_wallets(vaultId).catch((e) => {
+  const response = await vaultAPI.get_wallets(vaultId).catch((e: any) => {
     throw new Error(`getWallets: ${e.message}`)
   })
   return response.map((v) => candidToWallet(v))
 }
 
 export async function getPolicies(vaultId: bigint): Promise<Policy[]> {
-  const response = await vaultAPI.get_policies(vaultId).catch((e) => {
+  const response = await vaultAPI.get_policies(vaultId).catch((e: any) => {
     throw new Error(`getPolicies: ${e.message}`)
   })
   return response.map((v) => candidToPolicy(v))
@@ -207,7 +209,7 @@ export async function registerTransaction({
       amount,
       wallet_id: from_sub_account,
     })
-    .catch((e) => {
+    .catch((e: any) => {
       throw new Error(`registerTransaction: ${e.message}`)
     })
   return candidToTransaction(transaction)
@@ -227,14 +229,14 @@ export async function approveTransaction({
       state: transactionStateToCandid(state),
       transaction_id: transactionId,
     })
-    .catch((e) => {
+    .catch((e: any) => {
       throw new Error(`approveTransaction: ${e.message}`)
     })
   return candidToTransaction(transaction)
 }
 
 export async function getTransactions(): Promise<Transaction[]> {
-  const transactions = await vaultAPI.get_transactions().catch((e) => {
+  const transactions = await vaultAPI.get_transactions().catch((e: any) => {
     throw new Error(`getTransactions: ${e.message}`)
   })
   return transactions.map(candidToTransaction)

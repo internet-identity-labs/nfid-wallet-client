@@ -15,7 +15,7 @@ import {
   v2ResponseBody,
   isV4ResponseBody,
 } from "@icp-sdk/core/agent"
-import { bufFromBufLike } from "@icp-sdk/core/candid"
+import { uint8FromBufLike } from "@icp-sdk/core/candid"
 import { DelegationIdentity } from "@icp-sdk/core/identity"
 import { Principal } from "@icp-sdk/core/principal"
 
@@ -115,7 +115,7 @@ class CallCanisterService {
     if (response.body && isV4ResponseBody(response.body)) {
       const cert = (response.body as v4ResponseBody).certificate
       certificate = await Certificate.create({
-        certificate: bufFromBufLike(cert),
+        certificate: uint8FromBufLike(cert),
         rootKey: agent.rootKey,
         principal: { canisterId: Principal.from(canisterId) },
         blsVerify,

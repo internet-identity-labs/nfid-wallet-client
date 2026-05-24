@@ -3,7 +3,6 @@ export type OCPNetwork =
   | "Polygon"
   | "Arbitrum"
   | "Base"
-  | "BNB"
   | "Bitcoin"
   | "ICP"
 

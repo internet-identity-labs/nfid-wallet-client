@@ -3,13 +3,10 @@ import { Principal } from "@dfinity/principal"
 import { isAddress, formatUnits, parseUnits } from "ethers"
 import validate from "bitcoin-address-validation"
 
-import { PriceService } from "packages/integration/src/lib/asset/asset-util"
-
 import { ethereumService } from "../ethereum/eth/ethereum.service"
 import { polygonService } from "../ethereum/polygon/polygon.service"
 import { arbitrumService } from "../ethereum/arbitrum/arbitrum.service"
 import { baseService } from "../ethereum/base/base.service"
-import { bnbService } from "../ethereum/bnb/bnb.service"
 import { EVMService, SendEthFee } from "../ethereum/evm.service"
 import { bitcoinService } from "../bitcoin/bitcoin.service"
 import { Address } from "../bitcoin/services/chain-fusion-signer.service"
@@ -20,6 +17,7 @@ import {
   OCPNetworkError,
   OCPQuoteExpiredError,
   OCPCurrencyNotSupportedError,
+  OCPInsufficientBalanceError,
   OCPTransactionSignError,
   OCPSubmitError,
 } from "./errors"
@@ -38,12 +36,12 @@ const SUPPORTED_NETWORKS: OCPNetwork[] = [
   "Polygon",
   "Arbitrum",
   "Base",
-  "BNB",
   "Bitcoin",
   "ICP",
 ]
 
 const REQUEST_TIMEOUT_MS = 10_000
+const ICP_FEE_E8S = BigInt(10_000)
 
 export class OpenCryptoPayService {
   decodeLnurl(lnurl: string): string {
@@ -65,27 +63,27 @@ export class OpenCryptoPayService {
     currencies: OCPCurrency[],
     identity: SignIdentity,
   ): Promise<OCPCurrency[]> {
-    const available: OCPCurrency[] = []
+    const supported = currencies.filter((c) =>
+      this.isNetworkSupported(c.network),
+    )
 
-    for (const currency of currencies) {
-      if (!this.isNetworkSupported(currency.network)) continue
-
-      try {
+    const results = await Promise.allSettled(
+      supported.map(async (currency) => {
         const balance = await this.getBalanceForNetwork(
           currency.network,
           identity,
         )
         const balanceInUnits = Number(formatUnits(balance, currency.decimals))
+        return balanceInUnits >= currency.minSendable ? currency : null
+      }),
+    )
 
-        if (balanceInUnits >= currency.minSendable) {
-          available.push(currency)
-        }
-      } catch {
-        continue
-      }
-    }
-
-    return available
+    return results
+      .filter(
+        (r): r is PromiseFulfilledResult<OCPCurrency> =>
+          r.status === "fulfilled" && r.value !== null,
+      )
+      .map((r) => r.value)
   }
 
   async getQuote(
@@ -134,12 +132,10 @@ export class OpenCryptoPayService {
     const totalAmount = (amount + fee + netFee).toString()
 
     let totalAmountUSD = "0"
-    try {
-      const rate = await new PriceService().getPrice([currency.symbol])
-      const price = Number(rate[0]?.price ?? 0)
-      totalAmountUSD = (Number(totalAmount) * price).toFixed(2)
-    } catch {
-      // price unavailable
+    if (currency.convertedMultiplier) {
+      totalAmountUSD = (
+        Number(totalAmount) * currency.convertedMultiplier
+      ).toFixed(2)
     }
 
     const quoteExpiresIn = Math.max(
@@ -170,6 +166,16 @@ export class OpenCryptoPayService {
       throw new OCPCurrencyNotSupportedError(quote.asset, quote.method)
     }
 
+    const balance = await this.getBalanceForNetwork(quote.method, identity)
+    const requiredAmount = this.getRequiredAmount(quote)
+    if (balance < requiredAmount) {
+      throw new OCPInsufficientBalanceError(
+        requiredAmount.toString(),
+        balance.toString(),
+        quote.asset,
+      )
+    }
+
     let txId: string
     let rawTx: string
 
@@ -178,6 +184,7 @@ export class OpenCryptoPayService {
       txId = result.txId
       rawTx = result.rawTx
     } catch (e) {
+      if (e instanceof OCPInsufficientBalanceError) throw e
       throw new OCPTransactionSignError(
         quote.method,
         e instanceof Error ? e : new Error(String(e)),
@@ -193,7 +200,6 @@ export class OpenCryptoPayService {
       case "Polygon":
       case "Arbitrum":
       case "Base":
-      case "BNB":
         return isAddress(address)
       case "Bitcoin":
         return validate(address)
@@ -205,6 +211,24 @@ export class OpenCryptoPayService {
   }
 
   // ── Private helpers ──
+
+  private getRequiredAmount(quote: OCPQuote): bigint {
+    switch (quote.method) {
+      case "Ethereum":
+      case "Polygon":
+      case "Arbitrum":
+      case "Base":
+        return parseUnits(quote.amount, 18) + parseUnits(quote.fee, 18)
+      case "Bitcoin":
+        return parseUnits(quote.amount, 8) + parseUnits(quote.fee, 8)
+      case "ICP":
+        return (
+          parseUnits(quote.amount, 8) + parseUnits(quote.fee, 8) + ICP_FEE_E8S
+        )
+      default:
+        return BigInt(0)
+    }
+  }
 
   private isNetworkSupported(network: string): network is OCPNetwork {
     return SUPPORTED_NETWORKS.includes(network as OCPNetwork)
@@ -220,8 +244,6 @@ export class OpenCryptoPayService {
         return arbitrumService
       case "Base":
         return baseService
-      case "BNB":
-        return bnbService
       default:
         throw new OCPCurrencyNotSupportedError("native", network)
     }
@@ -235,25 +257,31 @@ export class OpenCryptoPayService {
       case "Ethereum":
       case "Polygon":
       case "Arbitrum":
-      case "Base":
-      case "BNB": {
+      case "Base": {
         const service = this.getEvmService(network)
         const address = await service.getAddress(identity)
         return service.getBalance(address)
       }
       case "Bitcoin": {
-        const balance = await bitcoinService.getBalance(identity)
-        return BigInt(balance)
+        return bitcoinService.getBalance(identity)
       }
       case "ICP": {
-        const { AccountIdentifier } = await import("@dfinity/ledger-icp")
-        const { getBalance } =
-          await import("packages/integration/src/lib/rosetta/balance")
-        const accountId = AccountIdentifier.fromPrincipal({
-          principal: identity.getPrincipal(),
-        }).toHex()
-        const balance = await getBalance(accountId)
-        return BigInt(balance)
+        const { ICP_CANISTER_ID } =
+          await import("@nfid/integration/token/constants")
+        const { createAgent } = await import("@dfinity/utils")
+        const { IcrcLedgerCanister } = await import("@dfinity/ledger-icrc")
+        const agent = await createAgent({
+          identity,
+          host: "https://ic0.app",
+        })
+        const ledger = IcrcLedgerCanister.create({
+          agent,
+          canisterId: Principal.fromText(ICP_CANISTER_ID),
+        })
+        return ledger.balance({
+          owner: identity.getPrincipal(),
+          certified: false,
+        })
       }
       default:
         throw new OCPCurrencyNotSupportedError("native", network)
@@ -269,8 +297,7 @@ export class OpenCryptoPayService {
       case "Ethereum":
       case "Polygon":
       case "Arbitrum":
-      case "Base":
-      case "BNB": {
+      case "Base": {
         const service = this.getEvmService(network)
         const from = await service.getAddress(identity)
         const fee: SendEthFee = await service.getSendEthFee(
@@ -281,10 +308,15 @@ export class OpenCryptoPayService {
         return formatUnits(fee.ethereumNetworkFee, 18)
       }
       case "Bitcoin": {
-        return "0.00001"
+        try {
+          const feeData = await bitcoinService.getFee(identity, quote.amount)
+          return formatUnits(feeData.fee_satoshis, 8)
+        } catch {
+          return "0.00001"
+        }
       }
       case "ICP": {
-        return "0.0001"
+        return formatUnits(ICP_FEE_E8S, 8)
       }
       default:
         return "0"
@@ -300,7 +332,6 @@ export class OpenCryptoPayService {
       case "Polygon":
       case "Arbitrum":
       case "Base":
-      case "BNB":
         return this.signAndSendEvm(quote, identity)
       case "Bitcoin":
         return this.signAndSendBtc(quote, identity)
@@ -330,7 +361,6 @@ export class OpenCryptoPayService {
       Polygon: ChainId.POL,
       Arbitrum: ChainId.ARB,
       Base: ChainId.BASE,
-      BNB: ChainId.BNB,
     }
 
     const response = await service.sendEthTransaction(
@@ -383,7 +413,7 @@ export class OpenCryptoPayService {
     const result = await transferICRC1(identity, ICP_CANISTER_ID, {
       to: { owner, subaccount: [] },
       amount: amountE8s,
-      fee: [],
+      fee: [ICP_FEE_E8S],
       memo: [],
       from_subaccount: [],
       created_at_time: [],

@@ -111,11 +111,13 @@ class CallCanisterService {
     })
 
     let certificate: Certificate | undefined
+    let rawCertificate: Uint8Array | undefined
 
     if (response.body && isV4ResponseBody(response.body)) {
       const cert = (response.body as v4ResponseBody).certificate
+      rawCertificate = uint8FromBufLike(cert)
       certificate = await Certificate.create({
-        certificate: uint8FromBufLike(cert),
+        certificate: rawCertificate,
         rootKey: agent.rootKey,
         principal: { canisterId: Principal.from(canisterId) },
         blsVerify,
@@ -210,7 +212,7 @@ class CallCanisterService {
 
     return {
       contentMap: requestDetails,
-      certificate: new Uint8Array(Cbor.encode((certificate as any).cert)),
+      certificate: rawCertificate!,
     }
   }
 }

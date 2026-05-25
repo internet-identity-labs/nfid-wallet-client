@@ -75,7 +75,7 @@ class CallCanisterService {
         request.canisterId,
         request.calledMethodName,
         request.agent,
-        Buffer.from(request.parameters, "base64").buffer as ArrayBuffer,
+        new Uint8Array(Buffer.from(request.parameters, "base64")),
       )
       const certificate: string = Buffer.from(response.certificate).toString(
         "base64",
@@ -97,7 +97,7 @@ class CallCanisterService {
     canisterId: string,
     methodName: string,
     agent: Agent,
-    arg: ArrayBuffer,
+    arg: Uint8Array,
   ): Promise<{ certificate: Uint8Array; contentMap: CallRequest | undefined }> {
     const cid = Principal.from(canisterId)
 

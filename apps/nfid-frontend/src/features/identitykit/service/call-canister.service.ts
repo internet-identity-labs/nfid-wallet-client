@@ -18,8 +18,7 @@ import {
 import { uint8FromBufLike } from "@icp-sdk/core/candid"
 import { DelegationIdentity } from "@icp-sdk/core/identity"
 import { Principal } from "@icp-sdk/core/principal"
-
-// @ts-expect-error borc has no TypeScript type declarations
+// @ts-ignore
 import borc from "borc"
 
 import { GenericError } from "./exception-handler.service"
@@ -120,6 +119,27 @@ class CallCanisterService {
       )
       const cborContentMap = encodeContentMap(response.contentMap)
       const contentMap: string = Buffer.from(cborContentMap).toString("base64")
+
+      // Debug: store in localStorage (persists after popup close)
+      try {
+        const decoded = borc.decodeFirst(Buffer.from(cborContentMap))
+        const debug = {
+          timestamp: new Date().toISOString(),
+          request_type: decoded.request_type,
+          method_name: decoded.method_name,
+          canister_id: request.canisterId,
+          sender_hex: Buffer.from(decoded.sender || []).toString("hex"),
+          ingress_expiry: decoded.ingress_expiry?.toString(),
+          ingress_expiry_type: typeof decoded.ingress_expiry,
+          arg_length: decoded.arg?.byteLength || decoded.arg?.length,
+          nonce_length: decoded.nonce?.byteLength || decoded.nonce?.length,
+          contentMap_b64_length: contentMap.length,
+          certificate_b64_length: certificate.length,
+        }
+        localStorage.setItem("__rpc_debug__", JSON.stringify(debug, null, 2))
+      } catch (e: any) {
+        localStorage.setItem("__rpc_debug_error__", e.message)
+      }
 
       return {
         certificate,

@@ -13,23 +13,25 @@ import { Contract, Interface, JsonRpcProvider, ZeroAddress } from "ethers"
 
 import { ETH_DECIMALS, INFURA_API_KEY } from "@nfid/integration/token/constants"
 import {
-  BridgeChain,
-  BridgeTransaction,
-  ChainMode,
   FORMATTED_CHAINS,
-  PendingBridge,
-  TOKEN_BRIDGE_ABI,
   BRIDGE_CHAIN_ID,
   BRIDGE_SCAN_API,
   BRIDGE_TO_CHAIN_ID,
   TOKEN_BRIDGE_ADDRESS,
-  EstimatedBridge,
   ATTESTATION_TIMEOUT,
-} from "./bridge.constants"
+} from "./constants"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
-import { EthSignTransactionRequest } from "../bitcoin/idl/chain-fusion-signer.d"
-import { chainFusionSignerService } from "../bitcoin/services/chain-fusion-signer.service"
-import { ethereumService } from "./eth/ethereum.service"
+import {
+  BridgeChain,
+  BridgeTransaction,
+  ChainMode,
+  EstimatedBridge,
+  PendingBridge,
+} from "./types"
+import { TOKEN_BRIDGE_ABI } from "./abi"
+import { ethereumService } from "../eth/ethereum.service"
+import { EthSignTransactionRequest } from "frontend/integration/bitcoin/idl/chain-fusion-signer"
+import { chainFusionSignerService } from "frontend/integration/bitcoin/services/chain-fusion-signer.service"
 
 export class BridgeService {
   private wh: Wormhole<ChainMode.MAINNET> | null = null

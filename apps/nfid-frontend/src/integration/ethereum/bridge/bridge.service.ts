@@ -30,7 +30,7 @@ import {
 } from "./types"
 import { TOKEN_BRIDGE_ABI } from "./abi"
 import { ethereumService } from "../eth/ethereum.service"
-import { EthSignTransactionRequest } from "frontend/integration/bitcoin/idl/chain-fusion-signer"
+import { EthSignTransactionRequest } from "frontend/integration/bitcoin/idl/chain-fusion-signer.d"
 import { chainFusionSignerService } from "frontend/integration/bitcoin/services/chain-fusion-signer.service"
 
 export class BridgeService {

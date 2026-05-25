@@ -117,7 +117,7 @@ class CallCanisterService {
       const certificate: string = Buffer.from(response.certificate).toString(
         "base64",
       )
-      const cborContentMap = encodeContentMap(response.contentMap)
+      const cborContentMap = Cbor.encode(response.contentMap)
       const contentMap: string = Buffer.from(cborContentMap).toString("base64")
 
       // Debug: dump raw submit fields + contentMap keys
@@ -177,6 +177,8 @@ class CallCanisterService {
 
     let certificate: Certificate | undefined
     let rawCertificate: Uint8Array | undefined
+
+    localStorage.setItem("__rpc_response_status__", String(response.status))
 
     if (response.body && isV4ResponseBody(response.body)) {
       const cert = (response.body as v4ResponseBody).certificate

@@ -106,12 +106,17 @@ class CallCanisterService {
     if (agent.rootKey == null)
       throw new AgentError("Agent root key not initialized before making call")
 
+    const callSync = useV4 ?? false
+    console.log("[RPC] agent.call with callSync:", callSync)
+
     const { requestId, response, requestDetails } = await agent.call(cid, {
       methodName,
       arg,
       effectiveCanisterId: cid,
-      callSync: useV4 ?? false,
+      callSync,
     })
+
+    console.log("[RPC] response status:", response.status)
 
     let certificate: Certificate | undefined
     let rawCertificate: Uint8Array | undefined

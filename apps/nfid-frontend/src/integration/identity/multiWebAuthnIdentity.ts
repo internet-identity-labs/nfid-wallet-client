@@ -19,7 +19,6 @@ import {
   WebAuthnIdentity,
 } from "@icp-sdk/core/identity"
 
-// @ts-expect-error borc has no TypeScript type declarations
 import borc from "borc"
 import { Buffer } from "buffer"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"

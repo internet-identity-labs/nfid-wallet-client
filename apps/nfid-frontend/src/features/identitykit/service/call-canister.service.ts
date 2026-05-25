@@ -19,9 +19,47 @@ import { uint8FromBufLike } from "@icp-sdk/core/candid"
 import { DelegationIdentity } from "@icp-sdk/core/identity"
 import { Principal } from "@icp-sdk/core/principal"
 
+// @ts-expect-error borc has no TypeScript type declarations
+import borc from "borc"
+
 import { GenericError } from "./exception-handler.service"
 ;(BigInt.prototype as any).toJSON = function () {
   return this.toString()
+}
+
+function bigIntToUint8Array(n: bigint): Uint8Array {
+  let hex = n.toString(16)
+  if (hex.length % 2) hex = "0" + hex
+  const bytes = new Uint8Array(hex.length / 2)
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16)
+  }
+  return bytes
+}
+
+function encodeContentMap(contentMap: any): Uint8Array {
+  const prepared: Record<string, any> = {}
+  for (const [key, value] of Object.entries(contentMap)) {
+    if (value === undefined) continue
+    if (value && typeof value === "object" && "_isPrincipal" in value) {
+      prepared[key] = Buffer.from((value as any).toUint8Array())
+    } else if (
+      typeof value === "bigint" ||
+      (value && typeof value === "object" && "_isExpiry" in value)
+    ) {
+      const bigVal =
+        typeof value === "bigint" ? value : (value as any).toBigInt()
+      prepared[key] = new borc.Tagged(
+        2,
+        Buffer.from(bigIntToUint8Array(bigVal)),
+      )
+    } else if (value instanceof Uint8Array) {
+      prepared[key] = Buffer.from(value)
+    } else {
+      prepared[key] = value
+    }
+  }
+  return new Uint8Array(borc.encode(new borc.Tagged(55799, prepared)))
 }
 
 // Helper function to convert lookupResultToBuffer result to ArrayBuffer
@@ -80,7 +118,7 @@ class CallCanisterService {
       const certificate: string = Buffer.from(response.certificate).toString(
         "base64",
       )
-      const cborContentMap = Cbor.encode(response.contentMap)
+      const cborContentMap = encodeContentMap(response.contentMap)
       const contentMap: string = Buffer.from(cborContentMap).toString("base64")
 
       return {

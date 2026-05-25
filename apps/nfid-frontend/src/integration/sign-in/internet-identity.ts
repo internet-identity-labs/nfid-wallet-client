@@ -36,13 +36,22 @@ export const signinWithII = async (): Promise<DelegationIdentity> => {
       return
     }
 
+    const expectedOrigin = new URL(identityProvider).origin
+    console.debug("[II] Listening for messages from origin:", expectedOrigin)
+
     const handleMessage = (event: MessageEvent) => {
-      if (event.origin !== new URL(identityProvider).origin) return
+      console.debug("[II] postMessage received:", {
+        origin: event.origin,
+        kind: event.data?.kind,
+        keys: event.data ? Object.keys(event.data) : [],
+      })
+      if (event.origin !== expectedOrigin) return
 
       const data = event.data
       if (!data || typeof data !== "object") return
 
       if (data.kind === "authorize-ready") {
+        console.debug("[II] authorize-ready received, sending authorize-client")
         iiWindow.postMessage(
           {
             kind: "authorize-client",
@@ -52,6 +61,10 @@ export const signinWithII = async (): Promise<DelegationIdentity> => {
           event.origin,
         )
       } else if (data.kind === "authorize-client-success") {
+        console.debug("[II] authorize-client-success received", {
+          hasDelegations: !!data.delegations,
+          hasUserPublicKey: !!data.userPublicKey,
+        })
         window.removeEventListener("message", handleMessage)
         iiWindow.close()
 

@@ -18,6 +18,7 @@ import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/o
 import { AuthSignInWithRecoveryPhrase } from "packages/ui/src/organisms/authentication/sign-in-with-recovery-phrase"
 import { AuthSignUpPassKey } from "packages/ui/src/organisms/authentication/sign-up-passkey"
 import { ReactNode, useCallback, useMemo, useState } from "react"
+import { openIIWindow } from "frontend/features/authentication/auth-selection/ii-flow/ii-auth.service"
 
 import { Button, IconCmpGoogle, IconCmpDfinity } from "@nfid-frontend/ui"
 import { getAllWalletsFromThisDevice } from "@nfid/integration"
@@ -72,6 +73,7 @@ export default function AuthenticationCoordinator({
   }
 
   const onSelectIIAuth = async () => {
+    openIIWindow()
     send({ type: "AUTH_WITH_II" })
   }
 

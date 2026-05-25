@@ -11,8 +11,8 @@ export const signinWithII = async (): Promise<DelegationIdentity> => {
   const authClient = new AuthClient({
     identityProvider:
       FRONTEND_MODE === "development"
-        ? `https://${INTERNET_IDENTITY_CANISTER_ID}.ic0.app/#authorize`
-        : `https://identity.ic0.app/#authorize`,
+        ? `https://${INTERNET_IDENTITY_CANISTER_ID}.ic0.app`
+        : `https://identity.ic0.app`,
     windowOpenerFeatures: `toolbar=0,location=0,menubar=0,width=525,height=705`,
   })
   return (await authClient.signIn()) as DelegationIdentity

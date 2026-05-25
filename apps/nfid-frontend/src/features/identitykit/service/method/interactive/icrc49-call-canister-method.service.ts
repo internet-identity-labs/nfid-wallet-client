@@ -53,6 +53,7 @@ export interface Icrc49Dto {
   sender: string
   method: string
   arg: string
+  useV4?: boolean
 }
 
 export type CallCanisterHelper = {
@@ -87,6 +88,7 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
       parameters: icrc49Dto.arg,
       delegation,
       agent,
+      useV4: icrc49Dto.useV4,
     })
 
     const response: RPCSuccessResponse = {

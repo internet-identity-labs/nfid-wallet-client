@@ -18,47 +18,9 @@ import {
 import { uint8FromBufLike } from "@icp-sdk/core/candid"
 import { DelegationIdentity } from "@icp-sdk/core/identity"
 import { Principal } from "@icp-sdk/core/principal"
-// @ts-ignore
-import borc from "borc"
-
 import { GenericError } from "./exception-handler.service"
 ;(BigInt.prototype as any).toJSON = function () {
   return this.toString()
-}
-
-function bigIntToUint8Array(n: bigint): Uint8Array {
-  let hex = n.toString(16)
-  if (hex.length % 2) hex = "0" + hex
-  const bytes = new Uint8Array(hex.length / 2)
-  for (let i = 0; i < bytes.length; i++) {
-    bytes[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16)
-  }
-  return bytes
-}
-
-function encodeContentMap(contentMap: any): Uint8Array {
-  const prepared: Record<string, any> = {}
-  for (const [key, value] of Object.entries(contentMap)) {
-    if (value === undefined) continue
-    if (value && typeof value === "object" && "_isPrincipal" in value) {
-      prepared[key] = Buffer.from((value as any).toUint8Array())
-    } else if (
-      typeof value === "bigint" ||
-      (value && typeof value === "object" && "_isExpiry" in value)
-    ) {
-      const bigVal =
-        typeof value === "bigint" ? value : (value as any).toBigInt()
-      prepared[key] = new borc.Tagged(
-        2,
-        Buffer.from(bigIntToUint8Array(bigVal)),
-      )
-    } else if (value instanceof Uint8Array) {
-      prepared[key] = Buffer.from(value)
-    } else {
-      prepared[key] = value
-    }
-  }
-  return new Uint8Array(borc.encode(new borc.Tagged(55799, prepared)))
 }
 
 // Helper function to convert lookupResultToBuffer result to ArrayBuffer
@@ -96,6 +58,7 @@ export interface CallCanisterRequest {
   calledMethodName: string
   parameters: string
   agent: Agent
+  useV4?: boolean
 }
 
 export interface CallCanisterResponse {
@@ -113,40 +76,13 @@ class CallCanisterService {
         request.calledMethodName,
         request.agent,
         new Uint8Array(Buffer.from(request.parameters, "base64")),
+        request.useV4,
       )
       const certificate: string = Buffer.from(response.certificate).toString(
         "base64",
       )
       const cborContentMap = Cbor.encode(response.contentMap)
       const contentMap: string = Buffer.from(cborContentMap).toString("base64")
-
-      // Debug: dump raw submit fields + contentMap keys
-      try {
-        const cm = response.contentMap as any
-        const debug = {
-          timestamp: new Date().toISOString(),
-          canister_id: request.canisterId,
-          method_name: request.calledMethodName,
-          submit_keys: cm ? Object.keys(cm) : "null",
-          submit_request_type: cm?.request_type,
-          submit_sender_principal: cm?.sender?.toText?.() || "no toText",
-          submit_sender_isPrincipal: cm?.sender?._isPrincipal,
-          submit_expiry_isExpiry: cm?.ingress_expiry?._isExpiry,
-          submit_expiry_value: cm?.ingress_expiry?.toBigInt?.()?.toString(),
-          submit_arg_type: cm?.arg?.constructor?.name,
-          submit_arg_length: cm?.arg?.length || cm?.arg?.byteLength,
-          submit_nonce_type: cm?.nonce?.constructor?.name,
-          submit_nonce_length: cm?.nonce?.length || cm?.nonce?.byteLength,
-          contentMap_b64_length: contentMap.length,
-          certificate_b64_length: certificate.length,
-          certificate_first_bytes: Buffer.from(
-            response.certificate.slice(0, 20),
-          ).toString("hex"),
-        }
-        localStorage.setItem("__rpc_debug__", JSON.stringify(debug, null, 2))
-      } catch (e: any) {
-        localStorage.setItem("__rpc_debug_error__", String(e))
-      }
 
       return {
         certificate,
@@ -163,6 +99,7 @@ class CallCanisterService {
     methodName: string,
     agent: Agent,
     arg: Uint8Array,
+    useV4?: boolean,
   ): Promise<{ certificate: Uint8Array; contentMap: CallRequest | undefined }> {
     const cid = Principal.from(canisterId)
 
@@ -173,12 +110,11 @@ class CallCanisterService {
       methodName,
       arg,
       effectiveCanisterId: cid,
+      callSync: useV4 ?? false,
     })
 
     let certificate: Certificate | undefined
     let rawCertificate: Uint8Array | undefined
-
-    localStorage.setItem("__rpc_response_status__", String(response.status))
 
     if (response.body && isV4ResponseBody(response.body)) {
       const cert = (response.body as v4ResponseBody).certificate

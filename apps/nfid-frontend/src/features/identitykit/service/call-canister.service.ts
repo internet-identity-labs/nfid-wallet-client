@@ -120,25 +120,32 @@ class CallCanisterService {
       const cborContentMap = encodeContentMap(response.contentMap)
       const contentMap: string = Buffer.from(cborContentMap).toString("base64")
 
-      // Debug: store in localStorage (persists after popup close)
+      // Debug: dump raw submit fields + contentMap keys
       try {
-        const decoded = borc.decodeFirst(Buffer.from(cborContentMap))
+        const cm = response.contentMap as any
         const debug = {
           timestamp: new Date().toISOString(),
-          request_type: decoded.request_type,
-          method_name: decoded.method_name,
           canister_id: request.canisterId,
-          sender_hex: Buffer.from(decoded.sender || []).toString("hex"),
-          ingress_expiry: decoded.ingress_expiry?.toString(),
-          ingress_expiry_type: typeof decoded.ingress_expiry,
-          arg_length: decoded.arg?.byteLength || decoded.arg?.length,
-          nonce_length: decoded.nonce?.byteLength || decoded.nonce?.length,
+          method_name: request.calledMethodName,
+          submit_keys: cm ? Object.keys(cm) : "null",
+          submit_request_type: cm?.request_type,
+          submit_sender_principal: cm?.sender?.toText?.() || "no toText",
+          submit_sender_isPrincipal: cm?.sender?._isPrincipal,
+          submit_expiry_isExpiry: cm?.ingress_expiry?._isExpiry,
+          submit_expiry_value: cm?.ingress_expiry?.toBigInt?.()?.toString(),
+          submit_arg_type: cm?.arg?.constructor?.name,
+          submit_arg_length: cm?.arg?.length || cm?.arg?.byteLength,
+          submit_nonce_type: cm?.nonce?.constructor?.name,
+          submit_nonce_length: cm?.nonce?.length || cm?.nonce?.byteLength,
           contentMap_b64_length: contentMap.length,
           certificate_b64_length: certificate.length,
+          certificate_first_bytes: Buffer.from(
+            response.certificate.slice(0, 20),
+          ).toString("hex"),
         }
         localStorage.setItem("__rpc_debug__", JSON.stringify(debug, null, 2))
       } catch (e: any) {
-        localStorage.setItem("__rpc_debug_error__", e.message)
+        localStorage.setItem("__rpc_debug_error__", String(e))
       }
 
       return {

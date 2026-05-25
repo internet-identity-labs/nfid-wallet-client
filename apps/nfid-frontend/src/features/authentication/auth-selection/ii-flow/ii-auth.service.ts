@@ -20,7 +20,7 @@ import {
 } from "frontend/integration/identity-manager"
 import { buildDelegate } from "frontend/integration/internet-identity/build-delegate"
 
-export const identityProvider = "https://id.ai"
+export const identityProvider = "https://identity.ic0.app/#authorize"
 export const derivationOrigin = NFID_WALLET_CLIENT_CANISTER
 
 const II_MAX_TIME_TO_LIVE = BigInt(28_800_000_000_000)

@@ -4,6 +4,7 @@ import { FT } from "src/integration/ft/ft"
 import { ftService } from "src/integration/ft/ft-service"
 import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
 import { mockGeekResponse } from "src/integration/nft/mock/mock"
+import * as wallet from "frontend/integration/facade/wallet"
 
 import { exchangeRateService } from "@nfid/integration"
 import {
@@ -580,15 +581,10 @@ describe("ft test suite", () => {
         ])
 
       // Mock getWalletDelegation to return a resolved promise
-      jest
-        .spyOn(
-          require("frontend/integration/facade/wallet"),
-          "getWalletDelegation",
-        )
-        .mockResolvedValue({
-          getPrincipal: () => principal,
-          sign: jest.fn(),
-        } as any)
+      jest.spyOn(wallet, "getWalletDelegation").mockResolvedValue({
+        getPrincipal: () => principal,
+        sign: jest.fn(),
+      } as any)
 
       const nfts = await nftService.getNFTs(principal, 1, 10)
       const result: FT[] = await ftService.getTokens(userId)

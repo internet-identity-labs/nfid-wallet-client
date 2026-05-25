@@ -1,16 +1,18 @@
-const plugin = require("tailwindcss/plugin")
-const colors = require("tailwindcss/colors")
+import plugin from "tailwindcss/plugin"
+import colors from "tailwindcss/colors"
 
-const iosUtilities = require("./utils/ios")
+import iosUtilities from "./utils/ios.js"
+import extendTheme from "./theme.js"
+import createButton from "./button/index.js"
 
-module.exports = plugin(
+export default plugin(
   function ({ addUtilities, addComponents, theme }) {
     addUtilities(iosUtilities, ["responsive"])
-    addComponents([require("./button/index")(theme)])
+    addComponents([createButton(theme)])
   },
   {
     theme: {
-      extend: require("./theme"),
+      extend: extendTheme,
       colors: {
         transparent: "transparent",
         current: "currentColor",

@@ -12,6 +12,8 @@
   ],
   "exclude": [
     "jest.config.ts",
+    "eslint.config.js",
+    "tailwind.config.js",
     "**/*.spec.ts",
     "**/*.test.ts",
     "**/*.spec.tsx",

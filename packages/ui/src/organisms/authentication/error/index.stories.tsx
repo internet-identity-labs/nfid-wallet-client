@@ -1,4 +1,4 @@
-import { Meta, StoryFn } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react-webpack5"
 
 import { withSignInDecorator } from "../../../decorators/sign-in"
 import { AuthEmailError, AuthEmailErrorProps } from "./index"

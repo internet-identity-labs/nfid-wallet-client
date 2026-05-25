@@ -1,10 +1,10 @@
 import clsx from "clsx"
 
-import Discord from "../assets/new-landing/ds.svg"
-import Github from "../assets/new-landing/gh.svg"
-import LinkedIn from "../assets/new-landing/ln.svg"
-import OpenChat from "../assets/new-landing/open-chat.svg"
-import Twitter from "../assets/new-landing/x.svg"
+import Discord from "../assets/new-landing/ds.svg?url"
+import Github from "../assets/new-landing/gh.svg?url"
+import LinkedIn from "../assets/new-landing/ln.svg?url"
+import OpenChat from "../assets/new-landing/open-chat.svg?url"
+import Twitter from "../assets/new-landing/x.svg?url"
 
 export function Socials({ className }: { className?: string }) {
   return (

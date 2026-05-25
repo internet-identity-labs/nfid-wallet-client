@@ -22,7 +22,7 @@ import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 import { StakeParamsCalculator } from "frontend/integration/staking/stake-params-calculator"
 
-import DiamondIcon from "../../staking/assets/diamond.svg"
+import DiamondIcon from "../../staking/assets/diamond.svg?url"
 import { DiamondAnimation } from "../../staking/components/diamond-animation"
 import { getFormattedPeriod, IModalType } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"

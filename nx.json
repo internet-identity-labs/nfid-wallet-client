@@ -1,14 +1,5 @@
 {
-  "plugins": [
-    {
-      "plugin": "@nx/webpack/plugin",
-      "options": {
-        "buildTargetName": "build",
-        "serveTargetName": "serve",
-        "previewTargetName": "preview"
-      }
-    }
-  ],
+  "plugins": [],
   "pluginsConfig": {
     "@nx/js": {
       "analyzeSourceFiles": true
@@ -59,7 +50,12 @@
       }
     },
     "@nx/eslint:lint": {
-      "inputs": ["default", "{workspaceRoot}/eslint.config.cjs"],
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/eslint.config.js",
+        "{workspaceRoot}/tools/eslint-rules/**/*"
+      ],
       "cache": true
     }
   },
@@ -219,5 +215,6 @@
       "{workspaceRoot}/.env.(ic|stage)"
     ]
   },
-  "useInferencePlugins": false
+  "useInferencePlugins": false,
+  "analytics": true
 }

@@ -52,9 +52,13 @@ export const Discovery: FC<DiscoveryProps> = ({ discoveryApps, isLoading }) => {
     const filtered = search
       ? discoveryApps.filter(
           (app) =>
-            app.status !== "Spam" && app.name?.toLowerCase().includes(query),
+            app.status !== "Spam" &&
+            app.status !== "New" &&
+            app.name?.toLowerCase().includes(query),
         )
-      : discoveryApps.filter((app) => app.status !== "Spam")
+      : discoveryApps.filter(
+          (app) => app.status !== "Spam" && app.status !== "New",
+        )
 
     if (sorting === DiscoverySorting.NAME) {
       filtered.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""))
@@ -89,7 +93,7 @@ export const Discovery: FC<DiscoveryProps> = ({ discoveryApps, isLoading }) => {
                 }
                 placeholder="Search"
                 inputClassName="bg-white !border-black dark:!border-zinc-500"
-                className="w-full"
+                className="w-full !mb-0"
               />
               <div className="flex items-center w-full gap-5 md:w-auto">
                 <span className="text-sm leading-5 whitespace-nowrap text-secondary dark:text-zinc-500">
@@ -152,10 +156,12 @@ export const Discovery: FC<DiscoveryProps> = ({ discoveryApps, isLoading }) => {
               )}
             >
               {filteredApps.map((app) => (
-                <div
+                <a
+                  target="_blank"
+                  href={app.url}
                   key={app.id}
                   className={clsx(
-                    "rounded-[12px] overflow-hidden cursor-pointer",
+                    "block rounded-[12px] overflow-hidden cursor-pointer",
                     "bg-gray-50 hover:bg-white dark:bg-zinc-800 dark:hover:bg-zinc-700",
                     "group hover:shadow-[0px_2px_15px_rgba(0,0,0,0.1)] dark:hover:bg-zinc-700 transition-all",
                   )}
@@ -199,11 +205,9 @@ export const Discovery: FC<DiscoveryProps> = ({ discoveryApps, isLoading }) => {
                         <span>{Number(app.uniqueUsers)}</span>
                       </div>
                     </div>
-                    <A href={app.url} target="_blank">
-                      {app.url}
-                    </A>
+                    <A>{app.url}</A>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
             <Button

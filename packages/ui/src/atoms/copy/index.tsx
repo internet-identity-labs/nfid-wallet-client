@@ -3,7 +3,7 @@ import clsx from "clsx"
 import React, { HTMLAttributes } from "react"
 
 import { CopyIcon } from "../icons/copy"
-import CopiedIcon from "./copied.svg"
+import CopiedIcon from "./copied.svg?url"
 
 export interface ICopy extends HTMLAttributes<HTMLDivElement> {
   value: string

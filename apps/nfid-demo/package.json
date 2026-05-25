@@ -2,6 +2,7 @@
   "name": "nfid-demo",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "nx serve nfid-demo",
     "build": "nx build nfid-demo",

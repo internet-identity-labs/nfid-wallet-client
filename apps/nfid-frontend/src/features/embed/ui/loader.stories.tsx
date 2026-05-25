@@ -1,5 +1,5 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip"
-import { StoryFn, Meta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react-webpack5"
 import { BrowserRouter } from "react-router-dom"
 
 import { ScreenResponsive } from "@nfid-frontend/ui"

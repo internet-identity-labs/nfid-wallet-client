@@ -1,4 +1,4 @@
-import { Meta, StoryFn } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react-webpack5"
 
 import { SuccessProps, SendSuccessUi } from "./send-success"
 import { TransferTemplate } from "./template"

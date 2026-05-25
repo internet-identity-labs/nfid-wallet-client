@@ -1,9 +1,14 @@
-const nxPlugin = require("@nx/eslint-plugin");
-const typescriptEslint = require("@typescript-eslint/eslint-plugin");
-const typescriptParser = require("@typescript-eslint/parser");
-const babelParser = require("@babel/eslint-parser");
-const reactHooks = require("eslint-plugin-react-hooks");
-const reactPlugin = require("eslint-plugin-react");
+import nxPlugin from "@nx/eslint-plugin"
+import typescriptEslint from "@typescript-eslint/eslint-plugin"
+import typescriptParser from "@typescript-eslint/parser"
+import babelParser from "@babel/eslint-parser"
+import reactHooks from "eslint-plugin-react-hooks"
+import reactPlugin from "eslint-plugin-react"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const sharedTypeScriptRules = {
   "no-extra-semi": "error",
@@ -20,16 +25,16 @@ const sharedTypeScriptRules = {
   "react-hooks/exhaustive-deps": "warn",
   "prefer-const": "warn",
   "no-console": ["warn", { allow: ["warn", "error"] }],
-};
+}
 
 const typeAwareRules = {
   "@typescript-eslint/prefer-nullish-coalescing": "warn",
   "@typescript-eslint/prefer-optional-chain": "warn",
   "@typescript-eslint/no-floating-promises": "warn",
   "@typescript-eslint/await-thenable": "error",
-};
+}
 
-module.exports = [
+export default [
   {
     ignores: [
       "node_modules/**",
@@ -91,7 +96,12 @@ module.exports = [
     },
   },
   {
-    files: ["packages/ui/**/*.ts", "packages/ui/**/*.tsx", "apps/nfid-demo/**/*.ts", "apps/nfid-demo/**/*.tsx"],
+    files: [
+      "packages/ui/**/*.ts",
+      "packages/ui/**/*.tsx",
+      "apps/nfid-demo/**/*.ts",
+      "apps/nfid-demo/**/*.tsx",
+    ],
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {
@@ -104,7 +114,7 @@ module.exports = [
     },
     plugins: {
       "@typescript-eslint": typescriptEslint,
-      "react": reactPlugin,
+      react: reactPlugin,
       "react-hooks": reactHooks,
     },
     settings: {
@@ -120,7 +130,12 @@ module.exports = [
   },
   {
     files: ["**/*.ts", "**/*.tsx"],
-    ignores: ["packages/ui/**", "**/*.d.ts", "apps/nfid-frontend/src/integration/_ic_api/**", "apps/nfid-demo/**"],
+    ignores: [
+      "packages/ui/**",
+      "**/*.d.ts",
+      "apps/nfid-frontend/src/integration/_ic_api/**",
+      "apps/nfid-demo/**",
+    ],
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {
@@ -135,7 +150,7 @@ module.exports = [
     },
     plugins: {
       "@typescript-eslint": typescriptEslint,
-      "react": reactPlugin,
+      react: reactPlugin,
       "react-hooks": reactHooks,
     },
     settings: {
@@ -219,4 +234,4 @@ module.exports = [
       "@nx/enforce-module-boundaries": "off",
     },
   },
-];
+]

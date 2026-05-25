@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-import logo from "../../assets/id.svg"
+import logo from "../../assets/id.svg?url"
 import { NFIDGradientBar } from "../../atoms/gradient-bar"
 
 interface ResponsiveTemplateProps extends React.HTMLAttributes<HTMLDivElement> {

@@ -2,10 +2,10 @@ import clsx from "clsx"
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import React from "react"
 
-import { StepInput } from "../../atoms/step-input"
-import { P } from "../../atoms/typography/paragraph"
-import ProfileTemplate from "../../templates/profile-template/Template"
-import { useTimer } from "../../utils/use-timer"
+import { P } from "../../../atoms/typography/paragraph"
+import ProfileTemplate from "../../../templates/profile-template/Template"
+import { useTimer } from "../../../utils/use-timer"
+import { StepInput } from "./step-input"
 
 interface IProfileAddPhoneSMS {
   onResendCode: () => void

@@ -1,5 +1,6 @@
 {
   "name": "@nfid/swr",
+  "type": "module",
   "version": "0.0.1",
   "repository": "git@github.com:internet-identity-labs/nfid-wallet-client.git",
   "license": "MIT"

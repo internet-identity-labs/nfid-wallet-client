@@ -1,3 +1,8 @@
+declare module "*.svg?url" {
+  const src: string
+  export default src
+}
+
 declare const AWS_EXCHANGE_RATE: string
 declare const AWS_X_TWEET: string
 declare const AWS_ECDSA_REGISTER: string

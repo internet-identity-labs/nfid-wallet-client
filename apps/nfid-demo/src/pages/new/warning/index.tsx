@@ -1,4 +1,4 @@
-import WarningIcon from "../../../assets/warning.svg"
+import WarningIcon from "../../../assets/warning.svg?url"
 
 export const Warning = ({ children }: { children: JSX.Element }) => {
   return (

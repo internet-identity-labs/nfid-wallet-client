@@ -3,9 +3,9 @@ import {
   getEvmGasTokenSymbol,
 } from "@nfid/integration/token/icrc1/enum/enums"
 import { ValidationStatus } from "./types"
-import ValidIcon from "./assets/valid.svg"
-import InvalidIcon from "./assets/invalid.svg"
-import UnknownIcon from "./assets/unverified.svg"
+import ValidIcon from "./assets/valid.svg?url"
+import InvalidIcon from "./assets/invalid.svg?url"
+import UnknownIcon from "./assets/unverified.svg?url"
 import { ETH_DECIMALS, TRIM_ZEROS } from "@nfid/integration/token/constants"
 import { formatUsdAmount } from "frontend/util/format-usd-amount"
 import BigNumber from "bignumber.js"

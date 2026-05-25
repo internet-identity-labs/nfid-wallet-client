@@ -8,3 +8,4 @@ apps/nfid-frontend-e2e/test/reporter
 
 /.nx/cache
 /.nx/workspace-data
+.nx/self-healing

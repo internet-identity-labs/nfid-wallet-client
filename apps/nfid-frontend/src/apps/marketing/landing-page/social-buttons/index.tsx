@@ -1,8 +1,8 @@
 import React from "react"
 
-import Discord from "./assets/ds.svg"
-import Github from "./assets/gh.svg"
-import Twitter from "./assets/tw.svg"
+import Discord from "./assets/ds.svg?url"
+import Github from "./assets/gh.svg?url"
+import Twitter from "./assets/tw.svg?url"
 
 import "./index.css"
 

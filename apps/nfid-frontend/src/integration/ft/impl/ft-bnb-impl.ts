@@ -3,7 +3,7 @@ import {
   ChainId,
   State,
 } from "@nfid/integration/token/icrc1/enum/enums"
-import BnbIcon from "packages/ui/src/organisms/tokens/assets/bnb.svg"
+import BnbIcon from "packages/ui/src/organisms/tokens/assets/bnb.svg?url"
 
 import { EVM_NATIVE, ETH_DECIMALS } from "@nfid/integration/token/constants"
 import { FTEvmAbstractImpl } from "./ft-evm-abstract-impl"

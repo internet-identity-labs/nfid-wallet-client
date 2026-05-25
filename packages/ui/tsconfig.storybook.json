@@ -6,7 +6,8 @@
     "declarationMap": true,
     "declarationDir": "../../dist/types",
     "emitDecoratorMetadata": true,
-    "outDir": ""
+    "outDir": "",
+    "moduleResolution": "bundler"
   },
   "files": [
     "../../node_modules/@nx/react/typings/styled-jsx.d.ts",

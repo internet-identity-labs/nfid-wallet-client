@@ -1,4 +1,4 @@
-import { StoryFn } from "@storybook/react"
+import { StoryFn } from "@storybook/react-webpack5"
 import { ToastContainer } from "react-toastify"
 
 import { ToastIcons } from "@nfid-frontend/ui"

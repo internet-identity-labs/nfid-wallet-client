@@ -1,9 +1,11 @@
-const svgToDataUri = require("mini-svg-data-uri")
-const plugin = require("tailwindcss/plugin")
-const defaultTheme = require("tailwindcss/defaultTheme")
-const colors = require("tailwindcss/colors")
+import svgToDataUri from "mini-svg-data-uri"
+import plugin from "tailwindcss/plugin"
+import defaultTheme from "tailwindcss/defaultTheme"
+import colors from "tailwindcss/colors"
+
 const [baseFontSize, { lineHeight: baseLineHeight }] =
   defaultTheme.fontSize.base
+
 const { spacing, borderWidth, borderRadius } = defaultTheme
 
 const forms = plugin.withOptions(function (options = { strategy: undefined }) {
@@ -202,11 +204,11 @@ const forms = plugin.withOptions(function (options = { strategy: undefined }) {
         base: [`[type='checkbox']:checked`, `[type='radio']:checked`],
         class: [".form-checkbox:checked", ".form-radio:checked"],
         styles: {
-          "border-color": `transparent`,
-          "background-color": `currentColor`,
-          "background-size": `100% 100%`,
-          "background-position": `center`,
-          "background-repeat": `no-repeat`,
+          "border-color": "transparent",
+          "background-color": "currentColor",
+          "background-size": "100% 100%",
+          "background-position": "center",
+          "background-repeat": "no-repeat",
         },
       },
       {
@@ -252,23 +254,6 @@ const forms = plugin.withOptions(function (options = { strategy: undefined }) {
           "background-image": `url("${svgToDataUri(
             `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16"><path stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h8"/></svg>`,
           )}")`,
-          "border-color": `transparent`,
-          "background-color": `currentColor`,
-          "background-size": `100% 100%`,
-          "background-position": `center`,
-          "background-repeat": `no-repeat`,
-        },
-      },
-      {
-        base: [
-          `[type='checkbox']:indeterminate:hover`,
-          `[type='checkbox']:indeterminate:focus`,
-        ],
-        class: [
-          ".form-checkbox:indeterminate:hover",
-          ".form-checkbox:indeterminate:focus",
-        ],
-        styles: {
           "border-color": "transparent",
           "background-color": "currentColor",
         },
@@ -302,7 +287,6 @@ const forms = plugin.withOptions(function (options = { strategy: undefined }) {
       rules
         .map((rule) => {
           if (rule[strategy] === null) return null
-
           return { [rule[strategy]]: rule.styles }
         })
         .filter(Boolean)
@@ -317,4 +301,4 @@ const forms = plugin.withOptions(function (options = { strategy: undefined }) {
   }
 })
 
-module.exports = forms
+export default forms

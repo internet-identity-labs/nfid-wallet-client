@@ -1,8 +1,8 @@
-import { StoryFn, Meta } from "@storybook/react"
+import { StoryFn, Meta } from "@storybook/react-webpack5"
 import { BrowserRouter as Router } from "react-router-dom"
 
 import { IRequestTransferPage, RequestTransferPage } from "."
-import logo from "./distrikt.svg"
+import logo from "./distrikt.svg?url"
 
 export default {
   title: "Screens/Wallet/RequestTransferPage",

@@ -2,7 +2,7 @@ import clsx from "clsx"
 import { motion } from "framer-motion"
 import { FC } from "react"
 
-import DiamondIcon from "../../staking/assets/diamond.svg"
+import DiamondIcon from "../../staking/assets/diamond.svg?url"
 
 interface DiamondAnimationProps {
   classname?: string

@@ -206,15 +206,10 @@ class CallCanisterService {
 
     // Fall back to polling if we receive an Accepted response code
     if (response.status === 202) {
-      const pollResult = await pollForResponse(agent, cid, requestId, {
-        strategy: defaultStrategy(),
-        blsVerify,
-      })
-      certificate = pollResult.certificate
-
+      const rawCert = await this.pollV2ReadState(agent, cid, requestId)
       return {
         contentMap: requestDetails,
-        certificate: pollResult.rawCertificate,
+        certificate: rawCert,
       }
     }
 
@@ -222,6 +217,71 @@ class CallCanisterService {
       contentMap: requestDetails,
       certificate: rawCertificate!,
     }
+  }
+
+  private async pollV2ReadState(
+    agent: Agent,
+    canisterId: Principal,
+    requestId: RequestId,
+  ): Promise<Uint8Array> {
+    const path = [new TextEncoder().encode("request_status"), requestId]
+    const maxAttempts = 60
+    const intervalMs = 2000
+
+    for (let i = 0; i < maxAttempts; i++) {
+      const readStateRequest = await agent.createReadStateRequest?.({
+        paths: [path],
+      })
+
+      const url = `https://ic0.app/api/v2/canister/${canisterId.toText()}/read_state`
+      const body = Cbor.encode(readStateRequest?.body)
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/cbor" },
+        body,
+      })
+
+      if (!res.ok) {
+        await new Promise((r) => setTimeout(r, intervalMs))
+        continue
+      }
+
+      const responseBytes = new Uint8Array(await res.arrayBuffer())
+      const decoded = Cbor.decode(responseBytes)
+      const rawCertificate = new Uint8Array(decoded.certificate)
+
+      const certificate = await Certificate.create({
+        certificate: rawCertificate,
+        rootKey: agent.rootKey,
+        principal: { canisterId },
+        blsVerify,
+      })
+
+      const statusBuf = lookupResultToBuffer(
+        certificate.lookup_path([
+          ...path,
+          new TextEncoder().encode("status"),
+        ]) as LookupResult,
+      )
+
+      if (!statusBuf) {
+        await new Promise((r) => setTimeout(r, intervalMs))
+        continue
+      }
+
+      const status = new TextDecoder().decode(toArrayBuffer(statusBuf) as any)
+
+      if (status === "replied") {
+        return rawCertificate
+      }
+      if (status === "rejected") {
+        throw new AgentError("Call was rejected")
+      }
+
+      await new Promise((r) => setTimeout(r, intervalMs))
+    }
+
+    throw new AgentError("Polling timed out")
   }
 }
 

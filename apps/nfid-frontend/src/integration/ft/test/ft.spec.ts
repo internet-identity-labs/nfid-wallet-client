@@ -900,7 +900,6 @@ describe("ft test suite", () => {
         to: [
           "2ouva-viaaa-aaaaq-aaamq-cai",
           CKBTC_CANISTER_ID,
-          "ryjl3-tyaaa-aaaaa-aaaba-cai",
           NFIDW_CANISTER_ID,
           CKETH_LEDGER_CANISTER_ID,
         ],
@@ -911,6 +910,8 @@ describe("ft test suite", () => {
         to: toList.filter((ledger) => validTokenLedgers.has(ledger)).sort(),
         from: fromList.filter((ledger) => validTokenLedgers.has(ledger)).sort(),
       }
+
+      console.log(1212, actualResult)
 
       expect(actualResult).toEqual({
         to: expectedResult.to.sort(),

@@ -911,8 +911,6 @@ describe("ft test suite", () => {
         from: fromList.filter((ledger) => validTokenLedgers.has(ledger)).sort(),
       }
 
-      console.log(1212, actualResult)
-
       expect(actualResult).toEqual({
         to: expectedResult.to.sort(),
         from: expectedResult.from.sort(),

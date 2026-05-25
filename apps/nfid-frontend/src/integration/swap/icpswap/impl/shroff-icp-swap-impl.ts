@@ -153,15 +153,6 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
     throw new LiquidityError()
   }
 
-  // protected getICRCActor() {
-  //   return actorBuilder<ICRC1ServiceIDL>(this.source.ledger, icrc1IDL, {
-  //     agent: new HttpAgent({
-  //       ...agentBaseConfig,
-  //       identity: this.delegationIdentity,
-  //     }),
-  //   })
-  // }
-
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
     if (!this.requestedQuote) {
       throw new Error("Request quote first")
@@ -180,7 +171,10 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
 
       try {
         await this.transferToSwap()
-        console.log("ICRC21 transfer response", JSON.stringify(icrcTransferId))
+        console.debug(
+          "ICRC21 transfer response",
+          JSON.stringify(icrcTransferId),
+        )
       } catch (e) {
         throw new ContactSupportError("Deposit error: " + e)
       }

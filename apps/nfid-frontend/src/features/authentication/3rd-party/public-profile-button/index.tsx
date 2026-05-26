@@ -39,9 +39,7 @@ export const PublicProfileButton = ({
   return (
     <div
       className={clsx(
-        "flex justify-between text-xs lowercase h-5 mt-5 dark:text-white",
-        !isAvailable &&
-          "!text-gray-400 dark:!text-zinc-500 !pointer-events-none",
+        "flex justify-between items-center text-xs lowercase h-5 mt-5",
       )}
     >
       <div className="flex items-center">
@@ -55,13 +53,23 @@ export const PublicProfileButton = ({
         />
         <label
           htmlFor="profile_public"
-          className="ml-2 lowercase cursor-pointer dark:text-white"
+          className={clsx(
+            "ml-2 lowercase cursor-pointer dark:text-white",
+            !isAvailable &&
+              "!text-gray-400 dark:!text-zinc-500 !pointer-events-none",
+          )}
         >
           {truncateString(publicProfile.principal.toString(), 6, 4)}
         </label>
       </div>
       {publicProfile?.balance ? (
-        <div className="uppercase dark:text-white">
+        <div
+          className={clsx(
+            "uppercase dark:text-white",
+            !isAvailable &&
+              "!text-gray-400 dark:!text-zinc-500 !pointer-events-none",
+          )}
+        >
           {publicProfile?.balance} ICP
         </div>
       ) : null}

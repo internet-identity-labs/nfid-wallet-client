@@ -609,7 +609,7 @@ export class WalletConnectService {
     userParams: WCGasData,
   ): Promise<EthSignTransactionRequest> {
     const fromAddressQuick = await ethereumService.getQuickAddress()
-    if (tx.from !== fromAddressQuick) {
+    if (tx.from && tx.from.toLowerCase() !== fromAddressQuick.toLowerCase()) {
       throw new Error(
         "Transaction 'from' address is not the same as the identity address",
       )

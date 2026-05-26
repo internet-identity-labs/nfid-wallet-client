@@ -1,4 +1,4 @@
-import { DerEncodedPublicKey } from "@dfinity/agent"
+import { DerEncodedPublicKey } from "@icp-sdk/core/agent"
 
 import { DeviceKey } from "frontend/integration/_ic_api/internet_identity.d"
 

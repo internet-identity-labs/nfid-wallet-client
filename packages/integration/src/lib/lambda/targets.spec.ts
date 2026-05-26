@@ -1,5 +1,5 @@
-import { Actor, ActorSubclass, Agent, HttpAgent } from "@dfinity/agent"
-import { IDL } from "@dfinity/candid"
+import { Actor, ActorSubclass, Agent, HttpAgent } from "@icp-sdk/core/agent"
+import { IDL } from "@icp-sdk/core/candid"
 
 import { storageWithTtl } from "@nfid/client-db"
 

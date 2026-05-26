@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js"
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 

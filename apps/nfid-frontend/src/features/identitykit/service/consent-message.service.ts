@@ -1,4 +1,4 @@
-import { Agent } from "@dfinity/agent"
+import { Agent } from "@icp-sdk/core/agent"
 
 import {
   icrc21_consent_message_request,

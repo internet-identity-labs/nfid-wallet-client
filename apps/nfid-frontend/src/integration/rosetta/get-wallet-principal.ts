@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { WALLET_SCOPE } from "@nfid/config"
 import { ii } from "@nfid/integration"

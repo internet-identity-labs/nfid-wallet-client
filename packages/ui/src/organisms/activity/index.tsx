@@ -1,4 +1,4 @@
-import { SignIdentity } from "@dfinity/agent"
+import { SignIdentity } from "@icp-sdk/core/agent"
 import clsx from "clsx"
 import { FC, useContext, useState } from "react"
 

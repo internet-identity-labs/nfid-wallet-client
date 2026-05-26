@@ -1,4 +1,4 @@
-import { AnonymousIdentity, HttpAgent } from "@dfinity/agent"
+import { AnonymousIdentity, HttpAgent } from "@icp-sdk/core/agent"
 import { icpSwapPropertiesService } from "src/integration/nft/impl/icpswap/properties/properties-service"
 import { icpswapTransactionMapper } from "src/integration/nft/impl/icpswap/transaction/icpswap-transaction-mapper"
 import { NFTDetailsImpl, NftImpl } from "src/integration/nft/impl/nft-abstract"

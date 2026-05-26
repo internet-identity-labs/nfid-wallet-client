@@ -2,7 +2,7 @@ import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
+} from "@icp-sdk/core/identity"
 
 import { im, passkeyStorage, replaceActorIdentity } from "@nfid/integration"
 

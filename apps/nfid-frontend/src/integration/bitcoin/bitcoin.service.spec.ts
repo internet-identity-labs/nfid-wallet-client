@@ -1,8 +1,8 @@
-import { SignIdentity } from "@dfinity/agent"
+import { SignIdentity } from "@icp-sdk/core/agent"
 import {
   Ed25519KeyIdentity,
   JsonnableEd25519KeyIdentity,
-} from "@dfinity/identity/lib/cjs/identity/ed25519"
+} from "@icp-sdk/core/identity"
 import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
 
 import {

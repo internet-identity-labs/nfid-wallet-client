@@ -1,6 +1,6 @@
-import { Identity } from "@dfinity/agent/lib/cjs/auth"
-import { AccountIdentifier as AccountIdentifierAddress } from "@dfinity/ledger-icp"
-import { Principal } from "@dfinity/principal"
+import { Identity } from "@icp-sdk/core/agent"
+import { AccountIdentifier as AccountIdentifierAddress } from "@icp-sdk/canisters/ledger/icp"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { isHex } from "@nfid-frontend/utils"
 import { initActor } from "@nfid/integration"
@@ -35,7 +35,7 @@ export async function transferEXT(
     notify: false,
   }
   const result: TransferResult = (await actor.transfer(request).catch((e) => {
-    throw Error(`Transfer failed!: ${e}`, e)
+    throw Error(`Transfer failed!: ${e}`)
   })) as TransferResult
   if ("err" in result)
     throw Error("Transfer failed! " + formatError(result.err))
@@ -62,7 +62,7 @@ export async function lockNFT(
       [],
     )
     .catch((e) => {
-      throw Error(`Lock failed!: ${e}`, e)
+      throw Error(`Lock failed!: ${e}`)
     })) as LockResult
   if ("err" in result) {
     throw Error("Lock failed! " + formatError(result.err))
@@ -86,7 +86,7 @@ export async function listNFT(
     price: [BigInt(price)],
   }
   const result = (await actor.list(request).catch((e) => {
-    throw Error(`List failed!: ${e}`, e)
+    throw Error(`List failed!: ${e}`)
   })) as ListResult
   if ("err" in result) throw Error("List failed! " + formatError(result.err))
   return result.ok === null
@@ -107,7 +107,7 @@ export async function unListNFT(
     price: [],
   }
   const result = (await actor.list(request).catch((e) => {
-    throw Error(`UnList failed!: ${e}`, e)
+    throw Error(`UnList failed!: ${e}`)
   })) as LockResult
   if ("err" in result) throw Error("UnList failed! " + formatError(result.err))
   return result.ok === null

@@ -1,4 +1,4 @@
-import { DelegationIdentity } from "@dfinity/identity"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
 
 const getExpirationDate = (expiration: bigint): Date =>
   new Date(Number(expiration / BigInt(1000000)))

@@ -1,4 +1,4 @@
-import { SignIdentity } from "@dfinity/agent"
+import { SignIdentity } from "@icp-sdk/core/agent"
 import BigNumber from "bignumber.js"
 import { TransactionErrorHandlerAbstract } from "src/integration/swap/errors/error-handler-abstract"
 import { SourceInputCalculatorIcpSwap } from "src/integration/swap/icpswap/impl/icp-swap-calculator"

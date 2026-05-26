@@ -1,5 +1,5 @@
-import { ActorSubclass, HttpAgent, SignIdentity } from "@dfinity/agent"
-import { toNullable } from "@dfinity/utils"
+import { ActorSubclass, HttpAgent, SignIdentity } from "@icp-sdk/core/agent"
+import { toNullable } from "@nfid-frontend/utils"
 
 import { actor, agentBaseConfig } from "@nfid/integration"
 

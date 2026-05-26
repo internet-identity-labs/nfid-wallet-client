@@ -1,5 +1,5 @@
-import { AccountIdentifier } from "@dfinity/ledger-icp"
-import { Principal } from "@dfinity/principal"
+import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp"
+import { Principal } from "@icp-sdk/core/principal"
 import toaster from "packages/ui/src/atoms/toast"
 import { useMemo, useState } from "react"
 

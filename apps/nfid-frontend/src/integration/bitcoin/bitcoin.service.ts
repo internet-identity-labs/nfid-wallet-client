@@ -1,4 +1,4 @@
-import { SignIdentity } from "@dfinity/agent"
+import { SignIdentity } from "@icp-sdk/core/agent"
 import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 

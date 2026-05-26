@@ -1,4 +1,4 @@
-import { DelegationIdentity } from "@dfinity/identity"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
 import { useAuthenticationContext } from "apps/nfid-demo/src/context/authentication"
 import React from "react"
 

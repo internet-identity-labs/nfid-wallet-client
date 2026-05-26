@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { Ed25519KeyIdentity } from "@icp-sdk/core/identity"
 import { expect } from "@jest/globals"
 import { createCipheriv } from "crypto"
 

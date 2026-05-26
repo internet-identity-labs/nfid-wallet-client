@@ -1,5 +1,5 @@
-import { SignIdentity } from "@dfinity/agent"
-import { DelegationIdentity } from "@dfinity/identity"
+import { SignIdentity } from "@icp-sdk/core/agent"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
 
 /**
  * An authentication session can be used to sign messages to II and NFID, and therefor

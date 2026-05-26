@@ -1,4 +1,4 @@
-import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { Ed25519KeyIdentity } from "@icp-sdk/core/identity"
 import { errorHandlerFactory } from "src/integration/swap/errors/handler-factory"
 import { KongShroffBuilder } from "src/integration/swap/kong/impl/kong-swap-shroff"
 import { Shroff } from "src/integration/swap/shroff"

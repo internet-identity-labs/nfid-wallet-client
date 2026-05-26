@@ -2,7 +2,7 @@ import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
+} from "@icp-sdk/core/identity"
 import {
   authStorage,
   KEY_STORAGE_DELEGATION,

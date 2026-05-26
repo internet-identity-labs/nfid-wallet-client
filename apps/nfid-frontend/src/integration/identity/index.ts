@@ -1,4 +1,4 @@
-import { WebAuthnIdentity } from "@dfinity/identity"
+import { WebAuthnIdentity } from "@icp-sdk/core/identity"
 
 import { DeviceData } from "../_ic_api/internet_identity.d"
 import { fetchProfile } from "../identity-manager"

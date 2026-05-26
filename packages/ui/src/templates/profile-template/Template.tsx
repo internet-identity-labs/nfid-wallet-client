@@ -17,7 +17,7 @@ import { Outlet, useLocation, useNavigate, useMatch } from "react-router-dom"
 import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
 import { SwapStage } from "src/integration/swap/types/enums"
 import useSWRImmutable from "swr/immutable"
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { ArrowButton, Loader, TabsSwitcher, Tooltip } from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"

@@ -1,8 +1,6 @@
-import { DelegationChain, Ed25519KeyIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
+import { DelegationChain, Ed25519KeyIdentity } from "@icp-sdk/core/identity"
 import { atom, useAtom } from "jotai"
 import React from "react"
-import { Usergeek } from "usergeek-ic-js"
 
 import {
   authState,
@@ -80,13 +78,6 @@ export const useAuthentication = () => {
     setTimeout(() => {
       window.location.href = "/"
     }, 100)
-
-    Usergeek.setPrincipal(Principal.anonymous())
-  }, [])
-
-  const initUserGeek = React.useCallback((principal: Principal) => {
-    Usergeek.setPrincipal(principal)
-    Usergeek.trackSession()
   }, [])
 
   const login = React.useCallback(
@@ -112,7 +103,6 @@ export const useAuthentication = () => {
       }
 
       if (result.tag === "ok") {
-        initUserGeek(principal)
         setUser({
           principal: principal.toText(),
           chain: result.chain,
@@ -125,7 +115,7 @@ export const useAuthentication = () => {
       setIsLoading(false)
       return result
     },
-    [initUserGeek, setIsLoading, userNumber],
+    [setIsLoading, userNumber],
   )
 
   const loginWithRecovery = React.useCallback(
@@ -172,7 +162,6 @@ export const useAuthentication = () => {
             chain: result.chain,
             sessionKey: result.sessionKey,
           })
-          initUserGeek(await agent.getPrincipal())
           setShouldStoreLocalAccount(false)
         }
         setIsLoading(false)
@@ -220,7 +209,7 @@ export const useAuthentication = () => {
         }
       }
     },
-    [initUserGeek, setIsLoading, setShouldStoreLocalAccount],
+    [setIsLoading, setShouldStoreLocalAccount],
   )
 
   return {

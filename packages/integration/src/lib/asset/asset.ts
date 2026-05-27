@@ -1,4 +1,4 @@
-import { DelegationIdentity } from "@dfinity/identity"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
 import { format } from "date-fns"
 
 import { E8S } from "../token/constants"

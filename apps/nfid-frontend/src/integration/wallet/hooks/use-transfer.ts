@@ -1,4 +1,4 @@
-import { DelegationIdentity } from "@dfinity/identity"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
 import React from "react"
 
 import { transfer as transferICP } from "@nfid/integration/token/icp"

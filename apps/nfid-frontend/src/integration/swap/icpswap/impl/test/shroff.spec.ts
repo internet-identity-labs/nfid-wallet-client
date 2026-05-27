@@ -2,8 +2,8 @@ import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
-import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+} from "@icp-sdk/core/identity"
+import { JsonnableEd25519KeyIdentity } from "@icp-sdk/core/identity"
 import { SlippageQuoteError } from "src/integration/swap/errors/types"
 import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
 import { IcpSwapShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"

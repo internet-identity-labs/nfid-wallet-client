@@ -1,5 +1,5 @@
-import * as Agent from "@dfinity/agent"
-import { HttpAgent } from "@dfinity/agent"
+import * as Agent from "@icp-sdk/core/agent"
+import { HttpAgent } from "@icp-sdk/core/agent"
 import { idlFactory as SwapStorageIDL } from "@nfid/integration/_ic_api/swap_trs_storage"
 import {
   NoteEntry,

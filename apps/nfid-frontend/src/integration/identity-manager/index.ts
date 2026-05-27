@@ -1,7 +1,7 @@
 // Fetch + idiomatic sanitization layer for the identity manager canister.
-import { SignIdentity } from "@dfinity/agent"
-import { DelegationIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
+import { SignIdentity } from "@icp-sdk/core/agent"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
+import { Principal } from "@icp-sdk/core/principal"
 
 import {
   AccessPoint,

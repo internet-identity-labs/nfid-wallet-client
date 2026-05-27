@@ -2,9 +2,9 @@ import { authState, userRegistryIdlFactory } from "@nfid/integration"
 import type { UserRegistryService } from "@nfid/integration"
 import { UserAddressEntity } from "../interfaces"
 import { AddressBookCanisterMapper } from "../mapper/address-book-canister.mapper"
-import { createAgent } from "@dfinity/utils"
-import { Principal } from "@dfinity/principal"
-import { Actor } from "@dfinity/agent"
+import { createAgent } from "@nfid-frontend/utils"
+import { Principal } from "@icp-sdk/core/principal"
+import { Actor } from "@icp-sdk/core/agent"
 
 export class AddressBookCanisterClient {
   constructor(private mapper: AddressBookCanisterMapper) {}

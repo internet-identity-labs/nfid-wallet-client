@@ -1,26 +1,23 @@
-// @ts-nocheck - TypeScript types for @dfinity/agent are too strict for this use case
+// @ts-nocheck - TypeScript types for @icp-sdk/core/agent are too strict for this use case
 import {
   Agent,
+  AgentError,
   blsVerify,
   CallRequest,
   Cbor,
   Certificate,
+  defaultStrategy,
   LookupResult,
   lookupResultToBuffer,
-  RequestId,
-  UpdateCallRejectedError,
-  v2ResponseBody,
-  v3ResponseBody,
-} from "@dfinity/agent"
-import { AgentError } from "@dfinity/agent/lib/cjs/errors"
-import {
-  defaultStrategy,
   pollForResponse,
-} from "@dfinity/agent/lib/cjs/polling"
-import { bufFromBufLike } from "@dfinity/candid"
-import { DelegationIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
-
+  RequestId,
+  v4ResponseBody,
+  v2ResponseBody,
+  isV4ResponseBody,
+} from "@icp-sdk/core/agent"
+import { uint8FromBufLike } from "@icp-sdk/core/candid"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
+import { Principal } from "@icp-sdk/core/principal"
 import { GenericError } from "./exception-handler.service"
 ;(BigInt.prototype as any).toJSON = function () {
   return this.toString()
@@ -39,12 +36,29 @@ function toArrayBuffer(buffer: Uint8Array | RequestId): ArrayBuffer {
   return buffer as ArrayBuffer
 }
 
+// Local shim: UpdateCallRejectedError removed from @icp-sdk/core, replaced by ErrorCode hierarchy
+class UpdateCallRejectedError extends Error {
+  constructor(
+    _cid: Principal,
+    _methodName: string,
+    _requestId: RequestId,
+    _response: unknown,
+    _rejectCode: number,
+    rejectMessage: string,
+    _errorCode?: string,
+  ) {
+    super(rejectMessage)
+    this.name = "UpdateCallRejectedError"
+  }
+}
+
 export interface CallCanisterRequest {
   delegation: DelegationIdentity
   canisterId: string
   calledMethodName: string
   parameters: string
   agent: Agent
+  useV4?: boolean
 }
 
 export interface CallCanisterResponse {
@@ -61,7 +75,8 @@ class CallCanisterService {
         request.canisterId,
         request.calledMethodName,
         request.agent,
-        Buffer.from(request.parameters, "base64").buffer as ArrayBuffer,
+        new Uint8Array(Buffer.from(request.parameters, "base64")),
+        request.useV4,
       )
       const certificate: string = Buffer.from(response.certificate).toString(
         "base64",
@@ -83,7 +98,8 @@ class CallCanisterService {
     canisterId: string,
     methodName: string,
     agent: Agent,
-    arg: ArrayBuffer,
+    arg: Uint8Array,
+    useV4?: boolean,
   ): Promise<{ certificate: Uint8Array; contentMap: CallRequest | undefined }> {
     const cid = Principal.from(canisterId)
 
@@ -94,22 +110,25 @@ class CallCanisterService {
       methodName,
       arg,
       effectiveCanisterId: cid,
+      callSync: useV4 ?? false,
     })
 
     let certificate: Certificate | undefined
+    let rawCertificate: Uint8Array | undefined
 
-    if (response.body && (response.body as v3ResponseBody).certificate) {
-      const cert = (response.body as v3ResponseBody).certificate
+    if (response.body && isV4ResponseBody(response.body)) {
+      const cert = (response.body as v4ResponseBody).certificate
+      rawCertificate = uint8FromBufLike(cert)
       certificate = await Certificate.create({
-        certificate: bufFromBufLike(cert),
+        certificate: rawCertificate,
         rootKey: agent.rootKey,
-        canisterId: Principal.from(canisterId),
+        principal: { canisterId: Principal.from(canisterId) },
         blsVerify,
       })
       const path = [new TextEncoder().encode("request_status"), requestId]
 
       const statusBuffer = lookupResultToBuffer(
-        certificate.lookup([...path, "status"]) as LookupResult,
+        certificate.lookup_path([...path, "status"]) as LookupResult,
       )
       if (!statusBuffer) {
         throw new AgentError("Status buffer not found")
@@ -121,10 +140,8 @@ class CallCanisterService {
         case "replied":
           break
         case "rejected": {
-          // Find rejection details in the certificate
-
           const rejectCodeBuffer = lookupResultToBuffer(
-            certificate.lookup([...path, "reject_code"]) as LookupResult,
+            certificate.lookup_path([...path, "reject_code"]) as LookupResult,
           )
           if (!rejectCodeBuffer) {
             throw new AgentError("Reject code buffer not found")
@@ -133,7 +150,10 @@ class CallCanisterService {
           const rejectCode = new Uint8Array(rejectCodeArrayBuffer as any)[0]
 
           const rejectMessageBuffer = lookupResultToBuffer(
-            certificate.lookup([...path, "reject_message"]) as LookupResult,
+            certificate.lookup_path([
+              ...path,
+              "reject_message",
+            ]) as LookupResult,
           )
           if (!rejectMessageBuffer) {
             throw new AgentError("Reject message buffer not found")
@@ -145,7 +165,7 @@ class CallCanisterService {
           )
 
           const error_code_buf = lookupResultToBuffer(
-            certificate.lookup([...path, "error_code"]) as LookupResult,
+            certificate.lookup_path([...path, "error_code"]) as LookupResult,
           )
           const error_code = error_code_buf
             ? (() => {
@@ -181,23 +201,82 @@ class CallCanisterService {
 
     // Fall back to polling if we receive an Accepted response code
     if (response.status === 202) {
-      const pollStrategy = defaultStrategy()
-      // Contains the certificate and the reply from the boundary node
-      const response = await pollForResponse(
-        agent,
-        cid,
-        requestId,
-        pollStrategy,
-        undefined,
-        blsVerify,
-      )
-      certificate = response.certificate
+      const rawCert = await this.pollV2ReadState(agent, cid, requestId)
+      return {
+        contentMap: requestDetails,
+        certificate: rawCert,
+      }
     }
 
     return {
       contentMap: requestDetails,
-      certificate: new Uint8Array(Cbor.encode((certificate as any).cert)),
+      certificate: rawCertificate!,
     }
+  }
+
+  private async pollV2ReadState(
+    agent: Agent,
+    canisterId: Principal,
+    requestId: RequestId,
+  ): Promise<Uint8Array> {
+    const path = [new TextEncoder().encode("request_status"), requestId]
+    const maxAttempts = 60
+    const intervalMs = 2000
+
+    for (let i = 0; i < maxAttempts; i++) {
+      const readStateRequest = await agent.createReadStateRequest?.({
+        paths: [path],
+      })
+
+      const url = `https://ic0.app/api/v2/canister/${canisterId.toText()}/read_state`
+      const body = Cbor.encode(readStateRequest?.body)
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/cbor" },
+        body,
+      })
+
+      if (!res.ok) {
+        await new Promise((r) => setTimeout(r, intervalMs))
+        continue
+      }
+
+      const responseBytes = new Uint8Array(await res.arrayBuffer())
+      const decoded = Cbor.decode(responseBytes)
+      const rawCertificate = new Uint8Array(decoded.certificate)
+
+      const certificate = await Certificate.create({
+        certificate: rawCertificate,
+        rootKey: agent.rootKey,
+        principal: { canisterId },
+        blsVerify,
+      })
+
+      const statusBuf = lookupResultToBuffer(
+        certificate.lookup_path([
+          ...path,
+          new TextEncoder().encode("status"),
+        ]) as LookupResult,
+      )
+
+      if (!statusBuf) {
+        await new Promise((r) => setTimeout(r, intervalMs))
+        continue
+      }
+
+      const status = new TextDecoder().decode(toArrayBuffer(statusBuf) as any)
+
+      if (status === "replied") {
+        return rawCertificate
+      }
+      if (status === "rejected") {
+        throw new AgentError("Call was rejected")
+      }
+
+      await new Promise((r) => setTimeout(r, intervalMs))
+    }
+
+    throw new AgentError("Polling timed out")
   }
 }
 

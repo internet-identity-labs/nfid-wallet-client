@@ -1,8 +1,8 @@
 /**
  * @jest-environment jsdom
  */
-import { DelegationIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
+import { Principal } from "@icp-sdk/core/principal"
 import { expect } from "@jest/globals"
 
 import * as nfidIntegration from "@nfid/integration"

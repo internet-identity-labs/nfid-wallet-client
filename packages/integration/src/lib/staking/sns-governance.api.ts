@@ -1,16 +1,19 @@
-import { AnonymousIdentity, Identity, SignIdentity } from "@dfinity/agent"
-import { IcrcAccount } from "@dfinity/ledger-icrc"
-import { Principal } from "@dfinity/principal"
+import { AnonymousIdentity, Identity, SignIdentity } from "@icp-sdk/core/agent"
+import { IcrcAccount } from "@icp-sdk/canisters/ledger/icrc"
+import { Principal } from "@icp-sdk/core/principal"
 import {
   SnsListProposalsParams,
-  SnsNervousSystemParameters,
-  SnsNeuron,
-  SnsNeuronId,
   SnsNeuronPermissionType,
-  SnsProposalId,
   SnsVote,
-} from "@dfinity/sns"
-import type { ListNervousSystemFunctionsResponse } from "@dfinity/sns/dist/candid/sns_governance"
+  type SnsGovernanceDid,
+} from "@icp-sdk/canisters/sns"
+
+type SnsNeuron = SnsGovernanceDid.Neuron
+type SnsNeuronId = SnsGovernanceDid.NeuronId
+type SnsProposalId = SnsGovernanceDid.ProposalId
+type SnsNervousSystemParameters = SnsGovernanceDid.NervousSystemParameters
+type ListNervousSystemFunctionsResponse =
+  SnsGovernanceDid.ListNervousSystemFunctionsResponse
 
 import { loadSnsWrapper } from "./sns-wrapper.api"
 import { logWithTimestamp } from "./util/dev.utils"
@@ -353,7 +356,10 @@ export const claimNeuron = async ({
   })
 
   const neuronId = await claimNeuronApi({
-    subaccount,
+    subaccount:
+      subaccount instanceof Uint8Array
+        ? subaccount
+        : new Uint8Array(subaccount),
     memo,
     controller,
   })

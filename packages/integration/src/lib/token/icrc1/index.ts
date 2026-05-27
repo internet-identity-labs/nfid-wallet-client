@@ -1,5 +1,5 @@
-import * as Agent from "@dfinity/agent"
-import { HttpAgent, Identity } from "@dfinity/agent"
+import * as Agent from "@icp-sdk/core/agent"
+import { HttpAgent, Identity } from "@icp-sdk/core/agent"
 
 import { storageWithTtl } from "@nfid/client-db"
 

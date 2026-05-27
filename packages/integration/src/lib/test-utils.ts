@@ -2,7 +2,7 @@ import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
+} from "@icp-sdk/core/identity"
 
 export async function generateDelegationIdentity(identity: Ed25519KeyIdentity) {
   const sessionKey = Ed25519KeyIdentity.generate()

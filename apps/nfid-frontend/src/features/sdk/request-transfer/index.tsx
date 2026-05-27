@@ -1,4 +1,4 @@
-import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp"
 import { isPresentInStorage } from "packages/integration/src/lib/lambda/domain-key-repository"
 import { TickerAmount } from "packages/ui/src/molecules/ticker-amount"
 import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"

@@ -1,11 +1,11 @@
-import { DerEncodedPublicKey } from "@dfinity/agent"
-import { WebAuthnIdentity } from "@dfinity/identity"
+import { DerEncodedPublicKey } from "@icp-sdk/core/agent"
+import { WebAuthnIdentity } from "@icp-sdk/core/identity"
 import {
   Delegation,
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
+} from "@icp-sdk/core/identity"
 
 export async function mockWebAuthnCreate() {
   return WebAuthnIdentity.fromJSON(

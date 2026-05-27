@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { useSWRWithTimestamp, mutate as mutateData } from "@nfid/swr"
 import { authState } from "@nfid/integration"

@@ -1,14 +1,14 @@
 /**
  * @jest-environment jsdom
  */
-import { Actor, ActorSubclass, Agent, HttpAgent } from "@dfinity/agent"
-import { IDL } from "@dfinity/candid"
+import { Actor, ActorSubclass, Agent, HttpAgent } from "@icp-sdk/core/agent"
+import { IDL } from "@icp-sdk/core/candid"
 import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
+} from "@icp-sdk/core/identity"
+import { Principal } from "@icp-sdk/core/principal"
 
 import {
   AccessPointRequest,

@@ -1,5 +1,7 @@
-import { Topic } from "@dfinity/nns"
-import { ListNervousSystemFunctionsResponse } from "@dfinity/sns/dist/candid/sns_governance"
+import { Topic } from "@icp-sdk/canisters/nns"
+import { type SnsGovernanceDid } from "@icp-sdk/canisters/sns"
+type ListNervousSystemFunctionsResponse =
+  SnsGovernanceDid.ListNervousSystemFunctionsResponse
 
 export interface TokenValue {
   getTokenValue(): string

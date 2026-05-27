@@ -1,8 +1,8 @@
 /**
  * @jest-environment jsdom
  */
-import { Ed25519KeyIdentity } from "@dfinity/identity"
-import { AccountIdentifier } from "@dfinity/ledger-icp"
+import { Ed25519KeyIdentity } from "@icp-sdk/core/identity"
+import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp"
 import { expect } from "@jest/globals"
 
 import { mockIdentityA, mockIdentityB } from "@nfid/integration"

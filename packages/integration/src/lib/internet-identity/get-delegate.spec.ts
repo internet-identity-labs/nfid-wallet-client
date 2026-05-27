@@ -1,10 +1,10 @@
-import { Signature } from "@dfinity/agent"
+import { Signature } from "@icp-sdk/core/agent"
 import {
   Delegation,
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
+} from "@icp-sdk/core/identity"
 
 import { authState } from "@nfid/integration"
 

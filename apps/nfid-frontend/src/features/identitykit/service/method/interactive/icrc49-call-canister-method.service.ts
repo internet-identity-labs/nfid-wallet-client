@@ -1,6 +1,6 @@
-import { Agent, HttpAgent, Identity } from "@dfinity/agent"
-import { IDL } from "@dfinity/candid"
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import { Agent, HttpAgent, Identity } from "@icp-sdk/core/agent"
+import { IDL } from "@icp-sdk/core/candid"
+import { DelegationIdentity, Ed25519KeyIdentity } from "@icp-sdk/core/identity"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 
 import { WALLET_SESSION_TTL_1_MIN_IN_MS } from "@nfid/config"
@@ -53,6 +53,7 @@ export interface Icrc49Dto {
   sender: string
   method: string
   arg: string
+  useV4?: boolean
 }
 
 export type CallCanisterHelper = {
@@ -87,6 +88,7 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
       parameters: icrc49Dto.arg,
       delegation,
       agent,
+      useV4: icrc49Dto.useV4,
     })
 
     const response: RPCSuccessResponse = {

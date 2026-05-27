@@ -1,5 +1,5 @@
-import { ActorSubclass, SignIdentity } from "@dfinity/agent"
-import { Principal } from "@dfinity/principal"
+import { ActorSubclass, SignIdentity } from "@icp-sdk/core/agent"
+import { Principal } from "@icp-sdk/core/principal"
 import BigNumber from "bignumber.js"
 import { DepositError, WithdrawError } from "src/integration/swap/errors/types"
 import { Account, ApproveArgs } from "src/integration/swap/kong/idl/icrc1.d"

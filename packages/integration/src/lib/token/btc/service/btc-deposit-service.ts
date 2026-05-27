@@ -1,5 +1,5 @@
-import { CkBTCMinterCanister } from "@dfinity/ckbtc"
-import { Principal } from "@dfinity/principal"
+import { CkBtcMinterCanister } from "@icp-sdk/canisters/ckbtc"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { agent } from "../../../agent"
 
@@ -7,10 +7,10 @@ const CKBTC_MINTER_CANISTER_ID = "mqygn-kiaaa-aaaar-qaadq-cai"
 const BTC_DEPOSIT_CHECK_INTERVAL = 7 * 60 * 1000 // 7 minues in millis
 
 export class BtсDepositService {
-  private minter: CkBTCMinterCanister
+  private minter: CkBtcMinterCanister
 
   constructor() {
-    this.minter = CkBTCMinterCanister.create({
+    this.minter = CkBtcMinterCanister.create({
       agent,
       canisterId: Principal.fromText(CKBTC_MINTER_CANISTER_ID),
     })

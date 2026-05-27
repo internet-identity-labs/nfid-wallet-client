@@ -2,7 +2,7 @@ import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
+} from "@icp-sdk/core/identity"
 import toaster from "packages/ui/src/atoms/toast"
 import { ActorRefFrom, assign, createMachine } from "xstate"
 

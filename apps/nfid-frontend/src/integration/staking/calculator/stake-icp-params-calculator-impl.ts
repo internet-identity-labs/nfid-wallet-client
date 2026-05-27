@@ -1,4 +1,4 @@
-import { NetworkEconomics } from "@dfinity/nns"
+import { NetworkEconomics } from "@icp-sdk/canisters/nns"
 
 import { StakeParamsCalculatorImpl } from "./stake-params-calculator-impl"
 

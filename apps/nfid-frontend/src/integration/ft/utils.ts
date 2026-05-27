@@ -1,4 +1,4 @@
-import { Utxo } from "@dfinity/ckbtc"
+import { Utxo } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
 import { SendEthFee } from "../ethereum/evm.service"
 
 export interface FeeResponse {

@@ -10,7 +10,7 @@ import {
 } from "ethers"
 import { Address } from "../bitcoin/services/chain-fusion-signer.service"
 import { chainFusionSignerService } from "../bitcoin/services/chain-fusion-signer.service"
-import { SignIdentity } from "@dfinity/agent"
+import { SignIdentity } from "@icp-sdk/core/agent"
 import { ethereumService } from "./eth/ethereum.service"
 import { storageWithTtl, ttlCacheService } from "@nfid/client-db"
 import { ChainId, State } from "@nfid/integration/token/icrc1/enum/enums"

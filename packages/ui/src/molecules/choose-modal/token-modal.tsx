@@ -1,5 +1,5 @@
-import { Principal } from "@dfinity/principal"
-import { debounce } from "@dfinity/utils"
+import { Principal } from "@icp-sdk/core/principal"
+import { debounce } from "@nfid-frontend/utils"
 import clsx from "clsx"
 import {
   useCallback,

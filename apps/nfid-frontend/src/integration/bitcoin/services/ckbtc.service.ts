@@ -1,8 +1,12 @@
-import { SignIdentity } from "@dfinity/agent"
-import { CkBTCMinterCanister, RetrieveBtcOk } from "@dfinity/ckbtc"
-import { IcrcLedgerCanister } from "@dfinity/ledger-icrc"
-import { Principal } from "@dfinity/principal"
-import { createAgent } from "@dfinity/utils"
+import { SignIdentity } from "@icp-sdk/core/agent"
+import {
+  CkBtcMinterCanister,
+  type CkBtcMinterDid,
+} from "@icp-sdk/canisters/ckbtc"
+type RetrieveBtcOk = CkBtcMinterDid.RetrieveBtcOk
+import { IcrcLedgerCanister } from "@icp-sdk/canisters/ledger/icrc"
+import { Principal } from "@icp-sdk/core/principal"
+import { createAgent } from "@nfid-frontend/utils"
 import BigNumber from "bignumber.js"
 
 import { BlockIndex, CkBtcToBtcFee } from "../bitcoin.service"
@@ -145,7 +149,7 @@ class CkBtcService {
       identity,
       host: IC_HOST,
     })
-    const ledger = CkBTCMinterCanister.create({
+    const ledger = CkBtcMinterCanister.create({
       canisterId: Principal.fromText(CK_BTC_MINTER_CANISTER_ID),
       agent,
     })

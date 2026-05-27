@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 import { ttlCacheService } from "@nfid/client-db"
 import { DataStructure, MappedToken } from "src/integration/nft/geek/geek-types"
 

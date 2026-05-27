@@ -1,5 +1,5 @@
-import { SignIdentity } from "@dfinity/agent"
-import { Principal } from "@dfinity/principal"
+import { SignIdentity } from "@icp-sdk/core/agent"
+import { Principal } from "@icp-sdk/core/principal"
 import BigNumber from "bignumber.js"
 import { DepositError, WithdrawError } from "src/integration/swap/errors/types"
 
@@ -10,12 +10,11 @@ import { swapTransactionService } from "src/integration/swap/transaction/transac
 import { userPrefService } from "src/integration/user-preferences/user-pref-service"
 
 import { hasOwnProperty, ICRC1TypeOracle, TransferArg } from "@nfid/integration"
-import { Account } from "@dfinity/ledger-icp"
+import { type IcpLedgerDid } from "@icp-sdk/canisters/ledger/icp"
+type Account = IcpLedgerDid.Account
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
 
 import type { SourceInputCalculator } from "src/integration/swap/calculator/calculator"
-
-import { ContactSupportError } from "../errors/types/contact-support-error"
 import { SwapName } from "../types/enums"
 
 export abstract class ShroffAbstract implements Shroff {

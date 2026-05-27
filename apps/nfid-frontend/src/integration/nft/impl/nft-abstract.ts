@@ -1,5 +1,5 @@
-import { Actor, HttpAgent } from "@dfinity/agent"
-import { Principal } from "@dfinity/principal"
+import { Actor, HttpAgent } from "@icp-sdk/core/agent"
+import { Principal } from "@icp-sdk/core/principal"
 import BigNumber from "bignumber.js"
 import { encodeTokenIdentifier } from "src/integration/entrepot/ext"
 import { entrepotAsset, getTokenLink } from "src/integration/entrepot/lib"

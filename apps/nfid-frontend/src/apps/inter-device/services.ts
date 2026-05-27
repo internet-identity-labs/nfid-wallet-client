@@ -1,4 +1,4 @@
-import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+import { hexToBytes } from "@noble/hashes/utils"
 
 import { AuthorizationRequest } from "frontend/state/authorization"
 
@@ -13,7 +13,7 @@ export function getDataFromPath(): Promise<{
 
   console.debug(getDataFromPath.name, { ...params })
 
-  const sessionPublicKey = new Uint8Array(fromHexString(secret))
+  const sessionPublicKey = new Uint8Array(hexToBytes(secret))
   return Promise.resolve({
     authRequest: {
       hostname: aliasDomain,

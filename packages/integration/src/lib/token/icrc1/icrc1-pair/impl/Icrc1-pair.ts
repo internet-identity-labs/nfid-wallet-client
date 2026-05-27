@@ -1,6 +1,6 @@
-import * as Agent from "@dfinity/agent"
-import { HttpAgent, SignIdentity } from "@dfinity/agent"
-import { Principal } from "@dfinity/principal"
+import * as Agent from "@icp-sdk/core/agent"
+import { HttpAgent, SignIdentity } from "@icp-sdk/core/agent"
+import { Principal } from "@icp-sdk/core/principal"
 
 import {
   actorBuilder,
@@ -18,10 +18,7 @@ import { Category, State } from "../../enum/enums"
 import { icrc1OracleService } from "../../service/icrc1-oracle-service"
 import { icrc1StorageService } from "../../service/icrc1-storage-service"
 import { ICRC1Data, ICRC1Error, AllowanceDetailDTO } from "../../types"
-import {
-  AccountIdentifier,
-  principalToAccountIdentifier,
-} from "@dfinity/ledger-icp"
+import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp"
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 export class Icrc1Pair implements IIcrc1Pair {
   private readonly ledger: string
@@ -117,7 +114,9 @@ export class Icrc1Pair implements IIcrc1Pair {
     })
     if (this.ledger === ICP_CANISTER_ID) {
       const allowances = await actor.get_allowances({
-        from_account_id: principalToAccountIdentifier(rootPrincipalId),
+        from_account_id: AccountIdentifier.fromPrincipal({
+          principal: rootPrincipalId,
+        }).toHex(),
         prev_spender_id: [],
         take: [],
       })

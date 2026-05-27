@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 import { Spinner } from "packages/ui/src/atoms/spinner"
 import toaster from "packages/ui/src/atoms/toast"
 import { FC, useCallback, useState } from "react"

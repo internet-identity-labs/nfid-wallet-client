@@ -1,5 +1,5 @@
-import { DerEncodedPublicKey, Signature } from "@dfinity/agent"
-import { Delegation, DelegationChain } from "@dfinity/identity"
+import { DerEncodedPublicKey, Signature } from "@icp-sdk/core/agent"
+import { Delegation, DelegationChain } from "@icp-sdk/core/identity"
 
 import { ThirdPartyAuthSession } from "frontend/state/authorization"
 
@@ -11,14 +11,13 @@ export const delegationChainFromDelegation = ({
     [
       {
         delegation: new Delegation(
-          new Uint8Array(signedDelegation.delegation.pubkey).buffer,
+          new Uint8Array(signedDelegation.delegation.pubkey),
           signedDelegation.delegation.expiration,
           signedDelegation.delegation.targets,
         ),
-        signature: new Uint8Array(signedDelegation.signature)
-          .buffer as Signature,
+        signature: new Uint8Array(signedDelegation.signature) as Signature,
       },
     ],
-    new Uint8Array(userPublicKey).buffer as DerEncodedPublicKey,
+    new Uint8Array(userPublicKey) as DerEncodedPublicKey,
   )
 }

@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 import { FT } from "src/integration/ft/ft"
 import BigNumber from "bignumber.js"
 import { FTImpl } from "./ft-impl"
@@ -9,7 +9,7 @@ import {
 import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { Category, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
-import { SignIdentity } from "@dfinity/agent"
+import { SignIdentity } from "@icp-sdk/core/agent"
 import { FeeResponseETH } from "../utils"
 import {
   ETH_DECIMALS,

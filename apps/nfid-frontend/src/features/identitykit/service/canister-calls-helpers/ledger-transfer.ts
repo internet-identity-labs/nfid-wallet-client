@@ -1,6 +1,6 @@
-import { toHex } from "@dfinity/agent"
-import { AccountIdentifier } from "@dfinity/ledger-icp"
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
+import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp"
+import { uint8ArrayToHexString } from "@nfid-frontend/utils"
+import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc"
 
 import { exchangeRateService, getBalance } from "@nfid/integration"
 import { ICP_DECIMALS, WALLET_FEE_E8S } from "@nfid/integration/token/constants"
@@ -25,7 +25,7 @@ export const getLedgerTransferMetadata = async (
 
   const balance = await getBalance(userAddress)
 
-  const toAddress = toHex(toArray)
+  const toAddress = uint8ArrayToHexString(new Uint8Array(toArray))
   const amount = BigInt(requestParams.amount.e8s)
   const total = amount + BigInt(WALLET_FEE_E8S)
   const isInsufficientBalance = total > balance

@@ -1,5 +1,5 @@
 // A global singleton for our internet computer actors.
-import * as Agent from "@dfinity/agent"
+import * as Agent from "@icp-sdk/core/agent"
 import {
   Actor,
   ActorMethod,
@@ -7,9 +7,11 @@ import {
   HttpAgent,
   Identity,
   SignIdentity,
-} from "@dfinity/agent"
-import { InterfaceFactory } from "@dfinity/candid/lib/cjs/idl"
-import { Principal } from "@dfinity/principal"
+} from "@icp-sdk/core/agent"
+import { IDL } from "@icp-sdk/core/candid"
+
+type InterfaceFactory = IDL.InterfaceFactory
+import { Principal } from "@icp-sdk/core/principal"
 
 import { idlFactory as cyclesMinterIDL } from "./_ic_api/cycles_minter"
 import { _SERVICE as CyclesMinter } from "./_ic_api/cycles_minter.d"

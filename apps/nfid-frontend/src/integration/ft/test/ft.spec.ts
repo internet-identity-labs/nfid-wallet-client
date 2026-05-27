@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 import BigNumber from "bignumber.js"
 import { FT } from "src/integration/ft/ft"
 import { ftService } from "src/integration/ft/ft-service"

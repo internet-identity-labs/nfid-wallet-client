@@ -1,4 +1,4 @@
-import { WebAuthnIdentity } from "@dfinity/identity"
+import { WebAuthnIdentity } from "@icp-sdk/core/identity"
 import { useCallback, useEffect, useMemo, useState } from "react"
 
 import { isWebAuthNSupported } from "frontend/integration/device"

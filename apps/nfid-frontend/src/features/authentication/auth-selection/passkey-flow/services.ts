@@ -1,11 +1,11 @@
-import { fromHexString } from "@dfinity/candid/lib/cjs/utils/buffer"
+import { hexToBytes } from "@noble/hashes/utils"
 import {
   DelegationIdentity,
   DER_COSE_OID,
   Ed25519KeyIdentity,
   WebAuthnIdentity,
   wrapDER,
-} from "@dfinity/identity"
+} from "@icp-sdk/core/identity"
 import { randomBytes } from "@noble/hashes/utils"
 import * as decodeHelpers from "@simplewebauthn/server/helpers"
 import { isoUint8Array } from "@simplewebauthn/server/helpers"
@@ -18,7 +18,7 @@ import {
   KEY_STORAGE_KEY,
   walletStorage,
 } from "packages/integration/src/lib/authentication/storage"
-import { toHexString } from "packages/integration/src/lib/delegation-factory/delegation-i"
+import { toHexString as bytesToHex } from "packages/integration/src/lib/delegation-factory/delegation-i"
 import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 
 import { getBrowser } from "@nfid-frontend/utils"
@@ -65,7 +65,7 @@ export class PasskeyConnector {
     const jsonData = JSON.stringify({
       ...data,
       credentialId: base64url.encode(Buffer.from(data.credentialId)),
-      publicKey: toHexString(data.publicKey.buffer as ArrayBuffer),
+      publicKey: bytesToHex(data.publicKey.buffer as ArrayBuffer),
     })
 
     const identity = WebAuthnIdentity.fromJSON(
@@ -170,7 +170,7 @@ export class PasskeyConnector {
     return {
       ...decodedObject,
       credentialId: base64url.toBuffer(decodedObject.credentialId),
-      publicKey: fromHexString(decodedObject.publicKey),
+      publicKey: hexToBytes(decodedObject.publicKey),
     }
   }
 
@@ -263,7 +263,7 @@ export class PasskeyConnector {
     const jsonData = JSON.stringify({
       ...data,
       credentialId: base64url.encode(Buffer.from(data.credentialId)),
-      publicKey: toHexString(data.publicKey.buffer as ArrayBuffer),
+      publicKey: bytesToHex(data.publicKey.buffer as ArrayBuffer),
       user: nextBorrowedAnchor,
     })
 
@@ -452,7 +452,10 @@ export class PasskeyConnector {
       undefined,
       passkeysMetadata.map((p) => ({
         credentialId: p.credentialId,
-        pubkey: wrapDER(p.publicKey.buffer as ArrayBuffer, DER_COSE_OID) as any,
+        pubkey: wrapDER(
+          new Uint8Array(p.publicKey.buffer),
+          DER_COSE_OID,
+        ) as any,
       })),
     )
   }

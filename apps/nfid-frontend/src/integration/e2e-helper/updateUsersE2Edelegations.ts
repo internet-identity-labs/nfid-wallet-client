@@ -1,4 +1,4 @@
-import { Ed25519KeyIdentity, DelegationChain } from "@dfinity/identity"
+import { Ed25519KeyIdentity, DelegationChain } from "@icp-sdk/core/identity"
 import users from "apps/nfid-frontend-e2e/src/helpers/users.json"
 
 import { IC_DERIVATION_PATH } from "../internet-identity"

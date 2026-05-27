@@ -1,5 +1,5 @@
-import { Principal } from "@dfinity/principal"
-import { SignIdentity } from "@dfinity/agent"
+import { Principal } from "@icp-sdk/core/principal"
+import { SignIdentity } from "@icp-sdk/core/agent"
 import { FTImpl } from "./ft-impl"
 import {
   CKETH_LEDGER_CANISTER_ID,

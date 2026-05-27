@@ -1,6 +1,11 @@
-import { SignIdentity } from "@dfinity/agent"
-import { AccountIdentifier } from "@dfinity/ledger-icp"
-import { Followees, Neuron, NeuronInfo, NeuronState } from "@dfinity/nns"
+import { SignIdentity } from "@icp-sdk/core/agent"
+import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp"
+import {
+  Followees,
+  Neuron,
+  NeuronInfo,
+  NeuronState,
+} from "@icp-sdk/canisters/nns"
 
 import {
   disburseICP,

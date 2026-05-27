@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 import validate, { Network } from "bitcoin-address-validation"
 import { isAddress } from "ethers"
 import React from "react"

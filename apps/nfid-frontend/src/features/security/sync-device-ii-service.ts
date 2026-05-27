@@ -1,4 +1,4 @@
-import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { type DerEncodedPublicKey } from "@icp-sdk/core/agent"
 import toaster from "packages/ui/src/atoms/toast"
 
 import { RootWallet, DeviceType, authState, ic } from "@nfid/integration"
@@ -70,14 +70,12 @@ export class SyncDeviceIIService {
       }),
     })
     const { publicKey } = await publicKeyResponse.json()
-    const identity = Ed25519KeyIdentity.fromParsedJson([publicKey, "0"])
-
     await addDevice(
       BigInt(profile.anchor),
       "Email",
       { cross_platform: null },
       { authentication: null },
-      identity.getPublicKey().toDer(),
+      Buffer.from(publicKey, "hex") as unknown as DerEncodedPublicKey,
     )
 
     toaster.success("The email device has been synchronized.")

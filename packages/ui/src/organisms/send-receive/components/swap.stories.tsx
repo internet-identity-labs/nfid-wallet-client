@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 import { Meta, StoryFn } from "@storybook/react-webpack5"
 import { FormProvider, useForm } from "react-hook-form"
 import BigNumber from "bignumber.js"

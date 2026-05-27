@@ -1,4 +1,5 @@
-import { Icrc1TransferError } from "@dfinity/ledger-icp/dist/candid/ledger"
+import { type IcpLedgerDid } from "@icp-sdk/canisters/ledger/icp"
+type Icrc1TransferError = IcpLedgerDid.Icrc1TransferError
 import { SwapTransaction as SwapTransactionCandid } from "@nfid/integration/_ic_api/swap_trs_storage.d"
 import { SwapName, SwapStage } from "src/integration/swap/types/enums"
 

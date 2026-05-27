@@ -1,10 +1,8 @@
-import { SignIdentity } from "@dfinity/agent"
+import { SignIdentity } from "@icp-sdk/core/agent"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { TransactionErrorHandler } from "src/integration/swap/transaction/transaction-error-handler"
 
-export abstract class TransactionErrorHandlerAbstract
-  implements TransactionErrorHandler
-{
+export abstract class TransactionErrorHandlerAbstract implements TransactionErrorHandler {
   private readonly transaction: SwapTransaction
 
   constructor(transaction: SwapTransaction) {

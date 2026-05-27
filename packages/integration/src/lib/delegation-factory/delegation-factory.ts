@@ -1,10 +1,10 @@
-import { Signature } from "@dfinity/agent"
+import { Signature } from "@icp-sdk/core/agent"
 import {
   Delegation,
   DelegationChain,
   DelegationIdentity,
-} from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
+} from "@icp-sdk/core/identity"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { ONE_HOUR_IN_MS } from "@nfid/config"
 import { delegationFactory, mapOptional } from "@nfid/integration"
@@ -52,12 +52,13 @@ export async function getDelegationChainSignedByCanister(
         [
           {
             delegation: new Delegation(
-              new Uint8Array(r.signed_delegation.delegation.pubkey).buffer,
+              new Uint8Array(r.signed_delegation.delegation.pubkey),
               r.signed_delegation.delegation.expiration,
               mapOptional(r.signed_delegation.delegation.targets),
             ),
-            signature: new Uint8Array(r.signed_delegation.signature)
-              .buffer as Signature,
+            signature: new Uint8Array(
+              r.signed_delegation.signature,
+            ) as Signature,
           },
         ],
         new Uint8Array(prepareDelegationResponse[0]),

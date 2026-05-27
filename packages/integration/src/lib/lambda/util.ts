@@ -1,8 +1,8 @@
-import { Endpoint, Expiry, QueryFields, ReadRequest } from "@dfinity/agent"
-import * as Agent from "@dfinity/agent"
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
-import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1"
-import { Principal } from "@dfinity/principal"
+import { Endpoint, Expiry, QueryFields, ReadRequest } from "@icp-sdk/core/agent"
+import * as Agent from "@icp-sdk/core/agent"
+import { DelegationIdentity, Ed25519KeyIdentity } from "@icp-sdk/core/identity"
+import { Secp256k1KeyIdentity } from "@icp-sdk/core/identity/secp256k1"
+import { Principal } from "@icp-sdk/core/principal"
 import sha256 from "sha256"
 
 import { idlFactory as imIDL } from "../_ic_api/identity_manager"
@@ -26,7 +26,9 @@ export async function getTransformedRequest(
     method_name: fields.methodName,
     arg: fields.arg,
     sender,
-    ingress_expiry: new Expiry(DEFAULT_INGRESS_EXPIRY_DELTA_IN_MSECS),
+    ingress_expiry: Expiry.fromDeltaInMilliseconds(
+      DEFAULT_INGRESS_EXPIRY_DELTA_IN_MSECS,
+    ),
   } as ReadRequest
   return await identity.transformRequest({
     request: {
@@ -56,6 +58,10 @@ export function getLambdaIdentity(): Secp256k1KeyIdentity {
   if (!LAMBDA_IDENTITY) {
     throw Error("No LAMBDA_IDENTITY provided.")
   }
-  const secretKey = Agent.fromHex(LAMBDA_IDENTITY.trim())
+  const secretKey = Uint8Array.from(
+    LAMBDA_IDENTITY.trim()
+      .match(/.{1,2}/g)!
+      .map((b) => parseInt(b, 16)),
+  )
   return Secp256k1KeyIdentity.fromSecretKey(secretKey)
 }

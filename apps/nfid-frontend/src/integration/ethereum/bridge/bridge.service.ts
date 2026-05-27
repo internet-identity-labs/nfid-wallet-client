@@ -1,4 +1,4 @@
-import { SignIdentity } from "@dfinity/agent"
+import { SignIdentity } from "@icp-sdk/core/agent"
 import { TokenTransfer } from "@wormhole-foundation/sdk-connect"
 import { Wormhole, wormhole } from "@wormhole-foundation/sdk"
 import evm from "@wormhole-foundation/sdk/evm"

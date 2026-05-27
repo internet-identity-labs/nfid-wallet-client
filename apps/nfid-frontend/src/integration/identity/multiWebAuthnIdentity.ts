@@ -12,8 +12,13 @@ import {
   PublicKey,
   Signature,
   SignIdentity,
-} from "@dfinity/agent"
-import { DER_COSE_OID, unwrapDER, WebAuthnIdentity } from "@dfinity/identity"
+} from "@icp-sdk/core/agent"
+import {
+  DER_COSE_OID,
+  unwrapDER,
+  WebAuthnIdentity,
+} from "@icp-sdk/core/identity"
+
 import borc from "borc"
 import { Buffer } from "buffer"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"

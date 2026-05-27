@@ -1,6 +1,6 @@
-import { HttpAgent } from "@dfinity/agent"
-import { AuthClient } from "@dfinity/auth-client"
-import { DelegationIdentity } from "@dfinity/identity"
+import { HttpAgent } from "@icp-sdk/core/agent"
+import { AuthClient } from "@icp-sdk/auth/client"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
 import React from "react"
 
 import { useSWR } from "@nfid/swr"
@@ -21,7 +21,7 @@ export const useAuthentication = () => {
     keyType,
     setKeyType,
   } = useAuthenticationContext()
-  const { data: authClient } = useSWR("authClient", () => AuthClient.create())
+  const { data: authClient } = useSWR("authClient", () => new AuthClient())
   const [error, setError] = React.useState<string>()
 
   const [authButton, updateAuthButton] = useButtonState({
@@ -43,31 +43,25 @@ export const useAuthentication = () => {
   }, [nfid, setIdentity, updateAuthButton])
 
   const handleLegacyAuthenticate = React.useCallback(async () => {
-    if (!authClient) return
-
     updateAuthButton({ loading: true, label: "Authenticating..." })
-    await authClient.login({
-      onSuccess: () => {
-        const identity = authClient.getIdentity() as DelegationIdentity
-        if (!(window as any).ic) (window as any).ic = {}
-        ;(window as any).ic.agent = new HttpAgent({
-          identity,
-          host: "https://ic0.app",
-        })
-        updateAuthButton({
-          disabled: false,
-          loading: false,
-          label: "Logout",
-        })
-        setIdentity(identity)
-      },
-      onError: (error: any) => {
-        console.error(error)
-      },
-      identityProvider: `${NFID_PROVIDER_URL}/authenticate?applicationName=NFID-DEMO`,
-      windowOpenerFeatures: `toolbar=0,location=0,menubar=0,width=525,height=705`,
-    })
-  }, [authClient, setIdentity, updateAuthButton])
+    try {
+      const client = new AuthClient({
+        identityProvider: `${NFID_PROVIDER_URL}/authenticate?applicationName=NFID-DEMO`,
+        windowOpenerFeatures: `toolbar=0,location=0,menubar=0,width=525,height=705`,
+      })
+      const identity = (await client.signIn()) as DelegationIdentity
+      if (!(window as any).ic) (window as any).ic = {}
+      ;(window as any).ic.agent = new HttpAgent({
+        identity,
+        host: "https://ic0.app",
+      })
+      updateAuthButton({ disabled: false, loading: false, label: "Logout" })
+      setIdentity(identity)
+    } catch (error: any) {
+      console.error(error)
+      updateAuthButton({ loading: false, label: "Authenticate" })
+    }
+  }, [setIdentity, updateAuthButton])
 
   const handleAuthenticate = React.useCallback(
     async ({

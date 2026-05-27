@@ -1,4 +1,4 @@
-import { DelegationIdentity } from "@dfinity/identity"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
 import { getGlobalDelegation } from "packages/integration/src/lib/delegation-factory/delegation-i"
 
 import { RootWallet, accessList, authState } from "@nfid/integration"

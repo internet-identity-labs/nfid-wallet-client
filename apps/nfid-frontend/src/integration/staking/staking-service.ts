@@ -1,4 +1,4 @@
-import { SignIdentity } from "@dfinity/agent"
+import { SignIdentity } from "@icp-sdk/core/agent"
 import { FT } from "src/integration/ft/ft"
 import { StakedToken } from "src/integration/staking/staked-token"
 

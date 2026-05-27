@@ -1,7 +1,8 @@
-import { AnonymousIdentity, SignIdentity } from "@dfinity/agent"
-import { Followees as IcpFollowees } from "@dfinity/nns"
-import { Principal } from "@dfinity/principal"
-import { Followees } from "@dfinity/sns/dist/candid/sns_governance"
+import { AnonymousIdentity, SignIdentity } from "@icp-sdk/core/agent"
+import { Followees as IcpFollowees } from "@icp-sdk/canisters/nns"
+import { Principal } from "@icp-sdk/core/principal"
+import { type SnsGovernanceDid } from "@icp-sdk/canisters/sns"
+type Followees = SnsGovernanceDid.Followees
 
 import { listNNSFunctions } from "@nfid/integration"
 import { ICP_ROOT_CANISTER_ID } from "@nfid/integration/token/constants"

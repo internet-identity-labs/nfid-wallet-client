@@ -1,5 +1,5 @@
-import { BitcoinCanister } from "@dfinity/ckbtc"
-import { Principal } from "@dfinity/principal"
+import { BitcoinCanister } from "@icp-sdk/canisters/ckbtc"
+import { Principal } from "@icp-sdk/core/principal"
 
 class BitcoinCanisterService {
   public async getBalanceQuery(address: string): Promise<bigint> {

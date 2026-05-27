@@ -1,4 +1,4 @@
-import { DelegationIdentity } from "@dfinity/identity"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
 
 import { accessList } from "../actors"
 import { getGlobalDelegation } from "../delegation-factory/delegation-i"

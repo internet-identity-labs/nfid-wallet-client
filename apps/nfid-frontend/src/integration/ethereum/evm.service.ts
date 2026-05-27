@@ -1,12 +1,16 @@
-import { HttpAgent, SignIdentity } from "@dfinity/agent"
+import { HttpAgent, SignIdentity } from "@icp-sdk/core/agent"
 import {
-  CkETHMinterCanister,
+  CkEthMinterCanister,
   encodePrincipalToEthAddress,
-} from "@dfinity/cketh"
-import { Account } from "@dfinity/ledger-icp"
-import { ApproveParams, IcrcLedgerCanister } from "@dfinity/ledger-icrc"
-import { TransferArg } from "@dfinity/ledger-icrc/dist/candid/icrc_ledger"
-import { Principal } from "@dfinity/principal"
+} from "@icp-sdk/canisters/cketh"
+import {
+  ApproveParams,
+  IcrcLedgerCanister,
+  type IcrcLedgerDid,
+} from "@icp-sdk/canisters/ledger/icrc"
+type Account = IcrcLedgerDid.Account
+type TransferArg = IcrcLedgerDid.TransferArg
+import { Principal } from "@icp-sdk/core/principal"
 import {
   Contract,
   Interface,
@@ -396,7 +400,7 @@ export abstract class EVMService {
       identity: identity,
     })
 
-    const ckEthMinter = CkETHMinterCanister.create({
+    const ckEthMinter = CkEthMinterCanister.create({
       agent,
       canisterId: Principal.fromText(this.ckEthMinterCanisterId),
     })

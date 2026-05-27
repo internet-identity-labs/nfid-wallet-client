@@ -1,5 +1,5 @@
-import { Ed25519KeyIdentity } from "@dfinity/identity"
-import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+import { Ed25519KeyIdentity } from "@icp-sdk/core/identity"
+import { JsonnableEd25519KeyIdentity } from "@icp-sdk/core/identity"
 import { errorHandlerFactory } from "src/integration/swap/errors/handler-factory"
 import { ContactSupportError } from "src/integration/swap/errors/types/contact-support-error"
 import { KongShroffBuilder } from "src/integration/swap/kong/impl/kong-swap-shroff"

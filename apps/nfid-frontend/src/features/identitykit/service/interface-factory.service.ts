@@ -5,11 +5,11 @@ import {
   Certificate,
   HttpAgent,
   IC_ROOT_KEY,
-  LookupResultFound,
+  LookupPathResultFound,
   ReadStateResponse,
-} from "@dfinity/agent"
-import { IDL } from "@dfinity/candid"
-import { Principal } from "@dfinity/principal"
+} from "@icp-sdk/core/agent"
+import { IDL } from "@icp-sdk/core/candid"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { GenericError } from "./exception-handler.service"
 
@@ -69,7 +69,7 @@ class InterfaceFactoryService {
     const encoder = new TextEncoder()
     const pathCandid = [
       encoder.encode("canister"),
-      canister.toUint8Array().buffer,
+      canister.toUint8Array(),
       encoder.encode("metadata"),
       encoder.encode("candid:service"),
     ]
@@ -84,16 +84,16 @@ class InterfaceFactoryService {
 
     const certificate = await Certificate.create({
       certificate: responseCandid.certificate,
-      canisterId: canister,
+      principal: { canisterId: canister },
       rootKey:
         agent.rootKey ??
         new Uint8Array(
           IC_ROOT_KEY.match(/[\da-f]{2}/gi)!.map((h) => parseInt(h, 16)),
-        ).buffer,
+        ),
     })
-    const dataCandid = certificate.lookup(pathCandid)
+    const dataCandid = certificate.lookup_path(pathCandid)
     const candidFileMabye = new TextDecoder().decode(
-      (dataCandid as LookupResultFound).value as ArrayBuffer,
+      (dataCandid as LookupPathResultFound).value,
     )
 
     if (!candidFileMabye) {

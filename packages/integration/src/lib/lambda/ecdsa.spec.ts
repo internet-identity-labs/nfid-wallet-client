@@ -1,14 +1,14 @@
 /**
  * @jest-environment jsdom
  */
-import { Actor, ActorSubclass, Agent, HttpAgent } from "@dfinity/agent"
-import { IDL } from "@dfinity/candid"
+import { Actor, ActorSubclass, Agent, HttpAgent } from "@icp-sdk/core/agent"
+import { IDL } from "@icp-sdk/core/candid"
 import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
-import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+} from "@icp-sdk/core/identity"
+import { JsonnableEd25519KeyIdentity } from "@icp-sdk/core/identity"
 
 import { WALLET_SCOPE } from "@nfid/config"
 
@@ -64,7 +64,7 @@ describe("Lambda Sign/Register ECDSA", () => {
       try {
         await ii.get_principal(BigInt(1), WALLET_SCOPE)
       } catch (e: any) {
-        expect(e.message).toContain("Gateway returned an error")
+        expect(e.message).toContain("not one of the delegation targets")
       }
       try {
         await replaceActorIdentity(im, globalICIdentity)

@@ -1,5 +1,5 @@
-import { SignIdentity } from "@dfinity/agent"
-import { DelegationChain, DelegationIdentity } from "@dfinity/identity"
+import { SignIdentity } from "@icp-sdk/core/agent"
+import { DelegationChain, DelegationIdentity } from "@icp-sdk/core/identity"
 
 export const delegationIdentityFromSignedIdentity = (
   sessionKey: Pick<SignIdentity, "sign">,

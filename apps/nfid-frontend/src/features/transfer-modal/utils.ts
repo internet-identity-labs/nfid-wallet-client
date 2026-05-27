@@ -1,11 +1,10 @@
-import { DelegationIdentity } from "@dfinity/identity"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
 import {
   AccountIdentifier,
   checkAccountId,
-  Icrc1BlockIndex,
-} from "@dfinity/ledger-icp"
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
-import { Principal } from "@dfinity/principal"
+} from "@icp-sdk/canisters/ledger/icp"
+import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc"
+import { Principal } from "@icp-sdk/core/principal"
 import validate, { Network } from "bitcoin-address-validation"
 import { isAddress } from "ethers"
 import { PRINCIPAL_LENGTH } from "packages/constants"
@@ -86,7 +85,7 @@ interface ITransferResponse {
   errorMessage?: Error
   url?: string
   hash?: string
-  blockIndex?: Icrc1BlockIndex
+  blockIndex?: bigint
 }
 
 export const getVaultsAccountsOptions = async (): Promise<

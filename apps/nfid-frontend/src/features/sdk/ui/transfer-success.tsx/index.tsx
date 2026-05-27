@@ -1,4 +1,3 @@
-import { Icrc1BlockIndex } from "@dfinity/ledger-icp"
 import toaster from "packages/ui/src/atoms/toast"
 import React from "react"
 
@@ -11,7 +10,7 @@ export interface ITransferResponse {
   errorMessage?: Error
   url?: string
   hash?: string
-  blockIndex?: Icrc1BlockIndex
+  blockIndex?: bigint
 }
 
 export interface ITransferSuccess {

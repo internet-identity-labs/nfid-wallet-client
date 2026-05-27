@@ -1,4 +1,4 @@
-import { SignIdentity } from "@dfinity/agent"
+import { SignIdentity } from "@icp-sdk/core/agent"
 import { useEffect, useState } from "react"
 
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
@@ -17,7 +17,7 @@ export const useIdentity = (isViewOnlyMode?: boolean) => {
         if (isViewOnlyMode) {
           console.debug("Identity error in View Only mode: ", e)
         } else {
-          throw new Error("Identity error: ", e)
+          throw new Error(`Identity error: ${e}`)
         }
       })
       .finally(() => {

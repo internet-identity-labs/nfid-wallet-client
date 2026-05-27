@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 import { format } from "date-fns"
 import toaster from "packages/ui/src/atoms/toast"
 

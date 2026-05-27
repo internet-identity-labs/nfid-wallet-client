@@ -1,5 +1,5 @@
-import { DelegationIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
+import { Principal } from "@icp-sdk/core/principal"
 
 import {
   WALLET_SCOPE,
@@ -12,7 +12,7 @@ import { fetchPrincipal } from "frontend/integration/internet-identity"
 
 export async function getWalletPrincipal(anchor: number): Promise<Principal> {
   return fetchPrincipal(anchor, WALLET_SCOPE).catch((e) => {
-    throw Error(`Getting of Wallet Principal failed!: ${e}`, e)
+    throw Error(`Getting of Wallet Principal failed!: ${e}`)
   })
 }
 

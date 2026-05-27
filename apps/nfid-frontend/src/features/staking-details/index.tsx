@@ -1,5 +1,6 @@
-import { NeuronId } from "@dfinity/sns/dist/candid/sns_governance"
-import { hexStringToUint8Array } from "@dfinity/utils"
+import { type SnsGovernanceDid } from "@icp-sdk/canisters/sns"
+type NeuronId = SnsGovernanceDid.NeuronId
+import { hexStringToUint8Array } from "@nfid-frontend/utils"
 import { useActor } from "@xstate/react"
 import { StakingDetails } from "packages/ui/src/organisms/staking/staking-details"
 import { useContext, useMemo, memo } from "react"

@@ -1,10 +1,10 @@
-import * as Agent from "@dfinity/agent"
+import * as Agent from "@icp-sdk/core/agent"
 import {
   DelegationChain,
   DelegationIdentity,
   Ed25519KeyIdentity,
-} from "@dfinity/identity"
-import { Secp256k1KeyIdentity } from "@dfinity/identity-secp256k1"
+} from "@icp-sdk/core/identity"
+import { Secp256k1KeyIdentity } from "@icp-sdk/core/identity/secp256k1"
 
 import { actor, ii, im, replaceActorIdentity } from "@nfid/integration"
 
@@ -98,6 +98,9 @@ export function getLambdaIdentity(): Secp256k1KeyIdentity {
   if (!LAMBDA_IDENTITY) {
     throw Error("No LAMBDA_IDENTITY provided.")
   }
-  const secretKey = Agent.fromHex(LAMBDA_IDENTITY.trim())
+  const hex = LAMBDA_IDENTITY.trim()
+  const secretKey = new Uint8Array(
+    hex.match(/.{1,2}/g)!.map((b) => parseInt(b, 16)),
+  )
   return Secp256k1KeyIdentity.fromSecretKey(secretKey)
 }

@@ -1,4 +1,4 @@
-import { debounce } from "@dfinity/utils"
+import { debounce } from "@nfid-frontend/utils"
 import clsx from "clsx"
 import { motion } from "framer-motion"
 import { CANISTER_ID_LENGTH } from "packages/constants"

@@ -1,4 +1,4 @@
-import { JsonnableEd25519KeyIdentity } from "@dfinity/identity/lib/cjs/identity/ed25519"
+import { JsonnableEd25519KeyIdentity } from "@icp-sdk/core/identity"
 
 export const mockIdentityA: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",

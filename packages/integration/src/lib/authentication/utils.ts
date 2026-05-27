@@ -1,10 +1,8 @@
-import { Ed25519KeyIdentity } from "@dfinity/identity"
+import { Principal } from "@icp-sdk/core/principal"
 
 export const getPrincipalId = (pubkey: Array<number>): string | undefined => {
   try {
-    const pubkeyHex = Buffer.from(pubkey).toString("hex")
-    const key = Ed25519KeyIdentity.fromParsedJson([pubkeyHex, "0"])
-    return key.getPrincipal().toString()
+    return Principal.selfAuthenticating(new Uint8Array(pubkey)).toText()
   } catch (e) {
     console.warn("getPrincipalId: failed to get principalId", e)
     return

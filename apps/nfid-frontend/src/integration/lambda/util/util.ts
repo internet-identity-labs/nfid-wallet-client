@@ -1,6 +1,6 @@
-import { Endpoint, Expiry, QueryFields, ReadRequest } from "@dfinity/agent"
-import { DelegationIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
+import { Endpoint, Expiry, QueryFields, ReadRequest } from "@icp-sdk/core/agent"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
+import { Principal } from "@icp-sdk/core/principal"
 
 const DEFAULT_INGRESS_EXPIRY_DELTA_IN_MSECS = 5 * 60 * 1000
 
@@ -18,7 +18,9 @@ export async function getTransformedRequest(
     method_name: fields.methodName,
     arg: fields.arg,
     sender,
-    ingress_expiry: new Expiry(DEFAULT_INGRESS_EXPIRY_DELTA_IN_MSECS),
+    ingress_expiry: Expiry.fromDeltaInMilliseconds(
+      DEFAULT_INGRESS_EXPIRY_DELTA_IN_MSECS,
+    ),
   } as ReadRequest
   return await identity.transformRequest({
     request: {

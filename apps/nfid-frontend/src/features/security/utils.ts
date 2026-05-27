@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 import base64url from "base64url"
 import { DeviceData } from "packages/integration/src/lib/_ic_api/internet_identity.d"
 

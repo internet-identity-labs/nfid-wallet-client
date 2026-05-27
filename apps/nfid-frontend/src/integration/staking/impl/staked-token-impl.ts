@@ -1,4 +1,4 @@
-import { NeuronState } from "@dfinity/nns"
+import { NeuronState } from "@icp-sdk/canisters/nns"
 import BigNumber from "bignumber.js"
 import { NFIDNeuron } from "src/integration/staking/nfid-neuron"
 import { StakedToken } from "src/integration/staking/staked-token"

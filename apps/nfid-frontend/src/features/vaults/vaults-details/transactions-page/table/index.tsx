@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 import { format } from "date-fns"
 import React, { useMemo } from "react"
 
@@ -75,7 +75,7 @@ export const VaultsTransactionsTable: React.FC<
             ) !== -1,
           memo: transaction.memo,
           vaultId: vault?.id,
-        } as IVaultTransactionsDetails),
+        }) as IVaultTransactionsDetails,
     )
   }, [
     exchangeRate,

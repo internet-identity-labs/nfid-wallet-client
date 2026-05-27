@@ -1,6 +1,6 @@
-import { AccountIdentifier, Icrc1BlockIndex } from "@dfinity/ledger-icp"
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc"
-import { Principal } from "@dfinity/principal"
+import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp"
+import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc"
+import { Principal } from "@icp-sdk/core/principal"
 import BigNumber from "bignumber.js"
 import debounce from "lodash/debounce"
 import { PRINCIPAL_LENGTH } from "packages/constants"
@@ -526,9 +526,7 @@ export const TransferFT = ({
 
           if (note.trim()) {
             const blockId =
-              typeof res === "bigint"
-                ? res
-                : (res as { Ok: Icrc1BlockIndex }).Ok
+              typeof res === "bigint" ? res : (res as { Ok: bigint }).Ok
 
             noteService.storeNote(
               new IcpNoteKey(blockId, token.getTokenAddress()),

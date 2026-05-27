@@ -1,7 +1,7 @@
-import * as Agent from "@dfinity/agent"
-import { HttpAgent } from "@dfinity/agent"
-import { AccountIdentifier } from "@dfinity/ledger-icp"
-import { Principal } from "@dfinity/principal"
+import * as Agent from "@icp-sdk/core/agent"
+import { HttpAgent } from "@icp-sdk/core/agent"
+import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { hasOwnProperty } from "@nfid/integration"
 

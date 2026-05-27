@@ -1,4 +1,4 @@
-import { HttpAgent, SignIdentity } from "@dfinity/agent"
+import { HttpAgent, SignIdentity } from "@icp-sdk/core/agent"
 
 import { ttlCacheService } from "@nfid/client-db"
 

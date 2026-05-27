@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 import { decodeTokenIdentifier } from "src/integration/entrepot/ext"
 
 import { Account } from "@nfid/integration"

@@ -1,4 +1,4 @@
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import { DelegationIdentity, Ed25519KeyIdentity } from "@icp-sdk/core/identity"
 
 import {
   delegationIdentityFromSignedIdentity,

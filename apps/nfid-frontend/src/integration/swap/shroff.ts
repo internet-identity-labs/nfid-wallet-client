@@ -1,4 +1,4 @@
-import { SignIdentity } from "@dfinity/agent"
+import { SignIdentity } from "@icp-sdk/core/agent"
 import { Quote } from "src/integration/swap/quote"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { SwapName } from "src/integration/swap/types/enums"

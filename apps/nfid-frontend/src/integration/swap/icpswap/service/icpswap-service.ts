@@ -1,5 +1,5 @@
-import * as Agent from "@dfinity/agent"
-import { Principal } from "@dfinity/principal"
+import * as Agent from "@icp-sdk/core/agent"
+import { Principal } from "@icp-sdk/core/principal"
 import { Cache } from "node-ts-cache"
 import { integrationCache } from "packages/integration/src/cache"
 import { idlFactory as SwapPoolIDL } from "src/integration/swap/icpswap/idl/SwapPool"

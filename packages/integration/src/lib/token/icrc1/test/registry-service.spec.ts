@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { DelegationIdentity, Ed25519KeyIdentity } from "@dfinity/identity"
+import { DelegationIdentity, Ed25519KeyIdentity } from "@icp-sdk/core/identity"
 
 import { authState, mockIdentityA } from "@nfid/integration"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"

@@ -1,4 +1,4 @@
-import { WebAuthnIdentity } from "@dfinity/identity"
+import { WebAuthnIdentity } from "@icp-sdk/core/identity"
 import { getIsMobileDeviceMatch } from "packages/ui/src/utils/is-mobile"
 
 import { ii, im, setProfileToStorage } from "@nfid/integration"

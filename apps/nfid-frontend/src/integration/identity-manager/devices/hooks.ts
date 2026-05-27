@@ -1,9 +1,6 @@
-import {
-  fromHexString,
-  toHexString,
-} from "@dfinity/candid/lib/cjs/utils/buffer"
-import { WebAuthnIdentity } from "@dfinity/identity"
-import { Principal } from "@dfinity/principal"
+import { hexToBytes, bytesToHex } from "@noble/hashes/utils"
+import { WebAuthnIdentity } from "@icp-sdk/core/identity"
+import { Principal } from "@icp-sdk/core/principal"
 import React from "react"
 
 import { im, Icon } from "@nfid/integration"
@@ -312,8 +309,8 @@ export const useDevices = () => {
       const identity = await WebAuthnIdentity.create({
         publicKey: creationOptions(existingDevices),
       })
-      const publicKey = toHexString(identity.getPublicKey().toDer())
-      const rawId = toHexString(identity.rawId)
+      const publicKey = bytesToHex(identity.getPublicKey().toDer())
+      const rawId = bytesToHex(identity.rawId)
 
       const device = {
         publicKey,
@@ -338,7 +335,7 @@ export const useDevices = () => {
       publicKey: string
       rawId: string
     }) => {
-      const pub_key = fromHexString(publicKey)
+      const pub_key = hexToBytes(publicKey)
 
       await Promise.all([
         addDevice(
@@ -347,7 +344,7 @@ export const useDevices = () => {
           { unknown: null },
           { authentication: null },
           derFromPubkey(Array.from(new Uint8Array(pub_key))),
-          fromHexString(rawId),
+          hexToBytes(rawId),
         ),
         im
           .create_access_point({

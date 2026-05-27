@@ -1,4 +1,4 @@
-import { Principal } from "@dfinity/principal"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { Account } from "@nfid/integration"
 import { Blockchain } from "@nfid/integration/token/types"

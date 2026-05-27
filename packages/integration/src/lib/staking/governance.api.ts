@@ -1,13 +1,13 @@
-import { Agent, Identity } from "@dfinity/agent"
+import { Agent, Identity } from "@icp-sdk/core/agent"
 import type {
   E8s,
   NetworkEconomics,
   NeuronId,
   NeuronInfo,
   Topic,
-} from "@dfinity/nns"
-import { GovernanceCanister, NeuronVisibility } from "@dfinity/nns"
-import { Principal } from "@dfinity/principal"
+} from "@icp-sdk/canisters/nns"
+import { NnsGovernanceCanister, NeuronVisibility } from "@icp-sdk/canisters/nns"
+import { Principal } from "@icp-sdk/core/principal"
 import { createAgent, nowInBigIntNanoSeconds } from "@dfinity/utils"
 
 import { ledgerCanister } from "./icp-ledger.api"
@@ -430,7 +430,7 @@ export const governanceCanister = async ({
 }: {
   identity: Identity
 }): Promise<{
-  canister: GovernanceCanister
+  canister: NnsGovernanceCanister
   agent: Agent
 }> => {
   const agent = await createAgent({
@@ -438,7 +438,7 @@ export const governanceCanister = async ({
     host: IC_HOST,
   })
 
-  const canister = GovernanceCanister.create({
+  const canister = NnsGovernanceCanister.create({
     agent,
     canisterId: Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai"),
   })

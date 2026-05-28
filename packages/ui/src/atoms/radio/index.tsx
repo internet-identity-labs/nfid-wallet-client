@@ -31,9 +31,9 @@ export const RadioButton: React.FC<RadioButtonProps> = ({
           name={name}
           value={value}
           className={clsx(
-            "w-5 h-5 cursor-pointer",
+            "w-5 h-5 cursor-pointer bg-transparent",
             disabled
-              ? "!border-gray-300 !pointer-events-none"
+              ? "!border-gray-300 dark:!border-zinc-500 !pointer-events-none"
               : "hover:ring-2 hover:ring-teal-600/20 hover:border-teal-600 focus:ring-0 focus:ring-offset-0 focus:ring-black active:ring-2 active:ring-offset-2 active:ring-black",
           )}
           {...props}

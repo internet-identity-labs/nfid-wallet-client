@@ -24,7 +24,6 @@ import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
 import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
-import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 import { mapCategory, mapState } from "@nfid/integration/token/icrc1/util"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
@@ -552,15 +551,11 @@ export class FtService {
 
   @Cache(integrationCache, { ttl: 300 })
   async getTokensAvailableToSwap(sourceToken: string): Promise<string[]> {
-    const kongPoolsPromise = KongSwapShroffImpl.getAvailablePools(sourceToken)
     const icpswapPoolsPromise = ShroffIcpSwapImpl.getAvailablePools(sourceToken)
 
-    const [kongPools, icpswapPools] = await Promise.all([
-      kongPoolsPromise,
-      icpswapPoolsPromise,
-    ])
+    const [icpswapPools] = await Promise.all([icpswapPoolsPromise])
 
-    const pools = [...new Set([...kongPools, ...icpswapPools])]
+    const pools = [...new Set([...icpswapPools])]
 
     return Array.from(pools)
   }

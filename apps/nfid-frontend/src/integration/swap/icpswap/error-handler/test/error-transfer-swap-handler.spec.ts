@@ -33,8 +33,6 @@ describe("shroff transfer swap error handler test", () => {
 
     let callCount = 0
 
-    jest.spyOn(shroff as any, "icrc2supported").mockResolvedValue(false)
-
     jest.spyOn(shroff as any, "transferToSwap").mockImplementation(() => {
       callCount++
       if (callCount === 1) {

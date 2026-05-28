@@ -1,7 +1,6 @@
 import * as Agent from "@icp-sdk/core/agent"
 import { HttpAgent } from "@icp-sdk/core/agent"
 import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
-import { KongSwapTransactionImpl } from "src/integration/swap/kong/impl/kong-swap-transaction-impl"
 import { SwapTransaction } from "src/integration/swap/swap-transaction"
 import { idlFactory as SwapStorageIDL } from "@nfid/integration/_ic_api/swap_trs_storage"
 import {
@@ -51,19 +50,12 @@ export class SwapTransactionService {
     const cache = authState.getUserIdData()
     return this.storageActor.get_transactions(cache.userId).then((trss) => {
       return trss.map((t) => {
-        const transaction = hasOwnProperty(t.swap_provider, "Kong")
-          ? new KongSwapTransactionImpl(
-              t.target_ledger,
-              t.source_ledger,
-              Number(t.target_amount),
-              t.source_amount,
-            ).fromCandid(t)
-          : new IcpSwapTransactionImpl(
-              t.target_ledger,
-              t.source_ledger,
-              Number(t.target_amount),
-              t.source_amount,
-            ).fromCandid(t)
+        const transaction = new IcpSwapTransactionImpl(
+          t.target_ledger,
+          t.source_ledger,
+          Number(t.target_amount),
+          t.source_amount,
+        ).fromCandid(t)
 
         if (
           transaction.getStage() !== SwapStage.Completed &&

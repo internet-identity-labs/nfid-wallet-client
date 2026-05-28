@@ -1,5 +1,5 @@
 import * as Agent from "@icp-sdk/core/agent"
-import { HttpAgent, SignIdentity } from "@icp-sdk/core/agent"
+import { SignIdentity } from "@icp-sdk/core/agent"
 import { SubAccount, type IcpLedgerDid } from "@icp-sdk/canisters/ledger/icp"
 type Account = IcpLedgerDid.Account
 import { Principal } from "@icp-sdk/core/principal"
@@ -10,8 +10,6 @@ import { SourceInputCalculatorIcpSwap } from "src/integration/swap/icpswap/impl/
 import { IcpSwapQuoteImpl } from "src/integration/swap/icpswap/impl/icp-swap-quote-impl"
 import { IcpSwapTransactionImpl } from "src/integration/swap/icpswap/impl/icp-swap-transaction-impl"
 import { icpSwapService } from "src/integration/swap/icpswap/service/icpswap-service"
-import { idlFactory as icrc1IDL } from "src/integration/swap/kong/idl/icrc1"
-import { _SERVICE as ICRC1ServiceIDL } from "src/integration/swap/kong/idl/icrc1.d"
 import { Quote } from "src/integration/swap/quote"
 import { Shroff } from "src/integration/swap/shroff"
 import { ShroffAbstract } from "src/integration/swap/shroff/shroff-abstract"
@@ -20,7 +18,6 @@ import { swapTransactionService } from "src/integration/swap/transaction/transac
 
 import {
   actorBuilder,
-  agentBaseConfig,
   exchangeRateService,
   hasOwnProperty,
   ICRC1TypeOracle,
@@ -156,15 +153,6 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
     throw new LiquidityError()
   }
 
-  protected getICRCActor() {
-    return actorBuilder<ICRC1ServiceIDL>(this.source.ledger, icrc1IDL, {
-      agent: new HttpAgent({
-        ...agentBaseConfig,
-        identity: this.delegationIdentity,
-      }),
-    })
-  }
-
   async swap(delegationIdentity: SignIdentity): Promise<SwapTransaction> {
     if (!this.requestedQuote) {
       throw new Error("Request quote first")
@@ -179,63 +167,29 @@ export class ShroffIcpSwapImpl extends ShroffAbstract {
     try {
       await replaceActorIdentity(this.swapPoolActor, delegationIdentity)
 
-      const icrc2supported = await this.icrc2supported()
-
       let icrcTransferId
 
-      if (icrc2supported) {
-        icrcTransferId = await this.icrc2approve(
-          this.poolData.canisterId.toString(),
+      try {
+        await this.transferToSwap()
+        console.debug(
+          "ICRC21 transfer response",
+          JSON.stringify(icrcTransferId),
         )
-        this.swapTransaction.setTransferId(icrcTransferId)
-        console.debug("ICRC2 approve response", JSON.stringify(icrcTransferId))
-        this.restoreTransaction()
-        const amountDecimals = this.requestedQuote
-          .getSourceSwapAmount()
-          .plus(Number(this.source.fee))
-        const args: DepositAndSwapArgs = {
-          tokenInFee: this.source.fee,
-          amountIn: this.requestedQuote!.getSourceSwapAmount().toFixed(),
-          zeroForOne: this.zeroForOne,
-          amountOutMinimum: this.requestedQuote!.getTargetAmount()
-            .toFixed(this.target.decimals)
-            .replace(TRIM_ZEROS, ""),
-          tokenOutFee: this.target.fee,
-        }
-        console.debug("Amount decimals: " + BigInt(amountDecimals.toFixed()))
-        const result = await this.swapPoolActor.depositFromAndSwap(args)
-        if (hasOwnProperty(result, "ok")) {
-          const id = result.ok as bigint
-          this.swapTransaction!.setSwap(id)
-        } else {
-          const err = JSON.stringify(
-            "Deposit and swap error: " + JSON.stringify(result.err),
-          )
-          console.error(err)
-          throw new DepositError(err)
-        }
-      } else {
-        try {
-          await this.transferToSwap()
-          console.log(
-            "ICRC21 transfer response",
-            JSON.stringify(icrcTransferId),
-          )
-        } catch (e) {
-          throw new ContactSupportError("Deposit error: " + e)
-        }
-        this.restoreTransaction()
-        console.debug("Transfer to swap done")
-        await this.deposit()
-        this.restoreTransaction()
-        console.debug("Deposit done")
-        await this.swapOnExchange()
-        this.restoreTransaction()
-        console.debug("Swap done")
-        await this.withdraw()
-        console.debug("Withdraw done")
-        this.restoreTransaction()
+      } catch (e) {
+        throw new ContactSupportError("Deposit error: " + e)
       }
+      this.restoreTransaction()
+      console.debug("Transfer to swap done")
+      await this.deposit()
+      this.restoreTransaction()
+      console.debug("Deposit done")
+      await this.swapOnExchange()
+      this.restoreTransaction()
+      console.debug("Swap done")
+      await this.withdraw()
+      console.debug("Withdraw done")
+      this.restoreTransaction()
+
       await this.transferToNFID()
       console.debug("Transfer to NFID done")
       await this.restoreTransaction()

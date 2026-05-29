@@ -90,7 +90,7 @@ thread_local! {
 }
 ```
 
-### 4.1 Why `Vec` for history is fine
+### 3.1 Why `Vec` for history is fine
 
 Under the prod parameters (Locked Period 7 days) the maximum number of
 new entries per year is bounded by Feature Duration mechanics, but
@@ -98,7 +98,7 @@ realistically caps at the low tens to low hundreds per year. Stable
 memory and storage cost are negligible. We keep **all** entries — no
 trimming.
 
-### 4.2 Stable memory
+### 3.2 Stable memory
 
 `Memory` struct in `pre_upgrade` / `post_upgrade` gains three optional
 fields so old upgrades restore cleanly (`unwrap_or_default()`):
@@ -184,7 +184,7 @@ service : (opt Conf) -> {
 Admin endpoints reuse the existing `trap_if_not_authenticated_admin`
 pattern from `icrc1_oracle`.
 
-### 5.1 `place_bid` flow (canister pseudocode)
+### 4.1 `place_bid` flow (canister pseudocode)
 
 ```rust
 #[update]
@@ -273,7 +273,7 @@ Notes:
   error and let the user explicitly decide to re-bid. The frontend
   service does **not** auto-retry.
 
-### 5.2 `veto_current_featured` (admin, one-shot)
+### 4.2 `veto_current_featured` (admin, one-shot)
 
 ```rust
 #[update]
@@ -290,7 +290,7 @@ qualifying bid the moment after veto, it can become featured again.
 This is intentional per the chosen design — veto is an emergency stop
 for _the current incident_, not policy enforcement.
 
-### 5.3 `get_promotion_status`
+### 4.3 `get_promotion_status`
 
 ```rust
 #[query]
@@ -396,7 +396,7 @@ export class PromotionError extends Error {
 }
 ```
 
-### 6.1 `placeBid` internals
+### 5.1 `placeBid` internals
 
 ```
 1. status = await getStatus()
@@ -412,7 +412,7 @@ export class PromotionError extends Error {
 6. on `{ Ok: slot }` → map to FeaturedSlot, return
 ```
 
-### 6.2 UI helpers (still belong to the service)
+### 5.2 UI helpers (still belong to the service)
 
 ```ts
 // trivial — the canister already computed it
@@ -437,7 +437,7 @@ export function validate(
 UI calls `validate` on every keystroke and disables the Promote button
 while it returns an error.
 
-### 6.3 Caching
+### 5.3 Caching
 
 `getStatus()` should be SWR-cached with a short TTL (~30 s) and
 invalidated immediately after a successful `placeBid`. Countdowns shown

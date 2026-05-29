@@ -50,9 +50,9 @@ that env.
 ## 3. State Machine
 
 Single Featured slot, no per-app state. Each successful bid **fully
-resets** both timers — a new `bid_time`, a new `locked_until` (= bid_time
+resets** both timers — a fresh `bid_time`, with `locked_until = bid_time
 
-- Locked Period), and a new `expires_at` (= bid_time + Feature Duration).
+- Locked Period`and`expires_at = bid_time + Feature Duration`.
 
 ```
              ┌─────────────┐

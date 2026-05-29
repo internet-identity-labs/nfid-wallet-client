@@ -11,9 +11,11 @@ that bidding round.
 The integration layer owns:
 
 - new methods on the `icrc1_oracle` canister (data model, bid
-  execution, state machine, history, veto)
+  execution, history, veto)
 - a TypeScript service that the UI calls (`promotionService`)
 - the on-chain token transfer (NFIDW, ICRC2 approve + pull)
+- new CLI commands in `admin_oracle` (one-time bootstrap, emergency
+  veto, status & history inspection)
 
 UI work (modal, banner, portfolio screen) is **out of scope** for this
 doc — the surface below is what the UI consumes.
@@ -445,7 +447,112 @@ if the user leaves the modal open.
 
 ---
 
-## 6. End-to-End Sequence
+## 6. Admin CLI (`admin_oracle`)
+
+Promotion needs operator-side tooling for three things: a one-time
+config push at deploy, an emergency veto button, and read-only
+inspection (current slot + history) for audit. We extend the existing
+`admin_oracle` package — same `argv[2]`-dispatched CLI, same
+`AdminManager` actor wrapper.
+
+### 6.1 AdminManager methods
+
+Added to `admin_oracle/admin_manager.ts`:
+
+```ts
+class AdminManager {
+  // ── promotion: write ──
+  async setPromotionConfig(env: "prod" | "dev"): Promise<void>
+  async vetoFeatured(): Promise<void>
+
+  // ── promotion: read ──
+  async getPromotionStatus(): Promise<PromotionStatus>
+  async getBidHistory(pageSize?: number): Promise<HistoricalBid[]>
+}
+```
+
+`setPromotionConfig` reads its values from a small lookup in
+`admin_oracle/constants.ts`:
+
+```ts
+export const PROMOTION_CONFIG: Record<"prod" | "dev", PromotionConfig> = {
+  prod: {
+    min_bid_e8s: 100_000n * 10n ** 8n,
+    bid_increment_e8s: 100n * 10n ** 8n,
+    locked_period_ns: 7n * 86_400n * 1_000_000_000n,
+    feature_duration_ns: 30n * 86_400n * 1_000_000_000n,
+    ledger_canister: Principal.fromText("mih44-vaaaa-aaaaq-aaekq-cai"),
+    treasury: Principal.fromText("mpg2i-yyaaa-aaaaq-aaeka-cai"),
+  },
+  dev: {
+    /* 5 / 1 / 1h / 1d */
+  },
+}
+```
+
+Calling `setPromotionConfig` is idempotent — re-running it overwrites
+the stored config. Intended once at deploy and again only when product
+changes a parameter.
+
+### 6.2 CLI commands
+
+Added to `admin_oracle/admin_CLI.ts` switch:
+
+```ts
+case "setPromotionConfig":
+    await adminManager.setPromotionConfig(process.argv[3] as "prod" | "dev")
+    console.log("Promotion config has been uploaded!!!")
+    break
+
+case "vetoFeatured":
+    await adminManager.vetoFeatured()
+    console.log("Current featured slot has been cleared!!!")
+    break
+
+case "getFeatured":
+    const status = await adminManager.getPromotionStatus()
+    console.log(JSON.stringify(status, replacerForBigints, 2))
+    break
+
+case "getBidHistory":
+    const history = await adminManager.getBidHistory()
+    console.log(JSON.stringify(history, replacerForBigints, 2))
+    break
+```
+
+Invocation:
+
+```
+npx tsx admin_oracle/admin_CLI.ts setPromotionConfig prod
+npx tsx admin_oracle/admin_CLI.ts vetoFeatured
+npx tsx admin_oracle/admin_CLI.ts getFeatured
+npx tsx admin_oracle/admin_CLI.ts getBidHistory
+```
+
+### 6.3 Authorisation
+
+The CLI authenticates as the admin identity stored in
+`admin_oracle/constants.ts` (`KEY_PAIR`). The canister enforces
+admin-only access for `set_promotion_config` and
+`veto_current_featured` via `trap_if_not_authenticated_admin`. Reads
+(`get_promotion_status`, `get_bid_history_paginated`) are public and
+work for any caller — the CLI just uses the same identity for
+consistency.
+
+### 6.4 Veto operational notes
+
+`vetoFeatured` calls `veto_current_featured()` which **always** clears
+`FEATURED_SLOT` (it does nothing else if the slot was already empty —
+no error). `BID_HISTORY` is preserved so the audit trail of the
+removed slot remains intact.
+
+Effect is immediate: the very next `get_promotion_status` from any
+caller returns `featured: undefined`. Frontend UI hides the banner on
+its next SWR poll. No deny-list is created — see §9 decision 4.
+
+---
+
+## 7. End-to-End Sequence
 
 ```
 User clicks Promote on dApp X
@@ -487,7 +594,7 @@ The vetoed app can be re-promoted by anyone with a fresh bid (no deny-list).
 
 ---
 
-## 7. Files to Touch (when implementation starts)
+## 8. Files to Touch (when implementation starts)
 
 **Canister** (`identity-manager`):
 
@@ -516,6 +623,19 @@ The vetoed app can be re-promoted by anyone with a fresh bid (no deny-list).
   - veto + immediate re-bid by the same app succeeds (no deny-list)
   - admin-only guards on `set_promotion_config` / `veto_current_featured`
 
+**Admin CLI** (`identity-manager/admin_oracle`):
+
+- `admin_oracle/admin_manager.ts` — add `setPromotionConfig`,
+  `vetoFeatured`, `getPromotionStatus`, `getBidHistory` methods
+  on `AdminManager`.
+- `admin_oracle/admin_CLI.ts` — new `case` entries:
+  `setPromotionConfig`, `vetoFeatured`, `getFeatured`,
+  `getBidHistory`.
+- `admin_oracle/constants.ts` — add the `PROMOTION_CONFIG` lookup
+  (prod/dev) used by `setPromotionConfig`.
+- `admin_oracle/types.ts` — re-export `PromotionStatus` /
+  `HistoricalBid` shapes for the CLI JSON-print path.
+
 **Frontend** (`nfid-wallet-client`):
 
 - `packages/integration/src/lib/_ic_api/icrc1_oracle.ts` and `.d.ts` —
@@ -541,7 +661,7 @@ The vetoed app can be re-promoted by anyone with a fresh bid (no deny-list).
 
 ---
 
-## 8. Decisions log
+## 9. Decisions log
 
 This section pins down the choices that close out the original open
 questions. They are the contract for implementation; if a decision

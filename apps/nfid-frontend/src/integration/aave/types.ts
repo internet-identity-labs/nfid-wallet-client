@@ -8,7 +8,7 @@ export interface AaveReserveData {
 }
 
 export interface AaveUserPosition {
-  chainId: ChainId
+  chainId: AaveSupportedChainId
   asset: string
   aTokenAddress: string
   symbol: string
@@ -19,14 +19,14 @@ export interface AaveUserPosition {
 }
 
 export interface AaveSupplyParams {
-  chainId: ChainId
+  chainId: AaveSupportedChainId
   asset: string
   amount: string
   isNativeToken: boolean
 }
 
 export interface AaveWithdrawParams {
-  chainId: ChainId
+  chainId: AaveSupportedChainId
   asset: string
   amount: string
   isNativeToken: boolean

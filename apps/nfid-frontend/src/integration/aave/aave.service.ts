@@ -1,4 +1,4 @@
-import { SignIdentity } from "@dfinity/agent"
+import { SignIdentity } from "@icp-sdk/core/agent"
 import {
   Contract,
   formatUnits,
@@ -29,7 +29,7 @@ import {
   AaveSupportedChainId,
 } from "./types"
 
-const RAY = BigInt(10) ** BigInt(27)
+const RAY = BigInt("1" + "0".repeat(27))
 const SECONDS_PER_YEAR = 31_536_000
 
 export class AaveService {

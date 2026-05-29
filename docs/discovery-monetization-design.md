@@ -47,53 +47,7 @@ that env.
 
 ---
 
-## 3. State Machine
-
-Single Featured slot, no per-app state. Each successful bid **fully
-resets** both timers — a fresh `bid_time`, plus:
-
-```
-locked_until = bid_time + Locked Period
-expires_at   = bid_time + Feature Duration
-```
-
-```
-             ┌─────────────┐
-             │   EMPTY     │  no featured slot
-             │             │  next bid >= Floor
-             └─────┬───────┘
-                   │  place_bid(app_id, >= Floor)
-                   ▼
-             ┌─────────────┐
-             │   LOCKED    │  app featured, outbid disabled
-             │             │  next bid: rejected (Locked)
-             └─────┬───────┘
-                   │  now > locked_until
-                   ▼
-             ┌─────────────┐
-             │ OPEN BIDDING│  next bid = current_bid + Increment
-             │             │  on successful bid: ─┐
-             └─────┬───────┘   ▶ slot is replaced with new bidder
-                   │           ▶ both timers reset to now + Period/Duration
-                   │
-                   │  now > expires_at  (and no one outbid)
-                   ▼
-                  EMPTY
-```
-
-`get_promotion_status()` computes the **effective** state at read time
-— it accounts for `expires_at < now` and reports `featured = None` in
-that case without mutating storage. Storage cleanup is lazy and happens
-on the next write (`place_bid` or `veto`).
-
-**Veto** is an out-of-band transition that takes any state → `EMPTY`
-immediately (see §7). Veto is **one-shot**: it only clears the current
-slot if it matches; it does not put the app on a deny-list, so the same
-app can be re-promoted by a fresh bid later.
-
----
-
-## 4. Canister Data Model
+## 3. Canister Data Model
 
 Added to `identity-manager/src/icrc1_oracle/src/lib.rs`:
 
@@ -158,7 +112,7 @@ struct Memory {
 
 ---
 
-## 5. Canister API (additions to `icrc1_oracle.did`)
+## 4. Canister API (additions to `icrc1_oracle.did`)
 
 ```candid
 type PromotionConfig = record {
@@ -365,7 +319,7 @@ The query is cheap and cacheable.
 
 ---
 
-## 6. Frontend Service Surface
+## 5. Frontend Service Surface
 
 New file: `packages/integration/src/lib/promotion/promotion-service.ts`.
 
@@ -491,7 +445,7 @@ if the user leaves the modal open.
 
 ---
 
-## 7. End-to-End Sequence
+## 6. End-to-End Sequence
 
 ```
 User clicks Promote on dApp X
@@ -533,7 +487,7 @@ The vetoed app can be re-promoted by anyone with a fresh bid (no deny-list).
 
 ---
 
-## 8. Files to Touch (when implementation starts)
+## 7. Files to Touch (when implementation starts)
 
 **Canister** (`identity-manager`):
 
@@ -543,7 +497,7 @@ The vetoed app can be re-promoted by anyone with a fresh bid (no deny-list).
   `veto_current_featured`, plus stable save/restore for the three new
   `Option<>` Memory fields.
 - `src/icrc1_oracle/icrc1_oracle.did` — new types and service entries
-  from §5.
+  from §4.
 - `src/icrc1_oracle/Cargo.toml` — likely needs the ICRC ledger
   client crate (e.g. `ic-icrc1-client` / equivalent) for the
   `transfer_from` call; pick whatever the existing services in this
@@ -565,9 +519,9 @@ The vetoed app can be re-promoted by anyone with a fresh bid (no deny-list).
 **Frontend** (`nfid-wallet-client`):
 
 - `packages/integration/src/lib/_ic_api/icrc1_oracle.ts` and `.d.ts` —
-  extend IDL with the new types and methods from §5.
+  extend IDL with the new types and methods from §4.
 - `packages/integration/src/lib/promotion/types.ts` — TS-shaped types
-  from §6.
+  from §5.
 - `packages/integration/src/lib/promotion/promotion-service.ts` —
   `PromotionService`, `PromotionError`, `computePreFill`, `validate`.
 - `packages/integration/src/lib/promotion/index.ts` — barrel.
@@ -587,7 +541,7 @@ The vetoed app can be re-promoted by anyone with a fresh bid (no deny-list).
 
 ---
 
-## 9. Decisions log
+## 8. Decisions log
 
 This section pins down the choices that close out the original open
 questions. They are the contract for implementation; if a decision

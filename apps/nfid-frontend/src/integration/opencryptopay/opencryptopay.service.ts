@@ -1,5 +1,5 @@
-import { SignIdentity } from "@dfinity/agent"
-import { Principal } from "@dfinity/principal"
+import { SignIdentity } from "@icp-sdk/core/agent"
+import { Principal } from "@icp-sdk/core/principal"
 import { isAddress, formatUnits, parseUnits } from "ethers"
 import validate from "bitcoin-address-validation"
 
@@ -268,8 +268,9 @@ export class OpenCryptoPayService {
       case "ICP": {
         const { ICP_CANISTER_ID } =
           await import("@nfid/integration/token/constants")
-        const { createAgent } = await import("@dfinity/utils")
-        const { IcrcLedgerCanister } = await import("@dfinity/ledger-icrc")
+        const { createAgent } = await import("@nfid-frontend/utils")
+        const { IcrcLedgerCanister } =
+          await import("@icp-sdk/canisters/ledger/icrc")
         const agent = await createAgent({
           identity,
           host: "https://ic0.app",

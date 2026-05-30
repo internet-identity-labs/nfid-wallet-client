@@ -60,17 +60,22 @@ export const RPCReceiverV3 =
   () => (send: (event: ProcedureCallEvent) => void) => {
     console.log("subscribe")
     const subscription = rpcMessages.subscribe(async (message) => {
-      console.log("[icrc49-debug] RPCReceiverV3 RECEIVE", {
-        method: message?.data?.method,
-        id: message?.data?.id,
-        origin: message.origin,
-        source:
-          message.source === window.opener
-            ? "opener"
-            : message.source === window.parent
-              ? "parent"
-              : "other",
-      })
+      const isIcrc49 = message?.data?.method === "icrc49_call_canister"
+      const isStatus = message?.data?.method === "icrc29_status"
+      // Quiet down the noisy status polling, keep everything else loud.
+      if (!isStatus || isIcrc49) {
+        console.log("[icrc49-debug] RPCReceiverV3 RECEIVE", {
+          method: message?.data?.method,
+          id: message?.data?.id,
+          origin: message.origin,
+          source:
+            message.source === window.opener
+              ? "opener"
+              : message.source === window.parent
+                ? "parent"
+                : "other",
+        })
+      }
 
       if (message?.data?.method === icrc29GetStatusMethodService.getMethod()) {
         try {

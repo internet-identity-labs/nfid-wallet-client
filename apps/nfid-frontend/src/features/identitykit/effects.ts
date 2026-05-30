@@ -63,22 +63,49 @@ export const sendResponseEffect = async (context: any, event: any) => {
     eventDataIsGenericError: event?.data instanceof GenericError,
   })
 
-  if (event.data instanceof Error || event.data instanceof GenericError) {
-    const payload = {
-      origin: context.activeRequest.origin,
-      jsonrpc: context.activeRequest.data.jsonrpc,
-      id: context.activeRequest.data.id,
-      error: {
-        code: 3001,
-        message: event.data?.message ?? "Unknown error",
-      },
+  try {
+    if (event.data instanceof Error || event.data instanceof GenericError) {
+      const payload = {
+        origin: context.activeRequest.origin,
+        jsonrpc: context.activeRequest.data.jsonrpc,
+        id: context.activeRequest.data.id,
+        error: {
+          code: 3001,
+          message: event.data?.message ?? "Unknown error",
+        },
+      }
+      console.log("[icrc49-debug] sendResponseEffect POST error", {
+        targetOrigin: request.origin,
+        responseId: payload.id,
+        responseJsonrpc: payload.jsonrpc,
+        responseError: payload.error,
+      })
+      parent.postMessage(payload, request.origin)
+    } else {
+      // Spell out the exact payload so we can compare against the dApp
+      // signer's expectations (must have jsonrpc:"2.0" and matching id).
+      const payload = event.data as
+        | {
+            jsonrpc?: string
+            id?: string
+            error?: unknown
+            result?: unknown
+          }
+        | undefined
+      console.log("[icrc49-debug] sendResponseEffect POST raw event.data", {
+        targetOrigin: request.origin,
+        responseId: payload?.id,
+        responseJsonrpc: payload?.jsonrpc,
+        hasError: payload && "error" in payload,
+        hasResult: payload && "result" in payload,
+        errorPayload: payload?.error,
+        fullPayload: payload,
+      })
+      parent.postMessage(event.data, request.origin)
     }
-    console.log("[icrc49-debug] sendResponseEffect POST error", payload)
-    parent.postMessage(payload, request.origin)
-  } else {
-    console.log("[icrc49-debug] sendResponseEffect POST raw event.data", {
-      payload: event.data,
-    })
-    parent.postMessage(event.data, request.origin)
+    console.log("[icrc49-debug] sendResponseEffect POST OK")
+  } catch (err) {
+    console.error("[icrc49-debug] sendResponseEffect POST THREW", err)
+    throw err
   }
 }

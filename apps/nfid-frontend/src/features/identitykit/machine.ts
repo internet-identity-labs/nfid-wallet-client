@@ -40,6 +40,13 @@ const machineConfig = {
       },
       on: {
         ON_REQUEST: [
+          // dApp signers (identitykit & others) retransmit the same JSON-RPC
+          // request (same origin, same id) while they wait for a reply. Drop
+          // those duplicates — otherwise every retransmit grows requestsQueue
+          // and the user has to click Reject/Approve once per duplicate.
+          {
+            cond: "isDuplicateRequest",
+          },
           {
             cond: "isRequestProcessing",
             actions: ["assignRequest"],
@@ -230,6 +237,18 @@ const machineServices = {
     },
     hasActiveRequest: (context: IdentityKitRPCMachineContext) =>
       !!context.activeRequest,
+    isDuplicateRequest: (context: IdentityKitRPCMachineContext, event: any) => {
+      const incoming = event.data as
+        | { origin?: string; data?: { id?: string } }
+        | undefined
+      const incomingId = incoming?.data?.id
+      const incomingOrigin = incoming?.origin
+      if (incomingId === undefined || incomingOrigin === undefined) return false
+      const matches = (r: any) =>
+        r?.origin === incomingOrigin && r?.data?.id === incomingId
+      if (context.activeRequest && matches(context.activeRequest)) return true
+      return context.requestsQueue.some(matches)
+    },
   },
   actions: {
     assignRequest: assign(

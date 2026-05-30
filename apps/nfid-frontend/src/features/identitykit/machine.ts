@@ -141,6 +141,13 @@ const machineConfig = {
                   actions: ["assignError"],
                 },
               },
+              // Allow Reject while metadata is loading. xstate v4 auto-cancels
+              // the invocation on transition out of the state. Without this a
+              // click that lands during the loader is silently dropped, which
+              // is the icrc49 reject-loader regression we are fixing.
+              on: {
+                ON_CANCEL: "CancelInteractiveRequest",
+              },
             },
             PromptInteractiveRequest: {
               on: {
@@ -167,6 +174,11 @@ const machineConfig = {
                   target: "Error",
                   actions: ["assignError"],
                 },
+              },
+              // Same rationale as PrepareComponentData: allow the user to
+              // abort while the canister call is in flight.
+              on: {
+                ON_CANCEL: "CancelInteractiveRequest",
               },
             },
             Error: {
@@ -233,24 +245,45 @@ const machineServices = {
   },
   actions: {
     assignRequest: assign(
-      (context: IdentityKitRPCMachineContext, event: any) => ({
-        requestsQueue: [...context.requestsQueue, event.data],
-      }),
+      (context: IdentityKitRPCMachineContext, event: any) => {
+        const next = [...context.requestsQueue, event.data]
+        console.log("[icrc49-debug] assignRequest", {
+          incomingId: event?.data?.data?.id,
+          incomingMethod: event?.data?.data?.method,
+          incomingOrigin: event?.data?.origin,
+          queueLenBefore: context.requestsQueue.length,
+          queueLenAfter: next.length,
+          activeId: context.activeRequest?.data?.id,
+          activeMethod: context.activeRequest?.data?.method,
+        })
+        return { requestsQueue: next }
+      },
     ),
     assignRequestMetadata: assign(
       (_context: IdentityKitRPCMachineContext, event: any) => ({
         activeRequestMetadata: event.data,
       }),
     ),
-    moveQueue: assign((context: IdentityKitRPCMachineContext, _event: any) => ({
-      requestsQueue:
+    moveQueue: assign((context: IdentityKitRPCMachineContext, _event: any) => {
+      const nextActive =
+        context.requestsQueue.length > 0 ? context.requestsQueue[0] : undefined
+      const nextQueue =
         context.requestsQueue.length > 1
           ? context.requestsQueue.slice(1, context.requestsQueue.length)
-          : [],
-      activeRequest:
-        context.requestsQueue.length > 0 ? context.requestsQueue[0] : undefined,
-      activeRequestMetadata: undefined,
-    })),
+          : []
+      console.log("[icrc49-debug] moveQueue", {
+        queueLenBefore: context.requestsQueue.length,
+        queueLenAfter: nextQueue.length,
+        poppedId: nextActive?.data?.id,
+        poppedMethod: nextActive?.data?.method,
+        previousActiveId: context.activeRequest?.data?.id,
+      })
+      return {
+        requestsQueue: nextQueue,
+        activeRequest: nextActive,
+        activeRequestMetadata: undefined,
+      }
+    }),
     resetActiveRequest: assign(
       (_context: IdentityKitRPCMachineContext, _event: any) => ({
         activeRequest: undefined,

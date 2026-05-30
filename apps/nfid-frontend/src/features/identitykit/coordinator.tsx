@@ -64,9 +64,23 @@ export default function IdentityKitRPCCoordinator() {
               ) as RPCComponentsUI
             }
             props={{
-              onApprove: (data: any) =>
-                send({ type: "ON_APPROVE", data: data }),
-              onReject: () => send({ type: "ON_CANCEL" }),
+              onApprove: (data: any) => {
+                console.log("[icrc49-debug] coordinator onApprove CLICK", {
+                  id: state.context.activeRequest?.data.id,
+                  method: state.context.activeRequest?.data.method,
+                  queueLen: state.context.requestsQueue.length,
+                })
+                send({ type: "ON_APPROVE", data: data })
+              },
+              onReject: () => {
+                console.log("[icrc49-debug] coordinator onReject CLICK", {
+                  id: state.context.activeRequest?.data.id,
+                  method: state.context.activeRequest?.data.method,
+                  queueLen: state.context.requestsQueue.length,
+                  stateValue: state.value,
+                })
+                send({ type: "ON_CANCEL" })
+              },
               onBack: async () => {
                 await authState.logout(false)
                 send({ type: "ON_BACK" })

@@ -245,24 +245,45 @@ const machineServices = {
   },
   actions: {
     assignRequest: assign(
-      (context: IdentityKitRPCMachineContext, event: any) => ({
-        requestsQueue: [...context.requestsQueue, event.data],
-      }),
+      (context: IdentityKitRPCMachineContext, event: any) => {
+        const next = [...context.requestsQueue, event.data]
+        console.log("[icrc49-debug] assignRequest", {
+          incomingId: event?.data?.data?.id,
+          incomingMethod: event?.data?.data?.method,
+          incomingOrigin: event?.data?.origin,
+          queueLenBefore: context.requestsQueue.length,
+          queueLenAfter: next.length,
+          activeId: context.activeRequest?.data?.id,
+          activeMethod: context.activeRequest?.data?.method,
+        })
+        return { requestsQueue: next }
+      },
     ),
     assignRequestMetadata: assign(
       (_context: IdentityKitRPCMachineContext, event: any) => ({
         activeRequestMetadata: event.data,
       }),
     ),
-    moveQueue: assign((context: IdentityKitRPCMachineContext, _event: any) => ({
-      requestsQueue:
+    moveQueue: assign((context: IdentityKitRPCMachineContext, _event: any) => {
+      const nextActive =
+        context.requestsQueue.length > 0 ? context.requestsQueue[0] : undefined
+      const nextQueue =
         context.requestsQueue.length > 1
           ? context.requestsQueue.slice(1, context.requestsQueue.length)
-          : [],
-      activeRequest:
-        context.requestsQueue.length > 0 ? context.requestsQueue[0] : undefined,
-      activeRequestMetadata: undefined,
-    })),
+          : []
+      console.log("[icrc49-debug] moveQueue", {
+        queueLenBefore: context.requestsQueue.length,
+        queueLenAfter: nextQueue.length,
+        poppedId: nextActive?.data?.id,
+        poppedMethod: nextActive?.data?.method,
+        previousActiveId: context.activeRequest?.data?.id,
+      })
+      return {
+        requestsQueue: nextQueue,
+        activeRequest: nextActive,
+        activeRequestMetadata: undefined,
+      }
+    }),
     resetActiveRequest: assign(
       (_context: IdentityKitRPCMachineContext, _event: any) => ({
         activeRequest: undefined,

@@ -110,9 +110,17 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
     const sender = await this.getSender(message.origin, icrc49Dto.sender)
     const delegation = await this.getIdentity(icrc49Dto, sender)
 
+    // Metadata path: consent message (icrc21) + candid:service interface.
+    // Both are non-critical (missing values surface as fallbacks in the
+    // prompt UI), so we disable the @icp-sdk default of 3 retries —
+    // otherwise a canister without icrc21 / candid metadata makes
+    // getComponentData hang for ~tens of seconds while the prompt loader
+    // is shown and the user's Reject clicks land in a state that doesn't
+    // handle ON_CANCEL (icrc49 reject-loader regression after v2→v5).
     const agent: HttpAgent = HttpAgent.createSync({
       host: IC_HOSTNAME,
       identity: delegation as unknown as Identity,
+      retryTimes: 0,
     })
 
     const baseData = await super.getComponentData(message)

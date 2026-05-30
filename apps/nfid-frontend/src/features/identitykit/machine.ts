@@ -141,6 +141,13 @@ const machineConfig = {
                   actions: ["assignError"],
                 },
               },
+              // Allow Reject while metadata is loading. xstate v4 auto-cancels
+              // the invocation on transition out of the state. Without this a
+              // click that lands during the loader is silently dropped, which
+              // is the icrc49 reject-loader regression we are fixing.
+              on: {
+                ON_CANCEL: "CancelInteractiveRequest",
+              },
             },
             PromptInteractiveRequest: {
               on: {
@@ -167,6 +174,11 @@ const machineConfig = {
                   target: "Error",
                   actions: ["assignError"],
                 },
+              },
+              // Same rationale as PrepareComponentData: allow the user to
+              // abort while the canister call is in flight.
+              on: {
+                ON_CANCEL: "CancelInteractiveRequest",
               },
             },
             Error: {

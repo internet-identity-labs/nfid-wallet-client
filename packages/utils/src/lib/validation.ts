@@ -16,6 +16,7 @@ const MIN_CK_BTC_AMOUNT_TO_CONVERT = 0.00051
 const MIN_BTC_AMOUNT_TO_CONVERT = 0.00001
 const MIN_CK_ETH_AMOUNT_TO_CONVERT = 0.03
 const MIN_ETH_AMOUNT_TO_CONVERT = 0.0005
+const MIN_SEPOLIA_ETH_AMOUNT_TO_CONVERT = 0.005
 
 interface Validation {
   min?: number
@@ -92,11 +93,17 @@ export const validateTransferAmountField =
     }
 
     if (
-      (modalType === IModalType.CONVERT_TO_CKETH ||
-        modalType === IModalType.CONVERT_TO_SEPOLIA_CKETH) &&
+      modalType === IModalType.CONVERT_TO_CKETH &&
       valueNum.isLessThan(MIN_ETH_AMOUNT_TO_CONVERT)
     ) {
       return `Amount can't be less than ${MIN_ETH_AMOUNT_TO_CONVERT} ETH.`
+    }
+
+    if (
+      modalType === IModalType.CONVERT_TO_SEPOLIA_CKETH &&
+      valueNum.isLessThan(MIN_SEPOLIA_ETH_AMOUNT_TO_CONVERT)
+    ) {
+      return `Amount can't be less than ${MIN_SEPOLIA_ETH_AMOUNT_TO_CONVERT} ETH.`
     }
 
     if (minAmount !== undefined && valueNum.isLessThan(minAmount)) {

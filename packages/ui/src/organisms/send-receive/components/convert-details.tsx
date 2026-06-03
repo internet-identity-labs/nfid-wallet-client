@@ -5,8 +5,9 @@ import { FC } from "react"
 
 import {
   BTC_NATIVE_ID,
-  CKETH_LEDGER_CANISTER_ID,
+  CKBTC_CANISTER_ID,
   ETH_NATIVE_ID,
+  EVM_NATIVE,
 } from "@nfid/integration/token/constants"
 
 import { FT } from "frontend/integration/ft/ft"
@@ -54,10 +55,10 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
           <div className="text-sm">
             <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-700">
               <p>
-                {token.getTokenAddress() === ETH_NATIVE_ID ||
-                token.getTokenAddress() === CKETH_LEDGER_CANISTER_ID
-                  ? "ETH"
-                  : "BTC"}{" "}
+                {token.getTokenAddress() === BTC_NATIVE_ID ||
+                token.getTokenAddress() === CKBTC_CANISTER_ID
+                  ? "BTC"
+                  : "ETH"}{" "}
                 network fee
               </p>
               <p className="leading-5 text-right font-inter">
@@ -105,7 +106,8 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
               </p>
             </div>
             {token.getTokenAddress() !== BTC_NATIVE_ID &&
-              token.getTokenAddress() !== ETH_NATIVE_ID && (
+              token.getTokenAddress() !== ETH_NATIVE_ID &&
+              token.getTokenAddress() !== EVM_NATIVE && (
                 <div className="flex flex-wrap justify-between py-3 leading-5">
                   <p>Widget fee</p>
                   <p className="leading-5 text-right font-inter">

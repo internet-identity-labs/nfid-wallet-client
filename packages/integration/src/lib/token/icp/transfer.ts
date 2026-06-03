@@ -17,6 +17,7 @@ type TransferParams = {
   to: string
   memo?: Memo
   identity: SignIdentity
+  isBurn?: boolean
 }
 
 const addressValidationService = {
@@ -66,6 +67,7 @@ export async function transfer({
   to,
   memo = BigInt(0),
   identity,
+  isBurn = false,
 }: TransferParams): Promise<BlockIndex> {
   const ledgerWithWallet = ledgerWithIdentity(identity)
 
@@ -74,7 +76,7 @@ export async function transfer({
       to: fromHexString(to),
       amount: { e8s: BigInt(amount.toFixed()) },
       memo,
-      fee: { e8s: BigInt(10000) },
+      fee: { e8s: isBurn ? BigInt(0) : BigInt(10000) },
       from_subaccount: [],
       created_at_time: [],
     })

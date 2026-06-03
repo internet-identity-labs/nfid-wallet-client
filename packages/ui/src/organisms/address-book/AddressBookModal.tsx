@@ -75,6 +75,16 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
   })
 
   useEffect(() => {
+    if (!isOpen) {
+      reset({
+        name: "",
+        accountId: "",
+        icpWallet: "",
+        btcWallet: "",
+        ethWallet: "",
+      })
+      return
+    }
     if (address) {
       reset({
         name: address.name ?? "",
@@ -83,16 +93,8 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
         btcWallet: address.btc ?? "",
         ethWallet: address.evm ?? "",
       })
-    } else {
-      reset({
-        name: "",
-        accountId: "",
-        icpWallet: "",
-        btcWallet: "",
-        ethWallet: "",
-      })
     }
-  }, [address, reset])
+  }, [address, isOpen, reset])
 
   const name = watch("name")
   const accountId = watch("accountId")

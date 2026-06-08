@@ -1,8 +1,9 @@
 import clsx from "clsx"
+import { ReactNode } from "react"
 
 export interface IDropdownOption {
   label?: string
-  icon?: string
+  icon?: string | ReactNode
   element?: React.ComponentType<{ className?: string }>
   link?: string
   handler?: () => void
@@ -37,13 +38,15 @@ export const DropdownOption = ({
         <Element className="w-full h-[40px] flex items-center" />
       ) : (
         <>
-          {icon && (
+          {icon && typeof icon === "string" ? (
             <img
               alt="dropdown-icon"
               width={24}
               className={iconClassName}
               src={icon}
             />
+          ) : (
+            icon
           )}
           {link ? (
             <a

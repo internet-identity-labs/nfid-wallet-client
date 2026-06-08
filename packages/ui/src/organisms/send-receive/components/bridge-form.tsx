@@ -6,62 +6,64 @@ import { FieldErrors, FieldValues } from "react-hook-form"
 import {
   Button,
   IconCmpArrowConvert,
-  IconCmpConvertWhite,
+  IconCmpBridge,
   Skeleton,
   Tooltip,
 } from "@nfid-frontend/ui"
 
 import { useDarkTheme } from "frontend/hooks"
+import { SelectedToken } from "frontend/features/transfer-modal/types"
 import { FT } from "frontend/integration/ft/ft"
 
 import ConvertArrowBoxDark from "../assets/convert-arrow-box-dark.png"
 import ConvertArrowBox from "../assets/convert-arrow-box.png"
 import ConvertDarkIcon from "../assets/convert-dark.svg?url"
 import ConvertIcon from "../assets/convert.svg?url"
-import { getModalType, EthFormattedFee, BtcFormattedFee } from "../utils"
+import { IModalType } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { ChooseToToken } from "./choose-to-token"
-import { ConvertModal } from "./convert"
-import { EthToCkEthFee } from "frontend/integration/ethereum/evm.service"
+import { BridgeModal } from "./bridge"
+import { EstimatedBridge } from "./bridge"
 
-export interface ConvertFormProps {
+export interface BridgeFormProps {
   fromToken: FT | undefined
   toToken: FT | undefined
   submit: () => void
-  setFromChosenToken: (value: string) => void
-  setToChosenToken: (value: string) => void
-  isFeeLoading: boolean
+  setFromChosenToken: (value: SelectedToken) => void
+  setToChosenToken: (value: SelectedToken) => void
   isOpen: boolean
-  setConvertModal: (v: ConvertModal) => void
+  setBridgeModal: (v: BridgeModal) => void
   amount: string
   errors: FieldErrors<FieldValues>
-  conversionError: string | undefined
+  bridgeError: string | undefined
   handleReverse: () => void
-  fee?: EthFormattedFee | BtcFormattedFee
+  bridgeData?: EstimatedBridge
+  isBridgeDataLoading: boolean
   tokens?: FT[]
+  toTokens?: FT[]
   isResponsive?: boolean
   setIsResponsive?: (value: boolean) => void
-  ethFee?: EthToCkEthFee
 }
 
-export const ConvertForm: FC<ConvertFormProps> = ({
+export const BridgeForm: FC<BridgeFormProps> = ({
   fromToken,
   toToken,
   submit,
   setFromChosenToken,
   setToChosenToken,
-  isFeeLoading,
+
   isOpen,
-  setConvertModal,
+  setBridgeModal,
   amount,
   errors,
-  conversionError,
+  bridgeError,
   handleReverse,
-  fee,
+  bridgeData,
+  isBridgeDataLoading,
   tokens,
+  toTokens,
   isResponsive,
   setIsResponsive,
-  ethFee,
 }) => {
   const [isFromResponsive, setIsFromResponsive] = useState(false)
   const [isToResponsive, setIsToResponsive] = useState(false)
@@ -74,11 +76,11 @@ export const ConvertForm: FC<ConvertFormProps> = ({
 
   const isDarkTheme = useDarkTheme()
   const isDisabled =
-    isFeeLoading ||
+    isBridgeDataLoading ||
     !amount ||
     Boolean(errors["amount"]?.message) ||
-    !fee ||
-    Boolean(conversionError)
+    !bridgeData ||
+    Boolean(bridgeError)
 
   return (
     <div className={clsx(!isOpen && "hidden", isResponsive && "pb-[70px]")}>
@@ -89,37 +91,40 @@ export const ConvertForm: FC<ConvertFormProps> = ({
             "flex justify-between items-center",
           )}
         >
-          <span>Convert</span>
+          <span>Bridge</span>
           {isOpen && (
             <Tooltip
               align="end"
               alignOffset={-20}
-              tip={
-                <span className="block max-w-[300px]">Conversion details</span>
-              }
+              tip={<span className="block max-w-[300px]">Bridge details</span>}
             >
               <img
                 className="cursor-pointer hover:opacity-60"
                 src={isDarkTheme ? ConvertDarkIcon : ConvertIcon}
                 alt="NFID swap settings"
-                onClick={() => setConvertModal(ConvertModal.DETAILS)}
+                onClick={() => setBridgeModal(BridgeModal.DETAILS)}
               />
             </Tooltip>
           )}
         </div>
         <p className="mb-1 text-xs select-none">From</p>
         <ChooseFromToken
-          modalType={getModalType(fromToken, toToken)}
-          id={"convert-from-title"}
+          modalType={IModalType.BRIDGE}
+          id={"bridge-from-title"}
           token={fromToken}
-          setFromChosenToken={(v) => setFromChosenToken(v.address)}
-          usdRate={toToken!.getTokenRateFormatted(amount || "0")}
+          setFromChosenToken={setFromChosenToken}
+          usdRate={bridgeData?.amountFromUsd}
           value={amount}
           tokens={tokens}
-          title="Convert from"
+          title="Bridge from"
           isResponsive={isResponsive}
           setIsResponsive={setIsFromResponsive}
-          fee={ethFee?.ethereumNetworkFee}
+          resetKey={
+            toToken
+              ? `${toToken.getChainId()}:${toToken.getTokenAddress()}`
+              : ""
+          }
+          withNetwork
         />
         <div className="h-4 mt-1 text-xs leading-4 text-red-600">
           {errors["amount"] && (errors["amount"]?.message as string)}
@@ -146,14 +151,21 @@ export const ConvertForm: FC<ConvertFormProps> = ({
         </div>
         <ChooseToToken
           token={toToken}
-          setToChosenToken={(v) => setToChosenToken(v.address)}
-          usdRate={toToken!.getTokenRateFormatted(fee?.amountToReceive || "0")}
-          isLoading={isFeeLoading && !!amount && !errors["amount"]}
-          value={fee?.amountToReceive}
+          tokens={toTokens}
+          setToChosenToken={setToChosenToken}
+          usdRate={bridgeData?.amountToUsd}
+          isLoading={isBridgeDataLoading && !!amount && !errors["amount"]}
+          value={
+            !bridgeData?.amountTo
+              ? "0.00"
+              : parseFloat(bridgeData?.amountTo || "0.00").toString()
+          }
           color="bg-gray-50 dark:bg-zinc-700"
           isResponsive={isResponsive}
           setIsResponsive={setIsToResponsive}
-          title="Convert to"
+          withNetwork
+          title="Bridge to"
+          tooltipText="Networks that can’t be selected lack enough liquidity for bridging."
         />
         <div
           className={clsx(
@@ -162,14 +174,14 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           )}
         >
           <span>Network fees</span>
-          {!amount || errors["amount"] ? null : fee === undefined ? (
+          {!amount || errors["amount"] ? null : bridgeData === undefined ? (
             <Skeleton className="w-[70px] h-4 rounded-lg" />
           ) : (
-            <span>{fromToken?.getTokenRateFormatted(fee.total)}</span>
+            <span>{bridgeData.totalUsdCost}</span>
           )}
         </div>
-        {conversionError && (
-          <div className="mt-2 text-xs text-red-600">{conversionError}</div>
+        {bridgeError && (
+          <div className="mt-2 text-xs text-red-600">{bridgeError}</div>
         )}
         <Button
           className="absolute bottom-5 left-5 right-5 !w-auto"
@@ -177,11 +189,18 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           id="swapTokensButton"
           block
           icon={
-            !amount || errors["amount"] ? null : fee === undefined &&
-              !conversionError ? (
+            !amount || errors["amount"] ? null : bridgeData === undefined &&
+              !bridgeError ? (
               <Spinner className="w-5 h-5 text-white" />
             ) : (
-              <IconCmpConvertWhite className="text-gray-400 !w-[18px] !h-[18px] text-white" />
+              <IconCmpBridge
+                className={clsx(
+                  "!w-[18px] !h-[18px]",
+                  isDisabled
+                    ? "text-cecondary dark:text-zinc-500"
+                    : "text-white",
+                )}
+              />
             )
           }
           disabled={isDisabled}
@@ -189,9 +208,9 @@ export const ConvertForm: FC<ConvertFormProps> = ({
         >
           {!amount
             ? "Enter an amount"
-            : fee === undefined && !conversionError && !errors["amount"]
+            : bridgeData === undefined && !bridgeError && !errors["amount"]
               ? "Calculating fee"
-              : "Convert"}
+              : "Bridge"}
         </Button>
       </div>
     </div>

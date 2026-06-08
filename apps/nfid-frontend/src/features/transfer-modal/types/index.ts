@@ -22,6 +22,7 @@ export enum ModalType {
   CONVERT = "convert",
   STAKE = "stake",
   REDEEM = "redeem",
+  BRIDGE = "bridge",
 }
 
 export interface SelectedToken {

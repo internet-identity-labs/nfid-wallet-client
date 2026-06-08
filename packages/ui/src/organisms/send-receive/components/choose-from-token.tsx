@@ -31,6 +31,8 @@ import {
 } from "packages/ui/src/utils/is-mobile"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { SelectedToken } from "frontend/features/transfer-modal/types"
+import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
+import { useDarkTheme } from "frontend/hooks"
 
 interface ChooseFromTokenProps {
   modalType: IModalType
@@ -50,6 +52,8 @@ interface ChooseFromTokenProps {
   isLoading?: boolean
   setSkipFeeCalculation?: () => void
   isBtcEthLoading?: boolean
+  withNetwork?: boolean
+  resetKey?: string
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -70,11 +74,14 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   isLoading,
   setSkipFeeCalculation,
   isBtcEthLoading,
+  withNetwork,
+  resetKey,
 }) => {
   const [inputAmountValue, setInputAmountValue] = useState(value || "")
   const [isMaxClicked, setIsMaxClicked] = useState(false)
   const [isFeeLoading, setIsFeeLoading] = useState(false)
   const isChangingToken = useRef(false)
+  const isDarkTheme = useDarkTheme()
 
   const {
     setValue,
@@ -96,7 +103,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     setTimeout(() => {
       isChangingToken.current = false
     }, 500)
-  }, [token, setValue, clearErrors])
+  }, [token, resetKey, setValue, clearErrors])
 
   const feeFormatted = useMemo(() => {
     if (!token || userBalance === undefined) return
@@ -301,12 +308,19 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
                   id={`sourceToken_${token.getTokenName()}_${token.getTokenAddress()}`}
                   className="flex items-center w-full cursor-pointer gap-1.5"
                 >
-                  <ImageWithFallback
-                    alt={token.getTokenName()}
-                    fallbackSrc={IconNftPlaceholder}
-                    src={`${token.getTokenLogo()}`}
-                    className="w-[28px] rounded-full"
-                  />
+                  <div className="relative">
+                    <ImageWithFallback
+                      alt={token.getTokenName()}
+                      fallbackSrc={IconNftPlaceholder}
+                      src={`${token.getTokenLogo()}`}
+                      className="w-[28px] rounded-full"
+                    />
+                    {withNetwork && (
+                      <div className="absolute bottom-0 right-0 w-3 h-3 rounded-[4px] bg-white dark:bg-zinc-800 [&>svg]:w-full [&>svg]:h-full">
+                        {getNetworkIcon(token.getChainId(), isDarkTheme)}
+                      </div>
+                    )}
+                  </div>
                   <p className="text-lg font-semibold">
                     {token.getTokenSymbol()}
                   </p>

@@ -19,6 +19,7 @@ import { TransferFT } from "./components/send-ft"
 import { TransferNFT } from "./components/send-nft"
 import { StakeFT } from "./components/stake"
 import { SwapFT } from "./components/swap"
+import { Bridge } from "./components/bridge"
 
 export const TransferModalCoordinator = () => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
@@ -27,7 +28,9 @@ export const TransferModalCoordinator = () => {
   const [state, send] = useActor(globalServices.transferService)
   const [hasSwapError, setHasSwapError] = useState(false)
   const [hasBtcError, setHasBtcError] = useState(false)
+  const [hasBridgeError, setHasBridgeError] = useState(false)
   const [isConvertSuccess, setIsConvertSuccess] = useState(false)
+  const [isBridgeSuccess, setIsBridgeSuccess] = useState(false)
 
   const hideModal = useCallback(() => {
     send({ type: "ASSIGN_SELECTED_FT", data: undefined })
@@ -37,6 +40,7 @@ export const TransferModalCoordinator = () => {
     send({ type: "CHANGE_DIRECTION", data: null })
     send({ type: "HIDE" })
     setIsConvertSuccess(false)
+    setIsBridgeSuccess(false)
   }, [send])
 
   useDisableScroll(!state.matches("Hidden"))
@@ -150,6 +154,24 @@ export const TransferModalCoordinator = () => {
             />
           </motion.div>
         )}
+        {state.matches("BridgeMachine") && (
+          <motion.div
+            key="bridge-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          >
+            <Bridge
+              preselectedSourceTokenAddress={state.context.selectedFT?.address}
+              onClose={hideModal}
+              setErrorMessage={setErrorMessage}
+              setSuccessMessage={setSuccessMessage}
+              setIsBridgeSuccess={setIsBridgeSuccess}
+              onError={setHasBridgeError}
+            />
+          </motion.div>
+        )}
         {state.matches("ReceiveMachine") && (
           <motion.div
             key="receive-modal"
@@ -231,6 +253,8 @@ export const TransferModalCoordinator = () => {
           hasSwapError={hasSwapError}
           hasBtcError={hasBtcError}
           isConvertSuccess={isConvertSuccess}
+          isBridgeSuccess={isBridgeSuccess}
+          hasBridgeError={hasBridgeError}
         />
       )}
     </>

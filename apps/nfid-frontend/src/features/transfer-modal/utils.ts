@@ -310,6 +310,31 @@ export const getTokensWithUpdatedBalance = async (
   return updatedTokens
 }
 
+export const getEvmTokensWithUpdatedBalance = async (
+  tokens: Array<{ address: string; chainId: number }>,
+  allTokens: FT[],
+) => {
+  const { publicKey } = authState.getUserIdData()
+
+  const updatedTokens = [...allTokens]
+
+  for (const { address, chainId } of tokens) {
+    const index = updatedTokens.findIndex(
+      (el) => el.getTokenAddress() === address && el.getChainId() === chainId,
+    )
+
+    if (index !== -1) {
+      const tokenToUpdate = updatedTokens[index]
+      const updatedToken = await tokenToUpdate.refreshBalance(
+        Principal.fromText(publicKey),
+      )
+      updatedTokens[index] = updatedToken
+    }
+  }
+
+  return updatedTokens
+}
+
 /** Apply refreshed `updates` onto `fullList` by token address (same length/order as fullList). */
 const mergeUpdatedFtIntoTokenList = (fullList: FT[], updates: FT[]): FT[] => {
   const byAddress = new Map(updates.map((t) => [t.getTokenAddress(), t]))

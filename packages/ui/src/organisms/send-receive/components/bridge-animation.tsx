@@ -3,11 +3,14 @@ import { IconNftPlaceholder } from "packages/ui/src/atoms/icons"
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
 import React, { useEffect, useState } from "react"
 
-import { SendStatus } from "frontend/features/transfer-modal/types"
-
 import FailedIcon from "../assets/animation-failed.svg?url"
 import "../assets/animation-gradient.css"
 import ConvertWaitIcon from "../assets/convert-wait.png"
+import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
+import { useDarkTheme } from "frontend/hooks"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import SuccessIcon from "../assets/stake-success.svg?url"
+import { SendStatus } from "frontend/features/transfer-modal/types"
 
 const HIDE_ANIMATION_DURATION = 0.3
 
@@ -21,13 +24,16 @@ export interface CustomAnimationProps {
   assetImg: string
   assetImgTo?: string
   status: SendStatus
+  tokenChain: ChainId
 }
 
-export const ConvertAnimation: React.FC<CustomAnimationProps> = ({
+export const BridgeAnimation: React.FC<CustomAnimationProps> = ({
   assetImg,
   assetImgTo,
   status,
+  tokenChain,
 }) => {
+  const isDarkTheme = useDarkTheme()
   const [animationStage, setAnimationStage] = useState<AnimationStage>(
     status === SendStatus.PENDING
       ? AnimationStage.SPINNING
@@ -79,6 +85,7 @@ export const ConvertAnimation: React.FC<CustomAnimationProps> = ({
         status === SendStatus.FAILED && "border-[3px] border-gray-200",
         status === SendStatus.COMPLETED &&
           "border-[3px] border-teal-600 dark:border-teal-500",
+        status === SendStatus.FAILED && "border-red-600",
         "circle-gradient flex justify-center items-center",
         "w-[148px] h-[148px] rounded-full",
         "relative before:content-[''] before:absolute before:top-0 before:left-0",
@@ -111,15 +118,22 @@ export const ConvertAnimation: React.FC<CustomAnimationProps> = ({
           status !== SendStatus.PENDING &&
             stageClassnames[animationStage].imageWrapper,
           status === SendStatus.FAILED && "bg-red-600",
+          status === SendStatus.COMPLETED && "bg-teal-600 dark:bg-teal-500",
         )}
       >
         {status !== SendStatus.PENDING ? (
           <img
-            src={status === SendStatus.COMPLETED ? ConvertWaitIcon : FailedIcon}
+            src={
+              status === SendStatus.COMPLETED
+                ? ConvertWaitIcon
+                : status === SendStatus.FAILED
+                  ? FailedIcon
+                  : SuccessIcon
+            }
             alt={
               status === SendStatus.COMPLETED
-                ? "Convert success"
-                : "Convert failed"
+                ? "Bridge success"
+                : "Bridge failed"
             }
           />
         ) : assetImgTo ? (
@@ -141,12 +155,17 @@ export const ConvertAnimation: React.FC<CustomAnimationProps> = ({
                 "absolute h-[68px] w-[68px] rounded-full p-[10px] bg-white dark:bg-zinc-500 z-2 top-[52px] left-[52px] sm:top-[52px] sm:left-[52px]",
               )}
             >
-              <ImageWithFallback
-                alt="assetImg"
-                src={`${assetImgTo}`}
-                fallbackSrc={IconNftPlaceholder}
-                className="w-full h-full rounded-full"
-              />
+              <div className="relative">
+                <ImageWithFallback
+                  alt="assetImg"
+                  src={`${assetImgTo}`}
+                  fallbackSrc={IconNftPlaceholder}
+                  className="w-full h-full rounded-full"
+                />
+                <div className="absolute bottom-0 right-0 w-5 h-5 rounded-[8px] bg-white dark:bg-zinc-800 [&>svg]:w-full [&>svg]:h-full">
+                  {getNetworkIcon(tokenChain, isDarkTheme)}
+                </div>
+              </div>
             </div>
           </>
         ) : (

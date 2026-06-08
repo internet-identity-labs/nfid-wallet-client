@@ -12,19 +12,19 @@ import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 
 interface IChooseFtItem {
   token: FT
-  isSwapTo?: boolean
+  isTargetList?: boolean
   tokensAvailableToSwap?: TokensAvailableToSwap
   isBtcEthLoading?: boolean
 }
 
 export const ChooseFtItem = ({
   token,
-  isSwapTo,
+  isTargetList,
   tokensAvailableToSwap,
   isBtcEthLoading,
 }: IChooseFtItem) => {
   const isTokenAvailable =
-    (isSwapTo
+    (isTargetList
       ? tokensAvailableToSwap?.to.includes(token.getTokenAddress())
       : tokensAvailableToSwap?.from.includes(token.getTokenAddress())) ??
     (false ||

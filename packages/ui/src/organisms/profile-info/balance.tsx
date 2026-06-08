@@ -38,7 +38,7 @@ export function Balance({
             !BigNumber(usdBalance?.value).eq(0) &&
             usdBalance?.dayChange &&
             usdBalance.dayChangePercent && (
-              <div className="flex mt-2.5">
+              <div className="flex mt-2.5 basis-[100%] md:basis-auto">
                 <small
                   className={clsx("text-xs font-bold mr-2.5 self-end", {
                     "text-emerald-600 dark:text-emerald-500":

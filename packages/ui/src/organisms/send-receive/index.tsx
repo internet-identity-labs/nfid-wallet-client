@@ -17,6 +17,8 @@ export interface TransferModalProps {
   hasSwapError: boolean
   hasBtcError: boolean
   isConvertSuccess: boolean
+  hasBridgeError: boolean
+  isBridgeSuccess: boolean
 }
 
 export interface TransferVaultModalProps {
@@ -39,6 +41,8 @@ export const TransferModal: FC<TransferModalProps> = ({
   hasSwapError,
   hasBtcError,
   isConvertSuccess,
+  hasBridgeError,
+  isBridgeSuccess,
 }) => {
   return (
     <TransferTemplate
@@ -47,11 +51,11 @@ export const TransferModal: FC<TransferModalProps> = ({
         direction === ModalType.SEND && "!pb-5",
         hasSwapError
           ? "min-h-[540px]"
-          : isConvertSuccess
-          ? "min-h-[580px]"
-          : hasBtcError
-          ? "min-h-[520px]"
-          : "min-h-[480px]",
+          : isConvertSuccess || isBridgeSuccess
+            ? "min-h-[580px]"
+            : hasBtcError || hasBridgeError
+              ? "min-h-[520px]"
+              : "min-h-[480px]",
       )}
       overlayClassName={!isOpen ? "hidden" : ""}
       isOpen={isOpen}

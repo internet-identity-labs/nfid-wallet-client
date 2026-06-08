@@ -29,7 +29,7 @@ export const useIntersectionObserver = (
     refs.forEach((ref) => ref && observer.observe(ref))
 
     return () => {
-      refs.forEach((ref) => ref && observer.unobserve(ref))
+      observer.disconnect()
     }
-  }, [refs, callback])
+  }, [refs.length, shouldObserve, callback])
 }

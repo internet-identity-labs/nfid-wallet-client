@@ -141,6 +141,14 @@ const TokensPage = memo(() => {
     send("SHOW")
   }
 
+  const onBridgeClick = (selectedToken: SelectedToken) => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.BRIDGE })
+    send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
+    send("SHOW")
+  }
+
   const { data: tokens = undefined, mutate: refetchTokens } =
     useSWRWithTimestamp(
       isViewOnlyMode ? ["tokens", viewOnlyAddress] : "tokens",
@@ -284,6 +292,7 @@ const TokensPage = memo(() => {
           onConvertToSepoliaEth={onConvertToSepoliaEth}
           onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
           onStakeClick={onStakeClick}
+          onBridgeClick={onBridgeClick}
           hideZeroBalance={hideZeroBalance}
           onZeroBalanceToggle={onZeroBalanceToggle}
           testnetEnabled={testnetEnabled}

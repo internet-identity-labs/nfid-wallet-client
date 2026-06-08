@@ -80,9 +80,7 @@ export const AuthEmailMagicLink = () => {
           <EmailMagicLinkLink
             googleButton={
               <SignInWithGoogle
-                onLogin={(credential) =>
-                  handleLinkGoogle(credential.credential)
-                }
+                onLogin={handleLinkGoogle}
                 button={
                   <Button
                     className="h-12 !p-0"

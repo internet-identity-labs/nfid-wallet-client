@@ -1,3 +1,4 @@
+import { Principal } from "@icp-sdk/core/principal"
 import { TooltipProvider } from "@radix-ui/react-tooltip"
 import clsx from "clsx"
 import toaster from "packages/ui/src/atoms/toast"
@@ -157,10 +158,15 @@ export const AuthChooseAccount = ({
             : undefined,
         )
 
+        const anonymousPrincipal = Principal.selfAuthenticating(
+          new Uint8Array(anonymousDelegation.publicKey),
+        ).toText()
+
         void icrc1OracleService.storeDiscoveryApp({
           derivationOrigin: authRequest.derivationOrigin,
           hostname: authRequest.hostname,
           login: "Anonymous",
+          anonymousPrincipal,
         })
 
         const authSession: ThirdPartyAuthSession = {

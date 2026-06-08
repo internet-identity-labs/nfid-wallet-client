@@ -1,4 +1,3 @@
-import { INFURA_API_KEY } from "@nfid/integration/token/constants"
 import { InfuraProvider } from "ethers"
 import { Erc20Service } from "../erc20-abstract.service"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"

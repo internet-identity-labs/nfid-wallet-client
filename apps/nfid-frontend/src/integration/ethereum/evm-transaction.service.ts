@@ -1,7 +1,4 @@
-import {
-  ETH_DECIMALS,
-  ETHERSCAN_API_KEY,
-} from "@nfid/integration/token/constants"
+import { ETH_DECIMALS } from "@nfid/integration/token/constants"
 import { IActivityAction } from "@nfid/integration/token/icrc1/types"
 import { ttlCacheService } from "@nfid/client-db"
 import { Erc20Service } from "./erc20-abstract.service"

@@ -58,6 +58,11 @@ export interface DiscoveryVisitRequest {
   derivation_origin: [] | [string]
   hostname: string
   login: LoginType
+  anonymous_principal: [] | [Principal]
+}
+export interface UserDiscoveryApp {
+  app_id: number
+  anonymous_principal: string
 }
 export interface DiscoveryApp {
   id: number
@@ -151,6 +156,7 @@ export interface _SERVICE {
   count_discovery_apps: ActorMethod<[], bigint>
   store_discovery_app: ActorMethod<[DiscoveryVisitRequest], undefined>
   is_unique: ActorMethod<[DiscoveryVisitRequest], boolean>
+  get_my_discovery_apps: ActorMethod<[], Array<UserDiscoveryApp>>
   get_discovery_app_paginated: ActorMethod<
     [bigint, bigint],
     Array<DiscoveryApp>

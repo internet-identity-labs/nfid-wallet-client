@@ -1,4 +1,5 @@
 import { DelegationChain, Ed25519PublicKey } from "@icp-sdk/core/identity"
+import { Principal } from "@icp-sdk/core/principal"
 import { authStorage } from "packages/integration/src/lib/authentication/storage"
 import { getAnonymousDelegation } from "packages/integration/src/lib/delegation-factory/delegation-i"
 
@@ -106,6 +107,22 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     }
   }
 
+  private recordAnonymousVisit(
+    chain: DelegationChain,
+    derivationOrigin: string,
+    hostname: string,
+  ): void {
+    const anonymousPrincipal = Principal.selfAuthenticating(
+      new Uint8Array(chain.publicKey),
+    ).toText()
+    void icrc1OracleService.storeDiscoveryApp({
+      derivationOrigin,
+      hostname,
+      login: "Anonymous",
+      anonymousPrincipal,
+    })
+  }
+
   private formatDelegationChain(chain: DelegationChain) {
     return {
       signerDelegation: chain.delegations.map((signedDelegation) => {
@@ -157,12 +174,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     }
 
     if (accountKeyIdentity.type === AccountType.SESSION) {
-      void icrc1OracleService.storeDiscoveryApp({
-        derivationOrigin: icrc34Dto.derivationOrigin ?? origin,
-        hostname: origin,
-        login: "Anonymous",
-      })
-      return await getAnonymousDelegation(
+      const chain = await getAnonymousDelegation(
         icrc34Dto.derivationOrigin ?? origin,
         new Uint8Array(sessionPublicKey.toDer()),
         auth.delegationIdentity,
@@ -170,15 +182,16 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
           ? Number(BigInt(icrc34Dto.maxTimeToLive) / BigInt(1000000))
           : undefined,
       )
+      this.recordAnonymousVisit(
+        chain,
+        icrc34Dto.derivationOrigin ?? origin,
+        origin,
+      )
+      return chain
     }
 
     if (accountKeyIdentity.type === AccountType.SESSION_WITHOUT_DERIVATION) {
-      void icrc1OracleService.storeDiscoveryApp({
-        derivationOrigin: icrc34Dto.derivationOrigin ?? origin,
-        hostname: origin,
-        login: "Anonymous",
-      })
-      return await getAnonymousDelegation(
+      const chain = await getAnonymousDelegation(
         origin,
         new Uint8Array(sessionPublicKey.toDer()),
         auth.delegationIdentity,
@@ -186,14 +199,15 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
           ? Number(BigInt(icrc34Dto.maxTimeToLive) / BigInt(1000000))
           : undefined,
       )
+      this.recordAnonymousVisit(
+        chain,
+        icrc34Dto.derivationOrigin ?? origin,
+        origin,
+      )
+      return chain
     }
 
     if (accountKeyIdentity.type === AccountType.ANONYMOUS_LEGACY) {
-      void icrc1OracleService.storeDiscoveryApp({
-        derivationOrigin: icrc34Dto.derivationOrigin ?? origin,
-        hostname: origin,
-        login: "Anonymous",
-      })
       const legacyAuthSession = await getLegacyThirdPartyAuthSession({
         derivationOrigin: icrc34Dto.derivationOrigin,
         hostname: origin,
@@ -201,7 +215,13 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
         maxTimeToLive: BigInt(icrc34Dto.maxTimeToLive),
       })
 
-      return delegationChainFromDelegation(legacyAuthSession)
+      const chain = delegationChainFromDelegation(legacyAuthSession)
+      this.recordAnonymousVisit(
+        chain,
+        icrc34Dto.derivationOrigin ?? origin,
+        origin,
+      )
+      return chain
     }
 
     throw new Error("Invalid account type")

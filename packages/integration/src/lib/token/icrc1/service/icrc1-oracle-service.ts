@@ -1,4 +1,5 @@
 import { HttpAgent, SignIdentity } from "@icp-sdk/core/agent"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { ttlCacheService } from "@nfid/client-db"
 
@@ -22,6 +23,7 @@ import {
   DiscoveryAppStatus,
   DiscoveryVisitData,
   ICRC1 as ICRC1Data,
+  UserDiscoveryAppData,
 } from "../types"
 
 export const ICRC1_ORACLE_CACHE_NAME = "ICRC1OracleService.getICRC1Canisters"
@@ -106,12 +108,7 @@ export class ICRC1OracleService {
   }
 
   async storeDiscoveryApp(data: DiscoveryVisitData): Promise<void> {
-    const request: DiscoveryVisitRequest = {
-      derivation_origin:
-        data.derivationOrigin !== undefined ? [data.derivationOrigin] : [],
-      hostname: data.hostname,
-      login: data.login === "Global" ? { Global: null } : { Anonymous: null },
-    }
+    const request = this.buildDiscoveryVisitRequest(data)
     const unique = await iCRC1OracleActor.is_unique(request)
     if (!unique) return
 
@@ -119,13 +116,32 @@ export class ICRC1OracleService {
   }
 
   async isUnique(data: DiscoveryVisitData): Promise<boolean> {
-    const request: DiscoveryVisitRequest = {
+    return await iCRC1OracleActor.is_unique(
+      this.buildDiscoveryVisitRequest(data),
+    )
+  }
+
+  async getMyDiscoveryApps(): Promise<UserDiscoveryAppData[]> {
+    const apps = await iCRC1OracleActor.get_my_discovery_apps()
+    return apps.map((a) => ({
+      appId: a.app_id,
+      anonymousPrincipal: a.anonymous_principal,
+    }))
+  }
+
+  private buildDiscoveryVisitRequest(
+    data: DiscoveryVisitData,
+  ): DiscoveryVisitRequest {
+    return {
       derivation_origin:
         data.derivationOrigin !== undefined ? [data.derivationOrigin] : [],
       hostname: data.hostname,
       login: data.login === "Global" ? { Global: null } : { Anonymous: null },
+      anonymous_principal:
+        data.anonymousPrincipal !== undefined
+          ? [Principal.fromText(data.anonymousPrincipal)]
+          : [],
     }
-    return await iCRC1OracleActor.is_unique(request)
   }
 
   async getDiscoveryApps(pageSize = 25): Promise<DiscoveryAppData[]> {

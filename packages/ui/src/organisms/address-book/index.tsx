@@ -234,7 +234,7 @@ export const AddressBook: FC<AddressBookProps> = ({
                       BTC wallet address
                     </th>
                     <th className="w-[20%] pr-[10px] min-w-[100px]">
-                      ETH wallet address
+                      EVM wallet address
                     </th>
                     <th className="w-[30px] lg:w-[50px]"></th>
                   </tr>

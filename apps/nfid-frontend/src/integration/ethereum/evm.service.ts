@@ -203,7 +203,7 @@ export abstract class EVMService {
     }
   }
 
-  //get eth address from global identity
+  //get evm address from global identity
   public async getAddress(identity: SignIdentity): Promise<Address> {
     const { cachedValue, key } = this.getAddressFromCache()
 
@@ -217,7 +217,7 @@ export abstract class EVMService {
     return address
   }
 
-  //get balance of eth address
+  //get balance of evm address
   public async getBalance(address: Address): Promise<Balance> {
     const network = await this.provider.getNetwork()
     const chainId = Number(network.chainId)

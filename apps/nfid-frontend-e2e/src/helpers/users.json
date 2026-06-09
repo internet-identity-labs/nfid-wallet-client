@@ -41,17 +41,17 @@
         "delegations": [
           {
             "delegation": {
-              "expiration": "18b5ee53bae27a00",
-              "pubkey": "302a300506032b6570032100dabb02a50e05b5328024d7a79659204daf8260b862064b23b3cfbc11a302db01"
+              "expiration": "18e56b9ef7b74a80",
+              "pubkey": "302a300506032b65700321006817a10db7a057c4cca5d854269a0d56f17a6f73577533962d9c07d223732437"
             },
-            "signature": "92de6056d7f4d659fc419dfe0b76d0f2d25a65656e14b06a3d40e31a7bc75ec15019f7698cbe0f2cec684ae84d32d7f1bb088f3d3bab8d1d83c1c560bce96e08"
+            "signature": "c58813321c9429a1048fc6448796cc0aac454e21df760ad0f8d9d076ab3db1b31ec66d3b2d20e233fcf4e47d2e399cd3a071caed7a8d0a50f0ab79c648724107"
           }
         ],
         "publicKey": "302a300506032b657003210004ca99c1c39964ba48817eece3a70469c2a81fb90139554be8fbf7f53e014f99"
       },
       "identity": [
-        "302a300506032b6570032100dabb02a50e05b5328024d7a79659204daf8260b862064b23b3cfbc11a302db01",
-        "f3a2df6e01612ca74a10b8a8dff45dff23a28cf52b383d5497476c493fd343ba"
+        "302a300506032b65700321006817a10db7a057c4cca5d854269a0d56f17a6f73577533962d9c07d223732437",
+        "584e43987701e9e7db22b8199601b345939b06b4edeabc43029902b483dce4dc"
       ]
     }
   },
@@ -83,17 +83,17 @@
         "delegations": [
           {
             "delegation": {
-              "expiration": "18b5ee53baf1bc40",
-              "pubkey": "302a300506032b6570032100ed43a261302d5330e0071e139524e128ead5c348b67bc16e6684df9faf5e792c"
+              "expiration": "18e56b9ef7b74a80",
+              "pubkey": "302a300506032b657003210005745b619f5eb426ed7c5278be6488cba5c12790576c1e88ec7fde1900359b23"
             },
-            "signature": "5d4d1d38428ef70332b1acecc17ed62f8e156ff7dde0070d8b95bb9623b922fca66bd389f9fac06e46deb4e33ffaa57b52bb8f36fba7584ded7e700b30b6f000"
+            "signature": "8e5f3f0fe0aef0cb2eda11b26a1ea471a7496df26b8feacc884aeebd89f6d9542c72594022b99e9779712d51dd82c913387d1220b7e36b3d5c6f7e2628075d05"
           }
         ],
         "publicKey": "302a300506032b6570032100367af97571f7e1c5c03cb761a00103440a5d9b5018bef0b371ca56422277744c"
       },
       "identity": [
-        "302a300506032b6570032100ed43a261302d5330e0071e139524e128ead5c348b67bc16e6684df9faf5e792c",
-        "6ff8be75d0fac019a888c4f9f50704f1f03bd6ac258d8df03499abe6ab107563"
+        "302a300506032b657003210005745b619f5eb426ed7c5278be6488cba5c12790576c1e88ec7fde1900359b23",
+        "8cb0afaf09d8e0faa5f8c13512b8a7d7cf0c63036b7c9a9178f5e8fc6af4fbd6"
       ]
     }
   },
@@ -120,25 +120,21 @@
       "signCount": 1
     },
     "authstate": {
-      "bitcoin": {
-        "key": "bitcoin-address",
-        "value": "bc1q7md9hggte560uehhl6ayr7fc0ae5pe3sfmmpnw"
-      },
       "delegation": {
         "delegations": [
           {
             "delegation": {
-              "expiration": "18b5ee53baf1bc40",
-              "pubkey": "302a300506032b6570032100b11e859b2133c5ca650d80811fc7d55bbe432ed40ecc1176fd219050fa053e3c"
+              "expiration": "18e56b9ef7c68cc0",
+              "pubkey": "302a300506032b6570032100b595e540826cb0597b2543963c6fabed9db7ed32696ef4fedbf534acada243a3"
             },
-            "signature": "abaae494cadff6adf9208bd275a218ee38bb38c0bd943a50de415cabb11195b801c2d7aa97913a389f50df3343ce976585c26e319fa400307578debc406f5d08"
+            "signature": "20a6440a2484e8e7c2c3d8b2da4f6ccc9b7d2e7b895f77c7aeb41f251e66f251eb61365e73db0581fc402dc66adb335633f635f3f29908e0a4799eac20ad2603"
           }
         ],
         "publicKey": "302a300506032b65700321000402c7c2ee61065280f1679dab11a0a6e77e770622209b027f02c4a558f2437d"
       },
       "identity": [
-        "302a300506032b6570032100b11e859b2133c5ca650d80811fc7d55bbe432ed40ecc1176fd219050fa053e3c",
-        "6a7316d395b063ece4a2b0a23b403d6beda727ebd5dd7f626aac6512c2a0f6a7"
+        "302a300506032b6570032100b595e540826cb0597b2543963c6fabed9db7ed32696ef4fedbf534acada243a3",
+        "d4a3f4646756bb316be787e4a0b6afa05d89b9d856d3f207874593f8e7180e81"
       ]
     }
   },
@@ -162,17 +158,17 @@
         "delegations": [
           {
             "delegation": {
-              "expiration": "18b5ee53baf1bc40",
-              "pubkey": "302a300506032b6570032100fef5dbad19aa8565a1cb43f0b98174dd50adc396b7702d4d855506842b04ae85"
+              "expiration": "18e56b9ef7c68cc0",
+              "pubkey": "302a300506032b657003210056ac109dc9e0c2e72d385df1a0e799c9dcdc2dac846ca11ba3ae1ca8794d88a7"
             },
-            "signature": "2745232a3329b180702e25672eb3ae6d05076ffaee74ba44f36c465da0b12c82dd557810045f3884fc559861695944ff2e62274213e5ab87d920d2da043dc101"
+            "signature": "d4a5c2315c57dbf0a36697858d63833c9ee626a3d91009259a560a4e012db347b6783bcadaf6c61e374147870df53c14a905ab6b709ef28b8577c2a9d0cd1907"
           }
         ],
         "publicKey": "302a300506032b65700321003d3a5c523ea914ba3c0d12523ce43fc0f39f1f17764c28f47e7ec156a1d0eb0e"
       },
       "identity": [
-        "302a300506032b6570032100fef5dbad19aa8565a1cb43f0b98174dd50adc396b7702d4d855506842b04ae85",
-        "c7322445bd811d40a7187223df8890ff8b478aeda634a486a50b6fecf81dfacb"
+        "302a300506032b657003210056ac109dc9e0c2e72d385df1a0e799c9dcdc2dac846ca11ba3ae1ca8794d88a7",
+        "2cae8966f1d06b4a85923ec1bf66367f41990e895ff8af811216388114add731"
       ]
     }
   },
@@ -203,17 +199,17 @@
         "delegations": [
           {
             "delegation": {
-              "expiration": "18b5ee53bb00fe80",
-              "pubkey": "302a300506032b6570032100acf9d08b584a904b55b092bba9d34533633fb86324988dda514a8c54153f7d49"
+              "expiration": "18e56b9ef7c68cc0",
+              "pubkey": "302a300506032b657003210062ebc72b928f8acfe752c25ee5f670b553778fd7eb71f61b6ae9002a6ac67d3d"
             },
-            "signature": "89691a013f04a79b56a45d5282909de343936548e180962433607d04b782af223e35d129eed61ccea4c24588253ae99f0e28f76b0afcd05660e1ff13e49bd00e"
+            "signature": "94445543af958e66c3f79e26bad2f64797205ce9227a468afb91cae11d69bd8f5efacacccaf6b2b4dbf58db2adc40812220b1a8939dd6b7aa3a957f4d8e3fb06"
           }
         ],
         "publicKey": "302a300506032b65700321009f317ae64c03b78b5e6cbe9364a393a0703cc6d167ef4ab7ca8bd44d56e198ee"
       },
       "identity": [
-        "302a300506032b6570032100acf9d08b584a904b55b092bba9d34533633fb86324988dda514a8c54153f7d49",
-        "24aa07a89b4fd79261bb425e94c96c5213263ed419562e7f0c9b16894d0bd6de"
+        "302a300506032b657003210062ebc72b928f8acfe752c25ee5f670b553778fd7eb71f61b6ae9002a6ac67d3d",
+        "441e55e30df3ec754c78ae3285bb6c8ce41781baaff142b0c91bd0b9b292c5ac"
       ]
     }
   },
@@ -240,25 +236,21 @@
       "signCount": 1
     },
     "authstate": {
-      "bitcoin": {
-        "key": "bitcoin-address",
-        "value": "bc1qfyqxqkru6g75qlt7e072hhjpg54gq60qajp0vm"
-      },
       "delegation": {
         "delegations": [
           {
             "delegation": {
-              "expiration": "18b5ee53bb00fe80",
-              "pubkey": "302a300506032b657003210018f7abe3550d2d4e31372d3371337b28d622919352108dd92055e66abb294198"
+              "expiration": "18e56b9ef7d5cf00",
+              "pubkey": "302a300506032b657003210062e15e509edbc14bcc424438e4d9701ce2ee7c0d1c8e57327c6a1bf04513b9e7"
             },
-            "signature": "c023c1d0e1facc56c518966f301c5f5ef076e7d3752dcf55822f7ae521b2022c6472f5f2e658ca38baf25fcc5ced153868df55936e1cf5c52c79d726bfa1a90b"
+            "signature": "138c8a80d35a06842966616997a5fe00e20cf2ba60f348c08edf18aff1a7e8bc4d0ef5a6fd2e2322b92f633b811a83804ec7b96d48ff76c1e41921a42158c302"
           }
         ],
         "publicKey": "302a300506032b6570032100150af78da203baa411aef0842e36d8801d90d18da7e9bf75732982de2348ad20"
       },
       "identity": [
-        "302a300506032b657003210018f7abe3550d2d4e31372d3371337b28d622919352108dd92055e66abb294198",
-        "ace32f3926c639cc216c2020cbeee2062a1e4e76efd1f108e6dfa0252ff82abe"
+        "302a300506032b657003210062e15e509edbc14bcc424438e4d9701ce2ee7c0d1c8e57327c6a1bf04513b9e7",
+        "00e09d67cbdb289ccbad6aa41b00264e4dbc3e0a9f96a9015d67af1ae988def2"
       ]
     }
   },
@@ -285,25 +277,21 @@
       "signCount": 1
     },
     "authstate": {
-      "bitcoin": {
-        "key": "bitcoin-address",
-        "value": "bc1qt956y2wpqu4yydkmhc76pfz6gupwqse84zgdra"
-      },
       "delegation": {
         "delegations": [
           {
             "delegation": {
-              "expiration": "18b5ee53bb1040c0",
-              "pubkey": "302a300506032b65700321009d2589ef83ab8b404a61ded9088253af2d1b5724bc07b9ef1d0c9afddf471923"
+              "expiration": "18e56b9ef7d5cf00",
+              "pubkey": "302a300506032b6570032100329fc5eb68587ec66d0d9f3695ac9a256e4815fb1a66e7b2466f814883e419f5"
             },
-            "signature": "36d5ce59c17bfe064e48268fb94e7d9a5c84b29eef74ea692d0870c81c7692da4a121a0c2c0022eba033509ff522baa0e81bbcdadef7e492521312eb830b500f"
+            "signature": "349f27f433dd42e43eea1467b2fda58a7ab6d5ea9865c968483d218b3a074c85f7107eb787250102ab20db346182b845459e390d97073caa7aa8b45209cc3e07"
           }
         ],
         "publicKey": "302a300506032b6570032100f50bba52bd753e6e8e8a657d8980a6636876daaef828428cabe5c044f57949fc"
       },
       "identity": [
-        "302a300506032b65700321009d2589ef83ab8b404a61ded9088253af2d1b5724bc07b9ef1d0c9afddf471923",
-        "691e6afa7291f37c43bcf0528ad82173ab177e979c6a0bdc1a0d8d69cbd44cb0"
+        "302a300506032b6570032100329fc5eb68587ec66d0d9f3695ac9a256e4815fb1a66e7b2466f814883e419f5",
+        "d2ace3c517978fecaf8fd277ba015e7bea3463df8b3750056ad789e2a06ba7b4"
       ]
     }
   },
@@ -319,25 +307,21 @@
       "signCount": 1
     },
     "authstate": {
-      "bitcoin": {
-        "key": "bitcoin-address",
-        "value": "bc1qm49khsfx6rzylttz07s7r04lr62m2q34myeuqq"
-      },
       "delegation": {
         "delegations": [
           {
             "delegation": {
-              "expiration": "18b5ee53bb1040c0",
-              "pubkey": "302a300506032b657003210028c9343a403a5d081c8a86a5b8bb87e33f33bfee00898698aedf0e394ba5e71d"
+              "expiration": "18e56b9ef7d5cf00",
+              "pubkey": "302a300506032b65700321001e9955dbb09b3134ea24129f6892adc8db0143c64b226e84c49354f2d370df0c"
             },
-            "signature": "a105b66d07cab53735dc2f70965d8dc7d3f3008d7a18b5bec8f7e9c7165a0c59253f37828ca15343afdec79916c6d0f78afc1b4eb8e3bd65c94d0514fbab1b01"
+            "signature": "3fc8b542fe79c59b84093bf9d60a6bcff7b9e04faf9a049c6b3dd28f7dfc94c5c361bdc1d656cebb00c6db9bc44de9e6df963b2d67baade499c4949acb234304"
           }
         ],
         "publicKey": "302a300506032b6570032100d25b38a6a309402e2577b9de5a92d337ae8860e777699d02fd1efdbebd16d190"
       },
       "identity": [
-        "302a300506032b657003210028c9343a403a5d081c8a86a5b8bb87e33f33bfee00898698aedf0e394ba5e71d",
-        "e79c939eaac4ea34a10144c8c9a5b53cd79f43128cb96054179c5dee479cb756"
+        "302a300506032b65700321001e9955dbb09b3134ea24129f6892adc8db0143c64b226e84c49354f2d370df0c",
+        "973bcf50807890aaa23e6c9051d2582c2c7d905a8e80c590c9f913e31c293224"
       ]
     }
   },
@@ -347,25 +331,21 @@
       "anchor": 100000830
     },
     "authstate": {
-      "bitcoin": {
-        "key": "bitcoin-address",
-        "value": "bc1q4fvc76rd70ds2jpyvh6zduy4879hzdw2vlw3le"
-      },
       "delegation": {
         "delegations": [
           {
             "delegation": {
-              "expiration": "18b5ee53bb1040c0",
-              "pubkey": "302a300506032b6570032100f63d2e770535459cb5c9d8b8c8c57600e3b1c8bbec757d93e2f4277f7fb5efb2"
+              "expiration": "18e56b9ef7d5cf00",
+              "pubkey": "302a300506032b65700321005f15d0908094ee9aa7b64c4d656abb0d7760243af3aa34fa2597b51975c797da"
             },
-            "signature": "31dde7ec46f77234eaeaeb8c6d3793dabc91f8e526082d9e4aed983017bbc2219031e652ff178a2bfc8e5d1072954cad98acd086cab0e5b9580f1c8e8aca410a"
+            "signature": "0ee68aac198ac4e7ee7674892ed501787ea91b44bf127ab2ca642a963bd119374877bb4682a18473b3fca5bcff58f77ac75cc8a18cefcf843160140a9f3e4000"
           }
         ],
         "publicKey": "302a300506032b65700321006ee8fc7c8ac94656f74072ebf54e0e2fa11550d13d6d3f9c92d7bf5e2f2478c6"
       },
       "identity": [
-        "302a300506032b6570032100f63d2e770535459cb5c9d8b8c8c57600e3b1c8bbec757d93e2f4277f7fb5efb2",
-        "a0c256c95af211a7eb35a5d5f80bb5ec55ba5c6043f920503ed5fb95dab9f863"
+        "302a300506032b65700321005f15d0908094ee9aa7b64c4d656abb0d7760243af3aa34fa2597b51975c797da",
+        "7ad1a48e046e7df60194f1f52d6b048cf2ec89ecb966e3265be8a3e70ae8d8ef"
       ]
     }
   },
@@ -375,25 +355,21 @@
       "anchor": 200000276
     },
     "authstate": {
-      "bitcoin": {
-        "key": "bitcoin-address",
-        "value": "bc1qspad2eelzpjqq9nz5mtjzwwp506ryzmczck065"
-      },
       "delegation": {
         "delegations": [
           {
             "delegation": {
-              "expiration": "18b5ee53bb1f8300",
-              "pubkey": "302a300506032b657003210076f9a6c8a6a69598fb389d0efafdf3588f62589d84fcc9c02bcfb98fe169bcd3"
+              "expiration": "18e56b9ef7e51140",
+              "pubkey": "302a300506032b65700321001208e2bd10723e0f6dbde84a377d3221bd7dd0f18677a6b74fa0afdd563fb868"
             },
-            "signature": "18d5ff77a5e5f2b6b70605a2dd21d2eaa4d81ade9e96a764f941b60a8b615480663178f9b638ecd2142685718d810922a635f9a7bd7994dabdf74d81e5ef550b"
+            "signature": "9519b41444911fad29a8e281b263534212d3d6d3fd00b5af4aba4594bb713aaeb03ba63f83bd650f06d7bde744990a0e07675643681c3d2177e280ec216eab09"
           }
         ],
         "publicKey": "302a300506032b6570032100632f57fee8d297adcf33f9ac876ed21675377b5859792943852462b293a07eee"
       },
       "identity": [
-        "302a300506032b657003210076f9a6c8a6a69598fb389d0efafdf3588f62589d84fcc9c02bcfb98fe169bcd3",
-        "88cfd57c002fa78a5e6e16ed9c50f43133f27c7cec2351fd6f83f53d865942e7"
+        "302a300506032b65700321001208e2bd10723e0f6dbde84a377d3221bd7dd0f18677a6b74fa0afdd563fb868",
+        "8564cfb39046bb13e6d331cf3c564d67553be594acc0d512bf0f2c210f2b967c"
       ]
     }
   }

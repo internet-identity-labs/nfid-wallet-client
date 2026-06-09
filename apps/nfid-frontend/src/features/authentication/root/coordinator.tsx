@@ -2,10 +2,7 @@ import { useActor } from "@xstate/react"
 import { motion } from "framer-motion"
 import { decodeJwt } from "jose"
 import toaster from "packages/ui/src/atoms/toast"
-import {
-  LoginEventHandler,
-  SignInWithGoogle,
-} from "packages/ui/src/molecules/button/signin-with-google"
+import { SignInWithGoogle } from "packages/ui/src/molecules/button/signin-with-google"
 import { Auth2FA } from "packages/ui/src/organisms/authentication/2fa"
 import { AuthAddPasskey } from "packages/ui/src/organisms/authentication/auth-add-passkey"
 import { AuthAddPasskeySuccess } from "packages/ui/src/organisms/authentication/auth-add-passkey/success"
@@ -61,7 +58,7 @@ export default function AuthenticationCoordinator({
     useState(false)
   const [signUpWithPassKeyError, setSignUpWithPasskeyError] = useState("")
 
-  const onSelectGoogleAuth: LoginEventHandler = ({ credential }) => {
+  const onSelectGoogleAuth = (credential: string) => {
     send({
       type: "AUTH_WITH_GOOGLE",
       data: {

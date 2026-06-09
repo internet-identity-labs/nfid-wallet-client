@@ -77,6 +77,47 @@ export interface DiscoveryApp {
   unique_users: bigint
   status: DiscoveryStatus
 }
+export interface PromotionConfig {
+  min_bid_e8s: bigint
+  bid_increment_e8s: bigint
+  locked_period_ns: bigint
+  feature_duration_ns: bigint
+  ledger_canister: Principal
+  treasury: Principal
+}
+export interface FeaturedSlot {
+  app_id: number
+  bidder: Principal
+  bid_amount_e8s: bigint
+  bid_time_ns: bigint
+  locked_until_ns: bigint
+  expires_at_ns: bigint
+}
+export interface HistoricalBid {
+  app_id: number
+  bidder: Principal
+  bid_amount_e8s: bigint
+  bid_time_ns: bigint
+}
+export interface PromotionStatus {
+  config: PromotionConfig
+  featured: [] | [FeaturedSlot]
+  min_next_bid_e8s: bigint
+  locked: boolean
+  now_ns: bigint
+}
+export interface PlaceBidArg {
+  app_id: number
+  amount_e8s: bigint
+}
+export type PlaceBidError =
+  | { Locked: { until_ns: bigint } }
+  | { BelowFloor: { floor_e8s: bigint } }
+  | { BelowIncrement: { required_e8s: bigint } }
+  | { UnknownApp: null }
+  | { TransferFailed: string }
+  | { NotConfigured: null }
+export type PlaceBidResult = { Ok: FeaturedSlot } | { Err: PlaceBidError }
 export interface Outpoint {
   txid: Uint8Array | number[]
   vout: number
@@ -122,6 +163,12 @@ export interface _SERVICE {
   >
   replace_all_discovery_app: ActorMethod<[Array<DiscoveryApp>], undefined>
   clear_discovery_apps: ActorMethod<[], undefined>
+  set_promotion_config: ActorMethod<[PromotionConfig], undefined>
+  get_promotion_status: ActorMethod<[], PromotionStatus>
+  place_bid: ActorMethod<[PlaceBidArg], PlaceBidResult>
+  veto_current_featured: ActorMethod<[], undefined>
+  count_bid_history: ActorMethod<[], bigint>
+  get_bid_history_paginated: ActorMethod<[bigint, bigint], Array<HistoricalBid>>
 }
 export declare const idlFactory: IDL.InterfaceFactory
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[]

@@ -84,6 +84,12 @@ export interface DiscoveryVisitData {
   derivationOrigin?: string
   hostname: string
   login: DiscoveryLoginType
+  anonymousPrincipal?: string
+}
+
+export interface UserDiscoveryAppData {
+  appId: number
+  anonymousPrincipal: string
 }
 
 export interface DiscoveryAppData {

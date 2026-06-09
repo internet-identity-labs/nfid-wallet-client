@@ -91,6 +91,21 @@ export async function getICRC1HistoryDataForUser(
   return icrc1IndexData
 }
 
+export async function getMintingAccount(
+  iCRC1Canister: string,
+): Promise<{ owner: string; subaccount?: Uint8Array } | undefined> {
+  const actor = Agent.Actor.createActor<ICRC1Service>(icrc1IDL, {
+    canisterId: iCRC1Canister,
+    agent: HttpAgent.createSync({ host: "https://ic0.app" }),
+  })
+  const result = await actor.icrc1_minting_account()
+  if (!result[0]) return undefined
+  return {
+    owner: result[0].owner.toString(),
+    subaccount: result[0].subaccount[0] as Uint8Array | undefined,
+  }
+}
+
 export async function transferICRC1(
   globalAccountPrincipal: Identity,
   iCRC1Canister: string,

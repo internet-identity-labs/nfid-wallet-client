@@ -87,7 +87,7 @@ describe("FullTextIndex", () => {
         type: AddressType.ETH,
         expectedCount: 1,
         expectedResult: CHARLIE_EVM_PREVIEW,
-        description: "search by partial ETH address",
+        description: "search by partial EVM address",
       },
       {
         query: "wrongaddress",
@@ -130,7 +130,7 @@ describe("FullTextIndex", () => {
         type: AddressType.ETH,
         expectedCount: 2,
         expectedResults: [ALICE_EVM_PREVIEW, CHARLIE_EVM_PREVIEW],
-        description: "return all ETH addresses",
+        description: "return all EVM addresses",
       },
     ])("should $description", ({ type, expectedCount, expectedResults }) => {
       const result = index.searchByType(type)

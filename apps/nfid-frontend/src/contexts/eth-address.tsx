@@ -28,7 +28,7 @@ export const EthAddressProvider = ({
         const address = await fetch()
         setEthAddress(address)
       } catch (error) {
-        console.error("Error fetching ETH address:", error)
+        console.error("Error fetching EVM address:", error)
       } finally {
         setIsEthAddressLoading(false)
       }

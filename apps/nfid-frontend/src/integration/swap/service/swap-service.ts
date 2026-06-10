@@ -1,5 +1,4 @@
 import { IcpSwapShroffBuilder } from "src/integration/swap/icpswap/impl/shroff-icp-swap-impl"
-import { KongShroffBuilder } from "src/integration/swap/kong/impl/kong-swap-shroff"
 import { Shroff } from "src/integration/swap/shroff"
 import { SwapName } from "src/integration/swap/types/enums"
 
@@ -8,7 +7,6 @@ import { Quote } from "../quote"
 
 const PROVIDERS = [
   { builder: new IcpSwapShroffBuilder(), name: SwapName.ICPSwap },
-  { builder: new KongShroffBuilder(), name: SwapName.Kongswap },
 ]
 
 export class SwapService {

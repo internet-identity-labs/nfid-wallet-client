@@ -257,7 +257,7 @@ export class FTImpl implements FT {
   }
 
   async getTokenFee(
-    _value?: number,
+    _value?: string,
     _identity?: SignIdentity,
     _to?: string,
     _from?: string,

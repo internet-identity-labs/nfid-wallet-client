@@ -71,37 +71,37 @@ export const BridgeDetails: FC<BridgeDetailsProps> = ({
                 )}
               </p>
             </div>
-            <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-700">
-              <div>
-                <p>Gas fee on destination chain</p>
-                <p className="text-xs leading-5 text-secondary dark:zinc-500">
-                  {toChainLabel}
-                </p>
-              </div>
-              <p className="leading-5 text-right font-inter">
-                {!amount ? null : !bridgeData ? (
-                  <Skeleton className="w-[70px] h-4 rounded-lg" />
-                ) : (
-                  <>
-                    {bridgeData.redeemCost}
-                    <span className="block text-xs text-gray-400 dark:text-zinc-500">
-                      {bridgeData.redeemUsdCost}
-                    </span>
-                  </>
-                )}
-              </p>
+            <div className="pt-3 leading-5">
+              <p>Protocol fees:</p>
+              {bridgeData?.protocolFee.map((f, i, arr) => (
+                <div
+                  className={clsx(
+                    "flex justify-between py-3 border-gray-100 dark:border-zinc-700",
+                    i < arr.length - 1 ? "border-b" : "",
+                  )}
+                  key={f.name}
+                >
+                  <div className="basis-[50%]">
+                    <p className="leading-5">{f.name}</p>
+                    <p className="text-xs leading-5 text-secondary dark:zinc-500">
+                      {f.description}
+                    </p>
+                  </div>
+                  <p className="leading-5 text-right font-inter basis-[50%]">
+                    {!amount ? null : !bridgeData ? (
+                      <Skeleton className="w-[70px] h-4 rounded-lg" />
+                    ) : (
+                      <>
+                        {f.amount}
+                        <span className="block text-xs text-gray-400 dark:text-zinc-500">
+                          {f.amountUSD}
+                        </span>
+                      </>
+                    )}
+                  </p>
+                </div>
+              ))}
             </div>
-            {bridgeData?.protocolFee && (
-              <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-700">
-                <p>Bridge fee</p>
-                <p className="leading-5 text-right font-inter">
-                  {bridgeData.protocolFee}
-                  <span className="block text-xs text-gray-400 dark:text-zinc-500">
-                    {bridgeData.protocolFeeUsd}
-                  </span>
-                </p>
-              </div>
-            )}
           </div>
         </div>
       </div>

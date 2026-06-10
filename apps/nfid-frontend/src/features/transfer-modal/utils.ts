@@ -335,11 +335,11 @@ export const getEvmTokensWithUpdatedBalance = async (
   return updatedTokens
 }
 
-/** Apply refreshed `updates` onto `fullList` by token address (same length/order as fullList). */
 const mergeUpdatedFtIntoTokenList = (fullList: FT[], updates: FT[]): FT[] => {
-  const byAddress = new Map(updates.map((t) => [t.getTokenAddress(), t]))
+  const tokenKey = (t: FT) => `${t.getTokenAddress()}:${t.getChainId()}`
+  const byKey = new Map(updates.map((t) => [tokenKey(t), t]))
   return fullList.map((t) => {
-    const next = byAddress.get(t.getTokenAddress())
+    const next = byKey.get(tokenKey(t))
     return next ?? t
   })
 }

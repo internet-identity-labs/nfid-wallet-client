@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js"
 import { SignIdentity } from "@icp-sdk/core/agent"
 import { Contract, Interface, JsonRpcProvider } from "ethers"
 
@@ -22,7 +23,7 @@ import { EthereumProvider } from "@lifi/sdk-provider-ethereum"
 import { createWalletClient, http } from "viem"
 import { toAccount } from "viem/accounts"
 import { mainnet } from "viem/chains"
-import { getQuote, getTokens } from "@lifi/sdk"
+import { getQuote, getStatus, getTokens } from "@lifi/sdk"
 import { EVM_ZERO_ADDRESS } from "./constants"
 import { EstimatedBridge } from "./types"
 
@@ -100,6 +101,7 @@ class BridgeService {
     toToken: string,
     fromAmount: string,
     decimals: number,
+    isMaxAmount: boolean,
   ): Promise<EstimatedBridge> {
     const fromTokenAddress =
       fromToken === EVM_NATIVE || fromToken === ETH_NATIVE_ID
@@ -110,9 +112,32 @@ class BridgeService {
         ? EVM_ZERO_ADDRESS
         : toToken
 
-    const amount = BigInt(
-      Math.floor(Number(fromAmount) * 10 ** decimals),
-    ).toString()
+    let amount = new BigNumber(fromAmount)
+      .multipliedBy(10 ** decimals)
+      .toString()
+
+    if (isMaxAmount) {
+      const probeQuote = await getQuote(this.client!, {
+        fromAddress: this.address!,
+        fromChain,
+        toChain,
+        fromToken: fromTokenAddress,
+        toToken: toTokenAddress,
+        fromAmount: amount,
+      })
+
+      const probeTx = probeQuote.transactionRequest
+      if (probeTx?.gasLimit && BigInt(probeTx.value ?? 0) > BigInt(0)) {
+        const provider = this.getProvider(fromChain)
+        const feeData = await provider.getFeeData()
+        const maxFeePerGas = feeData.maxFeePerGas ?? BigInt(10_000_000_000)
+        // 20% buffer to cover gas price fluctuations between quote and execution
+        const gasCost =
+          (BigInt(probeTx.gasLimit) * maxFeePerGas * BigInt(12)) / BigInt(10)
+        const adjusted = BigInt(amount) - gasCost
+        if (adjusted > BigInt(0)) amount = adjusted.toString()
+      }
+    }
 
     const quote = await getQuote(this.client!, {
       fromAddress: this.address!,
@@ -128,38 +153,19 @@ class BridgeService {
 
     const quoteEstimate = quote.estimate
     const quoteAction = quote.action
-    const gasCost = quoteEstimate.gasCosts?.[0]
+    const gasCosts = quoteEstimate.gasCosts ?? []
+    const sendGasCost = gasCosts.find((g) => g.type === "SEND") ?? gasCosts[0]
+    const sendGasDecimals = sendGasCost?.token?.decimals ?? ETH_DECIMALS
     const feeCosts = quoteEstimate.feeCosts ?? []
-    const totalFeesUsd = feeCosts.reduce(
-      (sum, f) => sum + Number(f.amountUSD ?? 0),
-      0,
-    )
-    const relayFee = feeCosts.find((f) => !f.included) ?? feeCosts[0]
-    const relayFeeDecimals = relayFee?.token?.decimals ?? ETH_DECIMALS
-
-    const tokenFees = feeCosts.filter(
-      (f) => f.included && f.token?.address !== EVM_ZERO_ADDRESS,
-    )
-    const tokenFeeNative = tokenFees.reduce(
-      (sum, f) => sum + Number(f.amount ?? 0),
-      0,
-    )
-    const tokenFeeUsd = tokenFees.reduce(
-      (sum, f) => sum + Number(f.amountUSD ?? 0),
-      0,
-    )
-    const tokenFeeSymbol = tokenFees[0]?.token?.symbol
-    const tokenFeeDecimals = tokenFees[0]?.token?.decimals ?? ETH_DECIMALS
-
-    const totalUsd = (Number(gasCost?.amountUSD ?? 0) + totalFeesUsd).toFixed(2)
+    const totalUsd = (
+      Number(sendGasCost?.amountUSD ?? 0) +
+      feeCosts.reduce((sum, f) => sum + Number(f.amountUSD ?? 0), 0)
+    ).toFixed(2)
 
     return {
-      sourceCost: `${(Number(gasCost?.amount ?? 0) / 10 ** ETH_DECIMALS).toFixed(ETH_DECIMALS).replace(TRIM_ZEROS, "")} ${gasCost?.token?.symbol ?? "ETH"}`,
-      sourceUsdCost: `${Number(gasCost?.amountUSD ?? 0).toFixed(2)} USD`,
-      redeemCost: relayFee
-        ? `${(Number(relayFee.amount) / 10 ** relayFeeDecimals).toFixed(relayFeeDecimals).replace(TRIM_ZEROS, "")} ${relayFee.token?.symbol}`
-        : "0 ETH",
-      redeemUsdCost: `${totalFeesUsd.toFixed(2)} USD`,
+      rawFee: sendGasCost?.amount ? BigInt(sendGasCost.amount) : BigInt(0),
+      sourceCost: `${(Number(sendGasCost?.amount ?? 0) / 10 ** sendGasDecimals).toFixed(sendGasDecimals).replace(TRIM_ZEROS, "")} ${sendGasCost?.token?.symbol ?? "ETH"}`,
+      sourceUsdCost: `${Number(sendGasCost?.amountUSD ?? 0).toFixed(2)} USD`,
       totalUsdCost: `${totalUsd} USD`,
 
       amountTo: `${(Number(quoteEstimate.toAmountMin ?? 0.0) / 10 ** quoteAction.toToken.decimals).toFixed(quoteAction.toToken.decimals).replace(TRIM_ZEROS, "")} ${quoteAction.toToken.symbol}`,
@@ -167,13 +173,14 @@ class BridgeService {
 
       amountFrom: `${(Number(quoteEstimate.fromAmount ?? 0.0) / 10 ** quoteAction.fromToken.decimals).toFixed(quoteAction.fromToken.decimals).replace(TRIM_ZEROS, "")} ${quoteAction.fromToken.symbol}`,
       amountFromUsd: `${Number(quoteEstimate.fromAmountUSD).toFixed(2) || "0.00"} USD`,
-
-      ...(tokenFeeNative > 0 && tokenFeeSymbol
-        ? {
-            protocolFee: `${(tokenFeeNative / 10 ** tokenFeeDecimals).toFixed(tokenFeeDecimals).replace(TRIM_ZEROS, "")} ${tokenFeeSymbol}`,
-            protocolFeeUsd: `${tokenFeeUsd.toFixed(2)} USD`,
-          }
-        : {}),
+      protocolFee: feeCosts.map((f) => {
+        return {
+          amount: `${Number(f.amount) / 10 ** f.token.decimals} ${f.token.symbol}`,
+          amountUSD: `${Number(f.amountUSD).toFixed(2)} USD`,
+          description: f.description,
+          name: f.name,
+        }
+      }),
     }
   }
 
@@ -314,7 +321,7 @@ class BridgeService {
       if (!receipt) throw new Error("No receipt for transaction")
 
       this.pendingQuote = null
-      return receipt.hash
+      return response.hash
     } catch (e) {
       throw e
     }

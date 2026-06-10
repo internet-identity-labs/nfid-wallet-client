@@ -1,6 +1,7 @@
+import BigNumber from "bignumber.js"
 import debounce from "lodash/debounce"
 import { ConvertUi } from "packages/ui/src/organisms/send-receive/components/convert"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 
 import {
@@ -77,6 +78,11 @@ export const ConvertBTC = ({
     getConversionTokenAddress(preselectedSourceTokenAddress ?? BTC_NATIVE_ID),
   )
   const { ethAddress } = useEthAddress()
+  const isMaxAmountRef = useRef(false)
+
+  const onMaxResolved = useCallback(() => {
+    isMaxAmountRef.current = true
+  }, [])
 
   const handleReverse = useCallback(() => {
     setFromTokenAddress(toTokenAddress)
@@ -134,7 +140,7 @@ export const ConvertBTC = ({
 
   useEffect(() => {
     setConversionError(undefined)
-  }, [fromTokenAddress, toTokenAddress])
+  }, [fromToken, toToken])
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -145,10 +151,10 @@ export const ConvertBTC = ({
   })
 
   useEffect(() => {
-    onError(Boolean(setConversionError))
+    onError(Boolean(conversionError))
   }, [conversionError, onError])
 
-  const { watch } = formMethods
+  const { watch, setValue } = formMethods
   const amount = watch("amount")
 
   const parsedAmount = Number(amount)
@@ -177,10 +183,12 @@ export const ConvertBTC = ({
             setBtcFee(undefined)
           }
         } else {
+          const isMaxAmount = isMaxAmountRef.current
+          isMaxAmountRef.current = false
           setEthFee(undefined)
           setConversionError(undefined)
           try {
-            const value = (amount as number)
+            const value = new BigNumber(amount)
               .toFixed(ETH_DECIMALS)
               .replace(TRIM_ZEROS, "")
 
@@ -196,6 +204,26 @@ export const ConvertBTC = ({
                 : await service.getCkEthToEthFee(ethAddress, value)
 
             setEthFee(fee)
+
+            if (
+              isMaxAmount &&
+              (tokenAddress === ETH_NATIVE_ID || tokenAddress === EVM_NATIVE) &&
+              fromToken
+            ) {
+              const balance = fromToken.getTokenBalance()
+              const networkFee = (fee as EthToCkEthFee).ethereumNetworkFee
+              if (balance !== undefined && networkFee !== undefined) {
+                const adjustedRaw = balance - networkFee
+                if (adjustedRaw > BigInt(0)) {
+                  const decimals = fromToken.getTokenDecimals()
+                  const formattedValue = new BigNumber(adjustedRaw.toString())
+                    .dividedBy(new BigNumber(10).pow(decimals))
+                    .toFixed(decimals)
+                    .replace(TRIM_ZEROS, "")
+                  setValue("amount", formattedValue, { shouldValidate: true })
+                }
+              }
+            }
           } catch (e) {
             console.error(`ETH error: ${e}`)
             setConversionError((e as Error).message)
@@ -203,20 +231,20 @@ export const ConvertBTC = ({
           }
         }
       }, 1000),
-    [ethAddress],
+    [ethAddress, fromToken, setValue],
   )
 
   useEffect(() => {
     if (!identity || !isAmountValid || !fromToken || hasAmountError) return
 
-    debouncedFetchFee(identity, fromToken.getTokenAddress(), parsedAmount)
+    debouncedFetchFee(identity, fromToken.getTokenAddress(), amount)
 
     return () => {
       debouncedFetchFee.cancel()
     }
   }, [
     identity,
-    parsedAmount,
+    amount,
     isAmountValid,
     hasAmountError,
     fromToken,
@@ -357,6 +385,7 @@ export const ConvertBTC = ({
         error={error}
         conversionError={conversionError}
         tokens={filteredTokens}
+        onMaxResolved={onMaxResolved}
       />
     </FormProvider>
   )

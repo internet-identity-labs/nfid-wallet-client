@@ -19,6 +19,7 @@ export const CKETH_LEDGER_CANISTER_ID = "ss2fx-dyaaa-aaaar-qacoq-cai"
 export const MINTER_ADDRESS = "0x18901044688D3756C35Ed2b36D93e6a5B8e00E68"
 export const CKETH_MINTER_CANISTER_ID = "sv3dd-oaaaa-aaaar-qacoa-cai"
 export const CKETH_NETWORK_FEE = BigInt(2000000000000)
+export const CKBTC_NETWORK_FEE = BigInt(10)
 // EVM TESTNET
 export const CKSEPOLIA_LEDGER_CANISTER_ID = "apia6-jaaaa-aaaar-qabma-cai"
 export const SEPOLIA_MINTER_ADDRESS =

@@ -3,7 +3,7 @@ import {
   BridgeUi,
   EstimatedBridge,
 } from "packages/ui/src/organisms/send-receive/components/bridge"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { ETH_NATIVE_ID, EVM_NATIVE } from "@nfid/integration/token/constants"
 import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
@@ -184,10 +184,10 @@ export const Bridge = ({
     setBridgeError(undefined)
     formMethods.setValue("amount", "")
     setBridgeData(undefined)
-  }, [fromTokenAddress, toTokenAddress, formMethods])
+  }, [fromToken, toToken, formMethods])
 
   useEffect(() => {
-    onError(Boolean(setBridgeError))
+    onError(Boolean(bridgeError))
   }, [bridgeError, onError])
 
   const { watch } = formMethods
@@ -196,10 +196,18 @@ export const Bridge = ({
   const parsedAmount = Number(amount)
   const isAmountValid = !isNaN(parsedAmount) && parsedAmount > 0
   const hasAmountError = !!formMethods.formState.errors.amount
+  const isMaxAmountRef = useRef(false)
+
+  const onMaxResolved = useCallback(() => {
+    isMaxAmountRef.current = true
+  }, [])
 
   const debouncedFetchFee = useMemo(
     () =>
       debounce(async (fromTokenChain, toTokenChain, amount) => {
+        const isMaxAmount = isMaxAmountRef.current
+        isMaxAmountRef.current = false
+
         try {
           if (!fromToken || !toToken || !identity) return
           setBridgeData(undefined)
@@ -212,6 +220,7 @@ export const Bridge = ({
             toToken.getTokenAddress(),
             amount,
             fromToken.getTokenDecimals(),
+            isMaxAmount,
           )
 
           setBridgeData(quote)
@@ -232,18 +241,14 @@ export const Bridge = ({
   useEffect(() => {
     if (!isAmountValid || !fromToken || !toToken || hasAmountError) return
 
-    debouncedFetchFee(
-      fromToken.getChainId(),
-      toToken?.getChainId(),
-      parsedAmount,
-    )
+    debouncedFetchFee(fromToken.getChainId(), toToken?.getChainId(), amount)
 
     return () => {
       debouncedFetchFee.cancel()
     }
   }, [
     identity,
-    parsedAmount,
+    amount,
     isAmountValid,
     hasAmountError,
     fromToken,
@@ -276,18 +281,21 @@ export const Bridge = ({
             : []),
         ]
 
-        getEvmTokensWithUpdatedBalance(tokensToRefresh, initedTokens).then(
-          (updatedTokens) => {
+        getEvmTokensWithUpdatedBalance(tokensToRefresh, initedTokens)
+          .then((updatedTokens) => {
             mutateTokensCacheMergingBalances(updatedTokens)
             mutateInitedTokens(updatedTokens, false)
-          },
-        )
+          })
+          .catch(console.debug)
 
-        toToken.showToken().then(async () => {
-          const { publicKey } = authState.getUserIdData()
-          await toToken.init(Principal.fromText(publicKey))
-          await getUpdatedInitedTokens(tokens)
-        })
+        toToken
+          .showToken()
+          .then(async () => {
+            const { publicKey } = authState.getUserIdData()
+            await toToken.init(Principal.fromText(publicKey))
+            await getUpdatedInitedTokens(tokens)
+          })
+          .catch(console.debug)
       })
       .catch((error) => {
         console.error(
@@ -333,6 +341,7 @@ export const Bridge = ({
           bridgeError={bridgeError}
           tokens={filteredFromTokens}
           toTokens={filteredToTokens}
+          onMaxResolved={onMaxResolved}
         />
       </FormProvider>
     </>

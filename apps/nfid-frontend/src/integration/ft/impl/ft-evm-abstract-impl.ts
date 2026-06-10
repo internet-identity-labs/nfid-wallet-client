@@ -1,4 +1,5 @@
 import { Principal } from "@icp-sdk/core/principal"
+import BigNumber from "bignumber.js"
 import { SignIdentity } from "@icp-sdk/core/agent"
 import { FTImpl } from "./ft-impl"
 import {
@@ -47,12 +48,14 @@ export abstract class FTEvmAbstractImpl extends FTImpl {
   }
 
   async getTokenFee(
-    _value: number,
+    _value: string,
     _identity: SignIdentity,
     _to?: string,
     _from?: string,
   ): Promise<FeeResponseETH> {
-    const amount = _value.toFixed(this.decimals).replace(TRIM_ZEROS, "")
+    const amount = new BigNumber(_value)
+      .toFixed(this.decimals)
+      .replace(TRIM_ZEROS, "")
 
     const ethFeeData: SendEthFee = await this.getProvider().getSendEthFee(
       _to!,

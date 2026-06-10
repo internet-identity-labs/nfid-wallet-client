@@ -42,6 +42,7 @@ export interface ConvertFormProps {
   isResponsive?: boolean
   setIsResponsive?: (value: boolean) => void
   ethFee?: EthToCkEthFee
+  onMaxResolved?: () => void
 }
 
 export const ConvertForm: FC<ConvertFormProps> = ({
@@ -62,6 +63,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
   isResponsive,
   setIsResponsive,
   ethFee,
+  onMaxResolved,
 }) => {
   const [isFromResponsive, setIsFromResponsive] = useState(false)
   const [isToResponsive, setIsToResponsive] = useState(false)
@@ -120,6 +122,7 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           isResponsive={isResponsive}
           setIsResponsive={setIsFromResponsive}
           fee={ethFee?.ethereumNetworkFee}
+          onMaxResolved={onMaxResolved}
         />
         <div className="h-4 mt-1 text-xs leading-4 text-red-600">
           {errors["amount"] && (errors["amount"]?.message as string)}

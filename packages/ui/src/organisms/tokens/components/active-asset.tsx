@@ -67,7 +67,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   const { isViewOnlyMode } = useContext(ProfileContext)
   const tokenRateDayChange = token.getTokenRateDayChangePercent()
   const balance = token.getTokenBalance()
-  const usdBalance = token.getUSDBalanceFormatted(false)
+  const usdBalance = token.getUSDBalanceFormatted(true)
   const tokenPrice = token.getTokenRateFormatted("1", false)
 
   if (!testnetEnabled && isTestnetToken(token.getChainId())) return null

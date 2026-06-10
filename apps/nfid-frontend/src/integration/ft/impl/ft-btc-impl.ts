@@ -4,6 +4,7 @@ import {
   State,
 } from "@nfid/integration/token/icrc1/enum/enums"
 import BtcIcon from "packages/ui/src/organisms/tokens/assets/bitcoin.svg?url"
+import BigNumber from "bignumber.js"
 
 import { FTImpl } from "./ft-impl"
 import {
@@ -66,10 +67,12 @@ export class FTBitcoinImpl extends FTImpl {
   }
 
   async getTokenFee(
-    _value: number,
+    _value: string,
     _identity: SignIdentity,
   ): Promise<FeeResponseBTC> {
-    const amount = _value.toFixed(this.decimals).replace(TRIM_ZEROS, "")
+    const amount = new BigNumber(_value)
+      .toFixed(this.decimals)
+      .replace(TRIM_ZEROS, "")
     const { fee_satoshis, utxos } = await bitcoinService.getFee(
       _identity,
       amount,

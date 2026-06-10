@@ -43,6 +43,8 @@ export interface BridgeFormProps {
   toTokens?: FT[]
   isResponsive?: boolean
   setIsResponsive?: (value: boolean) => void
+  setSkipFeeCalculation?: () => void
+  onMaxResolved?: () => void
 }
 
 export const BridgeForm: FC<BridgeFormProps> = ({
@@ -64,6 +66,8 @@ export const BridgeForm: FC<BridgeFormProps> = ({
   toTokens,
   isResponsive,
   setIsResponsive,
+  setSkipFeeCalculation,
+  onMaxResolved,
 }) => {
   const [isFromResponsive, setIsFromResponsive] = useState(false)
   const [isToResponsive, setIsToResponsive] = useState(false)
@@ -125,6 +129,9 @@ export const BridgeForm: FC<BridgeFormProps> = ({
               : ""
           }
           withNetwork
+          fee={bridgeData?.rawFee}
+          setSkipFeeCalculation={setSkipFeeCalculation}
+          onMaxResolved={onMaxResolved}
         />
         <div className="h-4 mt-1 text-xs leading-4 text-red-600">
           {errors["amount"] && (errors["amount"]?.message as string)}

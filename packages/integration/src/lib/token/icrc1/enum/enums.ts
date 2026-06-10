@@ -45,6 +45,10 @@ export const isEvmToken = (chainId: ChainId): boolean => {
   )
 }
 
+export const isErc20Token = (chainId: ChainId, category: Category): boolean => {
+  return isEvmToken(chainId) && category === Category.ERC20
+}
+
 export const isTestnetToken = (chainId: ChainId): boolean => {
   return (
     chainId === ChainId.ETH_SEPOLIA ||

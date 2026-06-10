@@ -15,17 +15,20 @@ import { BridgeDetails } from "./bridge-details"
 import { BridgeForm } from "./bridge-form"
 
 export type EstimatedBridge = {
+  rawFee: bigint
   sourceCost: string
   sourceUsdCost: string
-  redeemCost: string
-  redeemUsdCost: string
   totalUsdCost: string
   amountFrom: string
   amountFromUsd: string
   amountTo: string
   amountToUsd: string
-  protocolFee?: string
-  protocolFeeUsd?: string
+  protocolFee: {
+    amount: string
+    amountUSD: string
+    name: string
+    description: string
+  }[]
 }
 
 export enum BridgeModal {
@@ -50,6 +53,8 @@ export interface BridgeUiProps {
   isBridgeDataLoading: boolean
   tokens?: FT[]
   toTokens?: FT[]
+  setSkipFeeCalculation?: () => void
+  onMaxResolved?: () => void
 }
 
 export const BridgeUi: FC<BridgeUiProps> = ({
@@ -69,6 +74,8 @@ export const BridgeUi: FC<BridgeUiProps> = ({
   isBridgeDataLoading,
   tokens,
   toTokens,
+  setSkipFeeCalculation,
+  onMaxResolved,
 }) => {
   const [bridgeModal, setBridgeModal] = useState(BridgeModal.BRIDGE)
   const [isResponsive, setIsResponsive] = useState(false)
@@ -103,10 +110,10 @@ export const BridgeUi: FC<BridgeUiProps> = ({
           <BridgeSuccessUi
             assetImgFrom={fromToken?.getTokenLogo() ?? ""}
             assetImgTo={toToken?.getTokenLogo() ?? ""}
-            titleFrom={`${amount} ${fromToken!.getTokenSymbol()}`}
-            titleTo={`${amount} ${toToken!.getTokenSymbol()}`}
-            subTitleFrom={`${fromToken!.getTokenRateFormatted(amount || "0")}`}
-            subTitleTo={`${toToken!.getTokenRateFormatted(amount)}` || "0"}
+            titleFrom={`${bridgeData?.amountFrom}`}
+            titleTo={`${bridgeData?.amountTo}`}
+            subTitleFrom={`${bridgeData?.amountFromUsd}`}
+            subTitleTo={`${bridgeData?.amountToUsd}`}
             isOpen={isSuccessOpen}
             onClose={onClose}
             status={status}
@@ -159,6 +166,8 @@ export const BridgeUi: FC<BridgeUiProps> = ({
           bridgeData={bridgeData}
           tokens={tokens}
           toTokens={toTokens}
+          setSkipFeeCalculation={setSkipFeeCalculation}
+          onMaxResolved={onMaxResolved}
         />
       </motion.div>
     </>

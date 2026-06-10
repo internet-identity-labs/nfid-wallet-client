@@ -4,6 +4,16 @@
 > It is not an implementation spec — it describes what already exists.
 > For implementation specs, see the per-feature files in this directory.
 
+| Action       | Spec file              |
+| ------------ | ---------------------- |
+| Send         | `send.spec.md`         |
+| Receive      | `receive.spec.md`      |
+| Swap         | `swap.spec.md`         |
+| Convert      | `convert.spec.md`      |
+| Stake        | `stake.spec.md`        |
+| Redeem Stake | `redeem-stake.spec.md` |
+| Bridge       | `bridge.spec.md`       |
+
 ---
 
 ## Architecture
@@ -115,3 +125,22 @@ See **`bridge.spec.md`** for the full feature spec.
 **Trigger:** `CHANGE_DIRECTION: BRIDGE` + `ASSIGN_SELECTED_FT`
 **Chains:** ETH, Arbitrum, Base, Polygon (mainnet only)
 **Key files:** `integration/ethereum/bridge/bridge.service.ts`, `features/transfer-modal/components/bridge.tsx`
+
+---
+
+## MAX Button — Cross-Action Reference
+
+| Action  | Token type           | Amount set in input         |
+| ------- | -------------------- | --------------------------- |
+| Send    | ICP, ICRC1, BTC, ETH | `MAX_AMOUNT − Fee`          |
+| Send    | ERC20                | `MAX_AMOUNT` (full balance) |
+| Swap    | All ICP/ICRC1        | `MAX_AMOUNT` (fee included) |
+| Stake   | ICP, SNS             | `MAX_AMOUNT − Fee`          |
+| Convert | BTC → ckBTC          | `MAX_AMOUNT` (fee = 0)      |
+| Convert | ckBTC → BTC          | `MAX_AMOUNT − Fee`          |
+| Convert | ETH → ckETH          | `MAX_AMOUNT − Fee`          |
+| Convert | ckETH → ETH          | `MAX_AMOUNT` (fee in ETH)   |
+| Bridge  | ETH, POL (native)    | `MAX_AMOUNT` (fee included) |
+| Bridge  | ERC20                | `MAX_AMOUNT` (full balance) |
+| Redeem  | n/a                  | No amount input             |
+| Receive | n/a                  | No amount input             |

@@ -77,7 +77,23 @@ Token page  ──[Bridge]──▶  Bridge modal opens
 
 ---
 
-## 4. UI Components
+## 4. MAX Button Behaviour
+
+All EVM tokens in Bridge modal go through the deferred MAX flow (via `IModalType.BRIDGE`):
+
+1. Form is set to full token balance immediately.
+2. `onMaxResolved()` is called when `feeFormatted` becomes available (always `BigInt(0)` for Bridge modal), which sets `isMaxAmountRef.current = true`.
+3. When `isMaxAmount = true`, `bridge.service.ts` runs a **probe quote** to measure the actual gas cost, then adjusts the amount by subtracting `gasLimit × maxFeePerGas × 1.2` from the balance (20 % buffer).
+4. Native tokens (`value > 0` in probe tx): full deduction applied. ERC-20 tokens (`value = 0`): no deduction (gas is paid separately in native).
+
+| Token type       | Amount set in input                        |
+| ---------------- | ------------------------------------------ |
+| Native (ETH/POL) | `balance − estimatedGas × 1.2`             |
+| ERC-20           | `balance` (gas paid in native, not ERC-20) |
+
+---
+
+## 5. UI Components
 
 ### Bridge Form (`bridge.tsx`)
 
@@ -95,13 +111,26 @@ Token page  ──[Bridge]──▶  Bridge modal opens
 
 Derived from `EstimatedBridge`:
 
-| Label             | Field                                                       |
-| ----------------- | ----------------------------------------------------------- |
-| You receive       | `amountTo` / `amountToUsd`                                  |
-| Network fee (gas) | `sourceCost` / `sourceUsdCost`                              |
-| Relay fee         | `redeemCost` / `redeemUsdCost`                              |
-| Protocol fee      | `protocolFee` / `protocolFeeUsd` (optional, omit if absent) |
-| Total fees        | `totalUsdCost`                                              |
+| Label                | Field                          |
+| -------------------- | ------------------------------ |
+| You receive          | `amountTo` / `amountToUsd`     |
+| Network fee (gas)    | `sourceCost` / `sourceUsdCost` |
+| Total fees           | `totalUsdCost`                 |
+| Protocol fees (list) | `protocolFee[]`                |
+
+`protocolFee` is an array that maps directly from LiFi's `estimate.feeCosts[]`. Each entry:
+
+```ts
+{
+  amount: string // e.g. "0.000477 USDC"
+  amountUSD: string // e.g. "0.00 USD"
+  name: string // e.g. "LIFI Fixed Fee", "Gas receiver fee"
+  description: string // "Paid separately" when included=false, "" otherwise
+  percentage: string // e.g. "0.10%" or "" if no percentage
+}
+```
+
+Displayed as a scrollable list under a "Protocol fees:" heading. Each row shows `name`, `percentage`, `description`, `amount`, and `amountUSD`. Empty array renders nothing.
 
 ### Success Screen
 
@@ -114,7 +143,7 @@ Reuses the existing `TransferSuccess` component.
 
 ---
 
-## 5. State Machine Integration
+## 6. State Machine Integration
 
 **New `ModalType`:** `BRIDGE` (already added to enum)
 **New guard in `machine.ts`:** `isBridgeMachine` — routes to `BridgeMachine` state
@@ -142,7 +171,7 @@ Reuses the existing `TransferSuccess` component.
 
 ---
 
-## 6. Service Layer (`bridge.service.ts`)
+## 7. Service Layer (`bridge.service.ts`)
 
 Singleton `BridgeService` — initialized once per session via `bridgeService.init(identity)` in `wallet/index.tsx`.
 
@@ -179,7 +208,7 @@ Uses ICP **chain-fusion signer** — no MetaMask or browser wallet.
 
 ---
 
-## 7. Token Filtering Rules
+## 8. Token Filtering Rules
 
 ### Source tokens
 
@@ -196,7 +225,7 @@ Uses ICP **chain-fusion signer** — no MetaMask or browser wallet.
 
 ---
 
-## 8. Error Handling
+## 9. Error Handling
 
 | Error                                     | User-facing message                         |
 | ----------------------------------------- | ------------------------------------------- |
@@ -210,7 +239,7 @@ All errors surface as a **dismissible toast**; the bridge modal remains open so 
 
 ---
 
-## 9. Key Files
+## 10. Key Files
 
 | File                                            | Role                                                    |
 | ----------------------------------------------- | ------------------------------------------------------- |
@@ -226,7 +255,7 @@ All errors surface as a **dismissible toast**; the bridge modal remains open so 
 
 ---
 
-## 10. Open Questions
+## 11. Open Questions
 
 - [ ] Should the reverse button be available when only one chain's tokens are loaded (i.e., source has no valid reverse target)?
 - [ ] What is the expected UX during the approval mining step — spinner with a status label, or generic loading?

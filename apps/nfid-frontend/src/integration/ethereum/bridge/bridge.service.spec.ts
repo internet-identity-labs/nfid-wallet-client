@@ -29,6 +29,7 @@ jest.mock("frontend/integration/bitcoin/services/patron.service", () => ({
 }))
 
 import { bridgeService } from "./bridge.service"
+import { SignIdentity } from "@icp-sdk/core/agent"
 
 const ZRO_BASE = "0x6985884C4392D348587B19cb9eAAf157F13271cd"
 const USDC_BASE = "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913"
@@ -45,10 +46,10 @@ describe("Bridge2Service", () => {
         EVM_NATIVE,
         "0.01",
         18,
+        false,
       )
       console.debug("ETH quote", result)
       expect(result.sourceCost).toBeDefined()
-      expect(result.redeemCost).toBeDefined()
       expect(result.totalUsdCost).toBeDefined()
     })
 
@@ -60,10 +61,10 @@ describe("Bridge2Service", () => {
         "0x0000000000000000000000000000000000000000",
         "0.014",
         18,
+        false,
       )
       console.debug("ZRO quote", result)
       expect(result.sourceCost).toBeDefined()
-      expect(result.redeemCost).toBeDefined()
       expect(result.totalUsdCost).toBeDefined()
     })
   })
@@ -150,7 +151,7 @@ describe("Bridge2Service", () => {
     })
 
     it.skip("should bridge ETH from Base to Arbitrum", async () => {
-      const identity = {} as any // replace with real identity
+      const identity = {} as SignIdentity
       await bridgeService.init(identity)
       await bridgeService.getQuote(
         ChainId.BASE,
@@ -159,6 +160,7 @@ describe("Bridge2Service", () => {
         EVM_NATIVE,
         "0.001",
         18,
+        false,
       )
       const txHash = await bridgeService.bridge()
       console.debug("bridge tx hash", txHash)
@@ -167,7 +169,7 @@ describe("Bridge2Service", () => {
     })
 
     it.skip("should bridge ZRO from Base to Arbitrum with approval", async () => {
-      const identity = {} as any // replace with real identity
+      const identity = {} as SignIdentity
       await bridgeService.init(identity)
       await bridgeService.getQuote(
         ChainId.BASE,
@@ -176,6 +178,7 @@ describe("Bridge2Service", () => {
         "0x0000000000000000000000000000000000000000",
         "0.014",
         18,
+        false,
       )
       const txHash = await bridgeService.bridge()
       console.debug("ZRO bridge tx hash", txHash)
@@ -183,7 +186,7 @@ describe("Bridge2Service", () => {
     })
 
     it.skip("should bridge USDC from Base to Polygon", async () => {
-      const identity = {} as any // replace with real identity
+      const identity = {} as SignIdentity
       await bridgeService.init(identity)
       await bridgeService.getQuote(
         ChainId.BASE,
@@ -192,6 +195,7 @@ describe("Bridge2Service", () => {
         "0x0000000000000000000000000000000000000000",
         "1",
         6,
+        false,
       )
       const txHash = await bridgeService.bridge()
       console.debug("USDC bridge tx hash", txHash)

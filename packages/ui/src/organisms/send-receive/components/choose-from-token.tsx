@@ -181,7 +181,6 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
     if (modalType === IModalType.SEND) {
       const formattedValue = formatAssetAmountRaw(balanceNum, decimals)
-      console.log("formattedValue send", formattedValue, feeFormatted)
       setValue("amount", formattedValue, { shouldValidate: true })
       const isErc20 = isErc20Token(token.getChainId(), token.getTokenCategory())
 
@@ -229,7 +228,6 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         balanceNum.minus(feeNum),
         decimals,
       )
-      console.log("formattedValue", formattedValue, feeFormatted)
       setInputAmountValue(formattedValue)
       setValue("amount", formattedValue, { shouldValidate: true })
       return

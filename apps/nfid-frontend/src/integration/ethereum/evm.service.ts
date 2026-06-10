@@ -1,6 +1,7 @@
 import { HttpAgent, SignIdentity } from "@icp-sdk/core/agent"
 import {
   CkEthMinterCanister,
+  type CkEthMinterDid,
   encodePrincipalToEthAddress,
 } from "@icp-sdk/canisters/cketh"
 import {
@@ -15,7 +16,9 @@ import {
   Contract,
   Interface,
   InfuraProvider,
+  formatUnits,
   parseEther,
+  parseUnits,
   TransactionRequest,
   type FeeData,
   type TransactionResponse,
@@ -32,7 +35,17 @@ import {
   chainFusionSignerService,
 } from "../bitcoin/services/chain-fusion-signer.service"
 import { patronService } from "../bitcoin/services/patron.service"
-import { CKETH_ABI } from "./cketh.constants"
+import {
+  CKETH_ABI,
+  CKERC20_APPROVE_FALLBACK_GAS,
+  CKERC20_DEPOSIT_FALLBACK_GAS,
+  CKERC20_DEPOSIT_SUBACCOUNT_ZERO,
+  CKERC20_ERC20_ABI,
+} from "./cketh.constants"
+import {
+  getCkErc20ByLedgerId,
+  type CkErc20Token,
+} from "@nfid/integration/token/ckerc20.config"
 import { getWalletDelegation } from "../facade/wallet"
 import {
   MINTER_ADDRESS,
@@ -69,6 +82,23 @@ export type EthToCkEthFee = {
   ethereumNetworkFee: bigint
   amountToReceive: bigint
   icpNetworkFee: bigint
+}
+
+export type Erc20ToCkErc20Fee = {
+  approveGasUsed: bigint
+  depositGasUsed: bigint
+  maxPriorityFeePerGas: bigint
+  maxFeePerGas: bigint
+  baseFeePerGas: bigint
+  ethereumNetworkFee: bigint
+  amountToReceive: bigint
+}
+
+export type CkErc20ToErc20Fee = {
+  ethereumNetworkFee: bigint
+  amountToReceive: bigint
+  icpNetworkFee: bigint
+  identityLabsFee: bigint
 }
 
 export interface EvmNftMetadata {
@@ -172,7 +202,7 @@ export abstract class EVMService {
     }
   }
 
-  //get eth address from global identity
+  //get evm address from global identity
   public async getAddress(identity: SignIdentity): Promise<Address> {
     const { cachedValue, key } = this.getAddressFromCache()
 
@@ -186,7 +216,7 @@ export abstract class EVMService {
     return address
   }
 
-  //get balance of eth address
+  //get balance of evm address
   public async getBalance(address: Address): Promise<Balance> {
     const network = await this.provider.getNetwork()
     const chainId = Number(network.chainId)
@@ -551,6 +581,284 @@ export abstract class EVMService {
       icpNetworkFee: this.ckEthNetworkFee * BigInt(2),
       identityLabsFee,
     }
+  }
+
+  private resolveCkErc20Token(ledgerCanisterId: string): CkErc20Token {
+    const token = getCkErc20ByLedgerId(ledgerCanisterId)
+    if (!token) {
+      throw new Error(`Unsupported ckERC20 ledger: ${ledgerCanisterId}`)
+    }
+    return token
+  }
+
+  private async getErc20Allowance(
+    erc20Address: string,
+    owner: Address,
+    spender: string,
+  ): Promise<bigint> {
+    const contract = new Contract(
+      erc20Address,
+      CKERC20_ERC20_ABI,
+      this.provider,
+    )
+    return contract.allowance(owner, spender)
+  }
+
+  private async approveErc20IfNeeded(
+    identity: SignIdentity,
+    erc20Address: string,
+    spender: string,
+    amount: bigint,
+    fee: Erc20ToCkErc20Fee,
+    chainId: ChainId,
+  ): Promise<void> {
+    const from = await this.getAddress(identity)
+    const currentAllowance = await this.getErc20Allowance(
+      erc20Address,
+      from,
+      spender,
+    )
+    if (currentAllowance >= amount) return
+
+    const iface = new Interface(CKERC20_ERC20_ABI)
+    const data = iface.encodeFunctionData("approve", [spender, amount])
+    const nonce = await this.getTransactionCount(from)
+
+    const request: EthSignTransactionRequest = {
+      chain_id: BigInt(chainId),
+      to: erc20Address,
+      value: BigInt(0),
+      data: [data],
+      nonce: BigInt(nonce),
+      gas: fee.approveGasUsed,
+      max_priority_fee_per_gas: fee.maxPriorityFeePerGas,
+      max_fee_per_gas: fee.maxFeePerGas,
+    }
+
+    const signedTransaction = await chainFusionSignerService.ethSignTransaction(
+      identity,
+      request,
+    )
+    await this.sendTransaction(signedTransaction)
+  }
+
+  public async getErc20ToCkErc20Fee(
+    identity: SignIdentity,
+    ledgerCanisterId: string,
+    amount: string,
+  ): Promise<Erc20ToCkErc20Fee> {
+    const token = this.resolveCkErc20Token(ledgerCanisterId)
+    const fromAddress = await this.getAddress(identity)
+    const amountUnits = parseUnits(amount, token.decimals)
+    const principalHex = encodePrincipalToEthAddress(identity.getPrincipal())
+
+    const erc20Iface = new Interface(CKERC20_ERC20_ABI)
+    const approveData = erc20Iface.encodeFunctionData("approve", [
+      token.helperContractAddress,
+      amountUnits,
+    ])
+
+    let approveGasUsed: bigint
+    try {
+      approveGasUsed = await this.estimateGas({
+        to: token.erc20ContractAddress,
+        from: fromAddress,
+        data: approveData,
+      })
+    } catch {
+      approveGasUsed = CKERC20_APPROVE_FALLBACK_GAS
+    }
+
+    let depositGasUsed: bigint
+    try {
+      const helper = new Contract(
+        token.helperContractAddress,
+        CKETH_ABI,
+        this.provider,
+      )
+      const depositTx = await helper.depositErc20.populateTransaction(
+        token.erc20ContractAddress,
+        amountUnits,
+        principalHex,
+        CKERC20_DEPOSIT_SUBACCOUNT_ZERO,
+      )
+      depositGasUsed = await this.estimateGas({
+        to: depositTx.to,
+        from: fromAddress,
+        data: depositTx.data,
+      })
+    } catch {
+      depositGasUsed = CKERC20_DEPOSIT_FALLBACK_GAS
+    }
+
+    const feeData = await this.getFeeData()
+    const maxPriorityFeePerGas =
+      feeData.maxPriorityFeePerGas || BigInt(2_000_000_000)
+    const maxFeePerGas =
+      feeData.maxFeePerGas || maxPriorityFeePerGas + BigInt(5_000_000_000)
+
+    const baseFee = await this.getBaseFee()
+    const ethereumNetworkFee = this.estimateTransaction(
+      approveGasUsed + depositGasUsed,
+      maxFeePerGas,
+    )
+
+    return {
+      approveGasUsed,
+      depositGasUsed,
+      maxPriorityFeePerGas,
+      maxFeePerGas,
+      baseFeePerGas: baseFee,
+      ethereumNetworkFee,
+      amountToReceive: amountUnits,
+    }
+  }
+
+  //deposit ERC20 to ckERC20 (generic for any token in CKERC20_TOKENS)
+  public async convertToCkErc20(
+    identity: SignIdentity,
+    ledgerCanisterId: string,
+    amount: string,
+    fee: Erc20ToCkErc20Fee,
+  ): Promise<TransactionResponse> {
+    const token = this.resolveCkErc20Token(ledgerCanisterId)
+    const address = await this.getAddress(identity)
+    const amountUnits = parseUnits(amount, token.decimals)
+    const principalHex = encodePrincipalToEthAddress(identity.getPrincipal())
+
+    await this.approveErc20IfNeeded(
+      identity,
+      token.erc20ContractAddress,
+      token.helperContractAddress,
+      amountUnits,
+      fee,
+      token.chainId,
+    )
+
+    const helper = new Contract(
+      token.helperContractAddress,
+      CKETH_ABI,
+      this.provider,
+    )
+    const trs = await helper.depositErc20.populateTransaction(
+      token.erc20ContractAddress,
+      amountUnits,
+      principalHex,
+      CKERC20_DEPOSIT_SUBACCOUNT_ZERO,
+    )
+    const nonce = await this.getTransactionCount(address)
+
+    const trs_request: EthSignTransactionRequest = {
+      to: trs.to,
+      value: BigInt(0),
+      data: [trs.data],
+      nonce: BigInt(nonce),
+      gas: fee.depositGasUsed,
+      max_priority_fee_per_gas: fee.maxPriorityFeePerGas,
+      max_fee_per_gas: fee.maxFeePerGas,
+      chain_id: BigInt(token.chainId),
+    }
+
+    const signedTransaction = await chainFusionSignerService.ethSignTransaction(
+      identity,
+      trs_request,
+    )
+    return this.sendTransaction(signedTransaction)
+  }
+
+  public async getCkErc20ToErc20Fee(
+    ledgerCanisterId: string,
+    amount: string,
+  ): Promise<CkErc20ToErc20Fee> {
+    const token = this.resolveCkErc20Token(ledgerCanisterId)
+    const amountUnits = parseUnits(amount, token.decimals)
+    const identityLabsFee = this.getIdentityLabsFee(amountUnits)
+
+    const agent = new HttpAgent(agentBaseConfig)
+    const minter = CkEthMinterCanister.create({
+      agent,
+      canisterId: Principal.fromText(token.minterCanisterId),
+    })
+    const price = await minter.eip1559TransactionPrice({
+      ckErc20LedgerId: Principal.fromText(token.ledgerCanisterId),
+      certified: false,
+    })
+
+    return {
+      ethereumNetworkFee: price.max_transaction_fee,
+      amountToReceive: amountUnits - identityLabsFee,
+      icpNetworkFee: this.ckEthNetworkFee * BigInt(2),
+      identityLabsFee,
+    }
+  }
+
+  //withdraw ckERC20 to ERC20 (generic for any token in CKERC20_TOKENS)
+  public async convertFromCkErc20(
+    identity: SignIdentity,
+    ledgerCanisterId: string,
+    address: Address,
+    amount: string,
+  ): Promise<CkEthMinterDid.RetrieveErc20Request> {
+    const token = this.resolveCkErc20Token(ledgerCanisterId)
+    const amountUnits = parseUnits(amount, token.decimals)
+
+    if (amountUnits < token.minWithdrawalAmount) {
+      const min = formatUnits(token.minWithdrawalAmount, token.decimals)
+      throw new Error(
+        `The minimum amount for conversion is ${min} ${token.symbol}`,
+      )
+    }
+
+    const identityLabsFee = this.getIdentityLabsFee(amountUnits)
+
+    await this.approveTransfer(
+      token.ledgerCanisterId,
+      token.minterCanisterId,
+      amountUnits,
+      identity,
+    )
+
+    const agent = new HttpAgent({
+      ...agentBaseConfig,
+      identity: identity,
+    })
+    const minter = CkEthMinterCanister.create({
+      agent,
+      canisterId: Principal.fromText(token.minterCanisterId),
+    })
+
+    const price = await minter.eip1559TransactionPrice({
+      ckErc20LedgerId: Principal.fromText(token.ledgerCanisterId),
+      certified: false,
+    })
+
+    await this.approveTransfer(
+      this.ckEthLedgerCanisterId,
+      token.minterCanisterId,
+      price.max_transaction_fee,
+      identity,
+    )
+
+    const result = await minter.withdrawErc20({
+      address,
+      amount: amountUnits,
+      ledgerCanisterId: Principal.fromText(token.ledgerCanisterId),
+    })
+
+    const transferArgs: TransferArg = {
+      amount: identityLabsFee,
+      created_at_time: [],
+      fee: [],
+      from_subaccount: [],
+      memo: [],
+      to: {
+        subaccount: [],
+        owner: Principal.fromText(NFID_WALLET_CANISTER),
+      },
+    }
+    transferICRC1(identity, token.ledgerCanisterId, transferArgs)
+
+    return result
   }
 
   private estimateTransaction(gas: bigint, maxFeePerGas: bigint): bigint {

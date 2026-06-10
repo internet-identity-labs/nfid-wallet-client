@@ -1,57 +1,56 @@
-import { getBrowser } from "packages/utils/src"
-import React from "react"
-
-import { CredentialResponse } from "./types"
-import useLoadGsiScript from "./useLoadGsiScript"
-
-export type LoginEventHandler = ({ credential }: CredentialResponse) => void
+import React, { useEffect, useRef } from "react"
 
 if (!GOOGLE_CLIENT_ID) console.error("GOOGLE_CLIENT_ID is not defined")
 
 interface SignInWithGoogleProps {
-  onLogin: LoginEventHandler
-  button?: JSX.Element
+  onLogin: (credential: string) => void
+  button: JSX.Element
 }
 
 export const SignInWithGoogle: React.FC<SignInWithGoogleProps> = ({
   onLogin,
   button,
 }) => {
-  const buttonRef = React.useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLDivElement>(null)
+  const onLoginRef = useRef(onLogin)
+  onLoginRef.current = onLogin
 
-  const onScriptLoadSuccess = React.useCallback(() => {
-    window.google?.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: onLogin,
-      itp_support: true,
-      use_fedcm_for_prompt: true,
-    })
-  }, [onLogin])
-
-  useLoadGsiScript({ onScriptLoadSuccess })
-
-  window.google?.accounts.id.renderButton(buttonRef.current, {
-    text: "continue_with",
-    shape: "rectangular",
-    theme: "outline",
-    type: "standard",
-    size: "large",
-  })
-
-  const onClick = React.useCallback(() => {
-    let el: any
-    if (getBrowser() === "Chrome") {
-      el = buttonRef.current?.querySelector("div[role=button]")
-    } else el = buttonRef.current?.children[0].children[1].children[1]
-
-    //  @ts-ignore
-    el?.click()
+  useEffect(() => {
+    const script = document.createElement("script")
+    script.src = "https://accounts.google.com/gsi/client"
+    script.async = true
+    script.onload = () => {
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: ({ credential }) => onLoginRef.current(credential),
+        itp_support: true,
+        use_fedcm_for_prompt: true,
+      })
+      google.accounts.id.renderButton(buttonRef.current!, {
+        text: "continue_with",
+        shape: "rectangular",
+        theme: "outline",
+        type: "standard",
+        size: "large",
+      })
+    }
+    document.body.appendChild(script)
+    return () => {
+      document.body.removeChild(script)
+    }
   }, [])
 
   return (
     <>
       <div ref={buttonRef} className="hidden" />
-      <div className="w-full" onClick={onClick}>
+      <div
+        className="w-full"
+        onClick={() =>
+          buttonRef.current
+            ?.querySelector<HTMLElement>("div[role=button]")
+            ?.click()
+        }
+      >
         {button}
       </div>
     </>

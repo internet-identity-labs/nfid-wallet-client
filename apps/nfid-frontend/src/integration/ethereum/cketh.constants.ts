@@ -148,3 +148,13 @@ export const CKETH_ABI = [
 
 export const CKETH_FEE = BigInt(50_000)
 export const ETH_BASE_FEE = BigInt(21_000)
+
+export const CKERC20_ERC20_ABI = [
+  "function approve(address spender, uint256 amount) external returns (bool)",
+  "function allowance(address owner, address spender) external view returns (uint256)",
+]
+
+export const CKERC20_DEPOSIT_FALLBACK_GAS = BigInt(150_000)
+export const CKERC20_APPROVE_FALLBACK_GAS = BigInt(60_000)
+export const CKERC20_DEPOSIT_SUBACCOUNT_ZERO =
+  "0x0000000000000000000000000000000000000000000000000000000000000000"

@@ -1,5 +1,8 @@
 import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp"
-import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc"
+import {
+  decodeIcrcAccount,
+  encodeIcrcAccount,
+} from "@icp-sdk/canisters/ledger/icrc"
 import { Principal } from "@icp-sdk/core/principal"
 import BigNumber from "bignumber.js"
 import debounce from "lodash/debounce"
@@ -15,7 +18,7 @@ import {
   getAccountIdentifier,
   transfer as transferICP,
 } from "@nfid/integration/token/icp"
-import { transferICRC1 } from "@nfid/integration/token/icrc1"
+import { getMintingAccount, transferICRC1 } from "@nfid/integration/token/icrc1"
 import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
@@ -487,13 +490,29 @@ export const TransferFT = ({
       let transferResult
 
       if (token.getTokenAddress() === ICP_CANISTER_ID) {
+        const mintingAccount = await getMintingAccount(ICP_CANISTER_ID)
+        const isBurn = Boolean(
+          mintingAccount &&
+          encodeIcrcAccount({
+            owner: Principal.fromText(mintingAccount.owner),
+            subaccount: mintingAccount.subaccount,
+          }) === to,
+        )
         transferResult = transferICP({
           amount: stringICPtoE8s(String(amount)),
           to: getAccountIdentifier(to),
           identity: identity,
+          isBurn,
         })
       } else {
         const { owner, subaccount } = decodeIcrcAccount(to)
+        const mintingAccount = await getMintingAccount(token.getTokenAddress())
+        const isBurn =
+          mintingAccount &&
+          encodeIcrcAccount({
+            owner: Principal.fromText(mintingAccount.owner),
+            subaccount: mintingAccount.subaccount,
+          }) === to
         transferResult = transferICRC1(identity, token.getTokenAddress(), {
           to: {
             subaccount: subaccount ? [subaccount] : [],
@@ -505,7 +524,7 @@ export const TransferFT = ({
               .toFixed(),
           ),
           memo: [],
-          fee: [fee?.getFee()!],
+          fee: isBurn ? [BigInt(0)] : [fee?.getFee()!],
           from_subaccount: [],
           created_at_time: [],
         })

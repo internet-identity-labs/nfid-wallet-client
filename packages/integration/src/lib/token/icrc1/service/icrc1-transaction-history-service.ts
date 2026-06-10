@@ -208,11 +208,30 @@ export class Icrc1TransactionHistoryService {
     }).toHex()
 
     return rawTrss
-      .filter((rawTrs) => "Transfer" in rawTrs.transaction.operation)
+      .filter(
+        (rawTrs) =>
+          "Transfer" in rawTrs.transaction.operation ||
+          "Burn" in rawTrs.transaction.operation,
+      )
       .map((rawTrs) => {
         const operation = rawTrs.transaction.operation
-        const trs = "Transfer" in operation ? operation.Transfer : null
 
+        if ("Burn" in operation) {
+          return {
+            type: IActivityAction.BURN,
+            timestamp:
+              rawTrs.transaction.timestamp?.[0]?.timestamp_nanos || BigInt(0),
+            symbol,
+            amount: operation.Burn.amount.e8s,
+            from: operation.Burn.from,
+            to: "",
+            transactionId: rawTrs.id,
+            decimals,
+            canister: canisterId,
+          }
+        }
+
+        const trs = "Transfer" in operation ? operation.Transfer : null
         const type =
           accountIdentifier === trs?.from
             ? IActivityAction.SENT

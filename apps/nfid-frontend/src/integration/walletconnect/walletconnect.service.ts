@@ -614,6 +614,9 @@ export class WalletConnectService {
       " || ",
       "Identity address: ",
       fromAddressQuick,
+      " || ",
+      "userParams: ",
+      userParams,
     )
     if (tx.from && tx.from.toLowerCase() !== fromAddressQuick.toLowerCase()) {
       throw new Error(
@@ -646,7 +649,7 @@ export class WalletConnectService {
     }
 
     const parseGas = (gas: string | number | undefined): bigint => {
-      if (gas === undefined) throw new Error("Gas value is required")
+      if (gas === undefined) return userParams.gasUsed
       if (typeof gas === "number") return BigInt(gas)
       if (gas.startsWith("0x")) return BigInt(gas)
       return BigInt(gas)

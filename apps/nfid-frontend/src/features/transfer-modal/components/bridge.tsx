@@ -1,4 +1,5 @@
 import debounce from "lodash/debounce"
+import { type LiFiStep } from "@lifi/sdk"
 import {
   BridgeUi,
   EstimatedBridge,
@@ -24,6 +25,7 @@ import { Principal } from "@icp-sdk/core/principal"
 
 interface BridgeProps {
   preselectedSourceTokenAddress: string | undefined
+  preselectedSourceChainId?: ChainId
   onClose: () => void
   setErrorMessage: (message: string) => void
   setSuccessMessage: (message: string) => void
@@ -35,6 +37,7 @@ const DEFAULT_BRIDGE_ERROR = "Something went wrong"
 
 export const Bridge = ({
   preselectedSourceTokenAddress,
+  preselectedSourceChainId,
   onClose,
   setErrorMessage,
   setSuccessMessage,
@@ -45,11 +48,15 @@ export const Bridge = ({
   const [status, setStatus] = useState(SendStatus.PENDING)
   const [error, setError] = useState<string | undefined>()
   const [bridgeData, setBridgeData] = useState<EstimatedBridge>()
+  const [pendingQuote, setPendingQuote] = useState<LiFiStep>()
+  const [isFetchingBridgeData, setIsFetchingBridgeData] = useState(false)
   const [bridgeError, setBridgeError] = useState<string | undefined>()
   const [fromTokenAddress, setFromTokenAddress] = useState(
     preselectedSourceTokenAddress || ETH_NATIVE_ID,
   )
-  const [fromChainId, setFromChainId] = useState<ChainId | undefined>()
+  const [fromChainId, setFromChainId] = useState<ChainId | undefined>(
+    preselectedSourceChainId,
+  )
   const { identity } = useIdentity()
   const [toTokenAddress, setToTokenAddress] = useState(
     preselectedSourceTokenAddress ?? ETH_NATIVE_ID,
@@ -184,6 +191,8 @@ export const Bridge = ({
     setBridgeError(undefined)
     formMethods.setValue("amount", "")
     setBridgeData(undefined)
+    setPendingQuote(undefined)
+    setIsFetchingBridgeData(false)
   }, [fromToken, toToken, formMethods])
 
   useEffect(() => {
@@ -202,18 +211,24 @@ export const Bridge = ({
     isMaxAmountRef.current = true
   }, [])
 
+  const fetchGenRef = useRef(0)
+
   const debouncedFetchFee = useMemo(
     () =>
       debounce(async (fromTokenChain, toTokenChain, amount) => {
         const isMaxAmount = isMaxAmountRef.current
         isMaxAmountRef.current = false
 
+        const gen = fetchGenRef.current
+
         try {
           if (!fromToken || !toToken || !identity) return
           setBridgeData(undefined)
+          setPendingQuote(undefined)
           setBridgeError(undefined)
+          setIsFetchingBridgeData(true)
 
-          const quote = await bridgeService.getQuote(
+          const { estimate, quote } = await bridgeService.getQuote(
             fromTokenChain,
             toTokenChain,
             fromToken.getTokenAddress(),
@@ -223,8 +238,13 @@ export const Bridge = ({
             isMaxAmount,
           )
 
-          setBridgeData(quote)
+          if (fetchGenRef.current !== gen) return
+          setBridgeData(estimate)
+          setPendingQuote(quote)
+          setIsFetchingBridgeData(false)
         } catch (e) {
+          if (fetchGenRef.current !== gen) return
+          setIsFetchingBridgeData(false)
           console.error(`Bridge fee error: ${e}`)
           const message = (e as Error).message ?? ""
           setBridgeError(
@@ -244,6 +264,7 @@ export const Bridge = ({
     debouncedFetchFee(fromToken.getChainId(), toToken?.getChainId(), amount)
 
     return () => {
+      fetchGenRef.current++
       debouncedFetchFee.cancel()
     }
   }, [
@@ -256,14 +277,18 @@ export const Bridge = ({
     debouncedFetchFee,
   ])
 
+  const isSubmittingRef = useRef(false)
+
   const submit = useCallback(() => {
-    if (!identity || !fromToken || !toToken) return
+    if (!identity || !fromToken || !toToken || !pendingQuote) return
+    if (isSubmittingRef.current) return
+    isSubmittingRef.current = true
 
     setIsSuccessOpen(true)
     setIsBridgeSuccess(true)
 
     bridgeService
-      .bridge()
+      .bridge(pendingQuote)
       .then(() => {
         setSuccessMessage(
           `Bridge ${amount} ${fromToken.getTokenSymbol()} successful`,
@@ -307,10 +332,14 @@ export const Bridge = ({
         setStatus(SendStatus.FAILED)
         setError(error)
       })
+      .finally(() => {
+        isSubmittingRef.current = false
+      })
   }, [
     identity,
     fromToken,
     toToken,
+    pendingQuote,
     amount,
     toTokenAddress,
     fromTokenAddress,
@@ -335,7 +364,7 @@ export const Bridge = ({
           onClose={onClose}
           handleReverse={handleReverse}
           bridgeData={bridgeData}
-          isBridgeDataLoading={bridgeData === undefined}
+          isBridgeDataLoading={isFetchingBridgeData}
           status={status}
           error={error}
           bridgeError={bridgeError}

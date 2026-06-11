@@ -82,7 +82,7 @@ export const RedeemStake = ({
       .finally(() => {
         if (!initedTokens) return
         getTokensWithUpdatedBalance(
-          [stakedToken?.getToken().getTokenAddress()],
+          [{ address: stakedToken?.getToken().getTokenAddress() }],
           initedTokens,
         ).then((updatedTokens) => {
           mutateWithTimestamp("tokens", updatedTokens, false)

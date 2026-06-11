@@ -424,7 +424,7 @@ export const TransferFT = ({
           if (!initedTokens) return
 
           getTokensWithUpdatedBalance(
-            [token.getTokenAddress()],
+            [{ address: token.getTokenAddress() }],
             initedTokens,
           ).then((updatedTokens) => {
             mutateWithTimestamp("tokens", updatedTokens, false)
@@ -569,7 +569,7 @@ export const TransferFT = ({
           if (!initedTokens) return
 
           getTokensWithUpdatedBalance(
-            [token.getTokenAddress()],
+            [{ address: token.getTokenAddress() }],
             initedTokens,
           ).then((updatedTokens) => {
             mutateWithTimestamp("tokens", updatedTokens, false)

@@ -287,7 +287,7 @@ export const ConvertBTC = ({
             fromTokenAddress === CKSEPOLIA_LEDGER_CANISTER_ID
           if (isCkToNative) {
             getTokensWithUpdatedBalance(
-              [fromTokenAddress, toTokenAddress],
+              [{ address: fromTokenAddress }, { address: toTokenAddress }],
               initedTokens,
             ).then((updatedTokens) => {
               mutateWithTimestamp("tokens", updatedTokens, false)
@@ -332,7 +332,7 @@ export const ConvertBTC = ({
 
         if (fromToken.getTokenAddress() === CKBTC_CANISTER_ID) {
           getTokensWithUpdatedBalance(
-            [fromTokenAddress, toTokenAddress],
+            [{ address: fromTokenAddress }, { address: toTokenAddress }],
             initedTokens,
           ).then((updatedTokens) => {
             mutateWithTimestamp("tokens", updatedTokens, false)

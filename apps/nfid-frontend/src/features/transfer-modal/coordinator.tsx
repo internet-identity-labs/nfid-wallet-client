@@ -164,6 +164,7 @@ export const TransferModalCoordinator = () => {
           >
             <Bridge
               preselectedSourceTokenAddress={state.context.selectedFT?.address}
+              preselectedSourceChainId={state.context.selectedFT?.chainId}
               onClose={hideModal}
               setErrorMessage={setErrorMessage}
               setSuccessMessage={setSuccessMessage}

@@ -286,32 +286,7 @@ export const updateCachedInitedTokens = async (
 }
 
 export const getTokensWithUpdatedBalance = async (
-  ledgers: string[],
-  allTokens: FT[],
-) => {
-  const { publicKey } = authState.getUserIdData()
-
-  const updatedTokens = [...allTokens]
-
-  for (const ledger of ledgers) {
-    const index = updatedTokens.findIndex(
-      (el) => el.getTokenAddress() === ledger,
-    )
-
-    if (index !== -1) {
-      const tokenToUpdate = updatedTokens[index]
-      const updatedToken = await tokenToUpdate.refreshBalance(
-        Principal.fromText(publicKey),
-      )
-      updatedTokens[index] = updatedToken
-    }
-  }
-
-  return updatedTokens
-}
-
-export const getEvmTokensWithUpdatedBalance = async (
-  tokens: Array<{ address: string; chainId: number }>,
+  tokens: Array<{ address: string | undefined; chainId?: number }>,
   allTokens: FT[],
 ) => {
   const { publicKey } = authState.getUserIdData()
@@ -319,8 +294,11 @@ export const getEvmTokensWithUpdatedBalance = async (
   const updatedTokens = [...allTokens]
 
   for (const { address, chainId } of tokens) {
+    if (!address) continue
     const index = updatedTokens.findIndex(
-      (el) => el.getTokenAddress() === address && el.getChainId() === chainId,
+      (el) =>
+        el.getTokenAddress() === address &&
+        (chainId === undefined || el.getChainId() === chainId),
     )
 
     if (index !== -1) {
@@ -334,6 +312,11 @@ export const getEvmTokensWithUpdatedBalance = async (
 
   return updatedTokens
 }
+
+export const getEvmTokensWithUpdatedBalance = (
+  tokens: Array<{ address: string; chainId: number }>,
+  allTokens: FT[],
+) => getTokensWithUpdatedBalance(tokens, allTokens)
 
 const mergeUpdatedFtIntoTokenList = (fullList: FT[], updates: FT[]): FT[] => {
   const tokenKey = (t: FT) => `${t.getTokenAddress()}:${t.getChainId()}`

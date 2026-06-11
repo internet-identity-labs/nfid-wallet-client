@@ -386,7 +386,7 @@ export const SwapFT = ({
       .finally(() => {
         if (!initedTokens) return
         getTokensWithUpdatedBalance(
-          [fromTokenAddress, toTokenAddress],
+          [{ address: fromTokenAddress }, { address: toTokenAddress }],
           initedTokens,
         ).then((updatedTokens) => {
           mutateTokensCacheMergingBalances(updatedTokens)

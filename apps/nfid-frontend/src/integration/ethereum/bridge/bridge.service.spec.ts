@@ -49,8 +49,8 @@ describe("Bridge2Service", () => {
         false,
       )
       console.debug("ETH quote", result)
-      expect(result.sourceCost).toBeDefined()
-      expect(result.totalUsdCost).toBeDefined()
+      expect(result.estimate.sourceCost).toBeDefined()
+      expect(result.estimate.totalUsdCost).toBeDefined()
     })
 
     it.skip("should return fee breakdown for ERC-20 bridge", async () => {
@@ -64,8 +64,8 @@ describe("Bridge2Service", () => {
         false,
       )
       console.debug("ZRO quote", result)
-      expect(result.sourceCost).toBeDefined()
-      expect(result.totalUsdCost).toBeDefined()
+      expect(result.estimate.sourceCost).toBeDefined()
+      expect(result.estimate.totalUsdCost).toBeDefined()
     })
   })
 
@@ -144,16 +144,10 @@ describe("Bridge2Service", () => {
   })
 
   describe("bridge", () => {
-    it("should throw when called without a pending quote", async () => {
-      await expect(bridgeService.bridge()).rejects.toThrow(
-        "No pending quote. Call getQuote first.",
-      )
-    })
-
     it.skip("should bridge ETH from Base to Arbitrum", async () => {
       const identity = {} as SignIdentity
       await bridgeService.init(identity)
-      await bridgeService.getQuote(
+      const { quote } = await bridgeService.getQuote(
         ChainId.BASE,
         ChainId.ARB,
         EVM_NATIVE,
@@ -162,7 +156,7 @@ describe("Bridge2Service", () => {
         18,
         false,
       )
-      const txHash = await bridgeService.bridge()
+      const txHash = await bridgeService.bridge(quote)
       console.debug("bridge tx hash", txHash)
       expect(txHash).toBeDefined()
       expect(txHash).toMatch(/^0x/)
@@ -171,7 +165,7 @@ describe("Bridge2Service", () => {
     it.skip("should bridge ZRO from Base to Arbitrum with approval", async () => {
       const identity = {} as SignIdentity
       await bridgeService.init(identity)
-      await bridgeService.getQuote(
+      const { quote } = await bridgeService.getQuote(
         ChainId.BASE,
         ChainId.ARB,
         ZRO_BASE,
@@ -180,7 +174,7 @@ describe("Bridge2Service", () => {
         18,
         false,
       )
-      const txHash = await bridgeService.bridge()
+      const txHash = await bridgeService.bridge(quote)
       console.debug("ZRO bridge tx hash", txHash)
       expect(txHash).toBeDefined()
     })
@@ -188,7 +182,7 @@ describe("Bridge2Service", () => {
     it.skip("should bridge USDC from Base to Polygon", async () => {
       const identity = {} as SignIdentity
       await bridgeService.init(identity)
-      await bridgeService.getQuote(
+      const { quote } = await bridgeService.getQuote(
         ChainId.BASE,
         ChainId.POL,
         USDC_BASE,
@@ -197,7 +191,7 @@ describe("Bridge2Service", () => {
         6,
         false,
       )
-      const txHash = await bridgeService.bridge()
+      const txHash = await bridgeService.bridge(quote)
       console.debug("USDC bridge tx hash", txHash)
       expect(txHash).toBeDefined()
     })

@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js"
 import { SignIdentity } from "@icp-sdk/core/agent"
-import { Contract, Interface, JsonRpcProvider } from "ethers"
+import { Contract, Interface, JsonRpcProvider, isAddress } from "ethers"
 
 import {
   ETH_DECIMALS,
@@ -20,11 +20,11 @@ import { chainFusionSignerService } from "frontend/integration/bitcoin/services/
 
 import { createClient } from "@lifi/sdk"
 import { EthereumProvider } from "@lifi/sdk-provider-ethereum"
-import { createWalletClient, http } from "viem"
+import { createWalletClient, http, type Chain } from "viem"
 import { toAccount } from "viem/accounts"
-import { mainnet } from "viem/chains"
-import { getQuote, getStatus, getTokens } from "@lifi/sdk"
-import { EVM_ZERO_ADDRESS } from "./constants"
+import { mainnet, polygon, base, arbitrum } from "viem/chains"
+import { getQuote, getTokens, type LiFiStep } from "@lifi/sdk"
+import { BRIDGE_ADDRESS, EVM_ZERO_ADDRESS } from "./constants"
 import { EstimatedBridge } from "./types"
 
 class BridgeService {
@@ -32,25 +32,85 @@ class BridgeService {
   private address: string | null = null
   private account: ReturnType<typeof toAccount> | null = null
   private client: ReturnType<typeof createClient> | null = null
-  private pendingQuote: Awaited<ReturnType<typeof getQuote>> | null = null
   private supportedTokensCache: Set<string> | null = null
 
+  private buildSignRequest(params: {
+    to: string
+    value: bigint
+    data: [] | [string]
+    nonce: number | bigint
+    gas: bigint
+    maxPriorityFeePerGas: bigint | null
+    maxFeePerGas: bigint | null
+    chainId: number | bigint
+  }): EthSignTransactionRequest {
+    return {
+      to: params.to,
+      value: params.value,
+      data: params.data,
+      nonce: BigInt(params.nonce),
+      gas: params.gas,
+      max_priority_fee_per_gas:
+        params.maxPriorityFeePerGas ?? BigInt(2_000_000_000),
+      max_fee_per_gas: params.maxFeePerGas ?? BigInt(10_000_000_000),
+      chain_id: BigInt(params.chainId),
+    }
+  }
+
   private async signTransaction(transaction: any): Promise<`0x${string}`> {
-    const request: EthSignTransactionRequest = {
-      to: transaction.to as string,
+    const to: unknown = transaction.to
+    if (typeof to !== "string" || !isAddress(to)) {
+      throw new Error(`Invalid transaction destination address: ${to}`)
+    }
+    if (to === EVM_ZERO_ADDRESS) {
+      throw new Error("Transaction destination cannot be the zero address")
+    }
+    if (to.toLowerCase() !== BRIDGE_ADDRESS.toLowerCase()) {
+      throw new Error(`Unexpected transaction destination: ${to}`)
+    }
+    const request = this.buildSignRequest({
+      to,
       value: transaction.value ?? BigInt(0),
       data: transaction.data ? [transaction.data as string] : [],
-      nonce: BigInt(transaction.nonce ?? 0),
+      nonce: transaction.nonce ?? 0,
       gas: transaction.gas ?? BigInt(200_000),
-      max_priority_fee_per_gas:
-        transaction.maxPriorityFeePerGas ?? BigInt(2_000_000_000),
-      max_fee_per_gas: transaction.maxFeePerGas ?? BigInt(10_000_000_000),
-      chain_id: BigInt(transaction.chainId ?? ChainId.ETH),
-    }
+      maxPriorityFeePerGas: transaction.maxPriorityFeePerGas ?? null,
+      maxFeePerGas: transaction.maxFeePerGas ?? null,
+      chainId: transaction.chainId ?? ChainId.ETH,
+    })
     return chainFusionSignerService.ethSignTransaction(
       this.identity!,
       request,
     ) as Promise<`0x${string}`>
+  }
+
+  private getWalletClientForChain(chainId: number) {
+    const chains: Record<number, { chain: Chain; rpc: string }> = {
+      [ChainId.ETH]: {
+        chain: mainnet,
+        rpc: `https://mainnet.infura.io/v3/${INFURA_API_KEY}`,
+      },
+      [ChainId.POL]: {
+        chain: polygon,
+        rpc: `https://polygon-mainnet.infura.io/v3/${INFURA_API_KEY}`,
+      },
+      [ChainId.BASE]: {
+        chain: base,
+        rpc: `https://base-mainnet.infura.io/v3/${INFURA_API_KEY}`,
+      },
+      [ChainId.ARB]: {
+        chain: arbitrum,
+        rpc: `https://arbitrum-mainnet.infura.io/v3/${INFURA_API_KEY}`,
+      },
+    }
+    const config = chains[chainId]
+    if (!config)
+      throw new Error(`No wallet client config for chainId: ${chainId}`)
+    return createWalletClient({
+      account: this.account!,
+      chain: config.chain,
+      transport: http(config.rpc),
+    })
   }
 
   private buildAccount() {
@@ -68,8 +128,12 @@ class BridgeService {
 
   public async init(identity: SignIdentity) {
     const address = await ethereumService.getAddress(identity)
-    this.identity = identity
-    this.address = address
+    if (address !== this.address) {
+      this.identity = identity
+      this.address = address
+      this.account = null
+      this.client = null
+    }
     if (!this.account) this.buildAccount()
     if (this.client) return this.client
 
@@ -79,15 +143,9 @@ class BridgeService {
       providers: [
         EthereumProvider({
           getWalletClient: () =>
-            Promise.resolve(
-              createWalletClient({
-                account: this.account!,
-                chain: mainnet,
-                transport: http(
-                  `https://mainnet.infura.io/v3/${INFURA_API_KEY}`,
-                ),
-              }),
-            ) as any,
+            Promise.resolve(this.getWalletClientForChain(ChainId.ETH)) as any,
+          switchChain: (chainId) =>
+            Promise.resolve(this.getWalletClientForChain(chainId)) as any,
         }),
       ],
     })
@@ -102,7 +160,7 @@ class BridgeService {
     fromAmount: string,
     decimals: number,
     isMaxAmount: boolean,
-  ): Promise<EstimatedBridge> {
+  ): Promise<{ estimate: EstimatedBridge; quote: LiFiStep }> {
     const fromTokenAddress =
       fromToken === EVM_NATIVE || fromToken === ETH_NATIVE_ID
         ? EVM_ZERO_ADDRESS
@@ -113,7 +171,7 @@ class BridgeService {
         : toToken
 
     let amount = new BigNumber(fromAmount)
-      .multipliedBy(10 ** decimals)
+      .multipliedBy(new BigNumber(10).pow(decimals))
       .toString()
 
     if (isMaxAmount) {
@@ -147,9 +205,7 @@ class BridgeService {
       toToken: toTokenAddress,
       fromAmount: amount,
     })
-    this.pendingQuote = quote
-
-    await this.validateTransaction()
+    await this.validateTransaction(quote)
 
     const quoteEstimate = quote.estimate
     const quoteAction = quote.action
@@ -162,7 +218,7 @@ class BridgeService {
       feeCosts.reduce((sum, f) => sum + Number(f.amountUSD ?? 0), 0)
     ).toFixed(2)
 
-    return {
+    const estimate: EstimatedBridge = {
       rawFee: sendGasCost?.amount ? BigInt(sendGasCost.amount) : BigInt(0),
       sourceCost: `${(Number(sendGasCost?.amount ?? 0) / 10 ** sendGasDecimals).toFixed(sendGasDecimals).replace(TRIM_ZEROS, "")} ${sendGasCost?.token?.symbol ?? "ETH"}`,
       sourceUsdCost: `${Number(sendGasCost?.amountUSD ?? 0).toFixed(2)} USD`,
@@ -182,6 +238,7 @@ class BridgeService {
         }
       }),
     }
+    return { estimate, quote }
   }
 
   private getProvider(chainId: number): JsonRpcProvider {
@@ -199,13 +256,16 @@ class BridgeService {
   private async approve(
     provider: JsonRpcProvider,
     chainId: number,
+    quote: LiFiStep,
   ): Promise<void> {
-    if (!this.pendingQuote) return
-    const fromToken = this.pendingQuote.action.fromToken
+    const fromToken = quote.action.fromToken
     if (fromToken.address === EVM_ZERO_ADDRESS) return
 
-    const spender = this.pendingQuote.estimate.approvalAddress
-    const amount = BigInt(this.pendingQuote.action.fromAmount)
+    const spender = quote.estimate.approvalAddress
+    if (spender?.toLowerCase() !== BRIDGE_ADDRESS.toLowerCase()) {
+      throw new Error(`Unexpected approval address: ${spender}`)
+    }
+    const amount = BigInt(quote.action.fromAmount)
 
     const erc20 = new Contract(
       fromToken.address,
@@ -226,17 +286,16 @@ class BridgeService {
       amount,
     ])
 
-    const approvalRequest: EthSignTransactionRequest = {
+    const approvalRequest = this.buildSignRequest({
       to: fromToken.address,
       value: BigInt(0),
       data: [approveData],
-      nonce: BigInt(nonce),
+      nonce,
       gas: BigInt(100_000),
-      max_priority_fee_per_gas:
-        feeData.maxPriorityFeePerGas ?? BigInt(2_000_000_000),
-      max_fee_per_gas: feeData.maxFeePerGas ?? BigInt(10_000_000_000),
-      chain_id: BigInt(chainId),
-    }
+      maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
+      maxFeePerGas: feeData.maxFeePerGas,
+      chainId,
+    })
 
     const signed = await chainFusionSignerService.ethSignTransaction(
       this.identity!,
@@ -246,10 +305,10 @@ class BridgeService {
     await response.wait()
   }
 
-  private async validateTransaction(): Promise<void> {
-    if (!this.pendingQuote) throw new Error("No pending quote")
+  private async validateTransaction(quote: LiFiStep): Promise<void> {
+    if (!quote) throw new Error("No pending quote")
 
-    const tx = this.pendingQuote.transactionRequest
+    const tx = quote.transactionRequest
     if (!tx?.to) throw new Error("Quote has no transactionRequest")
 
     const chainId = tx.chainId as number
@@ -270,28 +329,26 @@ class BridgeService {
     }
   }
 
-  public async bridge(): Promise<string> {
-    if (!this.pendingQuote)
-      throw new Error("No pending quote. Call getQuote first.")
-
+  public async bridge(quote: LiFiStep): Promise<string> {
     try {
-      const tx = this.pendingQuote.transactionRequest
+      const tx = quote.transactionRequest
       if (!tx?.to) throw new Error("Quote has no transactionRequest")
 
       const chainId = tx.chainId as number
       const provider = this.getProvider(chainId)
 
-      await this.approve(provider, chainId)
+      await this.approve(provider, chainId, quote)
 
       // Re-fetch quote after approval — the original may have expired during mining
       const freshQuote = await getQuote(this.client!, {
         fromAddress: this.address!,
-        fromChain: this.pendingQuote.action.fromChainId,
-        toChain: this.pendingQuote.action.toChainId,
-        fromToken: this.pendingQuote.action.fromToken.address,
-        toToken: this.pendingQuote.action.toToken.address,
-        fromAmount: this.pendingQuote.action.fromAmount,
+        fromChain: quote.action.fromChainId,
+        toChain: quote.action.toChainId,
+        fromToken: quote.action.fromToken.address,
+        toToken: quote.action.toToken.address,
+        fromAmount: quote.action.fromAmount,
       })
+      await this.validateTransaction(freshQuote)
       const freshTx = freshQuote.transactionRequest ?? tx
 
       const [feeData, nonce] = await Promise.all([
@@ -299,17 +356,16 @@ class BridgeService {
         provider.getTransactionCount(this.address!),
       ])
 
-      const request: EthSignTransactionRequest = {
+      const request = this.buildSignRequest({
         to: freshTx.to as string,
         value: BigInt(freshTx.value ?? 0),
         data: freshTx.data ? [freshTx.data as string] : [],
-        nonce: BigInt(nonce),
+        nonce,
         gas: BigInt(freshTx.gasLimit ?? 500_000),
-        max_priority_fee_per_gas:
-          feeData.maxPriorityFeePerGas ?? BigInt(2_000_000_000),
-        max_fee_per_gas: feeData.maxFeePerGas ?? BigInt(10_000_000_000),
-        chain_id: BigInt(chainId),
-      }
+        maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
+        maxFeePerGas: feeData.maxFeePerGas,
+        chainId,
+      })
 
       const signed = await chainFusionSignerService.ethSignTransaction(
         this.identity!,
@@ -320,7 +376,6 @@ class BridgeService {
       const receipt = await response.wait()
       if (!receipt) throw new Error("No receipt for transaction")
 
-      this.pendingQuote = null
       return response.hash
     } catch (e) {
       throw e

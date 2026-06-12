@@ -1,11 +1,15 @@
 import { SignIdentity } from "@icp-sdk/core/agent"
 import {
+  AbiCoder,
   Contract,
   formatUnits,
   InfuraProvider,
   Interface,
+  keccak256,
+  MaxUint256,
   parseUnits,
   type TransactionResponse,
+  zeroPadValue,
 } from "ethers"
 
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
@@ -148,17 +152,41 @@ export class AaveService {
     } else {
       const iface = new Interface(AAVE_POOL_ABI)
       const decimals = await this.getTokenDecimals(provider, params.asset)
-      const data = iface.encodeFunctionData("supply", [
+      const amount = parseUnits(params.amount, decimals)
+      const poolAddress = this.getPoolAddress(params.chainId)
+
+      const erc20 = new Contract(params.asset, ERC20_ABI, provider)
+      const currentAllowance: bigint = await erc20.allowance(from, poolAddress)
+
+      let approveGas = BigInt(0)
+      if (currentAllowance < amount) {
+        const approveData = new Interface(ERC20_ABI).encodeFunctionData(
+          "approve",
+          [poolAddress, amount],
+        )
+        approveGas = await provider.estimateGas({
+          from,
+          to: params.asset,
+          data: approveData,
+        })
+      }
+
+      const supplyData = iface.encodeFunctionData("supply", [
         params.asset,
-        parseUnits(params.amount, decimals),
+        amount,
         from,
         AAVE_REFERRAL_CODE,
       ])
-      gasUsed = await provider.estimateGas({
+
+      const supplyGas = await this.estimateGasWithAllowanceOverride(
+        provider,
         from,
-        to: this.getPoolAddress(params.chainId),
-        data,
-      })
+        poolAddress,
+        supplyData,
+        params.asset,
+      )
+
+      gasUsed = approveGas + supplyGas
     }
 
     const feeData = await provider.getFeeData()
@@ -417,6 +445,40 @@ export class AaveService {
     )
     const response = await provider.broadcastTransaction(signed)
     await response.wait()
+  }
+
+  // Estimates gas for a supply call by overriding the ERC-20 allowance slot in
+  // the simulation so the on-chain check doesn't revert with "exceeds allowance".
+  // Uses the OpenZeppelin storage layout (_allowances at slot 1).
+  private async estimateGasWithAllowanceOverride(
+    provider: InfuraProvider,
+    from: string,
+    to: string,
+    data: string,
+    token: string,
+  ): Promise<bigint> {
+    // OZ ERC-20: slot 1 is _allowances mapping
+    // storageKey = keccak256(spender ++ keccak256(owner ++ slot))
+    const abiCoder = AbiCoder.defaultAbiCoder()
+    const innerSlot = keccak256(
+      abiCoder.encode(["address", "uint256"], [from, 1]),
+    )
+    const storageKey = keccak256(
+      abiCoder.encode(["address", "bytes32"], [to, innerSlot]),
+    )
+    const maxAllowance = zeroPadValue("0x" + MaxUint256.toString(16), 32)
+
+    try {
+      const result = await provider.send("eth_estimateGas", [
+        { from, to, data },
+        "latest",
+        { [token]: { stateDiff: { [storageKey]: maxAllowance } } },
+      ])
+      return BigInt(result)
+    } catch {
+      // Fallback: AAVE v3 ERC-20 supply uses ~250 000 gas consistently
+      return BigInt(250_000)
+    }
   }
 
   private async getTokenDecimals(

@@ -50,6 +50,7 @@ export interface ConvertUiProps {
   btcFee?: BtcToCkBtcFee | CkBtcToBtcFee
   ethFee?: EthToCkEthFee | CkEthToEthFee
   tokens?: FT[]
+  onMaxResolved?: () => void
 }
 
 export const ConvertUi: FC<ConvertUiProps> = ({
@@ -69,6 +70,7 @@ export const ConvertUi: FC<ConvertUiProps> = ({
   btcFee,
   ethFee,
   tokens,
+  onMaxResolved,
 }) => {
   const [convertModal, setConvertModal] = useState(ConvertModal.CONVERT)
   const [isResponsive, setIsResponsive] = useState(false)
@@ -181,6 +183,7 @@ export const ConvertUi: FC<ConvertUiProps> = ({
               ? (ethFee as EthToCkEthFee)
               : undefined
           }
+          onMaxResolved={onMaxResolved}
         />
       </motion.div>
     </>

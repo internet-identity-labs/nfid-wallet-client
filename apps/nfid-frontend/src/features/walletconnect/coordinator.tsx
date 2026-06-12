@@ -10,7 +10,6 @@ import { WalletConnectSignMessage } from "./components/sign-message"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { InfuraProvider } from "ethers"
-import { INFURA_API_KEY } from "@nfid/integration/token/constants"
 import { WalletConnectTemplate } from "./components/template"
 import { WCGasData } from "./types"
 

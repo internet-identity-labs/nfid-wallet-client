@@ -313,6 +313,13 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     send("SHOW")
   }
 
+  const onBridgeClick = () => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.BRIDGE })
+    send("SHOW")
+  }
+
   const refreshPortfolio = useCallback(async () => {
     if (isRefreshing) return
     setIsRefreshing(true)
@@ -448,6 +455,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
                 onSwapClick={onSwapClick}
                 onConvertClick={onConvertClick}
                 onStakeClick={onStakeClick}
+                onBridgeClick={onBridgeClick}
                 refreshPortfolio={refreshPortfolio}
                 isRefreshing={isRefreshing}
                 address={

@@ -123,5 +123,8 @@ export function getServiceConfig() {
     AWS_EXECUTE_CANDID: JSON.stringify(process.env.AWS_EXECUTE_CANDID),
     ALCHEMY_API_KEY: JSON.stringify(process.env.ALCHEMY_API_KEY),
     AWS_BASE_EP: JSON.stringify(process.env.AWS_BASE_EP),
+    ETHERSCAN_API_KEY: JSON.stringify(process.env.ETHERSCAN_API_KEY),
+    INFURA_API_KEY: JSON.stringify(process.env.INFURA_API_KEY),
+    BRIDGE_API_KEY: JSON.stringify(process.env.BRIDGE_API_KEY),
   }
 }

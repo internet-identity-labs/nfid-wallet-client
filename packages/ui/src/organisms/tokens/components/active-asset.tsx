@@ -28,6 +28,7 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   onConvertToSepoliaEth: () => void
   onConvertToCkSepoliaEth: () => void
   onStakeClick: (value: SelectedToken) => void
+  onBridgeClick: (value: SelectedToken) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   loadingToken: FT | null
@@ -51,6 +52,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   onConvertToSepoliaEth,
   onConvertToCkSepoliaEth,
   onStakeClick,
+  onBridgeClick,
   setToken,
   dropdownPosition,
   loadingToken,
@@ -65,7 +67,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   const { isViewOnlyMode } = useContext(ProfileContext)
   const tokenRateDayChange = token.getTokenRateDayChangePercent()
   const balance = token.getTokenBalance()
-  const usdBalance = token.getUSDBalanceFormatted(false)
+  const usdBalance = token.getUSDBalanceFormatted(true)
   const tokenPrice = token.getTokenRateFormatted("1", false)
 
   if (!testnetEnabled && isTestnetToken(token.getChainId())) return null
@@ -193,6 +195,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
             onConvertToSepoliaEth={onConvertToSepoliaEth}
             onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
             onStakeClick={onStakeClick}
+            onBridgeClick={onBridgeClick}
             setToken={setToken}
             dropdownPosition={dropdownPosition}
             setIsTokenProcessed={setIsTokenProcessed}

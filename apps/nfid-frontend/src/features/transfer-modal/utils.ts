@@ -286,16 +286,19 @@ export const updateCachedInitedTokens = async (
 }
 
 export const getTokensWithUpdatedBalance = async (
-  ledgers: string[],
+  tokens: Array<{ address: string | undefined; chainId?: number }>,
   allTokens: FT[],
 ) => {
   const { publicKey } = authState.getUserIdData()
 
   const updatedTokens = [...allTokens]
 
-  for (const ledger of ledgers) {
+  for (const { address, chainId } of tokens) {
+    if (!address) continue
     const index = updatedTokens.findIndex(
-      (el) => el.getTokenAddress() === ledger,
+      (el) =>
+        el.getTokenAddress() === address &&
+        (chainId === undefined || el.getChainId() === chainId),
     )
 
     if (index !== -1) {
@@ -310,11 +313,16 @@ export const getTokensWithUpdatedBalance = async (
   return updatedTokens
 }
 
-/** Apply refreshed `updates` onto `fullList` by token address (same length/order as fullList). */
+export const getEvmTokensWithUpdatedBalance = (
+  tokens: Array<{ address: string; chainId: number }>,
+  allTokens: FT[],
+) => getTokensWithUpdatedBalance(tokens, allTokens)
+
 const mergeUpdatedFtIntoTokenList = (fullList: FT[], updates: FT[]): FT[] => {
-  const byAddress = new Map(updates.map((t) => [t.getTokenAddress(), t]))
+  const tokenKey = (t: FT) => `${t.getTokenAddress()}:${t.getChainId()}`
+  const byKey = new Map(updates.map((t) => [tokenKey(t), t]))
   return fullList.map((t) => {
-    const next = byAddress.get(t.getTokenAddress())
+    const next = byKey.get(tokenKey(t))
     return next ?? t
   })
 }

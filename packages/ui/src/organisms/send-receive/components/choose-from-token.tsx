@@ -15,6 +15,7 @@ import {
 } from "@nfid-frontend/ui"
 import { validateTransferAmountField } from "@nfid-frontend/utils"
 import {
+  CKBTC_NETWORK_FEE,
   CKETH_NETWORK_FEE,
   CKSEPOLIA_NETWORK_FEE,
   E8S,
@@ -29,8 +30,15 @@ import {
   BALANCE_MOBILE_EDGE_LENGTH,
   getIsMobileDeviceMatch,
 } from "packages/ui/src/utils/is-mobile"
-import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import {
+  Category,
+  ChainId,
+  isErc20Token,
+  isEvmToken,
+} from "@nfid/integration/token/icrc1/enum/enums"
 import { SelectedToken } from "frontend/features/transfer-modal/types"
+import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
+import { useDarkTheme } from "frontend/hooks"
 
 interface ChooseFromTokenProps {
   modalType: IModalType
@@ -49,7 +57,10 @@ interface ChooseFromTokenProps {
   minAmount?: number
   isLoading?: boolean
   setSkipFeeCalculation?: () => void
+  onMaxResolved?: () => void
   isBtcEthLoading?: boolean
+  withNetwork?: boolean
+  resetKey?: string
 }
 
 export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
@@ -69,12 +80,16 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   minAmount,
   isLoading,
   setSkipFeeCalculation,
+  onMaxResolved,
   isBtcEthLoading,
+  withNetwork,
+  resetKey,
 }) => {
   const [inputAmountValue, setInputAmountValue] = useState(value || "")
   const [isMaxClicked, setIsMaxClicked] = useState(false)
   const [isFeeLoading, setIsFeeLoading] = useState(false)
   const isChangingToken = useRef(false)
+  const isDarkTheme = useDarkTheme()
 
   const {
     setValue,
@@ -96,16 +111,23 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     setTimeout(() => {
       isChangingToken.current = false
     }, 500)
-  }, [token, setValue, clearErrors])
+  }, [token, resetKey, setValue, clearErrors])
 
   const feeFormatted = useMemo(() => {
     if (!token || userBalance === undefined) return
 
     switch (modalType) {
+      case IModalType.BRIDGE:
+      // convert Native tokens to CK tokens
       case IModalType.CONVERT_TO_CKBTC:
+      case IModalType.CONVERT_TO_CKETH:
+      case IModalType.CONVERT_TO_SEPOLIA_CKETH:
+        // just set 0 for not setting undefined
         return BigInt(0)
+
+      // convert CK tokens to Native
       case IModalType.CONVERT_TO_BTC:
-        return BigInt(10)
+        return BigInt(CKBTC_NETWORK_FEE)
       case IModalType.CONVERT_TO_ETH:
         return BigInt(CKETH_NETWORK_FEE)
       case IModalType.CONVERT_TO_SEPOLIA_ETH:
@@ -115,7 +137,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
         return fee === undefined ? undefined : getMaxAmountFee(userBalance, fee)
 
       case IModalType.SEND:
-      case IModalType.CONVERT_TO_CKETH:
+      case IModalType.STAKE:
         return fee
 
       default:
@@ -136,10 +158,10 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   const isMaxAvailable = useMemo(() => {
     if (userBalance === undefined) return false
 
-    const isBTC = token?.getChainId() === ChainId.BTC
-    const isETH = token?.getChainId() === ChainId.ETH
-
-    if (isBTC || isETH) {
+    if (
+      token?.getChainId() === ChainId.BTC ||
+      (token && isEvmToken(token.getChainId()))
+    ) {
       return userBalance > BigInt(0)
     }
     if (feeFormatted === undefined) return false
@@ -157,7 +179,28 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
     const balanceNum = new BigNumber(userBalance.toString())
 
-    if (token.getChainId() === ChainId.ETH || modalType === IModalType.SEND) {
+    if (modalType === IModalType.SEND) {
+      const formattedValue = formatAssetAmountRaw(balanceNum, decimals)
+      setValue("amount", formattedValue, { shouldValidate: true })
+      const isErc20 = isErc20Token(token.getChainId(), token.getTokenCategory())
+
+      // we don't need to recalculate full amount according to fee for ERC-20 token
+      if (isErc20) {
+        setInputAmountValue(formattedValue)
+        return
+      }
+
+      // for non-erc-20 tokens we recalculate the full: amount - fee
+      setIsFeeLoading(true)
+      setIsMaxClicked(true)
+      return
+    }
+
+    if (
+      modalType === IModalType.CONVERT_TO_CKETH ||
+      modalType === IModalType.CONVERT_TO_SEPOLIA_CKETH ||
+      modalType === IModalType.BRIDGE
+    ) {
       const formattedValue = formatAssetAmountRaw(balanceNum, decimals)
       setValue("amount", formattedValue, { shouldValidate: true })
 
@@ -166,15 +209,29 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       return
     }
 
-    if (feeFormatted === undefined) return
-
-    const feeNum = new BigNumber(feeFormatted.toString())
-    const maxAmount =
-      modalType === IModalType.SWAP ? balanceNum : balanceNum.minus(feeNum)
-    const formattedValue = formatAssetAmountRaw(maxAmount, decimals)
-
-    setInputAmountValue(formattedValue)
-    setValue("amount", formattedValue, { shouldValidate: true })
+    if (modalType === IModalType.SWAP) {
+      const formattedValue = formatAssetAmountRaw(balanceNum, decimals)
+      setInputAmountValue(formattedValue)
+      setValue("amount", formattedValue, { shouldValidate: true })
+      return
+    }
+    if (
+      modalType === IModalType.STAKE ||
+      modalType === IModalType.CONVERT_TO_CKBTC ||
+      modalType === IModalType.CONVERT_TO_BTC ||
+      modalType === IModalType.CONVERT_TO_ETH ||
+      modalType === IModalType.CONVERT_TO_SEPOLIA_ETH
+    ) {
+      if (feeFormatted === undefined) return
+      const feeNum = new BigNumber(feeFormatted.toString())
+      const formattedValue = formatAssetAmountRaw(
+        balanceNum.minus(feeNum),
+        decimals,
+      )
+      setInputAmountValue(formattedValue)
+      setValue("amount", formattedValue, { shouldValidate: true })
+      return
+    }
   }, [token, feeFormatted, userBalance, isMaxAvailable, setValue])
 
   useEffect(() => {
@@ -182,7 +239,6 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       !isMaxClicked ||
       !token ||
       feeFormatted === undefined ||
-      feeFormatted === BigInt(0) ||
       userBalance === undefined
     )
       return
@@ -197,7 +253,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       decimals,
     )
 
-    setSkipFeeCalculation?.()
+    onMaxResolved?.()
     setInputAmountValue(formattedValue)
     setValue("amount", formattedValue, { shouldValidate: true })
 
@@ -264,7 +320,11 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
                 const amountValidationError = validateTransferAmountField(
                   balance || token.getTokenBalance(),
-                  modalType === IModalType.SWAP ? BigInt(0) : feeFormatted,
+                  modalType === IModalType.SWAP ||
+                    (modalType === IModalType.SEND &&
+                      token.getTokenCategory() === Category.ERC20)
+                    ? BigInt(0)
+                    : feeFormatted,
                   decimals,
                   modalType,
                   minAmount,
@@ -301,12 +361,19 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
                   id={`sourceToken_${token.getTokenName()}_${token.getTokenAddress()}`}
                   className="flex items-center w-full cursor-pointer gap-1.5"
                 >
-                  <ImageWithFallback
-                    alt={token.getTokenName()}
-                    fallbackSrc={IconNftPlaceholder}
-                    src={`${token.getTokenLogo()}`}
-                    className="w-[28px] rounded-full"
-                  />
+                  <div className="relative">
+                    <ImageWithFallback
+                      alt={token.getTokenName()}
+                      fallbackSrc={IconNftPlaceholder}
+                      src={`${token.getTokenLogo()}`}
+                      className="w-[28px] rounded-full"
+                    />
+                    {withNetwork && (
+                      <div className="absolute bottom-0 right-0 w-3 h-3 rounded-[4px] bg-white dark:bg-zinc-800 [&>svg]:w-full [&>svg]:h-full">
+                        {getNetworkIcon(token.getChainId(), isDarkTheme)}
+                      </div>
+                    )}
+                  </div>
                   <p className="text-lg font-semibold">
                     {token.getTokenSymbol()}
                   </p>

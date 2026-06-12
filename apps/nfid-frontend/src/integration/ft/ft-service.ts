@@ -545,7 +545,6 @@ export class FtService {
       }
 
       tokenImpl.inited = data.inited
-      tokenImpl.tokenState = data.state
     })
     return tokens
   }

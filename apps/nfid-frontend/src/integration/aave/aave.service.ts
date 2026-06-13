@@ -23,7 +23,13 @@ import { EthSignTransactionRequest } from "../bitcoin/idl/chain-fusion-signer.d"
 import { chainFusionSignerService } from "../bitcoin/services/chain-fusion-signer.service"
 
 import { AAVE_V3_POOL, WETH_GATEWAY, AAVE_REFERRAL_CODE } from "./constants"
-import { AAVE_POOL_ABI, WETH_GATEWAY_ABI, ERC20_ABI, ATOKEN_ABI } from "./abi"
+import {
+  AAVE_POOL_ABI,
+  WETH_GATEWAY_ABI,
+  ERC20_ABI,
+  ATOKEN_ABI,
+  POOL_NORMALIZED_INCOME_ABI,
+} from "./abi"
 import {
   AaveReserveData,
   AaveUserPosition,
@@ -31,6 +37,7 @@ import {
   AaveWithdrawParams,
   AaveSupplyFee,
   AaveSupportedChainId,
+  AaveSupplySnapshot,
 } from "./types"
 
 const RAY = BigInt("1" + "0".repeat(27))
@@ -89,42 +96,119 @@ export class AaveService {
     assets: string[],
   ): Promise<AaveUserPosition[]> {
     const service = this.getEvmService(chainId)
+    const userAddress = await service.getAddress(identity)
     const positions: AaveUserPosition[] = []
 
     for (const asset of assets) {
       try {
         const reserveData = await this.getReserveData(chainId, asset)
+        const provider = service["provider"]
         const aToken = new Contract(
           reserveData.aTokenAddress,
           ATOKEN_ABI,
-          service["provider"],
+          provider,
+        )
+        const pool = new Contract(
+          this.getPoolAddress(chainId),
+          POOL_NORMALIZED_INCOME_ABI,
+          provider,
         )
 
-        const userAddress = await service.getAddress(identity)
-        const [balance, decimals, symbol] = await Promise.all([
+        const [
+          balance,
+          scaledBalance,
+          decimals,
+          symbol,
+          currentLiquidityIndex,
+        ] = await Promise.all([
           aToken.balanceOf(userAddress) as Promise<bigint>,
+          aToken.scaledBalanceOf(userAddress) as Promise<bigint>,
           aToken.decimals() as Promise<number>,
           aToken.symbol() as Promise<string>,
+          pool.getReserveNormalizedIncome(asset) as Promise<bigint>,
         ])
 
-        if (balance > BigInt(0)) {
-          positions.push({
-            chainId,
-            asset,
-            aTokenAddress: reserveData.aTokenAddress,
-            symbol,
-            balance,
-            balanceFormatted: formatUnits(balance, decimals),
-            decimals,
-            supplyAPY: this.getSupplyAPY(reserveData.currentLiquidityRate),
-          })
-        }
+        if (balance === BigInt(0)) continue
+
+        const supplied = this.computeSupplied(
+          chainId,
+          asset,
+          userAddress,
+          scaledBalance,
+          currentLiquidityIndex,
+        )
+        const earned = balance > supplied ? balance - supplied : BigInt(0)
+
+        positions.push({
+          chainId,
+          asset,
+          aTokenAddress: reserveData.aTokenAddress,
+          symbol,
+          balance,
+          balanceFormatted: formatUnits(balance, decimals),
+          supplied,
+          suppliedFormatted: formatUnits(supplied, decimals),
+          earned,
+          earnedFormatted: formatUnits(earned, decimals),
+          decimals,
+          supplyAPY: this.getSupplyAPY(reserveData.currentLiquidityRate),
+        })
       } catch {
         continue
       }
     }
 
     return positions
+  }
+
+  // ---------------------------------------------------------------------------
+  // Supply snapshot helpers
+  // Stores scaledBalance + liquidityIndex at deposit time so we can recover
+  // the original principal later via: principal = scaledBalance × indexAtDeposit / RAY
+  // ---------------------------------------------------------------------------
+
+  private snapshotKey(chainId: number, asset: string, user: string): string {
+    return `aave:snapshot:${chainId}:${asset.toLowerCase()}:${user.toLowerCase()}`
+  }
+
+  private saveSupplySnapshot(
+    chainId: AaveSupportedChainId,
+    asset: string,
+    user: string,
+    scaledBalance: bigint,
+    liquidityIndex: bigint,
+  ): void {
+    const snapshot: AaveSupplySnapshot = {
+      scaledBalance: scaledBalance.toString(),
+      liquidityIndex: liquidityIndex.toString(),
+    }
+    localStorage.setItem(
+      this.snapshotKey(chainId, asset, user),
+      JSON.stringify(snapshot),
+    )
+  }
+
+  private computeSupplied(
+    chainId: AaveSupportedChainId,
+    asset: string,
+    user: string,
+    currentScaledBalance: bigint,
+    currentLiquidityIndex: bigint,
+  ): bigint {
+    const raw = localStorage.getItem(this.snapshotKey(chainId, asset, user))
+    if (!raw) {
+      // No snapshot — treat entire current balance as supplied (no earned shown)
+      return (currentScaledBalance * currentLiquidityIndex) / RAY
+    }
+    try {
+      const snapshot: AaveSupplySnapshot = JSON.parse(raw)
+      const indexAtDeposit = BigInt(snapshot.liquidityIndex)
+      const scaledAtDeposit = BigInt(snapshot.scaledBalance)
+      // principal = scaledBalance_at_deposit × liquidityIndex_at_deposit / RAY
+      return (scaledAtDeposit * indexAtDeposit) / RAY
+    } catch {
+      return (currentScaledBalance * currentLiquidityIndex) / RAY
+    }
   }
 
   async estimateSupplyFee(
@@ -303,6 +387,26 @@ export class AaveService {
     )
     const response = await provider.broadcastTransaction(signed)
     await response.wait()
+
+    // Save snapshot so getUserPositions() can compute earned later
+    const aToken = new Contract(
+      (await this.getReserveData(params.chainId, params.asset)).aTokenAddress,
+      ATOKEN_ABI,
+      provider,
+    )
+    const pool = new Contract(poolAddress, POOL_NORMALIZED_INCOME_ABI, provider)
+    const [scaledBalance, liquidityIndex] = await Promise.all([
+      aToken.scaledBalanceOf(from) as Promise<bigint>,
+      pool.getReserveNormalizedIncome(params.asset) as Promise<bigint>,
+    ])
+    this.saveSupplySnapshot(
+      params.chainId,
+      params.asset,
+      from,
+      scaledBalance,
+      liquidityIndex,
+    )
+
     return response
   }
 

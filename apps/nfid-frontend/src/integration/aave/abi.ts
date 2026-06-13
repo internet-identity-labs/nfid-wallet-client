@@ -20,7 +20,13 @@ export const ERC20_ABI = [
 
 export const ATOKEN_ABI = [
   "function balanceOf(address account) view returns (uint256)",
+  "function scaledBalanceOf(address account) view returns (uint256)",
   "function UNDERLYING_ASSET_ADDRESS() view returns (address)",
   "function decimals() view returns (uint8)",
   "function symbol() view returns (string)",
+]
+
+// Pool method to get current normalised income (= current liquidity index in RAY)
+export const POOL_NORMALIZED_INCOME_ABI = [
+  "function getReserveNormalizedIncome(address asset) view returns (uint256)",
 ]

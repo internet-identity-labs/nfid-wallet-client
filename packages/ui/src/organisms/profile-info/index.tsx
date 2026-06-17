@@ -12,6 +12,7 @@ import {
   Tooltip,
   IconCmpConvert,
   IconCmpBridge,
+  IconCmpEarn,
 } from "@nfid-frontend/ui"
 
 import { Balance } from "./balance"
@@ -35,6 +36,7 @@ export interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   onConvertClick: () => void
   onStakeClick: () => void
   onBridgeClick: () => void
+  onEarnClick: () => void
   refreshPortfolio: () => void
   isRefreshing: boolean
   address?: string
@@ -50,6 +52,7 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
   onConvertClick,
   onStakeClick,
   onBridgeClick,
+  onEarnClick,
   refreshPortfolio,
   isRefreshing,
   address,
@@ -241,6 +244,29 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
               ></Button>
               <p className="text-primaryButtonColor mb-0 text-xs leading-[20px] mt-1 text-center">
                 Bridge
+              </p>
+            </div>
+            <div
+              className="flex flex-col cursor-pointer"
+              id="earnButton"
+              onClick={onEarnClick}
+            >
+              <Button
+                id="profileEarnButton"
+                className="basis-[48px] !p-0 w-[48px]"
+                icon={
+                  <IconCmpEarn
+                    className={clsx(
+                      "!w-[18px] !h-[18px]",
+                      isMobile ? "text-primaryButtonColor" : "text-white",
+                    )}
+                  />
+                }
+                isSmall
+                type={isMobile ? "ghost" : "primary"}
+              ></Button>
+              <p className="text-primaryButtonColor mb-0 text-xs leading-[20px] mt-1 text-center">
+                Earn
               </p>
             </div>
           </div>

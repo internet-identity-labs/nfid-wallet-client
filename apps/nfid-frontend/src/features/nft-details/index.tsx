@@ -165,7 +165,7 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
   )
 
   if (isLoading) return <Loader isLoading />
-  if (!nft) return <NotFound />
+  if (!nft) return <NotFound hideNavigation />
 
   return (
     <ProfileTemplate

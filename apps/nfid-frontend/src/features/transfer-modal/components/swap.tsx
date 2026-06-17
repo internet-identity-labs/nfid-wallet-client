@@ -378,20 +378,31 @@ export const SwapFT = ({
       .swap(identity)
       .then(() => {
         setSuccessMessage(`Swap ${sourceAmount} to ${targetAmount} successful`)
+        if (!initedTokens || !fromToken || !toToken || !quote) return
+
+        const updatedTokens = getTokensWithUpdatedBalance(
+          [
+            {
+              address: fromTokenAddress,
+              amount: quote.getSourceAmountPrettified(),
+              decimals: fromToken.getTokenDecimals(),
+              fee: fee?.getFee(),
+            },
+            {
+              address: toTokenAddress,
+              amount: quote.getTargetAmountPrettified(),
+              decimals: toToken.getTokenDecimals(),
+              add: true,
+            },
+          ],
+          initedTokens,
+        )
+        mutateTokensCacheMergingBalances(updatedTokens)
+        updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
       })
       .catch((error) => {
         setSwapError(error)
         setErrorMessage("Something went wrong")
-      })
-      .finally(() => {
-        if (!initedTokens) return
-        getTokensWithUpdatedBalance(
-          [{ address: fromTokenAddress }, { address: toTokenAddress }],
-          initedTokens,
-        ).then((updatedTokens) => {
-          mutateTokensCacheMergingBalances(updatedTokens)
-          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
-        })
       })
 
     setGetTransaction(shroff.getSwapTransaction())
@@ -407,6 +418,7 @@ export const SwapFT = ({
     mutateInitedTokens,
     fromToken,
     toToken,
+    fee,
   ])
 
   const handleSwapClose = useCallback(() => {

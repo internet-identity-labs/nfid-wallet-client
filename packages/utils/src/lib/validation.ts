@@ -11,6 +11,8 @@ enum IModalType {
   CONVERT_TO_SEPOLIA_ETH = "CONVERT_TO_SEPOLIA_ETH",
   CONVERT_TO_SEPOLIA_CKETH = "CONVERT_TO_SEPOLIA_CKETH",
   BRIDGE = "BRIDGE",
+  EARN = "EARN",
+  WITHDRAW = "WITHDRAW",
 }
 
 const MIN_CK_BTC_AMOUNT_TO_CONVERT = 0.00051
@@ -86,8 +88,7 @@ export const validateTransferAmountField =
     }
 
     if (
-      (modalType === IModalType.CONVERT_TO_ETH ||
-        modalType === IModalType.CONVERT_TO_SEPOLIA_ETH) &&
+      modalType === IModalType.CONVERT_TO_ETH &&
       valueNum.isLessThan(MIN_CK_ETH_AMOUNT_TO_CONVERT)
     ) {
       return `Amount can't be less than ${MIN_CK_ETH_AMOUNT_TO_CONVERT} ckETH.`

@@ -12,6 +12,7 @@ export const ProfileConstants = {
   tokens: "tokens",
   nfts: "nfts",
   staking: "staking",
+  earn: "earn",
   activity: "activity",
   security: "/security",
   permissions: "/permissions",

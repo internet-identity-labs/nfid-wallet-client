@@ -6,16 +6,15 @@ import { Button } from "@nfid-frontend/ui"
 
 import { AppScreen, H2, P, CardBody } from "@nfid-frontend/ui"
 
-interface NotFoundProps extends React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLDivElement>,
-  HTMLDivElement
-> {}
+interface NotFoundProps {
+  hideNavigation?: boolean
+}
 
-export const NotFound: React.FC<NotFoundProps> = ({ children, className }) => {
+export const NotFound: React.FC<NotFoundProps> = ({ hideNavigation }) => {
   const navigate = useNavigate()
 
   return (
-    <AppScreen isFocused>
+    <AppScreen isFocused navigationBar={!hideNavigation}>
       <main className={clsx("flex flex-1")}>
         <div className="container px-6 py-0 mx-auto sm:py-4">
           <CardBody className="flex flex-col items-center justify-center h-full text-center">

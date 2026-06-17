@@ -37,7 +37,7 @@ export abstract class QuoteAbstract implements Quote {
     this.sourcePriceUSD = sourcePriceUSD
     this.sourceCalculator = sourceCalculator
     if (quote <= this.target.fee) {
-      console.error(
+      console.debug(
         "Not enough amount to pay fee for provider: ",
         this.constructor.name,
       )

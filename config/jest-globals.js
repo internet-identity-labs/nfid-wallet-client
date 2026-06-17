@@ -69,6 +69,8 @@ export const JEST_GLOBALS = {
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/check_verification",
   AWS_VERIFY_EMAIL:
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/verify_email",
+  AWS_APPROVE_LOGIN_IP:
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/login/ip",
   AWS_SIGNIN_GOOGLE_V2:
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/signin/v2",
   AWS_PUBLIC_KEY:

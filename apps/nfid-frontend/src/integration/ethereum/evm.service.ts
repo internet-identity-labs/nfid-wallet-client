@@ -51,7 +51,6 @@ import {
   MINTER_ADDRESS,
   CKETH_MINTER_CANISTER_ID,
   CKETH_NETWORK_FEE,
-  INFURA_API_KEY,
   CKETH_LEDGER_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { KEY_ETH_ADDRESS } from "packages/integration/src/lib/authentication/storage"

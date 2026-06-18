@@ -92,11 +92,16 @@ const transferMachineConfig = {
           target: "RedeemMachine",
           cond: "isRedeemMachine",
         },
+        {
+          target: "BridgeMachine",
+          cond: "isBridgeMachine",
+        },
       ],
     },
     ReceiveMachine: {},
     SwapMachine: {},
     ConvertMachine: {},
+    BridgeMachine: {},
     StakeMachine: {},
     RedeemMachine: {},
     SendMachine: {
@@ -159,6 +164,8 @@ const transferMachineOptions: Parameters<
       context.direction === "swap",
     isConvertMachine: (context: TransferMachineContext) =>
       context.direction === "convert",
+    isBridgeMachine: (context: TransferMachineContext) =>
+      context.direction === "bridge",
     isStakeMachine: (context: TransferMachineContext) =>
       context.direction === "stake",
     isRedeemMachine: (context: TransferMachineContext) =>

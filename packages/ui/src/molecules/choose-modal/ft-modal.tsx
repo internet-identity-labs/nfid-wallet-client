@@ -15,10 +15,11 @@ export interface IChooseFtModal {
   onSelect: (value: SelectedToken) => void
   title: string
   trigger?: JSX.Element
-  isSwapTo?: boolean
+  isTargetList?: boolean
   tokensAvailableToSwap?: TokensAvailableToSwap
   isBtcEthLoading?: boolean
   modalType?: IModalType
+  tooltipText?: string
 }
 
 export const ChooseFtModal = ({
@@ -28,15 +29,16 @@ export const ChooseFtModal = ({
   onSelect,
   title,
   trigger,
-  isSwapTo,
+  isTargetList,
   tokensAvailableToSwap,
   isBtcEthLoading,
   modalType,
+  tooltipText,
 }: IChooseFtModal) => {
   const sortedTokens = useMemo(() => {
     if (!tokensAvailableToSwap) return tokens
     const getIsSwappable = (token: FT) =>
-      isSwapTo
+      isTargetList
         ? tokensAvailableToSwap.to.includes(token.getTokenAddress())
         : tokensAvailableToSwap.from.includes(token.getTokenAddress())
 
@@ -48,7 +50,7 @@ export const ChooseFtModal = ({
       if (!aIsSwappable && bIsSwappable) return 1
       return 0
     })
-  }, [tokens, isSwapTo, tokensAvailableToSwap])
+  }, [tokens, isTargetList, tokensAvailableToSwap])
 
   const filterTokensBySearchInput = useCallback(
     (token: FT, searchInput: string) => {
@@ -77,11 +79,12 @@ export const ChooseFtModal = ({
         searchInputId={searchInputId}
         tokens={sortedTokens}
         title={title}
+        tooltipText={tooltipText}
         filterTokensBySearchInput={filterTokensBySearchInput}
         onSelect={(value) => onSelect(handleSelectTokenId(value))}
         trigger={trigger}
         renderItem={ChooseFtItem}
-        isSwapTo={isSwapTo}
+        isTargetList={isTargetList}
         tokensAvailableToSwap={tokensAvailableToSwap}
         isBtcEthLoading={isBtcEthLoading}
         modalType={modalType}

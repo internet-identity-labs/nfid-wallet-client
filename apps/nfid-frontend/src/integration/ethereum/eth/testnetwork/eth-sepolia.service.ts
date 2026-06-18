@@ -1,7 +1,6 @@
 import { InfuraProvider } from "ethers"
 
 import {
-  INFURA_API_KEY,
   SEPOLIA_MINTER_ADDRESS,
   CKSEPOLIA_MINTER_CANISTER_ID,
   CKSEPOLIA_LEDGER_CANISTER_ID,

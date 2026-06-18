@@ -70,7 +70,7 @@ export interface FT {
   showToken(): Promise<void>
 
   getTokenFee(
-    value?: number,
+    value?: string,
     identity?: SignIdentity,
     to?: string,
     from?: string,

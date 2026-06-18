@@ -151,12 +151,13 @@ export const StakeFT = ({
         })
         .finally(() => {
           if (!initedTokens) return
-          getTokensWithUpdatedBalance([ICP_CANISTER_ID], initedTokens).then(
-            (updatedTokens) => {
-              mutateWithTimestamp("tokens", updatedTokens, false)
-              updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
-            },
-          )
+          getTokensWithUpdatedBalance(
+            [{ address: ICP_CANISTER_ID }],
+            initedTokens,
+          ).then((updatedTokens) => {
+            mutateWithTimestamp("tokens", updatedTokens, false)
+            updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
+          })
         })
 
       return
@@ -192,7 +193,7 @@ export const StakeFT = ({
       .finally(() => {
         if (!initedTokens) return
         getTokensWithUpdatedBalance(
-          [token.getTokenAddress()],
+          [{ address: token.getTokenAddress() }],
           initedTokens,
         ).then((updatedTokens) => {
           mutateWithTimestamp("tokens", updatedTokens, false)

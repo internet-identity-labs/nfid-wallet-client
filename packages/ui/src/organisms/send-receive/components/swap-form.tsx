@@ -162,7 +162,7 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
         </div>
         <ChooseToToken
           token={toToken}
-          setToChosenToken={setToChosenToken}
+          setToChosenToken={(v) => setToChosenToken(v.address)}
           usdRate={quote?.getTargetAmountUSD()}
           tokens={allTokens}
           isLoading={isQuoteLoading}
@@ -171,6 +171,9 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
           isResponsive={isResponsive}
           setIsResponsive={setIsToResponsive}
           tokensAvailableToSwap={tokensAvailableToSwap}
+          title="Swap to"
+          tooltipText="Tokens that can't be selected lack enough liquidity for
+                      swapping."
         />
         {amount && quote && (
           <div className="flex items-center justify-between mt-6 text-xs text-gray-500 dark:text-zinc-500">

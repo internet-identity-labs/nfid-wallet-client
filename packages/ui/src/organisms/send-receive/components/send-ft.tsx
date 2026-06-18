@@ -142,6 +142,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         isBtcEthLoading={isBtcEthLoading}
         isResponsive={isFromResponsive}
         setIsResponsive={setIsFromResponsive}
+        withNetwork
       />
       <div className="h-4 mt-1 text-xs leading-4 text-red-600">
         {errors["amount"]?.message as string}

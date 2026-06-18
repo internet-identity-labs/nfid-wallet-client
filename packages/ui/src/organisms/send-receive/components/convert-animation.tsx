@@ -76,9 +76,9 @@ export const ConvertAnimation: React.FC<CustomAnimationProps> = ({
   return (
     <div
       className={clsx(
-        status === SendStatus.FAILED && "border-[3px] border-gray-200",
         status === SendStatus.COMPLETED &&
           "border-[3px] border-teal-600 dark:border-teal-500",
+        status === SendStatus.FAILED && "border-[3px] border-red-600",
         "circle-gradient flex justify-center items-center",
         "w-[148px] h-[148px] rounded-full",
         "relative before:content-[''] before:absolute before:top-0 before:left-0",
@@ -117,7 +117,9 @@ export const ConvertAnimation: React.FC<CustomAnimationProps> = ({
           <img
             src={status === SendStatus.COMPLETED ? ConvertWaitIcon : FailedIcon}
             alt={
-              status === SendStatus.COMPLETED ? "Stake success" : "Stake failed"
+              status === SendStatus.COMPLETED
+                ? "Convert success"
+                : "Convert failed"
             }
           />
         ) : assetImgTo ? (

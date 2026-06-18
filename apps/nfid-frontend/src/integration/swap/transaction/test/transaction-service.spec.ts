@@ -20,10 +20,15 @@ const mock: JsonnableEd25519KeyIdentity = [
 ]
 
 describe("SwapTransactionService", () => {
-  const service = new SwapTransactionService()
+  jest.setTimeout(10000)
+
+  let service: SwapTransactionService
+
+  beforeEach(() => {
+    service = new SwapTransactionService()
+  })
 
   it("should return the correct tx loading state", async () => {
-    jest.setTimeout(10000)
     const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(mock)
     const sessionKey = Ed25519KeyIdentity.generate()
     const chainRoot = await DelegationChain.create(

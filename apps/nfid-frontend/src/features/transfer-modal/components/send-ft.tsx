@@ -36,6 +36,8 @@ import {
   getValidatorByTokenAddress,
   updateCachedInitedTokens,
   getAddressBookFtOptions,
+  getEvmTokensWithUpdatedBalance,
+  mutateTokensCacheMergingBalances,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import {
@@ -128,11 +130,11 @@ export const TransferFT = ({
   const isIdentityReady = !!identity && !isIdentityLoading
   const parsedAmount = Number(amount)
   const isAmountValid = !isNaN(parsedAmount) && parsedAmount > 0
-  const [debouncedAmount, setDebouncedAmount] = useState(parsedAmount)
+  const [debouncedAmount, setDebouncedAmount] = useState(amount)
 
   const debouncedUpdate = useMemo(
     () =>
-      debounce((val: number) => {
+      debounce((val: string) => {
         setDebouncedAmount(val)
       }, 1000),
     [setDebouncedAmount],
@@ -140,9 +142,9 @@ export const TransferFT = ({
 
   useEffect(() => {
     if (isAmountValid) {
-      debouncedUpdate(parsedAmount)
+      debouncedUpdate(amount)
     }
-  }, [parsedAmount, isAmountValid, debouncedUpdate])
+  }, [amount, isAmountValid, debouncedUpdate])
 
   const { data: vaultsAccountsOptions = [] } = useSWR(
     "vaultsAccountsOptions",
@@ -208,13 +210,13 @@ export const TransferFT = ({
 
   useEffect(() => {
     if (isAmountValid) {
-      debouncedUpdate(parsedAmount)
+      debouncedUpdate(amount)
     }
 
     return () => {
       debouncedUpdate.cancel()
     }
-  }, [parsedAmount, isAmountValid, debouncedUpdate])
+  }, [amount, isAmountValid, debouncedUpdate])
 
   useEffect(() => {
     const fetchIcrc1Fee = async () => {
@@ -313,7 +315,7 @@ export const TransferFT = ({
   useEffect(() => {
     setFeeError(undefined)
     setFee(undefined)
-    setDebouncedAmount(0)
+    setDebouncedAmount("0")
   }, [token])
 
   const submit = useCallback(async () => {
@@ -372,13 +374,20 @@ export const TransferFT = ({
           setStatus(SendStatus.COMPLETED)
           if (!initedTokens) return
 
-          getTokensWithUpdatedBalance(
-            [token.getTokenAddress()],
+          getEvmTokensWithUpdatedBalance(
+            [
+              {
+                address: token.getTokenAddress(),
+                chainId: token.getChainId(),
+              },
+            ],
             initedTokens,
-          ).then((updatedTokens) => {
-            mutateWithTimestamp("tokens", updatedTokens, false)
-            updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
-          })
+          )
+            .then((updatedTokens) => {
+              mutateTokensCacheMergingBalances(updatedTokens)
+              mutateInitedTokens(updatedTokens, false)
+            })
+            .catch(console.debug)
         })
         .catch((e) => {
           console.error(
@@ -415,7 +424,7 @@ export const TransferFT = ({
           if (!initedTokens) return
 
           getTokensWithUpdatedBalance(
-            [token.getTokenAddress()],
+            [{ address: token.getTokenAddress() }],
             initedTokens,
           ).then((updatedTokens) => {
             mutateWithTimestamp("tokens", updatedTokens, false)
@@ -560,7 +569,7 @@ export const TransferFT = ({
           if (!initedTokens) return
 
           getTokensWithUpdatedBalance(
-            [token.getTokenAddress()],
+            [{ address: token.getTokenAddress() }],
             initedTokens,
           ).then((updatedTokens) => {
             mutateWithTimestamp("tokens", updatedTokens, false)

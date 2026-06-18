@@ -31,6 +31,7 @@ export interface Typegen0 {
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
+    isBridgeMachine: ""
     isConvertMachine: ""
     isReceiveMachine: ""
     isRedeemMachine: ""
@@ -41,6 +42,7 @@ export interface Typegen0 {
   }
   eventsCausingServices: {}
   matchesStates:
+    | "BridgeMachine"
     | "ConvertMachine"
     | "Hidden"
     | "ReceiveMachine"

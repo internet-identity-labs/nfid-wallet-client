@@ -13,6 +13,7 @@ import { PriceImpact } from "src/integration/swap/types/types"
 
 import { ChooseFtModal, Tooltip } from "@nfid-frontend/ui"
 
+import { SelectedToken } from "frontend/features/transfer-modal/types"
 import { FT } from "frontend/integration/ft/ft"
 import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 import {
@@ -20,11 +21,13 @@ import {
   BALANCE_MOBILE_EDGE_LENGTH,
   getIsMobileDeviceMatch,
 } from "packages/ui/src/utils/is-mobile"
+import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
+import { useDarkTheme } from "frontend/hooks"
 
 interface ChooseToTokenProps {
   token: FT | undefined
   tokens?: FT[]
-  setToChosenToken: (value: string) => void
+  setToChosenToken: (value: SelectedToken) => void
   usdRate: string | undefined | null
   isLoading: boolean
   value?: string
@@ -33,6 +36,9 @@ interface ChooseToTokenProps {
   setIsResponsive?: (v: boolean) => void
   tokensAvailableToSwap?: TokensAvailableToSwap
   color?: string
+  withNetwork?: boolean
+  title: string
+  tooltipText?: string
 }
 
 export const ChooseToToken: FC<ChooseToTokenProps> = ({
@@ -47,8 +53,12 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   setIsResponsive,
   tokensAvailableToSwap,
   color = "bg-gray-100 dark:bg-zinc-700",
+  withNetwork,
+  title,
+  tooltipText,
 }) => {
   const { setValue, register } = useFormContext()
+  const isDarkTheme = useDarkTheme()
 
   useEffect(() => {
     setValue("to", value)
@@ -112,20 +122,28 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
                 id="ft-modal"
                 searchInputId={"targetTokenSearchInput"}
                 tokens={tokens}
-                title="Swap to"
-                onSelect={(v) => setToChosenToken(v.address)}
-                isSwapTo={true}
+                title={title}
+                onSelect={(v) => setToChosenToken(v)}
+                isTargetList={true}
+                tooltipText={tooltipText}
                 trigger={
                   <div
                     id={`targetToken_${token.getTokenName()}_${token.getTokenAddress()}`}
                     className="flex items-center w-full cursor-pointer gap-1.5"
                   >
-                    <ImageWithFallback
-                      alt={token.getTokenName()}
-                      fallbackSrc={IconNftPlaceholder}
-                      src={`${token.getTokenLogo()}`}
-                      className="w-[28px] rounded-full"
-                    />
+                    <div className="relative">
+                      <ImageWithFallback
+                        alt={token.getTokenName()}
+                        fallbackSrc={IconNftPlaceholder}
+                        src={`${token.getTokenLogo()}`}
+                        className="w-[28px] rounded-full"
+                      />
+                      {withNetwork && (
+                        <div className="absolute bottom-0 right-0 w-3 h-3 rounded-[4px] bg-white dark:bg-zinc-800 [&>svg]:w-full [&>svg]:h-full">
+                          {getNetworkIcon(token.getChainId(), isDarkTheme)}
+                        </div>
+                      )}
+                    </div>
                     <p className="text-lg font-semibold">
                       {token.getTokenSymbol()}
                     </p>
@@ -135,7 +153,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
                 tokensAvailableToSwap={tokensAvailableToSwap}
               />
             ) : (
-              <div className="flex items-center w-full cursor-pointer gap-1.5">
+              <div className="flex items-center w-full gap-1.5">
                 <ImageWithFallback
                   alt={token.getTokenName()}
                   fallbackSrc={IconNftPlaceholder}

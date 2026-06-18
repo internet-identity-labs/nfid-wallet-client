@@ -91,19 +91,21 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
   }
 
   async getTokenFee(
-    _value: number,
+    _value: string,
     _identity: SignIdentity,
     _to?: string,
     _from?: string,
     _decimals?: number,
   ): Promise<FeeResponseETH> {
     try {
-      const amount = _value.toFixed(this.decimals).replace(TRIM_ZEROS, "")
+      const amount = new BigNumber(_value)
+        .toFixed(this.decimals)
+        .replace(TRIM_ZEROS, "")
 
       const erc20FeeData = await this.getProvider().estimateERC20Gas(
         this.tokenAddress,
-        _from!,
         _to!,
+        _from!,
         amount,
         _decimals!,
       )

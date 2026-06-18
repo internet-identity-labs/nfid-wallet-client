@@ -257,7 +257,7 @@ export class FTImpl implements FT {
   }
 
   async getTokenFee(
-    _value?: number,
+    _value?: string,
     _identity?: SignIdentity,
     _to?: string,
     _from?: string,
@@ -331,7 +331,7 @@ export class FTImpl implements FT {
     try {
       this.tokenBalance = await icrc1Pair.getBalance(globalPrincipal.toText())
     } catch (e) {
-      console.error("Icrc1Pair error: " + (e as Error).message)
+      console.debug("Icrc1Pair error: " + (e as Error).message)
       return
     }
 
@@ -341,7 +341,7 @@ export class FTImpl implements FT {
       )
     } catch (e) {
       this.tokenRate = null
-      console.error("ICRC1 rate fetch error: ", (e as Error).message)
+      console.debug("ICRC1 rate fetch error: ", (e as Error).message)
     }
 
     if (this.tokenBalance !== undefined) {

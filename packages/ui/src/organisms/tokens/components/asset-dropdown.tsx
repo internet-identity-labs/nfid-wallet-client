@@ -20,6 +20,7 @@ import {
   IconSvgStakeAction,
   IconSvgStakeActionWhite,
   IconSvgArrowWhite,
+  IconCmpBridge,
 } from "@nfid-frontend/ui"
 import {
   BTC_NATIVE_ID,
@@ -30,7 +31,11 @@ import {
   EVM_NATIVE,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
-import { Category, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import {
+  Category,
+  ChainId,
+  isEvmToken,
+} from "@nfid/integration/token/icrc1/enum/enums"
 
 import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
@@ -52,6 +57,7 @@ type AssetDropdownProps = {
   onConvertToSepoliaEth: () => void
   onConvertToCkSepoliaEth: () => void
   onStakeClick: (value: SelectedToken) => void
+  onBridgeClick: (value: SelectedToken) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   setIsTokenProcessed: (value: boolean) => void
@@ -71,6 +77,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
   onConvertToSepoliaEth,
   onConvertToCkSepoliaEth,
   onStakeClick,
+  onBridgeClick,
   setToken,
   dropdownPosition,
   setIsTokenProcessed,
@@ -112,6 +119,18 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             })
           }
         />
+        {isEvmToken(token.getChainId()) && (
+          <DropdownOption
+            label="Bridge"
+            icon={<IconCmpBridge className="min-w-6 dark:text-white" />}
+            handler={() =>
+              onBridgeClick({
+                address: token.getTokenAddress(),
+                chainId: token.getChainId(),
+              })
+            }
+          />
+        )}
         {token.getChainId() === ChainId.ICP && (
           <DropdownOption
             label="Swap"

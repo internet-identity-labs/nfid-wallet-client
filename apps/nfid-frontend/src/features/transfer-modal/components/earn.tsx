@@ -83,30 +83,16 @@ export const Earn = ({
 
   const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(tokens)
 
-  const { earnPositions } = useSupplyPositions(initedTokens)
-
-  const evmTokens = useMemo(() => {
-    if (!initedTokens) return
-    return initedTokens.filter(
-      (t) =>
-        isEvmToken(t.getChainId()) && t.getTokenCategory() !== Category.TESTNET,
-    )
-  }, [initedTokens])
-
-  const { data: filteredTokens } = useSWRWithTimestamp(
-    evmTokens ? "aaveSupportedTokens" : null,
-    () => aaveService.getSupportedTokens(evmTokens!, AAVE_SUPPORTED_CHAINS),
-    { revalidateOnFocus: false, revalidateIfStale: false },
-  )
+  const { earnPositions, supportedTokens } = useSupplyPositions(initedTokens)
 
   const token = useMemo(() => {
-    if (!filteredTokens) return
-    return filteredTokens.find(
+    if (!supportedTokens) return
+    return supportedTokens.find(
       (token: FT) =>
         token.getTokenAddress() === tokenAddress &&
         (chainId === undefined || token.getChainId() === chainId),
     )
-  }, [tokenAddress, chainId, filteredTokens])
+  }, [tokenAddress, chainId, supportedTokens])
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -322,7 +308,7 @@ export const Earn = ({
       <FormProvider {...formMethods}>
         <EarnUi
           token={token}
-          isTokenLoading={isTokensLoading || !filteredTokens}
+          isTokenLoading={isTokensLoading || !supportedTokens}
           setChosenToken={setChosenToken}
           submit={submit}
           isSuccessOpen={isSuccessOpen}
@@ -333,7 +319,7 @@ export const Earn = ({
           status={status}
           error={error}
           earnError={earnError}
-          tokens={filteredTokens}
+          tokens={supportedTokens}
           onMaxResolved={onMaxResolved}
           isUpdate={isUpdate}
         />

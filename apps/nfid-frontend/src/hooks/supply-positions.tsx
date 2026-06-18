@@ -23,7 +23,16 @@ export function useSupplyPositions(
 
   const { data: supportedTokens } = useSWRWithTimestamp(
     evmTokens ? "aaveSupportedTokens" : null,
-    () => aaveService.getSupportedTokens(evmTokens!, AAVE_SUPPORTED_CHAINS),
+    async () => {
+      const tokens = await aaveService.getSupportedTokens(
+        evmTokens!,
+        AAVE_SUPPORTED_CHAINS,
+      )
+      return tokens.filter((t) => {
+        const balance = t.getTokenBalance()
+        return balance !== undefined && balance > BigInt(0)
+      })
+    },
     { revalidateOnFocus: false, revalidateIfStale: false },
   )
 

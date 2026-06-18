@@ -94,7 +94,17 @@ export const Bridge = ({
   const { data: filteredFromTokens, isLoading: isFilteredTokensLoading } =
     useSWRWithTimestamp(
       initedTokens ? "filteredFromTokens" : null,
-      () => bridgeService.getSupportedSourceTokens(initedTokens),
+      async () => {
+        const tokens = await bridgeService.getSupportedSourceTokens(
+          initedTokens!,
+        )
+        if (!tokens) return
+
+        return tokens.filter((t) => {
+          const balance = t.getTokenBalance()
+          return balance !== undefined && balance > BigInt(0)
+        })
+      },
       { revalidateOnFocus: false },
     )
 

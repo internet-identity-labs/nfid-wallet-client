@@ -425,17 +425,6 @@ export const getUpdatedPositions = (
   mutate("earnPositions", updated, false)
 }
 
-export const getEvmTokensWithUpdatedBalance = (
-  tokens: Array<{
-    address: string
-    chainId: number
-    amount: string
-    decimals: number
-    fee?: bigint
-  }>,
-  allTokens: FT[],
-): FT[] => getTokensWithUpdatedBalance(tokens, allTokens)
-
 const mergeUpdatedFtIntoTokenList = (fullList: FT[], updates: FT[]): FT[] => {
   const tokenKey = (t: FT) => `${t.getTokenAddress()}:${t.getChainId()}`
   const byKey = new Map(updates.map((t) => [tokenKey(t), t]))

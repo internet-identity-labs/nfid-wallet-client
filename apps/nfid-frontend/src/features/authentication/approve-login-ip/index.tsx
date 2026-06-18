@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
 import { IconCmpNFIDWalletLogoBlack, Loader } from "@nfid-frontend/ui"
@@ -40,26 +40,23 @@ export const AuthApproveLoginIp = () => {
   const [state, setState] = useState<State>({ status: "LOADING" })
   const { token } = useParams()
 
-  const approve = useCallback(async (token: string) => {
-    try {
-      const data = await approveLoginIp(token)
-      setState({
-        status: "DONE",
-        title: data.title,
-        description: data.description,
-      })
-    } catch (e: any) {
-      setState({
-        status: "ERROR",
-        message: e?.message ?? "Something went wrong.",
-      })
-    }
-  }, [])
-
   useEffect(() => {
     if (!token) return
-    approve(token)
-  }, [token, approve])
+    approveLoginIp(token)
+      .then((data) =>
+        setState({
+          status: "DONE",
+          title: data.title,
+          description: data.description,
+        }),
+      )
+      .catch((e: any) =>
+        setState({
+          status: "ERROR",
+          message: e?.message ?? "Something went wrong.",
+        }),
+      )
+  }, [token])
 
   const content = getContent(state)
 

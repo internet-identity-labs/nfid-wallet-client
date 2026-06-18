@@ -156,11 +156,14 @@ jobs:
               --tag ${IMAGE_NAME} \
               --label 'runnumber=${GITHUB_RUN_ID}'" >&2
 
+            docker pull ${IMAGE_ID}:latest || true
+
             docker build . \
               --build-arg USER_ID=$(id -u) \
               --build-arg GROUP_ID=$(id -g) \
               --file Dockerfile \
               --tag ${IMAGE_NAME} \
+              --cache-from ${IMAGE_ID}:latest \
               --label "runnumber=${GITHUB_RUN_ID}"
 
             ci_echo_debug "docker tag ${IMAGE_NAME} ${IMAGE_ID}:${VERSION}" >&2

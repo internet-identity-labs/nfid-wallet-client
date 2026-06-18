@@ -30,6 +30,7 @@ import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/toke
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { useUserPrefs } from "frontend/hooks/user-prefs"
 import { useSupplyPositions } from "frontend/hooks"
+import { isTokenWithBalance } from "../transfer-modal/utils"
 
 const TokensPage = memo(() => {
   const {
@@ -180,11 +181,7 @@ const TokensPage = memo(() => {
   const { supportedTokens } = useSupplyPositions(initedTokens, viewOnlyAddress)
 
   const tokensOwnedQuantity = useMemo(() => {
-    return initedTokens?.filter(
-      (token) =>
-        token.getTokenBalance() !== undefined &&
-        token.getTokenBalance()! > BigInt(0),
-    ).length
+    return initedTokens?.filter((token) => isTokenWithBalance(token)).length
   }, [initedTokens])
 
   const tokensWithoutPrice = useMemo(() => {

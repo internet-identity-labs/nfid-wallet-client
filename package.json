@@ -75,7 +75,7 @@
     "clsx": "2.1.1",
     "core-js": "3.49.0",
     "date-fns": "4.1.0",
-    "dompurify": "3.4.0",
+    "dompurify": "3.4.9",
     "ethers": "6.16.0",
     "framer-motion": "12.38.0",
     "idb": "8.0.3",
@@ -109,7 +109,7 @@
     "xstate": "4.38.3"
   },
   "devDependencies": {
-    "@babel/core": "7.29.0",
+    "@babel/core": "7.29.6",
     "@babel/eslint-parser": "7.28.6",
     "@babel/plugin-proposal-private-property-in-object": "7.21.11",
     "@babel/plugin-syntax-flow": "7.28.6",

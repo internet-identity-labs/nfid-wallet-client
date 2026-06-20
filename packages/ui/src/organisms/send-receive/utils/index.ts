@@ -58,6 +58,8 @@ export enum IModalType {
   CONVERT_TO_SEPOLIA_ETH = "CONVERT_TO_SEPOLIA_ETH",
   CONVERT_TO_SEPOLIA_CKETH = "CONVERT_TO_SEPOLIA_CKETH",
   BRIDGE = "BRIDGE",
+  EARN = "EARN",
+  WITHDRAW = "WITHDRAW",
 }
 
 export const getTitleAndButtonText = (

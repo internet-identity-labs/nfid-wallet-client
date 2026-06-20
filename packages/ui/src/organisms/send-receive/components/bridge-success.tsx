@@ -159,7 +159,7 @@ export const BridgeSuccessUi: FC<BridgeSuccessUiProps> = ({
         </div>
       )}
       <Button
-        id={"swap-success-close-button"}
+        id={"bridge-success-close-button"}
         type="primary"
         className="mt-auto"
         block

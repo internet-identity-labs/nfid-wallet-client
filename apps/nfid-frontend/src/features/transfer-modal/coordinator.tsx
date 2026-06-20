@@ -20,6 +20,8 @@ import { TransferNFT } from "./components/send-nft"
 import { StakeFT } from "./components/stake"
 import { SwapFT } from "./components/swap"
 import { Bridge } from "./components/bridge"
+import { Earn } from "./components/earn"
+import { Withdraw } from "./components/withdraw"
 
 export const TransferModalCoordinator = () => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
@@ -31,16 +33,21 @@ export const TransferModalCoordinator = () => {
   const [hasBridgeError, setHasBridgeError] = useState(false)
   const [isConvertSuccess, setIsConvertSuccess] = useState(false)
   const [isBridgeSuccess, setIsBridgeSuccess] = useState(false)
+  const [isEarnSuccess, setIsEarnSuccess] = useState(false)
+  const [isWithdrawSuccess, setIsWithdrawSuccess] = useState(false)
 
   const hideModal = useCallback(() => {
     send({ type: "ASSIGN_SELECTED_FT", data: undefined })
     send({ type: "ASSIGN_SELECTED_TARGET_FT", data: "" })
     send({ type: "ASSIGN_SELECTED_NFT", data: "" })
     send({ type: "CHANGE_TOKEN_TYPE", data: "ft" })
+    send({ type: "ASSIGN_IS_EARN_UPDATE", data: false })
     send({ type: "CHANGE_DIRECTION", data: null })
     send({ type: "HIDE" })
     setIsConvertSuccess(false)
     setIsBridgeSuccess(false)
+    setIsEarnSuccess(false)
+    setIsWithdrawSuccess(false)
   }, [send])
 
   useDisableScroll(!state.matches("Hidden"))
@@ -173,6 +180,46 @@ export const TransferModalCoordinator = () => {
             />
           </motion.div>
         )}
+        {state.matches("EarnMachine") && (
+          <motion.div
+            key="bridge-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          >
+            <Earn
+              preselectedSourceTokenAddress={state.context.selectedFT?.address}
+              preselectedSourceChainId={state.context.selectedFT?.chainId}
+              onClose={hideModal}
+              setErrorMessage={setErrorMessage}
+              setSuccessMessage={setSuccessMessage}
+              setIsEarnSuccess={setIsEarnSuccess}
+              onError={setHasBridgeError}
+              isUpdate={state.context.isEarnUpdate}
+            />
+          </motion.div>
+        )}
+        {state.matches("WithdrawMachine") && (
+          <motion.div
+            key="bridge-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          >
+            <Withdraw
+              tokenAddress={state.context.selectedFT!.address}
+              chainId={state.context.selectedFT!.chainId}
+              balance={state.context.withdrawBalance}
+              onClose={hideModal}
+              setErrorMessage={setErrorMessage}
+              setSuccessMessage={setSuccessMessage}
+              setIsWithdrawSuccess={setIsWithdrawSuccess}
+              onError={setHasBridgeError}
+            />
+          </motion.div>
+        )}
         {state.matches("ReceiveMachine") && (
           <motion.div
             key="receive-modal"
@@ -256,6 +303,8 @@ export const TransferModalCoordinator = () => {
           isConvertSuccess={isConvertSuccess}
           isBridgeSuccess={isBridgeSuccess}
           hasBridgeError={hasBridgeError}
+          isEarnSuccess={isEarnSuccess}
+          isWithdrawSuccess={isWithdrawSuccess}
         />
       )}
     </>

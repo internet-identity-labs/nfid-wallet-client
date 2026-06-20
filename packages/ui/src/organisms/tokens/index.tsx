@@ -57,6 +57,8 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   onConvertToCkSepoliaEth: () => void
   onStakeClick: (value: SelectedToken) => void
   onBridgeClick: (value: SelectedToken) => void
+  onEarnClick: (value: SelectedToken) => void
+  aaveTokens?: FT[]
   hideZeroBalance: boolean
   onZeroBalanceToggle: () => void
   testnetEnabled: boolean
@@ -86,6 +88,8 @@ export const Tokens: FC<TokensProps> = ({
   onConvertToCkSepoliaEth,
   onStakeClick,
   onBridgeClick,
+  onEarnClick,
+  aaveTokens,
   hideZeroBalance,
   onZeroBalanceToggle,
   testnetEnabled,
@@ -243,6 +247,8 @@ export const Tokens: FC<TokensProps> = ({
                     onSwapClick={onSwapClick}
                     onStakeClick={onStakeClick}
                     onBridgeClick={onBridgeClick}
+                    onEarnClick={onEarnClick}
+                    aaveTokens={aaveTokens}
                     setToken={setToken}
                     dropdownPosition={index + 4 > arr.length ? "top" : "bottom"}
                     loadingToken={loadingToken}

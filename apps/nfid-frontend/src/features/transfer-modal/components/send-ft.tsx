@@ -36,7 +36,6 @@ import {
   getValidatorByTokenAddress,
   updateCachedInitedTokens,
   getAddressBookFtOptions,
-  getEvmTokensWithUpdatedBalance,
   mutateTokensCacheMergingBalances,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
@@ -374,20 +373,21 @@ export const TransferFT = ({
           setStatus(SendStatus.COMPLETED)
           if (!initedTokens) return
 
-          getEvmTokensWithUpdatedBalance(
+          const isErc20 = token.getTokenCategory() === Category.ERC20
+          const updatedTokens = getTokensWithUpdatedBalance(
             [
               {
                 address: token.getTokenAddress(),
                 chainId: token.getChainId(),
+                amount,
+                decimals: token.getTokenDecimals(),
+                fee: isErc20 ? undefined : ethFee.getFee(),
               },
             ],
             initedTokens,
           )
-            .then((updatedTokens) => {
-              mutateTokensCacheMergingBalances(updatedTokens)
-              mutateInitedTokens(updatedTokens, false)
-            })
-            .catch(console.debug)
+          mutateTokensCacheMergingBalances(updatedTokens)
+          mutateInitedTokens(updatedTokens, false)
         })
         .catch((e) => {
           console.error(
@@ -423,13 +423,19 @@ export const TransferFT = ({
           setStatus(SendStatus.COMPLETED)
           if (!initedTokens) return
 
-          getTokensWithUpdatedBalance(
-            [{ address: token.getTokenAddress() }],
+          const updatedTokens = getTokensWithUpdatedBalance(
+            [
+              {
+                address: token.getTokenAddress(),
+                amount,
+                decimals: token.getTokenDecimals(),
+                fee: btcFee.getFee(),
+              },
+            ],
             initedTokens,
-          ).then((updatedTokens) => {
-            mutateWithTimestamp("tokens", updatedTokens, false)
-            updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
-          })
+          )
+          mutateWithTimestamp("tokens", updatedTokens, false)
+          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
         })
         .catch((e) => {
           console.error(
@@ -568,13 +574,19 @@ export const TransferFT = ({
           setStatus(SendStatus.COMPLETED)
           if (!initedTokens) return
 
-          getTokensWithUpdatedBalance(
-            [{ address: token.getTokenAddress() }],
+          const updatedTokens = getTokensWithUpdatedBalance(
+            [
+              {
+                address: token.getTokenAddress(),
+                amount,
+                decimals: token.getTokenDecimals(),
+                fee: fee?.getFee() ?? BigInt(0),
+              },
+            ],
             initedTokens,
-          ).then((updatedTokens) => {
-            mutateWithTimestamp("tokens", updatedTokens, false)
-            updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
-          })
+          )
+          mutateWithTimestamp("tokens", updatedTokens, false)
+          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
         })
         .catch((e) => {
           console.error(

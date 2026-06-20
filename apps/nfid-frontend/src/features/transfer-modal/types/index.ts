@@ -23,6 +23,8 @@ export enum ModalType {
   STAKE = "stake",
   REDEEM = "redeem",
   BRIDGE = "bridge",
+  EARN = "earn",
+  WITHDRAW = "withdraw",
 }
 
 export interface SelectedToken {
@@ -59,6 +61,8 @@ export type TransferMachineContext = {
   transferObject?: ITransferSuccess
   error?: Error
   tokenStandard: string
+  isEarnUpdate: boolean
+  withdrawBalance: bigint
   isOpenedFromVaults: boolean
   stakeId?: string
 }
@@ -68,6 +72,8 @@ export type Events =
   | { type: "HIDE" }
   | { type: "CHANGE_TOKEN_TYPE"; data: TokenType }
   | { type: "CHANGE_DIRECTION"; data: ModalType | null }
+  | { type: "ASSIGN_IS_EARN_UPDATE"; data: boolean | null }
+  | { type: "ASSIGN_WITHDRAW_BALANCE"; data: bigint }
   | { type: "ASSIGN_SOURCE_ACCOUNT"; data: Wallet }
   | { type: "ASSIGN_SOURCE_WALLET"; data: string }
   | { type: "ASSIGN_STAKE_ID"; data: string }

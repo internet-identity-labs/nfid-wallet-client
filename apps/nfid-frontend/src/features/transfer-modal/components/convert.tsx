@@ -37,6 +37,7 @@ import { FormValues, SendStatus } from "../types"
 import {
   getConversionTokenAddress,
   getTokensWithUpdatedBalance,
+  mutateTokensCacheMergingBalances,
   updateCachedInitedTokens,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
@@ -282,18 +283,26 @@ export const ConvertBTC = ({
 
           if (!initedTokens) return
 
-          const isCkToNative =
-            fromTokenAddress === CKETH_LEDGER_CANISTER_ID ||
-            fromTokenAddress === CKSEPOLIA_LEDGER_CANISTER_ID
-          if (isCkToNative) {
-            getTokensWithUpdatedBalance(
-              [{ address: fromTokenAddress }, { address: toTokenAddress }],
-              initedTokens,
-            ).then((updatedTokens) => {
-              mutateWithTimestamp("tokens", updatedTokens, false)
-              updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
-            })
-          }
+          const isCkEthToNative =
+            fromToken.getTokenAddress() === CKETH_LEDGER_CANISTER_ID ||
+            fromToken.getTokenAddress() === CKSEPOLIA_LEDGER_CANISTER_ID
+          const fee = isCkEthToNative
+            ? ethFee!.icpNetworkFee
+            : (ethFee as EthToCkEthFee).ethereumNetworkFee
+
+          const updatedTokens = getTokensWithUpdatedBalance(
+            [
+              {
+                address: fromTokenAddress,
+                amount,
+                decimals: fromToken.getTokenDecimals(),
+                fee,
+              },
+            ],
+            initedTokens,
+          )
+          mutateWithTimestamp("tokens", updatedTokens, false)
+          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
         })
         .catch((error) => {
           console.error(
@@ -330,15 +339,25 @@ export const ConvertBTC = ({
         setStatus(SendStatus.COMPLETED)
         if (!initedTokens) return
 
-        if (fromToken.getTokenAddress() === CKBTC_CANISTER_ID) {
-          getTokensWithUpdatedBalance(
-            [{ address: fromTokenAddress }, { address: toTokenAddress }],
-            initedTokens,
-          ).then((updatedTokens) => {
-            mutateWithTimestamp("tokens", updatedTokens, false)
-            updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
-          })
-        }
+        const isCkBtcToNative =
+          fromToken.getTokenAddress() === CKBTC_CANISTER_ID
+        const fee = isCkBtcToNative
+          ? btcFee.icpNetworkFee
+          : (btcFee as BtcToCkBtcFee).bitcointNetworkFee.fee_satoshis
+
+        const updatedTokens = getTokensWithUpdatedBalance(
+          [
+            {
+              address: fromTokenAddress,
+              amount,
+              decimals: fromToken.getTokenDecimals(),
+              fee,
+            },
+          ],
+          initedTokens,
+        )
+        mutateWithTimestamp("tokens", updatedTokens, false)
+        updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
       })
       .catch((error) => {
         console.error(

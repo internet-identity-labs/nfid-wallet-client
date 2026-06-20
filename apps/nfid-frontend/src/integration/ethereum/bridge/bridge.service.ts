@@ -6,6 +6,7 @@ import {
   ETH_DECIMALS,
   ETH_NATIVE_ID,
   EVM_NATIVE,
+  EVM_ZERO_ADDRESS,
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
 import {
@@ -24,7 +25,7 @@ import { createWalletClient, http, type Chain } from "viem"
 import { toAccount } from "viem/accounts"
 import { mainnet, polygon, base, arbitrum } from "viem/chains"
 import { getQuote, getTokens, type LiFiStep } from "@lifi/sdk"
-import { BRIDGE_ADDRESS, EVM_ZERO_ADDRESS } from "./constants"
+import { BRIDGE_ADDRESS } from "./constants"
 import { EstimatedBridge } from "./types"
 
 class BridgeService {

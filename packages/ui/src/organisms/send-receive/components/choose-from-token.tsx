@@ -118,6 +118,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
     switch (modalType) {
       case IModalType.BRIDGE:
+      case IModalType.EARN:
+      case IModalType.WITHDRAW:
       // convert Native tokens to CK tokens
       case IModalType.CONVERT_TO_CKBTC:
       case IModalType.CONVERT_TO_CKETH:
@@ -199,10 +201,18 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     if (
       modalType === IModalType.CONVERT_TO_CKETH ||
       modalType === IModalType.CONVERT_TO_SEPOLIA_CKETH ||
-      modalType === IModalType.BRIDGE
+      modalType === IModalType.BRIDGE ||
+      modalType === IModalType.EARN ||
+      modalType === IModalType.WITHDRAW
     ) {
       const formattedValue = formatAssetAmountRaw(balanceNum, decimals)
       setValue("amount", formattedValue, { shouldValidate: true })
+
+      if (modalType === IModalType.WITHDRAW) {
+        onMaxResolved?.()
+        setInputAmountValue(formattedValue)
+        return
+      }
 
       setIsFeeLoading(true)
       setIsMaxClicked(true)
@@ -264,10 +274,12 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   useEffect(() => {
     if (!token || !setIsResponsive) return
 
-    const balance = token.getTokenBalanceFormatted()
+    const formattedBalance = balance
+      ? `${Number(balance) / 10 ** token.getTokenDecimals()} ${token.getTokenSymbol()}`
+      : token.getTokenBalanceFormatted()
     if (
-      !balance ||
-      balance.length <
+      !formattedBalance ||
+      formattedBalance.length <
         (getIsMobileDeviceMatch() &&
         (token.getChainId() === ChainId.BTC ||
           token.getChainId() === ChainId.ETH ||
@@ -385,12 +397,19 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             />
           ) : (
             <div className="flex items-center w-full gap-1.5">
-              <ImageWithFallback
-                alt={token.getTokenName()}
-                fallbackSrc={IconNftPlaceholder}
-                src={`${token.getTokenLogo()}`}
-                className="w-[28px] rounded-full"
-              />
+              <div className="relative">
+                <ImageWithFallback
+                  alt={token.getTokenName()}
+                  fallbackSrc={IconNftPlaceholder}
+                  src={`${token.getTokenLogo()}`}
+                  className="w-[28px] rounded-full"
+                />
+                {withNetwork && (
+                  <div className="absolute bottom-0 right-0 w-3 h-3 rounded-[4px] bg-white dark:bg-zinc-800 [&>svg]:w-full [&>svg]:h-full">
+                    {getNetworkIcon(token.getChainId(), isDarkTheme)}
+                  </div>
+                )}
+              </div>
               <p className="text-lg font-semibold">{token.getTokenSymbol()}</p>
             </div>
           )}
@@ -434,7 +453,11 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
                 )}
               </span>
             ) : (
-              <span>{Number(balance) / E8S} ICP</span>
+              <span>
+                {modalType === IModalType.WITHDRAW
+                  ? `${formatAssetAmountRaw(new BigNumber(balance.toString()), token.getTokenDecimals())} ${token.getTokenSymbol()}`
+                  : `${Number(balance) / E8S} ICP`}
+              </span>
             )}
           </span>
         </div>

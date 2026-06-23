@@ -21,6 +21,9 @@ const transferMachineConfig = {
       target: "TransferModal",
       actions: "assignDirection",
     },
+    ASSIGN_IS_EARN_UPDATE: {
+      actions: "assignIsEarnUpdate",
+    },
     ASSIGN_SOURCE_ACCOUNT: {
       actions: "assignSourceAccount",
     },
@@ -35,6 +38,9 @@ const transferMachineConfig = {
     },
     ASSIGN_SELECTED_FT: {
       actions: "assignSelectedFT",
+    },
+    ASSIGN_WITHDRAW_BALANCE: {
+      actions: "assignWithdrawBalance",
     },
     ASSIGN_SELECTED_TARGET_FT: {
       actions: "assignSelectedTargetFT",
@@ -96,12 +102,22 @@ const transferMachineConfig = {
           target: "BridgeMachine",
           cond: "isBridgeMachine",
         },
+        {
+          target: "EarnMachine",
+          cond: "isEarnMachine",
+        },
+        {
+          target: "WithdrawMachine",
+          cond: "isWithdrawMachine",
+        },
       ],
     },
     ReceiveMachine: {},
     SwapMachine: {},
     ConvertMachine: {},
     BridgeMachine: {},
+    EarnMachine: {},
+    WithdrawMachine: {},
     StakeMachine: {},
     RedeemMachine: {},
     SendMachine: {
@@ -166,6 +182,10 @@ const transferMachineOptions: Parameters<
       context.direction === "convert",
     isBridgeMachine: (context: TransferMachineContext) =>
       context.direction === "bridge",
+    isEarnMachine: (context: TransferMachineContext) =>
+      context.direction === "earn",
+    isWithdrawMachine: (context: TransferMachineContext) =>
+      context.direction === "withdraw",
     isStakeMachine: (context: TransferMachineContext) =>
       context.direction === "stake",
     isRedeemMachine: (context: TransferMachineContext) =>
@@ -184,6 +204,9 @@ const transferMachineOptions: Parameters<
     assignSourceAccount: assign((_, event: any) => ({
       sourceAccount: event?.data,
     })),
+    assignIsEarnUpdate: assign((_, event: any) => ({
+      isEarnUpdate: event?.data,
+    })),
     assignSourceWallet: assign((_, event: any) => ({
       sourceWalletAddress: event?.data,
     })),
@@ -192,6 +215,9 @@ const transferMachineOptions: Parameters<
     })),
     assignSelectedFT: assign((_, event: any) => ({
       selectedFT: event?.data,
+    })),
+    assignWithdrawBalance: assign((_, event: any) => ({
+      withdrawBalance: event?.data,
     })),
     assignSelectedTargetFT: assign((_, event: any) => ({
       selectedTargetFT: event?.data,

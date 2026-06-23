@@ -142,22 +142,25 @@ export const StakeFT = ({
           mutate("stakedTokens", fetchStakedTokens(initedTokens, true), {
             revalidate: true,
           })
+          const updatedTokens = getTokensWithUpdatedBalance(
+            [
+              {
+                address: ICP_CANISTER_ID,
+                amount,
+                decimals: token.getTokenDecimals(),
+                fee: stakingParams?.getFee() ?? BigInt(0),
+              },
+            ],
+            initedTokens,
+          )
+          mutateWithTimestamp("tokens", updatedTokens, false)
+          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
         })
         .catch((e) => {
           console.error("Stake error: ", e)
           setError((e as Error).message)
           setStatus(SendStatus.FAILED)
           setErrorMessage(DEFAULT_STAKE_ERROR)
-        })
-        .finally(() => {
-          if (!initedTokens) return
-          getTokensWithUpdatedBalance(
-            [{ address: ICP_CANISTER_ID }],
-            initedTokens,
-          ).then((updatedTokens) => {
-            mutateWithTimestamp("tokens", updatedTokens, false)
-            updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
-          })
         })
 
       return
@@ -183,22 +186,25 @@ export const StakeFT = ({
         mutate("stakedTokens", () => fetchStakedTokens(initedTokens, true), {
           revalidate: true,
         })
+        const updatedTokens = getTokensWithUpdatedBalance(
+          [
+            {
+              address: token.getTokenAddress(),
+              amount,
+              decimals: token.getTokenDecimals(),
+              fee: stakingParams?.getFee() ?? BigInt(0),
+            },
+          ],
+          initedTokens,
+        )
+        mutateWithTimestamp("tokens", updatedTokens, false)
+        updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
       })
       .catch((e) => {
         console.error("Stake error: ", e)
         setError((e as Error).message)
         setStatus(SendStatus.FAILED)
         setErrorMessage(DEFAULT_STAKE_ERROR)
-      })
-      .finally(() => {
-        if (!initedTokens) return
-        getTokensWithUpdatedBalance(
-          [{ address: token.getTokenAddress() }],
-          initedTokens,
-        ).then((updatedTokens) => {
-          mutateWithTimestamp("tokens", updatedTokens, false)
-          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
-        })
       })
   }, [
     token,

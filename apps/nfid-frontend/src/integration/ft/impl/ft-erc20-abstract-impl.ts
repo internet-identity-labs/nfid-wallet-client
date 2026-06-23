@@ -13,6 +13,7 @@ import { SignIdentity } from "@icp-sdk/core/agent"
 import { FeeResponseETH } from "../utils"
 import {
   ETH_DECIMALS,
+  ETH_NATIVE_ID,
   EVM_NATIVE,
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
@@ -50,7 +51,12 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
     const contracts = await icrc1RegistryService.getStoredUserTokens()
 
     return contracts
-      .filter((c) => c.network === this.tokenChainId && c.ledger !== EVM_NATIVE)
+      .filter(
+        (c) =>
+          c.network === this.tokenChainId &&
+          c.ledger !== EVM_NATIVE &&
+          c.ledger !== ETH_NATIVE_ID,
+      )
       .map((c) => c.ledger)
   }
 

@@ -29,6 +29,7 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   onConvertToCkSepoliaEth: () => void
   onStakeClick: (value: SelectedToken) => void
   onBridgeClick: (value: SelectedToken) => void
+  onEarnClick: (value: SelectedToken) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   loadingToken: FT | null
@@ -37,6 +38,7 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   arbitrumEnabled?: boolean
   baseEnabled?: boolean
   polygonEnabled?: boolean
+  aaveTokens?: FT[]
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
@@ -53,6 +55,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   onConvertToCkSepoliaEth,
   onStakeClick,
   onBridgeClick,
+  onEarnClick,
   setToken,
   dropdownPosition,
   loadingToken,
@@ -61,6 +64,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   arbitrumEnabled,
   baseEnabled,
   polygonEnabled,
+  aaveTokens,
   ...props
 }) => {
   const [isTokenProcessed, setIsTokenProcessed] = useState(false)
@@ -196,10 +200,16 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
             onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
             onStakeClick={onStakeClick}
             onBridgeClick={onBridgeClick}
+            onEarnClick={onEarnClick}
             setToken={setToken}
             dropdownPosition={dropdownPosition}
             setIsTokenProcessed={setIsTokenProcessed}
             isTokenProcessed={isTokenProcessed || loadingToken === token}
+            isEarnSupported={aaveTokens?.some(
+              (t) =>
+                t.getTokenAddress() === token.getTokenAddress() &&
+                t.getChainId() === token.getChainId(),
+            )}
           />
         )}
       </td>

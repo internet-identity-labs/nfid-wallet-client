@@ -14,8 +14,9 @@ export interface AaveUserPosition {
   symbol: string
   balance: bigint
   balanceFormatted: string
+  balanceUsdFormatted: string
   decimals: number
-  supplyAPY: number
+  supplyAPY: string
 }
 
 export interface AaveSupplyParams {
@@ -25,12 +26,7 @@ export interface AaveSupplyParams {
   isNativeToken: boolean
 }
 
-export interface AaveWithdrawParams {
-  chainId: AaveSupportedChainId
-  asset: string
-  amount: string
-  isNativeToken: boolean
-}
+export interface AaveWithdrawParams extends AaveSupplyParams {}
 
 export interface AaveSupplyFee {
   gasUsed: bigint
@@ -39,8 +35,21 @@ export interface AaveSupplyFee {
   networkFee: bigint
 }
 
+export interface AaveWithdrawFee extends AaveSupplyFee {}
+
 export type AaveSupportedChainId =
   | ChainId.ETH
   | ChainId.POL
   | ChainId.ARB
   | ChainId.BASE
+
+export interface AaveFeeFormatted {
+  fee: string
+  feeUsd: string
+}
+
+export interface AaveFeeData {
+  rawFee: AaveSupplyFee | AaveWithdrawFee
+  feeFormatted: AaveFeeFormatted
+  adjustedAmount?: string
+}

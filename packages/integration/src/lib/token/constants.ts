@@ -15,6 +15,7 @@ export const EVM_NATIVE = "evm-native"
 export const CKBTC_CANISTER_ID = "mxzaz-hqaaa-aaaar-qaada-cai"
 
 // ETH
+export const EVM_ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 export const CKETH_LEDGER_CANISTER_ID = "ss2fx-dyaaa-aaaar-qacoq-cai"
 export const MINTER_ADDRESS = "0x18901044688D3756C35Ed2b36D93e6a5B8e00E68"
 export const CKETH_MINTER_CANISTER_ID = "sv3dd-oaaaa-aaaar-qacoa-cai"

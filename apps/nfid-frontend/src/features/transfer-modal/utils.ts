@@ -6,7 +6,7 @@ import {
 import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc"
 import { Principal } from "@icp-sdk/core/principal"
 import validate, { Network } from "bitcoin-address-validation"
-import { isAddress } from "ethers"
+import { formatUnits, isAddress, parseUnits } from "ethers"
 import { PRINCIPAL_LENGTH } from "packages/constants"
 import { Shroff } from "src/integration/swap/shroff"
 
@@ -54,6 +54,10 @@ import {
   UserAddressSaveRequest,
   UserAddressUpdateRequest,
 } from "frontend/integration/address-book"
+import {
+  AaveUserPosition,
+  AaveSupportedChainId,
+} from "frontend/integration/aave"
 
 export enum AddressBookAction {
   CREATE = "CREATE",
@@ -285,10 +289,46 @@ export const updateCachedInitedTokens = async (
   mutate("fullUsdValue")
 }
 
-export const getTokensWithUpdatedBalance = async (
+export const getTokensWithUpdatedBalance = (
+  tokens: Array<{
+    address: string
+    chainId?: number
+    amount: string
+    decimals: number
+    fee?: bigint
+    add?: boolean
+  }>,
+  allTokens: FT[],
+): FT[] => {
+  const updatedTokens = [...allTokens]
+
+  for (const { address, chainId, amount, decimals, fee, add } of tokens) {
+    const index = updatedTokens.findIndex(
+      (el) =>
+        el.getTokenAddress() === address &&
+        (chainId === undefined || el.getChainId() === chainId),
+    )
+
+    if (index !== -1) {
+      const token = updatedTokens[index]
+      const current = token.getTokenBalance() ?? BigInt(0)
+      const parsed = parseUnits(amount, decimals) + (fee ?? BigInt(0))
+      ;(token as any).tokenBalance = add
+        ? current + parsed
+        : current > parsed
+          ? current - parsed
+          : BigInt(0)
+      updatedTokens[index] = token
+    }
+  }
+
+  return updatedTokens
+}
+
+export const refreshTokenBalances = async (
   tokens: Array<{ address: string | undefined; chainId?: number }>,
   allTokens: FT[],
-) => {
+): Promise<FT[]> => {
   const { publicKey } = authState.getUserIdData()
 
   const updatedTokens = [...allTokens]
@@ -313,10 +353,77 @@ export const getTokensWithUpdatedBalance = async (
   return updatedTokens
 }
 
-export const getEvmTokensWithUpdatedBalance = (
-  tokens: Array<{ address: string; chainId: number }>,
-  allTokens: FT[],
-) => getTokensWithUpdatedBalance(tokens, allTokens)
+export const getUpdatedPositions = (
+  positions: AaveUserPosition[] | undefined,
+  asset: string,
+  chainId: AaveSupportedChainId,
+  amount: string,
+  isMax: boolean,
+  token: FT,
+  supplyData?: { apy?: string },
+) => {
+  const currentPositions = positions ?? []
+  const index = currentPositions.findIndex(
+    (p) => p.asset === asset && p.chainId === chainId,
+  )
+  let updated: AaveUserPosition[]
+
+  if (supplyData) {
+    const decimals = token.getTokenDecimals()
+    const supplied = parseUnits(amount, decimals)
+    if (index !== -1) {
+      updated = currentPositions.map((p, i) => {
+        if (i !== index) return p
+        const newBalance = p.balance + supplied
+        const newBalanceStr = formatUnits(newBalance, p.decimals)
+        return {
+          ...p,
+          balance: newBalance,
+          balanceFormatted: `${newBalanceStr} ${p.symbol}`,
+          balanceUsdFormatted:
+            token.getTokenRateFormatted(newBalanceStr) ?? p.balanceUsdFormatted,
+        }
+      })
+    } else {
+      const newBalanceStr = formatUnits(supplied, decimals)
+      updated = [
+        ...currentPositions,
+        {
+          chainId,
+          asset,
+          aTokenAddress: "",
+          symbol: token.getTokenSymbol(),
+          balance: supplied,
+          balanceFormatted: `${newBalanceStr} ${token.getTokenSymbol()}`,
+          balanceUsdFormatted: token.getTokenRateFormatted(amount) ?? "",
+          decimals,
+          supplyAPY: supplyData.apy || "0.00%",
+        },
+      ]
+    }
+  } else if (isMax) {
+    if (index === -1) return
+    updated = currentPositions.filter((_, i) => i !== index)
+  } else {
+    if (index === -1) return
+    updated = currentPositions.map((p, i) => {
+      if (i !== index) return p
+      const withdrawn = parseUnits(amount, p.decimals)
+      const newBalance =
+        p.balance > withdrawn ? p.balance - withdrawn : BigInt(0)
+      const newBalanceStr = formatUnits(newBalance, p.decimals)
+      return {
+        ...p,
+        balance: newBalance,
+        balanceFormatted: `${newBalanceStr} ${p.symbol}`,
+        balanceUsdFormatted:
+          token.getTokenRateFormatted(newBalanceStr) ?? p.balanceUsdFormatted,
+      }
+    })
+  }
+
+  mutate("earnPositions", updated, false)
+}
 
 const mergeUpdatedFtIntoTokenList = (fullList: FT[], updates: FT[]): FT[] => {
   const tokenKey = (t: FT) => `${t.getTokenAddress()}:${t.getChainId()}`

@@ -29,6 +29,7 @@ import { fetchTokens } from "./utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { useUserPrefs } from "frontend/hooks/user-prefs"
+import { useSupplyPositions } from "frontend/hooks"
 
 const TokensPage = memo(() => {
   const {
@@ -149,6 +150,14 @@ const TokensPage = memo(() => {
     send("SHOW")
   }
 
+  const onEarnClick = (selectedToken: SelectedToken) => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.EARN })
+    send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
+    send("SHOW")
+  }
+
   const { data: tokens = undefined, mutate: refetchTokens } =
     useSWRWithTimestamp(
       isViewOnlyMode ? ["tokens", viewOnlyAddress] : "tokens",
@@ -168,6 +177,7 @@ const TokensPage = memo(() => {
     )
 
   const { initedTokens, isLoading: isTokensLoading } = useTokensInit(tokens)
+  const { supportedTokens } = useSupplyPositions(initedTokens, viewOnlyAddress)
 
   const tokensOwnedQuantity = useMemo(() => {
     return initedTokens?.filter(
@@ -293,6 +303,8 @@ const TokensPage = memo(() => {
           onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
           onStakeClick={onStakeClick}
           onBridgeClick={onBridgeClick}
+          onEarnClick={onEarnClick}
+          aaveTokens={supportedTokens}
           hideZeroBalance={hideZeroBalance}
           onZeroBalanceToggle={onZeroBalanceToggle}
           testnetEnabled={testnetEnabled}

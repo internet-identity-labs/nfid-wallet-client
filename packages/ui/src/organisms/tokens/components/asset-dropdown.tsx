@@ -21,6 +21,7 @@ import {
   IconSvgStakeActionWhite,
   IconSvgArrowWhite,
   IconCmpBridge,
+  IconCmpEarn,
 } from "@nfid-frontend/ui"
 import {
   BTC_NATIVE_ID,
@@ -58,10 +59,12 @@ type AssetDropdownProps = {
   onConvertToCkSepoliaEth: () => void
   onStakeClick: (value: SelectedToken) => void
   onBridgeClick: (value: SelectedToken) => void
+  onEarnClick: (value: SelectedToken) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   setIsTokenProcessed: (value: boolean) => void
   isTokenProcessed: boolean
+  isEarnSupported?: boolean
 }
 
 export const AssetDropdown: FC<AssetDropdownProps> = ({
@@ -78,10 +81,12 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
   onConvertToCkSepoliaEth,
   onStakeClick,
   onBridgeClick,
+  onEarnClick,
   setToken,
   dropdownPosition,
   setIsTokenProcessed,
   isTokenProcessed,
+  isEarnSupported,
 }) => {
   const isDarkTheme = useDarkTheme()
   const navigate = useNavigate()
@@ -125,6 +130,18 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             icon={<IconCmpBridge className="min-w-6 dark:text-white" />}
             handler={() =>
               onBridgeClick({
+                address: token.getTokenAddress(),
+                chainId: token.getChainId(),
+              })
+            }
+          />
+        )}
+        {isEarnSupported && (
+          <DropdownOption
+            label="Earn"
+            icon={<IconCmpEarn className="min-w-6 dark:text-white" />}
+            handler={() =>
+              onEarnClick({
                 address: token.getTokenAddress(),
                 chainId: token.getChainId(),
               })

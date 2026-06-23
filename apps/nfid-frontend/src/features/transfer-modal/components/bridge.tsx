@@ -14,7 +14,7 @@ import { useIdentity } from "frontend/hooks/identity"
 import { FT } from "frontend/integration/ft/ft"
 import { FormValues, SelectedToken, SendStatus } from "../types"
 import {
-  getEvmTokensWithUpdatedBalance,
+  getTokensWithUpdatedBalance,
   getUpdatedInitedTokens,
   mutateTokensCacheMergingBalances,
 } from "../utils"
@@ -94,7 +94,17 @@ export const Bridge = ({
   const { data: filteredFromTokens, isLoading: isFilteredTokensLoading } =
     useSWRWithTimestamp(
       initedTokens ? "filteredFromTokens" : null,
-      () => bridgeService.getSupportedSourceTokens(initedTokens),
+      async () => {
+        const tokens = await bridgeService.getSupportedSourceTokens(
+          initedTokens!,
+        )
+        if (!tokens) return
+
+        return tokens.filter((t) => {
+          const balance = t.getTokenBalance()
+          return balance !== undefined && balance > BigInt(0)
+        })
+      },
       { revalidateOnFocus: false },
     )
 
@@ -299,19 +309,20 @@ export const Bridge = ({
         const isFromNative =
           fromTokenAddress === EVM_NATIVE || fromTokenAddress === ETH_NATIVE_ID
 
-        const tokensToRefresh = [
-          { address: fromTokenAddress, chainId: fromToken.getChainId() },
-          ...(!isFromNative
-            ? [{ address: EVM_NATIVE, chainId: fromToken.getChainId() }]
-            : []),
-        ]
-
-        getEvmTokensWithUpdatedBalance(tokensToRefresh, initedTokens)
-          .then((updatedTokens) => {
-            mutateTokensCacheMergingBalances(updatedTokens)
-            mutateInitedTokens(updatedTokens, false)
-          })
-          .catch(console.debug)
+        const updatedTokens = getTokensWithUpdatedBalance(
+          [
+            {
+              address: fromTokenAddress,
+              chainId: fromToken.getChainId(),
+              amount,
+              decimals: fromToken.getTokenDecimals(),
+              fee: isFromNative ? bridgeData?.rawFee : BigInt(0),
+            },
+          ],
+          initedTokens,
+        )
+        mutateTokensCacheMergingBalances(updatedTokens)
+        mutateInitedTokens(updatedTokens, false)
 
         toToken
           .showToken()

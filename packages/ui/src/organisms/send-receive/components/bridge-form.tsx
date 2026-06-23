@@ -53,7 +53,6 @@ export const BridgeForm: FC<BridgeFormProps> = ({
   submit,
   setFromChosenToken,
   setToChosenToken,
-
   isOpen,
   setBridgeModal,
   amount,

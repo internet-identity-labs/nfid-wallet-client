@@ -44,6 +44,7 @@ import { FormValues, SendStatus } from "../types"
 import {
   getConversionTokenAddress,
   getTokensWithUpdatedBalance,
+  mutateTokensCacheMergingBalances,
   updateCachedInitedTokens,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"

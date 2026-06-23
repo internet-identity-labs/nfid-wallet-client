@@ -1,6 +1,5 @@
 import clsx from "clsx"
 import { FC, useContext } from "react"
-
 import ProfileContainer from "../../atoms/profile-container/Container"
 import { TableActivitySkeleton } from "../../atoms/skeleton"
 import { Button } from "../../molecules/button"

@@ -53,6 +53,7 @@ export function getServiceConfig() {
     ),
     AWS_CHECK_VERIFICATION: JSON.stringify(process.env.AWS_CHECK_VERIFICATION),
     AWS_VERIFY_EMAIL: JSON.stringify(process.env.AWS_VERIFY_EMAIL),
+    AWS_APPROVE_LOGIN_IP: JSON.stringify(process.env.AWS_APPROVE_LOGIN_IP),
     AWS_SIGNIN_GOOGLE_V2: JSON.stringify(process.env.AWS_SIGNIN_GOOGLE_V2),
     AWS_SIGNATURE_EVENT: JSON.stringify(process.env.AWS_SIGNATURE_EVENT),
     AWS_PUBLIC_KEY: JSON.stringify(process.env.AWS_PUBLIC_KEY),

@@ -584,6 +584,13 @@ export default composePlugins(withNx(), withReact(), withSvgr(), (config) => {
           pathRewrite: { "^/verify_email": "" },
         },
         {
+          context: ["/login/ip"],
+          target: process.env.AWS_APPROVE_LOGIN_IP,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/login/ip": "" },
+        },
+        {
           context: ["/nft_geek_api"],
           target: "https://api.nftgeek.app",
           secure: true,

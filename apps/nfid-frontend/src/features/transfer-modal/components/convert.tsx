@@ -14,6 +14,11 @@ import {
   EVM_NATIVE,
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
+import {
+  isCkErc20Token,
+  getCkErc20ByErc20Address,
+  getCkErc20ByLedgerId,
+} from "@nfid/integration/token/ckerc20.config"
 import { mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
@@ -28,6 +33,8 @@ import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.serv
 import { ethSepoliaService } from "frontend/integration/ethereum/eth/testnetwork/eth-sepolia.service"
 import {
   CkEthToEthFee,
+  CkErc20ToErc20Fee,
+  Erc20ToCkErc20Fee,
   EthToCkEthFee,
 } from "frontend/integration/ethereum/evm.service"
 
@@ -37,12 +44,13 @@ import { FormValues, SendStatus } from "../types"
 import {
   getConversionTokenAddress,
   getTokensWithUpdatedBalance,
-  mutateTokensCacheMergingBalances,
   updateCachedInitedTokens,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { useUserPrefs } from "frontend/hooks/user-prefs"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { authState } from "@nfid/integration"
+import { Principal } from "@icp-sdk/core/principal"
 
 interface ConvertBTCProps {
   preselectedSourceTokenAddress: string | undefined
@@ -63,11 +71,15 @@ export const ConvertBTC = ({
   setIsConvertSuccess,
   onError,
 }: ConvertBTCProps) => {
+  const [initingToToken, setInitingToToken] = useState(false)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [status, setStatus] = useState(SendStatus.PENDING)
   const [error, setError] = useState<string | undefined>()
   const [btcFee, setBtcFee] = useState<BtcToCkBtcFee | CkBtcToBtcFee>()
   const [ethFee, setEthFee] = useState<CkEthToEthFee | EthToCkEthFee>()
+  const [erc20Fee, setErc20Fee] = useState<
+    Erc20ToCkErc20Fee | CkErc20ToErc20Fee
+  >()
   const [conversionError, setConversionError] = useState<string | undefined>()
 
   const [fromTokenAddress, setFromTokenAddress] = useState(
@@ -101,19 +113,26 @@ export const ConvertBTC = ({
   const filteredTokens = useMemo(() => {
     if (!initedTokens) return
     return initedTokens.filter((t, _, arr) => {
+      const addr = t.getTokenAddress()
+      const ckErc20ByErc20 = getCkErc20ByErc20Address(addr)
       return (
-        t.getTokenAddress() === ETH_NATIVE_ID ||
-        t.getTokenAddress() === BTC_NATIVE_ID ||
-        t.getTokenAddress() === CKETH_LEDGER_CANISTER_ID ||
-        t.getTokenAddress() === CKBTC_CANISTER_ID ||
-        (t.getTokenAddress() === CKSEPOLIA_LEDGER_CANISTER_ID &&
+        addr === ETH_NATIVE_ID ||
+        addr === BTC_NATIVE_ID ||
+        addr === CKETH_LEDGER_CANISTER_ID ||
+        addr === CKBTC_CANISTER_ID ||
+        isCkErc20Token(addr) ||
+        (!!ckErc20ByErc20 &&
+          arr.some(
+            (tok) => tok.getTokenAddress() === ckErc20ByErc20.ledgerCanisterId,
+          )) ||
+        (addr === CKSEPOLIA_LEDGER_CANISTER_ID &&
           testnetEnabled &&
           arr.find(
             (t) =>
               t.getTokenAddress() === EVM_NATIVE &&
               t.getChainId() === ChainId.ETH_SEPOLIA,
           )) ||
-        (t.getTokenAddress() === EVM_NATIVE &&
+        (addr === EVM_NATIVE &&
           t.getChainId() === ChainId.ETH_SEPOLIA &&
           testnetEnabled &&
           arr.find((t) => t.getTokenAddress() === CKSEPOLIA_LEDGER_CANISTER_ID))
@@ -128,16 +147,41 @@ export const ConvertBTC = ({
   const fromToken = useMemo(() => {
     if (!filteredTokens) return
     return filteredTokens.find(
-      (token: FT) => token.getTokenAddress() === fromTokenAddress,
+      (token: FT) =>
+        token.getTokenAddress().toLowerCase() ===
+        fromTokenAddress.toLowerCase(),
     )
   }, [fromTokenAddress, filteredTokens])
 
   const toToken = useMemo(() => {
     if (!filteredTokens) return
     return filteredTokens.find(
-      (token: FT) => token.getTokenAddress() === toTokenAddress,
+      (token: FT) =>
+        token.getTokenAddress().toLowerCase() === toTokenAddress.toLowerCase(),
     )
   }, [toTokenAddress, filteredTokens])
+
+  useEffect(() => {
+    if (!!toToken || !initedTokens) return
+
+    const initToToken = async () => {
+      setInitingToToken(true)
+      const uninitedToken = tokens.find(
+        (t) =>
+          t.getTokenAddress().toLowerCase() === toTokenAddress.toLowerCase(),
+      )
+      if (!uninitedToken) return
+
+      const { publicKey } = authState.getUserIdData()
+      const principal = Principal.fromText(publicKey)
+
+      const initedToken = await uninitedToken.init(principal)
+      mutateInitedTokens([...initedTokens, initedToken], false)
+      setInitingToToken(false)
+    }
+
+    initToToken()
+  }, [toTokenAddress, toToken, initedTokens])
 
   useEffect(() => {
     setConversionError(undefined)
@@ -183,7 +227,12 @@ export const ConvertBTC = ({
             setConversionError((e as Error).message)
             setBtcFee(undefined)
           }
-        } else {
+        } else if (
+          tokenAddress === ETH_NATIVE_ID ||
+          tokenAddress === CKETH_LEDGER_CANISTER_ID ||
+          tokenAddress === EVM_NATIVE ||
+          tokenAddress === CKSEPOLIA_LEDGER_CANISTER_ID
+        ) {
           const isMaxAmount = isMaxAmountRef.current
           isMaxAmountRef.current = false
           setEthFee(undefined)
@@ -229,6 +278,32 @@ export const ConvertBTC = ({
             console.error(`ETH error: ${e}`)
             setConversionError((e as Error).message)
             setEthFee(undefined)
+          }
+        } else {
+          const ckErc20Token =
+            getCkErc20ByLedgerId(tokenAddress) ??
+            getCkErc20ByErc20Address(tokenAddress)
+          if (!ckErc20Token) return
+
+          setErc20Fee(undefined)
+          setConversionError(undefined)
+          try {
+            const isToCkErc20 = !!getCkErc20ByErc20Address(tokenAddress)
+            const fee = isToCkErc20
+              ? await ethereumService.getErc20ToCkErc20Fee(
+                  identity,
+                  ckErc20Token.ledgerCanisterId,
+                  amount,
+                )
+              : await ethereumService.getCkErc20ToErc20Fee(
+                  ckErc20Token.ledgerCanisterId,
+                  amount,
+                )
+            setErc20Fee(fee)
+          } catch (e) {
+            console.error(`ERC20 convert error: ${e}`)
+            setConversionError((e as Error).message)
+            setErc20Fee(undefined)
           }
         }
       }, 1000),
@@ -318,6 +393,65 @@ export const ConvertBTC = ({
       return
     }
 
+    const ckErc20Token =
+      getCkErc20ByLedgerId(fromTokenAddress) ??
+      getCkErc20ByErc20Address(fromTokenAddress)
+
+    if (ckErc20Token) {
+      const isToCkErc20 = !!getCkErc20ByErc20Address(fromTokenAddress)
+
+      const convertResponse = isToCkErc20
+        ? ethereumService.convertToCkErc20(
+            identity,
+            ckErc20Token.ledgerCanisterId,
+            amount,
+            erc20Fee as Erc20ToCkErc20Fee,
+          )
+        : ethereumService.convertFromCkErc20(
+            identity,
+            ckErc20Token.ledgerCanisterId,
+            ethAddress,
+            amount,
+          )
+
+      convertResponse
+        .then(() => {
+          setSuccessMessage(
+            `Conversion from ${amount} ${fromToken.getTokenSymbol()} successful`,
+          )
+          setStatus(SendStatus.COMPLETED)
+
+          if (!initedTokens) return
+
+          const updatedTokens = getTokensWithUpdatedBalance(
+            [
+              {
+                address: fromTokenAddress,
+                amount,
+                decimals: fromToken.getTokenDecimals(),
+                fee: BigInt(0),
+              },
+            ],
+            initedTokens,
+          )
+          mutateWithTimestamp("tokens", updatedTokens, false)
+          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
+        })
+        .catch((error) => {
+          console.dir(error)
+          console.error(
+            `ERC20 convert error: ${
+              (error as Error).message ? (error as Error).message : error
+            }`,
+          )
+          setErrorMessage(DEFAULT_CONVERT_ERROR)
+          setStatus(SendStatus.FAILED)
+          setError(error)
+        })
+
+      return
+    }
+
     if (!btcFee) return
     let convertResponse
 
@@ -380,26 +514,47 @@ export const ConvertBTC = ({
     initedTokens,
     btcFee,
     ethFee,
+    erc20Fee,
     setIsConvertSuccess,
     ethAddress,
     mutateInitedTokens,
   ])
+
+  const isBtcConvert =
+    fromTokenAddress === BTC_NATIVE_ID || fromTokenAddress === CKBTC_CANISTER_ID
+  const isEthConvertActive =
+    fromTokenAddress === ETH_NATIVE_ID ||
+    fromTokenAddress === CKETH_LEDGER_CANISTER_ID ||
+    fromTokenAddress === EVM_NATIVE ||
+    fromTokenAddress === CKSEPOLIA_LEDGER_CANISTER_ID
+  const isErc20Convert =
+    isCkErc20Token(fromTokenAddress) ||
+    !!getCkErc20ByErc20Address(fromTokenAddress)
+
+  const isFeeLoading = isBtcConvert
+    ? btcFee === undefined
+    : isEthConvertActive
+      ? ethFee === undefined
+      : isErc20Convert
+        ? erc20Fee === undefined
+        : false
 
   return (
     <FormProvider {...formMethods}>
       <ConvertUi
         toToken={toToken}
         fromToken={fromToken}
-        isTokenLoading={isTokensLoading}
+        isTokenLoading={isTokensLoading || initingToToken}
         setFromChosenToken={setFromTokenAddress}
         setToChosenToken={setToTokenAddress}
         submit={submit}
-        isFeeLoading={btcFee === undefined && ethFee === undefined}
+        isFeeLoading={isFeeLoading}
         isSuccessOpen={isSuccessOpen}
         onClose={onClose}
         handleReverse={handleReverse}
         btcFee={btcFee}
         ethFee={ethFee}
+        erc20Fee={erc20Fee}
         status={status}
         error={error}
         conversionError={conversionError}

@@ -835,7 +835,7 @@ export abstract class EVMService {
     await this.approveTransfer(
       this.ckEthLedgerCanisterId,
       token.minterCanisterId,
-      price.max_transaction_fee,
+      (price.max_transaction_fee * BigInt(120)) / BigInt(100),
       identity,
     )
 

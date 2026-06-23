@@ -27,6 +27,8 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   onConvertToCkEth: () => void
   onConvertToSepoliaEth: () => void
   onConvertToCkSepoliaEth: () => void
+  onConvertToErc20: (tokenAddress: string) => void
+  onConvertToCkErc20: (tokenAddress: string) => void
   onStakeClick: (value: SelectedToken) => void
   onBridgeClick: (value: SelectedToken) => void
   onEarnClick: (value: SelectedToken) => void
@@ -53,6 +55,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   onConvertToCkEth,
   onConvertToSepoliaEth,
   onConvertToCkSepoliaEth,
+  onConvertToErc20,
+  onConvertToCkErc20,
   onStakeClick,
   onBridgeClick,
   onEarnClick,
@@ -101,6 +105,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           withActions={!isViewOnlyMode}
           onConvertToSepoliaEth={onConvertToSepoliaEth}
           onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
+          onConvertToErc20={onConvertToErc20}
+          onConvertToCkErc20={onConvertToCkErc20}
         />
       </td>
       <td
@@ -198,6 +204,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
             onConvertToCkEth={onConvertToCkEth}
             onConvertToSepoliaEth={onConvertToSepoliaEth}
             onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
+            onConvertToErc20={onConvertToErc20}
+            onConvertToCkErc20={onConvertToCkErc20}
             onStakeClick={onStakeClick}
             onBridgeClick={onBridgeClick}
             onEarnClick={onEarnClick}

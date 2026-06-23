@@ -135,6 +135,28 @@ const TokensPage = memo(() => {
     send("SHOW")
   }
 
+  const onConvertToErc20 = (tokenAddress: string) => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
+    send({
+      type: "ASSIGN_SELECTED_FT",
+      data: { address: tokenAddress, chainId: ChainId.ICP },
+    })
+    send("SHOW")
+  }
+
+  const onConvertToCkErc20 = (tokenAddress: string) => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
+    send({
+      type: "ASSIGN_SELECTED_FT",
+      data: { address: tokenAddress, chainId: ChainId.ETH },
+    })
+    send("SHOW")
+  }
+
   const onStakeClick = (selectedToken: SelectedToken) => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
@@ -298,6 +320,8 @@ const TokensPage = memo(() => {
           onConvertToCkEth={onConvertToCkEth}
           onConvertToSepoliaEth={onConvertToSepoliaEth}
           onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
+          onConvertToErc20={onConvertToErc20}
+          onConvertToCkErc20={onConvertToCkErc20}
           onStakeClick={onStakeClick}
           onBridgeClick={onBridgeClick}
           onEarnClick={onEarnClick}

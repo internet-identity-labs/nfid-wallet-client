@@ -19,6 +19,10 @@ import {
   EVM_NATIVE,
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
+import {
+  isCkErc20Token,
+  getCkErc20ByErc20Address,
+} from "@nfid/integration/token/ckerc20.config"
 
 import {
   BtcToCkBtcFee,
@@ -30,6 +34,8 @@ import { ContactSupportError } from "frontend/integration/swap/errors/types/cont
 import {
   CkEthToEthFee,
   EthToCkEthFee,
+  Erc20ToCkErc20Fee,
+  CkErc20ToErc20Fee,
 } from "frontend/integration/ethereum/evm.service"
 export interface BtcFormattedFee {
   total: string
@@ -57,6 +63,8 @@ export enum IModalType {
   CONVERT_TO_CKETH = "CONVERT_TO_CKETH",
   CONVERT_TO_SEPOLIA_ETH = "CONVERT_TO_SEPOLIA_ETH",
   CONVERT_TO_SEPOLIA_CKETH = "CONVERT_TO_SEPOLIA_CKETH",
+  CONVERT_TO_CKERC20 = "CONVERT_TO_CKERC20",
+  CONVERT_TO_ERC20 = "CONVERT_TO_ERC20",
   BRIDGE = "BRIDGE",
   EARN = "EARN",
   WITHDRAW = "WITHDRAW",
@@ -182,6 +190,43 @@ export const getEthConversionFee = (
   }
 }
 
+export const getErc20ConversionFee = (
+  fee?: Erc20ToCkErc20Fee | CkErc20ToErc20Fee,
+  tokenDecimals: number = 6,
+): EthFormattedFee | undefined => {
+  if (!fee) return undefined
+
+  const { ethereumNetworkFee, amountToReceive } = fee
+  const icpNetworkFee = "icpNetworkFee" in fee ? fee.icpNetworkFee : BigInt(0)
+  const identityLabsFee =
+    "identityLabsFee" in fee ? fee.identityLabsFee : BigInt(0)
+
+  const totalEthFee = ethereumNetworkFee + icpNetworkFee
+
+  return {
+    ethNetworkFee: BigNumber(ethereumNetworkFee.toString())
+      .div(10 ** ETH_DECIMALS)
+      .toFixed(ETH_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+    icpNetworkFee: BigNumber(icpNetworkFee.toString())
+      .div(10 ** ETH_DECIMALS)
+      .toFixed(ETH_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+    widgetFee: BigNumber(identityLabsFee.toString())
+      .div(10 ** tokenDecimals)
+      .toFixed(tokenDecimals)
+      .replace(TRIM_ZEROS, ""),
+    amountToReceive: BigNumber(amountToReceive.toString())
+      .div(10 ** tokenDecimals)
+      .toFixed(tokenDecimals)
+      .replace(TRIM_ZEROS, ""),
+    total: BigNumber(totalEthFee.toString())
+      .div(10 ** ETH_DECIMALS)
+      .toFixed(ETH_DECIMALS)
+      .replace(TRIM_ZEROS, ""),
+  }
+}
+
 export const getFormattedPeriod = (value?: number, fullName?: boolean) => {
   if (value === undefined) return ""
   if (value === 0) return "Less than a month"
@@ -244,6 +289,14 @@ export const getModalType = (fromToken?: FT, toToken?: FT) => {
     case fromToken?.getTokenAddress() === CKSEPOLIA_LEDGER_CANISTER_ID &&
       toToken?.getTokenAddress() === EVM_NATIVE:
       return IModalType.CONVERT_TO_SEPOLIA_ETH
+
+    case !!fromToken?.getTokenAddress() &&
+      !!getCkErc20ByErc20Address(fromToken.getTokenAddress()):
+      return IModalType.CONVERT_TO_CKERC20
+
+    case !!fromToken?.getTokenAddress() &&
+      isCkErc20Token(fromToken.getTokenAddress()):
+      return IModalType.CONVERT_TO_ERC20
 
     default:
       return IModalType.CONVERT_TO_CKBTC

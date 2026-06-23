@@ -55,6 +55,8 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   onConvertToCkEth: () => void
   onConvertToSepoliaEth: () => void
   onConvertToCkSepoliaEth: () => void
+  onConvertToErc20: (tokenAddress: string) => void
+  onConvertToCkErc20: (tokenAddress: string) => void
   onStakeClick: (value: SelectedToken) => void
   onBridgeClick: (value: SelectedToken) => void
   onEarnClick: (value: SelectedToken) => void
@@ -86,6 +88,8 @@ export const Tokens: FC<TokensProps> = ({
   onConvertToCkEth,
   onConvertToSepoliaEth,
   onConvertToCkSepoliaEth,
+  onConvertToErc20,
+  onConvertToCkErc20,
   onStakeClick,
   onBridgeClick,
   onEarnClick,
@@ -258,6 +262,8 @@ export const Tokens: FC<TokensProps> = ({
                     onConvertToCkEth={onConvertToCkEth}
                     onConvertToSepoliaEth={onConvertToSepoliaEth}
                     onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
+                    onConvertToErc20={onConvertToErc20}
+                    onConvertToCkErc20={onConvertToCkErc20}
                   />
                 ))
               )}

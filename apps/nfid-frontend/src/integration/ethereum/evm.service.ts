@@ -790,14 +790,6 @@ export abstract class EVMService {
   ): Promise<CkEthMinterDid.RetrieveErc20Request> {
     const token = this.resolveCkErc20Token(ledgerCanisterId)
     const amountUnits = parseUnits(amount, token.decimals)
-
-    if (amountUnits < token.minWithdrawalAmount) {
-      const min = formatUnits(token.minWithdrawalAmount, token.decimals)
-      throw new Error(
-        `The minimum amount for conversion is ${min} ${token.symbol}`,
-      )
-    }
-
     const identityLabsFee = this.getIdentityLabsFee(amountUnits)
 
     await this.approveTransfer(

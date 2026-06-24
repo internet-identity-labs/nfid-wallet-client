@@ -1,4 +1,5 @@
 export * from "./delegation-identity-from-signed-identity"
+export * from "./ed25519"
 export * from "./fetch-delegate"
 export * from "./get-delegate"
 export * from "./get-delegation-by-scope"

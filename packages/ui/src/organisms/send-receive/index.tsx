@@ -57,6 +57,7 @@ export const TransferModal: FC<TransferModalProps> = ({
     if (hasBtcError || hasBridgeError) return "min-h-[520px]"
     if (direction === ModalType.EARN) return "min-h-[366px]"
     if (direction === ModalType.WITHDRAW) return "min-h-[330px]"
+    if (direction === ModalType.PAY) return "min-h-[438px]"
     return "min-h-[480px]"
   })()
 

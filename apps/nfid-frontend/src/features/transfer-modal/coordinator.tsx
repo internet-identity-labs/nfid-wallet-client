@@ -22,6 +22,7 @@ import { SwapFT } from "./components/swap"
 import { Bridge } from "./components/bridge"
 import { Earn } from "./components/earn"
 import { Withdraw } from "./components/withdraw"
+import { Pay } from "./components/pay"
 
 export const TransferModalCoordinator = () => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
@@ -216,6 +217,24 @@ export const TransferModalCoordinator = () => {
               setErrorMessage={setErrorMessage}
               setSuccessMessage={setSuccessMessage}
               setIsWithdrawSuccess={setIsWithdrawSuccess}
+              onError={setHasBridgeError}
+            />
+          </motion.div>
+        )}
+        {state.matches("PayMachine") && (
+          <motion.div
+            key="bridge-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          >
+            <Pay
+              openCryptoPayParams={state.context.openCryptoPayParams}
+              openCryptoPayPreselect={state.context.openCryptoPayPreselect}
+              onClose={hideModal}
+              setErrorMessage={setErrorMessage}
+              setSuccessMessage={setSuccessMessage}
               onError={setHasBridgeError}
             />
           </motion.div>

@@ -78,6 +78,7 @@
     "dompurify": "3.4.9",
     "ethers": "6.16.0",
     "framer-motion": "12.38.0",
+    "html5-qrcode": "^2.3.8",
     "idb": "8.0.3",
     "immer": "11.1.4",
     "jose": "6.2.2",

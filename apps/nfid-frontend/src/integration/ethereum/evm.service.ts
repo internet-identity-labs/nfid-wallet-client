@@ -901,6 +901,40 @@ export abstract class EVMService {
     return await this.sendTransaction(signedTransaction)
   }
 
+  public async sendEthTransactionWithRaw(
+    identity: SignIdentity,
+    to: Address,
+    value: string,
+    gas: {
+      gasUsed: bigint
+      maxPriorityFeePerGas: bigint
+      maxFeePerGas: bigint
+      baseFeePerGas: bigint
+    },
+    chainId: ChainId,
+  ): Promise<{ response: TransactionResponse; signedTransaction: string }> {
+    const address = await this.getAddress(identity)
+    const nonce = await this.getTransactionCount(address)
+
+    const request: EthSignTransactionRequest = {
+      chain_id: BigInt(chainId),
+      to: to,
+      value: parseEther(value),
+      data: [],
+      nonce: BigInt(nonce),
+      gas: gas?.gasUsed,
+      max_priority_fee_per_gas: gas?.maxPriorityFeePerGas,
+      max_fee_per_gas: gas?.maxFeePerGas,
+    }
+
+    const signedTransaction = await chainFusionSignerService.ethSignTransaction(
+      identity,
+      request,
+    )
+    const response = await this.sendTransaction(signedTransaction)
+    return { response, signedTransaction }
+  }
+
   public async getNFTTransferFee(
     from: Address,
     to: Address,

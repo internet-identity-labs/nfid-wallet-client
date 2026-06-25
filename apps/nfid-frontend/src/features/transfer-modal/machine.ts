@@ -42,6 +42,9 @@ const transferMachineConfig = {
     ASSIGN_WITHDRAW_BALANCE: {
       actions: "assignWithdrawBalance",
     },
+    ASSIGN_OPEN_CRYPTOPAY_PARAMS: {
+      actions: "assignOpenCryptopayParams",
+    },
     ASSIGN_SELECTED_TARGET_FT: {
       actions: "assignSelectedTargetFT",
     },
@@ -110,6 +113,10 @@ const transferMachineConfig = {
           target: "WithdrawMachine",
           cond: "isWithdrawMachine",
         },
+        {
+          target: "PayMachine",
+          cond: "isPayMachine",
+        },
       ],
     },
     ReceiveMachine: {},
@@ -118,6 +125,7 @@ const transferMachineConfig = {
     BridgeMachine: {},
     EarnMachine: {},
     WithdrawMachine: {},
+    PayMachine: {},
     StakeMachine: {},
     RedeemMachine: {},
     SendMachine: {
@@ -186,6 +194,9 @@ const transferMachineOptions: Parameters<
       context.direction === "earn",
     isWithdrawMachine: (context: TransferMachineContext) =>
       context.direction === "withdraw",
+    isPayMachine: (context: TransferMachineContext) =>
+      context.direction === "pay",
+
     isStakeMachine: (context: TransferMachineContext) =>
       context.direction === "stake",
     isRedeemMachine: (context: TransferMachineContext) =>
@@ -218,6 +229,10 @@ const transferMachineOptions: Parameters<
     })),
     assignWithdrawBalance: assign((_, event: any) => ({
       withdrawBalance: event?.data,
+    })),
+    assignOpenCryptopayParams: assign((_, event: any) => ({
+      openCryptoPayParams: event?.data,
+      openCryptoPayPreselect: event?.preselect,
     })),
     assignSelectedTargetFT: assign((_, event: any) => ({
       selectedTargetFT: event?.data,

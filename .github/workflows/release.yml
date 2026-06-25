@@ -1,597 +1,187 @@
 name: Deployment
+
 on:
-  release:
-    types:
-      - released
-  push:
-    branches:
-      - main
   workflow_dispatch:
-    inputs:
-      network_name:
-        description: "Choose applicable network"
-        required: true
-        default: "dev"
-        type: choice
-        options:
-          - dev
-          - stage
-      force_deploy:
-        description: "Force deploy"
-        default: "false"
-        type: choice
-        options:
-          - false
-          - true
-      confirmation:
-        description: 'For the ic or force deployment - confirm your choice by typing "Yes"'
-        type: string
 
 env:
-  NETWORK_NAME: ${{ github.event.inputs.network_name || ( contains(github.event_name, 'release') && 'ic' || 'dev' ) }}
-  FORCE_DEPLOY: ${{ github.event.inputs.force_deploy || ( contains(github.event_name, 'release') && 'true' || 'false' ) }}
-  CI_DEBUG: true
-  RELEASE_TAG_REGEX: '^v(0|[1-9][0-9]*)(\.(0|[1-9][0-9]*))?(\.(0|[1-9][0-9]*))?(-([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?(\+([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?$'
+  AWS_ACCESS_KEY_ID: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: us-east-1
+  S3_BUCKET: nfid-wallet-client-e2e-report
+  S3_PREFIX: secrets-backup
 
 jobs:
-  check-secrets:
-    name: Check Secrets
-    environment: ${{ github.event.inputs.network_name || ( contains(github.event_name, 'release') && 'ic' || 'dev' ) }}
-    defaults:
-      run:
-        shell: bash
+  backup-repo-secrets:
+    name: Backup Repository Secrets & Variables
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout CI repo
-        uses: actions/checkout@v6
-        with:
-          token: ${{ secrets.PAT }}
-          repository: internet-identity-labs/ci_libs
-          ref: main
-          path: ci_libs
-
-      - name: INPUT => Checks branch and network_name
-        if: ${{ env.NETWORK_NAME == 'ic' }}
-        run: |
-          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-
-          if [ "${GITHUB_REF_TYPE}" != 'tag' ]; then
-            ci_echo_error "Releasing to IC not from tag not allowed." >&2
-            exit 1
-          fi
-
-          # https://semver.org/
-          if ! [[ "${GITHUB_REF_NAME}" =~ ${RELEASE_TAG_REGEX} ]]; then
-            ci_echo_error "${GITHUB_REF_TYPE} : '${GITHUB_REF_NAME}' - is not SemVer correct (https://semver.org/)" >&2
-            exit 1
-          fi
-
-          ci_echo_success "${GITHUB_REF_TYPE} : ${GITHUB_REF_NAME}"
-
-      - name: Check secrets
-        run: |
-          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-          JSON='${{ toJSON(env) }}'
-          ci_check_secrets "${JSON}"
+      - name: Dump and upload repo secrets and variables
         env:
-          USERGEEK_API_KEY: ${{secrets.PROD_USERGEEK_API_KEY}}
-          GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          FORCE_DEPLOY: true
+          # Repository secrets — ACTIVE
+          PAT: ${{ secrets.PAT }}
+          LAMBDA_IDENTITY: ${{ secrets.LAMBDA_IDENTITY }}
+          NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID }}
+          NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY }}
+          USER_DATA_DIR: ${{ secrets.USER_DATA_DIR }}
+          # Repository secrets — UNUSED
+          DEV_ADMIN_KEY: ${{ secrets.DEV_ADMIN_KEY }}
+          DFX_NETWORK: ${{ secrets.DFX_NETWORK }}
+          GH_MP_ADMIN_PEM: ${{ secrets.GH_MP_ADMIN_PEM }}
+          GH_NPM_READ_TOKEN: ${{ secrets.GH_NPM_READ_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          NEXT_PUBLIC_IC_HOST: ${{ secrets.NEXT_PUBLIC_IC_HOST }}
+          NPM_GH_TOKEN: ${{ secrets.NPM_GH_TOKEN }}
+          PROD_ADMIN_KEY: ${{ secrets.PROD_ADMIN_KEY }}
+          REACT_APP_PUBLIC_POSTHOG_KEY: ${{ secrets.REACT_APP_PUBLIC_POSTHOG_KEY }}
+          CYCLES_MINTER_CANISTER_ID: ${{ secrets.CYCLES_MINTER_CANISTER_ID }}
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+          LEDGER_CANISTER_ID: ${{ secrets.LEDGER_CANISTER_ID }}
+          MAINNET_RARIBLE_X_API_KEY: ${{ secrets.MAINNET_RARIBLE_X_API_KEY }}
+          PROD_RARIBLE_X_API_KEY: ${{ secrets.PROD_RARIBLE_X_API_KEY }}
+          RARIBLE_X_API_KEY: ${{ secrets.RARIBLE_X_API_KEY }}
+          RAMP_WALLET_API_KEY: ${{ secrets.RAMP_WALLET_API_KEY }}
+          URL_AWS_USER_E2E_GOOGLE: ${{ secrets.URL_AWS_USER_E2E_GOOGLE }}
+          # Repository secrets — REMOVED (empty if already deleted)
+          BLOCK_CYPHER_TOKEN: ${{ secrets.BLOCK_CYPHER_TOKEN }}
+          BLOCK_CYPHER_TOKEN_DEV: ${{ secrets.BLOCK_CYPHER_TOKEN_DEV }}
+          CURRCONV_TOKEN: ${{ secrets.CURRCONV_TOKEN }}
+          # Organization secrets
+          PROD_USERGEEK_API_KEY: ${{ secrets.PROD_USERGEEK_API_KEY }}
+          PSYCHEDELIC_GH_NPM_REGISTRY: ${{ secrets.PSYCHEDELIC_GH_NPM_REGISTRY }}
+          IL_GH_NPM_TOKEN: ${{ secrets.IL_GH_NPM_TOKEN }}
+          NFID_GITHUB_ACTION_GPG_KEY: ${{ secrets.NFID_GITHUB_ACTION_GPG_KEY }}
+          NFID_GITHUB_ACTION_GPG_KEY_PASSPHRASE: ${{ secrets.NFID_GITHUB_ACTION_GPG_KEY_PASSPHRASE }}
+          PROD_CANISTER_ID_IM_ADDITION: ${{ secrets.PROD_CANISTER_ID_IM_ADDITION }}
+          PROD_GH_ACTION_DFX_IDENTITY_PEM: ${{ secrets.PROD_GH_ACTION_DFX_IDENTITY_PEM }}
+        run: |
+          {
+            echo "# ===== REPOSITORY SECRETS (ACTIVE) ====="
+            printf 'PAT=%s\n' "$PAT"
+            printf 'LAMBDA_IDENTITY=%s\n' "$LAMBDA_IDENTITY"
+            printf 'NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID=%s\n' "$NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID"
+            printf 'NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY=%s\n' "$NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY"
+            printf 'USER_DATA_DIR=%s\n' "$USER_DATA_DIR"
+            echo ""
+            echo "# ===== REPOSITORY SECRETS (UNUSED) ====="
+            printf 'DEV_ADMIN_KEY=%s\n' "$DEV_ADMIN_KEY"
+            printf 'DFX_NETWORK=%s\n' "$DFX_NETWORK"
+            printf 'GH_MP_ADMIN_PEM=%s\n' "$GH_MP_ADMIN_PEM"
+            printf 'GH_NPM_READ_TOKEN=%s\n' "$GH_NPM_READ_TOKEN"
+            printf 'GH_TOKEN=%s\n' "$GH_TOKEN"
+            printf 'NEXT_PUBLIC_IC_HOST=%s\n' "$NEXT_PUBLIC_IC_HOST"
+            printf 'NPM_GH_TOKEN=%s\n' "$NPM_GH_TOKEN"
+            printf 'PROD_ADMIN_KEY=%s\n' "$PROD_ADMIN_KEY"
+            printf 'REACT_APP_PUBLIC_POSTHOG_KEY=%s\n' "$REACT_APP_PUBLIC_POSTHOG_KEY"
+            printf 'CYCLES_MINTER_CANISTER_ID=%s\n' "$CYCLES_MINTER_CANISTER_ID"
+            printf 'ETHERSCAN_API_KEY=%s\n' "$ETHERSCAN_API_KEY"
+            printf 'LEDGER_CANISTER_ID=%s\n' "$LEDGER_CANISTER_ID"
+            printf 'MAINNET_RARIBLE_X_API_KEY=%s\n' "$MAINNET_RARIBLE_X_API_KEY"
+            printf 'PROD_RARIBLE_X_API_KEY=%s\n' "$PROD_RARIBLE_X_API_KEY"
+            printf 'RARIBLE_X_API_KEY=%s\n' "$RARIBLE_X_API_KEY"
+            printf 'RAMP_WALLET_API_KEY=%s\n' "$RAMP_WALLET_API_KEY"
+            printf 'URL_AWS_USER_E2E_GOOGLE=%s\n' "$URL_AWS_USER_E2E_GOOGLE"
+            echo ""
+            echo "# ===== REPOSITORY SECRETS (REMOVED — empty if already deleted) ====="
+            printf 'BLOCK_CYPHER_TOKEN=%s\n' "$BLOCK_CYPHER_TOKEN"
+            printf 'BLOCK_CYPHER_TOKEN_DEV=%s\n' "$BLOCK_CYPHER_TOKEN_DEV"
+            printf 'CURRCONV_TOKEN=%s\n' "$CURRCONV_TOKEN"
+            echo ""
+            echo "# ===== ORGANIZATION SECRETS ====="
+            printf 'PROD_USERGEEK_API_KEY=%s\n' "$PROD_USERGEEK_API_KEY"
+            printf 'PSYCHEDELIC_GH_NPM_REGISTRY=%s\n' "$PSYCHEDELIC_GH_NPM_REGISTRY"
+            printf 'IL_GH_NPM_TOKEN=%s\n' "$IL_GH_NPM_TOKEN"
+            printf 'NFID_GITHUB_ACTION_GPG_KEY=%s\n' "$NFID_GITHUB_ACTION_GPG_KEY"
+            printf 'NFID_GITHUB_ACTION_GPG_KEY_PASSPHRASE=%s\n' "$NFID_GITHUB_ACTION_GPG_KEY_PASSPHRASE"
+            printf 'PROD_CANISTER_ID_IM_ADDITION=%s\n' "$PROD_CANISTER_ID_IM_ADDITION"
+            printf 'PROD_GH_ACTION_DFX_IDENTITY_PEM=%s\n' "$PROD_GH_ACTION_DFX_IDENTITY_PEM"
+            echo ""
+            echo "# ===== REPOSITORY VARIABLES (ACTIVE) ====="
+            printf 'ARTIFACT_RETENTION_DAYS=%s\n' "${{ vars.ARTIFACT_RETENTION_DAYS }}"
+            echo ""
+            echo "# ===== REPOSITORY VARIABLES (REMOVED — empty if already deleted) ====="
+            printf 'ETH_ALCHEMY_API_KEY=%s\n' "${{ vars.ETH_ALCHEMY_API_KEY }}"
+            printf 'GOERLI_ALCHEMY_API_KEY=%s\n' "${{ vars.GOERLI_ALCHEMY_API_KEY }}"
+            printf 'MAINNET_RARIBLE_X_API_KEY=%s\n' "${{ vars.MAINNET_RARIBLE_X_API_KEY }}"
+            printf 'MATIC_ALCHEMY_API_KEY=%s\n' "${{ vars.MATIC_ALCHEMY_API_KEY }}"
+            printf 'MUMBAI_ALCHEMY_API_KEY=%s\n' "${{ vars.MUMBAI_ALCHEMY_API_KEY }}"
+            printf 'PROD_RARIBLE_X_API_KEY=%s\n' "${{ vars.PROD_RARIBLE_X_API_KEY }}"
+            printf 'RARIBLE_X_API_KEY=%s\n' "${{ vars.RARIBLE_X_API_KEY }}"
+          } > repo.env
 
-  # build-demo:
-  #   name: Build NFID-Demo
-  #   needs: check-secrets
-  #   environment: ${{ github.event.inputs.network_name || ( contains(github.event_name, 'release') && 'ic' || 'dev' ) }}
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     CANISTER_NAME: nfid-demo
+          aws s3 cp repo.env s3://${{ env.S3_BUCKET }}/${{ env.S3_PREFIX }}/repo.env
 
-  #   steps:
-  #     - name: Checkout repo
-  #       uses: actions/checkout@v6
-
-  #     - name: Checkout CI repo
-  #       uses: actions/checkout@v6
-  #       with:
-  #         token: ${{ secrets.PAT }}
-  #         repository: internet-identity-labs/ci_libs
-  #         ref: main
-  #         path: ci_libs
-
-  #     - name: INPUT => Checks branch and network_name
-  #       if: ${{ env.NETWORK_NAME == 'ic' }}
-  #       run: |
-  #         source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-
-  #         if [ "${GITHUB_REF_TYPE}" != 'tag' ]; then
-  #           ci_echo_error "Releasing to IC not from tag not allowed." >&2
-  #           exit 1
-  #         fi
-
-  #         # https://semver.org/
-  #         if ! [[ "${GITHUB_REF_NAME}" =~ ${RELEASE_TAG_REGEX} ]]; then
-  #           ci_echo_error "${GITHUB_REF_TYPE} : '${GITHUB_REF_NAME}' - is not SemVer correct (https://semver.org/)" >&2
-  #           exit 1
-  #         fi
-
-  #         ci_echo_success "${GITHUB_REF_TYPE} : ${GITHUB_REF_NAME}"
-
-  #     - name: Setup DFX
-  #       uses: dfinity/setup-dfx@main
-  #       with:
-  #         dfx-version: 0.24.1
-
-  #     - name: Setup Node
-  #       uses: actions/setup-node@v6
-  #       with:
-  #         node-version: "22"
-  #         cache: "yarn"
-
-  #     - name: Get yarn cache directory path
-  #       id: yarn-cache-dir-path
-  #       run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-  #     - name: Cache Node Modules
-  #       id: cache-node-modules
-  #       uses: actions/cache@v5
-  #       with:
-  #         path: |
-  #           **/node_modules
-  #           **/.eslintcache
-  #           ${{ steps.yarn-cache-dir-path.outputs.dir }}
-  #         key: nfid-fe-yarn
-
-  #     - name: Versions
-  #       run: |
-  #         source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
-
-  #         ci_versions
-
-  #     - name: Populate env vars
-  #       env:
-  #         OPTIONS: "${{ vars.OPTIONS }}"
-  #       run: |
-  #         source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-
-  #         ci_echo_debug "Getting values from dfx.json" >&2
-  #         if ! canister_data=$(cat dfx.json | jq -er ".canisters.\"${CANISTER_NAME}\""); then
-  #           ci_echo_error "Can't found canister '${CANISTER_NAME}' data from dfx.json" >&2
-  #           exit 1
-  #         fi
-
-  #         CANISTER_BRANCH="${GITHUB_REF_NAME////-}"
-  #         ENV_FILE=".env.${NETWORK_NAME}"
-
-  #         ci_echo_debug "Populating env variables" >&2
-  #         echo "CANISTER_BRANCH=${CANISTER_BRANCH}" >> $GITHUB_ENV
-  #         echo "ENV_FILE=${ENV_FILE}" >> $GITHUB_ENV
-  #         echo "OPTIONS=${OPTIONS}" >> $GITHUB_ENV
-
-  #     - name: Print Vars
-  #       run: |
-  #         source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-
-  #         ci_echo_info "CANISTER_NAME=${CANISTER_NAME}" >&2
-  #         ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
-  #         ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
-  #         ci_echo_info "ENV_FILE=${ENV_FILE}" >&2
-  #         ci_echo_info "OPTIONS=${OPTIONS}" >&2
-
-  #     - name: Install
-  #       env:
-  #         GH_NPM_REGISTRY: ${{secrets.PSYCHEDELIC_GH_NPM_REGISTRY}}
-  #       run: |
-  #         source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-
-  #         ci_echo_debug "Preparing .npmrc" >&2
-  #         sed -i "s/__PSYCHEDELIC_GH_NPM_REGISTRY__/${GH_NPM_REGISTRY}/g" .npmrc
-
-  #         ci_echo_debug "yarn --prefer-offline" >&2
-  #         yarn --prefer-offline --frozen-lockfile
-
-  #     - name: Build
-  #       run: |
-  #         source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-
-  #         ci_echo_info "NPX" >&2
-  #         ci_echo_debug "npx env-cmd -f '${ENV_FILE}' nx build '${CANISTER_NAME}' ${OPTIONS}" >&2
-  #         npx env-cmd -f "${ENV_FILE}" nx build "${CANISTER_NAME}" ${OPTIONS}
-
-  #         ci_echo_debug "dfx build --network '${NETWORK_NAME}' ${CANISTER_NAME}" >&2
-  #         dfx build --network "${NETWORK_NAME}" "${CANISTER_NAME}"
-
-  #     - name: Save artifact
-  #       uses: actions/upload-artifact@v7
-  #       with:
-  #         retention-days: 1
-  #         name: nfid-demo
-  #         include-hidden-files: true
-  #         path: |
-  #           build/
-  #           dist/
-  #           .dfx/
-
-  # deploy-demo:
-  #   name: Deploy NFID-Demo
-  #   needs: build-demo
-  #   environment: ${{ github.event.inputs.network_name || ( contains(github.event_name, 'release') && 'ic' || 'dev' ) }}
-  #   env:
-  #     CANISTER_NAME: nfid-demo
-  #   runs-on:
-  #     group: dfx-runner
-  #   defaults:
-  #     run:
-  #       shell: bash
-
-  #   steps:
-  #   - name: INPUT => Checks force_deploy
-  #     if: (github.event.inputs.force_deploy == 'true') && (github.event.inputs.confirmation != 'Yes')
-  #     run: |
-  #       echo "[ERROR] You have try to force release without or with wrong confirmation phrase" >&2
-  #       exit 1
-
-  #   - name: Checkout repo
-  #     uses: actions/checkout@v6
-
-  #   - name: Checkout CI repo
-  #     uses: actions/checkout@v6
-  #     with:
-  #       token: ${{ secrets.PAT }}
-  #       repository: internet-identity-labs/ci_libs
-  #       ref: main
-  #       path: ci_libs
-
-  #   - name: INPUT => Checks branch and network_name
-  #     if: ${{ env.NETWORK_NAME == 'ic' }}
-  #     run: |
-  #       source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-
-  #       if [ "${GITHUB_REF_TYPE}" != 'tag' ]; then
-  #         ci_echo_error "Releasing to IC not from tag not allowed." >&2
-  #         exit 1
-  #       fi
-
-  #       # https://semver.org/
-  #       if ! [[ "${GITHUB_REF_NAME}" =~ ${RELEASE_TAG_REGEX} ]]; then
-  #         ci_echo_error "${GITHUB_REF_TYPE} : '${GITHUB_REF_NAME}' - is not SemVer correct (https://semver.org/)" >&2
-  #         exit 1
-  #       fi
-
-  #       ci_echo_success "${GITHUB_REF_TYPE} : ${GITHUB_REF_NAME}"
-
-  #   - name: Versions
-  #     run: |
-  #       source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
-
-  #       ci_versions
-
-  #   - name: PRE-DEPLOY => Populate env vars
-  #     env:
-  #         DFX_ID_NAME: ${{ vars.DFX_ID_NAME }}
-  #     run: |
-  #       source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-
-  #       ci_echo_debug "Getting values from dfx.json" >&2
-  #       if ! canister_data=$(cat dfx.json | jq -er ".canisters.\"${CANISTER_NAME}\""); then
-  #         ci_echo_error "Can't found canister '${CANISTER_NAME}' data from dfx.json" >&2
-  #         exit 1
-  #       fi
-
-  #       CANISTER_BRANCH="${GITHUB_REF_NAME////-}"
-
-  #       ci_echo_debug "Populating env variables" >&2
-  #       echo "CANISTER_BRANCH=${CANISTER_BRANCH}" >> $GITHUB_ENV
-
-  #       ci_echo_debug "Getting dfx identity for network '${NETWORK_NAME}'" >&2
-  #       DFX_ID_PATH="${HOME}/.config/dfx/identity/${DFX_ID_NAME}"
-
-  #       echo "DFX_ID_NAME=${DFX_ID_NAME}" >> $GITHUB_ENV
-  #       echo "DFX_ID_PATH=${DFX_ID_PATH}" >> $GITHUB_ENV
-
-  #   - name: PRE-DEPLOY => Print Vars
-  #     run: |
-  #       source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-  #       ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
-  #       ci_echo_info "CANISTER_NAME=${CANISTER_NAME}" >&2
-  #       ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
-  #       ci_echo_info "DFX_ID_NAME=${DFX_ID_NAME}" >&2
-  #       ci_echo_info "DFX_ID_PATH=${DFX_ID_PATH}" >&2
-
-  #   - name: PRE-DEPLOY => Write identity
-  #     env:
-  #       DFX_ID_KEY: ${{ secrets.DFX_ID_KEY }}
-  #     run: |
-  #       source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
-
-  #       mkdir -p "${DFX_ID_PATH}"
-
-  #       ci_echo_warn "Preparing encoded key..." >&2
-  #       echo "${DFX_ID_KEY}" | base64 -d > "${DFX_ID_PATH}/identity.pem"
-
-  #   - name: PRE-DEPLOY => DFX status.
-  #     run: |
-  #       dfx --version
-
-  #   - name: DEPLOY => Load artifact
-  #     uses: actions/download-artifact@v4
-  #     with:
-  #       name: nfid-demo
-
-  #   - name: DEPLOY => Deploy to the canister.
-  #     run: |
-  #       source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-
-  #       if [ "${NETWORK_NAME}" == 'ic' ]; then
-  #         CI_DEBUG="true"
-  #       fi
-
-  #       if [ "${FORCE_DEPLOY}" == 'true' ]; then
-  #         FORCE="--yes"
-  #       fi
-
-  #       dfx identity use "${DFX_ID_NAME}"
-
-  #       ci_echo_debug "dfx canister install ${FORCE} --mode auto --network ${NETWORK_NAME} ${CANISTER_NAME}" >&2
-  #       if ! result=$(dfx canister install ${FORCE} --mode auto --network "${NETWORK_NAME}" "${CANISTER_NAME}"); then
-  #         ci_echo_error "Install failed ${result}" >&2
-  #         exit 1
-  #       fi
-
-  #       ci_echo_debug "Command output was '${result}'" >&2
-
-  #       ci_echo_success "Canister '${CANISTER_NAME}' was installed to the network '${NETWORK_NAME}'" >&2
-
-  #   - name: POST-DEPLOY => Cleaning.
-  #     uses: geekyeggo/delete-artifact@f275313e70c08f6120db482d7a6b98377786765b # v5.1.0
-  #     with:
-  #       name: nfid-demo
-  #       failOnError: false
-
-  #   - name: POST-DEPLOY => Save artifact.
-  #     uses: actions/upload-artifact@v7
-  #     with:
-  #       name: ${{github.sha}}-nfid-demo
-  #       retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
-  #       path: |
-  #           build/
-  #           dist/
-
-  build-frontend:
-    name: Build Frontend
-    needs: check-secrets
-    environment: ${{ github.event.inputs.network_name || ( contains(github.event_name, 'release') && 'ic' || 'dev' ) }}
+  backup-env-dev:
+    name: Backup Dev Environment Secrets & Variables
     runs-on: ubuntu-latest
-    env:
-      CANISTER_NAME: nfid-wallet-client
-
+    environment: dev
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v6
-
-      - name: Checkout CI repo
-        uses: actions/checkout@v6
-        with:
-          token: ${{ secrets.PAT }}
-          repository: internet-identity-labs/ci_libs
-          ref: main
-          path: ci_libs
-
-      - name: INPUT => Checks branch and network_name
-        if: ${{ env.NETWORK_NAME == 'ic' }}
-        run: |
-          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-
-          if [ "${GITHUB_REF_TYPE}" != 'tag' ]; then
-            ci_echo_error "Releasing to IC not from tag not allowed." >&2
-            exit 1
-          fi
-
-          # https://semver.org/
-          if ! [[ "${GITHUB_REF_NAME}" =~ ${RELEASE_TAG_REGEX} ]]; then
-            ci_echo_error "${GITHUB_REF_TYPE} : '${GITHUB_REF_NAME}' - is not SemVer correct (https://semver.org/)" >&2
-            exit 1
-          fi
-
-          ci_echo_success "${GITHUB_REF_TYPE} : ${GITHUB_REF_NAME}"
-
-      - name: Setup DFX
-        uses: dfinity/setup-dfx@main
-        with:
-          dfx-version: 0.24.1
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: ".nvmrc"
-          cache: "yarn"
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache Node Modules
-        id: cache-node-modules
-        uses: actions/cache@v5
-        with:
-          path: |
-            **/node_modules
-            **/.eslintcache
-            ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: nfid-fe-yarn
-
-      - name: Versions
-        run: |
-          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
-
-          ci_versions
-
-      - name: Populate env vars
-        env:
-          OPTIONS: "${{ vars.OPTIONS }}"
-        run: |
-          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-
-          ci_echo_debug "Getting values from dfx.json" >&2
-          if ! canister_data=$(cat dfx.json | jq -er ".canisters.\"${CANISTER_NAME}\""); then
-            ci_echo_error "Can't found canister '${CANISTER_NAME}' data from dfx.json" >&2
-            exit 1
-          fi
-
-          CANISTER_BRANCH="${GITHUB_REF_NAME////-}"
-          ENV_FILE=".env.${NETWORK_NAME}"
-
-          ci_echo_debug "Populating env variables" >&2
-          echo "CANISTER_BRANCH=${CANISTER_BRANCH}" >> $GITHUB_ENV
-          echo "ENV_FILE=${ENV_FILE}" >> $GITHUB_ENV
-          echo "OPTIONS=${OPTIONS}" >> $GITHUB_ENV
-
-      - name: Print Vars
-        run: |
-          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-
-          ci_echo_info "CANISTER_NAME=${CANISTER_NAME}" >&2
-          ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
-          ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
-          ci_echo_info "ENV_FILE=${ENV_FILE}" >&2
-          ci_echo_info "OPTIONS=${OPTIONS}" >&2
-
-      - name: Install
-        env:
-          GH_NPM_REGISTRY: ${{ secrets.PSYCHEDELIC_GH_NPM_REGISTRY }}
-        run: |
-          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-
-          ci_echo_debug "Preparing .npmrc" >&2
-          sed -i "s/__PSYCHEDELIC_GH_NPM_REGISTRY__/${GH_NPM_REGISTRY}/g" .npmrc
-
-          ci_echo_debug "yarn --prefer-offline" >&2
-          yarn --prefer-offline --frozen-lockfile
-
-      - name: Build
-        env:
-          IS_DEV: ${{ vars.IS_DEV }}
-          IC_HOST: https://ic0.app
-          USERGEEK_API_KEY: ${{ secrets.PROD_USERGEEK_API_KEY }}
-          GH_NPM_REGISTRY: ${{ secrets.PSYCHEDELIC_GH_NPM_REGISTRY }}
-        run: |
-          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-
-          ci_echo_debug "npx env-cmd -f '${ENV_FILE}' nx build '${CANISTER_NAME}' ${OPTIONS}" >&2
-          npx env-cmd -f "${ENV_FILE}" nx build "${CANISTER_NAME}" ${OPTIONS}
-
-          ci_echo_debug "dfx build --network '${NETWORK_NAME}' ${CANISTER_NAME}" >&2
-          dfx build --network "${NETWORK_NAME}" "${CANISTER_NAME}"
-
-      - name: INPUT => Checks force_deploy
-        if: (github.event.inputs.force_deploy == 'true') && (github.event.inputs.confirmation != 'Yes')
-        run: |
-          echo "[ERROR] You have try to force release without or with wrong confirmation phrase" >&2
-          exit 1
-
-      - name: INPUT => Checks branch and network_name
-        if: ${{ env.NETWORK_NAME == 'ic' }}
-        run: |
-          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-
-          if [ "${GITHUB_REF_TYPE}" != 'tag' ]; then
-            ci_echo_error "Releasing to IC not from tag not allowed." >&2
-            exit 1
-          fi
-
-          # https://semver.org/
-          if ! [[ "${GITHUB_REF_NAME}" =~ ${RELEASE_TAG_REGEX} ]]; then
-            ci_echo_error "${GITHUB_REF_TYPE} : '${GITHUB_REF_NAME}' - is not SemVer correct (https://semver.org/)" >&2
-            exit 1
-          fi
-
-          ci_echo_success "${GITHUB_REF_TYPE} : ${GITHUB_REF_NAME}"
-
-      - name: PRE-DEPLOY => Populate env vars
-        env:
-          DFX_ID_NAME: ${{ vars.DFX_ID_NAME }}
-        run: |
-          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-
-          ci_echo_debug "Getting values from dfx.json" >&2
-          if ! canister_data=$(cat dfx.json | jq -er ".canisters.\"${CANISTER_NAME}\""); then
-            ci_echo_error "Can't found canister '${CANISTER_NAME}' data from dfx.json" >&2
-            exit 1
-          fi
-
-          CANISTER_BRANCH="${GITHUB_REF_NAME////-}"
-
-          ci_echo_debug "Populating env variables" >&2
-          echo "CANISTER_BRANCH=${CANISTER_BRANCH}" >> $GITHUB_ENV
-
-          ci_echo_debug "Getting dfx identity for network '${NETWORK_NAME}'" >&2
-          DFX_ID_PATH="${HOME}/.config/dfx/identity/${DFX_ID_NAME}"
-
-          echo "DFX_ID_NAME=${DFX_ID_NAME}" >> $GITHUB_ENV
-          echo "DFX_ID_PATH=${DFX_ID_PATH}" >> $GITHUB_ENV
-
-      - name: PRE-DEPLOY => Print Vars
-        run: |
-          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
-          ci_echo_info "NETWORK_NAME=${NETWORK_NAME}" >&2
-          ci_echo_info "CANISTER_NAME=${CANISTER_NAME}" >&2
-          ci_echo_info "CANISTER_BRANCH=${CANISTER_BRANCH}" >&2
-          ci_echo_info "DFX_ID_NAME=${DFX_ID_NAME}" >&2
-          ci_echo_info "DFX_ID_PATH=${DFX_ID_PATH}" >&2
-
-      - name: PRE-DEPLOY => Write identity
+      - name: Dump and upload dev secrets and variables
         env:
           DFX_ID_KEY: ${{ secrets.DFX_ID_KEY }}
+          REACT_APP_PUBLIC_POSTHOG_KEY: ${{ secrets.REACT_APP_PUBLIC_POSTHOG_KEY }}
         run: |
-          source ${{ github.workspace }}/ci_libs/CI_LIBS.sh
+          {
+            echo "# ===== DEV ENVIRONMENT SECRETS ====="
+            printf 'DFX_ID_KEY=%s\n' "$DFX_ID_KEY"
+            printf 'REACT_APP_PUBLIC_POSTHOG_KEY=%s\n' "$REACT_APP_PUBLIC_POSTHOG_KEY"
+            echo ""
+            echo "# ===== DEV ENVIRONMENT VARIABLES ====="
+            printf 'ARTIFACT_RETENTION_DAYS=%s\n' "${{ vars.ARTIFACT_RETENTION_DAYS }}"
+            printf 'DFX_ID_NAME=%s\n' "${{ vars.DFX_ID_NAME }}"
+            printf 'IS_DEV=%s\n' "${{ vars.IS_DEV }}"
+            printf 'REACT_APP_PUBLIC_POSTHOG_KEY=%s\n' "${{ vars.REACT_APP_PUBLIC_POSTHOG_KEY }}"
+            printf 'BLOCK_CYPHER_TOKEN=%s\n' "${{ vars.BLOCK_CYPHER_TOKEN }}"
+          } > env-dev.env
 
-          mkdir -p "${DFX_ID_PATH}"
+          aws s3 cp env-dev.env s3://${{ env.S3_BUCKET }}/${{ env.S3_PREFIX }}/env-dev.env
 
-          ci_echo_warn "Preparing encoded key..." >&2
-          echo "${DFX_ID_KEY}" | base64 -d > "${DFX_ID_PATH}/identity.pem"
-
-      - name: PRE-DEPLOY => DFX status.
+  backup-env-stage:
+    name: Backup Stage Environment Secrets & Variables
+    runs-on: ubuntu-latest
+    environment: stage
+    steps:
+      - name: Dump and upload stage secrets and variables
+        env:
+          DFX_ID_KEY: ${{ secrets.DFX_ID_KEY }}
+          REACT_APP_PUBLIC_POSTHOG_KEY: ${{ secrets.REACT_APP_PUBLIC_POSTHOG_KEY }}
         run: |
-          dfx --version
+          {
+            echo "# ===== STAGE ENVIRONMENT SECRETS ====="
+            printf 'DFX_ID_KEY=%s\n' "$DFX_ID_KEY"
+            printf 'REACT_APP_PUBLIC_POSTHOG_KEY=%s\n' "$REACT_APP_PUBLIC_POSTHOG_KEY"
+            echo ""
+            echo "# ===== STAGE ENVIRONMENT VARIABLES ====="
+            printf 'ARTIFACT_RETENTION_DAYS=%s\n' "${{ vars.ARTIFACT_RETENTION_DAYS }}"
+            printf 'DFX_ID_NAME=%s\n' "${{ vars.DFX_ID_NAME }}"
+            printf 'IS_DEV=%s\n' "${{ vars.IS_DEV }}"
+            printf 'REACT_APP_PUBLIC_POSTHOG_KEY=%s\n' "${{ vars.REACT_APP_PUBLIC_POSTHOG_KEY }}"
+            printf 'BLOCK_CYPHER_TOKEN=%s\n' "${{ vars.BLOCK_CYPHER_TOKEN }}"
+          } > env-stage.env
 
-      - name: DEPLOY => Deploy to the canister.
+          aws s3 cp env-stage.env s3://${{ env.S3_BUCKET }}/${{ env.S3_PREFIX }}/env-stage.env
+
+  backup-env-ic:
+    name: Backup IC Environment Secrets & Variables
+    runs-on: ubuntu-latest
+    environment: ic
+    steps:
+      - name: Dump and upload ic secrets and variables
+        env:
+          DFX_ID_KEY: ${{ secrets.DFX_ID_KEY }}
+          REACT_APP_PUBLIC_POSTHOG_KEY: ${{ secrets.REACT_APP_PUBLIC_POSTHOG_KEY }}
         run: |
-          source "${{ github.workspace }}/ci_libs/CI_LIBS.sh"
+          {
+            echo "# ===== IC ENVIRONMENT SECRETS ====="
+            printf 'DFX_ID_KEY=%s\n' "$DFX_ID_KEY"
+            printf 'REACT_APP_PUBLIC_POSTHOG_KEY=%s\n' "$REACT_APP_PUBLIC_POSTHOG_KEY"
+            echo ""
+            echo "# ===== IC ENVIRONMENT VARIABLES ====="
+            printf 'ARTIFACT_RETENTION_DAYS=%s\n' "${{ vars.ARTIFACT_RETENTION_DAYS }}"
+            printf 'DFX_ID_NAME=%s\n' "${{ vars.DFX_ID_NAME }}"
+            printf 'IS_DEV=%s\n' "${{ vars.IS_DEV }}"
+            printf 'OPTIONS=%s\n' "${{ vars.OPTIONS }}"
+            printf 'REACT_APP_PUBLIC_POSTHOG_KEY=%s\n' "${{ vars.REACT_APP_PUBLIC_POSTHOG_KEY }}"
+            printf 'BLOCK_CYPHER_TOKEN=%s\n' "${{ vars.BLOCK_CYPHER_TOKEN }}"
+          } > env-ic.env
 
-          if [ "${NETWORK_NAME}" == 'ic' ]; then
-            CI_DEBUG="true"
-          fi
-
-          if [ "${FORCE_DEPLOY}" == 'true' ]; then
-            FORCE="--yes"
-          fi
-
-          dfx identity use "${DFX_ID_NAME}"
-
-          if [ "${NETWORK_NAME}" == 'ic' ]; then
-            ci_echo_debug "dfx deploy ${CANISTER_NAME} --network ${NETWORK_NAME} --by-proposal" >&2
-            if ! result=$(dfx deploy "${CANISTER_NAME}" --network "${NETWORK_NAME}" --by-proposal); then
-              ci_echo_error "Install failed ${result}" >&2
-              exit 1
-            fi
-          else
-            ci_echo_debug "dfx canister install --yes --mode reinstall --network ${NETWORK_NAME} ${CANISTER_NAME}" >&2
-            if ! result=$(dfx canister install --yes --mode reinstall --network "${NETWORK_NAME}" "${CANISTER_NAME}"); then
-              ci_echo_error "Install failed ${result}" >&2
-              exit 1
-            fi
-          fi
-
-          ci_echo_debug "Command output was '${result}'" >&2
-
-          ci_echo_success "Canister '${CANISTER_NAME}' was installed to the network '${NETWORK_NAME}'" >&2
-
-      - name: POST-DEPLOY => Save artifact.
-        uses: actions/upload-artifact@v7
-        with:
-          name: ${{github.sha}}-nfid-wallet-client
-          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
-          path: |
-            build/
-            dist/
+          aws s3 cp env-ic.env s3://${{ env.S3_BUCKET }}/${{ env.S3_PREFIX }}/env-ic.env

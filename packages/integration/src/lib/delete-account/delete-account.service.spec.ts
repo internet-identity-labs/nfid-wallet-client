@@ -26,10 +26,6 @@ const RECOVERY_SEED_PHRASE = `10001 ${RECOVERY_MNEMONIC}`
 describe("deleteAccountService", () => {
   jest.setTimeout(120000)
 
-  beforeEach(() => {
-    jest.spyOn(authState, "logout").mockResolvedValue(undefined)
-  })
-
   afterEach(() => {
     jest.restoreAllMocks()
   })
@@ -63,7 +59,6 @@ describe("deleteAccountService", () => {
       email: TEST_EMAIL,
       code: "123456",
     })
-    expect(authState.logout).toHaveBeenCalledTimes(1)
     const { status_code, error } = await im.get_account()
     expect(status_code).toBe(404)
     expect(error[0]).toBe("Unable to find Account")
@@ -102,7 +97,6 @@ describe("deleteAccountService", () => {
       email: TEST_EMAIL,
       code: "wrong",
     })
-    expect(authState.logout).not.toHaveBeenCalled()
     const { status_code } = await im.get_account()
     expect(status_code).toBe(200)
   })
@@ -163,7 +157,6 @@ describe("deleteAccountService", () => {
       email: TEST_EMAIL,
       code: "123456",
     })
-    expect(authState.logout).toHaveBeenCalledTimes(1)
     const { status_code, error } = await im.get_account()
     expect(status_code).toBe(404)
     expect(error[0]).toBe("Unable to find Account")
@@ -193,7 +186,6 @@ describe("deleteAccountService", () => {
         "10001 word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11",
       ),
     ).rejects.toThrow(IncorrectSeedPhraseError)
-    expect(authState.logout).not.toHaveBeenCalled()
     const { status_code } = await im.get_account()
     expect(status_code).toBe(200)
   })

@@ -12,7 +12,19 @@ export interface OCPPayRequest {
   minSendable: number
   maxSendable: number
   metadata: string
-  currencies: OCPCurrency[]
+  transferAmounts: OCPTransferAmount[]
+}
+
+export interface OCPTransferAmount {
+  method: OCPNetwork
+  available: boolean
+  minFee: number
+  assets: OCPAsset[]
+}
+
+export interface OCPAsset {
+  asset: string
+  amount: string
 }
 
 export interface OCPCurrency {
@@ -33,6 +45,7 @@ export interface OCPQuote {
   method: OCPNetwork
   asset: string
   targetAddress: string
+  submitUrl: string
 }
 
 export interface OCPCallbackResponse {

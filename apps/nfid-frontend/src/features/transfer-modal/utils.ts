@@ -637,3 +637,10 @@ export const getAddressBookNftOptions = (
       }
     })
 }
+
+export const getFeeSymbol = (chainId: ChainId) => {
+  if (chainId === ChainId.ICP) return "ICP"
+  if (chainId === ChainId.BTC) return "BTC"
+  if (chainId === ChainId.POL) return "POL"
+  return "ETH"
+}

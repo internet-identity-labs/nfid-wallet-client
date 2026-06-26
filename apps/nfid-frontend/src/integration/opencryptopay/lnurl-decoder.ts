@@ -3,6 +3,10 @@ import { bech32 } from "bech32"
 import { OCPInvalidLnurlError } from "./errors"
 
 export function decodeLnurl(lnurl: string): string {
+  if (lnurl.startsWith("https://")) {
+    return lnurl
+  }
+
   try {
     const decoded = bech32.decode(lnurl, 2048)
     const bytes = bech32.fromWords(decoded.words)

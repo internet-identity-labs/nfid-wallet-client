@@ -2,6 +2,7 @@ import { SignIdentity } from "@icp-sdk/core/agent"
 import { Principal } from "@icp-sdk/core/principal"
 import { isAddress, formatUnits, parseUnits } from "ethers"
 import validate from "bitcoin-address-validation"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { ethereumService } from "../ethereum/eth/ethereum.service"
 import { polygonService } from "../ethereum/polygon/polygon.service"
@@ -24,6 +25,7 @@ import {
 import {
   OCPNetwork,
   OCPPayRequest,
+  OCPTransferAmount,
   OCPCurrency,
   OCPQuote,
   OCPCallbackResponse,
@@ -31,14 +33,14 @@ import {
   OCPPaymentSummary,
 } from "./types"
 
-const SUPPORTED_NETWORKS: OCPNetwork[] = [
-  "Ethereum",
-  "Polygon",
-  "Arbitrum",
-  "Base",
-  "Bitcoin",
-  "ICP",
-]
+export const OCP_NETWORK_TO_CHAIN_ID: Record<OCPNetwork, ChainId> = {
+  Ethereum: ChainId.ETH,
+  Polygon: ChainId.POL,
+  Arbitrum: ChainId.ARB,
+  Base: ChainId.BASE,
+  Bitcoin: ChainId.BTC,
+  ICP: ChainId.ICP,
+}
 
 const REQUEST_TIMEOUT_MS = 10_000
 const ICP_FEE_E8S = BigInt(10_000)
@@ -52,7 +54,7 @@ export class OpenCryptoPayService {
     const response = await this.fetchWithTimeout(paymentUrl)
     const data = await response.json()
 
-    if (data?.tag !== "payRequest" || !Array.isArray(data.currencies)) {
+    if (data?.tag !== "payRequest" || !Array.isArray(data.transferAmounts)) {
       throw new OCPInvalidResponseError(paymentUrl, data)
     }
 
@@ -60,33 +62,32 @@ export class OpenCryptoPayService {
   }
 
   async getAvailableCurrencies(
-    currencies: OCPCurrency[],
+    transferAmounts: OCPTransferAmount[],
     identity: SignIdentity,
-  ): Promise<OCPCurrency[]> {
-    const supported = currencies.filter((c) =>
-      this.isNetworkSupported(c.network),
+  ): Promise<OCPTransferAmount[]> {
+    const supported = transferAmounts.filter(
+      (t) => t.available && this.isNetworkSupported(t.method),
     )
 
     const results = await Promise.allSettled(
-      supported.map(async (currency) => {
+      supported.map(async (transfer) => {
         const balance = await this.getBalanceForNetwork(
-          currency.network,
+          transfer.method,
           identity,
         )
-        const balanceInUnits = Number(formatUnits(balance, currency.decimals))
-        return balanceInUnits >= currency.minSendable ? currency : null
+        return balance > BigInt(0) ? transfer : null
       }),
     )
 
     return results
       .filter(
-        (r): r is PromiseFulfilledResult<OCPCurrency> =>
+        (r): r is PromiseFulfilledResult<OCPTransferAmount> =>
           r.status === "fulfilled" && r.value !== null,
       )
       .map((r) => r.value)
   }
 
-  async getQuote(
+  private async fetchQuote(
     callbackUrl: string,
     amount: number,
     currency: string,
@@ -102,7 +103,68 @@ export class OpenCryptoPayService {
       throw new OCPInvalidResponseError(url.toString(), data)
     }
 
-    return data.quote
+    const submitUrl = callbackUrl.replace("/cb/", "/tx/")
+    return { ...data.quote, submitUrl }
+  }
+
+  private async fetchDfxQuote(
+    paymentUrl: string,
+    method: string,
+    asset: string,
+    transferAmounts: OCPTransferAmount[],
+    decimals: number,
+  ): Promise<OCPQuote> {
+    const url = new URL(paymentUrl)
+    url.searchParams.set("method", method)
+    url.searchParams.set("asset", asset)
+
+    const response = await this.fetchWithTimeout(url.toString())
+    const data = await response.json()
+
+    if (!data?.uri || !data?.expiryDate) {
+      throw new OCPInvalidResponseError(url.toString(), data)
+    }
+
+    const { targetAddress, amount } = this.parseDfxUri(data.uri, decimals)
+    const submitUrl = this.extractUrlFromText(data.hint)
+
+    if (!submitUrl) {
+      throw new OCPInvalidResponseError(url.toString(), data)
+    }
+
+    const transfer = transferAmounts.find((t) => t.method === method)
+    const fee = this.formatDfxMinFee(transfer?.minFee ?? 0, method)
+
+    return {
+      id: submitUrl.split("/").pop() ?? "",
+      expiresAt: data.expiryDate,
+      amount,
+      fee,
+      method: method as OCPNetwork,
+      asset,
+      targetAddress,
+      submitUrl,
+    }
+  }
+
+  public async getQuote(
+    payInfo: { url: string; details: OCPPayRequest },
+    method: string,
+    asset: string,
+    amount: number,
+    decimals: number,
+  ): Promise<OCPQuote> {
+    const isDfx = new URL(payInfo.url).hostname === "api.dfx.swiss"
+    if (isDfx) {
+      return this.fetchDfxQuote(
+        payInfo.url,
+        method,
+        asset,
+        payInfo.details.transferAmounts,
+        decimals,
+      )
+    }
+    return this.fetchQuote(payInfo.details.callback, amount, asset)
   }
 
   isQuoteExpired(quote: OCPQuote): boolean {
@@ -231,7 +293,7 @@ export class OpenCryptoPayService {
   }
 
   private isNetworkSupported(network: string): network is OCPNetwork {
-    return SUPPORTED_NETWORKS.includes(network as OCPNetwork)
+    return network in OCP_NETWORK_TO_CHAIN_ID
   }
 
   private getEvmService(network: OCPNetwork): EVMService {
@@ -355,26 +417,18 @@ export class OpenCryptoPayService {
       quote.amount,
     )
 
-    const { ChainId } = await import("@nfid/integration/token/icrc1/enum/enums")
-
-    const chainIdMap: Record<string, number> = {
-      Ethereum: ChainId.ETH,
-      Polygon: ChainId.POL,
-      Arbitrum: ChainId.ARB,
-      Base: ChainId.BASE,
-    }
-
-    const response = await service.sendEthTransaction(
-      identity,
-      quote.targetAddress as Address,
-      quote.amount,
-      fee,
-      chainIdMap[quote.method],
-    )
+    const { response, signedTransaction } =
+      await service.sendEthTransactionWithRaw(
+        identity,
+        quote.targetAddress as Address,
+        quote.amount,
+        fee,
+        OCP_NETWORK_TO_CHAIN_ID[quote.method],
+      )
 
     return {
       txId: response.hash,
-      rawTx: response.hash,
+      rawTx: signedTransaction,
     }
   }
 
@@ -428,17 +482,74 @@ export class OpenCryptoPayService {
     return { txId: blockIndex, rawTx: blockIndex }
   }
 
+  private parseDfxUri(
+    uri: string,
+    decimals: number,
+  ): { targetAddress: string; amount: string } {
+    // ERC-20: ethereum:0xCONTRACT@chainId/transfer?address=0xRECIPIENT&uint256=AMOUNT
+    const erc20Match = uri.match(
+      /^ethereum:0x[0-9a-fA-F]+(?:@\d+)?\/transfer\?address=(0x[0-9a-fA-F]+)&uint256=(\d+)/,
+    )
+    if (erc20Match) {
+      return {
+        targetAddress: erc20Match[1],
+        amount: formatUnits(BigInt(erc20Match[2]), decimals),
+      }
+    }
+
+    // Native ETH: ethereum:0xADDRESS@chainId?value=WEI
+    const ethMatch = uri.match(
+      /^ethereum:(0x[0-9a-fA-F]+)(?:@\d+)?\?value=(\d+)/,
+    )
+    if (ethMatch) {
+      return {
+        targetAddress: ethMatch[1],
+        amount: formatUnits(BigInt(ethMatch[2]), 18),
+      }
+    }
+
+    // Bitcoin: bitcoin:ADDRESS?amount=BTC
+    const btcMatch = uri.match(/^bitcoin:([^?]+)\?amount=([0-9.]+)/)
+    if (btcMatch) {
+      return { targetAddress: btcMatch[1], amount: btcMatch[2] }
+    }
+
+    throw new OCPInvalidResponseError(uri, { uri })
+  }
+
+  private extractUrlFromText(text: string): string | undefined {
+    return text?.match(/https:\/\/\S+/)?.[0]?.replace(/[.,;!?:)]+$/, "")
+  }
+
+  private formatDfxMinFee(minFee: number, method: string): string {
+    const decimals = method === "Bitcoin" ? 8 : 18
+    return formatUnits(BigInt(Math.round(minFee)), decimals)
+  }
+
   private async submitToOCP(
     quote: OCPQuote,
     txId: string,
-    _rawTx: string,
+    rawTx: string,
     submitBaseUrl?: string,
   ): Promise<OCPSubmitResponse> {
-    const base =
-      submitBaseUrl ?? `https://api.opencryptopay.io/v1/lnurlp/tx/${txId}`
+    const base = submitBaseUrl ?? quote.submitUrl
     const url = new URL(base)
-    url.searchParams.set("method", quote.method)
     url.searchParams.set("quote", quote.id)
+    url.searchParams.set("method", quote.method)
+
+    switch (quote.method) {
+      case "Ethereum":
+      case "Polygon":
+      case "Arbitrum":
+      case "Base":
+      case "Bitcoin":
+        url.searchParams.set("hex", rawTx)
+        break
+      case "ICP":
+        url.searchParams.set("asset", quote.asset)
+        url.searchParams.set("tx", txId)
+        break
+    }
 
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)

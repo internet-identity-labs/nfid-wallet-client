@@ -36,6 +36,7 @@ interface PayProps {
   setErrorMessage: (message: string) => void
   setSuccessMessage: (message: string) => void
   onError: (value: boolean) => void
+  setIsPaySuccess: (value: boolean) => void
 }
 
 const DEFAULT_PAY_ERROR = "Something went wrong"
@@ -47,6 +48,7 @@ export const Pay = ({
   setErrorMessage,
   setSuccessMessage,
   onError,
+  setIsPaySuccess,
 }: PayProps) => {
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [status, setStatus] = useState(SendStatus.PENDING)
@@ -157,7 +159,7 @@ export const Pay = ({
     const defaultToken =
       filteredTokens.find((t) => t.getTokenSymbol() === "ICP") ??
       filteredTokens.find(
-        (t) => t.getTokenSymbol() === "ETH" && t.getChainId() === ChainId.ETH,
+        (t) => t.getTokenSymbol() === "ETH" && t.getChainId() === ChainId.ARB,
       ) ??
       filteredTokens[0]
 
@@ -325,6 +327,7 @@ export const Pay = ({
     initedTokens,
     mutateInitedTokens,
     payData,
+    setIsPaySuccess,
   ])
 
   return (

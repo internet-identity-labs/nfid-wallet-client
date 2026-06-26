@@ -16,11 +16,8 @@ export interface TransferModalProps {
   isOpen: boolean
   hasSwapError: boolean
   hasBtcError: boolean
-  isConvertSuccess: boolean
   hasBridgeError: boolean
-  isBridgeSuccess: boolean
-  isEarnSuccess: boolean
-  isWithdrawSuccess: boolean
+  isSuccessTx: boolean
 }
 
 export interface TransferVaultModalProps {
@@ -42,18 +39,12 @@ export const TransferModal: FC<TransferModalProps> = ({
   isOpen,
   hasSwapError,
   hasBtcError,
-  isConvertSuccess,
   hasBridgeError,
-  isBridgeSuccess,
-  isEarnSuccess,
-  isWithdrawSuccess,
+  isSuccessTx,
 }) => {
-  const isSuccessScreen =
-    isConvertSuccess || isBridgeSuccess || isEarnSuccess || isWithdrawSuccess
-
   const minHeight = (() => {
     if (hasSwapError) return "min-h-[540px]"
-    if (isSuccessScreen) return "min-h-[580px]"
+    if (isSuccessTx) return "min-h-[580px]"
     if (hasBtcError || hasBridgeError) return "min-h-[520px]"
     if (direction === ModalType.EARN) return "min-h-[366px]"
     if (direction === ModalType.WITHDRAW) return "min-h-[330px]"

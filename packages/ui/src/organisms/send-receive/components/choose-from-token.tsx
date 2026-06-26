@@ -124,6 +124,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       case IModalType.CONVERT_TO_CKBTC:
       case IModalType.CONVERT_TO_CKETH:
       case IModalType.CONVERT_TO_SEPOLIA_CKETH:
+      case IModalType.CONVERT_TO_CKERC20:
         // just set 0 for not setting undefined
         return BigInt(0)
 
@@ -140,6 +141,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
       case IModalType.SEND:
       case IModalType.STAKE:
+      case IModalType.CONVERT_TO_ERC20:
         return fee
 
       default:
@@ -161,16 +163,17 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     if (userBalance === undefined) return false
 
     if (
-      token?.getChainId() === ChainId.BTC ||
-      (token && isEvmToken(token.getChainId()))
+      modalType === IModalType.SWAP ||
+      modalType === IModalType.CONVERT_TO_ERC20
     ) {
-      return userBalance > BigInt(0)
-    }
-    if (feeFormatted === undefined) return false
+      if (feeFormatted === undefined) return false
 
-    const balanceNum = new BigNumber(userBalance.toString())
-    const feeNum = new BigNumber(feeFormatted.toString())
-    return balanceNum.minus(feeNum).isGreaterThanOrEqualTo(0)
+      const balanceNum = new BigNumber(userBalance.toString())
+      const feeNum = new BigNumber(feeFormatted.toString())
+      return balanceNum.minus(feeNum).isGreaterThanOrEqualTo(0)
+    }
+
+    return userBalance > BigInt(0)
   }, [userBalance, feeFormatted, token])
 
   const maxHandler = useCallback(() => {
@@ -230,7 +233,9 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       modalType === IModalType.CONVERT_TO_CKBTC ||
       modalType === IModalType.CONVERT_TO_BTC ||
       modalType === IModalType.CONVERT_TO_ETH ||
-      modalType === IModalType.CONVERT_TO_SEPOLIA_ETH
+      modalType === IModalType.CONVERT_TO_SEPOLIA_ETH ||
+      modalType === IModalType.CONVERT_TO_CKERC20 ||
+      modalType === IModalType.CONVERT_TO_ERC20
     ) {
       if (feeFormatted === undefined) return
       const feeNum = new BigNumber(feeFormatted.toString())
@@ -313,7 +318,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           <InputAmount
             key={token.getTokenAddress()}
             className={clsx(
-              isResponsive && "leading-[26px] h-[30px] !max-w-full",
+              isResponsive &&
+                "leading-[26px] h-[30px] !max-w-full basis-[100%]",
             )}
             id={"choose-from-token-amount"}
             isLoading={isFeeLoading}

@@ -14,6 +14,7 @@ import { FT } from "frontend/integration/ft/ft"
 
 import { EthFormattedFee, BtcFormattedFee } from "../utils"
 import { ConvertModal } from "./convert"
+import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 
 export interface ConvertDetailsProps {
   token: FT
@@ -83,31 +84,34 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
                 )}
               </p>
             </div>
-            <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-700">
-              <p>ICP network fee</p>
-              <p className="leading-5 text-right font-inter">
-                {!amount ? null : !fee ? (
-                  <Skeleton className="w-[70px] h-4 rounded-lg" />
-                ) : "ethNetworkFee" in fee ? (
-                  <>
-                    {fee.icpNetworkFee} ckETH
-                    <span className="block text-xs text-gray-400 dark:text-zinc-500">
-                      {token?.getTokenRateFormatted(fee.icpNetworkFee)}
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    {fee.icpNetworkFee} ckBTC
-                    <span className="block text-xs text-gray-400 dark:text-zinc-500">
-                      {token?.getTokenRateFormatted(fee.icpNetworkFee)}
-                    </span>
-                  </>
-                )}
-              </p>
-            </div>
+            {token.getTokenCategory() !== Category.ERC20 && (
+              <div className="flex justify-between py-3 leading-5 border-b border-gray-100 dark:border-zinc-700">
+                <p>ICP network fee</p>
+                <p className="leading-5 text-right font-inter">
+                  {!amount ? null : !fee ? (
+                    <Skeleton className="w-[70px] h-4 rounded-lg" />
+                  ) : "ethNetworkFee" in fee ? (
+                    <>
+                      {fee.icpNetworkFee} ckETH
+                      <span className="block text-xs text-gray-400 dark:text-zinc-500">
+                        {token?.getTokenRateFormatted(fee.icpNetworkFee)}
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      {fee.icpNetworkFee} ckBTC
+                      <span className="block text-xs text-gray-400 dark:text-zinc-500">
+                        {token?.getTokenRateFormatted(fee.icpNetworkFee)}
+                      </span>
+                    </>
+                  )}
+                </p>
+              </div>
+            )}
             {token.getTokenAddress() !== BTC_NATIVE_ID &&
               token.getTokenAddress() !== ETH_NATIVE_ID &&
-              token.getTokenAddress() !== EVM_NATIVE && (
+              token.getTokenAddress() !== EVM_NATIVE &&
+              token.getTokenCategory() !== Category.ERC20 && (
                 <div className="flex flex-wrap justify-between py-3 leading-5">
                   <p>Widget fee</p>
                   <p className="leading-5 text-right font-inter">
@@ -115,7 +119,7 @@ export const ConvertDetails: FC<ConvertDetailsProps> = ({
                       <Skeleton className="w-[70px] h-4 rounded-lg" />
                     ) : "ethNetworkFee" in fee ? (
                       <>
-                        {fee.widgetFee} ckETH
+                        {fee.widgetFee} {token.getTokenSymbol()}
                         <span className="block text-xs text-gray-400">
                           {token?.getTokenRateFormatted(fee.widgetFee!)}
                         </span>

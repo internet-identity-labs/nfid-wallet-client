@@ -17,6 +17,7 @@ import { BtcAddressProvider } from "./contexts"
 import { EthAddressProvider } from "./contexts/eth-address"
 import ThirdPartyAuthCoordinator from "./features/authentication/3rd-party/coordinator"
 import { AuthEmailMagicLink } from "./features/authentication/auth-selection/email-flow/magic-link-flow"
+import { AuthApproveLoginIp } from "./features/authentication/approve-login-ip"
 import IdentityKitRPCCoordinator from "./features/identitykit/coordinator"
 import { WalletRouter } from "./features/wallet"
 import WalletConnectCoordinator from "./features/walletconnect/coordinator"
@@ -240,6 +241,7 @@ export const App = () => {
                     path="/verify/email/:token"
                     element={<AuthEmailMagicLink />}
                   />
+                  <Route path="/ip/:token" element={<AuthApproveLoginIp />} />
                   <Route
                     path="/iframe/trust-device"
                     element={

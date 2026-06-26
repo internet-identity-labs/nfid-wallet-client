@@ -8,11 +8,13 @@ import { ftService } from "../ft/ft-service"
 import { NFT } from "../nft/nft"
 import { nftService } from "../nft/nft-service"
 import { stakingService } from "../staking/service/staking-service-impl"
+import { aaveService, AaveUserPosition } from "../aave"
 
 export class PortfolioService {
   async getPortfolioUSDBalance(
     nfts: NFT[],
     ft: FT[],
+    supplyPositions: AaveUserPosition[],
     viewOnlyPrincipal?: Principal,
   ): Promise<
     | {
@@ -24,6 +26,8 @@ export class PortfolioService {
     | undefined
   > {
     const icp = ft.find((token) => token.getTokenAddress() === ICP_CANISTER_ID)
+
+    const supplyBalance = aaveService.getTotalUsdValue(supplyPositions)
 
     const [ftUSDBalance, nftUSDBalance, stakingBalance] = await Promise.all([
       ftService.getFTUSDBalance(ft),
@@ -37,11 +41,17 @@ export class PortfolioService {
     const nftValue24h = nftUSDBalance?.value24h || "0"
     const stakingValue = stakingBalance?.value || "0"
     const stakingValue24h = stakingBalance?.value24h || "0"
+    const supplyValue = supplyBalance?.value || "0"
+    const supplyValue24h = supplyBalance?.value24h || "0"
 
-    const valueSum = new BigNumber(ftValue).plus(nftValue).plus(stakingValue)
+    const valueSum = new BigNumber(ftValue)
+      .plus(nftValue)
+      .plus(stakingValue)
+      .plus(supplyValue)
     const valueSum24h = new BigNumber(ftValue24h)
       .plus(nftValue24h)
       .plus(stakingValue24h)
+      .plus(supplyValue24h)
 
     return {
       value: valueSum.toString(),

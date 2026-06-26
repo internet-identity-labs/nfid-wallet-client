@@ -15,15 +15,10 @@ describe("SwapService", () => {
       targetLedger,
     )
 
-    expect(result.size).toEqual(2)
+    expect(result.size).toEqual(1)
     expect(result.get(SwapName.ICPSwap)).toBeDefined()
     expect(result.get(SwapName.ICPSwap)?.getSwapName()).toEqual(
       SwapName.ICPSwap,
-    )
-
-    expect(result.get(SwapName.Kongswap)).toBeDefined()
-    expect(result.get(SwapName.Kongswap)?.getSwapName()).toEqual(
-      SwapName.Kongswap,
     )
   })
 

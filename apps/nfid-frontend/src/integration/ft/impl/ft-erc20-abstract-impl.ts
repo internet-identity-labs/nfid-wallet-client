@@ -13,6 +13,7 @@ import { SignIdentity } from "@icp-sdk/core/agent"
 import { FeeResponseETH } from "../utils"
 import {
   ETH_DECIMALS,
+  ETH_NATIVE_ID,
   EVM_NATIVE,
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
@@ -50,7 +51,12 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
     const contracts = await icrc1RegistryService.getStoredUserTokens()
 
     return contracts
-      .filter((c) => c.network === this.tokenChainId && c.ledger !== EVM_NATIVE)
+      .filter(
+        (c) =>
+          c.network === this.tokenChainId &&
+          c.ledger !== EVM_NATIVE &&
+          c.ledger !== ETH_NATIVE_ID,
+      )
       .map((c) => c.ledger)
   }
 
@@ -59,7 +65,7 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
       viewOnlyAddress ?? (await ethereumService.getQuickAddress())
     const ledgers = viewOnlyAddress
       ? [this.tokenAddress]
-      : await this.getTokens()
+      : [...new Set([...(await this.getTokens()), this.tokenAddress])]
 
     const [balances, usdBalances] = await Promise.all([
       this.getProvider().getMultipleTokenBalances(ethAddress, ledgers),
@@ -91,19 +97,21 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
   }
 
   async getTokenFee(
-    _value: number,
+    _value: string,
     _identity: SignIdentity,
     _to?: string,
     _from?: string,
     _decimals?: number,
   ): Promise<FeeResponseETH> {
     try {
-      const amount = _value.toFixed(this.decimals).replace(TRIM_ZEROS, "")
+      const amount = new BigNumber(_value)
+        .toFixed(this.decimals)
+        .replace(TRIM_ZEROS, "")
 
       const erc20FeeData = await this.getProvider().estimateERC20Gas(
         this.tokenAddress,
-        _from!,
         _to!,
+        _from!,
         amount,
         _decimals!,
       )

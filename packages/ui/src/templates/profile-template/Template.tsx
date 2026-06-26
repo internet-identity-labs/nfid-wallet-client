@@ -71,6 +71,7 @@ import {
   ERC20_TOKENS_LIST_CACHE_NAME,
 } from "frontend/integration/ethereum/erc20-abstract.service"
 import { useUserPrefs } from "frontend/hooks/user-prefs"
+import { useSupplyPositions } from "frontend/hooks"
 
 interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   pageTitle?: string
@@ -149,6 +150,11 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         path: `${ProfileConstants.base}/${ProfileConstants.staking}`,
       },
       {
+        name: "Earn",
+        title: <>Earn</>,
+        path: `${ProfileConstants.base}/${ProfileConstants.earn}`,
+      },
+      {
         name: "Activity",
         title: <>Activity</>,
         path: `${ProfileConstants.base}/${ProfileConstants.activity}`,
@@ -195,6 +201,11 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   )
 
   const { initedTokens } = useTokensInit(tokens)
+  const {
+    earnPositions,
+    supportedTokens,
+    isLoading: earnPositionsLoading,
+  } = useSupplyPositions(initedTokens, viewOnlyAddress)
 
   const btc = useMemo(() => {
     return initedTokens?.find(
@@ -219,9 +230,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
       initedTokens &&
       !!isWallet &&
       eth &&
-      btc
+      btc &&
+      (earnPositions !== undefined || supportedTokens?.length === 0)
     )
-  }, [nfts, initedTokens, isWallet, btc, eth])
+  }, [nfts, initedTokens, isWallet, btc, eth, earnPositions, supportedTokens])
 
   const isViewOnly = isViewOnlyMode && viewOnlyAddress && viewOnlyAddressType
 
@@ -241,9 +253,14 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
           viewOnlyAddressType === "icp"
             ? Principal.fromText(viewOnlyAddress!)
             : Principal.anonymous()
-        return getFullUsdValue(viewOnlyNfts.items, initedTokens!, principal)
+        return getFullUsdValue(
+          viewOnlyNfts.items,
+          initedTokens!,
+          earnPositions!,
+          principal,
+        )
       }
-      return getFullUsdValue(nfts?.items!, initedTokens!)
+      return getFullUsdValue(nfts?.items!, initedTokens!, earnPositions!)
     },
     { revalidateOnFocus: false },
   )
@@ -310,6 +327,20 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     send({ type: "CHANGE_DIRECTION", data: ModalType.STAKE })
+    send("SHOW")
+  }
+
+  const onBridgeClick = () => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.BRIDGE })
+    send("SHOW")
+  }
+
+  const onEarnClick = () => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.EARN })
     send("SHOW")
   }
 
@@ -448,6 +479,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
                 onSwapClick={onSwapClick}
                 onConvertClick={onConvertClick}
                 onStakeClick={onStakeClick}
+                onBridgeClick={onBridgeClick}
+                onEarnClick={onEarnClick}
                 refreshPortfolio={refreshPortfolio}
                 isRefreshing={isRefreshing}
                 address={

@@ -17,6 +17,10 @@ export interface TransferModalProps {
   hasSwapError: boolean
   hasBtcError: boolean
   isConvertSuccess: boolean
+  hasBridgeError: boolean
+  isBridgeSuccess: boolean
+  isEarnSuccess: boolean
+  isWithdrawSuccess: boolean
 }
 
 export interface TransferVaultModalProps {
@@ -39,20 +43,27 @@ export const TransferModal: FC<TransferModalProps> = ({
   hasSwapError,
   hasBtcError,
   isConvertSuccess,
+  hasBridgeError,
+  isBridgeSuccess,
+  isEarnSuccess,
+  isWithdrawSuccess,
 }) => {
+  const isSuccessScreen =
+    isConvertSuccess || isBridgeSuccess || isEarnSuccess || isWithdrawSuccess
+
+  const minHeight = (() => {
+    if (hasSwapError) return "min-h-[540px]"
+    if (isSuccessScreen) return "min-h-[580px]"
+    if (hasBtcError || hasBridgeError) return "min-h-[520px]"
+    if (direction === ModalType.EARN) return "min-h-[366px]"
+    if (direction === ModalType.WITHDRAW) return "min-h-[330px]"
+    return "min-h-[480px]"
+  })()
+
   return (
     <TransferTemplate
       onClickOutside={onClickOutside}
-      className={clsx(
-        direction === ModalType.SEND && "!pb-5",
-        hasSwapError
-          ? "min-h-[540px]"
-          : isConvertSuccess
-          ? "min-h-[580px]"
-          : hasBtcError
-          ? "min-h-[520px]"
-          : "min-h-[480px]",
-      )}
+      className={clsx(direction === ModalType.SEND && "!pb-5", minHeight)}
       overlayClassName={!isOpen ? "hidden" : ""}
       isOpen={isOpen}
     >

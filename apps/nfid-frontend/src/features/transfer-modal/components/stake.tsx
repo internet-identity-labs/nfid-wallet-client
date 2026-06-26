@@ -21,6 +21,7 @@ import { FormValues, SendStatus } from "../types"
 import {
   getAccurateDateForStakeInSeconds,
   getTokensWithUpdatedBalance,
+  isTokenWithBalance,
   updateCachedInitedTokens,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
@@ -66,7 +67,8 @@ export const StakeFT = ({
     if (!initedTokens) return []
     return initedTokens.filter(
       (token) =>
-        token.getTokenCategory() === Category.Sns ||
+        (token.getTokenCategory() === Category.Sns &&
+          isTokenWithBalance(token)) ||
         token.getTokenAddress() === ICP_CANISTER_ID,
     )
   }, [initedTokens])
@@ -142,21 +144,25 @@ export const StakeFT = ({
           mutate("stakedTokens", fetchStakedTokens(initedTokens, true), {
             revalidate: true,
           })
+          const updatedTokens = getTokensWithUpdatedBalance(
+            [
+              {
+                address: ICP_CANISTER_ID,
+                amount,
+                decimals: token.getTokenDecimals(),
+                fee: stakingParams?.getFee() ?? BigInt(0),
+              },
+            ],
+            initedTokens,
+          )
+          mutateWithTimestamp("tokens", updatedTokens, false)
+          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
         })
         .catch((e) => {
           console.error("Stake error: ", e)
           setError((e as Error).message)
           setStatus(SendStatus.FAILED)
           setErrorMessage(DEFAULT_STAKE_ERROR)
-        })
-        .finally(() => {
-          if (!initedTokens) return
-          getTokensWithUpdatedBalance([ICP_CANISTER_ID], initedTokens).then(
-            (updatedTokens) => {
-              mutateWithTimestamp("tokens", updatedTokens, false)
-              updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
-            },
-          )
         })
 
       return
@@ -182,22 +188,25 @@ export const StakeFT = ({
         mutate("stakedTokens", () => fetchStakedTokens(initedTokens, true), {
           revalidate: true,
         })
+        const updatedTokens = getTokensWithUpdatedBalance(
+          [
+            {
+              address: token.getTokenAddress(),
+              amount,
+              decimals: token.getTokenDecimals(),
+              fee: stakingParams?.getFee() ?? BigInt(0),
+            },
+          ],
+          initedTokens,
+        )
+        mutateWithTimestamp("tokens", updatedTokens, false)
+        updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
       })
       .catch((e) => {
         console.error("Stake error: ", e)
         setError((e as Error).message)
         setStatus(SendStatus.FAILED)
         setErrorMessage(DEFAULT_STAKE_ERROR)
-      })
-      .finally(() => {
-        if (!initedTokens) return
-        getTokensWithUpdatedBalance(
-          [token.getTokenAddress()],
-          initedTokens,
-        ).then((updatedTokens) => {
-          mutateWithTimestamp("tokens", updatedTokens, false)
-          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
-        })
       })
   }, [
     token,

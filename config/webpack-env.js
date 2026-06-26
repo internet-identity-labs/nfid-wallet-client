@@ -53,6 +53,7 @@ export function getServiceConfig() {
     ),
     AWS_CHECK_VERIFICATION: JSON.stringify(process.env.AWS_CHECK_VERIFICATION),
     AWS_VERIFY_EMAIL: JSON.stringify(process.env.AWS_VERIFY_EMAIL),
+    AWS_APPROVE_LOGIN_IP: JSON.stringify(process.env.AWS_APPROVE_LOGIN_IP),
     AWS_SIGNIN_GOOGLE_V2: JSON.stringify(process.env.AWS_SIGNIN_GOOGLE_V2),
     AWS_SIGNATURE_EVENT: JSON.stringify(process.env.AWS_SIGNATURE_EVENT),
     AWS_PUBLIC_KEY: JSON.stringify(process.env.AWS_PUBLIC_KEY),
@@ -123,5 +124,8 @@ export function getServiceConfig() {
     AWS_EXECUTE_CANDID: JSON.stringify(process.env.AWS_EXECUTE_CANDID),
     ALCHEMY_API_KEY: JSON.stringify(process.env.ALCHEMY_API_KEY),
     AWS_BASE_EP: JSON.stringify(process.env.AWS_BASE_EP),
+    ETHERSCAN_API_KEY: JSON.stringify(process.env.ETHERSCAN_API_KEY),
+    INFURA_API_KEY: JSON.stringify(process.env.INFURA_API_KEY),
+    BRIDGE_API_KEY: JSON.stringify(process.env.BRIDGE_API_KEY),
   }
 }

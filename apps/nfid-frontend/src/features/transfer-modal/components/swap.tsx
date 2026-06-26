@@ -43,6 +43,7 @@ import { FormValues } from "../types"
 import {
   getQuoteData,
   getTokensWithUpdatedBalance,
+  isTokenWithBalance,
   mutateTokensCacheMergingBalances,
   updateCachedInitedTokens,
 } from "../utils"
@@ -99,7 +100,7 @@ export const SwapFT = ({
     string | undefined
   >()
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
-  const { slippage, setSlippage, hideZeroBalance } = useUserPrefs()
+  const { slippage, setSlippage } = useUserPrefs()
   const [providerError, setProviderError] = useState<
     ServiceUnavailableError | undefined
   >()
@@ -143,15 +144,13 @@ export const SwapFT = ({
       (token: FT) => token.getChainId() === ChainId.ICP,
     )
 
-    if (!hideZeroBalance) return filtered
-
     const tokensWithBalance = filtered.filter(
       (token: FT) =>
         token.getTokenAddress() === ICP_CANISTER_ID ||
-        token.getTokenBalance() !== BigInt(0),
+        isTokenWithBalance(token),
     )
     return tokensWithBalance
-  }, [initedTokens, hideZeroBalance])
+  }, [initedTokens])
 
   const [getTransaction, setGetTransaction] = useState<
     SwapTransaction | undefined
@@ -378,20 +377,31 @@ export const SwapFT = ({
       .swap(identity)
       .then(() => {
         setSuccessMessage(`Swap ${sourceAmount} to ${targetAmount} successful`)
+        if (!initedTokens || !fromToken || !toToken || !quote) return
+
+        const updatedTokens = getTokensWithUpdatedBalance(
+          [
+            {
+              address: fromTokenAddress,
+              amount: quote.getSourceAmountPrettified(),
+              decimals: fromToken.getTokenDecimals(),
+              fee: fee?.getFee(),
+            },
+            {
+              address: toTokenAddress,
+              amount: quote.getTargetAmountPrettified(),
+              decimals: toToken.getTokenDecimals(),
+              add: true,
+            },
+          ],
+          initedTokens,
+        )
+        mutateTokensCacheMergingBalances(updatedTokens)
+        updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
       })
       .catch((error) => {
         setSwapError(error)
         setErrorMessage("Something went wrong")
-      })
-      .finally(() => {
-        if (!initedTokens) return
-        getTokensWithUpdatedBalance(
-          [fromTokenAddress, toTokenAddress],
-          initedTokens,
-        ).then((updatedTokens) => {
-          mutateTokensCacheMergingBalances(updatedTokens)
-          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
-        })
       })
 
     setGetTransaction(shroff.getSwapTransaction())
@@ -407,6 +417,7 @@ export const SwapFT = ({
     mutateInitedTokens,
     fromToken,
     toToken,
+    fee,
   ])
 
   const handleSwapClose = useCallback(() => {

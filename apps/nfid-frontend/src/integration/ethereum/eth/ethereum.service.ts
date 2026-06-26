@@ -1,6 +1,5 @@
 import { InfuraProvider } from "ethers"
 
-import { INFURA_API_KEY } from "@nfid/integration/token/constants"
 import { EVMService } from "../evm.service"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 

@@ -31,7 +31,8 @@ import { useIntersectionObserver } from "../../organisms/send-receive/hooks/inte
 import { BTC_NATIVE_ID, ETH_NATIVE_ID } from "@nfid/integration/token/constants"
 import { IModalType } from "../../organisms/send-receive/utils"
 import { ChainFilter } from "../../organisms/tokens/components/chain-filter"
-import { Category } from "@nfid/integration/token/icrc1/enum/enums"
+import { Category, isEvmToken } from "@nfid/integration/token/icrc1/enum/enums"
+import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
 
 const INITED_TOKENS_LIMIT = 6
 
@@ -45,14 +46,15 @@ export interface IChooseTokenModal<T> {
   filterTokensBySearchInput: (token: T, searchInput: string) => boolean
   renderItem: ElementType<{
     token: T
-    isSwapTo?: boolean
+    isTargetList?: boolean
     tokensAvailableToSwap?: TokensAvailableToSwap
     isBtcEthLoading?: boolean
   }>
-  isSwapTo?: boolean
+  isTargetList?: boolean
   tokensAvailableToSwap?: TokensAvailableToSwap
   isBtcEthLoading?: boolean
   modalType?: IModalType
+  tooltipText?: string
 }
 
 export const ChooseTokenModal = <T extends FT | NFT>({
@@ -64,10 +66,11 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   trigger,
   filterTokensBySearchInput,
   renderItem: ChooseItem,
-  isSwapTo,
+  isTargetList,
   tokensAvailableToSwap,
   isBtcEthLoading,
   modalType,
+  tooltipText,
 }: IChooseTokenModal<T>) => {
   const isDarkTheme = useDarkTheme()
   const [searchInput, setSearchInput] = useState("")
@@ -76,6 +79,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   const [isTokenOptionsLoading, setIsTokenOptionsLoading] = useState(true)
   const [filter, setFilter] = useState<string[]>([])
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
+  const initingRef = useRef<Set<string>>(new Set())
 
   const handleSearch = useCallback((value: string) => {
     const debounced = debounce((val: string) => setSearchInput(val), 300)
@@ -83,7 +87,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   }, [])
 
   useEffect(() => {
-    if (!isSwapTo) {
+    if (!isTargetList) {
       setTokensOptions(tokens)
       setIsTokenOptionsLoading(false)
       return
@@ -91,13 +95,18 @@ export const ChooseTokenModal = <T extends FT | NFT>({
 
     const init = async () => {
       const { publicKey } = authState.getUserIdData()
+      const principal = Principal.fromText(publicKey)
 
       try {
         const tokenOptions = await Promise.all(
           tokens.map(async (token, index) => {
             if (index < INITED_TOKENS_LIMIT) {
               try {
-                await token.init(Principal.fromText(publicKey))
+                const reinit =
+                  token instanceof FTImpl && isEvmToken(token.getChainId())
+                    ? await ethereumService.getQuickAddress()
+                    : undefined
+                await token.init(principal, reinit)
                 return token
               } catch (error) {
                 console.error("Error during token initialization:", error)
@@ -117,7 +126,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
     }
 
     init()
-  }, [tokens, isSwapTo])
+  }, [tokens, isTargetList])
 
   const filteredTokens = useMemo(() => {
     let result = tokensOptions
@@ -142,30 +151,50 @@ export const ChooseTokenModal = <T extends FT | NFT>({
     return result
   }, [tokensOptions, searchInput, filter, filterTokensBySearchInput])
 
-  useIntersectionObserver(itemRefs.current, !!isSwapTo, async (index) => {
-    const token = filteredTokens[index]
+  const onIntersect = useCallback(
+    async (index: number) => {
+      const token = filteredTokens[index]
+      if (!token || !(token instanceof FTImpl) || token.isInited()) return
 
-    if (token) {
-      const { publicKey } = authState.getUserIdData()
+      const tokenKey = `${token.getChainId()}:${token.getTokenAddress()}`
+      if (initingRef.current.has(tokenKey)) return
+      initingRef.current.add(tokenKey)
 
-      const updatedToken = await token.init(Principal.fromText(publicKey))
+      try {
+        const { publicKey } = authState.getUserIdData()
+        const reinit = isEvmToken(token.getChainId())
+          ? await ethereumService.getQuickAddress()
+          : undefined
+        const updatedToken = await token.init(
+          Principal.fromText(publicKey),
+          reinit,
+        )
 
-      setTokensOptions((prev) => {
-        const newOptions = [...prev]
-        const tokenIndex = prev.findIndex((t) => t === token)
+        setTokensOptions((prev) => {
+          const newOptions = [...prev]
+          const tokenIndex = prev.findIndex(
+            (t) =>
+              t instanceof FTImpl &&
+              t.getTokenAddress() === token.getTokenAddress() &&
+              t.getChainId() === token.getChainId(),
+          )
+          if (tokenIndex !== -1) newOptions[tokenIndex] = updatedToken as T
+          return newOptions
+        })
+      } catch (e) {
+        console.debug(`Failed to init token ${tokenKey}:`, e)
+      } finally {
+        initingRef.current.delete(tokenKey)
+      }
+    },
+    [filteredTokens],
+  )
 
-        if (tokenIndex !== -1) {
-          newOptions[tokenIndex] = updatedToken as T
-        }
-
-        return newOptions
-      })
-    }
-  })
+  useIntersectionObserver(itemRefs.current, !!isTargetList, onIntersect)
 
   const handleSelect = (token: T) => {
     if (token instanceof FTImpl) {
-      const isSwappable = isSwapTo
+      const isSwappable = isTargetList
         ? tokensAvailableToSwap?.to.includes(token.getTokenAddress())
         : tokensAvailableToSwap?.from.includes(token.getTokenAddress())
 
@@ -204,15 +233,12 @@ export const ChooseTokenModal = <T extends FT | NFT>({
               <p id={id} className="text-xl font-bold leading-10">
                 {title}
               </p>
-              {tokensAvailableToSwap && (
+              {tooltipText && (
                 <Tooltip
                   align="end"
                   alignOffset={-20}
                   tip={
-                    <span className="block max-w-[320px]">
-                      Tokens that can't be selected lack enough liquidity for
-                      swapping.
-                    </span>
+                    <span className="block max-w-[320px]">{tooltipText}</span>
                   }
                 >
                   <img
@@ -278,7 +304,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
               >
                 <ChooseItem
                   token={token}
-                  isSwapTo={isSwapTo}
+                  isTargetList={isTargetList}
                   tokensAvailableToSwap={tokensAvailableToSwap}
                   isBtcEthLoading={isBtcEthLoading}
                 />

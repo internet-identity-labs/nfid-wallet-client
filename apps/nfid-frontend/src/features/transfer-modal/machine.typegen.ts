@@ -17,6 +17,7 @@ export interface Typegen0 {
     assignAmount: "ASSIGN_AMOUNT"
     assignDirection: "CHANGE_DIRECTION"
     assignError: "ASSIGN_ERROR"
+    assignIsEarnUpdate: "ASSIGN_IS_EARN_UPDATE"
     assignIsVault: "ASSIGN_VAULTS"
     assignReceiverWallet: "ASSIGN_RECEIVER_WALLET"
     assignSelectedFT: "ASSIGN_SELECTED_FT"
@@ -28,20 +29,26 @@ export interface Typegen0 {
     assignTokenStandard: "ASSIGN_TOKEN_STANDARD"
     assignTokenType: "CHANGE_TOKEN_TYPE"
     assignTransferObject: "ON_TRANSFER"
+    assignWithdrawBalance: "ASSIGN_WITHDRAW_BALANCE"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {
+    isBridgeMachine: ""
     isConvertMachine: ""
+    isEarnMachine: ""
     isReceiveMachine: ""
     isRedeemMachine: ""
     isSendFungible: ""
     isSendMachine: ""
     isStakeMachine: ""
     isSwapMachine: ""
+    isWithdrawMachine: ""
   }
   eventsCausingServices: {}
   matchesStates:
+    | "BridgeMachine"
     | "ConvertMachine"
+    | "EarnMachine"
     | "Hidden"
     | "ReceiveMachine"
     | "RedeemMachine"
@@ -54,6 +61,7 @@ export interface Typegen0 {
     | "SwapSuccess"
     | "TransferModal"
     | "TransferSuccess"
+    | "WithdrawMachine"
     | { SendMachine?: "CheckSendType" | "SendFT" | "SendNFT" }
   tags: never
 }

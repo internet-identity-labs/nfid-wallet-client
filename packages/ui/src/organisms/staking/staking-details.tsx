@@ -121,7 +121,7 @@ export const StakingDetails: FC<StakingDetailsProps> = ({
     })
   }
 
-  if (!stakedToken && !isLoading) return <NotFound />
+  if (!stakedToken && !isLoading) return <NotFound hideNavigation />
 
   return (
     <>

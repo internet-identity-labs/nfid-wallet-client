@@ -32,7 +32,7 @@ export function InfoCopy({
           className,
         )}
       >
-        <div className="flex flex-col lg:flex-row max-w-[90%] md:max-w-full">
+        <div className="flex flex-col lg:flex-row max-w-[90%] md:max-w-full gap-1">
           <p className="text-white text-sm lg-text-[18px]">{text}</p>
           <p className="text-teal-500 text-sm lg-text-[18px]">{value}</p>
         </div>

@@ -49,6 +49,7 @@ declare const AWS_SEND_VERIFICATION_EMAIL: string
 declare const AWS_LINK_GOOGLE_ACCOUNT: string
 declare const AWS_CHECK_VERIFICATION: string
 declare const AWS_VERIFY_EMAIL: string
+declare const AWS_APPROVE_LOGIN_IP: string
 declare const NFID_WALLET_CLIENT_CANISTER: string
 declare const PATRON_CANISTER_ID: string
 declare const CHAIN_FUSION_SIGNER_CANISTER_ID: string
@@ -59,3 +60,6 @@ declare const FEE_PERCENT: string
 declare const FEE_ADDRESS: string
 declare const ALCHEMY_API_KEY: string
 declare const IC_EXPLORER_API_URL: string
+declare const ETHERSCAN_API_KEY: string
+declare const INFURA_API_KEY: string
+declare const BRIDGE_API_KEY: string

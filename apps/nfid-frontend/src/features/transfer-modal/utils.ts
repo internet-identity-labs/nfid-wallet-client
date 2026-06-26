@@ -6,7 +6,7 @@ import {
 import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc"
 import { Principal } from "@icp-sdk/core/principal"
 import validate, { Network } from "bitcoin-address-validation"
-import { isAddress } from "ethers"
+import { formatUnits, isAddress, parseUnits } from "ethers"
 import { PRINCIPAL_LENGTH } from "packages/constants"
 import { Shroff } from "src/integration/swap/shroff"
 
@@ -29,6 +29,10 @@ import {
   EVM_NATIVE,
   CKSEPOLIA_LEDGER_CANISTER_ID,
 } from "@nfid/integration/token/constants"
+import {
+  getCkErc20ByLedgerId,
+  getCkErc20ByErc20Address,
+} from "@nfid/integration/token/ckerc20.config"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 import { mutate, mutateWithTimestamp } from "@nfid/swr"
 
@@ -54,6 +58,10 @@ import {
   UserAddressSaveRequest,
   UserAddressUpdateRequest,
 } from "frontend/integration/address-book"
+import {
+  AaveUserPosition,
+  AaveSupportedChainId,
+} from "frontend/integration/aave"
 
 export enum AddressBookAction {
   CREATE = "CREATE",
@@ -285,17 +293,56 @@ export const updateCachedInitedTokens = async (
   mutate("fullUsdValue")
 }
 
-export const getTokensWithUpdatedBalance = async (
-  ledgers: string[],
+export const getTokensWithUpdatedBalance = (
+  tokens: Array<{
+    address: string
+    chainId?: number
+    amount: string
+    decimals: number
+    fee?: bigint
+    add?: boolean
+  }>,
   allTokens: FT[],
-) => {
+): FT[] => {
+  const updatedTokens = [...allTokens]
+
+  for (const { address, chainId, amount, decimals, fee, add } of tokens) {
+    const index = updatedTokens.findIndex(
+      (el) =>
+        el.getTokenAddress() === address &&
+        (chainId === undefined || el.getChainId() === chainId),
+    )
+
+    if (index !== -1) {
+      const token = updatedTokens[index]
+      const current = token.getTokenBalance() ?? BigInt(0)
+      const parsed = parseUnits(amount, decimals) + (fee ?? BigInt(0))
+      ;(token as any).tokenBalance = add
+        ? current + parsed
+        : current > parsed
+          ? current - parsed
+          : BigInt(0)
+      updatedTokens[index] = token
+    }
+  }
+
+  return updatedTokens
+}
+
+export const refreshTokenBalances = async (
+  tokens: Array<{ address: string | undefined; chainId?: number }>,
+  allTokens: FT[],
+): Promise<FT[]> => {
   const { publicKey } = authState.getUserIdData()
 
   const updatedTokens = [...allTokens]
 
-  for (const ledger of ledgers) {
+  for (const { address, chainId } of tokens) {
+    if (!address) continue
     const index = updatedTokens.findIndex(
-      (el) => el.getTokenAddress() === ledger,
+      (el) =>
+        el.getTokenAddress() === address &&
+        (chainId === undefined || el.getChainId() === chainId),
     )
 
     if (index !== -1) {
@@ -310,11 +357,83 @@ export const getTokensWithUpdatedBalance = async (
   return updatedTokens
 }
 
-/** Apply refreshed `updates` onto `fullList` by token address (same length/order as fullList). */
+export const getUpdatedPositions = (
+  positions: AaveUserPosition[] | undefined,
+  asset: string,
+  chainId: AaveSupportedChainId,
+  amount: string,
+  isMax: boolean,
+  token: FT,
+  supplyData?: { apy?: string },
+) => {
+  const currentPositions = positions ?? []
+  const index = currentPositions.findIndex(
+    (p) => p.asset === asset && p.chainId === chainId,
+  )
+  let updated: AaveUserPosition[]
+
+  if (supplyData) {
+    const decimals = token.getTokenDecimals()
+    const supplied = parseUnits(amount, decimals)
+    if (index !== -1) {
+      updated = currentPositions.map((p, i) => {
+        if (i !== index) return p
+        const newBalance = p.balance + supplied
+        const newBalanceStr = formatUnits(newBalance, p.decimals)
+        return {
+          ...p,
+          balance: newBalance,
+          balanceFormatted: `${newBalanceStr} ${p.symbol}`,
+          balanceUsdFormatted:
+            token.getTokenRateFormatted(newBalanceStr) ?? p.balanceUsdFormatted,
+        }
+      })
+    } else {
+      const newBalanceStr = formatUnits(supplied, decimals)
+      updated = [
+        ...currentPositions,
+        {
+          chainId,
+          asset,
+          aTokenAddress: "",
+          symbol: token.getTokenSymbol(),
+          balance: supplied,
+          balanceFormatted: `${newBalanceStr} ${token.getTokenSymbol()}`,
+          balanceUsdFormatted: token.getTokenRateFormatted(amount) ?? "",
+          decimals,
+          supplyAPY: supplyData.apy || "0.00%",
+        },
+      ]
+    }
+  } else if (isMax) {
+    if (index === -1) return
+    updated = currentPositions.filter((_, i) => i !== index)
+  } else {
+    if (index === -1) return
+    updated = currentPositions.map((p, i) => {
+      if (i !== index) return p
+      const withdrawn = parseUnits(amount, p.decimals)
+      const newBalance =
+        p.balance > withdrawn ? p.balance - withdrawn : BigInt(0)
+      const newBalanceStr = formatUnits(newBalance, p.decimals)
+      return {
+        ...p,
+        balance: newBalance,
+        balanceFormatted: `${newBalanceStr} ${p.symbol}`,
+        balanceUsdFormatted:
+          token.getTokenRateFormatted(newBalanceStr) ?? p.balanceUsdFormatted,
+      }
+    })
+  }
+
+  mutate("earnPositions", updated, false)
+}
+
 const mergeUpdatedFtIntoTokenList = (fullList: FT[], updates: FT[]): FT[] => {
-  const byAddress = new Map(updates.map((t) => [t.getTokenAddress(), t]))
+  const tokenKey = (t: FT) => `${t.getTokenAddress()}:${t.getChainId()}`
+  const byKey = new Map(updates.map((t) => [tokenKey(t), t]))
   return fullList.map((t) => {
-    const next = byAddress.get(t.getTokenAddress())
+    const next = byKey.get(tokenKey(t))
     return next ?? t
   })
 }
@@ -395,6 +514,12 @@ export const getConversionTokenAddress = (source: string): string => {
 
   if (source === EVM_NATIVE) return CKSEPOLIA_LEDGER_CANISTER_ID
   if (source === CKSEPOLIA_LEDGER_CANISTER_ID) return EVM_NATIVE
+
+  const ckErc20 = getCkErc20ByLedgerId(source)
+  if (ckErc20) return ckErc20.erc20ContractAddress
+
+  const erc20 = getCkErc20ByErc20Address(source)
+  if (erc20) return erc20.ledgerCanisterId
 
   return CKBTC_CANISTER_ID
 }
@@ -521,4 +646,9 @@ export const getAddressBookNftOptions = (
         value,
       }
     })
+}
+
+export const isTokenWithBalance = (token: FT) => {
+  const balance = token.getTokenBalance()
+  return balance !== undefined && balance > BigInt(0)
 }

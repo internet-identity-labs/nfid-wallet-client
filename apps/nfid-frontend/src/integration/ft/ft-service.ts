@@ -24,7 +24,6 @@ import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc
 import { icrc1StorageService } from "@nfid/integration/token/icrc1/service/icrc1-storage-service"
 
 import { ShroffIcpSwapImpl } from "../swap/icpswap/impl/shroff-icp-swap-impl"
-import { KongSwapShroffImpl } from "../swap/kong/impl/kong-swap-shroff"
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 import { mapCategory, mapState } from "@nfid/integration/token/icrc1/util"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
@@ -38,6 +37,7 @@ import { arbSepoliaErc20Service } from "../ethereum/arbitrum/testnetwork/arb-sep
 import { baseSepoliaErc20Service } from "../ethereum/base/testnetwork/base-sepolia-erc20.service"
 import { polygonAmoyErc20Service } from "../ethereum/polygon/testnetwork/pol-amoy-erc20.service"
 import { ethSepoliaErc20Service } from "../ethereum/eth/testnetwork/eth-sepolia-erc20.service"
+import { isTokenWithBalance } from "frontend/features/transfer-modal/utils"
 
 export const INITED_TOKENS_CACHE_NAME = "InitedTokens_"
 export const TOKENS_REFRESH_INTERVAL = 30000
@@ -545,24 +545,13 @@ export class FtService {
       }
 
       tokenImpl.inited = data.inited
-      tokenImpl.tokenState = data.state
     })
     return tokens
   }
 
   @Cache(integrationCache, { ttl: 300 })
   async getTokensAvailableToSwap(sourceToken: string): Promise<string[]> {
-    const kongPoolsPromise = KongSwapShroffImpl.getAvailablePools(sourceToken)
-    const icpswapPoolsPromise = ShroffIcpSwapImpl.getAvailablePools(sourceToken)
-
-    const [kongPools, icpswapPools] = await Promise.all([
-      kongPoolsPromise,
-      icpswapPoolsPromise,
-    ])
-
-    const pools = [...new Set([...kongPools, ...icpswapPools])]
-
-    return Array.from(pools)
+    return ShroffIcpSwapImpl.getAvailablePools(sourceToken)
   }
 
   async filterNotActiveNotZeroBalancesTokens(
@@ -577,14 +566,9 @@ export class FtService {
           return ftWithBalance
         }),
       )
-    ).filter((ft) => {
-      const tokenBalance = ft.getTokenBalance()
-      return (
-        tokenBalance !== undefined &&
-        tokenBalance > BigInt(0) &&
-        ft.getTokenState() !== State.Active
-      )
-    })
+    ).filter(
+      (ft) => isTokenWithBalance(ft) && ft.getTokenState() !== State.Active,
+    )
   }
 
   async getFTUSDBalance(ft: FT[]): Promise<

@@ -27,7 +27,11 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   onConvertToCkEth: () => void
   onConvertToSepoliaEth: () => void
   onConvertToCkSepoliaEth: () => void
+  onConvertToErc20: (tokenAddress: string) => void
+  onConvertToCkErc20: (tokenAddress: string) => void
   onStakeClick: (value: SelectedToken) => void
+  onBridgeClick: (value: SelectedToken) => void
+  onEarnClick: (value: SelectedToken) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   loadingToken: FT | null
@@ -36,6 +40,7 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   arbitrumEnabled?: boolean
   baseEnabled?: boolean
   polygonEnabled?: boolean
+  aaveTokens?: FT[]
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
@@ -50,7 +55,11 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   onConvertToCkEth,
   onConvertToSepoliaEth,
   onConvertToCkSepoliaEth,
+  onConvertToErc20,
+  onConvertToCkErc20,
   onStakeClick,
+  onBridgeClick,
+  onEarnClick,
   setToken,
   dropdownPosition,
   loadingToken,
@@ -59,13 +68,14 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   arbitrumEnabled,
   baseEnabled,
   polygonEnabled,
+  aaveTokens,
   ...props
 }) => {
   const [isTokenProcessed, setIsTokenProcessed] = useState(false)
   const { isViewOnlyMode } = useContext(ProfileContext)
   const tokenRateDayChange = token.getTokenRateDayChangePercent()
   const balance = token.getTokenBalance()
-  const usdBalance = token.getUSDBalanceFormatted(false)
+  const usdBalance = token.getUSDBalanceFormatted(true)
   const tokenPrice = token.getTokenRateFormatted("1", false)
 
   if (!testnetEnabled && isTestnetToken(token.getChainId())) return null
@@ -95,6 +105,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           withActions={!isViewOnlyMode}
           onConvertToSepoliaEth={onConvertToSepoliaEth}
           onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
+          onConvertToErc20={onConvertToErc20}
+          onConvertToCkErc20={onConvertToCkErc20}
         />
       </td>
       <td
@@ -192,11 +204,20 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
             onConvertToCkEth={onConvertToCkEth}
             onConvertToSepoliaEth={onConvertToSepoliaEth}
             onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
+            onConvertToErc20={onConvertToErc20}
+            onConvertToCkErc20={onConvertToCkErc20}
             onStakeClick={onStakeClick}
+            onBridgeClick={onBridgeClick}
+            onEarnClick={onEarnClick}
             setToken={setToken}
             dropdownPosition={dropdownPosition}
             setIsTokenProcessed={setIsTokenProcessed}
             isTokenProcessed={isTokenProcessed || loadingToken === token}
+            isEarnSupported={aaveTokens?.some(
+              (t) =>
+                t.getTokenAddress() === token.getTokenAddress() &&
+                t.getChainId() === token.getChainId(),
+            )}
           />
         )}
       </td>

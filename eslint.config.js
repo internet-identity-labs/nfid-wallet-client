@@ -177,7 +177,8 @@ export default [
           jsx: true,
         },
         babelOptions: {
-          presets: ["@babel/preset-env", "@babel/preset-react"],
+          configFile: false,
+          presets: ["@babel/preset-react"],
         },
       },
     },

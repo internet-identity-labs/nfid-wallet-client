@@ -2,6 +2,7 @@ import { Redeem } from "packages/ui/src/organisms/send-receive/components/redeem
 import { useCallback, useMemo, useState } from "react"
 import { useLocation } from "react-router-dom"
 
+import { formatUnits } from "ethers"
 import { mutate, mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchStakedTokens } from "frontend/features/staking/utils"
@@ -72,22 +73,28 @@ export const RedeemStake = ({
         mutate("stakedTokens", fetchStakedTokens(initedTokens, true), {
           revalidate: true,
         })
+
+        const redeemToken = stakedToken.getToken()
+        const decimals = redeemToken.getTokenDecimals()
+        const updatedTokens = getTokensWithUpdatedBalance(
+          [
+            {
+              address: redeemToken.getTokenAddress(),
+              amount: formatUnits(stakeToRedeem.getTotalValue(), decimals),
+              decimals,
+              add: true,
+            },
+          ],
+          initedTokens,
+        )
+        mutateWithTimestamp("tokens", updatedTokens, false)
+        updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
       })
       .catch((e) => {
         console.error("Redeem error: ", e)
         setError((e as Error).message)
         setStatus(SendStatus.FAILED)
         setErrorMessage("Something went wrong")
-      })
-      .finally(() => {
-        if (!initedTokens) return
-        getTokensWithUpdatedBalance(
-          [stakedToken?.getToken().getTokenAddress()],
-          initedTokens,
-        ).then((updatedTokens) => {
-          mutateWithTimestamp("tokens", updatedTokens, false)
-          updateCachedInitedTokens(updatedTokens, mutateInitedTokens)
-        })
       })
   }, [
     identity,

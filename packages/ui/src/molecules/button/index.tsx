@@ -13,6 +13,7 @@ export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   isSmall?: boolean
   as?: React.ElementType
   innerClassName?: string
+  textClassName?: string
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -21,6 +22,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       className,
       innerClassName,
+      textClassName,
       type = "primary",
       disabled,
       icon,
@@ -108,7 +110,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               {icon}
             </div>
           ) : null}
-          {children ? <div className="text-center">{children}</div> : null}
+          {children ? (
+            <div className={clsx("text-center", textClassName)}>{children}</div>
+          ) : null}
         </div>
       </Component>
     )

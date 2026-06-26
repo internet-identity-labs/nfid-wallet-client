@@ -55,7 +55,12 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   onConvertToCkEth: () => void
   onConvertToSepoliaEth: () => void
   onConvertToCkSepoliaEth: () => void
+  onConvertToErc20: (tokenAddress: string) => void
+  onConvertToCkErc20: (tokenAddress: string) => void
   onStakeClick: (value: SelectedToken) => void
+  onBridgeClick: (value: SelectedToken) => void
+  onEarnClick: (value: SelectedToken) => void
+  aaveTokens?: FT[]
   hideZeroBalance: boolean
   onZeroBalanceToggle: () => void
   testnetEnabled: boolean
@@ -83,7 +88,12 @@ export const Tokens: FC<TokensProps> = ({
   onConvertToCkEth,
   onConvertToSepoliaEth,
   onConvertToCkSepoliaEth,
+  onConvertToErc20,
+  onConvertToCkErc20,
   onStakeClick,
+  onBridgeClick,
+  onEarnClick,
+  aaveTokens,
   hideZeroBalance,
   onZeroBalanceToggle,
   testnetEnabled,
@@ -240,6 +250,9 @@ export const Tokens: FC<TokensProps> = ({
                     onSendClick={onSendClick}
                     onSwapClick={onSwapClick}
                     onStakeClick={onStakeClick}
+                    onBridgeClick={onBridgeClick}
+                    onEarnClick={onEarnClick}
+                    aaveTokens={aaveTokens}
                     setToken={setToken}
                     dropdownPosition={index + 4 > arr.length ? "top" : "bottom"}
                     loadingToken={loadingToken}
@@ -249,6 +262,8 @@ export const Tokens: FC<TokensProps> = ({
                     onConvertToCkEth={onConvertToCkEth}
                     onConvertToSepoliaEth={onConvertToSepoliaEth}
                     onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
+                    onConvertToErc20={onConvertToErc20}
+                    onConvertToCkErc20={onConvertToCkErc20}
                   />
                 ))
               )}

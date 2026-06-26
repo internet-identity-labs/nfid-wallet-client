@@ -7,7 +7,6 @@ import { InfuraProvider, TypedDataEncoder } from "ethers"
 import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
 import { chainFusionSignerService } from "frontend/integration/bitcoin/services/chain-fusion-signer.service"
 import { EthSignTransactionRequest } from "frontend/integration/bitcoin/idl/chain-fusion-signer.d"
-import { INFURA_API_KEY } from "@nfid/integration/token/constants"
 import {
   EthereumTransactionParams,
   WCGasData,

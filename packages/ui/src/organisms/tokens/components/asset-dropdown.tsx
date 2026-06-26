@@ -20,6 +20,8 @@ import {
   IconSvgStakeAction,
   IconSvgStakeActionWhite,
   IconSvgArrowWhite,
+  IconCmpBridge,
+  IconCmpEarn,
 } from "@nfid-frontend/ui"
 import {
   BTC_NATIVE_ID,
@@ -30,7 +32,11 @@ import {
   EVM_NATIVE,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
-import { Category, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import {
+  Category,
+  ChainId,
+  isEvmToken,
+} from "@nfid/integration/token/icrc1/enum/enums"
 
 import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
@@ -38,6 +44,10 @@ import { FT } from "frontend/integration/ft/ft"
 import { IProfileConstants } from ".."
 import { getUpdatedInitedTokens } from "frontend/features/transfer-modal/utils"
 import { SelectedToken } from "frontend/features/transfer-modal/types"
+import {
+  getCkErc20ByErc20Address,
+  isCkErc20Token,
+} from "@nfid/integration/token/ckerc20.config"
 
 type AssetDropdownProps = {
   token: FT
@@ -51,11 +61,16 @@ type AssetDropdownProps = {
   onConvertToCkEth: () => void
   onConvertToSepoliaEth: () => void
   onConvertToCkSepoliaEth: () => void
+  onConvertToErc20?: (tokenAddress: string) => void
+  onConvertToCkErc20?: (tokenAddress: string) => void
   onStakeClick: (value: SelectedToken) => void
+  onBridgeClick: (value: SelectedToken) => void
+  onEarnClick: (value: SelectedToken) => void
   setToken: (value: FT) => void
   dropdownPosition: IDropdownPosition
   setIsTokenProcessed: (value: boolean) => void
   isTokenProcessed: boolean
+  isEarnSupported?: boolean
 }
 
 export const AssetDropdown: FC<AssetDropdownProps> = ({
@@ -70,11 +85,16 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
   onConvertToCkEth,
   onConvertToSepoliaEth,
   onConvertToCkSepoliaEth,
+  onConvertToErc20,
+  onConvertToCkErc20,
   onStakeClick,
+  onBridgeClick,
+  onEarnClick,
   setToken,
   dropdownPosition,
   setIsTokenProcessed,
   isTokenProcessed,
+  isEarnSupported,
 }) => {
   const isDarkTheme = useDarkTheme()
   const navigate = useNavigate()
@@ -112,6 +132,30 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             })
           }
         />
+        {isEvmToken(token.getChainId()) && (
+          <DropdownOption
+            label="Bridge"
+            icon={<IconCmpBridge className="min-w-6 dark:text-white" />}
+            handler={() =>
+              onBridgeClick({
+                address: token.getTokenAddress(),
+                chainId: token.getChainId(),
+              })
+            }
+          />
+        )}
+        {isEarnSupported && (
+          <DropdownOption
+            label="Earn"
+            icon={<IconCmpEarn className="min-w-6 dark:text-white" />}
+            handler={() =>
+              onEarnClick({
+                address: token.getTokenAddress(),
+                chainId: token.getChainId(),
+              })
+            }
+          />
+        )}
         {token.getChainId() === ChainId.ICP && (
           <DropdownOption
             label="Swap"
@@ -177,6 +221,24 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
               isDarkTheme ? IconSvgConvertActionWhite : IconSvgConvertAction
             }
             handler={onConvertToSepoliaEth}
+          />
+        )}
+        {isCkErc20Token(token.getTokenAddress()) && (
+          <DropdownOption
+            label="Convert"
+            icon={
+              isDarkTheme ? IconSvgConvertActionWhite : IconSvgConvertAction
+            }
+            handler={() => onConvertToErc20?.(token.getTokenAddress())}
+          />
+        )}
+        {getCkErc20ByErc20Address(token.getTokenAddress()) && (
+          <DropdownOption
+            label="Convert"
+            icon={
+              isDarkTheme ? IconSvgConvertActionWhite : IconSvgConvertAction
+            }
+            handler={() => onConvertToCkErc20?.(token.getTokenAddress())}
           />
         )}
         {(token.getTokenCategory() === Category.Sns ||

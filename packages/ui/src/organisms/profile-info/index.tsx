@@ -7,14 +7,17 @@ import {
   Skeleton,
   Button,
   CopyAddress,
-  IconCmpConvertWhite,
   IconCmpStake,
   IconCmpRefresh,
   Tooltip,
+  IconCmpConvert,
+  IconCmpBridge,
+  IconCmpEarn,
 } from "@nfid-frontend/ui"
 
 import { Balance } from "./balance"
 import { ProfileContext } from "frontend/provider"
+import { getIsMobileDeviceMatch } from "../../utils/is-mobile"
 
 export interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   usdBalance:
@@ -32,6 +35,8 @@ export interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   onSwapClick: () => void
   onConvertClick: () => void
   onStakeClick: () => void
+  onBridgeClick: () => void
+  onEarnClick: () => void
   refreshPortfolio: () => void
   isRefreshing: boolean
   address?: string
@@ -46,11 +51,14 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
   onSwapClick,
   onConvertClick,
   onStakeClick,
+  onBridgeClick,
+  onEarnClick,
   refreshPortfolio,
   isRefreshing,
   address,
 }) => {
   const { isViewOnlyMode } = useContext(ProfileContext)
+  const isMobile = getIsMobileDeviceMatch()
 
   return (
     <div className="p-[20px] sm:p-[30px] bg-portfolioColor dark:bg-zinc-800 rounded-[24px] flex flex-col md:flex-row justify-between md:items-center">
@@ -108,94 +116,157 @@ export const ProfileInfo: FC<IProfileTemplate> = ({
       </div>
       {!isViewOnlyMode && (
         <div>
-          <div className="flex justify-between md:justify-start md:gap-[10px] mt-[20px] md:mt-0">
-            <div className="flex flex-col">
+          <div className="flex justify-between md:justify-start md:gap-[10px] mt-[20px] md:mt-0 flex-wrap md:flex-nowrap">
+            <div
+              className="flex flex-col basis-[calc(50%-2.5px)] mb-2.5 md:mb-0 cursor-pointer"
+              id="sendButton"
+              onClick={onSendClick}
+            >
               <Button
-                id="sendButton"
-                className="flex-1 !px-0 sm:!px-[15px]"
-                innerClassName="!space-x-1 !h-[40px] !md:h-full w-[56px] sm:w-[72px] md:w-auto"
+                className="basis-[48px] !p-0 w-full md:w-[48px]"
+                textClassName="md:hidden"
                 icon={
-                  <IconCmpArrow className="text-gray-400 rotate-[135deg] w-[18px] h-[18px] text-white" />
+                  <IconCmpArrow className="rotate-[135deg] w-[18px] h-[18px] text-white" />
                 }
-                onClick={onSendClick}
                 isSmall
               >
-                <span className="hidden md:flex">Send</span>
+                <span>Send</span>
               </Button>
-              <p className="text-primaryButtonColor md:hidden mb-0 text-xs leading-[20px] mt-[4px] text-center">
+              <p className="text-primaryButtonColor mb-0 text-xs leading-[20px] mt-1 text-center hidden md:block">
                 Send
               </p>
             </div>
-            <div className="flex flex-col">
+            <div
+              className="flex flex-col basis-[calc(50%-2.5px)] mb-2.5 md:mb-0 cursor-pointer"
+              id="receiveButton"
+              onClick={onReceiveClick}
+            >
               <Button
-                id="receiveButton"
-                className="flex-1 !px-0 sm:!px-[15px]"
-                innerClassName="!space-x-1 !h-[40px] !md:h-full w-[56px] sm:w-[72px] md:w-auto"
+                className="basis-[48px] !p-0 w-full md:w-[48px]"
+                textClassName="md:hidden"
                 icon={
-                  <IconCmpArrow className="text-gray-400 rotate-[-45deg] w-[18px] h-[18px] text-white" />
+                  <IconCmpArrow className="rotate-[-45deg] w-[18px] h-[18px] text-white" />
                 }
-                onClick={onReceiveClick}
                 isSmall
               >
-                <span className="hidden md:flex">Receive</span>
+                <span>Receive</span>
               </Button>
-              <p className="text-primaryButtonColor md:hidden mb-0 text-xs leading-[20px] mt-[4px] text-center">
+              <p className="text-primaryButtonColor mb-0 text-xs leading-[20px] mt-1 text-center hidden md:block">
                 Receive
               </p>
             </div>
-            <div className="flex flex-col">
+            <div
+              className="flex flex-col cursor-pointer"
+              id="swapButton"
+              onClick={onSwapClick}
+            >
               <Button
-                id="swapButton"
-                className="flex-1 !px-0 sm:!px-[15px]"
-                innerClassName="!space-x-1 !h-[40px] !md:h-full w-[56px] sm:w-[72px] md:w-auto"
+                className="basis-[48px] !p-0 w-[48px]"
                 icon={
-                  <IconCmpSwap className="text-gray-400 !w-[18px] !h-[18px] text-white" />
+                  <IconCmpSwap
+                    className={clsx(
+                      "!w-[18px] !h-[18px]",
+                      isMobile ? "text-primaryButtonColor" : "text-white",
+                    )}
+                  />
                 }
-                onClick={onSwapClick}
                 isSmall
-              >
-                <span className="hidden md:flex">Swap</span>
-              </Button>
-              <p className="text-primaryButtonColor md:hidden mb-0 text-xs leading-[20px] mt-[4px] text-center">
+                type={isMobile ? "ghost" : "primary"}
+              ></Button>
+              <p className="text-primaryButtonColor mb-0 text-xs leading-[20px] mt-1 text-center">
                 Swap
               </p>
             </div>
-            <div className="flex flex-col">
+            <div
+              className="flex flex-col cursor-pointer"
+              id="stakeButton"
+              onClick={onStakeClick}
+            >
               <Button
                 id="profileStakeButton"
-                className="flex-1 !px-0 sm:!px-[15px]"
-                innerClassName="!space-x-1 !h-[40px] !md:h-full w-[56px] sm:w-[72px] md:w-auto"
+                className="basis-[48px] !p-0 w-[48px]"
                 icon={
-                  <IconCmpStake className="text-gray-400 !w-[18px] !h-[18px] text-white" />
+                  <IconCmpStake
+                    className={clsx(
+                      "!w-[18px] !h-[18px]",
+                      isMobile ? "text-primaryButtonColor" : "text-white",
+                    )}
+                  />
                 }
-                onClick={onStakeClick}
                 isSmall
-              >
-                <span id={"stakeButton"} className="hidden md:flex">
-                  Stake
-                </span>
-              </Button>
-              <p className="text-primaryButtonColor md:hidden mb-0 text-xs leading-[20px] mt-[4px] text-center">
+                type={isMobile ? "ghost" : "primary"}
+              ></Button>
+              <p className="text-primaryButtonColor mb-0 text-xs leading-[20px] mt-1 text-center">
                 Stake
               </p>
             </div>
-            <div className="flex flex-col">
+            <div
+              className="flex flex-col cursor-pointer"
+              id="convertButton"
+              onClick={onConvertClick}
+            >
               <Button
                 id="profileConvertButton"
-                className="flex-1 !px-0 sm:!px-[15px]"
-                innerClassName="!space-x-1 !h-[40px] !md:h-full w-[56px] sm:w-[72px] md:w-auto"
+                className="basis-[48px] !p-0 w-[48px]"
                 icon={
-                  <IconCmpConvertWhite className="!text-gray-400 !w-[18px] !h-[18px] text-white" />
+                  <IconCmpConvert
+                    className={clsx(
+                      "!w-[18px] !h-[18px]",
+                      isMobile ? "text-primaryButtonColor" : "text-white",
+                    )}
+                  />
                 }
-                onClick={onConvertClick}
                 isSmall
-              >
-                <span id={"convertButton"} className="hidden md:flex">
-                  Convert
-                </span>
-              </Button>
-              <p className="text-primaryButtonColor md:hidden mb-0 text-xs leading-[20px] mt-[4px] text-center">
+                type={isMobile ? "ghost" : "primary"}
+              ></Button>
+              <p className="text-primaryButtonColor mb-0 text-xs leading-[20px] mt-1 text-center">
                 Convert
+              </p>
+            </div>
+            <div
+              className="flex flex-col cursor-pointer"
+              id="bridgeButton"
+              onClick={onBridgeClick}
+            >
+              <Button
+                id="profileBridgeButton"
+                className="basis-[48px] !p-0 w-[48px]"
+                icon={
+                  <IconCmpBridge
+                    className={clsx(
+                      "!w-[18px] !h-[18px]",
+                      isMobile ? "text-primaryButtonColor" : "text-white",
+                    )}
+                  />
+                }
+                isSmall
+                type={isMobile ? "ghost" : "primary"}
+              ></Button>
+              <p className="text-primaryButtonColor mb-0 text-xs leading-[20px] mt-1 text-center">
+                Bridge
+              </p>
+            </div>
+            <div
+              className="flex flex-col cursor-pointer"
+              id="earnButton"
+              onClick={onEarnClick}
+            >
+              <Button
+                id="profileEarnButton"
+                className="basis-[48px] !p-0 w-[48px]"
+                icon={
+                  <IconCmpEarn
+                    className={clsx(
+                      "!w-[18px] !h-[18px]",
+                      isMobile ? "text-primaryButtonColor" : "text-white",
+                    )}
+                  />
+                }
+                isSmall
+                type={isMobile ? "ghost" : "primary"}
+              ></Button>
+              <p className="text-primaryButtonColor mb-0 text-xs leading-[20px] mt-1 text-center">
+                Earn
               </p>
             </div>
           </div>

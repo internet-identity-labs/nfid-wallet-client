@@ -8,6 +8,7 @@ import {
 } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { mapState } from "@nfid/integration/token/icrc1/util"
+import { AaveUserPosition } from "frontend/integration/aave"
 import { arbitrumErc20Service } from "frontend/integration/ethereum/arbitrum/arbitrum-erc20.service"
 import { baseErc20Service } from "frontend/integration/ethereum/base/base-erc20.service"
 import { ethErc20Service } from "frontend/integration/ethereum/eth/eth-erc20.service"
@@ -157,7 +158,13 @@ export const filterNotActiveNotZeroBalancesTokens = async (
 export const getFullUsdValue = async (
   nfts: NFT[],
   ft: FT[],
+  supplyPositions: AaveUserPosition[],
   viewOnlyPrincipal?: Principal,
 ) => {
-  return portfolioService.getPortfolioUSDBalance(nfts, ft, viewOnlyPrincipal)
+  return portfolioService.getPortfolioUSDBalance(
+    nfts,
+    ft,
+    supplyPositions,
+    viewOnlyPrincipal,
+  )
 }

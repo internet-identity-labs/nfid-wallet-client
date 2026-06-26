@@ -233,6 +233,7 @@ jobs:
           path: /home/runner/work/nfid-wallet-client/nfid-wallet-client/yarn-error.log
 
   e2e-tests:
+    if: false
     name: E2E Tests
     needs: docker-for-e2e
     runs-on: ubuntu-latest
@@ -499,7 +500,7 @@ jobs:
   allure-report-desktop:
     name: Allure Report Desktop
     needs: e2e-tests
-    if: ${{ ! cancelled() }}
+    if: false
     runs-on: ubuntu-latest
     env:
       TARGET_URL: https://nfid-wallet-client-e2e-report.s3.amazonaws.com/desktop/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html

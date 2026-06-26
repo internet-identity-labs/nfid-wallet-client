@@ -37,6 +37,7 @@ import {
   updateCachedInitedTokens,
   getAddressBookFtOptions,
   mutateTokensCacheMergingBalances,
+  isTokenWithBalance,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import {
@@ -63,7 +64,6 @@ import {
   EvmNoteKey,
   IcpNoteKey,
 } from "frontend/integration/note/note-key"
-import { useUserPrefs } from "frontend/hooks/user-prefs"
 
 const DEFAULT_TRANSFER_ERROR = "Something went wrong"
 
@@ -106,7 +106,6 @@ export const TransferFT = ({
   const [fee, setFee] = useState<FeeResponse | undefined>()
   const [isFeeLoading, setIsFeeLoading] = useState(false)
   const skipFeeCalculation = useRef(false)
-  const { hideZeroBalance } = useUserPrefs()
 
   const triggerSkipCaclulation = useCallback(() => {
     skipFeeCalculation.current = true
@@ -168,14 +167,13 @@ export const TransferFT = ({
 
   const filteredTokens = useMemo(() => {
     if (!initedTokens) return
-    if (!hideZeroBalance) return initedTokens
     const tokensWithBalance = initedTokens.filter(
       (token) =>
         token.getTokenAddress() === ICP_CANISTER_ID ||
-        token.getTokenBalance() !== BigInt(0),
+        isTokenWithBalance(token),
     )
     return tokensWithBalance
-  }, [initedTokens, hideZeroBalance])
+  }, [initedTokens])
 
   const token = useMemo(() => {
     return filteredTokens?.find(

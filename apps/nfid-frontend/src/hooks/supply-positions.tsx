@@ -5,6 +5,7 @@ import { Category, isEvmToken } from "@nfid/integration/token/icrc1/enum/enums"
 import { AAVE_SUPPORTED_CHAINS, aaveService } from "frontend/integration/aave"
 import { useSWRWithTimestamp } from "@nfid/swr"
 import { useEthAddress } from "./contexts"
+import { isTokenWithBalance } from "frontend/features/transfer-modal/utils"
 
 export function useSupplyPositions(
   initedTokens?: FT[],
@@ -28,10 +29,7 @@ export function useSupplyPositions(
         evmTokens!,
         AAVE_SUPPORTED_CHAINS,
       )
-      return tokens.filter((t) => {
-        const balance = t.getTokenBalance()
-        return balance !== undefined && balance > BigInt(0)
-      })
+      return tokens.filter((t) => isTokenWithBalance(t))
     },
     { revalidateOnFocus: false, revalidateIfStale: false },
   )

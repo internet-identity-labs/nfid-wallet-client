@@ -18,7 +18,12 @@ import ConvertArrowBoxDark from "../assets/convert-arrow-box-dark.png"
 import ConvertArrowBox from "../assets/convert-arrow-box.png"
 import ConvertDarkIcon from "../assets/convert-dark.svg?url"
 import ConvertIcon from "../assets/convert.svg?url"
-import { getModalType, EthFormattedFee, BtcFormattedFee } from "../utils"
+import {
+  getModalType,
+  EthFormattedFee,
+  BtcFormattedFee,
+  IModalType,
+} from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { ChooseToToken } from "./choose-to-token"
 import { ConvertModal } from "./convert"
@@ -67,12 +72,22 @@ export const ConvertForm: FC<ConvertFormProps> = ({
 }) => {
   const [isFromResponsive, setIsFromResponsive] = useState(false)
   const [isToResponsive, setIsToResponsive] = useState(false)
+  const [ckErc20LedgerFee, setCkErc20LedgerFee] = useState<bigint>()
 
   useEffect(() => {
     if (setIsResponsive) {
       setIsResponsive(isFromResponsive || isToResponsive)
     }
   }, [isFromResponsive, isToResponsive, setIsResponsive])
+
+  useEffect(() => {
+    const modalType = getModalType(fromToken, toToken)
+    if (modalType !== IModalType.CONVERT_TO_ERC20 || !fromToken) {
+      setCkErc20LedgerFee(undefined)
+      return
+    }
+    fromToken.getTokenFee().then((r) => setCkErc20LedgerFee(r.getFee()))
+  }, [fromToken, toToken])
 
   const isDarkTheme = useDarkTheme()
   const isDisabled =
@@ -121,7 +136,11 @@ export const ConvertForm: FC<ConvertFormProps> = ({
           title="Convert from"
           isResponsive={isResponsive}
           setIsResponsive={setIsFromResponsive}
-          fee={ethFee?.ethereumNetworkFee}
+          fee={
+            getModalType(fromToken, toToken) === IModalType.CONVERT_TO_ERC20
+              ? ckErc20LedgerFee
+              : ethFee?.ethereumNetworkFee
+          }
           onMaxResolved={onMaxResolved}
         />
         <div className="h-4 mt-1 text-xs leading-4 text-red-600">

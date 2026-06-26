@@ -65,7 +65,7 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
       viewOnlyAddress ?? (await ethereumService.getQuickAddress())
     const ledgers = viewOnlyAddress
       ? [this.tokenAddress]
-      : await this.getTokens()
+      : [...new Set([...(await this.getTokens()), this.tokenAddress])]
 
     const [balances, usdBalances] = await Promise.all([
       this.getProvider().getMultipleTokenBalances(ethAddress, ledgers),

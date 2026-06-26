@@ -53,9 +53,11 @@ const SecurityPage: FC<SecurityPageProps> = memo(
         if (p.steps[0] === DeletionMode.PASSKEY) {
           await deleteAccountService.prepareStep(p)
           const next = await deleteAccountService.executeStep(p, "confirm")
-          setPlan(next)
-          if (!next.isCompleted)
+          if (next.isCompleted) {
+            setPlan(next)
+          } else {
             setPlan(await deleteAccountService.prepareStep(next))
+          }
         } else {
           setPlan(await deleteAccountService.prepareStep(p))
         }
@@ -75,7 +77,10 @@ const SecurityPage: FC<SecurityPageProps> = memo(
       try {
         const next = await deleteAccountService.executeStep(plan, stepValue)
         setStepValue("")
-        if (next.isCompleted) return
+        if (next.isCompleted) {
+          setPlan(next)
+          return
+        }
         setPlan(await deleteAccountService.prepareStep(next))
       } catch (e) {
         if (e instanceof PasskeyNotConfirmedError) {

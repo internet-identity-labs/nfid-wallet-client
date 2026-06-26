@@ -1,7 +1,14 @@
 import { useMemo, useCallback, FC, memo, useState } from "react"
 import { useSWR } from "@nfid/swr"
 import { Loader, PasskeySkeleton, Toggle } from "@nfid-frontend/ui"
-import { Icon } from "@nfid/integration"
+import {
+  Icon,
+  deleteAccountService,
+  PasskeyNotConfirmedError,
+  IncorrectSeedPhraseError,
+  Plan,
+  DeletionMode,
+} from "@nfid/integration"
 import { useDarkTheme } from "frontend/hooks"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { Security } from "packages/ui/src/organisms/security"
@@ -14,6 +21,7 @@ import { AddRecoveryPhrase } from "./recovery-phrase/add-recovery"
 import { DeleteRecoveryPhrase } from "./recovery-phrase/remove-recovery"
 import { securityConnector } from "./device-connector"
 import { NFIDTheme } from "frontend/App"
+import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 
 type SecurityPageProps = {
   walletTheme: NFIDTheme
@@ -28,8 +36,59 @@ export type IHandleWithLoading = <T>(
 const SecurityPage: FC<SecurityPageProps> = memo(
   ({ walletTheme, setWalletTheme }) => {
     const isDarkTheme = useDarkTheme()
+    // const { logout } = useAuthentication()
     const [isLoading, setIsLoading] = useState(false)
+    const [plan, setPlan] = useState<Plan | null>(null)
+    const [stepValue, setStepValue] = useState("")
+    const [deleteError, setDeleteError] = useState<string | null>(null)
+    const [isDeleting, setIsDeleting] = useState(false)
     const { profile, refreshProfile } = useProfile()
+
+    const handleGetPlan = useCallback(async () => {
+      setDeleteError(null)
+      setPlan(null)
+      setStepValue("")
+      try {
+        const p = await deleteAccountService.getPlan()
+        if (p.steps[0] === DeletionMode.PASSKEY) {
+          await deleteAccountService.prepareStep(p)
+          const next = await deleteAccountService.executeStep(p, "confirm")
+          setPlan(next)
+          if (!next.isCompleted)
+            setPlan(await deleteAccountService.prepareStep(next))
+        } else {
+          setPlan(await deleteAccountService.prepareStep(p))
+        }
+      } catch (e) {
+        if (e instanceof PasskeyNotConfirmedError) {
+          setDeleteError("Passkey confirmation was cancelled or failed.")
+        } else {
+          setDeleteError((e as Error).message ?? "Failed to get plan.")
+        }
+      }
+    }, [])
+
+    const handleSubmitStep = useCallback(async () => {
+      if (!plan) return
+      setIsDeleting(true)
+      setDeleteError(null)
+      try {
+        const next = await deleteAccountService.executeStep(plan, stepValue)
+        setStepValue("")
+        if (next.isCompleted) return
+        setPlan(await deleteAccountService.prepareStep(next))
+      } catch (e) {
+        if (e instanceof PasskeyNotConfirmedError) {
+          setDeleteError("Passkey confirmation was cancelled or failed.")
+        } else if (e instanceof IncorrectSeedPhraseError) {
+          setDeleteError("Incorrect seed phrase.")
+        } else {
+          setDeleteError((e as Error).message ?? "Step failed.")
+        }
+      } finally {
+        setIsDeleting(false)
+      }
+    }, [plan, stepValue])
 
     const {
       data: devices,
@@ -177,6 +236,46 @@ const SecurityPage: FC<SecurityPageProps> = memo(
           renderPasskeys={PasskeysSection}
           renderRecoveryOptions={RecoveryPhraseSection}
         />
+        <div className="px-[20px] sm:px-[30px] pb-[30px] space-y-3">
+          {!plan ? (
+            <button
+              onClick={handleGetPlan}
+              className="w-full h-10 rounded-xl bg-red-600 text-white text-sm font-medium hover:bg-red-700"
+            >
+              Delete account
+            </button>
+          ) : plan.isCompleted ? (
+            <p className="text-sm text-green-600 font-medium">
+              Account deleted.
+            </p>
+          ) : (
+            <>
+              <p className="text-xs text-gray-500">
+                Steps:{" "}
+                <span className="font-mono">{plan.steps.join(" → ")}</span>
+              </p>
+              <p className="text-sm font-medium">
+                Current step:{" "}
+                <span className="font-mono text-red-600">{plan.steps[0]}</span>
+              </p>
+              <input
+                type="text"
+                value={stepValue}
+                onChange={(e) => setStepValue(e.target.value)}
+                placeholder="Enter value for this step…"
+                className="w-full h-10 px-3 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-blue-500"
+              />
+              <button
+                onClick={handleSubmitStep}
+                disabled={isDeleting || !stepValue}
+                className="w-full h-10 rounded-xl bg-red-600 text-white text-sm font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isDeleting ? "Processing…" : "Submit"}
+              </button>
+            </>
+          )}
+          {deleteError && <p className="text-sm text-red-500">{deleteError}</p>}
+        </div>
       </ProfileTemplate>
     )
   },

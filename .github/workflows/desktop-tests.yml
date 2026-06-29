@@ -48,7 +48,7 @@ jobs:
 
     steps:
       - name: Checkout CI repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
@@ -92,10 +92,10 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Checkout CI repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
@@ -180,10 +180,10 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Checkout CI repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
@@ -233,7 +233,6 @@ jobs:
           path: /home/runner/work/nfid-wallet-client/nfid-wallet-client/yarn-error.log
 
   e2e-tests:
-    if: false
     name: E2E Tests
     needs: docker-for-e2e
     runs-on: ubuntu-latest
@@ -248,10 +247,10 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Checkout CI repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
@@ -393,10 +392,10 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Checkout CI repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           token: ${{ secrets.PAT }}
           repository: internet-identity-labs/ci_libs
@@ -500,7 +499,7 @@ jobs:
   allure-report-desktop:
     name: Allure Report Desktop
     needs: e2e-tests
-    if: false
+    if: ${{ ! cancelled() }}
     runs-on: ubuntu-latest
     env:
       TARGET_URL: https://nfid-wallet-client-e2e-report.s3.amazonaws.com/desktop/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html

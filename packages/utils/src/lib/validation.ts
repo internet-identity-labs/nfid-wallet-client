@@ -15,6 +15,7 @@ enum IModalType {
   BRIDGE = "BRIDGE",
   EARN = "EARN",
   WITHDRAW = "WITHDRAW",
+  PAY = "PAY",
 }
 
 const MIN_CK_BTC_AMOUNT_TO_CONVERT = 0.00051

@@ -68,6 +68,7 @@ export enum IModalType {
   BRIDGE = "BRIDGE",
   EARN = "EARN",
   WITHDRAW = "WITHDRAW",
+  PAY = "PAY",
 }
 
 export const getTitleAndButtonText = (

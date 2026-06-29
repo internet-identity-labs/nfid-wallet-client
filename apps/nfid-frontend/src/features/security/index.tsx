@@ -1,7 +1,20 @@
 import { useMemo, useCallback, FC, memo, useState } from "react"
 import { useSWR } from "@nfid/swr"
-import { Loader, PasskeySkeleton, Toggle } from "@nfid-frontend/ui"
-import { Icon } from "@nfid/integration"
+import {
+  IconCmpTrash,
+  IconCmpWallet,
+  Loader,
+  PasskeySkeleton,
+  Toggle,
+} from "@nfid-frontend/ui"
+import {
+  deleteAccountService,
+  DeletionMode,
+  Icon,
+  IncorrectSeedPhraseError,
+  PasskeyNotConfirmedError,
+  Plan,
+} from "@nfid/integration"
 import { useDarkTheme } from "frontend/hooks"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { Security } from "packages/ui/src/organisms/security"
@@ -14,6 +27,10 @@ import { AddRecoveryPhrase } from "./recovery-phrase/add-recovery"
 import { DeleteRecoveryPhrase } from "./recovery-phrase/remove-recovery"
 import { securityConnector } from "./device-connector"
 import { NFIDTheme } from "frontend/App"
+import { authState } from "@nfid/integration"
+import { RemoveAccountModal } from "./components/remove-account"
+import toaster from "packages/ui/src/atoms/toast"
+import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 
 type SecurityPageProps = {
   walletTheme: NFIDTheme
@@ -27,9 +44,14 @@ export type IHandleWithLoading = <T>(
 
 const SecurityPage: FC<SecurityPageProps> = memo(
   ({ walletTheme, setWalletTheme }) => {
+    const { logout } = useAuthentication()
     const isDarkTheme = useDarkTheme()
     const [isLoading, setIsLoading] = useState(false)
     const { profile, refreshProfile } = useProfile()
+    const [isRemoveAccountModalVisible, setIsRemoveAccountModalVisible] =
+      useState(false)
+    const [accountDeletionSteps, setAccountDeletionSteps] = useState<Plan>()
+    const [isDeletionLoading, setIsDeletionLoading] = useState(false)
 
     const {
       data: devices,
@@ -39,6 +61,71 @@ const SecurityPage: FC<SecurityPageProps> = memo(
       profile?.anchor ? [profile.anchor.toString(), "devices"] : null,
       securityConnector.getDevices,
       { revalidateOnFocus: false },
+    )
+
+    const getAccountDeletionSteps = useCallback(async () => {
+      setIsRemoveAccountModalVisible(true)
+      setIsDeletionLoading(true)
+      try {
+        const p = await deleteAccountService.getPlan()
+        if (p.steps[0] === DeletionMode.PASSKEY) {
+          await deleteAccountService.prepareStep(p)
+          const next = await deleteAccountService.executeStep(p, "confirm")
+          if (next.isCompleted) {
+            setAccountDeletionSteps(next)
+          } else {
+            setAccountDeletionSteps(
+              await deleteAccountService.prepareStep(next),
+            )
+          }
+        } else {
+          setAccountDeletionSteps(await deleteAccountService.prepareStep(p))
+        }
+      } catch (e) {
+        const errorMessage =
+          e instanceof PasskeyNotConfirmedError
+            ? "Passkey confirmation was cancelled or failed."
+            : ((e as Error).message ?? "Failed to get plan.")
+        toaster.error(`Deletion error. ${errorMessage}`)
+      } finally {
+        setIsDeletionLoading(false)
+      }
+    }, [])
+
+    const executeStep = useCallback(
+      async (value: string) => {
+        if (!accountDeletionSteps) return
+        setIsDeletionLoading(true)
+        try {
+          const next = await deleteAccountService.executeStep(
+            accountDeletionSteps,
+            value,
+          )
+          if (next.isCompleted) {
+            logout()
+            return
+          }
+          setAccountDeletionSteps(await deleteAccountService.prepareStep(next))
+        } catch (e) {
+          let errorMessage: string
+          if (e instanceof PasskeyNotConfirmedError) {
+            errorMessage = "Passkey confirmation was cancelled or failed."
+          } else if (e instanceof IncorrectSeedPhraseError) {
+            errorMessage = "Incorrect seed phrase."
+          } else {
+            const raw = (e as Error).message
+            try {
+              errorMessage = JSON.parse(raw).error ?? raw
+            } catch {
+              errorMessage = raw
+            }
+          }
+          toaster.error(`Deletion error. ${errorMessage}`)
+        } finally {
+          setIsDeletionLoading(false)
+        }
+      },
+      [accountDeletionSteps],
     )
 
     const handleWithLoading: IHandleWithLoading = useCallback(
@@ -102,6 +189,35 @@ const SecurityPage: FC<SecurityPageProps> = memo(
         ) : (
           <AddRecoveryPhrase handleWithLoading={handleWithLoading} />
         )}
+      </>
+    )
+
+    const RemoveAccountSection = () => (
+      <>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <div className="w-10 h-10 [&>svg]:h-full">
+              <IconCmpWallet color={isDarkTheme ? "#71717A" : "#9CA3AF"} />
+            </div>
+            <div className="my-2.5 pl-[18px]">
+              <p className="text-sm leading-5">Wallet address</p>
+              <p className="text-xs leading-4 text-gray-400 dark:text-zinc-500">
+                {authState.getUserIdData().publicKey}
+              </p>
+            </div>
+          </div>
+          <IconCmpTrash
+            onClick={getAccountDeletionSteps}
+            className="w-6 text-gray-400 cursor-pointer dark:text-zinc-500 hover:opacity-50"
+          />
+        </div>
+        <RemoveAccountModal
+          isModalVisible={isRemoveAccountModalVisible}
+          setIsModalVisible={setIsRemoveAccountModalVisible}
+          executeStep={executeStep}
+          steps={accountDeletionSteps}
+          isLoading={isDeletionLoading}
+        />
       </>
     )
 
@@ -176,6 +292,7 @@ const SecurityPage: FC<SecurityPageProps> = memo(
           }
           renderPasskeys={PasskeysSection}
           renderRecoveryOptions={RecoveryPhraseSection}
+          renderRemoveAccount={RemoveAccountSection}
         />
       </ProfileTemplate>
     )

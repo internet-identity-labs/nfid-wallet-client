@@ -39,7 +39,7 @@ interface PayProps {
   setIsPaySuccess: (value: boolean) => void
 }
 
-const DEFAULT_PAY_ERROR = "Something went wrong"
+export const DEFAULT_PAY_ERROR = "Something went wrong"
 
 export const Pay = ({
   openCryptoPayParams,
@@ -55,7 +55,10 @@ export const Pay = ({
   const [error, setError] = useState<string | undefined>()
   const [payData, setPayData] = useState<PayData | undefined>()
   const [isLoadingPayData, setIsLoadingPayData] = useState(true)
-  const [payError, setPayError] = useState<string | undefined>()
+  const [paymentDetailsError, setPaymentDetailsError] = useState<
+    string | undefined
+  >()
+  const [quoteError, setQuoteError] = useState<string | undefined>()
   const [selectedToken, setSelectedToken] = useState<
     SelectedToken | undefined
   >()
@@ -80,24 +83,24 @@ export const Pay = ({
   })
 
   useEffect(() => {
-    if (!identity) return
     const getPayDetails = async () => {
       try {
-        setPayError(undefined)
+        setPaymentDetailsError(undefined)
         const decoded = openCryptoPayService.decodeLnurl(openCryptoPayParams)
         const details = await openCryptoPayService.getPaymentDetails(decoded)
-        const available = await openCryptoPayService.getAvailableCurrencies(
+        const available = openCryptoPayService.getAvailableCurrencies(
           details.transferAmounts,
-          identity,
         )
         setPayInfo({ url: decoded, details, availableTransfers: available })
       } catch (e) {
         console.error("Get Payment Details error: ", e)
-        setPayError(`${(e as Error).message ? (e as Error).message : e}`)
+        setPaymentDetailsError(
+          `${(e as Error).message ? (e as Error).message : e}`,
+        )
       }
     }
     getPayDetails()
-  }, [identity])
+  }, [openCryptoPayParams])
 
   const setChosenToken = useCallback(
     (token: SelectedToken) => setSelectedToken(token),
@@ -159,7 +162,7 @@ export const Pay = ({
     const defaultToken =
       filteredTokens.find((t) => t.getTokenSymbol() === "ICP") ??
       filteredTokens.find(
-        (t) => t.getTokenSymbol() === "ETH" && t.getChainId() === ChainId.ARB,
+        (t) => t.getTokenSymbol() === "ETH" && t.getChainId() === ChainId.ETH,
       ) ??
       filteredTokens[0]
 
@@ -209,7 +212,7 @@ export const Pay = ({
 
     const getQuote = async () => {
       try {
-        setPayError(undefined)
+        setQuoteError(undefined)
 
         const quote = await openCryptoPayService.getQuote(
           payInfo,
@@ -258,11 +261,12 @@ export const Pay = ({
             targetAddress,
             quote,
           })
-          setIsLoadingPayData(false)
         }
       } catch (e) {
         console.error("Get Payment Quote error: ", e)
-        setPayError(`${(e as Error).message ? (e as Error).message : e}`)
+        setQuoteError(`${(e as Error).message ? (e as Error).message : e}`)
+      } finally {
+        setIsLoadingPayData(false)
       }
     }
     getQuote()
@@ -273,8 +277,8 @@ export const Pay = ({
   }, [token, payInfo])
 
   useEffect(() => {
-    onError(Boolean(payError))
-  }, [payError, onError])
+    onError(Boolean(quoteError))
+  }, [quoteError, onError])
 
   const submit = useCallback(() => {
     if (!identity || !token || !payData || !payInfo) return
@@ -282,6 +286,7 @@ export const Pay = ({
     isSubmittingRef.current = true
 
     setIsSuccessOpen(true)
+    setIsPaySuccess(true)
 
     openCryptoPayService
       .executePayment(payData.quote, identity)
@@ -344,7 +349,8 @@ export const Pay = ({
           isPayDataLoading={isLoadingPayData}
           status={status}
           error={error}
-          payError={payError}
+          paymentDetailsError={paymentDetailsError}
+          quoteError={quoteError}
           tokens={filteredTokens}
           isInsufficientBalance={isInsufficientBalance}
         />

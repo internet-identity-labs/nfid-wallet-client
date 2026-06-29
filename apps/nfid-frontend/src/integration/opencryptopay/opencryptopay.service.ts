@@ -62,30 +62,12 @@ export class OpenCryptoPayService {
     return data as OCPPayRequest
   }
 
-  async getAvailableCurrencies(
+  getAvailableCurrencies(
     transferAmounts: OCPTransferAmount[],
-    identity: SignIdentity,
-  ): Promise<OCPTransferAmount[]> {
-    const supported = transferAmounts.filter(
+  ): OCPTransferAmount[] {
+    return transferAmounts.filter(
       (t) => t.available && this.isNetworkSupported(t.method),
     )
-
-    const results = await Promise.allSettled(
-      supported.map(async (transfer) => {
-        const balance = await this.getBalanceForNetwork(
-          transfer.method,
-          identity,
-        )
-        return balance > BigInt(0) ? transfer : null
-      }),
-    )
-
-    return results
-      .filter(
-        (r): r is PromiseFulfilledResult<OCPTransferAmount> =>
-          r.status === "fulfilled" && r.value !== null,
-      )
-      .map((r) => r.value)
   }
 
   private async fetchQuote(

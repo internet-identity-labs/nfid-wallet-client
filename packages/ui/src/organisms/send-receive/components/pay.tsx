@@ -20,6 +20,7 @@ import clsx from "clsx"
 import { Spinner } from "packages/ui/src/atoms/spinner"
 import { ChooseToToken } from "./choose-to-token"
 import { PaySuccessUi } from "./pay-success"
+import { DEFAULT_PAY_ERROR } from "frontend/features/transfer-modal/components/pay"
 
 export interface PayUiProps {
   token: FT | undefined
@@ -28,7 +29,8 @@ export interface PayUiProps {
   isTokenLoading: boolean
   status: SendStatus
   error: string | undefined
-  payError: string | undefined
+  paymentDetailsError: string | undefined
+  quoteError: string | undefined
   isSuccessOpen: boolean
   onClose: () => void
   payData?: PayData
@@ -44,7 +46,8 @@ export const PayUi: FC<PayUiProps> = ({
   isTokenLoading,
   status,
   error,
-  payError,
+  paymentDetailsError,
+  quoteError,
   isSuccessOpen,
   onClose,
   payData,
@@ -57,10 +60,17 @@ export const PayUi: FC<PayUiProps> = ({
   const isDisabled =
     isPayDataLoading ||
     !payData ||
-    Boolean(payError) ||
+    Boolean(quoteError) ||
     Boolean(isInsufficientBalance)
 
-  if (isTokenLoading || !token || isPayDataLoading || !payData)
+  if (paymentDetailsError)
+    return (
+      <div className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center p-5 text-center text-red-600">
+        {DEFAULT_PAY_ERROR}
+      </div>
+    )
+
+  if (isTokenLoading || !token || isPayDataLoading)
     return (
       <BlurredLoader
         isLoading
@@ -82,8 +92,8 @@ export const PayUi: FC<PayUiProps> = ({
         >
           <PaySuccessUi
             assetImg={token?.getTokenLogo() ?? ""}
-            title={payData.amountFormatted}
-            subTitle={payData.amountUsdFormatted}
+            title={payData!.amountFormatted}
+            subTitle={payData!.amountUsdFormatted}
             isOpen={isSuccessOpen}
             onClose={onClose}
             status={status}
@@ -109,10 +119,10 @@ export const PayUi: FC<PayUiProps> = ({
             </p>
             <ChooseToToken
               setToChosenToken={setChosenToken}
-              isLoading={isPayDataLoading}
+              isLoading={isPayDataLoading || !payData}
               token={token}
-              usdRate={payData.amountUsdFormatted}
-              value={payData.amount}
+              usdRate={payData?.amountUsdFormatted}
+              value={payData?.amount}
               tokens={tokens}
               title="Amount to supply"
               isResponsive={isResponsive}
@@ -126,7 +136,7 @@ export const PayUi: FC<PayUiProps> = ({
             <Input
               type="text"
               disabled
-              value={payData.targetAddress}
+              value={payData?.targetAddress}
               labelText="To"
               placeholder="{recipient wallet address or account ID}"
               inputClassName="!border-0 h-[56px] text-sm placeholder:text-gray-400 dark:placeholder:text-zinc-500 !bg-gray-50 dark:!bg-zinc-700"
@@ -139,7 +149,7 @@ export const PayUi: FC<PayUiProps> = ({
               )}
             >
               <span className="leading-6">Network fee</span>
-              {payError ? null : payData === undefined ? (
+              {quoteError ? null : payData === undefined ? (
                 <div className="text-right">
                   <Skeleton className="w-[70px] h-3 rounded-lg ml-auto" />
                   <Skeleton className="w-[50px] h-3 rounded-lg mt-1.5 ml-auto" />
@@ -151,8 +161,10 @@ export const PayUi: FC<PayUiProps> = ({
                 </div>
               )}
             </div>
-            {payError && (
-              <div className="mt-2 text-xs text-red-600">{payError}</div>
+            {quoteError && (
+              <div className="mt-2 text-xs text-red-600">
+                {DEFAULT_PAY_ERROR}
+              </div>
             )}
             <Button
               className="absolute bottom-5 left-5 right-5 !w-auto"
@@ -160,7 +172,7 @@ export const PayUi: FC<PayUiProps> = ({
               id="swapTokensButton"
               block
               icon={
-                payError ? null : payData === undefined && !payError ? (
+                quoteError ? null : payData === undefined && !quoteError ? (
                   <Spinner className="w-5 h-5 text-white" />
                 ) : (
                   <IconCmpArrow

@@ -33,8 +33,6 @@ const JEST_GLOBALS = {
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/verify/",
   AWS_SYMMETRIC:
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/symmetric/",
-  AWS_SIGNATURE_EVENT:
-    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/signature/",
   AWS_X_TWEET:
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/x/tweet",
   AWS_EXCHANGE_RATE:
@@ -69,12 +67,17 @@ const JEST_GLOBALS = {
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/check_verification",
   AWS_VERIFY_EMAIL:
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/verify_email",
+  AWS_APPROVE_LOGIN_IP:
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/login/ip",
   AWS_SIGNIN_GOOGLE_V2:
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/signin/v2",
   AWS_PUBLIC_KEY:
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/publickey",
   IC_EXPLORER_API_URL: "https://api.icexplorer.io/api/dashboard/search",
+  ALCHEMY_API_KEY: "",
+  ETHERSCAN_API_KEY: "",
   INFURA_API_KEY: "",
+  BRIDGE_API_KEY: "",
 }
 
 module.exports = { JEST_GLOBALS }

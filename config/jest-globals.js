@@ -33,8 +33,6 @@ export const JEST_GLOBALS = {
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/verify/",
   AWS_SYMMETRIC:
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/symmetric/",
-  AWS_SIGNATURE_EVENT:
-    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/signature/",
   AWS_X_TWEET:
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/x/tweet",
   AWS_EXCHANGE_RATE:

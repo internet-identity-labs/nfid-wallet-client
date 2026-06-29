@@ -61,6 +61,10 @@ const JEST_GLOBALS = {
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/passkey",
   AWS_SEND_VERIFICATION_EMAIL:
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/send_verification_email",
+  AWS_SEND_DELETE_ACCOUNT_EMAIL:
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/send_delete_account_email",
+  AWS_CONFIRM_DELETE_ACCOUNT:
+    "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/confirm_delete_account",
   AWS_LINK_GOOGLE_ACCOUNT:
     "https://m81pwzeyke.execute-api.us-east-1.amazonaws.com/dev/link_google_account",
   AWS_CHECK_VERIFICATION:

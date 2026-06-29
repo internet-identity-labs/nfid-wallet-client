@@ -49,6 +49,12 @@ export const serviceConfig = {
   AWS_CHECK_VERIFICATION: JSON.stringify(process.env.AWS_CHECK_VERIFICATION),
   AWS_VERIFY_EMAIL: JSON.stringify(process.env.AWS_VERIFY_EMAIL),
   AWS_APPROVE_LOGIN_IP: JSON.stringify(process.env.AWS_APPROVE_LOGIN_IP),
+  AWS_SEND_DELETE_ACCOUNT_EMAIL: JSON.stringify(
+    process.env.AWS_SEND_DELETE_ACCOUNT_EMAIL,
+  ),
+  AWS_CONFIRM_DELETE_ACCOUNT: JSON.stringify(
+    process.env.AWS_CONFIRM_DELETE_ACCOUNT,
+  ),
   AWS_SIGNIN_GOOGLE_V2: JSON.stringify(process.env.AWS_SIGNIN_GOOGLE_V2),
   AWS_PUBLIC_KEY: JSON.stringify(process.env.AWS_PUBLIC_KEY),
   SIGNIN_GOOGLE: JSON.stringify(

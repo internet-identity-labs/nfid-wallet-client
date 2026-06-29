@@ -16,6 +16,7 @@ import { FormValues, SelectedToken, SendStatus } from "../types"
 import {
   getTokensWithUpdatedBalance,
   getUpdatedInitedTokens,
+  isTokenWithBalance,
   mutateTokensCacheMergingBalances,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
@@ -100,10 +101,7 @@ export const Bridge = ({
         )
         if (!tokens) return
 
-        return tokens.filter((t) => {
-          const balance = t.getTokenBalance()
-          return balance !== undefined && balance > BigInt(0)
-        })
+        return tokens.filter((t) => isTokenWithBalance(t))
       },
       { revalidateOnFocus: false },
     )

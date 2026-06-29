@@ -43,6 +43,7 @@ import { FormValues } from "../types"
 import {
   getQuoteData,
   getTokensWithUpdatedBalance,
+  isTokenWithBalance,
   mutateTokensCacheMergingBalances,
   updateCachedInitedTokens,
 } from "../utils"
@@ -99,7 +100,7 @@ export const SwapFT = ({
     string | undefined
   >()
   const [liquidityError, setLiquidityError] = useState<Error | undefined>()
-  const { slippage, setSlippage, hideZeroBalance } = useUserPrefs()
+  const { slippage, setSlippage } = useUserPrefs()
   const [providerError, setProviderError] = useState<
     ServiceUnavailableError | undefined
   >()
@@ -143,15 +144,13 @@ export const SwapFT = ({
       (token: FT) => token.getChainId() === ChainId.ICP,
     )
 
-    if (!hideZeroBalance) return filtered
-
     const tokensWithBalance = filtered.filter(
       (token: FT) =>
         token.getTokenAddress() === ICP_CANISTER_ID ||
-        token.getTokenBalance() !== BigInt(0),
+        isTokenWithBalance(token),
     )
     return tokensWithBalance
-  }, [initedTokens, hideZeroBalance])
+  }, [initedTokens])
 
   const [getTransaction, setGetTransaction] = useState<
     SwapTransaction | undefined

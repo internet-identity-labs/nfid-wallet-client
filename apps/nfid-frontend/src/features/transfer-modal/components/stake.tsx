@@ -21,6 +21,7 @@ import { FormValues, SendStatus } from "../types"
 import {
   getAccurateDateForStakeInSeconds,
   getTokensWithUpdatedBalance,
+  isTokenWithBalance,
   updateCachedInitedTokens,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
@@ -66,7 +67,8 @@ export const StakeFT = ({
     if (!initedTokens) return []
     return initedTokens.filter(
       (token) =>
-        token.getTokenCategory() === Category.Sns ||
+        (token.getTokenCategory() === Category.Sns &&
+          isTokenWithBalance(token)) ||
         token.getTokenAddress() === ICP_CANISTER_ID,
     )
   }, [initedTokens])

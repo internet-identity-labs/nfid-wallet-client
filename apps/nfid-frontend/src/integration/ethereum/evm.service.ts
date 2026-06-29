@@ -412,8 +412,8 @@ export abstract class EVMService {
     //we take 0.0000875% ckETH as fee
     const identityLabsFee: bigint = this.getIdentityLabsFee(parsedAmount)
 
-    //Minimum amount 0.03 ckETH
-    if (parsedAmount < BigInt(30000000000000000)) {
+    //Minimum amount 0.005 ckETH
+    if (parsedAmount < BigInt(5000000000000000)) {
       throw new Error("The minimum amount for conversion is 0.03 ckETH")
     }
 
@@ -551,33 +551,22 @@ export abstract class EVMService {
   }
 
   public async getCkEthToEthFee(
-    to: string,
+    _to: string,
     amount: string,
   ): Promise<CkEthToEthFee> {
     const parsedAmount = parseEther(amount.toString())
     const identityLabsFee = this.getIdentityLabsFee(parsedAmount)
-    const amountToReceive =
-      parsedAmount - identityLabsFee - this.ckEthNetworkFee
 
-    const gasEstimate = await this.estimateGas({
-      to,
-      value: parsedAmount,
+    const agent = new HttpAgent(agentBaseConfig)
+    const minter = CkEthMinterCanister.create({
+      agent,
+      canisterId: Principal.fromText(this.ckEthMinterCanisterId),
     })
-
-    const feeData = await this.provider.getFeeData()
-    const maxPriorityFeePerGas =
-      feeData.maxPriorityFeePerGas || BigInt(2_000_000_000)
-    const maxFeePerGas =
-      feeData.maxFeePerGas || maxPriorityFeePerGas + BigInt(5_000_000_000)
-
-    const ethereumNetworkFee = this.estimateTransaction(
-      gasEstimate,
-      maxFeePerGas,
-    )
+    const price = await minter.eip1559TransactionPrice({ certified: false })
 
     return {
-      ethereumNetworkFee,
-      amountToReceive,
+      ethereumNetworkFee: price.max_transaction_fee,
+      amountToReceive: parsedAmount - identityLabsFee - this.ckEthNetworkFee,
       icpNetworkFee: this.ckEthNetworkFee * BigInt(2),
       identityLabsFee,
     }
@@ -801,14 +790,6 @@ export abstract class EVMService {
   ): Promise<CkEthMinterDid.RetrieveErc20Request> {
     const token = this.resolveCkErc20Token(ledgerCanisterId)
     const amountUnits = parseUnits(amount, token.decimals)
-
-    if (amountUnits < token.minWithdrawalAmount) {
-      const min = formatUnits(token.minWithdrawalAmount, token.decimals)
-      throw new Error(
-        `The minimum amount for conversion is ${min} ${token.symbol}`,
-      )
-    }
-
     const identityLabsFee = this.getIdentityLabsFee(amountUnits)
 
     await this.approveTransfer(
@@ -835,7 +816,7 @@ export abstract class EVMService {
     await this.approveTransfer(
       this.ckEthLedgerCanisterId,
       token.minterCanisterId,
-      price.max_transaction_fee,
+      (price.max_transaction_fee * BigInt(120)) / BigInt(100),
       identity,
     )
 

@@ -15,13 +15,8 @@ import {
   mutateTokensCacheMergingBalances,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
+import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import {
-  Category,
-  ChainId,
-  isEvmToken,
-} from "@nfid/integration/token/icrc1/enum/enums"
-import {
-  AAVE_SUPPORTED_CHAINS,
   AaveFeeData,
   aaveService,
   AaveSupportedChainId,

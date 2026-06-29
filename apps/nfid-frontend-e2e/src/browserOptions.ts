@@ -19,13 +19,14 @@ if (isHeadless) {
 
 export const chromeBrowser = {
   browserName: "chrome",
-  'wdio:enforceWebDriverClassic': true,
+  "wdio:enforceWebDriverClassic": true,
   acceptInsecureCerts: true,
   "goog:chromeOptions": {
     ...chromeBrowserOptions,
     args: [
       ...chromeBrowserOptions.args,
       "--window-size=1920,1080",
+      "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
     ],
   },
   "goog:loggingPrefs": {
@@ -39,7 +40,7 @@ export const chromeBrowser = {
 
 export const mobileChromeBrowser = {
   browserName: "chrome",
-  'wdio:enforceWebDriverClassic': true,
+  "wdio:enforceWebDriverClassic": true,
   acceptInsecureCerts: true,
   "goog:chromeOptions": {
     mobileEmulation: {
@@ -52,10 +53,7 @@ export const mobileChromeBrowser = {
         "AppleWebKit/605.1.15 (KHTML, like Gecko) " +
         "Version/13.0.3 Mobile/15E148 Safari/604.1",
     },
-    args: [
-      ...chromeBrowserOptions.args,
-      "--window-size=500,812",
-    ],
+    args: [...chromeBrowserOptions.args, "--window-size=500,812"],
   },
   "goog:loggingPrefs": {
     browser: "ALL",

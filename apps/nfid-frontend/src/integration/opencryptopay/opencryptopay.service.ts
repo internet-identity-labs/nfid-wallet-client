@@ -44,6 +44,7 @@ export const OCP_NETWORK_TO_CHAIN_ID: Record<OCPNetwork, ChainId> = {
 
 const REQUEST_TIMEOUT_MS = 10_000
 const ICP_FEE_E8S = BigInt(10_000)
+const EVM_FEE_BUFFER_PCT = BigInt(120)
 
 export class OpenCryptoPayService {
   decodeLnurl(lnurl: string): string {
@@ -104,19 +105,27 @@ export class OpenCryptoPayService {
     }
 
     const submitUrl = callbackUrl.replace("/cb/", "/tx/")
-    return { ...data.quote, submitUrl }
+    return { ...data.quote, submitUrl, quoteRef: data.quote.id }
   }
 
+  // DFX attaches the on-chain activation to the quote identified by the `quote` query
+  // param (transferInfo.quoteUniqueId) — but ONLY via the callback endpoint (/cb/:id).
+  // The plain lnurlp endpoint (/:id) mints a fresh quote and overwrites the param, so
+  // its activation lands on a quote the client never sees. We therefore hit the callback
+  // URL and pass our own (still-ACTUAL) quote id, so the submit `?quote=` matches.
   private async fetchDfxQuote(
-    paymentUrl: string,
+    lnurlUrl: string,
+    callbackUrl: string,
     method: string,
     asset: string,
     transferAmounts: OCPTransferAmount[],
     decimals: number,
+    quoteRef: string,
   ): Promise<OCPQuote> {
-    const url = new URL(paymentUrl)
+    const url = new URL(callbackUrl)
     url.searchParams.set("method", method)
     url.searchParams.set("asset", asset)
+    if (quoteRef) url.searchParams.set("quote", quoteRef)
 
     const response = await this.fetchWithTimeout(url.toString())
     const data = await response.json()
@@ -125,7 +134,10 @@ export class OpenCryptoPayService {
       throw new OCPInvalidResponseError(url.toString(), data)
     }
 
-    const { targetAddress, amount } = this.parseDfxUri(data.uri, decimals)
+    const { targetAddress, amount, tokenAddress, amountRaw } = this.parseDfxUri(
+      data.uri,
+      decimals,
+    )
     const submitUrl = this.extractUrlFromText(data.hint)
 
     if (!submitUrl) {
@@ -137,6 +149,7 @@ export class OpenCryptoPayService {
 
     return {
       id: submitUrl.split("/").pop() ?? "",
+      quoteRef,
       expiresAt: data.expiryDate,
       amount,
       fee,
@@ -144,7 +157,20 @@ export class OpenCryptoPayService {
       asset,
       targetAddress,
       submitUrl,
+      tokenAddress,
+      amountRaw,
+      dfxPaymentUrl: lnurlUrl,
+      decimals,
     }
+  }
+
+  // Build the DFX callback URL (/lnurlp/cb/:id) from the lnurlp URL (/lnurlp/:id).
+  // Prefer the callback advertised in the pay request when it points at /cb/.
+  private getDfxCallbackUrl(lnurlUrl: string, details: OCPPayRequest): string {
+    if (details.callback && details.callback.includes("/cb/")) {
+      return details.callback
+    }
+    return lnurlUrl.replace("/lnurlp/", "/lnurlp/cb/")
   }
 
   public async getQuote(
@@ -158,10 +184,12 @@ export class OpenCryptoPayService {
     if (isDfx) {
       return this.fetchDfxQuote(
         payInfo.url,
+        this.getDfxCallbackUrl(payInfo.url, payInfo.details),
         method,
         asset,
         payInfo.details.transferAmounts,
         decimals,
+        payInfo.details.quote?.id ?? "",
       )
     }
     return this.fetchQuote(payInfo.details.callback, amount, asset)
@@ -220,21 +248,32 @@ export class OpenCryptoPayService {
     quote: OCPQuote,
     identity: SignIdentity,
   ): Promise<OCPSubmitResponse> {
-    if (this.isQuoteExpired(quote)) {
-      throw new OCPQuoteExpiredError(quote.id, quote.expiresAt)
+    // Re-fetch the DFX quote right before signing so the on-chain activation is
+    // created on the actual quote we then reference in submit. DFX rotates its
+    // actual quote over time, so a quote captured at screen-load may no longer own
+    // the activation, which surfaces as "No matching activation for transaction".
+    const freshQuote = await this.refreshDfxQuote(quote)
+
+    if (this.isQuoteExpired(freshQuote)) {
+      throw new OCPQuoteExpiredError(freshQuote.id, freshQuote.expiresAt)
     }
 
-    if (!this.validateTargetAddress(quote.targetAddress, quote.method)) {
-      throw new OCPCurrencyNotSupportedError(quote.asset, quote.method)
+    if (
+      !this.validateTargetAddress(freshQuote.targetAddress, freshQuote.method)
+    ) {
+      throw new OCPCurrencyNotSupportedError(
+        freshQuote.asset,
+        freshQuote.method,
+      )
     }
 
-    const balance = await this.getBalanceForNetwork(quote.method, identity)
-    const requiredAmount = this.getRequiredAmount(quote)
+    const balance = await this.getBalanceForNetwork(freshQuote.method, identity)
+    const requiredAmount = this.getRequiredAmount(freshQuote)
     if (balance < requiredAmount) {
       throw new OCPInsufficientBalanceError(
         requiredAmount.toString(),
         balance.toString(),
-        quote.asset,
+        freshQuote.asset,
       )
     }
 
@@ -242,18 +281,41 @@ export class OpenCryptoPayService {
     let rawTx: string
 
     try {
-      const result = await this.signAndSend(quote, identity)
+      const result = await this.signAndSend(freshQuote, identity)
       txId = result.txId
       rawTx = result.rawTx
     } catch (e) {
       if (e instanceof OCPInsufficientBalanceError) throw e
       throw new OCPTransactionSignError(
-        quote.method,
+        freshQuote.method,
         e instanceof Error ? e : new Error(String(e)),
       )
     }
 
-    return this.submitToOCP(quote, txId, rawTx)
+    return this.submitToOCP(freshQuote, txId, rawTx)
+  }
+
+  // Re-fetch a fresh DFX quote (and re-create its activation) for the same payment
+  // link, so the activation and the ?quote= id used in submit stay consistent. For
+  // non-DFX flows there is nothing to refresh and the original quote is returned.
+  private async refreshDfxQuote(quote: OCPQuote): Promise<OCPQuote> {
+    if (!quote.dfxPaymentUrl) return quote
+    try {
+      const details = await this.getPaymentDetails(quote.dfxPaymentUrl)
+      return await this.fetchDfxQuote(
+        quote.dfxPaymentUrl,
+        this.getDfxCallbackUrl(quote.dfxPaymentUrl, details),
+        quote.method,
+        quote.asset,
+        details.transferAmounts,
+        quote.decimals ?? 18,
+        details.quote?.id ?? "",
+      )
+    } catch {
+      // If the refresh fails (network/parse), fall back to the existing quote
+      // rather than blocking the payment outright.
+      return quote
+    }
   }
 
   validateTargetAddress(address: string, network: OCPNetwork): boolean {
@@ -280,6 +342,10 @@ export class OpenCryptoPayService {
       case "Polygon":
       case "Arbitrum":
       case "Base":
+        // ERC-20: the transfer amount is drawn from the token balance, not native
+        // ETH. The native balance only needs to cover gas (enforced on-chain at
+        // broadcast), so don't treat the token amount as a native requirement here.
+        if (quote.tokenAddress) return BigInt(0)
         return parseUnits(quote.amount, 18) + parseUnits(quote.fee, 18)
       case "Bitcoin":
         return parseUnits(quote.amount, 8) + parseUnits(quote.fee, 8)
@@ -363,12 +429,21 @@ export class OpenCryptoPayService {
       case "Base": {
         const service = this.getEvmService(network)
         const from = await service.getAddress(identity)
-        const fee: SendEthFee = await service.getSendEthFee(
-          quote.targetAddress as Address,
-          from as Address,
-          quote.amount,
-        )
-        return formatUnits(fee.ethereumNetworkFee, 18)
+        const fee: SendEthFee =
+          quote.tokenAddress && quote.amountRaw
+            ? await service.getSendErc20Fee(
+                quote.tokenAddress as Address,
+                from as Address,
+                quote.targetAddress as Address,
+                quote.amountRaw,
+              )
+            : await service.getSendEthFee(
+                quote.targetAddress as Address,
+                from as Address,
+                quote.amount,
+              )
+        const bufferedFee = (fee.gasUsed * EVM_FEE_BUFFER_PCT) / BigInt(100)
+        return formatUnits(bufferedFee * fee.maxFeePerGas, 18)
       }
       case "Bitcoin": {
         try {
@@ -411,24 +486,76 @@ export class OpenCryptoPayService {
   ): Promise<{ txId: string; rawTx: string }> {
     const service = this.getEvmService(quote.method)
     const from = await service.getAddress(identity)
-    const fee = await service.getSendEthFee(
-      quote.targetAddress as Address,
-      from as Address,
-      quote.amount,
-    )
+    const chainId = OCP_NETWORK_TO_CHAIN_ID[quote.method]
+    const isErc20 = Boolean(quote.tokenAddress && quote.amountRaw)
 
-    const { response, signedTransaction } =
-      await service.sendEthTransactionWithRaw(
-        identity,
-        quote.targetAddress as Address,
-        quote.amount,
-        fee,
-        OCP_NETWORK_TO_CHAIN_ID[quote.method],
-      )
+    const fee = isErc20
+      ? await service.getSendErc20Fee(
+          quote.tokenAddress as Address,
+          from as Address,
+          quote.targetAddress as Address,
+          quote.amountRaw as string,
+        )
+      : await service.getSendEthFee(
+          quote.targetAddress as Address,
+          from as Address,
+          quote.amount,
+        )
+
+    const adjustedFee = this.adjustEvmFeeForDfx(fee, quote.fee)
+
+    const signedTransaction = isErc20
+      ? await service.signErc20Transaction(
+          identity,
+          quote.tokenAddress as Address,
+          quote.targetAddress as Address,
+          quote.amountRaw as string,
+          adjustedFee,
+          chainId,
+        )
+      : await service.signEthTransaction(
+          identity,
+          quote.targetAddress as Address,
+          quote.amount,
+          adjustedFee,
+          chainId,
+        )
 
     return {
-      txId: response.hash,
+      txId: "",
       rawTx: signedTransaction,
+    }
+  }
+
+  // DFX validates the hex fee as min(maxFeePerGas, liveGasPrice + maxPriorityFeePerGas)
+  // against a per-gas minimum (quote.fee, wei/gas). With maxPriorityFeePerGas = 0 the
+  // feeLimit collapses to the live gas price, which on L2s can dip below the minimum and
+  // fail validation. Lift both maxPriorityFeePerGas and maxFeePerGas above the buffered
+  // minimum so the check passes regardless of the live gas price at submit time.
+  private adjustEvmFeeForDfx(
+    fee: SendEthFee,
+    minFeeFormatted: string,
+  ): SendEthFee {
+    const minFeePerGas = parseUnits(minFeeFormatted, 18)
+    const bufferedMin = (minFeePerGas * EVM_FEE_BUFFER_PCT) / BigInt(100)
+
+    const maxPriorityFeePerGas =
+      fee.maxPriorityFeePerGas > bufferedMin
+        ? fee.maxPriorityFeePerGas
+        : bufferedMin
+    const maxFeePerGas =
+      fee.maxFeePerGas > maxPriorityFeePerGas
+        ? fee.maxFeePerGas
+        : maxPriorityFeePerGas
+    // Buffer the gas limit too so DFX's broadcast does not revert with out-of-gas.
+    const gasUsed = (fee.gasUsed * EVM_FEE_BUFFER_PCT) / BigInt(100)
+
+    return {
+      ...fee,
+      gasUsed,
+      maxPriorityFeePerGas,
+      maxFeePerGas,
+      ethereumNetworkFee: gasUsed * maxFeePerGas,
     }
   }
 
@@ -485,15 +612,22 @@ export class OpenCryptoPayService {
   private parseDfxUri(
     uri: string,
     decimals: number,
-  ): { targetAddress: string; amount: string } {
+  ): {
+    targetAddress: string
+    amount: string
+    tokenAddress?: string
+    amountRaw?: string
+  } {
     // ERC-20: ethereum:0xCONTRACT@chainId/transfer?address=0xRECIPIENT&uint256=AMOUNT
     const erc20Match = uri.match(
-      /^ethereum:0x[0-9a-fA-F]+(?:@\d+)?\/transfer\?address=(0x[0-9a-fA-F]+)&uint256=(\d+)/,
+      /^ethereum:(0x[0-9a-fA-F]+)(?:@\d+)?\/transfer\?address=(0x[0-9a-fA-F]+)&uint256=(\d+)/,
     )
     if (erc20Match) {
       return {
-        targetAddress: erc20Match[1],
-        amount: formatUnits(BigInt(erc20Match[2]), decimals),
+        tokenAddress: erc20Match[1],
+        targetAddress: erc20Match[2],
+        amount: formatUnits(BigInt(erc20Match[3]), decimals),
+        amountRaw: erc20Match[3],
       }
     }
 
@@ -534,7 +668,7 @@ export class OpenCryptoPayService {
   ): Promise<OCPSubmitResponse> {
     const base = submitBaseUrl ?? quote.submitUrl
     const url = new URL(base)
-    url.searchParams.set("quote", quote.id)
+    url.searchParams.set("quote", quote.quoteRef)
     url.searchParams.set("method", quote.method)
 
     switch (quote.method) {
@@ -567,6 +701,12 @@ export class OpenCryptoPayService {
       throw new OCPSubmitError(quote.id, body)
     } catch (e) {
       if (e instanceof OCPSubmitError) throw e
+      const isTimeout = e instanceof DOMException && e.name === "AbortError"
+      console.error(
+        isTimeout ? "OCP submit timeout" : "OCP submit network error",
+        url.toString(),
+        e,
+      )
       throw new OCPNetworkError(url.toString())
     } finally {
       clearTimeout(timeout)

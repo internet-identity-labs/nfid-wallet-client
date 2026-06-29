@@ -173,6 +173,9 @@ const EVM_NFTS_CACHE_TTL = 2 * 60 * 1000
 export const EVM_NFTS_CACHE_NAME = "EVM_NFTS_"
 export const EVM_BALANCE_CACHE_NAME = "EVM_BALANCE_"
 
+const ERC20_TRANSFER_IFACE = new Interface([
+  "function transfer(address to, uint256 amount)",
+])
 const ERC721_TRANSFER_IFACE = new Interface([
   "function safeTransferFrom(address from, address to, uint256 tokenId)",
 ])
@@ -914,6 +917,106 @@ export abstract class EVMService {
     )
     const response = await this.sendTransaction(signedTransaction)
     return { response, signedTransaction }
+  }
+
+  public async signEthTransaction(
+    identity: SignIdentity,
+    to: Address,
+    value: string,
+    gas: {
+      gasUsed: bigint
+      maxPriorityFeePerGas: bigint
+      maxFeePerGas: bigint
+      baseFeePerGas: bigint
+    },
+    chainId: ChainId,
+  ): Promise<string> {
+    const address = await this.getAddress(identity)
+    const nonce = await this.getTransactionCount(address)
+
+    const request: EthSignTransactionRequest = {
+      chain_id: BigInt(chainId),
+      to: to,
+      value: parseEther(value),
+      data: [],
+      nonce: BigInt(nonce),
+      gas: gas?.gasUsed,
+      max_priority_fee_per_gas: gas?.maxPriorityFeePerGas,
+      max_fee_per_gas: gas?.maxFeePerGas,
+    }
+
+    return chainFusionSignerService.ethSignTransaction(identity, request)
+  }
+
+  //estimate fee for an ERC-20 transfer(to, amount) call
+  public async getSendErc20Fee(
+    tokenAddress: Address,
+    from: Address,
+    to: Address,
+    amountRaw: string,
+  ): Promise<SendEthFee> {
+    const data = ERC20_TRANSFER_IFACE.encodeFunctionData("transfer", [
+      to,
+      BigInt(amountRaw),
+    ])
+
+    let gasUsed: bigint
+    try {
+      gasUsed = await this.estimateGas({ from, to: tokenAddress, data })
+    } catch {
+      gasUsed = BigInt(100_000)
+    }
+
+    const feeData = await this.getFeeData()
+    const maxPriorityFeePerGas =
+      feeData.maxPriorityFeePerGas ?? BigInt(2_000_000_000)
+    const maxFeePerGas =
+      feeData.maxFeePerGas ?? maxPriorityFeePerGas + BigInt(5_000_000_000)
+
+    const baseFee = await this.getBaseFee()
+
+    return {
+      gasUsed,
+      maxPriorityFeePerGas,
+      maxFeePerGas,
+      baseFeePerGas: baseFee,
+      ethereumNetworkFee: this.estimateTransaction(gasUsed, maxFeePerGas),
+    }
+  }
+
+  //sign (without broadcasting) an ERC-20 transfer(to, amount) call
+  public async signErc20Transaction(
+    identity: SignIdentity,
+    tokenAddress: Address,
+    to: Address,
+    amountRaw: string,
+    gas: {
+      gasUsed: bigint
+      maxPriorityFeePerGas: bigint
+      maxFeePerGas: bigint
+      baseFeePerGas: bigint
+    },
+    chainId: ChainId,
+  ): Promise<string> {
+    const address = await this.getAddress(identity)
+    const nonce = await this.getTransactionCount(address)
+    const data = ERC20_TRANSFER_IFACE.encodeFunctionData("transfer", [
+      to,
+      BigInt(amountRaw),
+    ])
+
+    const request: EthSignTransactionRequest = {
+      chain_id: BigInt(chainId),
+      to: tokenAddress,
+      value: BigInt(0),
+      data: [data],
+      nonce: BigInt(nonce),
+      gas: gas?.gasUsed,
+      max_priority_fee_per_gas: gas?.maxPriorityFeePerGas,
+      max_fee_per_gas: gas?.maxFeePerGas,
+    }
+
+    return chainFusionSignerService.ethSignTransaction(identity, request)
   }
 
   public async getNFTTransferFee(

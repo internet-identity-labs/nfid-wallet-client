@@ -1,4 +1,5 @@
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import { OCPQuote } from "frontend/integration/opencryptopay"
 
 import { Wallet } from "frontend/integration/wallet/hooks/use-all-wallets"
 
@@ -25,6 +26,7 @@ export enum ModalType {
   BRIDGE = "bridge",
   EARN = "earn",
   WITHDRAW = "withdraw",
+  PAY = "pay",
 }
 
 export interface SelectedToken {
@@ -63,6 +65,8 @@ export type TransferMachineContext = {
   tokenStandard: string
   isEarnUpdate: boolean
   withdrawBalance: bigint
+  openCryptoPayParams: string
+  openCryptoPayPreselect?: { method: string; asset: string }
   isOpenedFromVaults: boolean
   stakeId?: string
 }
@@ -74,6 +78,11 @@ export type Events =
   | { type: "CHANGE_DIRECTION"; data: ModalType | null }
   | { type: "ASSIGN_IS_EARN_UPDATE"; data: boolean | null }
   | { type: "ASSIGN_WITHDRAW_BALANCE"; data: bigint }
+  | {
+      type: "ASSIGN_OPEN_CRYPTOPAY_PARAMS"
+      data: string
+      preselect?: { method: string; asset: string }
+    }
   | { type: "ASSIGN_SOURCE_ACCOUNT"; data: Wallet }
   | { type: "ASSIGN_SOURCE_WALLET"; data: string }
   | { type: "ASSIGN_STAKE_ID"; data: string }
@@ -106,4 +115,14 @@ export interface FormValues {
 
 export interface NeuronFormValues {
   userNeuron: string
+}
+
+export interface PayData {
+  feeFormatted: string
+  feeUsdFormatted: string
+  amount: string
+  amountFormatted: string
+  amountUsdFormatted: string
+  targetAddress: string
+  quote: OCPQuote
 }

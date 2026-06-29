@@ -51,6 +51,10 @@ import { ProfileContext } from "frontend/provider"
 import { ttlCacheService } from "@nfid/client-db"
 import { STAKED_TOKENS_CACHE_NAME } from "frontend/integration/staking/service/staking-service-impl"
 import {
+  EARN_POSITIONS_CACHE_NAME,
+  AAVE_SUPPORTED_TOKENS_CACHE_NAME,
+} from "frontend/integration/aave/aave.service"
+import {
   EVM_ACTIVITIES_CACHE_NAME,
   EVM_ERC20_ACTIVITIES_CACHE_NAME,
 } from "frontend/integration/ethereum/evm-transaction.service"
@@ -379,6 +383,18 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
       case "Staking":
         await ttlCacheService.invalidate([STAKED_TOKENS_CACHE_NAME])
         await mutate("stakedTokens")
+        break
+      case "Earn":
+        await ttlCacheService.invalidate([
+          EARN_POSITIONS_CACHE_NAME,
+          AAVE_SUPPORTED_TOKENS_CACHE_NAME,
+        ])
+        await mutate("aaveSupportedTokens")
+        await mutate(
+          (key) =>
+            key === "earnPositions" ||
+            (Array.isArray(key) && key[0] === "earnPositions"),
+        )
         break
       case "Activity":
         await ttlCacheService.invalidate([

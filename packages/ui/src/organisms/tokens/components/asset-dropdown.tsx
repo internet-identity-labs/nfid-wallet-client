@@ -44,6 +44,10 @@ import { FT } from "frontend/integration/ft/ft"
 import { IProfileConstants } from ".."
 import { getUpdatedInitedTokens } from "frontend/features/transfer-modal/utils"
 import { SelectedToken } from "frontend/features/transfer-modal/types"
+import {
+  getCkErc20ByErc20Address,
+  isCkErc20Token,
+} from "@nfid/integration/token/ckerc20.config"
 
 type AssetDropdownProps = {
   token: FT
@@ -57,6 +61,8 @@ type AssetDropdownProps = {
   onConvertToCkEth: () => void
   onConvertToSepoliaEth: () => void
   onConvertToCkSepoliaEth: () => void
+  onConvertToErc20?: (tokenAddress: string) => void
+  onConvertToCkErc20?: (tokenAddress: string) => void
   onStakeClick: (value: SelectedToken) => void
   onBridgeClick: (value: SelectedToken) => void
   onEarnClick: (value: SelectedToken) => void
@@ -79,6 +85,8 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
   onConvertToCkEth,
   onConvertToSepoliaEth,
   onConvertToCkSepoliaEth,
+  onConvertToErc20,
+  onConvertToCkErc20,
   onStakeClick,
   onBridgeClick,
   onEarnClick,
@@ -213,6 +221,24 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
               isDarkTheme ? IconSvgConvertActionWhite : IconSvgConvertAction
             }
             handler={onConvertToSepoliaEth}
+          />
+        )}
+        {isCkErc20Token(token.getTokenAddress()) && (
+          <DropdownOption
+            label="Convert"
+            icon={
+              isDarkTheme ? IconSvgConvertActionWhite : IconSvgConvertAction
+            }
+            handler={() => onConvertToErc20?.(token.getTokenAddress())}
+          />
+        )}
+        {getCkErc20ByErc20Address(token.getTokenAddress()) && (
+          <DropdownOption
+            label="Convert"
+            icon={
+              isDarkTheme ? IconSvgConvertActionWhite : IconSvgConvertAction
+            }
+            handler={() => onConvertToCkErc20?.(token.getTokenAddress())}
           />
         )}
         {(token.getTokenCategory() === Category.Sns ||

@@ -61,7 +61,6 @@ export function getServiceConfig() {
       process.env.AWS_CONFIRM_DELETE_ACCOUNT,
     ),
     AWS_SIGNIN_GOOGLE_V2: JSON.stringify(process.env.AWS_SIGNIN_GOOGLE_V2),
-    AWS_SIGNATURE_EVENT: JSON.stringify(process.env.AWS_SIGNATURE_EVENT),
     AWS_PUBLIC_KEY: JSON.stringify(process.env.AWS_PUBLIC_KEY),
     SIGNIN_GOOGLE: JSON.stringify(
       process.env.FRONTEND_MODE === "production"
@@ -91,7 +90,6 @@ export function getServiceConfig() {
       process.env.CYCLES_MINTER_CANISTER_ID,
     ),
     VAULT_CANISTER_ID: JSON.stringify(process.env.VAULT_CANISTER_ID),
-    II_PROVIDER: JSON.stringify(process.env.II_PROVIDER),
     ECDSA_SIGNER_CANISTER_ID: JSON.stringify(
       process.env.ECDSA_SIGNER_CANISTER_ID,
     ),

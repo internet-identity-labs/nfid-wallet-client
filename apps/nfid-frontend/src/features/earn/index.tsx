@@ -1,11 +1,9 @@
 import { useActor } from "@xstate/react"
 import { Earn } from "packages/ui/src/organisms/earn"
 import { useContext, memo } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
 
 import { useSWRWithTimestamp } from "@nfid/swr"
 
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { ftService } from "frontend/integration/ft/ft-service"
 import { ProfileContext } from "frontend/provider"
 
@@ -16,7 +14,6 @@ import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/toke
 import { useSupplyPositions } from "frontend/hooks"
 
 const EarnPage = memo(() => {
-  const navigate = useNavigate()
   const {
     isViewOnlyMode,
     viewOnlyAddress,
@@ -24,12 +21,6 @@ const EarnPage = memo(() => {
     transferService,
   } = useContext(ProfileContext)
   const [, send] = useActor(transferService)
-  const { search } = useLocation()
-
-  const navigateWithSearch = (to: unknown) => {
-    if (typeof to === "string") return navigate({ pathname: to, search })
-    return navigate(to as never)
-  }
 
   const onEarnClick = (selectedToken?: SelectedToken) => {
     send({ type: "ASSIGN_VAULTS", data: false })
@@ -79,8 +70,6 @@ const EarnPage = memo(() => {
     <Earn
       isLoading={earnPositionsLoading}
       earnPositions={earnPositions}
-      links={ProfileConstants}
-      navigate={navigateWithSearch}
       tokens={supportedTokens}
       totalBalance={totalBalance}
       onEarnClick={isViewOnlyMode ? undefined : onEarnClick}

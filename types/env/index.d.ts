@@ -11,7 +11,6 @@ declare const AWS_ECDSA_GET_ANONYMOUS: string
 declare const AWS_EXECUTE_CANDID: string
 declare const AWS_ECDSA_SIGN: string
 declare const AWS_PASSKEY: string
-declare const AWS_SIGNATURE_EVENT: string
 declare const AWS_PUBLIC_KEY: string
 declare const AWS_SYMMETRIC: string
 declare const IC_SIGNER_CANISTER_ID: string
@@ -50,6 +49,8 @@ declare const AWS_LINK_GOOGLE_ACCOUNT: string
 declare const AWS_CHECK_VERIFICATION: string
 declare const AWS_VERIFY_EMAIL: string
 declare const AWS_APPROVE_LOGIN_IP: string
+declare const AWS_SEND_DELETE_ACCOUNT_EMAIL: string
+declare const AWS_CONFIRM_DELETE_ACCOUNT: string
 declare const NFID_WALLET_CLIENT_CANISTER: string
 declare const PATRON_CANISTER_ID: string
 declare const CHAIN_FUSION_SIGNER_CANISTER_ID: string

@@ -61,9 +61,12 @@ export const renderLink = (
   navigate: ReturnType<typeof useNavigate>,
   isDarkTheme: boolean,
   onOpenViewOnlyModal: () => void,
+  onOpenCryptopayModal: () => void,
 ) => {
   const isExternalLink = linkItem.id === "nav-knowledge-base"
-  const isModal = linkItem.id === "nav-view-only"
+  const isModal =
+    linkItem.id === "nav-view-only" || linkItem.id === "nav-open-cryptopay"
+  // const isOpenCryptopayModal = linkItem.id === "nav-open-cryptopay"
   const LinkComponent = isExternalLink ? "a" : "div"
   const linkProps = isExternalLink
     ? { href: linkItem.link, target: "_blank" }
@@ -75,7 +78,9 @@ export const renderLink = (
         }
       : {
           onClick: () => {
-            onOpenViewOnlyModal()
+            linkItem.id === "nav-open-cryptopay"
+              ? onOpenCryptopayModal()
+              : onOpenViewOnlyModal()
           },
         }
 

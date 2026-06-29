@@ -16,6 +16,10 @@ import {
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { FT } from "../ft/ft"
 import { ETH_NATIVE_ID, EVM_NATIVE } from "@nfid/integration/token/constants"
+import { ttlCacheService } from "@nfid/client-db"
+
+export const EARN_POSITIONS_CACHE_NAME = "EarnPositions"
+export const AAVE_SUPPORTED_TOKENS_CACHE_NAME = "AaveSupportedTokens"
 
 import { ethereumService } from "../ethereum/eth/ethereum.service"
 import { polygonService } from "../ethereum/polygon/polygon.service"
@@ -80,32 +84,63 @@ export class AaveService {
   async getSupportedTokens(
     tokens: FT[],
     chains: AaveSupportedChainId[],
+    refetch?: boolean,
   ): Promise<FT[]> {
-    const reservesByChain = await Promise.all(
-      chains.map(async (chainId) => {
-        const service = this.getEvmService(chainId)
-        const pool = new Contract(
-          this.getPoolAddress(chainId),
-          AAVE_POOL_ABI,
-          service["provider"],
+    return ttlCacheService.getOrFetch<FT[]>(
+      AAVE_SUPPORTED_TOKENS_CACHE_NAME,
+      async () => {
+        const reservesByChain = await Promise.all(
+          chains.map(async (chainId) => {
+            const service = this.getEvmService(chainId)
+            const pool = new Contract(
+              this.getPoolAddress(chainId),
+              AAVE_POOL_ABI,
+              service["provider"],
+            )
+            const list: string[] = await pool.getReservesList()
+            return [chainId, list.map((a) => a.toLowerCase())] as const
+          }),
         )
-        const list: string[] = await pool.getReservesList()
-        return [chainId, list.map((a) => a.toLowerCase())] as const
-      }),
-    )
-    const reserveMap = new Map(reservesByChain)
+        const reserveMap = new Map(reservesByChain)
 
-    return tokens.filter((t) => {
-      const chainId = t.getChainId() as AaveSupportedChainId
-      const reserves = reserveMap.get(chainId)
-      if (!reserves) return false
-      const addr = t.getTokenAddress()
-      const underlying =
-        addr === ETH_NATIVE_ID || addr === EVM_NATIVE
-          ? WRAPPED_NATIVE_TOKEN[chainId]?.toLowerCase()
-          : addr.toLowerCase()
-      return !!underlying && reserves.includes(underlying)
-    })
+        return tokens.filter((t) => {
+          const chainId = t.getChainId() as AaveSupportedChainId
+          const reserves = reserveMap.get(chainId)
+          if (!reserves) return false
+          const addr = t.getTokenAddress()
+          const underlying =
+            addr === ETH_NATIVE_ID || addr === EVM_NATIVE
+              ? WRAPPED_NATIVE_TOKEN[chainId]?.toLowerCase()
+              : addr.toLowerCase()
+          return !!underlying && reserves.includes(underlying)
+        })
+      },
+      300 * 1000,
+      {
+        forceRefetch: Boolean(refetch),
+        serialize: (fts) =>
+          JSON.stringify(
+            fts?.map((t) => ({
+              chainId: t.getChainId(),
+              address: t.getTokenAddress(),
+            })),
+          ),
+        deserialize: (stored) => {
+          const ids: Array<{ chainId: ChainId; address: string }> = JSON.parse(
+            stored as string,
+          )
+          return ids
+            .map((id) =>
+              tokens.find(
+                (t) =>
+                  t.getChainId() === id.chainId &&
+                  t.getTokenAddress() === id.address,
+              ),
+            )
+            .filter((t): t is FT => t !== undefined)
+        },
+      },
+    )
   }
 
   public async getReserveData(
@@ -140,36 +175,56 @@ export class AaveService {
     tokens: FT[],
     supportedChains: AaveSupportedChainId[],
     address: string,
+    refetch?: boolean,
   ): Promise<AaveUserPosition[]> {
-    const tokensByChain = new Map<AaveSupportedChainId, Map<string, FT>>()
-    for (const chain of supportedChains) {
-      tokensByChain.set(chain, new Map())
-    }
-    for (const token of tokens) {
-      const chainId = token.getChainId() as AaveSupportedChainId
-      if (!tokensByChain.has(chainId)) continue
-      const address = (
-        token.getTokenAddress() === ETH_NATIVE_ID ||
-        token.getTokenAddress() === EVM_NATIVE
-          ? WRAPPED_NATIVE_TOKEN[chainId]
-          : token.getTokenAddress()
-      ).toLowerCase()
-      const chainMap = tokensByChain.get(chainId)!
-      if (!chainMap.has(address)) chainMap.set(address, token)
-    }
+    return ttlCacheService.getOrFetch<AaveUserPosition[]>(
+      `${EARN_POSITIONS_CACHE_NAME}_${address}`,
+      async () => {
+        const tokensByChain = new Map<AaveSupportedChainId, Map<string, FT>>()
+        for (const chain of supportedChains) {
+          tokensByChain.set(chain, new Map())
+        }
+        for (const token of tokens) {
+          const chainId = token.getChainId() as AaveSupportedChainId
+          if (!tokensByChain.has(chainId)) continue
+          const tokenAddress = (
+            token.getTokenAddress() === ETH_NATIVE_ID ||
+            token.getTokenAddress() === EVM_NATIVE
+              ? WRAPPED_NATIVE_TOKEN[chainId]
+              : token.getTokenAddress()
+          ).toLowerCase()
+          const chainMap = tokensByChain.get(chainId)!
+          if (!chainMap.has(tokenAddress)) chainMap.set(tokenAddress, token)
+        }
 
-    const results = await Promise.all(
-      supportedChains.map(async (chainId, index) => {
-        await delay(index * 500)
-        return this.getPositionsForChain(
-          chainId,
-          tokensByChain.get(chainId)!,
-          address,
+        const results = await Promise.all(
+          supportedChains.map(async (chainId, index) => {
+            await delay(index * 500)
+            return this.getPositionsForChain(
+              chainId,
+              tokensByChain.get(chainId)!,
+              address,
+            )
+          }),
         )
-      }),
-    )
 
-    return results.flat()
+        return results.flat()
+      },
+      300 * 1000,
+      {
+        forceRefetch: Boolean(refetch),
+        serialize: (positions) =>
+          JSON.stringify(
+            positions?.map((p) => ({ ...p, balance: p.balance.toString() })),
+          ),
+        deserialize: (stored) => {
+          const data: Array<
+            Omit<AaveUserPosition, "balance"> & { balance: string }
+          > = JSON.parse(stored as string)
+          return data.map((p) => ({ ...p, balance: BigInt(p.balance) }))
+        },
+      },
+    )
   }
 
   private async getPositionsForChain(

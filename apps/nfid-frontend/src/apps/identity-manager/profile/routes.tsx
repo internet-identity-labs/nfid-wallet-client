@@ -1,5 +1,6 @@
 import { NavSecurityIcon } from "packages/ui/src/atoms/icons/nav-security"
 import { NavPermissionsIcon } from "packages/ui/src/atoms/icons/nav-permissions"
+import { NavOpenCryptopayIcon } from "packages/ui/src/atoms/icons/nav-open-cryptopay"
 import { NavDiscoveryIcon } from "packages/ui/src/atoms/icons/nav-discovery"
 import { NavVaultsIcon } from "packages/ui/src/atoms/icons/nav-vaults"
 import { NavWalletIcon } from "packages/ui/src/atoms/icons/nav-wallet"
@@ -63,6 +64,12 @@ export const navigationPopupLinks = [
     title: "Permissions",
     link: ProfileConstants.permissions,
     id: "nav-permissions",
+  },
+  {
+    icon: NavOpenCryptopayIcon,
+    title: "Open Cryptopay",
+    link: "",
+    id: "nav-open-cryptopay",
   },
   {
     icon: NavViewOnlyIcon,

@@ -13,6 +13,7 @@ import { INavigationPopupLinks } from "../profile-header"
 import { renderLink, shouldRenderLink } from "./renderLinks"
 import { ThemeSwitcher } from "./theme-switcher"
 import { ViewOnlyModal } from "./view-only-modal"
+import { OpenCryptopayModal } from "./open-cryptopay-modal"
 
 export interface IAuthenticatedPopup extends HTMLAttributes<HTMLDivElement> {
   onSignOut: () => void
@@ -49,6 +50,8 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
   const location = useLocation()
   const isDarkTheme = useDarkTheme()
   const [isViewOnlyModalOpen, setIsViewOnlyModalOpen] = useState(false)
+  const [isOpenCryptopayModalOpen, setIsOpenCryptopayModalOpen] =
+    useState(false)
 
   return (
     <AnimatePresence>
@@ -108,13 +111,21 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
                 ),
               )
               .map((linkItem) =>
-                renderLink(linkItem, navigate, isDarkTheme, () =>
-                  setIsViewOnlyModalOpen(true),
+                renderLink(
+                  linkItem,
+                  navigate,
+                  isDarkTheme,
+                  () => setIsViewOnlyModalOpen(true),
+                  () => setIsOpenCryptopayModalOpen(true),
                 ),
               )}
             <ViewOnlyModal
               isOpen={isViewOnlyModalOpen}
               onCLose={() => setIsViewOnlyModalOpen(false)}
+            />
+            <OpenCryptopayModal
+              isOpen={isOpenCryptopayModalOpen}
+              onCLose={() => setIsOpenCryptopayModalOpen(false)}
             />
             <div className="my-[8px] bg-gray-100 dark:bg-zinc-700 h-[1px]"></div>
             <div

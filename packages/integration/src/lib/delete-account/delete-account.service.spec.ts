@@ -128,6 +128,8 @@ describe("deleteAccountService", () => {
       .mockResolvedValueOnce({ ok: true, status: 200, text: async () => "{}" })
     global.fetch = fetchMock
 
+    const authSetSpy = jest.spyOn(authState, "set")
+
     // When RECOVERY_PHRASE step is executed first, then EMAIL step
     const plan = await deleteAccountService.getPlan()
     await deleteAccountService.prepareStep(plan)
@@ -141,8 +143,17 @@ describe("deleteAccountService", () => {
       "123456",
     )
 
-    // Then both steps were required in order, lambda received correct params, and the account is fully deleted after the last step
+    // Then both steps were required in order, the session identity was switched to the recovery identity
+    // after the seed phrase step, lambda received correct params, and the account is fully deleted
     const [[, sendOptions], [, confirmOptions]] = fetchMock.mock.calls
+    const { identity: signedInIdentity } = authSetSpy.mock.calls[0][0]
+    const signedInPrincipal = Principal.selfAuthenticating(
+      signedInIdentity!.getPublicKey().toDer(),
+    ).toText()
+    expect(authSetSpy).toHaveBeenCalledTimes(1)
+    expect(signedInPrincipal).toBe(recoveryPrincipal)
+    expect(signedInPrincipal).not.toBe(principal)
+
     expect(plan.steps).toEqual([
       DeletionMode.RECOVERY_PHRASE,
       DeletionMode.EMAIL,

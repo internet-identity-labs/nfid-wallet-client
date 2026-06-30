@@ -33,11 +33,11 @@ enum Sorting {
 
 export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   initedTokens: FT[]
-  allTokens: FT[]
-  isTokensLoading: boolean
-  profileConstants: IProfileConstants
-  onSubmitIcrc1Pair: (ledgerID: string, indexID: string) => Promise<void>
-  onFetch: (
+  allTokens?: FT[]
+  isTokensLoading?: boolean
+  profileConstants?: IProfileConstants
+  onSubmitIcrc1Pair?: (ledgerID: string, indexID: string) => Promise<void>
+  onFetch?: (
     ledgerID: string,
     indexID: string,
   ) => Promise<{
@@ -47,63 +47,71 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
     decimals: number
     fee: bigint
   }>
-  onSendClick: (value: SelectedToken) => void
-  onSwapClick: (value: SelectedToken) => void
-  onConvertToBtc: () => void
-  onConvertToCkBtc: () => void
-  onConvertToEth: () => void
-  onConvertToCkEth: () => void
-  onConvertToSepoliaEth: () => void
-  onConvertToCkSepoliaEth: () => void
-  onConvertToErc20: (tokenAddress: string) => void
-  onConvertToCkErc20: (tokenAddress: string) => void
-  onStakeClick: (value: SelectedToken) => void
-  onBridgeClick: (value: SelectedToken) => void
-  onEarnClick: (value: SelectedToken) => void
+  onSendClick?: (value: SelectedToken) => void
+  onSwapClick?: (value: SelectedToken) => void
+  onConvertToBtc?: () => void
+  onConvertToCkBtc?: () => void
+  onConvertToEth?: () => void
+  onConvertToCkEth?: () => void
+  onConvertToSepoliaEth?: () => void
+  onConvertToCkSepoliaEth?: () => void
+  onConvertToErc20?: (tokenAddress: string) => void
+  onConvertToCkErc20?: (tokenAddress: string) => void
+  onStakeClick?: (value: SelectedToken) => void
+  onBridgeClick?: (value: SelectedToken) => void
+  onEarnClick?: (value: SelectedToken) => void
   aaveTokens?: FT[]
-  hideZeroBalance: boolean
-  onZeroBalanceToggle: () => void
-  testnetEnabled: boolean
-  onTestnetToggle: () => void
-  arbitrumEnabled: boolean
-  onArbitrumToggle: () => void
-  baseEnabled: boolean
-  onBaseToggle: () => void
-  polygonEnabled: boolean
-  onPolygonToggle: () => void
+  hideZeroBalance?: boolean
+  onZeroBalanceToggle?: () => void
+  testnetEnabled?: boolean
+  onTestnetToggle?: () => void
+  arbitrumEnabled?: boolean
+  onArbitrumToggle?: () => void
+  baseEnabled?: boolean
+  onBaseToggle?: () => void
+  polygonEnabled?: boolean
+  onPolygonToggle?: () => void
+  isPrivateAccount?: boolean
 }
 
 export const Tokens: FC<TokensProps> = ({
   initedTokens,
-  allTokens,
-  isTokensLoading,
-  profileConstants,
-  onSubmitIcrc1Pair,
-  onFetch,
-  onSendClick,
-  onSwapClick,
-  onConvertToBtc,
-  onConvertToCkBtc,
-  onConvertToEth,
-  onConvertToCkEth,
-  onConvertToSepoliaEth,
-  onConvertToCkSepoliaEth,
-  onConvertToErc20,
-  onConvertToCkErc20,
-  onStakeClick,
-  onBridgeClick,
-  onEarnClick,
+  allTokens = [],
+  isTokensLoading = false,
+  profileConstants = { base: "/wallet", activity: "activity" },
+  onSubmitIcrc1Pair = async () => {},
+  onFetch = async () => ({
+    name: "",
+    symbol: "",
+    logo: undefined,
+    decimals: 0,
+    fee: BigInt(0),
+  }),
+  onSendClick = () => {},
+  onSwapClick = () => {},
+  onConvertToBtc = () => {},
+  onConvertToCkBtc = () => {},
+  onConvertToEth = () => {},
+  onConvertToCkEth = () => {},
+  onConvertToSepoliaEth = () => {},
+  onConvertToCkSepoliaEth = () => {},
+  onConvertToErc20 = () => {},
+  onConvertToCkErc20 = () => {},
+  onStakeClick = () => {},
+  onBridgeClick = () => {},
+  onEarnClick = () => {},
   aaveTokens,
-  hideZeroBalance,
-  onZeroBalanceToggle,
-  testnetEnabled,
-  onTestnetToggle,
-  arbitrumEnabled,
-  onArbitrumToggle,
-  baseEnabled,
-  onBaseToggle,
-  polygonEnabled,
-  onPolygonToggle,
+  hideZeroBalance = false,
+  onZeroBalanceToggle = () => {},
+  testnetEnabled = false,
+  onTestnetToggle = () => {},
+  arbitrumEnabled = false,
+  onArbitrumToggle = () => {},
+  baseEnabled = false,
+  onBaseToggle = () => {},
+  polygonEnabled = false,
+  onPolygonToggle = () => {},
+  isPrivateAccount = false,
 }) => {
   const [token, setToken] = useState<FT | undefined>()
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -184,19 +192,22 @@ export const Tokens: FC<TokensProps> = ({
   return (
     <>
       <div className="relative flex flex-col">
-        {!isViewOnlyMode && (
-          <div className={clsx("flex justify-end mb-1", isLoading && "hidden")}>
-            <ChainFilter
-              filter={filter}
-              setFilter={setFilter}
-              iconClassName="w-[24px] h-[24px]"
-            />
-            <IconCmpPortfolioOptions
-              className="ml-5 w-[24px] h-[24px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white bg-transparent"
-              onClick={() => setIsModalOpen(true)}
-            />
-          </div>
-        )}
+        {!isViewOnlyMode ||
+          (!isPrivateAccount && (
+            <div
+              className={clsx("flex justify-end mb-1", isLoading && "hidden")}
+            >
+              <ChainFilter
+                filter={filter}
+                setFilter={setFilter}
+                iconClassName="w-[24px] h-[24px]"
+              />
+              <IconCmpPortfolioOptions
+                className="ml-5 w-[24px] h-[24px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white bg-transparent"
+                onClick={() => setIsModalOpen(true)}
+              />
+            </div>
+          ))}
         <div className="mb-[20px] overflow-x-auto scrollbar scrollbar-w-4 scrollbar-thumb-gray-300 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
           <table className="w-full text-left">
             <thead className="text-secondary dark:text-zinc-500 h-[40px] hidden md:table-header-group">
@@ -264,22 +275,24 @@ export const Tokens: FC<TokensProps> = ({
                     onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
                     onConvertToErc20={onConvertToErc20}
                     onConvertToCkErc20={onConvertToCkErc20}
+                    isPrivateAccount={isPrivateAccount}
                   />
                 ))
               )}
             </tbody>
           </table>
         </div>
-        {!isViewOnlyMode && (
-          <ManageTokens
-            className="mx-auto w-fit"
-            tokens={allTokens}
-            onSubmitIcrc1Pair={onSubmitIcrc1Pair}
-            onFetch={onFetch}
-            setLoadingToken={setLoadingToken}
-            manageBtnDisabled={isLoading}
-          />
-        )}
+        {!isViewOnlyMode ||
+          (!isPrivateAccount && (
+            <ManageTokens
+              className="mx-auto w-fit"
+              tokens={allTokens}
+              onSubmitIcrc1Pair={onSubmitIcrc1Pair}
+              onFetch={onFetch}
+              setLoadingToken={setLoadingToken}
+              manageBtnDisabled={isLoading}
+            />
+          ))}
         <PortfolioOptions
           isOpen={isModalOpen}
           setIsOpen={setIsModalOpen}

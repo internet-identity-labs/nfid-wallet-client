@@ -19,6 +19,8 @@ import { A } from "../../atoms/custom-link"
 import useWindowSize from "../../utils/use-window-size"
 import { DiscoverySkeleton } from "../../atoms/skeleton/discovery-skeleton"
 
+import DiscoveryPlaceholder from "./assets/discovery-placeholder.jpg"
+
 enum DiscoverySorting {
   NAME = "NAME",
   USERS = "USERS",
@@ -166,15 +168,12 @@ export const Discovery: FC<DiscoveryProps> = ({ discoveryApps, isLoading }) => {
                     "group hover:shadow-[0px_2px_15px_rgba(0,0,0,0.1)] dark:hover:bg-zinc-700 transition-all",
                   )}
                 >
-                  <div className="rounded-[12px] overflow-hidden relative h-[175px]">
+                  <div className="rounded-[12px] overflow-hidden relative">
                     <ImageWithFallback
                       alt={app.name}
                       src={`${app.image || "#"}`}
-                      fallbackSrc={IconNftPlaceholder}
-                      className={clsx(
-                        "w-full h-full",
-                        app.image ? "object-cover" : "object-contain",
-                      )}
+                      fallbackSrc={DiscoveryPlaceholder}
+                      className="w-full h-full object-cover aspect-[335/175]"
                     />
                     {app.desc && (
                       <div
@@ -195,7 +194,7 @@ export const Discovery: FC<DiscoveryProps> = ({ discoveryApps, isLoading }) => {
                   </div>
                   <div className="px-2.5 pt-3 pb-[15px]">
                     <div className="flex justify-between items-center mb-1 gap-2.5">
-                      <span className="text-sm font-bold leading-5 dark:text-white">
+                      <span className="text-sm font-bold leading-5 dark:text-white max-w-[80%] overflow-hidden text-ellipsis whitespace-nowrap">
                         {app.name}
                       </span>
                       <div className="flex items-center gap-[6px]">

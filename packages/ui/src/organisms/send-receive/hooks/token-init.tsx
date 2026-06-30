@@ -19,7 +19,10 @@ import { ProfileContext } from "frontend/provider"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { useUserPrefs } from "frontend/hooks/user-prefs"
 
-export const useTokensInit = (tokens: FT[] | undefined) => {
+export const useTokensInit = (
+  tokens: FT[] | undefined,
+  privateAccount?: string,
+) => {
   const { isEthAddressLoading } = useEthAddress()
   const { isBtcAddressLoading } = useBtcAddress()
   const {
@@ -49,7 +52,9 @@ export const useTokensInit = (tokens: FT[] | undefined) => {
   const [state] = useActor(transferService)
 
   const addressesReady =
-    isViewOnlyMode || (!isBtcAddressLoading && !isEthAddressLoading)
+    isViewOnlyMode ||
+    Boolean(privateAccount) ||
+    (!isBtcAddressLoading && !isEthAddressLoading)
 
   const {
     data: initedTokens,
@@ -58,8 +63,8 @@ export const useTokensInit = (tokens: FT[] | undefined) => {
   } = useSWRWithTimestamp(
     // TODO: do not block all the tokens if there is no eth/btc address!
     addressesReady && activeTokens && activeTokens.length > 0
-      ? isViewOnlyMode
-        ? ["initedTokens", viewOnlyAddress]
+      ? isViewOnlyMode || Boolean(privateAccount)
+        ? ["initedTokens", viewOnlyAddress || privateAccount]
         : "initedTokens"
       : null,
     async () => {
@@ -75,6 +80,8 @@ export const useTokensInit = (tokens: FT[] | undefined) => {
           principal = Principal.anonymous()
           viewOnlyAddressOverride = viewOnlyAddress!
         }
+      } else if (Boolean(privateAccount)) {
+        principal = Principal.fromText(privateAccount!)
       } else {
         const { publicKey } = authState.getUserIdData()
         principal = Principal.fromText(publicKey)
@@ -83,7 +90,7 @@ export const useTokensInit = (tokens: FT[] | undefined) => {
       return ftService.getInitedTokens(
         activeTokens,
         principal,
-        Boolean(isViewOnlyMode),
+        Boolean(isViewOnlyMode) || Boolean(privateAccount),
         viewOnlyAddressOverride,
       )
     },
@@ -96,10 +103,14 @@ export const useTokensInit = (tokens: FT[] | undefined) => {
       keepPreviousData: true,
       onSuccess: () => {
         mutateData(
-          isViewOnlyMode ? ["ftUsdValue", viewOnlyAddress] : "ftUsdValue",
+          isViewOnlyMode || privateAccount
+            ? ["ftUsdValue", viewOnlyAddress || privateAccount]
+            : "ftUsdValue",
         )
         mutateData(
-          isViewOnlyMode ? ["fullUsdValue", viewOnlyAddress] : "fullUsdValue",
+          isViewOnlyMode || privateAccount
+            ? ["fullUsdValue", viewOnlyAddress || privateAccount]
+            : "fullUsdValue",
         )
       },
     },

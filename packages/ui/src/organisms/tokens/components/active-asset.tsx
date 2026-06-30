@@ -41,6 +41,7 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   baseEnabled?: boolean
   polygonEnabled?: boolean
   aaveTokens?: FT[]
+  isPrivateAccount?: boolean
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
@@ -69,6 +70,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   baseEnabled,
   polygonEnabled,
   aaveTokens,
+  isPrivateAccount = false,
   ...props
 }) => {
   const [isTokenProcessed, setIsTokenProcessed] = useState(false)
@@ -191,7 +193,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         className="w-[24px] min-w-[30px] lg:min-w-[50px] lg:ps-[25px]"
         id={`${token.getTokenName()}_options`}
       >
-        {!isViewOnlyMode && (
+        {!isViewOnlyMode && !isPrivateAccount && (
           <AssetDropdown
             token={token}
             tokens={tokens}

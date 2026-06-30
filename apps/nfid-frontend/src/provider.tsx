@@ -1,6 +1,6 @@
 import * as RadixTooltip from "@radix-ui/react-tooltip"
 import { useInterpret } from "@xstate/react"
-import React, { createContext } from "react"
+import React, { createContext, useState } from "react"
 import { HelmetProvider } from "react-helmet-async"
 import { ParallaxProvider } from "react-scroll-parallax"
 
@@ -31,10 +31,14 @@ export const ProfileContext = createContext({
   isViewOnlyMode: false,
   viewOnlyAddress: null as string | null,
   viewOnlyAddressType: null as ViewOnlyAddressType,
+  isOpenCryptopayModalOpen: false,
+  setIsOpenCryptopayModalOpen: (_: boolean) => {},
 })
 
 export const Provider: React.FC<ProviderProps> = ({ children }) => {
   const transferService: TransferMachineActor = useInterpret(transferMachine)
+  const [isOpenCryptopayModalOpen, setIsOpenCryptopayModalOpen] =
+    useState(false)
   const viewOnlyAddress = new URLSearchParams(window.location.search).get(
     "viewOnly",
   )
@@ -50,6 +54,8 @@ export const Provider: React.FC<ProviderProps> = ({ children }) => {
             isViewOnlyMode,
             viewOnlyAddress,
             viewOnlyAddressType,
+            isOpenCryptopayModalOpen,
+            setIsOpenCryptopayModalOpen,
           }}
         >
           <RadixTooltip.Provider>{children}</RadixTooltip.Provider>

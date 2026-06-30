@@ -86,6 +86,7 @@ import AddressBookBannerBg from "../assets/address-book-banner.png"
 
 interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   pageTitle?: string
+  pageDescription?: string
   icon?: string
   showBackButton?: boolean
   onIconClick?: () => void
@@ -105,6 +106,7 @@ interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
 
 const ProfileTemplate: FC<IProfileTemplate> = ({
   pageTitle,
+  pageDescription,
   icon,
   showBackButton,
   onIconClick,
@@ -134,10 +136,18 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     ),
   )
 
+  const isPrivateAccDetails = Boolean(
+    useMatch(
+      `${ProfileConstants.privateAccounts}/${ProfileConstants.privateAccountsDetails}`,
+    ),
+  )
+
   const handleNavigateBack = () => {
-    const pathname = !isNftDetails
-      ? `${ProfileConstants.base}/${ProfileConstants.tokens}`
-      : `${ProfileConstants.base}/${ProfileConstants.nfts}`
+    const pathname = isNftDetails
+      ? `${ProfileConstants.base}/${ProfileConstants.nfts}`
+      : isPrivateAccDetails
+        ? `${ProfileConstants.privateAccounts}`
+        : `${ProfileConstants.base}/${ProfileConstants.tokens}`
     navigate({ pathname, search: location.search })
   }
 
@@ -550,7 +560,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
           <div
             className={clsx(
               "flex justify-between items-center leading-[40px]",
-              showBackButton && "mb-[30px]",
+              showBackButton && !pageDescription && "mb-[30px]",
             )}
           >
             <div className="sticky left-0 flex items-center space-x-2">
@@ -564,7 +574,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
               )}
               <p
                 className={clsx(
-                  "text-[28px] leading-[32px] block",
+                  "text-[28px] leading-[32px] block dark:text-white",
                   titleClassNames,
                 )}
                 id={"page_title"}
@@ -585,6 +595,11 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
             )}
             {headerMenu}
           </div>
+          {pageDescription && (
+            <div className="text-sm mt-[11px] leading-5 dark:text-white pl-[64px]">
+              {pageDescription}
+            </div>
+          )}
           {isWallet && (
             <>
               <ProfileInfo

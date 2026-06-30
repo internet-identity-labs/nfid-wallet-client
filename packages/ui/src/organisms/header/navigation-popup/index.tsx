@@ -1,7 +1,8 @@
 import clsx from "clsx"
 import { AnimatePresence, motion } from "framer-motion"
 import { NavDisconnectIcon } from "packages/ui/src/atoms/icons/nav-disconnect"
-import { HTMLAttributes, FC, useState } from "react"
+import { HTMLAttributes, FC, useState, useContext } from "react"
+import { ProfileContext } from "frontend/provider"
 import { useNavigate, useLocation } from "react-router-dom"
 
 import { Skeleton } from "@nfid-frontend/ui"
@@ -50,101 +51,103 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
   const location = useLocation()
   const isDarkTheme = useDarkTheme()
   const [isViewOnlyModalOpen, setIsViewOnlyModalOpen] = useState(false)
-  const [isOpenCryptopayModalOpen, setIsOpenCryptopayModalOpen] =
-    useState(false)
+  const { isOpenCryptopayModalOpen, setIsOpenCryptopayModalOpen } =
+    useContext(ProfileContext)
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          key="AuthenticatedPopup"
-          className={clsx(
-            "z-40 w-[340px] absolute right-0 top-[30px] bg-white dark:bg-zinc-800 p-[20px]",
-            "shadow-xl rounded-[24px] flex flex-col justify-between",
-          )}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5, ease: "easeInOut" }}
-        >
-          <ThemeSwitcher
-            walletTheme={walletTheme}
-            setWalletTheme={setWalletTheme}
-          />
-          <div className="mb-[16px]">
-            <div
-              className={clsx(
-                "flex items-center justify-center bg-gray-50 dark:bg-zinc-900 h-[50px] rounded-[12px]",
-                "text-xs text-gray-500 dark:text-zinc-400",
-              )}
-              id="nfid-anchor"
-            >
-              NFID number:{" "}
-              {anchor || (
-                <Skeleton className="h-5 ml-1 w-[72px] rounded-[6px]" />
-              )}
-            </div>
-          </div>
-          <div>
-            {isLanding ? (
+    <>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            key="AuthenticatedPopup"
+            className={clsx(
+              "z-40 w-[340px] absolute right-0 top-[30px] bg-white dark:bg-zinc-800 p-[20px]",
+              "shadow-xl rounded-[24px] flex flex-col justify-between",
+            )}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+          >
+            <ThemeSwitcher
+              walletTheme={walletTheme}
+              setWalletTheme={setWalletTheme}
+            />
+            <div className="mb-[16px]">
               <div
                 className={clsx(
-                  "w-full h-10 text-center border-t border-gray-200 dark:border-gray-700 leading-10",
-                  "hover:bg-gray-100 dark:hover:bg-red-600 cursor-pointer text-sm",
+                  "flex items-center justify-center bg-gray-50 dark:bg-zinc-900 h-[50px] rounded-[12px]",
+                  "text-xs text-gray-500 dark:text-zinc-400",
                 )}
-                id="#profileButton"
-                onClick={() => {
-                  if (!assetsLink) return
-                  navigate(assetsLink)
-                }}
+                id="nfid-anchor"
               >
-                NFID Profile
+                NFID number:{" "}
+                {anchor || (
+                  <Skeleton className="h-5 ml-1 w-[72px] rounded-[6px]" />
+                )}
               </div>
-            ) : null}
-            {links
-              .filter((linkItem) =>
-                shouldRenderLink(
-                  linkItem,
-                  hasVaults!,
-                  location,
-                  profileConstants,
-                ),
-              )
-              .map((linkItem) =>
-                renderLink(
-                  linkItem,
-                  navigate,
-                  isDarkTheme,
-                  () => setIsViewOnlyModalOpen(true),
-                  () => setIsOpenCryptopayModalOpen(true),
-                ),
-              )}
-            <ViewOnlyModal
-              isOpen={isViewOnlyModalOpen}
-              onCLose={() => setIsViewOnlyModalOpen(false)}
-            />
-            <OpenCryptopayModal
-              isOpen={isOpenCryptopayModalOpen}
-              onCLose={() => setIsOpenCryptopayModalOpen(false)}
-            />
-            <div className="my-[8px] bg-gray-100 dark:bg-zinc-700 h-[1px]"></div>
-            <div
-              id="nav-logout"
-              className={clsx(
-                "flex items-center gap-[10px] h-[40px] px-[10px] rounded-[12px]",
-                "hover:bg-gray-50 dark:hover:bg-darkGrayHover/60 cursor-pointer text-sm block text-black dark:text-white font-semibold",
-              )}
-              onClick={onSignOut}
-            >
-              <NavDisconnectIcon
-                strokeColor={isDarkTheme ? "white" : "black"}
-              />
-              Disconnect
             </div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+            <div>
+              {isLanding ? (
+                <div
+                  className={clsx(
+                    "w-full h-10 text-center border-t border-gray-200 dark:border-gray-700 leading-10",
+                    "hover:bg-gray-100 dark:hover:bg-red-600 cursor-pointer text-sm",
+                  )}
+                  id="#profileButton"
+                  onClick={() => {
+                    if (!assetsLink) return
+                    navigate(assetsLink)
+                  }}
+                >
+                  NFID Profile
+                </div>
+              ) : null}
+              {links
+                .filter((linkItem) =>
+                  shouldRenderLink(
+                    linkItem,
+                    hasVaults!,
+                    location,
+                    profileConstants,
+                  ),
+                )
+                .map((linkItem) =>
+                  renderLink(
+                    linkItem,
+                    navigate,
+                    isDarkTheme,
+                    () => setIsViewOnlyModalOpen(true),
+                    () => setIsOpenCryptopayModalOpen(true),
+                  ),
+                )}
+              <ViewOnlyModal
+                isOpen={isViewOnlyModalOpen}
+                onCLose={() => setIsViewOnlyModalOpen(false)}
+              />
+              <div className="my-[8px] bg-gray-100 dark:bg-zinc-700 h-[1px]"></div>
+              <div
+                id="nav-logout"
+                className={clsx(
+                  "flex items-center gap-[10px] h-[40px] px-[10px] rounded-[12px]",
+                  "hover:bg-gray-50 dark:hover:bg-darkGrayHover/60 cursor-pointer text-sm block text-black dark:text-white font-semibold",
+                )}
+                onClick={onSignOut}
+              >
+                <NavDisconnectIcon
+                  strokeColor={isDarkTheme ? "white" : "black"}
+                />
+                Disconnect
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <OpenCryptopayModal
+        isOpen={isOpenCryptopayModalOpen}
+        onCLose={() => setIsOpenCryptopayModalOpen(false)}
+      />
+    </>
   )
 }
 

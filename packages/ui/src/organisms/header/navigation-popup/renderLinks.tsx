@@ -66,7 +66,6 @@ export const renderLink = (
   const isExternalLink = linkItem.id === "nav-knowledge-base"
   const isModal =
     linkItem.id === "nav-view-only" || linkItem.id === "nav-open-cryptopay"
-  // const isOpenCryptopayModal = linkItem.id === "nav-open-cryptopay"
   const LinkComponent = isExternalLink ? "a" : "div"
   const linkProps = isExternalLink
     ? { href: linkItem.link, target: "_blank" }

@@ -40,4 +40,7 @@ Icon
 
 # Storybook
 doctor-storybook.log
-.claude
+
+# Anthropic
+CLAUDE.local.md
+.claude/settings.local.json

@@ -1,10 +1,13 @@
 import { Principal } from "@icp-sdk/core/principal"
+import { DelegationIdentity } from "@icp-sdk/core/identity"
 
 import { AccountResponse } from "../../_ic_api/identity_manager.d"
 import {
   fromMnemonicWithoutValidation,
   IC_DERIVATION_PATH,
 } from "../../internet-identity/ed25519"
+import { requestFEDelegationChain } from "../../authentication/frontend-delegation"
+import { authState } from "../../authentication/auth-state"
 import { hasOwnProperty } from "../../test-utils"
 import { DeletionStepService } from "../dto/deletion-step-service.dto"
 import { DeletionMode } from "../enum/deletion-mode.enum"
@@ -44,6 +47,20 @@ export const recoveryPhraseDeletionService: DeletionStepService = {
 
       if (derivedPrincipal !== recoveryAccessPoint.principal_id)
         throw new IncorrectSeedPhraseError()
+
+      const { sessionKey, chain } = await requestFEDelegationChain(identity)
+
+      const delegationIdentity = DelegationIdentity.fromDelegation(
+        sessionKey,
+        chain,
+      )
+
+      await authState.set({
+        identity,
+        delegationIdentity,
+        chain,
+        sessionKey,
+      })
     } catch (error) {
       if (error instanceof IncorrectSeedPhraseError) throw error
       throw new DeletionError(

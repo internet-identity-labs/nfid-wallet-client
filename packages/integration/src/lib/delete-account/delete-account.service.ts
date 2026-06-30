@@ -36,16 +36,17 @@ export const deleteAccountService: DeleteAccountService = {
     try {
       const { data } = await im.get_account()
       const account = data[0]!
+      const steps: DeletionMode[] = []
 
-      const steps = (
-        await Promise.all(
-          [...stepServices.entries()]
-            .filter(([mode]) => mode !== DeletionMode.DEFAULT)
-            .map(async ([mode, service]) =>
-              (await service.isApplicable(account)) ? [mode] : [],
-            ),
-        )
-      ).flat()
+      if (await passkeyDeletionService.isApplicable(account)) {
+        steps.push(DeletionMode.PASSKEY)
+      } else if (await recoveryPhraseDeletionService.isApplicable(account)) {
+        steps.push(DeletionMode.RECOVERY_PHRASE)
+      }
+
+      if (await emailDeletionService.isApplicable(account)) {
+        steps.push(DeletionMode.EMAIL)
+      }
 
       return {
         steps: steps.length ? steps : [DeletionMode.DEFAULT],

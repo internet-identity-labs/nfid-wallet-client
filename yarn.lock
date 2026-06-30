@@ -2087,6 +2087,11 @@
     "@eslint/core" "^0.17.0"
     levn "^0.4.1"
 
+"@fancyapps/ui@^6.1.14":
+  version "6.1.14"
+  resolved "https://registry.yarnpkg.com/@fancyapps/ui/-/ui-6.1.14.tgz#7f06650f7e2a62d8e0c221b3665b84e23e276f19"
+  integrity sha512-cBV73XXHrc0qMca+PJJ6qay3xweIgsoYse13rGRstgUs0xA5WAv1tgbSzPCIOOjiLs2S2jiVFJxyszgvgyfxMg==
+
 "@ffmpeg-installer/darwin-arm64@4.1.5":
   version "4.1.5"
   resolved "https://registry.yarnpkg.com/@ffmpeg-installer/darwin-arm64/-/darwin-arm64-4.1.5.tgz#b7b5c262dd96d1aea4807514e1cdcf6e11f82743"

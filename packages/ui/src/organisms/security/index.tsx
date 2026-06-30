@@ -12,6 +12,7 @@ export interface SecurityProps {
   addPasskeyElement: JSX.Element
   renderPasskeys: () => JSX.Element
   renderRecoveryOptions: () => JSX.Element
+  renderRemoveAccount: () => JSX.Element
   showCreatePasskeyOnCanister?: string
 }
 
@@ -21,6 +22,7 @@ export const Security: FC<SecurityProps> = ({
   addPasskeyElement,
   renderPasskeys,
   renderRecoveryOptions,
+  renderRemoveAccount,
   showCreatePasskeyOnCanister,
 }) => {
   return (
@@ -99,6 +101,16 @@ export const Security: FC<SecurityProps> = ({
         subTitle="Access your account even if you lose access to all other authentication factors."
       >
         {renderRecoveryOptions()}
+      </ProfileContainer>
+      <ProfileContainer
+        className="mt-[20px] mb-[120px] sm:my-[30px] p-[20px] sm:p-[30px] dark:text-white !border-red-200"
+        innerClassName="!px-0"
+        titleClassName="!px-0 text-red-600"
+        subtitleClassName="!text-red-500"
+        title="Remove account"
+        subTitle="You will permanently lose access to this account, all crypto assets stored inside it, and any active funds connected to external dApps."
+      >
+        {renderRemoveAccount()}
       </ProfileContainer>
     </>
   )

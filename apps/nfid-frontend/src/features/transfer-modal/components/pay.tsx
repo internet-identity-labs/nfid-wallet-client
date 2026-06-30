@@ -1,6 +1,14 @@
 import BigNumber from "bignumber.js"
 import { PayUi } from "packages/ui/src/organisms/send-receive/components/pay"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react"
+import { ProfileContext } from "frontend/provider"
 import { FormProvider, useForm } from "react-hook-form"
 import {
   CKETH_LEDGER_CANISTER_ID,
@@ -50,6 +58,7 @@ export const Pay = ({
   onError,
   setIsPaySuccess,
 }: PayProps) => {
+  const { setIsOpenCryptopayModalOpen } = useContext(ProfileContext)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [status, setStatus] = useState(SendStatus.PENDING)
   const [error, setError] = useState<string | undefined>()
@@ -353,6 +362,10 @@ export const Pay = ({
           quoteError={quoteError}
           tokens={filteredTokens}
           isInsufficientBalance={isInsufficientBalance}
+          onTryAgain={() => {
+            onClose()
+            setIsOpenCryptopayModalOpen(true)
+          }}
         />
       </FormProvider>
     </>

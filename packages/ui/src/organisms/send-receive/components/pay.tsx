@@ -22,6 +22,10 @@ import { ChooseToToken } from "./choose-to-token"
 import { PaySuccessUi } from "./pay-success"
 import { DEFAULT_PAY_ERROR } from "frontend/features/transfer-modal/components/pay"
 
+import PaymentDetailsErrorImg from "../assets/payment-details-error.png"
+import PaymentDetailsErrorDarkImg from "../assets/payment-details-error-dark.png"
+import { useDarkTheme } from "frontend/hooks"
+
 export interface PayUiProps {
   token: FT | undefined
   submit: () => void
@@ -37,6 +41,7 @@ export interface PayUiProps {
   isPayDataLoading: boolean
   tokens?: FT[]
   isInsufficientBalance?: boolean
+  onTryAgain?: () => void
 }
 
 export const PayUi: FC<PayUiProps> = ({
@@ -54,8 +59,10 @@ export const PayUi: FC<PayUiProps> = ({
   isPayDataLoading,
   tokens,
   isInsufficientBalance,
+  onTryAgain,
 }) => {
   const [isResponsive, setIsResponsive] = useState(false)
+  const isDarkTheme = useDarkTheme()
 
   const isDisabled =
     isPayDataLoading ||
@@ -65,8 +72,29 @@ export const PayUi: FC<PayUiProps> = ({
 
   if (paymentDetailsError)
     return (
-      <div className="absolute top-0 bottom-0 left-0 right-0 flex items-center justify-center p-5 text-center text-red-600">
-        {DEFAULT_PAY_ERROR}
+      <div className="absolute top-0 bottom-0 left-0 right-0 p-5">
+        <div className="leading-10 text-[20px] font-bold">
+          {DEFAULT_PAY_ERROR}
+        </div>
+        <img
+          src={
+            isDarkTheme ? PaymentDetailsErrorDarkImg : PaymentDetailsErrorImg
+          }
+          alt="Payment error"
+          className="block my-5 mx-auto max-h-[200px]"
+        />
+        <div className="mb-5 dark:text-white">
+          Please ensure you are scanning a valid Open CryptoPay QR code and try
+          again.
+        </div>
+        <div className="flex gap-2.5">
+          <Button type="stroke" className="w-full" onClick={onClose}>
+            Close
+          </Button>
+          <Button className="w-full" onClick={onTryAgain}>
+            Try again
+          </Button>
+        </div>
       </div>
     )
 

@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useState } from "react"
+import { FC, useCallback, useContext, useEffect, useState } from "react"
 import clsx from "clsx"
 import { useDarkTheme } from "frontend/hooks"
 import ScanQrInfo from "../assets/scan-qr-info.png"
@@ -31,6 +31,14 @@ export const OpenCryptopayModal: FC<OpenCryptopayModalProps> = ({
   const { transferService } = useContext(ProfileContext)
   const [, send] = useActor(transferService)
   const [incorrectLinkError, setIncorrectLinkError] = useState(false)
+
+  useEffect(() => {
+    if (!isOpen) {
+      setIsInfoScreen(false)
+      setManualInput("")
+      setIncorrectLinkError(false)
+    }
+  }, [isOpen])
 
   const openPayScreen = useCallback(
     (value: string) => {

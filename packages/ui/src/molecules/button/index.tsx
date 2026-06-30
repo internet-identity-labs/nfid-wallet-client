@@ -1,7 +1,7 @@
 import clsx from "clsx"
 import React from "react"
 
-type ButtonType = "primary" | "secondary" | "stroke" | "ghost" | "red"
+export type ButtonType = "primary" | "secondary" | "stroke" | "ghost" | "red"
 
 export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   block?: boolean

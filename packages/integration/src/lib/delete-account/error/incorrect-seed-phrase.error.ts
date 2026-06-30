@@ -5,7 +5,7 @@ export class IncorrectSeedPhraseError extends DeletionError {
   constructor(message?: string) {
     super(
       DeletionMode.RECOVERY_PHRASE,
-      false,
+      true,
       message ?? "Invalid recovery phrase",
     )
   }

@@ -193,36 +193,35 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         className="w-[24px] min-w-[30px] lg:min-w-[50px] lg:ps-[25px]"
         id={`${token.getTokenName()}_options`}
       >
-        {!isViewOnlyMode ||
-          (!isPrivateAccount && (
-            <AssetDropdown
-              token={token}
-              tokens={tokens}
-              profileConstants={profileConstants}
-              onSendClick={onSendClick}
-              onSwapClick={onSwapClick}
-              onConvertToBtc={onConvertToBtc}
-              onConvertToCkBtc={onConvertToCkBtc}
-              onConvertToEth={onConvertToEth}
-              onConvertToCkEth={onConvertToCkEth}
-              onConvertToSepoliaEth={onConvertToSepoliaEth}
-              onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
-              onConvertToErc20={onConvertToErc20}
-              onConvertToCkErc20={onConvertToCkErc20}
-              onStakeClick={onStakeClick}
-              onBridgeClick={onBridgeClick}
-              onEarnClick={onEarnClick}
-              setToken={setToken}
-              dropdownPosition={dropdownPosition}
-              setIsTokenProcessed={setIsTokenProcessed}
-              isTokenProcessed={isTokenProcessed || loadingToken === token}
-              isEarnSupported={aaveTokens?.some(
-                (t) =>
-                  t.getTokenAddress() === token.getTokenAddress() &&
-                  t.getChainId() === token.getChainId(),
-              )}
-            />
-          ))}
+        {!isViewOnlyMode && !isPrivateAccount && (
+          <AssetDropdown
+            token={token}
+            tokens={tokens}
+            profileConstants={profileConstants}
+            onSendClick={onSendClick}
+            onSwapClick={onSwapClick}
+            onConvertToBtc={onConvertToBtc}
+            onConvertToCkBtc={onConvertToCkBtc}
+            onConvertToEth={onConvertToEth}
+            onConvertToCkEth={onConvertToCkEth}
+            onConvertToSepoliaEth={onConvertToSepoliaEth}
+            onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
+            onConvertToErc20={onConvertToErc20}
+            onConvertToCkErc20={onConvertToCkErc20}
+            onStakeClick={onStakeClick}
+            onBridgeClick={onBridgeClick}
+            onEarnClick={onEarnClick}
+            setToken={setToken}
+            dropdownPosition={dropdownPosition}
+            setIsTokenProcessed={setIsTokenProcessed}
+            isTokenProcessed={isTokenProcessed || loadingToken === token}
+            isEarnSupported={aaveTokens?.some(
+              (t) =>
+                t.getTokenAddress() === token.getTokenAddress() &&
+                t.getChainId() === token.getChainId(),
+            )}
+          />
+        )}
       </td>
     </tr>
   )

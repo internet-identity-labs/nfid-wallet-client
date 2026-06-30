@@ -192,22 +192,19 @@ export const Tokens: FC<TokensProps> = ({
   return (
     <>
       <div className="relative flex flex-col">
-        {!isViewOnlyMode ||
-          (!isPrivateAccount && (
-            <div
-              className={clsx("flex justify-end mb-1", isLoading && "hidden")}
-            >
-              <ChainFilter
-                filter={filter}
-                setFilter={setFilter}
-                iconClassName="w-[24px] h-[24px]"
-              />
-              <IconCmpPortfolioOptions
-                className="ml-5 w-[24px] h-[24px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white bg-transparent"
-                onClick={() => setIsModalOpen(true)}
-              />
-            </div>
-          ))}
+        {!isViewOnlyMode && !isPrivateAccount && (
+          <div className={clsx("flex justify-end mb-1", isLoading && "hidden")}>
+            <ChainFilter
+              filter={filter}
+              setFilter={setFilter}
+              iconClassName="w-[24px] h-[24px]"
+            />
+            <IconCmpPortfolioOptions
+              className="ml-5 w-[24px] h-[24px] transition-opacity cursor-pointer hover:opacity-60 dark:text-white bg-transparent"
+              onClick={() => setIsModalOpen(true)}
+            />
+          </div>
+        )}
         <div className="mb-[20px] overflow-x-auto scrollbar scrollbar-w-4 scrollbar-thumb-gray-300 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
           <table className="w-full text-left">
             <thead className="text-secondary dark:text-zinc-500 h-[40px] hidden md:table-header-group">
@@ -282,17 +279,16 @@ export const Tokens: FC<TokensProps> = ({
             </tbody>
           </table>
         </div>
-        {!isViewOnlyMode ||
-          (!isPrivateAccount && (
-            <ManageTokens
-              className="mx-auto w-fit"
-              tokens={allTokens}
-              onSubmitIcrc1Pair={onSubmitIcrc1Pair}
-              onFetch={onFetch}
-              setLoadingToken={setLoadingToken}
-              manageBtnDisabled={isLoading}
-            />
-          ))}
+        {!isViewOnlyMode && !isPrivateAccount && (
+          <ManageTokens
+            className="mx-auto w-fit"
+            tokens={allTokens}
+            onSubmitIcrc1Pair={onSubmitIcrc1Pair}
+            onFetch={onFetch}
+            setLoadingToken={setLoadingToken}
+            manageBtnDisabled={isLoading}
+          />
+        )}
         <PortfolioOptions
           isOpen={isModalOpen}
           setIsOpen={setIsModalOpen}

@@ -48,7 +48,7 @@ export const BannerCarousel: FC<BannerCarouselProps> = ({ slides }) => {
       <div
         className={clsx(
           "rounded-[24px] mt-[30px] relative bg-[linear-gradient(to_bottom,_#008d7f,_#012d2f)] font-inter",
-          "lg:h-[260px] lg:bg-[linear-gradient(to_right,_#008d7f,_#012d2f)] lg:p-[30px] overflow-hidden",
+          "lg:min-h-[260px] lg:bg-[linear-gradient(to_right,_#008d7f,_#012d2f)] lg:p-[30px] overflow-hidden",
         )}
       >
         <div
@@ -67,7 +67,7 @@ export const BannerCarousel: FC<BannerCarouselProps> = ({ slides }) => {
         <div
           className={clsx(
             "text-white relative p-5",
-            "lg:w-[50%] lg:max-w-[510px] lg:p-0",
+            "lg:w-[50%] lg:max-w-[520px] lg:p-0",
           )}
         >
           <div className="text-[24px] leading-[24px] tracking-[0.01em] mb-5">

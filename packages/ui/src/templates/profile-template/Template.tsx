@@ -450,7 +450,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
       title: "Convert BTC to ckBTC",
       text: (
         <>
-          <div className="text-sm leading-[18px] mb-4 lg:pr-[20px]">
+          <div className="text-sm leading-[18px] mb-4 lg:pr-[30px]">
             ckBTC is wrapped Bitcoin on ICP and backed 1:1 with Bitcoin—fast,
             cheap, and powerful. Transfers take{" "}
             <span className="font-semibold">2 seconds</span> and cost{" "}
@@ -489,7 +489,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
       id: "showIcpDapps",
       title: "Explore dApps on ICP ecosystem",
       text: (
-        <div className="text-sm leading-[21px] lg:pr-[20px]">
+        <div className="text-sm leading-[21px] lg:pr-[30px]">
           Explore decentralized apps with transparent, near real-time data.
           Discover exciting dapps, complete quests to earn rewards, unravel
           trends, participate in airdrops, and explore additional opportunities
@@ -510,7 +510,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
       id: "showAddressBook",
       title: "Simplify your transactions with Address Book",
       text: (
-        <div className="text-sm leading-[21px] lg:pr-[23px]">
+        <div className="text-sm leading-[21px] lg:pr-[33px]">
           You can now save addresses across ICP, Bitcoin, and EVM chains under a
           single, custom name, eliminating copy-paste anxiety and making sending
           crypto as easy as messaging a friend. You can initiate transfers with

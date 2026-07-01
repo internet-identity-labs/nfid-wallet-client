@@ -125,6 +125,10 @@ export const Carousel = ({
           animation-play-state: paused;
         }
 
+        .f-carousel__dot.f-dot-reset[aria-current="true"]::before {
+          animation: none !important;
+        }
+
         @keyframes dot-progress {
           from { transform: scaleX(0); }
           to { transform: scaleX(1); }
@@ -138,8 +142,18 @@ export const Carousel = ({
             "--autoplay-timeout": `${autoplayTimeout}ms`,
           } as React.CSSProperties
         }
-        onMouseEnter={() => carouselInstance?.getPlugins()?.Autoplay?.pause()}
-        onMouseLeave={() => carouselInstance?.getPlugins()?.Autoplay?.resume()}
+        onMouseEnter={() => {
+          const dot = container?.querySelector<HTMLElement>(
+            '.f-carousel__dot[aria-current="true"]',
+          )
+          if (dot) {
+            dot.classList.add("f-dot-reset")
+            void dot.offsetWidth
+            dot.classList.remove("f-dot-reset")
+          }
+          carouselInstance?.getPlugins()?.Autoplay?.stop()
+        }}
+        onMouseLeave={() => carouselInstance?.getPlugins()?.Autoplay?.start()}
       >
         {slides.map((slide) => (
           <div key={slide.id} className="f-carousel__slide">

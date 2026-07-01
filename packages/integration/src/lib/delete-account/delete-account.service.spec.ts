@@ -6,6 +6,8 @@ import {
 import { Principal } from "@icp-sdk/core/principal"
 
 import { authState } from "../authentication"
+import { walletStorage } from "../authentication/storage"
+import { serializeUserIdData } from "../authentication/user-id-data"
 import { im, replaceActorIdentity, userRegistry } from "../actors"
 import { RootWallet } from "../identity-manager/profile"
 import {
@@ -42,12 +44,31 @@ describe("deleteAccountService", () => {
       .mockResolvedValueOnce({ ok: true, status: 200, text: async () => "{}" })
     global.fetch = fetchMock
 
-    // When the full deletion flow is executed with a valid code
     const plan = await deleteAccountService.getPlan()
     await deleteAccountService.prepareStep(plan)
+
+    const profileKey = `user_profile_data_someSessionKey`
+    jest.spyOn(walletStorage, "getAllKeys").mockResolvedValue([profileKey])
+    jest.spyOn(walletStorage, "get").mockImplementation(async (key: string) => {
+      if (key === profileKey)
+        return serializeUserIdData({
+          userId: principal,
+          publicKey: principal,
+          anchor: plan.account.anchor,
+          wallet: RootWallet.NFID,
+          cacheVersion: "1",
+        })
+      return null
+    })
+    const removeAllSpy = jest
+      .spyOn(walletStorage, "removeAll")
+      .mockResolvedValue()
+    jest.spyOn(walletStorage, "set").mockResolvedValue()
+
+    // When the full deletion flow is executed with a valid code
     const result = await deleteAccountService.executeStep(plan, "123456")
 
-    // Then EMAIL step was required, lambda received correct params, and the account is fully deleted
+    // Then EMAIL step was required, lambda received correct params, account is fully deleted, and the local wallet profile entry is removed
     expect(plan.steps).toContain(DeletionMode.EMAIL)
     expect(result.isCompleted).toBe(true)
     const [[, sendOptions], [, confirmOptions]] = fetchMock.mock.calls
@@ -59,6 +80,7 @@ describe("deleteAccountService", () => {
       email: TEST_EMAIL,
       code: "123456",
     })
+    expect(removeAllSpy).toHaveBeenCalledWith([profileKey])
     const { status_code, error } = await im.get_account()
     expect(status_code).toBe(404)
     expect(error[0]).toBe("Unable to find Account")

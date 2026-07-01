@@ -5,6 +5,7 @@ import { DeletionMode } from "./enum/deletion-mode.enum"
 import { DeletionError } from "./error/deletion.error"
 import { EmailAlreadyDeletedError } from "./error/email-already-deleted.error"
 import { im, userRegistry } from "../actors"
+import { walletStorageService } from "./service/wallet-storage.service"
 import { defaultDeletionService } from "./service/default-deletion.service"
 import { emailDeletionService } from "./service/email-deletion.service"
 import { passkeyDeletionService } from "./service/passkey-deletion.service"
@@ -102,6 +103,7 @@ export const deleteAccountService: DeleteAccountService = {
 async function finalizeDeletion(plan: Plan): Promise<Plan> {
   try {
     await userRegistry.address_book_delete_all()
+    await walletStorageService.clearLocalWalletProfiles(plan.account)
     const { status_code } = await im.remove_account()
     if (status_code !== 200)
       throw new DeletionError(

@@ -28,7 +28,6 @@ export const Carousel = ({
 }: CarouselProps) => {
   const options = {
     Autoplay: { timeout: autoplayTimeout, showProgressbar: false },
-    gestures: false as const,
   }
   const storedOptions = useRef(options)
 
@@ -122,6 +121,10 @@ export const Carousel = ({
           animation: dot-progress var(--autoplay-timeout, 3000ms) linear forwards;
         }
 
+        .banner-carousel:hover .f-carousel__dot[aria-current="true"]::before {
+          animation-play-state: paused;
+        }
+
         @keyframes dot-progress {
           from { transform: scaleX(0); }
           to { transform: scaleX(1); }
@@ -135,6 +138,8 @@ export const Carousel = ({
             "--autoplay-timeout": `${autoplayTimeout}ms`,
           } as React.CSSProperties
         }
+        onMouseEnter={() => carouselInstance?.getPlugins()?.Autoplay?.pause()}
+        onMouseLeave={() => carouselInstance?.getPlugins()?.Autoplay?.resume()}
       >
         {slides.map((slide) => (
           <div key={slide.id} className="f-carousel__slide">

@@ -14,6 +14,7 @@ export interface ICRC2Metadata {
 
 export interface TransferMetadata {
   toAddress: string
+  memo?: string
   amount: string
   balance: string
   isInsufficientBalance: boolean

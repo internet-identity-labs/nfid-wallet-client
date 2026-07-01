@@ -72,6 +72,12 @@ const CallCanisterTransfer = (props: CallCanisterTransferProps) => {
               <Address address={metadata.toAddress} />
             </div>
           </div>
+          {metadata.memo && (
+            <div className="flex items-center justify-between h-[54px] dark:text-white">
+              <div>Memo</div>
+              <div>{metadata.memo}</div>
+            </div>
+          )}
           <div className="flex items-center justify-between h-[54px] dark:text-white">
             <div>Network fee</div>
             <div className="text-right">

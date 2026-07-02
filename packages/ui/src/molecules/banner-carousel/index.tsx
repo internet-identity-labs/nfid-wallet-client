@@ -64,12 +64,7 @@ export const BannerCarousel: FC<BannerCarouselProps> = ({ slides }) => {
         >
           <CloseIcon color={colors.white} className="w-full h-full" />
         </div>
-        <div
-          className={clsx(
-            "text-white relative p-5",
-            "lg:w-[50%] lg:max-w-[520px] lg:p-0",
-          )}
-        >
+        <div className={clsx("text-white relative p-5", "lg:w-[50%] lg:p-0")}>
           <div className="text-[24px] leading-[24px] tracking-[0.01em] mb-5">
             {s.title}
           </div>

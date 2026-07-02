@@ -61,19 +61,19 @@ export const ConvertSuccessUi: FC<ConvertSuccessUiProps> = ({
           {status === SendStatus.FAILED
             ? "Transaction failed"
             : status === SendStatus.COMPLETED
-            ? "Your transaction is on the way"
-            : "Converting"}
+              ? "Your transaction is on the way"
+              : "Converting"}
         </H5>
         <p className="h-5 mt-3 text-sm leading-5">
           {status === SendStatus.FAILED
             ? "Your assets are still in your wallet."
             : status === SendStatus.COMPLETED
-            ? isBtc
-              ? `${tokenName} will be on your address after 6 Bitcoin network confirmations. This usually takes about 90 minutes.`
-              : `${tokenName} will be on your address after the transaction is confirmed on the network. This usually takes a few minutes, depending on network congestion.`
-            : isBtc
-            ? `Conversion usually takes around ${duration} minutes.`
-            : `Conversion usually takes a few minutes, depending on network congestion`}
+              ? isBtc
+                ? `${tokenName} will be on your address after 6 Bitcoin network confirmations. This usually takes about 90 minutes.`
+                : `${tokenName} will be on your address after the transaction is confirmed on the network. This usually takes a few minutes, depending on network congestion.`
+              : isBtc
+                ? `Conversion usually takes around ${duration} minutes.`
+                : `Conversion usually takes a few minutes, depending on network congestion`}
         </p>
       </div>
       <div
@@ -142,12 +142,7 @@ export const ConvertSuccessUi: FC<ConvertSuccessUiProps> = ({
           </div>
         </div>
       </div>
-      {error && (
-        <div className="text-sm text-red-600 my-[10px]">
-          Something went wrong with conversion. <br />
-          Please try again later.
-        </div>
-      )}
+      {error && <div className="text-sm text-red-600 my-[10px]">{error}</div>}
       <Button
         id={"swap-success-close-button"}
         type="primary"

@@ -18,6 +18,8 @@ import {
   getUpdatedInitedTokens,
   isTokenWithBalance,
   mutateTokensCacheMergingBalances,
+  isInsufficientEthForGas,
+  INSUFFICIENT_ETH_FOR_GAS_ERROR,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { ChainId, isEvmToken } from "@nfid/integration/token/icrc1/enum/enums"
@@ -337,9 +339,12 @@ export const Bridge = ({
             (error as Error).message ? (error as Error).message : error
           }`,
         )
-        setErrorMessage(DEFAULT_BRIDGE_ERROR)
+        const errorMessage = isInsufficientEthForGas(error)
+          ? INSUFFICIENT_ETH_FOR_GAS_ERROR
+          : DEFAULT_BRIDGE_ERROR
+        setErrorMessage(errorMessage)
         setStatus(SendStatus.FAILED)
-        setError(error)
+        setError(errorMessage)
       })
       .finally(() => {
         isSubmittingRef.current = false

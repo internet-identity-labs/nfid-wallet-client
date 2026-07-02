@@ -11,6 +11,7 @@ import { A } from "../../atoms/custom-link"
 import useWindowSize from "../../utils/use-window-size"
 import { DiscoverySkeleton } from "../../atoms/skeleton/discovery-skeleton"
 import DiscoveryPlaceholder from "../discovery/assets/discovery-placeholder.jpg"
+import DiscoveryDarkPlaceholder from "../discovery/assets/discovery-placeholder-dark.jpg"
 import { useNavigate } from "react-router-dom"
 
 interface PrivateAccountsProps {
@@ -67,7 +68,11 @@ export const PrivateAccounts: FC<PrivateAccountsProps> = ({
                     <ImageWithFallback
                       alt={app.name}
                       src={`${app.image || "#"}`}
-                      fallbackSrc={DiscoveryPlaceholder}
+                      fallbackSrc={
+                        isDarkTheme
+                          ? DiscoveryDarkPlaceholder
+                          : DiscoveryPlaceholder
+                      }
                       className="w-full h-full object-cover aspect-[335/175]"
                     />
                     {app.desc && (

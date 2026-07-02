@@ -77,6 +77,7 @@ export const BannerCarousel: FC<BannerCarouselProps> = ({ slides }) => {
           <div className="flex gap-[10px] md:gap-[20px] mt-5 flex-wrap">
             {s.actions.map((a) => (
               <Button
+                key={a.text}
                 type="stroke"
                 className={a.classnames}
                 isSmall

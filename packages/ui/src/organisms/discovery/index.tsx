@@ -3,7 +3,8 @@ import { FC, useMemo, useState } from "react"
 
 import {
   Button,
-  IconNftPlaceholder,
+  ButtonType,
+  IconCmpPromote,
   ImageWithFallback,
   Input,
 } from "@nfid-frontend/ui"
@@ -20,6 +21,12 @@ import useWindowSize from "../../utils/use-window-size"
 import { DiscoverySkeleton } from "../../atoms/skeleton/discovery-skeleton"
 
 import DiscoveryPlaceholder from "./assets/discovery-placeholder.jpg"
+import DiscoveryDarkPlaceholder from "./assets/discovery-placeholder-dark.jpg"
+import { ReactComponent as PromotedIcon } from "./assets/promoted.svg"
+import { PromotionStatus } from "@nfid/integration/promotion"
+import { BannerCarousel } from "../../molecules/banner-carousel"
+
+import PromotedDappBannerBg from "../../templates/assets/promoted-dapp-banner.png"
 
 enum DiscoverySorting {
   NAME = "NAME",
@@ -30,9 +37,16 @@ enum DiscoverySorting {
 interface DiscoveryProps {
   discoveryApps?: DiscoveryAppData[]
   isLoading: boolean
+  onPromoteClick?: (dappId: number) => void
+  promotionStatus?: PromotionStatus
 }
 
-export const Discovery: FC<DiscoveryProps> = ({ discoveryApps, isLoading }) => {
+export const Discovery: FC<DiscoveryProps> = ({
+  discoveryApps,
+  isLoading,
+  onPromoteClick,
+  promotionStatus,
+}) => {
   const isDarkTheme = useDarkTheme()
   const { width } = useWindowSize()
   const PAGE_SIZE = width < 1024 ? 4 : 6
@@ -45,6 +59,18 @@ export const Discovery: FC<DiscoveryProps> = ({ discoveryApps, isLoading }) => {
   const getSortingIconColor = (active: boolean) => {
     if (active) return isDarkTheme ? "white" : "black"
     return isDarkTheme ? "#71717A" : "#9CA3AF"
+  }
+
+  const dapp = useMemo(() => {
+    if (!promotionStatus?.featured || !discoveryApps) return
+
+    return discoveryApps.find(
+      (app) => app.id === promotionStatus.featured?.appId,
+    )
+  }, [promotionStatus?.featured, discoveryApps])
+
+  const handleNavigatePromotedDapp = () => {
+    window.open(dapp?.url, "_blank")
   }
 
   const filteredApps = useMemo(() => {
@@ -68,11 +94,38 @@ export const Discovery: FC<DiscoveryProps> = ({ discoveryApps, isLoading }) => {
       filtered.sort((a, b) => Number(b.uniqueUsers) - Number(a.uniqueUsers))
     }
 
+    const featuredId = promotionStatus?.featured?.appId
+    filtered.sort(
+      (a, b) => (b.id === featuredId ? 1 : 0) - (a.id === featuredId ? 1 : 0),
+    )
+
     return filtered.slice(0, appsToShow)
-  }, [search, discoveryApps, sorting, appsToShow])
+  }, [search, discoveryApps, sorting, appsToShow, promotionStatus])
+
+  const bannerSlides = useMemo(() => {
+    return [
+      {
+        id: "showPromotedDapp",
+        title: dapp?.name || "",
+        text: <div className="text-sm leading-[21px]">{dapp?.desc}</div>,
+        image: PromotedDappBannerBg,
+        isStoredInLocalStorage: false,
+        actions: [
+          {
+            text: "Explore",
+            type: "stroke" as ButtonType,
+            classnames:
+              "bg-white dark:!text-black border-0 w-full md:w-[120px]",
+            handler: handleNavigatePromotedDapp,
+          },
+        ],
+      },
+    ]
+  }, [dapp])
 
   return (
     <>
+      {promotionStatus?.featured && <BannerCarousel slides={bannerSlides} />}
       <ProfileContainer
         className="my-[20px] sm:my-[30px] sm:p-[20px] sm:p-[30px] dark:text-white"
         innerClassName="!px-0"
@@ -169,28 +222,59 @@ export const Discovery: FC<DiscoveryProps> = ({ discoveryApps, isLoading }) => {
                   )}
                 >
                   <div className="rounded-[12px] overflow-hidden relative">
+                    {promotionStatus?.featured?.appId === app.id && (
+                      <div className="absolute top-2.5 left-2.5 z-[2] flex gap-2.5 items-center">
+                        <PromotedIcon />
+                        <p
+                          className={clsx(
+                            "font-bold leading-[18px] text-sm text-orange-400",
+                            "tracking-[0.01em] opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+                          )}
+                        >
+                          Promoted
+                        </p>
+                      </div>
+                    )}
                     <ImageWithFallback
                       alt={app.name}
                       src={`${app.image || "#"}`}
-                      fallbackSrc={DiscoveryPlaceholder}
+                      fallbackSrc={
+                        isDarkTheme
+                          ? DiscoveryDarkPlaceholder
+                          : DiscoveryPlaceholder
+                      }
                       className="w-full h-full object-cover aspect-[335/175]"
                     />
-                    {app.desc && (
-                      <div
-                        className={clsx(
-                          "absolute top-0 left-0 right-0 m-auto z-2 flex items-center justify-center w-full h-full p-5 text-center",
-                          "bg-white/60 dark:bg-zinc-500/60",
-                          "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
-                          "text-sm leading-5 overflow-hidden rounded-[12px]",
-                        )}
-                        style={{
-                          backdropFilter: "blur(10px)",
-                          WebkitBackdropFilter: "blur(10px)",
-                        }}
-                      >
+                    <div
+                      className={clsx(
+                        "absolute top-0 left-0 right-0 m-auto z-2 flex items-center justify-center w-full h-full p-5 text-center",
+                        "bg-white/60 dark:bg-zinc-500/60",
+                        "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+                        "text-sm leading-5 overflow-hidden rounded-[12px]",
+                      )}
+                      style={{
+                        backdropFilter: "blur(10px)",
+                        WebkitBackdropFilter: "blur(10px)",
+                      }}
+                    >
+                      <div>
                         {app.desc}
+                        {!promotionStatus?.locked && (
+                          <Button
+                            className="w-[144px] mt-4 mx-auto"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              onPromoteClick?.(app.id)
+                            }}
+                            icon={
+                              <IconCmpPromote className="w-[18px] h-[18px]" />
+                            }
+                          >
+                            Promote
+                          </Button>
+                        )}
                       </div>
-                    )}
+                    </div>
                   </div>
                   <div className="px-2.5 pt-3 pb-[15px]">
                     <div className="flex justify-between items-center mb-1 gap-2.5">

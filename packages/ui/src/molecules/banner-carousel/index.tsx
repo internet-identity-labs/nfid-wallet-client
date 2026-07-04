@@ -11,6 +11,7 @@ export interface BannerSlide {
   title: string
   text: ReactNode
   image: string
+  isStoredInLocalStorage: boolean
   actions: {
     text: string
     type: ButtonType
@@ -28,10 +29,13 @@ export const BannerCarousel: FC<BannerCarouselProps> = ({ slides }) => {
 
   useEffect(() => {
     const visible = slides
-      .filter((s) => localStorage.getItem(s.id) !== "false")
+      .filter(
+        (s) =>
+          !s.isStoredInLocalStorage || localStorage.getItem(s.id) !== "false",
+      )
       .map((s) => s.id)
     setVisibleIds(visible)
-  }, [])
+  }, [slides])
 
   const handleClose = (id: string) => {
     localStorage.setItem(id, "false")
@@ -58,12 +62,14 @@ export const BannerCarousel: FC<BannerCarouselProps> = ({ slides }) => {
           )}
           style={{ backgroundImage: `url(${s.image})` }}
         ></div>
-        <div
-          className="w-6 h-6 absolute right-[10px] top-[10px]"
-          onClick={() => handleClose(s.id)}
-        >
-          <CloseIcon color={colors.white} className="w-full h-full" />
-        </div>
+        {s.isStoredInLocalStorage && (
+          <div
+            className="w-6 h-6 absolute right-[10px] top-[10px]"
+            onClick={() => handleClose(s.id)}
+          >
+            <CloseIcon color={colors.white} className="w-full h-full" />
+          </div>
+        )}
         <div
           className={clsx(
             "text-white relative p-5",

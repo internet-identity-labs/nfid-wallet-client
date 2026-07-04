@@ -16,6 +16,7 @@ enum IModalType {
   EARN = "EARN",
   WITHDRAW = "WITHDRAW",
   PAY = "PAY",
+  PROMOTE = "PROMOTE",
 }
 
 const MIN_CK_BTC_AMOUNT_TO_CONVERT = 0.00051
@@ -119,8 +120,20 @@ export const validateTransferAmountField =
       return `Amount can't be less than ${MIN_CK_SEPOLIA_ETH_AMOUNT_TO_CONVERT} ETH.`
     }
 
-    if (minAmount !== undefined && valueNum.isLessThan(minAmount)) {
+    if (
+      minAmount !== undefined &&
+      modalType === IModalType.STAKE &&
+      valueNum.isLessThan(minAmount)
+    ) {
       return `Minimum amount to stake ${symbol} is ${minAmount}`
+    }
+
+    if (
+      minAmount !== undefined &&
+      modalType === IModalType.PROMOTE &&
+      valueNum.isLessThan(minAmount)
+    ) {
+      return `Minimum amount to promote ${symbol} is ${minAmount}`
     }
 
     return true

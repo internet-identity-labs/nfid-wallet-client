@@ -12,8 +12,10 @@ import ProfileContainer from "../../atoms/profile-container/Container"
 import { ModalComponent } from "@nfid-frontend/ui"
 import { DiscoveryAppData } from "@nfid/integration/token/icrc1/types"
 import DiscoveryPlaceholder from "../discovery/assets/discovery-placeholder.jpg"
+import DiscoveryDarkPlaceholder from "../discovery/assets/discovery-placeholder-dark.jpg"
 import { Tokens } from "../tokens"
 import { FT } from "frontend/integration/ft/ft"
+import { useDarkTheme } from "frontend/hooks"
 
 export interface PrivateAccounDetailstProps {
   dappInfo: {
@@ -27,6 +29,7 @@ export interface PrivateAccounDetailstProps {
 export const PrivateAccountDetails: FC<PrivateAccounDetailstProps> = memo(
   ({ dappInfo, tokens, isTokensLoading }) => {
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const isDarkTheme = useDarkTheme()
 
     return (
       <>
@@ -72,7 +75,9 @@ export const PrivateAccountDetails: FC<PrivateAccounDetailstProps> = memo(
             >
               <ImageWithFallback
                 src={dappInfo.app.image}
-                fallbackSrc={DiscoveryPlaceholder}
+                fallbackSrc={
+                  isDarkTheme ? DiscoveryDarkPlaceholder : DiscoveryPlaceholder
+                }
                 alt={dappInfo.app.name}
                 className="w-full"
               />

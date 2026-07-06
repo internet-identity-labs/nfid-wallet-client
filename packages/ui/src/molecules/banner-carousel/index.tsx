@@ -52,7 +52,7 @@ export const BannerCarousel: FC<BannerCarouselProps> = ({ slides }) => {
       <div
         className={clsx(
           "rounded-[24px] mt-[30px] relative bg-[linear-gradient(to_bottom,_#008d7f,_#012d2f)] font-inter",
-          "lg:h-[260px] lg:bg-[linear-gradient(to_right,_#008d7f,_#012d2f)] lg:p-[30px] overflow-hidden",
+          "lg:min-h-[260px] lg:bg-[linear-gradient(to_right,_#008d7f,_#012d2f)] lg:p-[30px] overflow-hidden",
         )}
       >
         <div
@@ -83,6 +83,7 @@ export const BannerCarousel: FC<BannerCarouselProps> = ({ slides }) => {
           <div className="flex gap-[10px] md:gap-[20px] mt-5 flex-wrap">
             {s.actions.map((a) => (
               <Button
+                key={a.text}
                 type="stroke"
                 className={a.classnames}
                 isSmall

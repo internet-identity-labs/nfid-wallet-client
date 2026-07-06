@@ -38,6 +38,8 @@ import {
   getAddressBookFtOptions,
   mutateTokensCacheMergingBalances,
   isTokenWithBalance,
+  isInsufficientEthForGas,
+  INSUFFICIENT_ETH_FOR_GAS_ERROR,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import {
@@ -393,8 +395,11 @@ export const TransferFT = ({
               (e as Error).message ? (e as Error).message : e
             }`,
           )
-          setErrorMessage(DEFAULT_TRANSFER_ERROR)
-          setError(DEFAULT_TRANSFER_ERROR)
+          const errorMessage = isInsufficientEthForGas(e)
+            ? INSUFFICIENT_ETH_FOR_GAS_ERROR
+            : DEFAULT_TRANSFER_ERROR
+          setErrorMessage(errorMessage)
+          setError(errorMessage)
           setStatus(SendStatus.FAILED)
         })
 

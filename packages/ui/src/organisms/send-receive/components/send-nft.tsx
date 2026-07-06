@@ -84,6 +84,7 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
         isOpen={isSuccessOpen}
         status={status}
         assetImageClassname="w-[102px] h-[102px] top-[161px] sm:w-[116px] sm:h-[116px] sm:top-[154px]"
+        duration={selectedNFT && "asset" in selectedNFT ? 30 : 2}
       />
       <div className="text-xs">
         <Label className="inline-block mb-1 text-xs dark:text-white">

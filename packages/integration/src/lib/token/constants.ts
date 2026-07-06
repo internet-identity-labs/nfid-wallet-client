@@ -33,6 +33,7 @@ export const ICP_ROOT_CANISTER_ID = "r7inp-6aaaa-aaaaa-aaabq-cai"
 export const ICP_GOV_CANISTER_ID = "rrkah-fqaaa-aaaaa-aaaaq-cai"
 export const ICP_INDEX_ID = "qhbym-qaaaa-aaaaa-aaafq-cai"
 export const NFIDW_CANISTER_ID = "mih44-vaaaa-aaaaq-aaekq-cai"
+export const NFIDW_PROMOTE_CANISTER_ID = "mpg2i-yyaaa-aaaaq-aaeka-cai"
 export const ICP_DECIMALS = 8
 export const BTC_DECIMALS = 8
 export const ETH_DECIMALS = 18

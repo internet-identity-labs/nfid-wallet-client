@@ -49,6 +49,7 @@ export const TransferModal: FC<TransferModalProps> = ({
     if (direction === ModalType.EARN) return "min-h-[366px]"
     if (direction === ModalType.WITHDRAW) return "min-h-[330px]"
     if (direction === ModalType.PAY) return "min-h-[438px]"
+    if (direction === ModalType.PROMOTE) return "min-h-[500px]"
     return "min-h-[480px]"
   })()
 

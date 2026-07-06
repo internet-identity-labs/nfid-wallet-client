@@ -23,6 +23,7 @@ import { Bridge } from "./components/bridge"
 import { Earn } from "./components/earn"
 import { Withdraw } from "./components/withdraw"
 import { Pay } from "./components/pay"
+import { Promote } from "./components/promote"
 
 export const TransferModalCoordinator = () => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
@@ -231,6 +232,23 @@ export const TransferModalCoordinator = () => {
               setSuccessMessage={setSuccessMessage}
               onError={setHasBridgeError}
               setIsPaySuccess={setIsSuccessTx}
+            />
+          </motion.div>
+        )}
+        {state.matches("PromoteMachine") && (
+          <motion.div
+            key="bridge-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          >
+            <Promote
+              onClose={hideModal}
+              setErrorMessage={setErrorMessage}
+              setSuccessMessage={setSuccessMessage}
+              setIsPromoteSuccess={setIsSuccessTx}
+              dappId={state.context.selectedDapp}
             />
           </motion.div>
         )}

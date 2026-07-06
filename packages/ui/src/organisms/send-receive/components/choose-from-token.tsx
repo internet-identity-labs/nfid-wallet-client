@@ -47,6 +47,7 @@ interface ChooseFromTokenProps {
   tokens?: FT[]
   balance?: bigint | undefined
   value?: string
+  initialValue?: string
   setFromChosenToken?: (value: SelectedToken) => void
   usdRate?: string | null
   title: string
@@ -70,6 +71,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   tokens,
   balance,
   value,
+  initialValue,
   setFromChosenToken,
   usdRate = "0.00 USD",
   title,
@@ -113,6 +115,12 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     }, 500)
   }, [token, resetKey, setValue, clearErrors])
 
+  useEffect(() => {
+    if (!initialValue) return
+    setInputAmountValue(initialValue)
+    setValue("amount", initialValue, { shouldValidate: true })
+  }, [initialValue])
+
   const feeFormatted = useMemo(() => {
     if (!token || userBalance === undefined) return
 
@@ -141,6 +149,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
       case IModalType.SEND:
       case IModalType.STAKE:
+      case IModalType.PROMOTE:
       case IModalType.CONVERT_TO_ERC20:
         return fee
 
@@ -231,6 +240,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     }
     if (
       modalType === IModalType.STAKE ||
+      modalType === IModalType.PROMOTE ||
       modalType === IModalType.CONVERT_TO_CKBTC ||
       modalType === IModalType.CONVERT_TO_BTC ||
       modalType === IModalType.CONVERT_TO_ETH ||

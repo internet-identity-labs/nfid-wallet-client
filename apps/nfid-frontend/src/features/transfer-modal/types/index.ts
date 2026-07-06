@@ -27,6 +27,7 @@ export enum ModalType {
   EARN = "earn",
   WITHDRAW = "withdraw",
   PAY = "pay",
+  PROMOTE = "promote",
 }
 
 export interface SelectedToken {
@@ -56,6 +57,7 @@ export type TransferMachineContext = {
   sourceWalletAddress: string
   sourceAccount?: Wallet
   selectedFT?: SelectedToken
+  selectedDapp: number
   selectedTargetFT?: string
   selectedNFTId?: string
   receiverWallet: string
@@ -75,6 +77,7 @@ export type Events =
   | { type: "SHOW" }
   | { type: "HIDE" }
   | { type: "CHANGE_TOKEN_TYPE"; data: TokenType }
+  | { type: "ASSIGN_SELECTED_DAPP"; data: number }
   | { type: "CHANGE_DIRECTION"; data: ModalType | null }
   | { type: "ASSIGN_IS_EARN_UPDATE"; data: boolean | null }
   | { type: "ASSIGN_WITHDRAW_BALANCE"; data: bigint }

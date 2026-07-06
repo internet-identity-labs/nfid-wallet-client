@@ -22,7 +22,13 @@ import { SwapStage } from "src/integration/swap/types/enums"
 import useSWRImmutable from "swr/immutable"
 import { Principal } from "@icp-sdk/core/principal"
 
-import { ArrowButton, Loader, TabsSwitcher, Tooltip } from "@nfid-frontend/ui"
+import {
+  ArrowButton,
+  ButtonType,
+  Loader,
+  TabsSwitcher,
+  Tooltip,
+} from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
 import {
   BTC_NATIVE_ID,
@@ -70,7 +76,10 @@ import {
   EVM_NFTS_CACHE_NAME,
 } from "frontend/integration/ethereum/evm.service"
 import { INITED_TOKENS_CACHE_NAME } from "frontend/integration/ft/ft-service"
-import { ICRC1_ORACLE_CACHE_NAME } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+import {
+  ICRC1_ORACLE_CACHE_NAME,
+  icrc1OracleService,
+} from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 import { ICRC1_REGISTRY_CACHE_NAME } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import {
   ERC20_BALANCES_CACHE_NAME,
@@ -79,10 +88,12 @@ import {
 } from "frontend/integration/ethereum/erc20-abstract.service"
 import { useUserPrefs } from "frontend/hooks/user-prefs"
 import { useSupplyPositions } from "frontend/hooks"
+import { promotionService } from "@nfid/integration/promotion"
 
 import BtcBannerBg from "../assets/btc-banner.png"
 import DappsBannerBg from "../assets/dapps-banner.png"
 import AddressBookBannerBg from "../assets/address-book-banner.png"
+import PromotedDappBannerBg from "../assets/promoted-dapp-banner.png"
 
 interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   pageTitle?: string
@@ -293,6 +304,48 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     { revalidateOnFocus: false },
   )
 
+  const { data: discoveryApps } = useSWR(
+    "discoveryApps",
+    async () => icrc1OracleService.getDiscoveryApps(),
+    { revalidateOnFocus: false },
+  )
+
+  const { data: promotionStatus } = useSWR(
+    "promotionStatus",
+    async () => promotionService.getStatus(),
+    {
+      revalidateOnFocus: false,
+    },
+  )
+
+  const handleNavigatePromotedDapp = (url?: string) => {
+    window.open(url, "_blank")
+  }
+
+  const dappSlide = useMemo(() => {
+    if (!promotionStatus?.featured || !discoveryApps) return
+
+    const dapp = discoveryApps.find(
+      (app) => app.id === promotionStatus.featured?.appId,
+    )
+
+    return {
+      id: "showPromotedDapp",
+      title: dapp?.name || "",
+      text: <div className="text-sm leading-[21px]">{dapp?.desc}</div>,
+      image: PromotedDappBannerBg,
+      isStoredInLocalStorage: false,
+      actions: [
+        {
+          text: "Explore",
+          type: "stroke" as ButtonType,
+          classnames: "bg-white dark:!text-black border-0 w-full md:w-[120px]",
+          handler: () => handleNavigatePromotedDapp(dapp?.url),
+        },
+      ],
+    }
+  }, [promotionStatus?.featured, discoveryApps])
+
   const {
     data: isEmailDeviceOutOfSyncWithII,
     mutate: refreshIsEmailDeviceOutOfSyncWithII,
@@ -469,6 +522,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         </>
       ),
       image: BtcBannerBg,
+      isStoredInLocalStorage: true,
       actions: [
         {
           text: "Convert BTC",
@@ -497,6 +551,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         </div>
       ),
       image: DappsBannerBg,
+      isStoredInLocalStorage: true,
       actions: [
         {
           text: "Explore",
@@ -519,6 +574,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         </div>
       ),
       image: AddressBookBannerBg,
+      isStoredInLocalStorage: true,
       actions: [
         {
           text: "Explore",
@@ -620,7 +676,9 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
                     : authState.getUserIdData().publicKey
                 }
               />
-              <BannerCarousel slides={bannerSlides} />
+              <BannerCarousel
+                slides={[...(dappSlide ? [dappSlide] : []), ...bannerSlides]}
+              />
               <TabsSwitcher
                 className="my-[30px]"
                 tabs={tabs}

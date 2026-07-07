@@ -173,7 +173,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
     if (
       modalType === IModalType.SWAP ||
-      modalType === IModalType.CONVERT_TO_ERC20
+      modalType === IModalType.CONVERT_TO_ERC20 ||
+      (modalType === IModalType.SEND && token?.getChainId() === ChainId.ICP)
     ) {
       if (feeFormatted === undefined) return false
 

@@ -67,12 +67,7 @@ export const EarnSuccessUi: FC<EarnSuccessProps> = ({
         <p className="text-xs text-gray-500 leading-[18px]" id="subTitle">
           {subTitle}
         </p>
-        {error && (
-          <div className="text-sm text-red-600 mt-[20px]">
-            Something went wrong with supplying. <br />
-            Please try again later.
-          </div>
-        )}
+        {error && <div className="text-sm text-red-600 mt-[20px]">{error}</div>}
         <Button
           type="primary"
           block

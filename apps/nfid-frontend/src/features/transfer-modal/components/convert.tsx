@@ -46,6 +46,8 @@ import {
   getTokensWithUpdatedBalance,
   mutateTokensCacheMergingBalances,
   updateCachedInitedTokens,
+  isInsufficientEthForGas,
+  INSUFFICIENT_ETH_FOR_GAS_ERROR,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { useUserPrefs } from "frontend/hooks/user-prefs"
@@ -386,9 +388,12 @@ export const ConvertBTC = ({
               (error as Error).message ? (error as Error).message : error
             }`,
           )
-          setErrorMessage(DEFAULT_CONVERT_ERROR)
+          const errorMessage = isInsufficientEthForGas(error)
+            ? INSUFFICIENT_ETH_FOR_GAS_ERROR
+            : DEFAULT_CONVERT_ERROR
+          setErrorMessage(errorMessage)
           setStatus(SendStatus.FAILED)
-          setError(error)
+          setError(errorMessage)
         })
 
       return
@@ -445,9 +450,12 @@ export const ConvertBTC = ({
               (error as Error).message ? (error as Error).message : error
             }`,
           )
-          setErrorMessage(DEFAULT_CONVERT_ERROR)
+          const errorMessage = isInsufficientEthForGas(error)
+            ? INSUFFICIENT_ETH_FOR_GAS_ERROR
+            : DEFAULT_CONVERT_ERROR
+          setErrorMessage(errorMessage)
           setStatus(SendStatus.FAILED)
-          setError(error)
+          setError(errorMessage)
         })
 
       return
@@ -502,7 +510,7 @@ export const ConvertBTC = ({
         )
         setErrorMessage(DEFAULT_CONVERT_ERROR)
         setStatus(SendStatus.FAILED)
-        setError(error)
+        setError(DEFAULT_CONVERT_ERROR)
       })
   }, [
     identity,

@@ -457,6 +457,17 @@ export const mutateTokensCacheMergingBalances = (balanceUpdates: FT[]) => {
   )
 }
 
+export const INSUFFICIENT_ETH_FOR_GAS_ERROR =
+  "Insufficient ETH balance to cover network gas fees. Please add ETH to your wallet and try again."
+
+export const isInsufficientEthForGas = (e: unknown): boolean => {
+  const msg = e instanceof Error ? e.message : String(e)
+  return (
+    msg.includes("gas required exceeds allowance") ||
+    msg.includes("insufficient funds for gas")
+  )
+}
+
 export const getUpdatedInitedTokens = async (tokens: FT[]) => {
   const { publicKey } = authState.getUserIdData()
   const principal = Principal.fromText(publicKey)

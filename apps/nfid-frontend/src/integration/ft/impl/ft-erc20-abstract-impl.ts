@@ -117,8 +117,8 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
       )
 
       return new FeeResponseETH(erc20FeeData)
-    } catch (e: any) {
-      throw new Error(e)
+    } catch (e: unknown) {
+      throw e
     }
   }
 

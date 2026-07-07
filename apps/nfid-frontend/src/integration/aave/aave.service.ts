@@ -22,6 +22,7 @@ export const EARN_POSITIONS_CACHE_NAME = "EarnPositions"
 export const AAVE_SUPPORTED_TOKENS_CACHE_NAME = "AaveSupportedTokens"
 
 import { ethereumService } from "../ethereum/eth/ethereum.service"
+import { withRetry } from "../ethereum/utils"
 import { polygonService } from "../ethereum/polygon/polygon.service"
 import { arbitrumService } from "../ethereum/arbitrum/arbitrum.service"
 import { baseService } from "../ethereum/base/base.service"
@@ -242,7 +243,7 @@ export class AaveService {
 
         const token = tokenMap.get(asset)!
         try {
-          const reserveData = await this.withRetry(() =>
+          const reserveData = await withRetry(() =>
             this.getReserveData(chainId, asset),
           )
           const aToken = new Contract(
@@ -251,7 +252,7 @@ export class AaveService {
             provider,
           )
 
-          const balance = await this.withRetry(() => aToken.balanceOf(address))
+          const balance = await withRetry(() => aToken.balanceOf(address))
 
           const balanceAmount = formatUnits(balance, token.getTokenDecimals())
 
@@ -279,27 +280,6 @@ export class AaveService {
     )
 
     return positions.filter((p): p is AaveUserPosition => p !== null)
-  }
-
-  private async withRetry<T>(
-    fn: () => Promise<T>,
-    retries = 5,
-    delayMs = 500,
-  ): Promise<T> {
-    for (let attempt = 0; attempt < retries; attempt++) {
-      try {
-        return await fn()
-      } catch (e: unknown) {
-        const is429 =
-          e instanceof Error &&
-          (e.message.includes("429") ||
-            e.message.includes("Too Many Requests") ||
-            e.message.includes("-32005"))
-        if (!is429 || attempt === retries - 1) throw e
-        await new Promise((r) => setTimeout(r, delayMs * (attempt + 1)))
-      }
-    }
-    throw new Error("Unreachable")
   }
 
   getTotalUsdValue(positions?: AaveUserPosition[]): {
@@ -346,17 +326,18 @@ export class AaveService {
         from,
         AAVE_REFERRAL_CODE,
       ])
-      gasUsed = await provider.estimateGas({
-        from,
-        to: gatewayAddress,
-        data,
-        value: parseUnits(params.amount, ETH_DECIMALS),
-      })
+      gasUsed = await withRetry(() =>
+        provider.estimateGas({
+          from,
+          to: gatewayAddress,
+          data,
+          value: parseUnits(params.amount, ETH_DECIMALS),
+        }),
+      )
 
       if (isMaxAmount) {
-        const feeData = await this.withRetry(() =>
-          this.withRetry(() => provider.getFeeData()),
-        )
+        const feeData = await withRetry(() => provider.getFeeData())
+
         const maxFeePerGas = feeData.maxFeePerGas ?? BigInt(0)
         // 20% buffer to cover gas price fluctuations between estimate and execution
         const gasCost = (gasUsed * maxFeePerGas * BigInt(12)) / BigInt(10)
@@ -379,11 +360,9 @@ export class AaveService {
           "approve",
           [poolAddress, amount],
         )
-        approveGas = await provider.estimateGas({
-          from,
-          to: params.asset,
-          data: approveData,
-        })
+        approveGas = await withRetry(() =>
+          provider.estimateGas({ from, to: params.asset, data: approveData }),
+        )
       }
       const data = iface.encodeFunctionData("supply", [
         params.asset,
@@ -404,7 +383,7 @@ export class AaveService {
       gasUsed = approveGas + supplyGas
     }
 
-    const feeData = await provider.getFeeData()
+    const feeData = await withRetry(() => provider.getFeeData())
     const maxFeePerGas = feeData.maxFeePerGas ?? BigInt(0)
     const maxPriorityFeePerGas = feeData.maxPriorityFeePerGas ?? BigInt(0)
     const networkFee = gasUsed * maxFeePerGas
@@ -452,7 +431,7 @@ export class AaveService {
     if (params.isNativeToken) {
       const gatewayAddress = this.getWethGatewayAddress(params.chainId)
       const aToken = new Contract(aTokenAddress, ATOKEN_ABI, provider)
-      const aTokenBalance = await this.withRetry(() => aToken.balanceOf(from))
+      const aTokenBalance = await withRetry(() => aToken.balanceOf(from))
       const withdrawAmount =
         params.amount === "max"
           ? aTokenBalance
@@ -470,7 +449,7 @@ export class AaveService {
           "approve",
           [gatewayAddress, withdrawAmount],
         )
-        approveGas = await this.withRetry(() =>
+        approveGas = await withRetry(() =>
           provider.estimateGas({ from, to: aTokenAddress, data: approveData }),
         )
         approveGas = (approveGas * BigInt(120)) / BigInt(100)
@@ -495,7 +474,7 @@ export class AaveService {
         "withdraw",
         [params.asset, withdrawAmount, from],
       )
-      gasUsed = await this.withRetry(() =>
+      gasUsed = await withRetry(() =>
         provider.estimateGas({
           from,
           to: this.getPoolAddress(params.chainId),
@@ -504,7 +483,7 @@ export class AaveService {
       )
     }
 
-    const feeData = await this.withRetry(() => provider.getFeeData())
+    const feeData = await withRetry(() => provider.getFeeData())
     const maxFeePerGas = feeData.maxFeePerGas ?? BigInt(0)
     const maxPriorityFeePerGas = feeData.maxPriorityFeePerGas ?? BigInt(0)
     const networkFee = gasUsed * maxFeePerGas
@@ -591,8 +570,10 @@ export class AaveService {
       request,
     )
     const provider = service["provider"]
-    const response = await provider.broadcastTransaction(signed)
-    await this.withRetry(() => response.wait())
+    const response = await withRetry(() =>
+      provider.broadcastTransaction(signed),
+    )
+    await withRetry(() => response.wait())
     return response
   }
 
@@ -641,8 +622,10 @@ export class AaveService {
       identity,
       request,
     )
-    const response = await provider.broadcastTransaction(signed)
-    await this.withRetry(() => response.wait())
+    const response = await withRetry(() =>
+      provider.broadcastTransaction(signed),
+    )
+    await withRetry(() => response.wait())
     return response
   }
 
@@ -682,7 +665,7 @@ export class AaveService {
 
     // Re-estimate after allowance is set — pre-estimate falls back to 200k
     // because aToken transferFrom reverts without allowance in simulation
-    const withdrawGasEstimate = await this.withRetry(() =>
+    const withdrawGasEstimate = await withRetry(() =>
       provider.estimateGas({ from, to: gatewayAddress, data }),
     )
     const withdrawGas = (withdrawGasEstimate * BigInt(120)) / BigInt(100)
@@ -711,8 +694,10 @@ export class AaveService {
       identity,
       request,
     )
-    const response = await provider.broadcastTransaction(signed)
-    await this.withRetry(() => response.wait())
+    const response = await withRetry(() =>
+      provider.broadcastTransaction(signed),
+    )
+    await withRetry(() => response.wait())
     return response
   }
 
@@ -752,8 +737,10 @@ export class AaveService {
       identity,
       request,
     )
-    const response = await provider.broadcastTransaction(signed)
-    await this.withRetry(() => response.wait())
+    const response = await withRetry(() =>
+      provider.broadcastTransaction(signed),
+    )
+    await withRetry(() => response.wait())
     return response
   }
 
@@ -779,8 +766,8 @@ export class AaveService {
 
     const [nonce, feeData, estimatedGas] = await Promise.all([
       service.getTransactionCount(from),
-      provider.getFeeData(),
-      this.withRetry(() => provider.estimateGas({ from, to: token, data })),
+      withRetry(() => provider.getFeeData()),
+      withRetry(() => provider.estimateGas({ from, to: token, data })),
     ])
     const gas = (estimatedGas * BigInt(120)) / BigInt(100)
 
@@ -800,8 +787,10 @@ export class AaveService {
       identity,
       request,
     )
-    const response = await provider.broadcastTransaction(signed)
-    await this.withRetry(() => response.wait())
+    const response = await withRetry(() =>
+      provider.broadcastTransaction(signed),
+    )
+    await withRetry(() => response.wait())
 
     // Return the next nonce directly instead of re-querying the RPC node —
     // some providers lag behind their own just-confirmed transactions, which
@@ -831,11 +820,13 @@ export class AaveService {
     const maxAllowance = zeroPadValue("0x" + MaxUint256.toString(16), 32)
 
     try {
-      const result = await provider.send("eth_estimateGas", [
-        { from, to, data },
-        "latest",
-        { [token]: { stateDiff: { [storageKey]: maxAllowance } } },
-      ])
+      const result = await withRetry(() =>
+        provider.send("eth_estimateGas", [
+          { from, to, data },
+          "latest",
+          { [token]: { stateDiff: { [storageKey]: maxAllowance } } },
+        ]),
+      )
       return BigInt(result)
     } catch {
       // Fallback: AAVE v3 ERC-20 supply uses ~250 000 gas consistently

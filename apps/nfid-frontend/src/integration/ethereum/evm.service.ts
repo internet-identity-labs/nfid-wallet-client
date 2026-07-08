@@ -56,6 +56,7 @@ import {
 import { KEY_ETH_ADDRESS } from "packages/integration/src/lib/authentication/storage"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { ALCHEMY_CHAIN_MAP } from "../nft/constants/constants"
+import { withRetry } from "./utils"
 
 export type EvmNftStandard = "ERC-721" | "ERC-1155" | "ERC-404"
 
@@ -330,7 +331,7 @@ export abstract class EVMService {
 
   //retrieve fee data from provider
   private async getFeeData(): Promise<FeeData> {
-    const feeData = await this.provider.getFeeData()
+    const feeData = withRetry(() => this.provider.getFeeData())
     return feeData
   }
 
@@ -341,12 +342,14 @@ export abstract class EVMService {
     value,
     data,
   }: TransactionRequest): Promise<bigint> {
-    return await this.provider.estimateGas({
-      to,
-      value,
-      from,
-      data,
-    })
+    return await withRetry(() =>
+      this.provider.estimateGas({
+        to,
+        value,
+        from,
+        data,
+      }),
+    )
   }
 
   //deposit eth to ckETH
@@ -1147,7 +1150,10 @@ export abstract class EVMService {
   }
 
   public async getTransactionCount(address: Address): Promise<number> {
-    const transactionCount = await this.provider.getTransactionCount(address)
+    const transactionCount = await this.provider.getTransactionCount(
+      address,
+      "pending",
+    )
     return transactionCount
   }
 
@@ -1159,20 +1165,17 @@ export abstract class EVMService {
   }
 
   private async getBaseFee() {
-    const block = await this.provider.getBlock("latest")
+    const block = await withRetry(() => this.provider.getBlock("latest"))
     return block?.baseFeePerGas ?? BigInt(0)
   }
 
   private async sendTransaction(
     signedTransaction: string,
   ): Promise<TransactionResponse> {
-    try {
-      const response =
-        await this.provider.broadcastTransaction(signedTransaction)
-      await response.wait()
-      return response
-    } catch (e) {
-      throw e
-    }
+    const response = await withRetry(() =>
+      this.provider.broadcastTransaction(signedTransaction),
+    )
+    await withRetry(() => response.wait())
+    return response
   }
 }

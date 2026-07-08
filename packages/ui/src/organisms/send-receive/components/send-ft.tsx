@@ -17,6 +17,7 @@ import {
 import {
   BTC_NATIVE_ID,
   ETH_NATIVE_ID,
+  EVM_NATIVE,
   ICP_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 
@@ -29,7 +30,11 @@ import { FT } from "frontend/integration/ft/ft"
 import { IModalType } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { SendSuccessUi } from "./send-success"
-import { ChainId, isEvmToken } from "@nfid/integration/token/icrc1/enum/enums"
+import {
+  ChainId,
+  isErc20Token,
+  isEvmToken,
+} from "@nfid/integration/token/icrc1/enum/enums"
 import clsx from "clsx"
 import {
   FtSearchRequest,
@@ -391,7 +396,8 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
           !amount ||
           !to ||
           (token?.getTokenAddress() === BTC_NATIVE_ID && !fee) ||
-          (token?.getTokenAddress() === ETH_NATIVE_ID && !fee)
+          (token?.getTokenAddress() === ETH_NATIVE_ID && !fee) ||
+          isFeeLoading
         }
         type="primary"
         id="sendButton"
@@ -400,7 +406,9 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         icon={
           isFeeLoading &&
           (token.getTokenAddress() === BTC_NATIVE_ID ||
-            token.getTokenAddress() === ETH_NATIVE_ID) &&
+            token.getTokenAddress() === ETH_NATIVE_ID ||
+            token.getTokenAddress() === EVM_NATIVE ||
+            isErc20Token(token.getChainId(), token.getTokenCategory())) &&
           !errors["amount"] &&
           !feeError ? (
             <Spinner className="w-5 h-5 text-white" />

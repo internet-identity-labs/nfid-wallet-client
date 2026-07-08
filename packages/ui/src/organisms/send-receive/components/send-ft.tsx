@@ -1,5 +1,6 @@
+import { truncateString } from "@nfid-frontend/utils"
 import { Spinner } from "packages/ui/src/atoms/spinner"
-import { Dispatch, FC, SetStateAction, useState } from "react"
+import { Dispatch, FC, SetStateAction, useMemo, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 
@@ -32,9 +33,23 @@ import { ChainId, isEvmToken } from "@nfid/integration/token/icrc1/enum/enums"
 import clsx from "clsx"
 import {
   FtSearchRequest,
+  UserAddress,
+  UserAddressSaveRequest,
+  UserAddressUpdateRequest,
   UserAddressPreview,
 } from "frontend/integration/address-book"
 import { ChooseAddressModal } from "packages/ui/src/molecules/choose-modal/address-modal"
+import { SendAddressBook } from "./send-address-book"
+import {
+  AddressBookModal,
+  PredefinedAddress,
+} from "../../address-book/AddressBookModal"
+import {
+  AddressBookAction,
+  getAddressBookFtOptions,
+} from "frontend/features/transfer-modal/utils"
+import { PRINCIPAL_LENGTH } from "packages/constants"
+import { ChooseAvailableAddressModal } from "packages/ui/src/molecules/choose-modal/available-address-modal"
 
 const MAX_NOTE_LENGTH = 60
 
@@ -60,8 +75,10 @@ export interface TransferFTUiProps {
   fee?: bigint
   isFeeLoading: boolean
   setSkipFeeCalculation: () => void
-  addresses: IGroupedSendAddress[] | undefined
+  addresses: UserAddress[] | undefined
   searchAddress: (req: FtSearchRequest) => Promise<UserAddressPreview[]>
+  onCreateContact: (request: UserAddressSaveRequest) => Promise<void>
+  onUpdateContact: (contact: UserAddressUpdateRequest) => Promise<void>
 }
 
 export const TransferFTUi: FC<TransferFTUiProps> = ({
@@ -88,8 +105,17 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   setSkipFeeCalculation,
   addresses,
   searchAddress,
+  onCreateContact,
+  onUpdateContact,
 }) => {
   const [isFromResponsive, setIsFromResponsive] = useState(false)
+  const [isAddressBookOpen, setIsAddressBookOpen] = useState(false)
+  const [isCreateAddressBookModalOpen, setIsCreateAddressBookModalOpen] =
+    useState(false)
+  const [isUpdateAddressListModalOpen, setIsUpdateAddressListModalOpen] =
+    useState(false)
+
+  const [addressToEdit, setAddressToEdit] = useState("")
   const [noteLength, setNoteLength] = useState(0)
   const {
     watch,
@@ -101,6 +127,84 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   const to = watch("to")
   const isBtc = token?.getChainId() === ChainId.BTC
   const isEth = token?.getChainId() === ChainId.ETH
+
+  const { predefinedAddress, contactOptionsToUpdate } = useMemo(() => {
+    if (!token)
+      return { predefinedAddress: undefined, contactOptionsToUpdate: [] }
+
+    const chainId = token.getChainId()
+
+    let predefinedAddress: PredefinedAddress | undefined
+    if (to) {
+      if (chainId === ChainId.ICP)
+        predefinedAddress = {
+          value: to,
+          type: to.length === PRINCIPAL_LENGTH ? "icpWallet" : "accountId",
+        }
+      else if (chainId === ChainId.BTC)
+        predefinedAddress = { value: to, type: "btcWallet" }
+      else if (isEvmToken(chainId))
+        predefinedAddress = { value: to, type: "ethWallet" }
+    }
+
+    const contactOptionsToUpdate = (addresses ?? []).filter((contact) => {
+      if (chainId === ChainId.ICP) {
+        if (predefinedAddress?.type === "icpWallet")
+          return !contact.icpPrincipal
+        return !contact.icpAccountId
+      }
+      if (chainId === ChainId.BTC) return !contact.btc
+      if (isEvmToken(chainId)) return !contact.evm
+      return false
+    })
+
+    return { predefinedAddress, contactOptionsToUpdate }
+  }, [to, token, addresses])
+
+  const addressesOptions = useMemo(() => {
+    return getAddressBookFtOptions(addresses, token)
+  }, [addresses, token])
+
+  const isAddressExists = useMemo(() => {
+    if (!to || !addresses || !token) return false
+    const chainId = token.getChainId()
+
+    return addresses.some((address) => {
+      if (chainId === ChainId.ICP)
+        return (
+          address.icpPrincipal === to ||
+          address.icpAccountId?.toLowerCase() === (to as string).toLowerCase()
+        )
+      if (chainId === ChainId.BTC)
+        return address.btc?.toLowerCase() === (to as string).toLowerCase()
+      if (isEvmToken(chainId))
+        return address.evm?.toLowerCase() === (to as string).toLowerCase()
+      return false
+    })
+  }, [to, addresses, token])
+
+  const onDone = () => {
+    if (isAddressExists) return onClose()
+    setIsAddressBookOpen(true)
+  }
+
+  const availableAddressesOptions = useMemo((): IGroupedSendAddress[] => {
+    return contactOptionsToUpdate.map((address) => {
+      const existingAddress =
+        address.icpPrincipal ??
+        address.icpAccountId ??
+        address.evm ??
+        address.btc
+      return {
+        id: address.id,
+        title: address.name,
+        subTitle: existingAddress
+          ? truncateString(existingAddress, 6, 4)
+          : undefined,
+        value: undefined,
+      }
+    })
+  }, [contactOptionsToUpdate])
 
   if (!token || isLoading)
     return (
@@ -117,7 +221,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
       <SendSuccessUi
         title={`${amount} ${token.getTokenSymbol()}`}
         subTitle={`${token.getTokenRateFormatted(amount || 0)}`}
-        onClose={onClose}
+        onDone={onDone}
         assetImg={token.getTokenLogo() ?? ""}
         isOpen={isSuccessOpen}
         status={status}
@@ -126,6 +230,40 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         isNativeBtc={token.getTokenAddress() === BTC_NATIVE_ID}
         isNativeEth={token.getTokenAddress() === ETH_NATIVE_ID}
         duration={isEvmToken(token.getChainId()) ? 30 : 2}
+      />
+      <SendAddressBook
+        onClose={onClose}
+        isOpen={isAddressBookOpen}
+        hasContactsToUpdate={contactOptionsToUpdate.length > 0}
+        setCreateContactModalOpen={setIsCreateAddressBookModalOpen}
+        setUpdateContactModalOpen={setIsUpdateAddressListModalOpen}
+      />
+      <AddressBookModal
+        mode={AddressBookAction.CREATE}
+        isOpen={isCreateAddressBookModalOpen}
+        onClose={() => setIsCreateAddressBookModalOpen(false)}
+        onSubmit={onCreateContact}
+        addresses={addresses}
+        predefinedAddress={predefinedAddress}
+        showBackButton
+      />
+      <ChooseAvailableAddressModal
+        isAvailableModalVisible={isUpdateAddressListModalOpen}
+        onClose={() => setIsUpdateAddressListModalOpen(false)}
+        title="Add to existing contact"
+        addresses={availableAddressesOptions}
+        token={token}
+        setSelectedAddress={setAddressToEdit}
+      />
+      <AddressBookModal
+        mode={AddressBookAction.EDIT}
+        isOpen={Boolean(addressToEdit)}
+        onClose={() => setAddressToEdit("")}
+        onSubmit={onUpdateContact}
+        addresses={addresses}
+        predefinedAddress={predefinedAddress}
+        address={addresses?.find((a) => a.id === addressToEdit)}
+        showBackButton
       />
       <p className="mb-1 text-xs dark:text-white">Amount to send</p>
       <ChooseFromToken
@@ -168,7 +306,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
       )}
       <ChooseAddressModal<FtSearchRequest>
         title="Send to"
-        addresses={addresses}
+        addresses={addressesOptions}
         placeholder={
           token.getTokenAddress() === ICP_CANISTER_ID
             ? "Recipient wallet address or account ID"

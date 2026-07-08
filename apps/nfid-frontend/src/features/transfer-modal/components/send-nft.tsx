@@ -2,7 +2,7 @@ import toaster from "packages/ui/src/atoms/toast"
 import { TransferNFTUi } from "packages/ui/src/organisms/send-receive/components/send-nft"
 import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 
-import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import { mutate, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchNFT, fetchNFTs } from "frontend/features/collectibles/utils/util"
 import { fetchTokens } from "frontend/features/fungible-token/utils"
@@ -13,14 +13,12 @@ import { isAddress } from "ethers"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 import { FormValues, SendStatus } from "../types"
-import {
-  getAddressBookNftOptions,
-  validateETHAddress,
-  validateNftAddress,
-} from "../utils"
+import { validateETHAddress, validateNftAddress } from "../utils"
 import {
   addressBookFacade,
   NftSearchRequest,
+  UserAddressSaveRequest,
+  UserAddressUpdateRequest,
 } from "frontend/integration/address-book"
 import { FormProvider, useForm } from "react-hook-form"
 import { FeeResponse, FeeResponseETH } from "frontend/integration/ft/utils"
@@ -113,9 +111,17 @@ export const TransferNFT = ({
 
   const isEvmNft = selectedNFT?.getMarketPlace() === MarketPlace.EVM
 
-  const addressesOptions = useMemo(() => {
-    return getAddressBookNftOptions(addresses, isEvmNft)
-  }, [addresses, isEvmNft])
+  const createContact = async (request: UserAddressSaveRequest) => {
+    await addressBookFacade.save(request)
+    await mutate("addressBook")
+    onClose()
+  }
+
+  const updateContact = async (request: UserAddressUpdateRequest) => {
+    await addressBookFacade.update(request)
+    await mutate("addressBook")
+    onClose()
+  }
 
   const searchNftAddress = useCallback(
     (req: NftSearchRequest) =>
@@ -124,7 +130,7 @@ export const TransferNFT = ({
   )
 
   const nativeGasToken = useMemo(() => {
-    if (!selectedNFT || selectedNFT.getMarketPlace() !== MarketPlace.EVM) return
+    if (selectedNFT?.getMarketPlace() !== MarketPlace.EVM) return
     const chainId = selectedNFT.getChainId()
     return initedTokens?.find(
       (t) =>
@@ -152,7 +158,7 @@ export const TransferNFT = ({
   }, [selectedNFT])
 
   useEffect(() => {
-    if (!selectedNFT || selectedNFT.getMarketPlace() !== MarketPlace.EVM) return
+    if (selectedNFT?.getMarketPlace() !== MarketPlace.EVM) return
     if (!to || !isAddress(to) || !ethAddress) return
 
     const chainId = selectedNFT.getChainId()
@@ -300,8 +306,10 @@ export const TransferNFT = ({
         isSuccessOpen={isSuccessOpen}
         onClose={onClose}
         status={status}
-        addresses={addressesOptions}
+        addresses={addresses}
         searchAddress={searchNftAddress}
+        onCreateContact={createContact}
+        onUpdateContact={updateContact}
         nativeToken={nativeGasToken}
         isFeeLoading={isFeeLoading}
         feeError={feeError}

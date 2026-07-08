@@ -19,7 +19,12 @@ import {
   transfer as transferICP,
 } from "@nfid/integration/token/icp"
 import { getMintingAccount, transferICRC1 } from "@nfid/integration/token/icrc1"
-import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import {
+  mutateWithTimestamp,
+  useSWR,
+  useSWRWithTimestamp,
+  mutate,
+} from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
@@ -35,7 +40,6 @@ import {
   getVaultsAccountsOptions,
   getValidatorByTokenAddress,
   updateCachedInitedTokens,
-  getAddressBookFtOptions,
   mutateTokensCacheMergingBalances,
   isTokenWithBalance,
   isInsufficientEthForGas,
@@ -59,6 +63,8 @@ import { TransactionResponse, isAddress } from "ethers"
 import {
   addressBookFacade,
   FtSearchRequest,
+  UserAddressSaveRequest,
+  UserAddressUpdateRequest,
 } from "frontend/integration/address-book"
 import { noteService } from "frontend/integration/note/note-service"
 import {
@@ -82,6 +88,7 @@ interface ITransferFT {
   setErrorMessage: (message: string) => void
   setSuccessMessage: (message: string) => void
   onError: (value: boolean) => void
+  setIsSendSuccess: (value: boolean) => void
 }
 
 export const TransferFT = ({
@@ -92,6 +99,7 @@ export const TransferFT = ({
   setErrorMessage,
   setSuccessMessage,
   onError,
+  setIsSendSuccess,
 }: ITransferFT) => {
   const [tokenSelected, setTokenSelected] =
     useState<SelectedToken>(preselectedToken)
@@ -126,6 +134,22 @@ export const TransferFT = ({
   const amount = watch("amount")
   const to = watch("to")
   const note = watch("note")
+
+  const { data: addresses } = useSWR("addressBook", async () =>
+    addressBookFacade.findAll(),
+  )
+
+  const createContact = async (request: UserAddressSaveRequest) => {
+    await addressBookFacade.save(request)
+    await mutate("addressBook")
+    onClose()
+  }
+
+  const updateContact = async (request: UserAddressUpdateRequest) => {
+    await addressBookFacade.update(request)
+    await mutate("addressBook")
+    onClose()
+  }
 
   const isIdentityReady = !!identity && !isIdentityLoading
   const parsedAmount = Number(amount)
@@ -190,14 +214,6 @@ export const TransferFT = ({
       (balance) => balance.address === selectedVaultsAccountAddress,
     )
   }, [selectedVaultsAccountAddress, balances])
-
-  const { data: addresses } = useSWR("addressBook", async () =>
-    addressBookFacade.findAll(),
-  )
-
-  const addressesOptions = useMemo(() => {
-    return getAddressBookFtOptions(addresses, token)
-  }, [addresses, token])
 
   const searchFtAddress = async (req: FtSearchRequest) => {
     return addressBookFacade.ftSearch(req)
@@ -319,6 +335,8 @@ export const TransferFT = ({
 
   const submit = useCallback(async () => {
     if (!token) return toaster.error("No selected token")
+
+    setIsSendSuccess(true)
 
     if (isEvmToken(token.getChainId())) {
       if (!identity || !fee) return
@@ -635,15 +653,17 @@ export const TransferFT = ({
         accountsOptions={vaultsAccountsOptions}
         vaultsBalance={balance?.balance["ICP"]}
         status={status}
-        isSuccessOpen={isSuccessOpen}
+        isSuccessOpen={true}
         onClose={onClose}
         error={error}
         feeError={feeError}
         fee={fee?.getFee()}
         isFeeLoading={isFeeLoading || isIdentityLoading || !identity}
         setSkipFeeCalculation={triggerSkipCaclulation}
-        addresses={addressesOptions}
+        addresses={addresses}
         searchAddress={searchFtAddress}
+        onCreateContact={createContact}
+        onUpdateContact={updateContact}
       />
     </FormProvider>
   )

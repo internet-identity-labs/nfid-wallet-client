@@ -132,7 +132,23 @@ Multi-stage execution: deposit → swap → withdraw. Each stage is tracked by `
 
 ---
 
-## 8. Key Files
+## 8. Token Resolution (`resolveIcrcTokens`)
+
+`fromToken` and `toToken` are both resolved via a shared `resolveIcrcTokens` fallback to handle 0-balance tokens that would otherwise cause an infinite loader:
+
+```
+filteredTokens (balance-filtered initialized tokens)
+  → initedTokens (all initialized tokens)
+    → tokens (full raw list)
+```
+
+Match criteria: `token.getTokenAddress() === address && token.getChainId() === ChainId.ICP`.
+
+The balance-enriched version is preferred when available; a 0-balance token still resolves so the form renders correctly.
+
+---
+
+## 9. Key Files
 
 | File                                                         | Role                            |
 | ------------------------------------------------------------ | ------------------------------- |

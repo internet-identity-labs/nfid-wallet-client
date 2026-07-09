@@ -22,6 +22,7 @@ import { getMintingAccount, transferICRC1 } from "@nfid/integration/token/icrc1"
 import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
+import { FT } from "frontend/integration/ft/ft"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
@@ -177,13 +178,24 @@ export const TransferFT = ({
     return tokensWithBalance
   }, [initedTokens])
 
-  const token = useMemo(() => {
-    return filteredTokens?.find(
-      (token) =>
-        token.getTokenAddress() === tokenSelected.address &&
-        token.getChainId() === tokenSelected.chainId,
-    )
-  }, [tokenSelected, filteredTokens])
+  const resolveToken = useCallback(
+    (selected: SelectedToken): FT | undefined => {
+      const isMatch = (token: FT) =>
+        token.getTokenAddress() === selected.address &&
+        token.getChainId() === selected.chainId
+      return (
+        filteredTokens?.find(isMatch) ??
+        initedTokens?.find(isMatch) ??
+        tokens.find(isMatch)
+      )
+    },
+    [filteredTokens, initedTokens, tokens],
+  )
+
+  const token = useMemo(
+    () => resolveToken(tokenSelected),
+    [tokenSelected, resolveToken],
+  )
 
   const balance = useMemo(() => {
     return balances?.find(

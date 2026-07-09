@@ -12,6 +12,7 @@ import { Category } from "@nfid/integration/token/icrc1/enum/enums"
 import { mutate, mutateWithTimestamp, useSWRWithTimestamp } from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
+import { FT } from "frontend/integration/ft/ft"
 import { fetchStakedTokens } from "frontend/features/staking/utils"
 import { useIdentity } from "frontend/hooks/identity"
 import { stakingService } from "frontend/integration/staking/service/staking-service-impl"
@@ -73,11 +74,23 @@ export const StakeFT = ({
     )
   }, [initedTokens])
 
-  const token = useMemo(() => {
-    return filteredTokens.find(
-      (token) => token.getTokenAddress() === tokenAddress,
-    )
-  }, [tokenAddress, filteredTokens])
+  const resolveToken = useCallback(
+    (address: string | undefined): FT | undefined => {
+      if (!address) return undefined
+      const isMatch = (token: FT) => token.getTokenAddress() === address
+      return (
+        filteredTokens.find(isMatch) ??
+        initedTokens?.find(isMatch) ??
+        tokens.find(isMatch)
+      )
+    },
+    [filteredTokens, initedTokens, tokens],
+  )
+
+  const token = useMemo(
+    () => resolveToken(tokenAddress),
+    [tokenAddress, resolveToken],
+  )
 
   const formMethods = useForm<FormValues>({
     mode: "all",

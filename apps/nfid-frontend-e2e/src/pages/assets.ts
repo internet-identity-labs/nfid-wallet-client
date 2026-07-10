@@ -72,7 +72,7 @@ export class Assets extends Page {
   }
 
   get backButtonInSendWindow() {
-    return $("svg.mr-2")
+    return $("#choose-nft-back-button")
   }
 
   get swapButton() {
@@ -80,9 +80,7 @@ export class Assets extends Page {
   }
 
   get tokenToSendBackButton() {
-    return $(
-      `//*[@id="token-to-send-title"]/parent::div/preceding-sibling::div[1]`,
-    )
+    return $("#token-to-send-title-back-button")
   }
 
   get addressBook() {

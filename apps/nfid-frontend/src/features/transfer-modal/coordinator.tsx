@@ -102,6 +102,7 @@ export const TransferModalCoordinator = () => {
               setErrorMessage={setErrorMessage}
               setSuccessMessage={setSuccessMessage}
               onError={setHasBtcError}
+              setIsSendSuccess={setIsSuccessTx}
             />
           </motion.div>
         )}

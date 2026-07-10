@@ -25,7 +25,7 @@ const ETH_NATIVE_DESCRIPTION =
 export interface SuccessProps {
   title: string
   subTitle?: string
-  onClose?: () => void
+  onDone?: () => void
   assetImg: string
   duration?: number
   isOpen: boolean
@@ -41,7 +41,7 @@ const allAnimations = [Success1, Success2, Successs3, Fail]
 export const SendSuccessUi: React.FC<SuccessProps> = ({
   title,
   subTitle = "0.00 USD",
-  onClose,
+  onDone,
   assetImg,
   duration = 2,
   assetImageClassname,
@@ -146,7 +146,7 @@ export const SendSuccessUi: React.FC<SuccessProps> = ({
           type="primary"
           block
           className={clsx(error ? "mt-[20px]" : "mt-[30px]")}
-          onClick={onClose}
+          onClick={onDone}
         >
           Done
         </Button>

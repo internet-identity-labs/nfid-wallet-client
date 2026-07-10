@@ -224,6 +224,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
         <div>
           <div className="flex items-center w-full">
             <div
+              id={`${id}-back-button`}
               className="cursor-pointer"
               onClick={() => setIsModalVisible(false)}
             >

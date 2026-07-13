@@ -108,14 +108,28 @@ export const Bridge = ({
       { revalidateOnFocus: false },
     )
 
-  const fromToken = useMemo(() => {
-    if (!filteredFromTokens) return
-    return filteredFromTokens.find(
-      (token: FT) =>
-        token.getTokenAddress() === fromTokenAddress &&
-        (fromChainId === undefined || token.getChainId() === fromChainId),
-    )
-  }, [fromTokenAddress, fromChainId, filteredFromTokens])
+  const resolveToken = useCallback(
+    (
+      address: string,
+      chainId: ChainId | undefined,
+      primary: FT[] | undefined,
+    ): FT | undefined => {
+      const isMatch = (token: FT) =>
+        token.getTokenAddress() === address &&
+        (chainId === undefined || token.getChainId() === chainId)
+      return (
+        primary?.find(isMatch) ??
+        initedTokens?.find(isMatch) ??
+        tokens.find(isMatch)
+      )
+    },
+    [initedTokens, tokens],
+  )
+
+  const fromToken = useMemo(
+    () => resolveToken(fromTokenAddress, fromChainId, filteredFromTokens),
+    [fromTokenAddress, fromChainId, filteredFromTokens, resolveToken],
+  )
 
   const fromTokenId = fromToken
     ? `${fromToken.getChainId()}:${fromToken.getTokenAddress()}`
@@ -129,14 +143,10 @@ export const Bridge = ({
     { revalidateOnFocus: false },
   )
 
-  const toToken = useMemo(() => {
-    if (!filteredToTokens) return
-    return filteredToTokens.find(
-      (token: FT) =>
-        token.getTokenAddress() === toTokenAddress &&
-        (toChainId === undefined || token.getChainId() === toChainId),
-    )
-  }, [toTokenAddress, toChainId, filteredToTokens])
+  const toToken = useMemo(
+    () => resolveToken(toTokenAddress, toChainId, filteredToTokens),
+    [toTokenAddress, toChainId, filteredToTokens, resolveToken],
+  )
 
   const formMethods = useForm<FormValues>({
     mode: "all",

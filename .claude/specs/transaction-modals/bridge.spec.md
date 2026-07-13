@@ -208,7 +208,23 @@ Uses ICP **chain-fusion signer** — no MetaMask or browser wallet.
 
 ---
 
-## 8. Token Filtering Rules
+## 8. Token Resolution (`resolveToken`)
+
+`fromToken` and `toToken` are both resolved via a shared `resolveToken` fallback to handle 0-balance tokens that would otherwise cause an infinite loader:
+
+```
+primary (filteredFromTokens / filteredToTokens — LiFi-validated, balance-enriched)
+  → initedTokens (all initialized tokens)
+    → tokens (full raw list)
+```
+
+Match criteria: `token.getTokenAddress() === address && (chainId === undefined || token.getChainId() === chainId)`.
+
+The balance-enriched version is preferred when available; a 0-balance token still resolves so the form renders correctly.
+
+---
+
+## 9. Token Filtering Rules
 
 ### Source tokens
 

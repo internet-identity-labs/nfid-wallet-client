@@ -91,6 +91,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   const [isMaxClicked, setIsMaxClicked] = useState(false)
   const [isFeeLoading, setIsFeeLoading] = useState(false)
   const isChangingToken = useRef(false)
+  const isMaxAmountActive = useRef(false)
   const isDarkTheme = useDarkTheme()
 
   const {
@@ -162,7 +163,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     if (
       feeFormatted !== undefined &&
       inputAmountValue.trim() &&
-      !isChangingToken.current
+      !isChangingToken.current &&
+      !isMaxAmountActive.current
     ) {
       trigger("amount")
     }
@@ -280,6 +282,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     )
 
     onMaxResolved?.()
+    isMaxAmountActive.current = true
     setInputAmountValue(formattedValue)
     setValue("amount", formattedValue, { shouldValidate: true })
 
@@ -337,7 +340,10 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             decimals={decimals}
             value={inputAmountValue}
             {...register("amount", {
-              onChange: (e) => setInputAmountValue(e.target.value),
+              onChange: (e) => {
+                isMaxAmountActive.current = false
+                setInputAmountValue(e.target.value)
+              },
               validate: (value) => {
                 if (isChangingToken.current) {
                   return true

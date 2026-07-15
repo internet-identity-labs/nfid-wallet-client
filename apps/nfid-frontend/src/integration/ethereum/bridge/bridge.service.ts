@@ -177,14 +177,16 @@ class BridgeService {
       .toString()
 
     if (isMaxAmount) {
-      const probeQuote = await getQuote(this.client!, {
-        fromAddress: this.address!,
-        fromChain,
-        toChain,
-        fromToken: fromTokenAddress,
-        toToken: toTokenAddress,
-        fromAmount: amount,
-      })
+      const probeQuote = await withRetry(() =>
+        getQuote(this.client!, {
+          fromAddress: this.address!,
+          fromChain,
+          toChain,
+          fromToken: fromTokenAddress,
+          toToken: toTokenAddress,
+          fromAmount: amount,
+        }),
+      )
 
       const probeTx = probeQuote.transactionRequest
       if (probeTx?.gasLimit && BigInt(probeTx.value ?? 0) > BigInt(0)) {
@@ -199,14 +201,16 @@ class BridgeService {
       }
     }
 
-    const quote = await getQuote(this.client!, {
-      fromAddress: this.address!,
-      fromChain,
-      toChain,
-      fromToken: fromTokenAddress,
-      toToken: toTokenAddress,
-      fromAmount: amount,
-    })
+    const quote = await withRetry(() =>
+      getQuote(this.client!, {
+        fromAddress: this.address!,
+        fromChain,
+        toChain,
+        fromToken: fromTokenAddress,
+        toToken: toTokenAddress,
+        fromAmount: amount,
+      }),
+    )
     await this.validateTransaction(quote)
 
     const quoteEstimate = quote.estimate

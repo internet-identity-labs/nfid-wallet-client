@@ -106,7 +106,7 @@
     "stickyfilljs": "2.1.0",
     "swr": "2.4.1",
     "tweetnacl": "1.0.3",
-    "uuid": "14.0.0",
+    "uuid": "14.0.1",
     "wouter": "3.9.0",
     "xstate": "4.38.3"
   },

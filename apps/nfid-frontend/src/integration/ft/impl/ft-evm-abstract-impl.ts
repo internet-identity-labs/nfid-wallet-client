@@ -2,6 +2,8 @@ import { Principal } from "@icp-sdk/core/principal"
 import BigNumber from "bignumber.js"
 import { SignIdentity } from "@icp-sdk/core/agent"
 import { FTImpl } from "./ft-impl"
+import { formatUnits } from "ethers"
+
 import {
   CKETH_LEDGER_CANISTER_ID,
   TRIM_ZEROS,
@@ -64,6 +66,14 @@ export abstract class FTEvmAbstractImpl extends FTImpl {
     )
 
     return new FeeResponseETH(ethFeeData)
+  }
+
+  getTokenFeeFormatted(fee: bigint): string {
+    if (fee == null) return `0 ${this.symbol}`
+    const formatted = new BigNumber(formatUnits(fee, this.decimals))
+      .toFixed(this.decimals)
+      .replace(TRIM_ZEROS, "")
+    return `${formatted} ${this.symbol}`
   }
 
   // Native EVM tokens (ETH, BNB, POL, etc.) do not support ERC20 allowances

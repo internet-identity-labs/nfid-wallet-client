@@ -17,7 +17,7 @@ Transfers a fungible token or NFT to an external address across all supported ch
 
 - ICP native, ICRC1 tokens
 - BTC (native)
-- ETH (native) and ERC20 tokens (Arbitrum, Base, BNB, Polygon)
+- ETH (native) and ERC20 tokens (Arbitrum, Base, Ethereum, Polygon)
 - NFT transfers
 - Vault wallet support (`isOpenedFromVaults`)
 - Address book autocomplete
@@ -61,7 +61,13 @@ Token page / Vault  ──[Send]──▶  Send modal opens
 | ICP, ICRC1, BTC, ETH | `MAX_AMOUNT − Fee`          | Sets full balance first; fee fetched async; input updated to `balance − fee` on arrival |
 | ERC20                | `MAX_AMOUNT` (full balance) | Fee is denominated in native ETH, not the token itself — no subtraction needed          |
 
-**Implementation note:** `choose-from-token.tsx` handles this via the `isMaxClicked` flag. For SEND modal type, clicking Max immediately sets the input to full balance and starts a fee load; when `feeFormatted` arrives the `useEffect` at line 187 subtracts it and clears the flag. For ERC20 the effective fee in the token's own units is 0, so the result is the full balance.
+**Implementation note:** `choose-from-token.tsx` handles this via the `isMaxClicked` flag. For SEND modal type, clicking Max immediately sets the input to full balance and starts a fee load; when `feeFormatted` arrives the `useEffect` subtracts it and clears the flag. For ERC20 the effective fee in the token's own units is 0, so the result is the full balance.
+
+### Insufficient funds on Max (EVM native tokens only)
+
+EVM native token fees are not known until gas estimation completes asynchronously. If the fee that arrives after Max is clicked exceeds the balance (i.e. `balance − fee < 0`), the input is reset to empty and a field-level **"Insufficient funds"** error is shown. The confirm button stays disabled.
+
+This guard only fires for `modalType === SEND`, `isEvmToken`, and non-ERC20 category — ICP and BTC are excluded because their `isMaxAvailable` check already blocks Max when `balance < fee`.
 
 ---
 

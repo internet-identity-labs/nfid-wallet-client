@@ -331,7 +331,7 @@ export abstract class EVMService {
 
   //retrieve fee data from provider
   private async getFeeData(): Promise<FeeData> {
-    const feeData = withRetry(() => this.provider.getFeeData())
+    const feeData = await withRetry(() => this.provider.getFeeData())
     return feeData
   }
 

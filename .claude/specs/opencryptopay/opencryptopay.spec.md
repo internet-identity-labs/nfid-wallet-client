@@ -249,7 +249,8 @@ class OpenCryptoPayService {
    * @throws OCPInsufficientBalanceError - balance insufficient (including network fee)
    * @throws OCPTransactionSignError - transaction signing error
    * @throws OCPSubmitError - OCP returned an error on submit
-   * @throws OCPNetworkError - network error during submit
+   * @throws OCPNetworkError - network error during submit (non-timeout)
+   * @throws OCPSubmitTimeoutError - submit POST timed out (30 s); tx may be in-flight
    */
   async executePayment(
     quote: OCPQuote,
@@ -335,6 +336,13 @@ class OCPTransactionSignError extends OCPError {
 class OCPSubmitError extends OCPError {
   // OCP API returned an error on transaction submit
   constructor(quoteId: string, public readonly apiMessage: string)
+}
+
+class OCPSubmitTimeoutError extends OCPError {
+  // The signed tx was POSTed to OCP but the HTTP response timed out (30 s).
+  // The transaction may already be in-flight — do not treat as a failure
+  // and do not allow a retry (duplicate tx risk).
+  constructor(url: string)
 }
 ```
 

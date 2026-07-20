@@ -21,6 +21,7 @@ import {
   OCPInsufficientBalanceError,
   OCPTransactionSignError,
   OCPSubmitError,
+  OCPSubmitTimeoutError,
 } from "./errors"
 import {
   OCPNetwork,
@@ -43,6 +44,7 @@ export const OCP_NETWORK_TO_CHAIN_ID: Record<OCPNetwork, ChainId> = {
 }
 
 const REQUEST_TIMEOUT_MS = 10_000
+const SUBMIT_TIMEOUT_MS = 30_000
 const ICP_FEE_E8S = BigInt(10_000)
 const EVM_FEE_BUFFER_PCT = BigInt(120)
 
@@ -668,7 +670,7 @@ export class OpenCryptoPayService {
     }
 
     const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
+    const timeout = setTimeout(() => controller.abort(), SUBMIT_TIMEOUT_MS)
 
     try {
       const response = await fetch(url.toString(), {
@@ -684,11 +686,11 @@ export class OpenCryptoPayService {
     } catch (e) {
       if (e instanceof OCPSubmitError) throw e
       const isTimeout = e instanceof DOMException && e.name === "AbortError"
-      console.error(
-        isTimeout ? "OCP submit timeout" : "OCP submit network error",
-        url.toString(),
-        e,
-      )
+      if (isTimeout) {
+        console.error("OCP submit timeout", url.toString(), e)
+        throw new OCPSubmitTimeoutError(url.toString())
+      }
+      console.error("OCP submit network error", url.toString(), e)
       throw new OCPNetworkError(url.toString())
     } finally {
       clearTimeout(timeout)

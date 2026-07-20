@@ -13,7 +13,7 @@ export async function withRetry<T>(
           e.message.includes("Too Many Requests") ||
           e.message.includes("-32005"))
       if (!is429 || attempt === retries - 1) throw e
-      await new Promise((r) => setTimeout(r, delayMs * (attempt + 1)))
+      await new Promise((r) => setTimeout(r, delayMs * 2 ** attempt))
     }
   }
   throw new Error("Unreachable")

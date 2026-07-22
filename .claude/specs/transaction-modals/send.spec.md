@@ -71,7 +71,33 @@ This guard only fires for `modalType === SEND`, `isEvmToken`, and non-ERC20 cate
 
 ---
 
-## 5. UI Components
+## 5. Fee Estimation Behaviour
+
+### Debounce + stale-amount guard (BTC and EVM)
+
+Fee estimation is expensive (a node RPC call) so it is debounced 1 000 ms via `debouncedAmount` state. A ref `currentAmountRef` is kept in sync with the raw `amount` on every render (direct assignment, not a `useEffect`) so it always reflects the latest keystroke.
+
+Before calling `fethcBtcFee` / `fetchEvmFee` the effect checks:
+
+```
+if (currentAmountRef.current !== debouncedAmount) return
+```
+
+If the user changed the amount after the debounce fired but before the fee effect ran, `debouncedAmount` is stale and the call is skipped entirely. The next debounce fire (for the newer value) will restart the cycle.
+
+### In-flight cancellation (`isCancelled`)
+
+The ref guard blocks calls that haven't started yet. For a call already in-flight when a dependency changes, the effect's cleanup sets `isCancelled = true`. Every state update inside `try`, `catch`, and `finally` is gated on `!isCancelled`, so a stale response can never update form state after the effect has been superseded.
+
+Both guards are applied consistently to both BTC and EVM paths. A single `return () => { isCancelled = true }` at the bottom of the effect is the only cleanup needed — it is only reachable after an async call was actually started.
+
+### ICP
+
+ICP fee is a fixed protocol constant fetched once on token selection; it is not debounced and not amount-dependent.
+
+---
+
+## 6. UI Components
 
 ### Send Form
 
@@ -87,7 +113,7 @@ This guard only fires for `modalType === SEND`, `isEvmToken`, and non-ERC20 cate
 
 ---
 
-## 6. State Machine Integration
+## 7. State Machine Integration
 
 **`ModalType`:** `SEND`
 **Machine states:** `SendMachine.SendFT`, `SendMachine.SendNFT`
@@ -114,7 +140,7 @@ This guard only fires for `modalType === SEND`, `isEvmToken`, and non-ERC20 cate
 
 ---
 
-## 7. Service Layer
+## 8. Service Layer
 
 Chain is resolved from `selectedFT.getChainId()`:
 
@@ -128,7 +154,7 @@ Chain is resolved from `selectedFT.getChainId()`:
 
 ---
 
-## 8. Token Resolution (`resolveToken`)
+## 9. Token Resolution (`resolveToken`)
 
 `token` is resolved via a fallback chain to handle 0-balance tokens that would otherwise cause an infinite loader:
 
@@ -144,7 +170,7 @@ The balance-enriched version is preferred when available; a 0-balance token stil
 
 ---
 
-## 9. Key Files
+## 10. Key Files
 
 | File                                                                      | Role                     |
 | ------------------------------------------------------------------------- | ------------------------ |

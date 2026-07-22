@@ -33,6 +33,7 @@ import {
   OCPTransferAmount,
   OCP_NETWORK_TO_CHAIN_ID,
   openCryptoPayService,
+  OCPSubmitTimeoutError,
 } from "frontend/integration/opencryptopay"
 import { exchangeRateService } from "@nfid/integration"
 import { polygonErc20Service } from "frontend/integration/ethereum/polygon/pol-erc20.service"
@@ -301,9 +302,11 @@ export const Pay = ({
       .executePayment(payData.quote, identity)
       .then(() => {
         setSuccessMessage(
-          `Supply ${payData.amount} ${token.getTokenSymbol()} successful`,
+          `Payment ${payData.amount} ${token.getTokenSymbol()} successful`,
         )
         setStatus(SendStatus.COMPLETED)
+        isSubmittingRef.current = false
+
         if (!initedTokens) return
 
         const updatedTokens = getTokensWithUpdatedBalance(
@@ -326,11 +329,19 @@ export const Pay = ({
             (error as Error).message ? (error as Error).message : error
           }`,
         )
+        if (error instanceof OCPSubmitTimeoutError) {
+          // The signed tx was delivered to OCP but the HTTP response timed out
+          // (common on mobile with slow network). The payment is in-flight — treat as submitted
+          // and keep isSubmittingRef.current = true to block a duplicate retry.
+          setSuccessMessage(
+            `Payment ${payData.amount} ${token.getTokenSymbol()} successful`,
+          )
+          setStatus(SendStatus.COMPLETED)
+          return
+        }
         setErrorMessage(DEFAULT_PAY_ERROR)
         setStatus(SendStatus.FAILED)
         setError(error)
-      })
-      .finally(() => {
         isSubmittingRef.current = false
       })
   }, [

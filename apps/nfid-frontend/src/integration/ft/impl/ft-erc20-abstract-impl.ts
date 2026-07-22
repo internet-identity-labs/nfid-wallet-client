@@ -1,25 +1,31 @@
 import { Principal } from "@icp-sdk/core/principal"
 import { FT } from "src/integration/ft/ft"
 import BigNumber from "bignumber.js"
+import { formatUnits } from "ethers"
 import { FTImpl } from "./ft-impl"
 import {
   Erc20Service,
   ERC20TokenInfo,
 } from "frontend/integration/ethereum/erc20-abstract.service"
 import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
+import { exchangeRateService } from "@nfid/integration"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import { Category, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { SignIdentity } from "@icp-sdk/core/agent"
 import { FeeResponseETH } from "../utils"
 import {
+  CKETH_LEDGER_CANISTER_ID,
   ETH_DECIMALS,
   ETH_NATIVE_ID,
   EVM_NATIVE,
   TRIM_ZEROS,
 } from "@nfid/integration/token/constants"
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
+import { formatUsdAmount } from "../../../util/format-usd-amount"
 
 export abstract class FTERC20AbstractImpl extends FTImpl {
+  private ethUsdRate: BigNumber | undefined
+
   constructor(erc20TokenInfo: ERC20TokenInfo) {
     super({
       ledger: erc20TokenInfo.address,
@@ -67,10 +73,12 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
       ? [this.tokenAddress]
       : [...new Set([...(await this.getTokens()), this.tokenAddress])]
 
-    const [balances, usdBalances] = await Promise.all([
+    const [balances, usdBalances, nativeRate] = await Promise.all([
       this.getProvider().getMultipleTokenBalances(ethAddress, ledgers),
       this.getProvider().getUSDPrices(ledgers),
+      this.fetchNativeTokenUsdRate(),
     ])
+    this.ethUsdRate = nativeRate
 
     const balance = balances.find(
       (b) => b.contractAddress === super.getTokenAddress(),
@@ -94,6 +102,13 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
     if (this.tokenBalance !== undefined) {
       this.inited = true
     }
+  }
+
+  protected async fetchNativeTokenUsdRate(): Promise<BigNumber | undefined> {
+    const rate = await exchangeRateService.usdPriceForICRC1(
+      CKETH_LEDGER_CANISTER_ID,
+    )
+    return rate?.value
   }
 
   async getTokenFee(
@@ -123,18 +138,19 @@ export abstract class FTERC20AbstractImpl extends FTImpl {
   }
 
   getTokenFeeFormatted(fee: bigint): string {
-    return `${(Number(fee) / 10 ** ETH_DECIMALS).toLocaleString("en", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: this.decimals,
-    })} ${this.getChainId() === ChainId.POL ? "POL" : "ETH"}`
+    const symbol = this.getChainId() === ChainId.POL ? "POL" : "ETH"
+    if (fee == null) return `0 ${symbol}`
+    const formatted = new BigNumber(formatUnits(fee, ETH_DECIMALS))
+      .toFixed(ETH_DECIMALS)
+      .replace(TRIM_ZEROS, "")
+    return `${formatted} ${symbol}`
   }
 
   getTokenFeeFormattedUsd(fee: bigint): string | undefined {
-    const feeInUsd = this.getTokenRateFormatted(
-      (Number(fee) / 10 ** this.decimals).toString(),
-    )
-
-    return feeInUsd || undefined
+    if (fee == null || !this.ethUsdRate) return undefined
+    const ethAmount = new BigNumber(formatUnits(fee, ETH_DECIMALS))
+    const usdValue = this.ethUsdRate.multipliedBy(ethAmount)
+    return formatUsdAmount(usdValue)
   }
 
   async getIcrc2Allowances(_: Principal): Promise<Array<AllowanceDetailDTO>> {

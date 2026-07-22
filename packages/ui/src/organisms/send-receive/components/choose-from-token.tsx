@@ -100,6 +100,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     formState: { errors },
     trigger,
     clearErrors,
+    setError,
   } = useFormContext()
   const userBalance = balance !== undefined ? balance : token?.getTokenBalance()
   const decimals = token?.getTokenDecimals()
@@ -276,10 +277,23 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
     const balanceNum = new BigNumber(userBalance.toString())
     const feeNum = new BigNumber(feeFormatted.toString())
-    const formattedValue = formatAssetAmountRaw(
-      balanceNum.minus(feeNum),
-      decimals,
-    )
+    const netAmount = balanceNum.minus(feeNum)
+
+    if (
+      netAmount.isLessThan(0) &&
+      modalType === IModalType.SEND &&
+      isEvmToken(token.getChainId()) &&
+      !isErc20Token(token.getChainId(), token.getTokenCategory())
+    ) {
+      setInputAmountValue("")
+      setValue("amount", "", { shouldValidate: false })
+      setError("amount", { message: "Insufficient funds" })
+      setIsFeeLoading(false)
+      setIsMaxClicked(false)
+      return
+    }
+
+    const formattedValue = formatAssetAmountRaw(netAmount, decimals)
 
     onMaxResolved?.()
     isMaxAmountActive.current = true

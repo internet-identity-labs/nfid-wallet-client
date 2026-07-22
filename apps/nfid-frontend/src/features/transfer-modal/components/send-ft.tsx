@@ -133,6 +133,8 @@ export const TransferFT = ({
 
   const { watch } = formMethods
   const amount = watch("amount")
+  const currentAmountRef = useRef(amount)
+  currentAmountRef.current = amount
   const to = watch("to")
   const note = watch("note")
 
@@ -279,9 +281,11 @@ export const TransferFT = ({
         const fee = await token?.getTokenFee(debouncedAmount, identity)
         if (!isCancelled) setFee(fee)
       } catch (e) {
-        console.error(`Fee error: ${e}`)
-        setFeeError((e as Error).message)
-        if (!isCancelled) setFee(undefined)
+        if (!isCancelled) {
+          console.error(`Fee error: ${e}`)
+          setFeeError((e as Error).message)
+          setFee(undefined)
+        }
       } finally {
         if (!isCancelled) setIsFeeLoading(false)
       }
@@ -297,6 +301,7 @@ export const TransferFT = ({
       setFee(undefined)
       setIsFeeLoading(true)
       try {
+        console.log("debouncedAmount", debouncedAmount)
         const fee = await token?.getTokenFee(
           debouncedAmount,
           undefined,
@@ -307,21 +312,23 @@ export const TransferFT = ({
 
         if (!isCancelled) setFee(fee)
       } catch (e) {
-        console.error(`Fee error: ${e}`)
-        setFeeError((e as Error).message)
-        if (!isCancelled) setFee(undefined)
+        if (!isCancelled) {
+          console.error(`Fee error: ${e}`)
+          setFeeError((e as Error).message)
+          setFee(undefined)
+        }
       } finally {
         if (!isCancelled) setIsFeeLoading(false)
       }
     }
 
+    if (currentAmountRef.current !== debouncedAmount) return
+
     if (token?.getChainId() === ChainId.BTC) {
       fethcBtcFee()
-      return
-    }
-
-    if (token && isEvmToken(token.getChainId())) {
+    } else if (token && isEvmToken(token.getChainId())) {
       fetchEvmFee()
+    } else {
       return
     }
 

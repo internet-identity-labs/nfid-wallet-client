@@ -74,7 +74,3 @@ export function validateSeedPhrase(value: string): boolean {
 
   return validateMnemonic(mnemonicWords.join(" "))
 }
-
-export function validateEmailCode(value: string): boolean {
-  return /^\d{6}$/.test(value)
-}

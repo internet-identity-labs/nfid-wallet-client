@@ -1,10 +1,10 @@
-import { BlurredLoader, Input, Loader, ModalComponent } from "@nfid-frontend/ui"
+import { BlurredLoader, ModalComponent } from "@nfid-frontend/ui"
 
 import { Button } from "@nfid-frontend/ui"
 import { DeletionMode, Plan } from "@nfid/integration"
 import clsx from "clsx"
 import { useEffect, useState } from "react"
-import { validateEmailCode, validateSeedPhrase } from "../utils"
+import { validateSeedPhrase } from "../utils"
 
 export interface RemoveAccountModalProps {
   isModalVisible: boolean
@@ -82,36 +82,17 @@ export const RemoveAccountModal = ({
               />
             </>
           )}
-          {currentStep === DeletionMode.EMAIL && (
-            <>
-              <p className="text-sm leading-5">
-                Enter the verification code sent to your email address to
-                confirm account removal:
-              </p>
-              <Input
-                onChange={(e) => {
-                  const value = e.target.value
-                  setValue(value)
-                  if (value) {
-                    setIsValueValid(validateEmailCode(value))
-                  } else {
-                    setIsValueValid(true)
-                  }
-                }}
-                className="mt-1.5"
-                inputClassName={clsx(
-                  !isValueValid && "!border-red-600 focus:!ring-red-600/40",
-                )}
-              />
-            </>
-          )}
           <div className="flex gap-2.5 mt-5">
             <Button className="w-full" type="stroke" onClick={handleClose}>
               Cancel
             </Button>
             <Button
               className="w-full"
-              disabled={!value || !isValueValid}
+              disabled={
+                currentStep === DeletionMode.DEFAULT
+                  ? false
+                  : !value || !isValueValid
+              }
               type="red"
               onClick={() => executeStep(value)}
             >

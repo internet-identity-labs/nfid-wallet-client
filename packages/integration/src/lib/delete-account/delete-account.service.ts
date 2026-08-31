@@ -3,11 +3,9 @@ import { DeletionStepService } from "./dto/deletion-step-service.dto"
 import { Plan } from "./dto/plan.dto"
 import { DeletionMode } from "./enum/deletion-mode.enum"
 import { DeletionError } from "./error/deletion.error"
-import { EmailAlreadyDeletedError } from "./error/email-already-deleted.error"
 import { im, userRegistry } from "../actors"
 import { walletStorageService } from "./service/wallet-storage.service"
 import { defaultDeletionService } from "./service/default-deletion.service"
-import { emailDeletionService } from "./service/email-deletion.service"
 import { passkeyDeletionService } from "./service/passkey-deletion.service"
 import { recoveryPhraseDeletionService } from "./service/recovery-phrase-deletion.service"
 
@@ -16,12 +14,9 @@ export * from "./dto/deletion-step-service.dto"
 export * from "./dto/plan.dto"
 export * from "./enum/deletion-mode.enum"
 export * from "./error/deletion.error"
-export * from "./error/email-already-deleted.error"
-export * from "./error/incorrect-code.error"
 export * from "./error/incorrect-seed-phrase.error"
 export * from "./error/passkey-not-confirmed.error"
 export * from "./service/default-deletion.service"
-export * from "./service/email-deletion.service"
 export * from "./service/passkey-deletion.service"
 export * from "./service/recovery-phrase-deletion.service"
 
@@ -29,7 +24,6 @@ const stepServices = new Map<DeletionMode, DeletionStepService>([
   [DeletionMode.DEFAULT, defaultDeletionService],
   [DeletionMode.PASSKEY, passkeyDeletionService],
   [DeletionMode.RECOVERY_PHRASE, recoveryPhraseDeletionService],
-  [DeletionMode.EMAIL, emailDeletionService],
 ])
 
 export const deleteAccountService: DeleteAccountService = {
@@ -43,10 +37,6 @@ export const deleteAccountService: DeleteAccountService = {
         steps.push(DeletionMode.PASSKEY)
       } else if (await recoveryPhraseDeletionService.isApplicable(account)) {
         steps.push(DeletionMode.RECOVERY_PHRASE)
-      }
-
-      if (await emailDeletionService.isApplicable(account)) {
-        steps.push(DeletionMode.EMAIL)
       }
 
       return {
@@ -73,8 +63,6 @@ export const deleteAccountService: DeleteAccountService = {
       await service.prepare(plan)
       return plan
     } catch (error) {
-      if (error instanceof EmailAlreadyDeletedError)
-        return finalizeDeletion(plan)
       if (error instanceof DeletionError) throw error
       throw new DeletionError(plan.steps[0], false, (error as Error).message)
     }

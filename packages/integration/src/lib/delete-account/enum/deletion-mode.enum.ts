@@ -1,6 +1,5 @@
 export enum DeletionMode {
   RECOVERY_PHRASE = "RECOVERY_PHRASE",
   PASSKEY = "PASSKEY",
-  EMAIL = "EMAIL",
   DEFAULT = "DEFAULT",
 }

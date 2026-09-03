@@ -2,6 +2,10 @@ import { importPKCS8, SignJWT } from "jose"
 import * as JwtService from "jsonwebtoken"
 
 import {
+  REGISTRATION_DISABLED_MESSAGE,
+  RegistrationDisabledError,
+} from "../authentication/registration-guard.service"
+import {
   PrevTokenHasNotExpiredError,
   VerificationIsInProgressError,
   generateCryptoKeyPair,
@@ -120,6 +124,34 @@ describe("Verification of email", () => {
     })
 
     await expect(func).rejects.toThrow(PrevTokenHasNotExpiredError)
+  })
+
+  it("should exec sendVerification and receive RegistrationDisabledError error", async () => {
+    // Given: the endpoint reports that registration is disabled
+    const mockFetchPromise = Promise.resolve({
+      text: () =>
+        JSON.stringify({
+          error: "REGISTRATION_DISABLED",
+          message: "Registration of new users is permanently blocked.",
+        }),
+      ok: false,
+      status: 403,
+    })
+
+    global.fetch = jest.fn().mockImplementation((url, options) => {
+      validateVerificationRequest(url, options)
+      return mockFetchPromise
+    })
+
+    // When: a verification email is requested
+    const func = verificationService.sendVerification({
+      verificationMethod: "email",
+      emailAddress: "testEmailAddress",
+    })
+
+    // Then: it rejects with the typed error carrying the repo-owned message
+    await expect(func).rejects.toThrow(RegistrationDisabledError)
+    await expect(func).rejects.toThrow(REGISTRATION_DISABLED_MESSAGE)
   })
 
   it("should exec verify and receive success response", async () => {

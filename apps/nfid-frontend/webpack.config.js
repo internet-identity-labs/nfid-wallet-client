@@ -591,6 +591,20 @@ export default composePlugins(withNx(), withReact(), withSvgr(), (config) => {
           pathRewrite: { "^/login/ip": "" },
         },
         {
+          context: ["/send_delete_account_email"],
+          target: process.env.AWS_SEND_DELETE_ACCOUNT_EMAIL,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/send_delete_account_email": "" },
+        },
+        {
+          context: ["/confirm_delete_account"],
+          target: process.env.AWS_CONFIRM_DELETE_ACCOUNT,
+          secure: true,
+          changeOrigin: true,
+          pathRewrite: { "^/confirm_delete_account": "" },
+        },
+        {
           context: ["/nft_geek_api"],
           target: "https://api.nftgeek.app",
           secure: true,

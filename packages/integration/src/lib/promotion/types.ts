@@ -45,3 +45,12 @@ export class PromotionError extends Error {
     this.name = "PromotionError"
   }
 }
+
+export interface PromoteData {
+  fee: bigint
+  feeFormatted: string
+  feeUsdFormatted: string
+  targetAddress: string
+  dappName: string
+  minAmount: number
+}

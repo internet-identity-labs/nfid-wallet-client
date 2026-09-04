@@ -10,14 +10,19 @@ enum IModalType {
   CONVERT_TO_CKETH = "CONVERT_TO_CKETH",
   CONVERT_TO_SEPOLIA_ETH = "CONVERT_TO_SEPOLIA_ETH",
   CONVERT_TO_SEPOLIA_CKETH = "CONVERT_TO_SEPOLIA_CKETH",
+  CONVERT_TO_CKERC20 = "CONVERT_TO_CKERC20",
+  CONVERT_TO_ERC20 = "CONVERT_TO_ERC20",
   BRIDGE = "BRIDGE",
   EARN = "EARN",
   WITHDRAW = "WITHDRAW",
+  PAY = "PAY",
+  PROMOTE = "PROMOTE",
 }
 
 const MIN_CK_BTC_AMOUNT_TO_CONVERT = 0.00051
 const MIN_BTC_AMOUNT_TO_CONVERT = 0.00001
-const MIN_CK_ETH_AMOUNT_TO_CONVERT = 0.03
+const MIN_CK_ETH_AMOUNT_TO_CONVERT = 0.005
+const MIN_CK_SEPOLIA_ETH_AMOUNT_TO_CONVERT = 0.01
 const MIN_ETH_AMOUNT_TO_CONVERT = 0.0005
 const MIN_SEPOLIA_ETH_AMOUNT_TO_CONVERT = 0.005
 
@@ -108,8 +113,27 @@ export const validateTransferAmountField =
       return `Amount can't be less than ${MIN_SEPOLIA_ETH_AMOUNT_TO_CONVERT} ETH.`
     }
 
-    if (minAmount !== undefined && valueNum.isLessThan(minAmount)) {
+    if (
+      modalType === IModalType.CONVERT_TO_SEPOLIA_ETH &&
+      valueNum.isLessThan(MIN_CK_SEPOLIA_ETH_AMOUNT_TO_CONVERT)
+    ) {
+      return `Amount can't be less than ${MIN_CK_SEPOLIA_ETH_AMOUNT_TO_CONVERT} ETH.`
+    }
+
+    if (
+      minAmount !== undefined &&
+      modalType === IModalType.STAKE &&
+      valueNum.isLessThan(minAmount)
+    ) {
       return `Minimum amount to stake ${symbol} is ${minAmount}`
+    }
+
+    if (
+      minAmount !== undefined &&
+      modalType === IModalType.PROMOTE &&
+      valueNum.isLessThan(minAmount)
+    ) {
+      return `Minimum amount to promote ${symbol} is ${minAmount}`
     }
 
     return true

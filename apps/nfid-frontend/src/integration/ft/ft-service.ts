@@ -37,6 +37,7 @@ import { arbSepoliaErc20Service } from "../ethereum/arbitrum/testnetwork/arb-sep
 import { baseSepoliaErc20Service } from "../ethereum/base/testnetwork/base-sepolia-erc20.service"
 import { polygonAmoyErc20Service } from "../ethereum/polygon/testnetwork/pol-amoy-erc20.service"
 import { ethSepoliaErc20Service } from "../ethereum/eth/testnetwork/eth-sepolia-erc20.service"
+import { isTokenWithBalance } from "frontend/features/transfer-modal/utils"
 
 export const INITED_TOKENS_CACHE_NAME = "InitedTokens_"
 export const TOKENS_REFRESH_INTERVAL = 30000
@@ -565,14 +566,9 @@ export class FtService {
           return ftWithBalance
         }),
       )
-    ).filter((ft) => {
-      const tokenBalance = ft.getTokenBalance()
-      return (
-        tokenBalance !== undefined &&
-        tokenBalance > BigInt(0) &&
-        ft.getTokenState() !== State.Active
-      )
-    })
+    ).filter(
+      (ft) => isTokenWithBalance(ft) && ft.getTokenState() !== State.Active,
+    )
   }
 
   async getFTUSDBalance(ft: FT[]): Promise<

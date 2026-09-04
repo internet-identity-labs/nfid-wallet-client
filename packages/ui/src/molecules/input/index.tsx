@@ -15,6 +15,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   small?: boolean
   isErrorStyles?: boolean
   inputClassName?: string
+  labelClassName?: string
   disabled?: boolean
   innerText?: string
   upperText?: string
@@ -27,6 +28,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       children: _children,
       className,
       inputClassName,
+      labelClassName,
       placeholder,
       type = "text",
       pin,
@@ -49,7 +51,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             <Label
               className={clsx(
                 "text-xs inline-block dark:text-white mb-1",
-                inputProps.disabled && "!text-secondary dark:!text-zinc-700",
+                inputProps.disabled && "text-secondary dark:text-zinc-700",
+                labelClassName,
               )}
             >
               {labelText}

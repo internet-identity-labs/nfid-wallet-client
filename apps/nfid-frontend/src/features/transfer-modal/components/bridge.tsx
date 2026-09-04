@@ -16,7 +16,10 @@ import { FormValues, SelectedToken, SendStatus } from "../types"
 import {
   getTokensWithUpdatedBalance,
   getUpdatedInitedTokens,
+  isTokenWithBalance,
   mutateTokensCacheMergingBalances,
+  isInsufficientEthForGas,
+  INSUFFICIENT_ETH_FOR_GAS_ERROR,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { ChainId, isEvmToken } from "@nfid/integration/token/icrc1/enum/enums"
@@ -100,22 +103,33 @@ export const Bridge = ({
         )
         if (!tokens) return
 
-        return tokens.filter((t) => {
-          const balance = t.getTokenBalance()
-          return balance !== undefined && balance > BigInt(0)
-        })
+        return tokens.filter((t) => isTokenWithBalance(t))
       },
       { revalidateOnFocus: false },
     )
 
-  const fromToken = useMemo(() => {
-    if (!filteredFromTokens) return
-    return filteredFromTokens.find(
-      (token: FT) =>
-        token.getTokenAddress() === fromTokenAddress &&
-        (fromChainId === undefined || token.getChainId() === fromChainId),
-    )
-  }, [fromTokenAddress, fromChainId, filteredFromTokens])
+  const resolveToken = useCallback(
+    (
+      address: string,
+      chainId: ChainId | undefined,
+      primary: FT[] | undefined,
+    ): FT | undefined => {
+      const isMatch = (token: FT) =>
+        token.getTokenAddress() === address &&
+        (chainId === undefined || token.getChainId() === chainId)
+      return (
+        primary?.find(isMatch) ??
+        initedTokens?.find(isMatch) ??
+        tokens.find(isMatch)
+      )
+    },
+    [initedTokens, tokens],
+  )
+
+  const fromToken = useMemo(
+    () => resolveToken(fromTokenAddress, fromChainId, filteredFromTokens),
+    [fromTokenAddress, fromChainId, filteredFromTokens, resolveToken],
+  )
 
   const fromTokenId = fromToken
     ? `${fromToken.getChainId()}:${fromToken.getTokenAddress()}`
@@ -129,14 +143,10 @@ export const Bridge = ({
     { revalidateOnFocus: false },
   )
 
-  const toToken = useMemo(() => {
-    if (!filteredToTokens) return
-    return filteredToTokens.find(
-      (token: FT) =>
-        token.getTokenAddress() === toTokenAddress &&
-        (toChainId === undefined || token.getChainId() === toChainId),
-    )
-  }, [toTokenAddress, toChainId, filteredToTokens])
+  const toToken = useMemo(
+    () => resolveToken(toTokenAddress, toChainId, filteredToTokens),
+    [toTokenAddress, toChainId, filteredToTokens, resolveToken],
+  )
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -339,9 +349,12 @@ export const Bridge = ({
             (error as Error).message ? (error as Error).message : error
           }`,
         )
-        setErrorMessage(DEFAULT_BRIDGE_ERROR)
+        const errorMessage = isInsufficientEthForGas(error)
+          ? INSUFFICIENT_ETH_FOR_GAS_ERROR
+          : DEFAULT_BRIDGE_ERROR
+        setErrorMessage(errorMessage)
         setStatus(SendStatus.FAILED)
-        setError(error)
+        setError(errorMessage)
       })
       .finally(() => {
         isSubmittingRef.current = false

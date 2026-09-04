@@ -27,6 +27,8 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   onConvertToCkEth: () => void
   onConvertToSepoliaEth: () => void
   onConvertToCkSepoliaEth: () => void
+  onConvertToErc20: (tokenAddress: string) => void
+  onConvertToCkErc20: (tokenAddress: string) => void
   onStakeClick: (value: SelectedToken) => void
   onBridgeClick: (value: SelectedToken) => void
   onEarnClick: (value: SelectedToken) => void
@@ -39,6 +41,7 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   baseEnabled?: boolean
   polygonEnabled?: boolean
   aaveTokens?: FT[]
+  isPrivateAccount?: boolean
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
@@ -53,6 +56,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   onConvertToCkEth,
   onConvertToSepoliaEth,
   onConvertToCkSepoliaEth,
+  onConvertToErc20,
+  onConvertToCkErc20,
   onStakeClick,
   onBridgeClick,
   onEarnClick,
@@ -65,6 +70,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   baseEnabled,
   polygonEnabled,
   aaveTokens,
+  isPrivateAccount = false,
   ...props
 }) => {
   const [isTokenProcessed, setIsTokenProcessed] = useState(false)
@@ -101,6 +107,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           withActions={!isViewOnlyMode}
           onConvertToSepoliaEth={onConvertToSepoliaEth}
           onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
+          onConvertToErc20={onConvertToErc20}
+          onConvertToCkErc20={onConvertToCkErc20}
         />
       </td>
       <td
@@ -185,7 +193,7 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
         className="w-[24px] min-w-[30px] lg:min-w-[50px] lg:ps-[25px]"
         id={`${token.getTokenName()}_options`}
       >
-        {!isViewOnlyMode && (
+        {!isViewOnlyMode && !isPrivateAccount && (
           <AssetDropdown
             token={token}
             tokens={tokens}
@@ -198,6 +206,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
             onConvertToCkEth={onConvertToCkEth}
             onConvertToSepoliaEth={onConvertToSepoliaEth}
             onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
+            onConvertToErc20={onConvertToErc20}
+            onConvertToCkErc20={onConvertToCkErc20}
             onStakeClick={onStakeClick}
             onBridgeClick={onBridgeClick}
             onEarnClick={onEarnClick}

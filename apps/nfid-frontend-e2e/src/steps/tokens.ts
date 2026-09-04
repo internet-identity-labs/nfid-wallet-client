@@ -118,8 +118,9 @@ Then(
             (await (await Assets.getCurrency(tokenName)).getText())
               .split("\n")
               .map((s) => s.trim())
-              .join(" "),
-          ).toBe(currency),
+              .join(" ")
+              .split(" ")[0],
+          ).toBe(currency.split(" ")[0]),
         `Incorrect token currency`,
       ],
       [

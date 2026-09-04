@@ -64,7 +64,7 @@ export const CallCanisterDetails = ({
         <div
           className={clsx(
             "p-5 lg:p-0 flex flex-col",
-            "w-full lg:w-3/5 lg:w-[387px] flex flex-col h-full lg:h-auto",
+            "w-full lg:w-3/5 lg:w-[387px] flex flex-col h-full lg:h-auto lg:max-h-[80%]",
           )}
         >
           <p className="text-[20px] lg:text-[28px] font-bold text-center dark:text-white">

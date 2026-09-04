@@ -26,7 +26,7 @@ import {
   PromotionStatus,
 } from "./types"
 
-const NS_PER_MS = 1_000_000n
+const NS_PER_MS = BigInt(1_000_000)
 const HISTORY_PAGE_SIZE = 100
 
 export class PromotionService {
@@ -48,7 +48,7 @@ export class PromotionService {
     await this.approveTreasury(
       identity,
       status.config.ledgerCanisterId,
-      status.config.treasuryPrincipal,
+      ICRC1_ORACLE_CANISTER_ID,
       amountE8s,
     )
 

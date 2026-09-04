@@ -1,14 +1,18 @@
 import { NavSecurityIcon } from "packages/ui/src/atoms/icons/nav-security"
 import { NavPermissionsIcon } from "packages/ui/src/atoms/icons/nav-permissions"
+import { NavOpenCryptopayIcon } from "packages/ui/src/atoms/icons/nav-open-cryptopay"
 import { NavDiscoveryIcon } from "packages/ui/src/atoms/icons/nav-discovery"
 import { NavVaultsIcon } from "packages/ui/src/atoms/icons/nav-vaults"
 import { NavWalletIcon } from "packages/ui/src/atoms/icons/nav-wallet"
 import { NavAddressBookIcon } from "packages/ui/src/atoms/icons/nav-book"
 import { NavViewOnlyIcon } from "packages/ui/src/atoms/icons/nav-view-only"
+import { NavPrivateAccountsIcon } from "packages/ui/src/atoms/icons/nav-private-accounts"
 
 export const ProfileConstants = {
   base: "/wallet",
   nftDetails: ":tokenId",
+  privateAccountsDetails: ":dappId",
+  privateAccounts: "/private-accounts",
   tokens: "tokens",
   nfts: "nfts",
   staking: "staking",
@@ -41,16 +45,22 @@ export const navigationPopupLinks = [
     separator: true,
   },
   {
-    icon: NavAddressBookIcon,
-    title: "Address book",
-    link: ProfileConstants.addressBook,
-    id: "nav-address-book",
-  },
-  {
     icon: NavSecurityIcon,
     title: "Security",
     link: ProfileConstants.security,
     id: "nav-security",
+  },
+  {
+    icon: NavPermissionsIcon,
+    title: "Permissions",
+    link: ProfileConstants.permissions,
+    id: "nav-permissions",
+  },
+  {
+    icon: NavAddressBookIcon,
+    title: "Address book",
+    link: ProfileConstants.addressBook,
+    id: "nav-address-book",
   },
   {
     icon: NavDiscoveryIcon,
@@ -59,10 +69,16 @@ export const navigationPopupLinks = [
     id: "nav-discovery",
   },
   {
-    icon: NavPermissionsIcon,
-    title: "Permissions",
-    link: ProfileConstants.permissions,
-    id: "nav-permissions",
+    icon: NavPrivateAccountsIcon,
+    title: "Private accounts",
+    link: ProfileConstants.privateAccounts,
+    id: "nav-private-accounts",
+  },
+  {
+    icon: NavOpenCryptopayIcon,
+    title: "Open CryptoPay",
+    link: "",
+    id: "nav-open-cryptopay",
   },
   {
     icon: NavViewOnlyIcon,

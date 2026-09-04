@@ -33,6 +33,7 @@ export const getLedgerTransferMetadata = async (
   return {
     balance: balance.toString(),
     toAddress,
+    memo: requestParams.memo?.toString(),
     amount: amount.toString(),
     isInsufficientBalance,
     usdRate: usdRate.toString(),

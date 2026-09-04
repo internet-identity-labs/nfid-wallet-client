@@ -39,6 +39,7 @@ interface ChooseToTokenProps {
   withNetwork?: boolean
   title: string
   tooltipText?: string
+  isTokenModalHighlighted?: boolean
 }
 
 export const ChooseToToken: FC<ChooseToTokenProps> = ({
@@ -56,6 +57,7 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
   withNetwork,
   title,
   tooltipText,
+  isTokenModalHighlighted,
 }) => {
   const { setValue, register } = useFormContext()
   const isDarkTheme = useDarkTheme()
@@ -115,6 +117,8 @@ export const ChooseToToken: FC<ChooseToTokenProps> = ({
             className={clsx(
               "p-[6px] pr-[12px] bg-gray-300/40 dark:bg-[#E5E7EB1A] rounded-[24px] inline-block",
               isResponsive && "w-full flex-[0_0_100%] order-1 mt-2",
+              isTokenModalHighlighted &&
+                "border border-teal-500 shadow-[0_0_4px_rgba(13,148,136,0.5)]",
             )}
           >
             {tokens !== undefined && setToChosenToken ? (

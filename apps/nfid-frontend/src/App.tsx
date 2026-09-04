@@ -59,6 +59,14 @@ const VaultTransactionsDetailsPage = lazy(
 
 const NFTDetailsPage = lazy(() => import("frontend/features/nft-details"))
 
+const PrivateAccountsPage = lazy(
+  () => import("../src/features/private-accounts"),
+)
+
+const PrivateAccountsDetailsPage = lazy(
+  () => import("frontend/features/private-accounts-details"),
+)
+
 export enum NFIDTheme {
   LIGHT = "light",
   DARK = "dark",
@@ -284,6 +292,34 @@ export const App = () => {
                         cacheLoaded={cacheLoaded}
                       >
                         <ProfilePermissions
+                          walletTheme={walletTheme}
+                          setWalletTheme={setWalletTheme}
+                        />
+                      </AuthWrapper>
+                    }
+                  />
+                  <Route
+                    path={`${ProfileConstants.privateAccounts}/${ProfileConstants.privateAccountsDetails}`}
+                    element={
+                      <AuthWrapper
+                        isAuthenticated={isAuthenticated}
+                        cacheLoaded={cacheLoaded}
+                      >
+                        <PrivateAccountsDetailsPage
+                          walletTheme={walletTheme}
+                          setWalletTheme={setWalletTheme}
+                        />
+                      </AuthWrapper>
+                    }
+                  />
+                  <Route
+                    path={ProfileConstants.privateAccounts}
+                    element={
+                      <AuthWrapper
+                        isAuthenticated={isAuthenticated}
+                        cacheLoaded={cacheLoaded}
+                      >
+                        <PrivateAccountsPage
                           walletTheme={walletTheme}
                           setWalletTheme={setWalletTheme}
                         />

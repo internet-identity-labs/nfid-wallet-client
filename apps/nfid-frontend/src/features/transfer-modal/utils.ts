@@ -29,6 +29,10 @@ import {
   EVM_NATIVE,
   CKSEPOLIA_LEDGER_CANISTER_ID,
 } from "@nfid/integration/token/constants"
+import {
+  getCkErc20ByLedgerId,
+  getCkErc20ByErc20Address,
+} from "@nfid/integration/token/ckerc20.config"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 import { mutate, mutateWithTimestamp } from "@nfid/swr"
 
@@ -453,6 +457,17 @@ export const mutateTokensCacheMergingBalances = (balanceUpdates: FT[]) => {
   )
 }
 
+export const INSUFFICIENT_ETH_FOR_GAS_ERROR =
+  "Insufficient ETH balance to cover network gas fees. Please add ETH to your wallet and try again."
+
+export const isInsufficientEthForGas = (e: unknown): boolean => {
+  const msg = e instanceof Error ? e.message : String(e)
+  return (
+    msg.includes("gas required exceeds allowance") ||
+    msg.includes("insufficient funds for gas")
+  )
+}
+
 export const getUpdatedInitedTokens = async (tokens: FT[]) => {
   const { publicKey } = authState.getUserIdData()
   const principal = Principal.fromText(publicKey)
@@ -510,6 +525,12 @@ export const getConversionTokenAddress = (source: string): string => {
 
   if (source === EVM_NATIVE) return CKSEPOLIA_LEDGER_CANISTER_ID
   if (source === CKSEPOLIA_LEDGER_CANISTER_ID) return EVM_NATIVE
+
+  const ckErc20 = getCkErc20ByLedgerId(source)
+  if (ckErc20) return ckErc20.erc20ContractAddress
+
+  const erc20 = getCkErc20ByErc20Address(source)
+  if (erc20) return erc20.ledgerCanisterId
 
   return CKBTC_CANISTER_ID
 }
@@ -636,4 +657,16 @@ export const getAddressBookNftOptions = (
         value,
       }
     })
+}
+
+export const getFeeSymbol = (chainId: ChainId) => {
+  if (chainId === ChainId.ICP) return "ICP"
+  if (chainId === ChainId.BTC) return "BTC"
+  if (chainId === ChainId.POL) return "POL"
+  return "ETH"
+}
+
+export const isTokenWithBalance = (token: FT) => {
+  const balance = token.getTokenBalance()
+  return balance !== undefined && balance > BigInt(0)
 }

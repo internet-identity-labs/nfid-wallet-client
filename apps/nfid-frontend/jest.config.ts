@@ -19,7 +19,7 @@ const config = {
     ],
   },
   transformIgnorePatterns: [
-    "node_modules/(?!(@icp-sdk|@dfinity|dom-accessibility-api)/)",
+    "node_modules/(?!(@icp-sdk|@dfinity|dom-accessibility-api|bitcoin-address-validation|base58-js)/)",
   ],
   collectCoverage: false,
   coverageThreshold: {

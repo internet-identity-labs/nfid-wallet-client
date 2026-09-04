@@ -1,6 +1,9 @@
 import { useActor } from "@xstate/react"
 import clsx from "clsx"
-import { BtcBanner } from "packages/ui/src/molecules/btc-banner"
+import {
+  BannerCarousel,
+  BannerSlide,
+} from "packages/ui/src/molecules/banner-carousel"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
 import ProfileInfo from "packages/ui/src/organisms/profile-info"
 import {
@@ -19,7 +22,13 @@ import { SwapStage } from "src/integration/swap/types/enums"
 import useSWRImmutable from "swr/immutable"
 import { Principal } from "@icp-sdk/core/principal"
 
-import { ArrowButton, Loader, TabsSwitcher, Tooltip } from "@nfid-frontend/ui"
+import {
+  ArrowButton,
+  ButtonType,
+  Loader,
+  TabsSwitcher,
+  Tooltip,
+} from "@nfid-frontend/ui"
 import { authState } from "@nfid/integration"
 import {
   BTC_NATIVE_ID,
@@ -51,6 +60,10 @@ import { ProfileContext } from "frontend/provider"
 import { ttlCacheService } from "@nfid/client-db"
 import { STAKED_TOKENS_CACHE_NAME } from "frontend/integration/staking/service/staking-service-impl"
 import {
+  EARN_POSITIONS_CACHE_NAME,
+  AAVE_SUPPORTED_TOKENS_CACHE_NAME,
+} from "frontend/integration/aave/aave.service"
+import {
   EVM_ACTIVITIES_CACHE_NAME,
   EVM_ERC20_ACTIVITIES_CACHE_NAME,
 } from "frontend/integration/ethereum/evm-transaction.service"
@@ -63,7 +76,10 @@ import {
   EVM_NFTS_CACHE_NAME,
 } from "frontend/integration/ethereum/evm.service"
 import { INITED_TOKENS_CACHE_NAME } from "frontend/integration/ft/ft-service"
-import { ICRC1_ORACLE_CACHE_NAME } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+import {
+  ICRC1_ORACLE_CACHE_NAME,
+  icrc1OracleService,
+} from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 import { ICRC1_REGISTRY_CACHE_NAME } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 import {
   ERC20_BALANCES_CACHE_NAME,
@@ -72,9 +88,16 @@ import {
 } from "frontend/integration/ethereum/erc20-abstract.service"
 import { useUserPrefs } from "frontend/hooks/user-prefs"
 import { useSupplyPositions } from "frontend/hooks"
+import { promotionService } from "@nfid/integration/promotion"
+
+import BtcBannerBg from "../assets/btc-banner.png"
+import DappsBannerBg from "../assets/dapps-banner.png"
+import AddressBookBannerBg from "../assets/address-book-banner.png"
+import PromotedDappBannerBg from "../assets/promoted-dapp-banner.png"
 
 interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   pageTitle?: string
+  pageDescription?: string
   icon?: string
   showBackButton?: boolean
   onIconClick?: () => void
@@ -94,6 +117,7 @@ interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
 
 const ProfileTemplate: FC<IProfileTemplate> = ({
   pageTitle,
+  pageDescription,
   icon,
   showBackButton,
   onIconClick,
@@ -123,11 +147,27 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     ),
   )
 
+  const isPrivateAccDetails = Boolean(
+    useMatch(
+      `${ProfileConstants.privateAccounts}/${ProfileConstants.privateAccountsDetails}`,
+    ),
+  )
+
   const handleNavigateBack = () => {
-    const pathname = !isNftDetails
-      ? `${ProfileConstants.base}/${ProfileConstants.tokens}`
-      : `${ProfileConstants.base}/${ProfileConstants.nfts}`
+    const pathname = isNftDetails
+      ? `${ProfileConstants.base}/${ProfileConstants.nfts}`
+      : isPrivateAccDetails
+        ? `${ProfileConstants.privateAccounts}`
+        : `${ProfileConstants.base}/${ProfileConstants.tokens}`
     navigate({ pathname, search: location.search })
+  }
+
+  const handleNavigateAddressBook = () => {
+    navigate(ProfileConstants.addressBook)
+  }
+
+  const handleNavigateDiscovery = () => {
+    navigate(ProfileConstants.discovery)
   }
 
   const [hasUncompletedSwap, setHasUncompletedSwap] = useState(false)
@@ -201,11 +241,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   )
 
   const { initedTokens } = useTokensInit(tokens)
-  const {
-    earnPositions,
-    supportedTokens,
-    isLoading: earnPositionsLoading,
-  } = useSupplyPositions(initedTokens, viewOnlyAddress)
+  const { earnPositions, supportedTokens } = useSupplyPositions(
+    initedTokens,
+    viewOnlyAddress,
+  )
 
   const btc = useMemo(() => {
     return initedTokens?.find(
@@ -264,6 +303,48 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     },
     { revalidateOnFocus: false },
   )
+
+  const { data: discoveryApps } = useSWR(
+    "discoveryApps",
+    async () => icrc1OracleService.getDiscoveryApps(),
+    { revalidateOnFocus: false },
+  )
+
+  const { data: promotionStatus } = useSWR(
+    "promotionStatus",
+    async () => promotionService.getStatus(),
+    {
+      revalidateOnFocus: false,
+    },
+  )
+
+  const handleNavigatePromotedDapp = (url?: string) => {
+    window.open(url, "_blank")
+  }
+
+  const dappSlide = useMemo(() => {
+    if (!promotionStatus?.featured || !discoveryApps) return
+
+    const dapp = discoveryApps.find(
+      (app) => app.id === promotionStatus.featured?.appId,
+    )
+
+    return {
+      id: "showPromotedDapp",
+      title: dapp?.name || "",
+      text: <div className="text-sm leading-[21px]">{dapp?.desc}</div>,
+      image: PromotedDappBannerBg,
+      isStoredInLocalStorage: false,
+      actions: [
+        {
+          text: "Explore",
+          type: "stroke" as ButtonType,
+          classnames: "bg-white dark:!text-black border-0 w-full md:w-[120px]",
+          handler: () => handleNavigatePromotedDapp(dapp?.url),
+        },
+      ],
+    }
+  }, [promotionStatus?.featured, discoveryApps])
 
   const {
     data: isEmailDeviceOutOfSyncWithII,
@@ -380,6 +461,18 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         await ttlCacheService.invalidate([STAKED_TOKENS_CACHE_NAME])
         await mutate("stakedTokens")
         break
+      case "Earn":
+        await ttlCacheService.invalidate([
+          EARN_POSITIONS_CACHE_NAME,
+          AAVE_SUPPORTED_TOKENS_CACHE_NAME,
+        ])
+        await mutate("aaveSupportedTokens")
+        await mutate(
+          (key) =>
+            key === "earnPositions" ||
+            (Array.isArray(key) && key[0] === "earnPositions"),
+        )
+        break
       case "Activity":
         await ttlCacheService.invalidate([
           EVM_ACTIVITIES_CACHE_NAME,
@@ -403,6 +496,95 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }, [activeTab.name, isRefreshing])
 
   const isUsdBalanceLoading = isUsdLoading || !fullUsdBalance
+
+  const bannerSlides: BannerSlide[] = [
+    {
+      id: "showBtcBanner",
+      title: "Convert BTC to ckBTC",
+      text: (
+        <>
+          <div className="text-sm leading-[18px] mb-4">
+            ckBTC is wrapped Bitcoin on ICP and backed 1:1 with Bitcoin—fast,
+            cheap, and powerful. Transfers take{" "}
+            <span className="font-semibold">2 seconds</span> and cost{" "}
+            <span className="font-semibold">less than $0.01.</span>
+          </div>
+          <div className="justify-between lg:flex">
+            <ul className="text-sm leading-[18px] list-none ml-0 mb-2 lg:mb-0">
+              <li className="mb-2">• Trade runes on Odin.fun</li>
+              <li>• Send to friends & family</li>
+            </ul>
+            <ul className="text-sm leading-[18px] list-none ml-0">
+              <li className="mb-2">• Use across other ICP apps</li>
+              <li>• Convert 1:1 with BTC at any time</li>
+            </ul>
+          </div>
+        </>
+      ),
+      image: BtcBannerBg,
+      isStoredInLocalStorage: true,
+      actions: [
+        {
+          text: "Convert BTC",
+          type: "stroke",
+          classnames: "bg-white dark:!text-black border-0 w-full md:w-[120px]",
+          handler: onConvertClick,
+        },
+        {
+          text: "Swap an ICP token for ckBTC",
+          type: "ghost",
+          classnames:
+            "text-white dark:text-white border-white w-full md:w-[230px] hover:text-primaryButtonColor",
+          handler: onBtcSwapClick,
+        },
+      ],
+    },
+    {
+      id: "showIcpDapps",
+      title: "Explore dApps on ICP ecosystem",
+      text: (
+        <div className="text-sm leading-[21px]">
+          Explore decentralized apps with transparent, near real-time data.
+          Discover exciting dapps, complete quests to earn rewards, unravel
+          trends, participate in airdrops, and explore additional opportunities
+          including crypto gaming, NFTs, DeFi, AI tools, and SocialFi.
+        </div>
+      ),
+      image: DappsBannerBg,
+      isStoredInLocalStorage: true,
+      actions: [
+        {
+          text: "Explore",
+          type: "stroke",
+          classnames: "bg-white dark:!text-black border-0 w-full md:w-[120px]",
+          handler: handleNavigateDiscovery,
+        },
+      ],
+    },
+    {
+      id: "showAddressBook",
+      title: "Simplify your transactions with Address Book",
+      text: (
+        <div className="text-sm leading-[21px]">
+          You can now save addresses across ICP, Bitcoin, and EVM chains under a
+          single, custom name, eliminating copy-paste anxiety and making sending
+          crypto as easy as messaging a friend. You can initiate transfers with
+          a simple tap, and rest assured that your funds will always reach the
+          right destination.
+        </div>
+      ),
+      image: AddressBookBannerBg,
+      isStoredInLocalStorage: true,
+      actions: [
+        {
+          text: "Explore",
+          type: "stroke",
+          classnames: "bg-white dark:!text-black border-0 w-full md:w-[120px]",
+          handler: handleNavigateAddressBook,
+        },
+      ],
+    },
+  ]
 
   return (
     <div className={clsx("relative min-h-screen overflow-hidden", className)}>
@@ -434,7 +616,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
           <div
             className={clsx(
               "flex justify-between items-center leading-[40px]",
-              showBackButton && "mb-[30px]",
+              showBackButton && !pageDescription && "mb-[30px]",
             )}
           >
             <div className="sticky left-0 flex items-center space-x-2">
@@ -448,7 +630,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
               )}
               <p
                 className={clsx(
-                  "text-[28px] leading-[32px] block",
+                  "text-[28px] leading-[32px] block dark:text-white",
                   titleClassNames,
                 )}
                 id={"page_title"}
@@ -469,6 +651,11 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
             )}
             {headerMenu}
           </div>
+          {pageDescription && (
+            <div className="text-sm mt-[11px] leading-5 dark:text-white pl-[64px]">
+              {pageDescription}
+            </div>
+          )}
           {isWallet && (
             <>
               <ProfileInfo
@@ -489,9 +676,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
                     : authState.getUserIdData().publicKey
                 }
               />
-              <BtcBanner
-                onBtcSwapClick={onBtcSwapClick}
-                onConvertClick={onConvertClick}
+              <BannerCarousel
+                slides={[...(dappSlide ? [dappSlide] : []), ...bannerSlides]}
               />
               <TabsSwitcher
                 className="my-[30px]"

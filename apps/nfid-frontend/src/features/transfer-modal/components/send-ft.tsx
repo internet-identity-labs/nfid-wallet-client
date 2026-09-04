@@ -19,9 +19,15 @@ import {
   transfer as transferICP,
 } from "@nfid/integration/token/icp"
 import { getMintingAccount, transferICRC1 } from "@nfid/integration/token/icrc1"
-import { mutateWithTimestamp, useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import {
+  mutateWithTimestamp,
+  useSWR,
+  useSWRWithTimestamp,
+  mutate,
+} from "@nfid/swr"
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
+import { FT } from "frontend/integration/ft/ft"
 import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
@@ -35,8 +41,10 @@ import {
   getVaultsAccountsOptions,
   getValidatorByTokenAddress,
   updateCachedInitedTokens,
-  getAddressBookFtOptions,
   mutateTokensCacheMergingBalances,
+  isTokenWithBalance,
+  isInsufficientEthForGas,
+  INSUFFICIENT_ETH_FOR_GAS_ERROR,
 } from "../utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import {
@@ -56,6 +64,8 @@ import { TransactionResponse, isAddress } from "ethers"
 import {
   addressBookFacade,
   FtSearchRequest,
+  UserAddressSaveRequest,
+  UserAddressUpdateRequest,
 } from "frontend/integration/address-book"
 import { noteService } from "frontend/integration/note/note-service"
 import {
@@ -63,7 +73,6 @@ import {
   EvmNoteKey,
   IcpNoteKey,
 } from "frontend/integration/note/note-key"
-import { useUserPrefs } from "frontend/hooks/user-prefs"
 
 const DEFAULT_TRANSFER_ERROR = "Something went wrong"
 
@@ -80,6 +89,7 @@ interface ITransferFT {
   setErrorMessage: (message: string) => void
   setSuccessMessage: (message: string) => void
   onError: (value: boolean) => void
+  setIsSendSuccess: (value: boolean) => void
 }
 
 export const TransferFT = ({
@@ -90,6 +100,7 @@ export const TransferFT = ({
   setErrorMessage,
   setSuccessMessage,
   onError,
+  setIsSendSuccess,
 }: ITransferFT) => {
   const [tokenSelected, setTokenSelected] =
     useState<SelectedToken>(preselectedToken)
@@ -106,7 +117,6 @@ export const TransferFT = ({
   const [fee, setFee] = useState<FeeResponse | undefined>()
   const [isFeeLoading, setIsFeeLoading] = useState(false)
   const skipFeeCalculation = useRef(false)
-  const { hideZeroBalance } = useUserPrefs()
 
   const triggerSkipCaclulation = useCallback(() => {
     skipFeeCalculation.current = true
@@ -123,8 +133,26 @@ export const TransferFT = ({
 
   const { watch } = formMethods
   const amount = watch("amount")
+  const currentAmountRef = useRef(amount)
+  currentAmountRef.current = amount
   const to = watch("to")
   const note = watch("note")
+
+  const { data: addresses } = useSWR("addressBook", async () =>
+    addressBookFacade.findAll(),
+  )
+
+  const createContact = async (request: UserAddressSaveRequest) => {
+    await addressBookFacade.save(request)
+    await mutate("addressBook")
+    onClose()
+  }
+
+  const updateContact = async (request: UserAddressUpdateRequest) => {
+    await addressBookFacade.update(request)
+    await mutate("addressBook")
+    onClose()
+  }
 
   const isIdentityReady = !!identity && !isIdentityLoading
   const parsedAmount = Number(amount)
@@ -168,36 +196,38 @@ export const TransferFT = ({
 
   const filteredTokens = useMemo(() => {
     if (!initedTokens) return
-    if (!hideZeroBalance) return initedTokens
     const tokensWithBalance = initedTokens.filter(
       (token) =>
         token.getTokenAddress() === ICP_CANISTER_ID ||
-        token.getTokenBalance() !== BigInt(0),
+        isTokenWithBalance(token),
     )
     return tokensWithBalance
-  }, [initedTokens, hideZeroBalance])
+  }, [initedTokens])
 
-  const token = useMemo(() => {
-    return filteredTokens?.find(
-      (token) =>
-        token.getTokenAddress() === tokenSelected.address &&
-        token.getChainId() === tokenSelected.chainId,
-    )
-  }, [tokenSelected, filteredTokens])
+  const resolveToken = useCallback(
+    (selected: SelectedToken): FT | undefined => {
+      const isMatch = (token: FT) =>
+        token.getTokenAddress() === selected.address &&
+        token.getChainId() === selected.chainId
+      return (
+        filteredTokens?.find(isMatch) ??
+        initedTokens?.find(isMatch) ??
+        tokens.find(isMatch)
+      )
+    },
+    [filteredTokens, initedTokens, tokens],
+  )
+
+  const token = useMemo(
+    () => resolveToken(tokenSelected),
+    [tokenSelected, resolveToken],
+  )
 
   const balance = useMemo(() => {
     return balances?.find(
       (balance) => balance.address === selectedVaultsAccountAddress,
     )
   }, [selectedVaultsAccountAddress, balances])
-
-  const { data: addresses } = useSWR("addressBook", async () =>
-    addressBookFacade.findAll(),
-  )
-
-  const addressesOptions = useMemo(() => {
-    return getAddressBookFtOptions(addresses, token)
-  }, [addresses, token])
 
   const searchFtAddress = async (req: FtSearchRequest) => {
     return addressBookFacade.ftSearch(req)
@@ -251,9 +281,11 @@ export const TransferFT = ({
         const fee = await token?.getTokenFee(debouncedAmount, identity)
         if (!isCancelled) setFee(fee)
       } catch (e) {
-        console.error(`Fee error: ${e}`)
-        setFeeError((e as Error).message)
-        if (!isCancelled) setFee(undefined)
+        if (!isCancelled) {
+          console.error(`Fee error: ${e}`)
+          setFeeError((e as Error).message)
+          setFee(undefined)
+        }
       } finally {
         if (!isCancelled) setIsFeeLoading(false)
       }
@@ -269,6 +301,7 @@ export const TransferFT = ({
       setFee(undefined)
       setIsFeeLoading(true)
       try {
+        console.log("debouncedAmount", debouncedAmount)
         const fee = await token?.getTokenFee(
           debouncedAmount,
           undefined,
@@ -279,21 +312,23 @@ export const TransferFT = ({
 
         if (!isCancelled) setFee(fee)
       } catch (e) {
-        console.error(`Fee error: ${e}`)
-        setFeeError((e as Error).message)
-        if (!isCancelled) setFee(undefined)
+        if (!isCancelled) {
+          console.error(`Fee error: ${e}`)
+          setFeeError((e as Error).message)
+          setFee(undefined)
+        }
       } finally {
         if (!isCancelled) setIsFeeLoading(false)
       }
     }
 
+    if (currentAmountRef.current !== debouncedAmount) return
+
     if (token?.getChainId() === ChainId.BTC) {
       fethcBtcFee()
-      return
-    }
-
-    if (token && isEvmToken(token.getChainId())) {
+    } else if (token && isEvmToken(token.getChainId())) {
       fetchEvmFee()
+    } else {
       return
     }
 
@@ -319,6 +354,8 @@ export const TransferFT = ({
 
   const submit = useCallback(async () => {
     if (!token) return toaster.error("No selected token")
+
+    setIsSendSuccess(true)
 
     if (isEvmToken(token.getChainId())) {
       if (!identity || !fee) return
@@ -395,8 +432,11 @@ export const TransferFT = ({
               (e as Error).message ? (e as Error).message : e
             }`,
           )
-          setErrorMessage(DEFAULT_TRANSFER_ERROR)
-          setError(DEFAULT_TRANSFER_ERROR)
+          const errorMessage = isInsufficientEthForGas(e)
+            ? INSUFFICIENT_ETH_FOR_GAS_ERROR
+            : DEFAULT_TRANSFER_ERROR
+          setErrorMessage(errorMessage)
+          setError(errorMessage)
           setStatus(SendStatus.FAILED)
         })
 
@@ -639,8 +679,10 @@ export const TransferFT = ({
         fee={fee?.getFee()}
         isFeeLoading={isFeeLoading || isIdentityLoading || !identity}
         setSkipFeeCalculation={triggerSkipCaclulation}
-        addresses={addressesOptions}
+        addresses={addresses}
         searchAddress={searchFtAddress}
+        onCreateContact={createContact}
+        onUpdateContact={updateContact}
       />
     </FormProvider>
   )

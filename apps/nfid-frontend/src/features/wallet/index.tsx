@@ -11,7 +11,6 @@ import { useIdentity } from "frontend/hooks/identity"
 import { useContext, useEffect } from "react"
 import { bridgeService } from "frontend/integration/ethereum/bridge"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import EarnDetailsPage from "../earn-details"
 import { ProfileContext } from "frontend/provider"
 
 export const WalletRouter = () => {
@@ -36,10 +35,6 @@ export const WalletRouter = () => {
       <Route
         path={`${ProfileConstants.staking}/:tokenSymbol`}
         element={<StakingDetailsPage />}
-      />
-      <Route
-        path={`${ProfileConstants.earn}/:chainId/:asset`}
-        element={<EarnDetailsPage />}
       />
       <Route
         path="activity"

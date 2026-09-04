@@ -30,6 +30,7 @@ import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/toke
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { useUserPrefs } from "frontend/hooks/user-prefs"
 import { useSupplyPositions } from "frontend/hooks"
+import { isTokenWithBalance } from "../transfer-modal/utils"
 
 const TokensPage = memo(() => {
   const {
@@ -134,6 +135,28 @@ const TokensPage = memo(() => {
     send("SHOW")
   }
 
+  const onConvertToErc20 = (tokenAddress: string) => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
+    send({
+      type: "ASSIGN_SELECTED_FT",
+      data: { address: tokenAddress, chainId: ChainId.ICP },
+    })
+    send("SHOW")
+  }
+
+  const onConvertToCkErc20 = (tokenAddress: string) => {
+    send({ type: "ASSIGN_VAULTS", data: false })
+    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
+    send({
+      type: "ASSIGN_SELECTED_FT",
+      data: { address: tokenAddress, chainId: ChainId.ETH },
+    })
+    send("SHOW")
+  }
+
   const onStakeClick = (selectedToken: SelectedToken) => {
     send({ type: "ASSIGN_VAULTS", data: false })
     send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
@@ -180,11 +203,7 @@ const TokensPage = memo(() => {
   const { supportedTokens } = useSupplyPositions(initedTokens, viewOnlyAddress)
 
   const tokensOwnedQuantity = useMemo(() => {
-    return initedTokens?.filter(
-      (token) =>
-        token.getTokenBalance() !== undefined &&
-        token.getTokenBalance()! > BigInt(0),
-    ).length
+    return initedTokens?.filter((token) => isTokenWithBalance(token)).length
   }, [initedTokens])
 
   const tokensWithoutPrice = useMemo(() => {
@@ -301,6 +320,8 @@ const TokensPage = memo(() => {
           onConvertToCkEth={onConvertToCkEth}
           onConvertToSepoliaEth={onConvertToSepoliaEth}
           onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
+          onConvertToErc20={onConvertToErc20}
+          onConvertToCkErc20={onConvertToCkErc20}
           onStakeClick={onStakeClick}
           onBridgeClick={onBridgeClick}
           onEarnClick={onEarnClick}

@@ -19,14 +19,24 @@ import {
 } from "frontend/integration/bitcoin/bitcoin.service"
 import { FT } from "frontend/integration/ft/ft"
 
-import { getBtcConversionFee, getEthConversionFee } from "../utils"
+import {
+  getBtcConversionFee,
+  getEthConversionFee,
+  getErc20ConversionFee,
+} from "../utils"
 import { ConvertDetails } from "./convert-details"
 import { ConvertForm } from "./convert-form"
 import { ConvertSuccessUi } from "./convert-success"
 import {
   CkEthToEthFee,
+  CkErc20ToErc20Fee,
+  Erc20ToCkErc20Fee,
   EthToCkEthFee,
 } from "frontend/integration/ethereum/evm.service"
+import {
+  isCkErc20Token,
+  getCkErc20ByErc20Address,
+} from "@nfid/integration/token/ckerc20.config"
 
 export enum ConvertModal {
   CONVERT = "convert",
@@ -49,6 +59,7 @@ export interface ConvertUiProps {
   handleReverse: () => void
   btcFee?: BtcToCkBtcFee | CkBtcToBtcFee
   ethFee?: EthToCkEthFee | CkEthToEthFee
+  erc20Fee?: Erc20ToCkErc20Fee | CkErc20ToErc20Fee
   tokens?: FT[]
   onMaxResolved?: () => void
 }
@@ -69,6 +80,7 @@ export const ConvertUi: FC<ConvertUiProps> = ({
   handleReverse,
   btcFee,
   ethFee,
+  erc20Fee,
   tokens,
   onMaxResolved,
 }) => {
@@ -81,22 +93,27 @@ export const ConvertUi: FC<ConvertUiProps> = ({
   } = useFormContext()
 
   const amount = watch("amount")
+  const fromAddr = fromToken?.getTokenAddress() ?? ""
   const isEthLike =
-    fromToken?.getTokenAddress() === ETH_NATIVE_ID ||
-    fromToken?.getTokenAddress() === CKETH_LEDGER_CANISTER_ID ||
-    fromToken?.getTokenAddress() === EVM_NATIVE ||
-    fromToken?.getTokenAddress() === CKSEPOLIA_LEDGER_CANISTER_ID
+    fromAddr === ETH_NATIVE_ID ||
+    fromAddr === CKETH_LEDGER_CANISTER_ID ||
+    fromAddr === EVM_NATIVE ||
+    fromAddr === CKSEPOLIA_LEDGER_CANISTER_ID
+  const isErc20Like =
+    isCkErc20Token(fromAddr) || !!getCkErc20ByErc20Address(fromAddr)
 
   const fee = isEthLike
     ? getEthConversionFee(ethFee)
-    : getBtcConversionFee(btcFee)
+    : isErc20Like
+      ? getErc20ConversionFee(erc20Fee, fromToken?.getTokenDecimals())
+      : getBtcConversionFee(btcFee)
 
   if (isTokenLoading || !fromToken || !toToken)
     return (
       <BlurredLoader
         isLoading
         overlayClassnames="rounded-[24px] max-h-full"
-        loadingMessage="Fetching your BTC balance"
+        loadingMessage="Fetching your balance"
         className="text-xs"
       />
     )

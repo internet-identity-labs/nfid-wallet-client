@@ -39,8 +39,14 @@ const transferMachineConfig = {
     ASSIGN_SELECTED_FT: {
       actions: "assignSelectedFT",
     },
+    ASSIGN_SELECTED_DAPP: {
+      actions: "assignSelectedDapp",
+    },
     ASSIGN_WITHDRAW_BALANCE: {
       actions: "assignWithdrawBalance",
+    },
+    ASSIGN_OPEN_CRYPTOPAY_PARAMS: {
+      actions: "assignOpenCryptopayParams",
     },
     ASSIGN_SELECTED_TARGET_FT: {
       actions: "assignSelectedTargetFT",
@@ -110,6 +116,14 @@ const transferMachineConfig = {
           target: "WithdrawMachine",
           cond: "isWithdrawMachine",
         },
+        {
+          target: "PayMachine",
+          cond: "isPayMachine",
+        },
+        {
+          target: "PromoteMachine",
+          cond: "isPromoteMachine",
+        },
       ],
     },
     ReceiveMachine: {},
@@ -118,6 +132,8 @@ const transferMachineConfig = {
     BridgeMachine: {},
     EarnMachine: {},
     WithdrawMachine: {},
+    PayMachine: {},
+    PromoteMachine: {},
     StakeMachine: {},
     RedeemMachine: {},
     SendMachine: {
@@ -186,6 +202,10 @@ const transferMachineOptions: Parameters<
       context.direction === "earn",
     isWithdrawMachine: (context: TransferMachineContext) =>
       context.direction === "withdraw",
+    isPayMachine: (context: TransferMachineContext) =>
+      context.direction === "pay",
+    isPromoteMachine: (context: TransferMachineContext) =>
+      context.direction === "promote",
     isStakeMachine: (context: TransferMachineContext) =>
       context.direction === "stake",
     isRedeemMachine: (context: TransferMachineContext) =>
@@ -216,8 +236,15 @@ const transferMachineOptions: Parameters<
     assignSelectedFT: assign((_, event: any) => ({
       selectedFT: event?.data,
     })),
+    assignSelectedDapp: assign((_, event: any) => ({
+      selectedDapp: event?.data,
+    })),
     assignWithdrawBalance: assign((_, event: any) => ({
       withdrawBalance: event?.data,
+    })),
+    assignOpenCryptopayParams: assign((_, event: any) => ({
+      openCryptoPayParams: event?.data,
+      openCryptoPayPreselect: event?.preselect,
     })),
     assignSelectedTargetFT: assign((_, event: any) => ({
       selectedTargetFT: event?.data,

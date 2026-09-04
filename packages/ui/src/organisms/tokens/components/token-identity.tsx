@@ -21,6 +21,11 @@ import { Category, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { getNetworkIcon } from "packages/ui/src/utils/network-icon"
 import { useDarkTheme } from "frontend/hooks"
 import { SelectedToken } from "frontend/features/transfer-modal/types"
+import {
+  getCkErc20ByErc20Address,
+  getCkErc20ByLedgerId,
+  isCkErc20Token,
+} from "@nfid/integration/token/ckerc20.config"
 
 interface TokenIdentityProps extends HTMLAttributes<HTMLDivElement> {
   token: FT
@@ -30,11 +35,14 @@ interface TokenIdentityProps extends HTMLAttributes<HTMLDivElement> {
   onConvertToCkEth?: () => void
   onConvertToSepoliaEth?: () => void
   onConvertToCkSepoliaEth?: () => void
+  onConvertToErc20?: (tokenAddress: string) => void
+  onConvertToCkErc20?: (tokenAddress: string) => void
   onStakeClick?: (value: SelectedToken) => void
   withNetwork?: boolean
   withActions?: boolean
   isActive?: boolean
   disabled?: boolean
+  mobileSize?: number
 }
 
 export const TokenIdentity: FC<TokenIdentityProps> = ({
@@ -45,24 +53,32 @@ export const TokenIdentity: FC<TokenIdentityProps> = ({
   onConvertToCkEth,
   onConvertToSepoliaEth,
   onConvertToCkSepoliaEth,
+  onConvertToErc20,
+  onConvertToCkErc20,
   onStakeClick,
   withNetwork = true,
   withActions = false,
   isActive = true,
   disabled = false,
+  mobileSize = 24,
 }) => {
   const isDarkTheme = useDarkTheme()
 
   return (
     <div className="flex items-center">
-      <div className="w-[24px] h-[24px] sm:w-[40px] sm:h-[40px] mr-[12px] rounded-full bg-zinc-50 relative">
+      <div
+        className={clsx(
+          "sm:w-[40px] sm:h-[40px] mr-[12px] rounded-full bg-zinc-50 relative",
+          `w[${mobileSize}px] h-[${mobileSize}px]`,
+        )}
+      >
         <ImageWithFallback
           alt={`${token.getTokenSymbol()}`}
           fallbackSrc={IconNftPlaceholder}
           src={`${token.getTokenLogo()}`}
           className={clsx(
-            "w-[24px] h-[24px] sm:w-[40px] sm:h-[40px]",
-            "rounded-full object-cover min-w-[24px] sm:min-w-[40px]",
+            "sm:w-[40px] sm:h-[40px] rounded-full object-cover sm:min-w-[40px]",
+            `w-[${mobileSize}px] h-[${mobileSize}px] min-w-[${mobileSize}px]`,
             disabled && "grayscale opacity-40",
           )}
         />
@@ -78,7 +94,7 @@ export const TokenIdentity: FC<TokenIdentityProps> = ({
             "text-sm dark:text-white font-semibold leading-[25px] flex items-center",
             isActive && !disabled
               ? "text-black dark:text-white"
-              : "text-secondary dark:text-zinc-400",
+              : "text-secondary dark:text-zinc-500",
           )}
           id={`token_${token.getTokenName().replace(/\s/g, "")}_${token.getChainId()}_currency`}
         >
@@ -158,6 +174,37 @@ export const TokenIdentity: FC<TokenIdentityProps> = ({
                   </span>
                 </>
               )}
+              {isCkErc20Token(token.getTokenAddress()) && (
+                <>
+                  <span className="block mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+                  <span
+                    className="flex items-center text-xs cursor-pointer text-primaryButtonColor dark:text-teal-500"
+                    onClick={() => onConvertToErc20?.(token.getTokenAddress())}
+                  >
+                    <IconCmpConvert className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor dark:text-teal-500" />
+                    Convert to{" "}
+                    {
+                      getCkErc20ByLedgerId(token.getTokenAddress())
+                        ?.underlyingSymbol
+                    }
+                  </span>
+                </>
+              )}
+              {getCkErc20ByErc20Address(token.getTokenAddress()) && (
+                <>
+                  <span className="block mx-[6px] rounded-[50%] w-[2px] h-[2px] bg-gray-400" />
+                  <span
+                    className="flex items-center text-xs cursor-pointer text-primaryButtonColor dark:text-teal-500"
+                    onClick={() =>
+                      onConvertToCkErc20?.(token.getTokenAddress())
+                    }
+                  >
+                    <IconCmpConvert className="mr-[4px] h-[14px] w-[14px] text-primaryButtonColor dark:text-teal-500" />
+                    Convert to{" "}
+                    {getCkErc20ByErc20Address(token.getTokenAddress())?.symbol}
+                  </span>
+                </>
+              )}
               {(token.getTokenCategory() === Category.Sns ||
                 token.getTokenAddress() === ICP_CANISTER_ID) && (
                 <>
@@ -179,7 +226,7 @@ export const TokenIdentity: FC<TokenIdentityProps> = ({
             </>
           )}
         </p>
-        <p className="text-secondary text-xs leading-[20px] dark:text-zinc-400">
+        <p className="text-secondary text-xs leading-[20px] dark:text-zinc-500">
           {token.getTokenName()}
         </p>
       </div>

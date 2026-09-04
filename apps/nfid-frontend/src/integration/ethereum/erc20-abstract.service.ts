@@ -10,6 +10,7 @@ import {
 } from "ethers"
 import { Address } from "../bitcoin/services/chain-fusion-signer.service"
 import { chainFusionSignerService } from "../bitcoin/services/chain-fusion-signer.service"
+import { withRetry } from "./utils"
 import { SignIdentity } from "@icp-sdk/core/agent"
 import { ethereumService } from "./eth/ethereum.service"
 import { storageWithTtl, ttlCacheService } from "@nfid/client-db"
@@ -558,9 +559,11 @@ export abstract class Erc20Service {
 
     const value = BigInt(Number(amount) * 10 ** decimals)
 
-    const gas = erc20Contract.transfer.estimateGas(to, value, { from })
-    const feeData = this.provider.getFeeData()
-    const block = this.provider.getBlock("latest")
+    const gas = withRetry(() =>
+      erc20Contract.transfer.estimateGas(to, value, { from }),
+    )
+    const feeData = withRetry(() => this.provider.getFeeData())
+    const block = withRetry(() => this.provider.getBlock("latest"))
 
     return Promise.all([gas, feeData, block]).then(([gas, feeData, block]) => {
       if (
@@ -598,7 +601,10 @@ export abstract class Erc20Service {
       this.provider,
     )
     const fromAddress = await ethereumService.getAddress(identity)
-    const nonce = await this.provider.getTransactionCount(fromAddress)
+    const nonce = await this.provider.getTransactionCount(
+      fromAddress,
+      "pending",
+    )
 
     const valueBigInt = BigInt(Number(value) * 10 ** decimals)
     const trs = await erc20Contract.transfer.populateTransaction(
@@ -629,14 +635,11 @@ export abstract class Erc20Service {
   private async sendTransaction(
     signedTransaction: string,
   ): Promise<TransactionResponse> {
-    try {
-      const response =
-        await this.provider.broadcastTransaction(signedTransaction)
-      await response.wait()
-      return response
-    } catch (e) {
-      throw e
-    }
+    const response = await withRetry(() =>
+      this.provider.broadcastTransaction(signedTransaction),
+    )
+    await withRetry(() => response.wait())
+    return response
   }
   /**
    * Get list of all known ERC20 tokens with logos and metadata
@@ -818,20 +821,25 @@ export abstract class Erc20Service {
       this.provider,
     )
     const fromAddress = await ethereumService.getAddress(identity)
-    const nonce = await this.provider.getTransactionCount(fromAddress)
+    const nonce = await this.provider.getTransactionCount(
+      fromAddress,
+      "pending",
+    )
 
     const trs = await erc20.approve.populateTransaction(spender, amount)
 
-    const feeData = await this.provider.getFeeData()
+    const feeData = await withRetry(() => this.provider.getFeeData())
     if (!feeData.maxFeePerGas || !feeData.maxPriorityFeePerGas) {
       throw new Error("setERC20Allowance: gas fee data is missing")
     }
 
-    const gasUsed = await this.provider.estimateGas({
-      to: contractAddress,
-      from: fromAddress,
-      data: trs.data,
-    })
+    const gasUsed = await withRetry(() =>
+      this.provider.estimateGas({
+        to: contractAddress,
+        from: fromAddress,
+        data: trs.data,
+      }),
+    )
 
     const trs_request: EthSignTransactionRequest = {
       to: contractAddress,
@@ -848,8 +856,10 @@ export abstract class Erc20Service {
       identity,
       trs_request,
     )
-    const response = await this.provider.broadcastTransaction(signedTx)
-    await response.wait()
+    const response = await withRetry(() =>
+      this.provider.broadcastTransaction(signedTx),
+    )
+    await withRetry(() => response.wait())
 
     // Invalidate cached allowances so the next read reflects the new state
     const cacheKey = `ERC20_Allowances_${fromAddress.toLowerCase()}_${this.chainId}`

@@ -22,6 +22,8 @@ import { SwapFT } from "./components/swap"
 import { Bridge } from "./components/bridge"
 import { Earn } from "./components/earn"
 import { Withdraw } from "./components/withdraw"
+import { Pay } from "./components/pay"
+import { Promote } from "./components/promote"
 
 export const TransferModalCoordinator = () => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
@@ -31,10 +33,7 @@ export const TransferModalCoordinator = () => {
   const [hasSwapError, setHasSwapError] = useState(false)
   const [hasBtcError, setHasBtcError] = useState(false)
   const [hasBridgeError, setHasBridgeError] = useState(false)
-  const [isConvertSuccess, setIsConvertSuccess] = useState(false)
-  const [isBridgeSuccess, setIsBridgeSuccess] = useState(false)
-  const [isEarnSuccess, setIsEarnSuccess] = useState(false)
-  const [isWithdrawSuccess, setIsWithdrawSuccess] = useState(false)
+  const [isSuccessTx, setIsSuccessTx] = useState(false)
 
   const hideModal = useCallback(() => {
     send({ type: "ASSIGN_SELECTED_FT", data: undefined })
@@ -44,10 +43,7 @@ export const TransferModalCoordinator = () => {
     send({ type: "ASSIGN_IS_EARN_UPDATE", data: false })
     send({ type: "CHANGE_DIRECTION", data: null })
     send({ type: "HIDE" })
-    setIsConvertSuccess(false)
-    setIsBridgeSuccess(false)
-    setIsEarnSuccess(false)
-    setIsWithdrawSuccess(false)
+    setIsSuccessTx(false)
   }, [send])
 
   useDisableScroll(!state.matches("Hidden"))
@@ -106,6 +102,7 @@ export const TransferModalCoordinator = () => {
               setErrorMessage={setErrorMessage}
               setSuccessMessage={setSuccessMessage}
               onError={setHasBtcError}
+              setIsSendSuccess={setIsSuccessTx}
             />
           </motion.div>
         )}
@@ -156,7 +153,7 @@ export const TransferModalCoordinator = () => {
               onClose={hideModal}
               setErrorMessage={setErrorMessage}
               setSuccessMessage={setSuccessMessage}
-              setIsConvertSuccess={setIsConvertSuccess}
+              setIsConvertSuccess={setIsSuccessTx}
               onError={setHasBtcError}
             />
           </motion.div>
@@ -175,7 +172,7 @@ export const TransferModalCoordinator = () => {
               onClose={hideModal}
               setErrorMessage={setErrorMessage}
               setSuccessMessage={setSuccessMessage}
-              setIsBridgeSuccess={setIsBridgeSuccess}
+              setIsBridgeSuccess={setIsSuccessTx}
               onError={setHasBridgeError}
             />
           </motion.div>
@@ -194,7 +191,7 @@ export const TransferModalCoordinator = () => {
               onClose={hideModal}
               setErrorMessage={setErrorMessage}
               setSuccessMessage={setSuccessMessage}
-              setIsEarnSuccess={setIsEarnSuccess}
+              setIsEarnSuccess={setIsSuccessTx}
               onError={setHasBridgeError}
               isUpdate={state.context.isEarnUpdate}
             />
@@ -215,8 +212,44 @@ export const TransferModalCoordinator = () => {
               onClose={hideModal}
               setErrorMessage={setErrorMessage}
               setSuccessMessage={setSuccessMessage}
-              setIsWithdrawSuccess={setIsWithdrawSuccess}
+              setIsWithdrawSuccess={setIsSuccessTx}
               onError={setHasBridgeError}
+            />
+          </motion.div>
+        )}
+        {state.matches("PayMachine") && (
+          <motion.div
+            key="bridge-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          >
+            <Pay
+              openCryptoPayParams={state.context.openCryptoPayParams}
+              openCryptoPayPreselect={state.context.openCryptoPayPreselect}
+              onClose={hideModal}
+              setErrorMessage={setErrorMessage}
+              setSuccessMessage={setSuccessMessage}
+              onError={setHasBridgeError}
+              setIsPaySuccess={setIsSuccessTx}
+            />
+          </motion.div>
+        )}
+        {state.matches("PromoteMachine") && (
+          <motion.div
+            key="bridge-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          >
+            <Promote
+              onClose={hideModal}
+              setErrorMessage={setErrorMessage}
+              setSuccessMessage={setSuccessMessage}
+              setIsPromoteSuccess={setIsSuccessTx}
+              dappId={state.context.selectedDapp}
             />
           </motion.div>
         )}
@@ -300,11 +333,8 @@ export const TransferModalCoordinator = () => {
           isOpen={!state.matches("Hidden")}
           hasSwapError={hasSwapError}
           hasBtcError={hasBtcError}
-          isConvertSuccess={isConvertSuccess}
-          isBridgeSuccess={isBridgeSuccess}
           hasBridgeError={hasBridgeError}
-          isEarnSuccess={isEarnSuccess}
-          isWithdrawSuccess={isWithdrawSuccess}
+          isSuccessTx={isSuccessTx}
         />
       )}
     </>

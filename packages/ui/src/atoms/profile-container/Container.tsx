@@ -8,6 +8,7 @@ interface IProfileContainer {
   className?: string
   innerClassName?: string
   titleClassName?: string
+  subtitleClassName?: string
   id?: string
 }
 
@@ -17,6 +18,7 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
   children,
   className,
   titleClassName,
+  subtitleClassName,
   innerClassName,
   id,
 }) => {
@@ -36,7 +38,12 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
           </div>
         )}
         {subTitle && (
-          <div className="flex items-center justify-between mb-5 text-sm leading-[18px] text-secondary dark:text-zinc-500">
+          <div
+            className={clsx(
+              "flex items-center justify-between mb-5 text-sm leading-[18px] text-secondary dark:text-zinc-500",
+              subtitleClassName,
+            )}
+          >
             {subTitle}
           </div>
         )}

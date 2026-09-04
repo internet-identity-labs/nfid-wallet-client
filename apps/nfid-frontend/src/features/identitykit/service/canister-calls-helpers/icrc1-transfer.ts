@@ -1,5 +1,10 @@
 import { Agent, AnonymousIdentity, HttpAgent } from "@icp-sdk/core/agent"
-import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc"
+import { Principal } from "@icp-sdk/core/principal"
+import {
+  decodeIcrcAccount,
+  encodeIcrcAccount,
+} from "@icp-sdk/canisters/ledger/icrc"
+import { uint8ArrayToHexString } from "@nfid-frontend/utils"
 
 import { exchangeRateService } from "@nfid/integration"
 
@@ -41,6 +46,19 @@ export const getIcrc1TransferMetadata = async (
 
   const [requestParams] = JSON.parse(args)
 
+  const subaccountOpt: Record<string, number>[] | undefined =
+    requestParams.to?.subaccount
+  const subaccountBytes = subaccountOpt?.length
+    ? Object.values(subaccountOpt[0])
+    : undefined
+
+  const memoOpt: Record<string, number>[] | undefined = requestParams.memo
+  const memoBytes = memoOpt?.length ? Object.values(memoOpt[0]) : undefined
+
+  const memo = memoBytes
+    ? uint8ArrayToHexString(new Uint8Array(memoBytes))
+    : undefined
+
   const amount = BigInt(requestParams.amount)
   const total = amount + fee
   const isInsufficientBalance = total > balance
@@ -49,9 +67,15 @@ export const getIcrc1TransferMetadata = async (
     message.data.params.canisterId,
   )
 
+  const toAddress = encodeIcrcAccount({
+    owner: Principal.fromText(requestParams.to.owner.__principal__),
+    ...(subaccountBytes ? { subaccount: new Uint8Array(subaccountBytes) } : {}),
+  })
+
   return {
     balance: balance.toString(),
-    toAddress: requestParams.to.owner["__principal__"],
+    toAddress,
+    memo,
     amount: amount.toString(),
     isInsufficientBalance,
     address: message.data.params.sender,

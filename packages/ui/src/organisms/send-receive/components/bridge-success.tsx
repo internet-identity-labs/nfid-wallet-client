@@ -152,12 +152,7 @@ export const BridgeSuccessUi: FC<BridgeSuccessUiProps> = ({
           )}
         </div>
       </div>
-      {error && (
-        <div className="text-sm text-red-600 my-[10px]">
-          Something went wrong with bridging. <br />
-          Please try again later.
-        </div>
-      )}
+      {error && <div className="text-sm text-red-600 my-[10px]">{error}</div>}
       <Button
         id={"bridge-success-close-button"}
         type="primary"

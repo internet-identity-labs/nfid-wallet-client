@@ -27,6 +27,12 @@ import {
   validateAddressBook,
 } from "./utils"
 import { useDarkTheme } from "frontend/hooks"
+import { ReactComponent as ArrowLeft } from "../../atoms/icons/arrow.svg"
+
+export type PredefinedAddress = {
+  value: string
+  type: "accountId" | "icpWallet" | "btcWallet" | "ethWallet"
+}
 
 type AddressBookModalProps =
   | {
@@ -36,6 +42,8 @@ type AddressBookModalProps =
       onSubmit: (request: UserAddressSaveRequest) => Promise<void>
       address?: UserAddress
       addresses?: UserAddress[]
+      showBackButton?: boolean
+      predefinedAddress?: PredefinedAddress
     }
   | {
       mode: AddressBookAction.EDIT
@@ -44,6 +52,8 @@ type AddressBookModalProps =
       address?: UserAddress
       onSubmit: (request: UserAddressUpdateRequest) => Promise<void>
       addresses?: UserAddress[]
+      showBackButton?: boolean
+      predefinedAddress?: PredefinedAddress
     }
 
 export const AddressBookModal: FC<AddressBookModalProps> = ({
@@ -53,6 +63,8 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
   onSubmit,
   address,
   addresses,
+  showBackButton,
+  predefinedAddress,
 }) => {
   const isDarkTheme = useDarkTheme()
   const [isLoading, setIsLoading] = useState(false)
@@ -92,9 +104,21 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
         icpWallet: address.icpPrincipal ?? "",
         btcWallet: address.btc ?? "",
         ethWallet: address.evm ?? "",
+        ...(predefinedAddress
+          ? { [predefinedAddress.type]: predefinedAddress.value }
+          : {}),
+      })
+    } else if (predefinedAddress) {
+      reset({
+        name: "",
+        accountId: "",
+        icpWallet: "",
+        btcWallet: "",
+        ethWallet: "",
+        [predefinedAddress.type]: predefinedAddress.value,
       })
     }
-  }, [address, isOpen, reset])
+  }, [address, predefinedAddress, isOpen, reset])
 
   const name = watch("name")
   const accountId = watch("accountId")
@@ -145,18 +169,24 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
       isVisible={isOpen}
       onClose={onClose}
       className={clsx(
-        "p-5 w-[95%] md:w-[540px] z-[100] !rounded-[24px] !max-h-[90vh] !min-h-1 overflow-auto",
+        "p-5 w-[95%] md:w-[450px] z-[100] !rounded-[24px] !max-h-[90vh] !min-h-1 overflow-auto",
         "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300 snap-end",
         "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
         "dark:scrollbar-thumb-zinc-600 dark:scrollbar-track-darkGray",
       )}
     >
-      <p className="text-[20px] leading-[26px] font-bold dark:text-white mb-5">
+      <p className="text-[20px] leading-[26px] font-bold dark:text-white mb-5 flex items-center gap-2.5">
+        {showBackButton && (
+          <ArrowLeft
+            className="cursor-pointer dark:text-white"
+            onClick={onClose}
+          />
+        )}
         {mode === AddressBookAction.CREATE ? "Add new contact" : "Edit contact"}
       </p>
       <div>
         <Input
-          inputClassName="h-[60px]"
+          inputClassName="h-[56px]"
           className="mb-2.5"
           id="name"
           labelText="Name"
@@ -178,7 +208,7 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
           errorText={errors.name?.message}
         />
         <Input
-          inputClassName="h-[60px]"
+          inputClassName="h-[56px]"
           id="accountId"
           labelText="ICP Account ID"
           placeholder="Enter ICP Account ID"
@@ -200,7 +230,7 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
           errorText={errors.accountId?.message}
         />
         <Input
-          inputClassName="h-[60px]"
+          inputClassName="h-[56px]"
           id="icpWallet"
           labelText="ICP wallet address"
           placeholder="Enter ICP wallet address"
@@ -222,7 +252,7 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
           errorText={errors.icpWallet?.message}
         />
         <Input
-          inputClassName="h-[60px]"
+          inputClassName="h-[56px]"
           id="btcWallet"
           labelText="BTC wallet address"
           placeholder="Enter BTC wallet address"
@@ -244,7 +274,7 @@ export const AddressBookModal: FC<AddressBookModalProps> = ({
           errorText={errors.btcWallet?.message}
         />
         <Input
-          inputClassName="h-[60px]"
+          inputClassName="h-[56px]"
           id="ethWallet"
           labelText="EVM wallet address"
           placeholder="Enter EVM wallet address"

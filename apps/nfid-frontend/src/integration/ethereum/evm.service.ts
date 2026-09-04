@@ -56,6 +56,7 @@ import {
 import { KEY_ETH_ADDRESS } from "packages/integration/src/lib/authentication/storage"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { ALCHEMY_CHAIN_MAP } from "../nft/constants/constants"
+import { withRetry } from "./utils"
 
 export type EvmNftStandard = "ERC-721" | "ERC-1155" | "ERC-404"
 
@@ -173,6 +174,9 @@ const EVM_NFTS_CACHE_TTL = 2 * 60 * 1000
 export const EVM_NFTS_CACHE_NAME = "EVM_NFTS_"
 export const EVM_BALANCE_CACHE_NAME = "EVM_BALANCE_"
 
+const ERC20_TRANSFER_IFACE = new Interface([
+  "function transfer(address to, uint256 amount)",
+])
 const ERC721_TRANSFER_IFACE = new Interface([
   "function safeTransferFrom(address from, address to, uint256 tokenId)",
 ])
@@ -327,7 +331,7 @@ export abstract class EVMService {
 
   //retrieve fee data from provider
   private async getFeeData(): Promise<FeeData> {
-    const feeData = await this.provider.getFeeData()
+    const feeData = await withRetry(() => this.provider.getFeeData())
     return feeData
   }
 
@@ -338,12 +342,14 @@ export abstract class EVMService {
     value,
     data,
   }: TransactionRequest): Promise<bigint> {
-    return await this.provider.estimateGas({
-      to,
-      value,
-      from,
-      data,
-    })
+    return await withRetry(() =>
+      this.provider.estimateGas({
+        to,
+        value,
+        from,
+        data,
+      }),
+    )
   }
 
   //deposit eth to ckETH
@@ -412,8 +418,8 @@ export abstract class EVMService {
     //we take 0.0000875% ckETH as fee
     const identityLabsFee: bigint = this.getIdentityLabsFee(parsedAmount)
 
-    //Minimum amount 0.03 ckETH
-    if (parsedAmount < BigInt(30000000000000000)) {
+    //Minimum amount 0.005 ckETH
+    if (parsedAmount < BigInt(5000000000000000)) {
       throw new Error("The minimum amount for conversion is 0.03 ckETH")
     }
 
@@ -551,33 +557,22 @@ export abstract class EVMService {
   }
 
   public async getCkEthToEthFee(
-    to: string,
+    _to: string,
     amount: string,
   ): Promise<CkEthToEthFee> {
     const parsedAmount = parseEther(amount.toString())
     const identityLabsFee = this.getIdentityLabsFee(parsedAmount)
-    const amountToReceive =
-      parsedAmount - identityLabsFee - this.ckEthNetworkFee
 
-    const gasEstimate = await this.estimateGas({
-      to,
-      value: parsedAmount,
+    const agent = new HttpAgent(agentBaseConfig)
+    const minter = CkEthMinterCanister.create({
+      agent,
+      canisterId: Principal.fromText(this.ckEthMinterCanisterId),
     })
-
-    const feeData = await this.provider.getFeeData()
-    const maxPriorityFeePerGas =
-      feeData.maxPriorityFeePerGas || BigInt(2_000_000_000)
-    const maxFeePerGas =
-      feeData.maxFeePerGas || maxPriorityFeePerGas + BigInt(5_000_000_000)
-
-    const ethereumNetworkFee = this.estimateTransaction(
-      gasEstimate,
-      maxFeePerGas,
-    )
+    const price = await minter.eip1559TransactionPrice({ certified: false })
 
     return {
-      ethereumNetworkFee,
-      amountToReceive,
+      ethereumNetworkFee: price.max_transaction_fee,
+      amountToReceive: parsedAmount - identityLabsFee - this.ckEthNetworkFee,
       icpNetworkFee: this.ckEthNetworkFee * BigInt(2),
       identityLabsFee,
     }
@@ -801,14 +796,6 @@ export abstract class EVMService {
   ): Promise<CkEthMinterDid.RetrieveErc20Request> {
     const token = this.resolveCkErc20Token(ledgerCanisterId)
     const amountUnits = parseUnits(amount, token.decimals)
-
-    if (amountUnits < token.minWithdrawalAmount) {
-      const min = formatUnits(token.minWithdrawalAmount, token.decimals)
-      throw new Error(
-        `The minimum amount for conversion is ${min} ${token.symbol}`,
-      )
-    }
-
     const identityLabsFee = this.getIdentityLabsFee(amountUnits)
 
     await this.approveTransfer(
@@ -835,7 +822,7 @@ export abstract class EVMService {
     await this.approveTransfer(
       this.ckEthLedgerCanisterId,
       token.minterCanisterId,
-      price.max_transaction_fee,
+      (price.max_transaction_fee * BigInt(120)) / BigInt(100),
       identity,
     )
 
@@ -899,6 +886,140 @@ export abstract class EVMService {
     )
 
     return await this.sendTransaction(signedTransaction)
+  }
+
+  public async sendEthTransactionWithRaw(
+    identity: SignIdentity,
+    to: Address,
+    value: string,
+    gas: {
+      gasUsed: bigint
+      maxPriorityFeePerGas: bigint
+      maxFeePerGas: bigint
+      baseFeePerGas: bigint
+    },
+    chainId: ChainId,
+  ): Promise<{ response: TransactionResponse; signedTransaction: string }> {
+    const address = await this.getAddress(identity)
+    const nonce = await this.getTransactionCount(address)
+
+    const request: EthSignTransactionRequest = {
+      chain_id: BigInt(chainId),
+      to: to,
+      value: parseEther(value),
+      data: [],
+      nonce: BigInt(nonce),
+      gas: gas?.gasUsed,
+      max_priority_fee_per_gas: gas?.maxPriorityFeePerGas,
+      max_fee_per_gas: gas?.maxFeePerGas,
+    }
+
+    const signedTransaction = await chainFusionSignerService.ethSignTransaction(
+      identity,
+      request,
+    )
+    const response = await this.sendTransaction(signedTransaction)
+    return { response, signedTransaction }
+  }
+
+  public async signEthTransaction(
+    identity: SignIdentity,
+    to: Address,
+    value: string,
+    gas: {
+      gasUsed: bigint
+      maxPriorityFeePerGas: bigint
+      maxFeePerGas: bigint
+      baseFeePerGas: bigint
+    },
+    chainId: ChainId,
+  ): Promise<string> {
+    const address = await this.getAddress(identity)
+    const nonce = await this.getTransactionCount(address)
+
+    const request: EthSignTransactionRequest = {
+      chain_id: BigInt(chainId),
+      to: to,
+      value: parseEther(value),
+      data: [],
+      nonce: BigInt(nonce),
+      gas: gas?.gasUsed,
+      max_priority_fee_per_gas: gas?.maxPriorityFeePerGas,
+      max_fee_per_gas: gas?.maxFeePerGas,
+    }
+
+    return chainFusionSignerService.ethSignTransaction(identity, request)
+  }
+
+  //estimate fee for an ERC-20 transfer(to, amount) call
+  public async getSendErc20Fee(
+    tokenAddress: Address,
+    from: Address,
+    to: Address,
+    amountRaw: string,
+  ): Promise<SendEthFee> {
+    const data = ERC20_TRANSFER_IFACE.encodeFunctionData("transfer", [
+      to,
+      BigInt(amountRaw),
+    ])
+
+    let gasUsed: bigint
+    try {
+      gasUsed = await this.estimateGas({ from, to: tokenAddress, data })
+    } catch {
+      gasUsed = BigInt(100_000)
+    }
+
+    const feeData = await this.getFeeData()
+    const maxPriorityFeePerGas =
+      feeData.maxPriorityFeePerGas ?? BigInt(2_000_000_000)
+    const maxFeePerGas =
+      feeData.maxFeePerGas ?? maxPriorityFeePerGas + BigInt(5_000_000_000)
+
+    const baseFee = await this.getBaseFee()
+
+    return {
+      gasUsed,
+      maxPriorityFeePerGas,
+      maxFeePerGas,
+      baseFeePerGas: baseFee,
+      ethereumNetworkFee: this.estimateTransaction(gasUsed, maxFeePerGas),
+    }
+  }
+
+  //sign (without broadcasting) an ERC-20 transfer(to, amount) call
+  public async signErc20Transaction(
+    identity: SignIdentity,
+    tokenAddress: Address,
+    to: Address,
+    amountRaw: string,
+    gas: {
+      gasUsed: bigint
+      maxPriorityFeePerGas: bigint
+      maxFeePerGas: bigint
+      baseFeePerGas: bigint
+    },
+    chainId: ChainId,
+  ): Promise<string> {
+    const address = await this.getAddress(identity)
+    const nonce = await this.getTransactionCount(address)
+    const data = ERC20_TRANSFER_IFACE.encodeFunctionData("transfer", [
+      to,
+      BigInt(amountRaw),
+    ])
+
+    const request: EthSignTransactionRequest = {
+      chain_id: BigInt(chainId),
+      to: tokenAddress,
+      value: BigInt(0),
+      data: [data],
+      nonce: BigInt(nonce),
+      gas: gas?.gasUsed,
+      max_priority_fee_per_gas: gas?.maxPriorityFeePerGas,
+      max_fee_per_gas: gas?.maxFeePerGas,
+    }
+
+    return chainFusionSignerService.ethSignTransaction(identity, request)
   }
 
   public async getNFTTransferFee(
@@ -1029,7 +1150,10 @@ export abstract class EVMService {
   }
 
   public async getTransactionCount(address: Address): Promise<number> {
-    const transactionCount = await this.provider.getTransactionCount(address)
+    const transactionCount = await this.provider.getTransactionCount(
+      address,
+      "pending",
+    )
     return transactionCount
   }
 
@@ -1041,20 +1165,17 @@ export abstract class EVMService {
   }
 
   private async getBaseFee() {
-    const block = await this.provider.getBlock("latest")
+    const block = await withRetry(() => this.provider.getBlock("latest"))
     return block?.baseFeePerGas ?? BigInt(0)
   }
 
   private async sendTransaction(
     signedTransaction: string,
   ): Promise<TransactionResponse> {
-    try {
-      const response =
-        await this.provider.broadcastTransaction(signedTransaction)
-      await response.wait()
-      return response
-    } catch (e) {
-      throw e
-    }
+    const response = await withRetry(() =>
+      this.provider.broadcastTransaction(signedTransaction),
+    )
+    await withRetry(() => response.wait())
+    return response
   }
 }

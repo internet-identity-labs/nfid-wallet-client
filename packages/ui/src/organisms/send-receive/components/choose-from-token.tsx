@@ -47,6 +47,7 @@ interface ChooseFromTokenProps {
   tokens?: FT[]
   balance?: bigint | undefined
   value?: string
+  initialValue?: string
   setFromChosenToken?: (value: SelectedToken) => void
   usdRate?: string | null
   title: string
@@ -70,6 +71,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   tokens,
   balance,
   value,
+  initialValue,
   setFromChosenToken,
   usdRate = "0.00 USD",
   title,
@@ -89,6 +91,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   const [isMaxClicked, setIsMaxClicked] = useState(false)
   const [isFeeLoading, setIsFeeLoading] = useState(false)
   const isChangingToken = useRef(false)
+  const isMaxAmountActive = useRef(false)
   const isDarkTheme = useDarkTheme()
 
   const {
@@ -97,6 +100,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     formState: { errors },
     trigger,
     clearErrors,
+    setError,
   } = useFormContext()
   const userBalance = balance !== undefined ? balance : token?.getTokenBalance()
   const decimals = token?.getTokenDecimals()
@@ -113,6 +117,12 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     }, 500)
   }, [token, resetKey, setValue, clearErrors])
 
+  useEffect(() => {
+    if (!initialValue) return
+    setInputAmountValue(initialValue)
+    setValue("amount", initialValue, { shouldValidate: true })
+  }, [initialValue])
+
   const feeFormatted = useMemo(() => {
     if (!token || userBalance === undefined) return
 
@@ -124,6 +134,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
       case IModalType.CONVERT_TO_CKBTC:
       case IModalType.CONVERT_TO_CKETH:
       case IModalType.CONVERT_TO_SEPOLIA_CKETH:
+      case IModalType.CONVERT_TO_CKERC20:
         // just set 0 for not setting undefined
         return BigInt(0)
 
@@ -140,6 +151,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
       case IModalType.SEND:
       case IModalType.STAKE:
+      case IModalType.PROMOTE:
+      case IModalType.CONVERT_TO_ERC20:
         return fee
 
       default:
@@ -151,7 +164,8 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     if (
       feeFormatted !== undefined &&
       inputAmountValue.trim() &&
-      !isChangingToken.current
+      !isChangingToken.current &&
+      !isMaxAmountActive.current
     ) {
       trigger("amount")
     }
@@ -161,16 +175,18 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     if (userBalance === undefined) return false
 
     if (
-      token?.getChainId() === ChainId.BTC ||
-      (token && isEvmToken(token.getChainId()))
+      modalType === IModalType.SWAP ||
+      modalType === IModalType.CONVERT_TO_ERC20 ||
+      (modalType === IModalType.SEND && token?.getChainId() === ChainId.ICP)
     ) {
-      return userBalance > BigInt(0)
-    }
-    if (feeFormatted === undefined) return false
+      if (feeFormatted === undefined) return false
 
-    const balanceNum = new BigNumber(userBalance.toString())
-    const feeNum = new BigNumber(feeFormatted.toString())
-    return balanceNum.minus(feeNum).isGreaterThanOrEqualTo(0)
+      const balanceNum = new BigNumber(userBalance.toString())
+      const feeNum = new BigNumber(feeFormatted.toString())
+      return balanceNum.minus(feeNum).isGreaterThanOrEqualTo(0)
+    }
+
+    return userBalance > BigInt(0)
   }, [userBalance, feeFormatted, token])
 
   const maxHandler = useCallback(() => {
@@ -227,10 +243,13 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     }
     if (
       modalType === IModalType.STAKE ||
+      modalType === IModalType.PROMOTE ||
       modalType === IModalType.CONVERT_TO_CKBTC ||
       modalType === IModalType.CONVERT_TO_BTC ||
       modalType === IModalType.CONVERT_TO_ETH ||
-      modalType === IModalType.CONVERT_TO_SEPOLIA_ETH
+      modalType === IModalType.CONVERT_TO_SEPOLIA_ETH ||
+      modalType === IModalType.CONVERT_TO_CKERC20 ||
+      modalType === IModalType.CONVERT_TO_ERC20
     ) {
       if (feeFormatted === undefined) return
       const feeNum = new BigNumber(feeFormatted.toString())
@@ -258,12 +277,26 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
 
     const balanceNum = new BigNumber(userBalance.toString())
     const feeNum = new BigNumber(feeFormatted.toString())
-    const formattedValue = formatAssetAmountRaw(
-      balanceNum.minus(feeNum),
-      decimals,
-    )
+    const netAmount = balanceNum.minus(feeNum)
+
+    if (
+      netAmount.isLessThan(0) &&
+      modalType === IModalType.SEND &&
+      isEvmToken(token.getChainId()) &&
+      !isErc20Token(token.getChainId(), token.getTokenCategory())
+    ) {
+      setInputAmountValue("")
+      setValue("amount", "", { shouldValidate: false })
+      setError("amount", { message: "Insufficient funds" })
+      setIsFeeLoading(false)
+      setIsMaxClicked(false)
+      return
+    }
+
+    const formattedValue = formatAssetAmountRaw(netAmount, decimals)
 
     onMaxResolved?.()
+    isMaxAmountActive.current = true
     setInputAmountValue(formattedValue)
     setValue("amount", formattedValue, { shouldValidate: true })
 
@@ -313,14 +346,18 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
           <InputAmount
             key={token.getTokenAddress()}
             className={clsx(
-              isResponsive && "leading-[26px] h-[30px] !max-w-full",
+              isResponsive &&
+                "leading-[26px] h-[30px] !max-w-full basis-[100%]",
             )}
             id={"choose-from-token-amount"}
             isLoading={isFeeLoading}
             decimals={decimals}
             value={inputAmountValue}
             {...register("amount", {
-              onChange: (e) => setInputAmountValue(e.target.value),
+              onChange: (e) => {
+                isMaxAmountActive.current = false
+                setInputAmountValue(e.target.value)
+              },
               validate: (value) => {
                 if (isChangingToken.current) {
                   return true

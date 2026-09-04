@@ -27,6 +27,7 @@ import { mainnet, polygon, base, arbitrum } from "viem/chains"
 import { getQuote, getTokens, type LiFiStep } from "@lifi/sdk"
 import { BRIDGE_ADDRESS } from "./constants"
 import { EstimatedBridge } from "./types"
+import { withRetry } from "../utils"
 
 class BridgeService {
   private identity: SignIdentity | null = null
@@ -176,19 +177,21 @@ class BridgeService {
       .toString()
 
     if (isMaxAmount) {
-      const probeQuote = await getQuote(this.client!, {
-        fromAddress: this.address!,
-        fromChain,
-        toChain,
-        fromToken: fromTokenAddress,
-        toToken: toTokenAddress,
-        fromAmount: amount,
-      })
+      const probeQuote = await withRetry(() =>
+        getQuote(this.client!, {
+          fromAddress: this.address!,
+          fromChain,
+          toChain,
+          fromToken: fromTokenAddress,
+          toToken: toTokenAddress,
+          fromAmount: amount,
+        }),
+      )
 
       const probeTx = probeQuote.transactionRequest
       if (probeTx?.gasLimit && BigInt(probeTx.value ?? 0) > BigInt(0)) {
         const provider = this.getProvider(fromChain)
-        const feeData = await provider.getFeeData()
+        const feeData = await withRetry(() => provider.getFeeData())
         const maxFeePerGas = feeData.maxFeePerGas ?? BigInt(10_000_000_000)
         // 20% buffer to cover gas price fluctuations between quote and execution
         const gasCost =
@@ -198,14 +201,16 @@ class BridgeService {
       }
     }
 
-    const quote = await getQuote(this.client!, {
-      fromAddress: this.address!,
-      fromChain,
-      toChain,
-      fromToken: fromTokenAddress,
-      toToken: toTokenAddress,
-      fromAmount: amount,
-    })
+    const quote = await withRetry(() =>
+      getQuote(this.client!, {
+        fromAddress: this.address!,
+        fromChain,
+        toChain,
+        fromToken: fromTokenAddress,
+        toToken: toTokenAddress,
+        fromAmount: amount,
+      }),
+    )
     await this.validateTransaction(quote)
 
     const quoteEstimate = quote.estimate
@@ -280,7 +285,7 @@ class BridgeService {
     const allowance: bigint = await erc20.allowance(this.address!, spender)
     if (allowance >= amount) return
 
-    const feeData = await provider.getFeeData()
+    const feeData = await withRetry(() => provider.getFeeData())
     const nonce = await provider.getTransactionCount(this.address!)
     const approveData = erc20.interface.encodeFunctionData("approve", [
       spender,
@@ -302,8 +307,10 @@ class BridgeService {
       this.identity!,
       approvalRequest,
     )
-    const response = await provider.broadcastTransaction(signed)
-    await response.wait()
+    const response = await withRetry(() =>
+      provider.broadcastTransaction(signed),
+    )
+    await withRetry(() => response.wait())
   }
 
   private async validateTransaction(quote: LiFiStep): Promise<void> {
@@ -317,7 +324,7 @@ class BridgeService {
 
     const [balance, feeData] = await Promise.all([
       provider.getBalance(this.address!),
-      provider.getFeeData(),
+      withRetry(() => provider.getFeeData()),
     ])
 
     const value = BigInt(tx.value ?? 0)
@@ -353,7 +360,7 @@ class BridgeService {
       const freshTx = freshQuote.transactionRequest ?? tx
 
       const [feeData, nonce] = await Promise.all([
-        provider.getFeeData(),
+        withRetry(() => provider.getFeeData()),
         provider.getTransactionCount(this.address!),
       ])
 
@@ -373,8 +380,10 @@ class BridgeService {
         request,
       )
 
-      const response = await provider.broadcastTransaction(signed)
-      const receipt = await response.wait()
+      const response = await withRetry(() =>
+        provider.broadcastTransaction(signed),
+      )
+      const receipt = await withRetry(() => response.wait())
       if (!receipt) throw new Error("No receipt for transaction")
 
       return response.hash

@@ -102,3 +102,10 @@ export class OCPSubmitError extends OCPError {
     this.apiMessage = apiMessage
   }
 }
+
+export class OCPSubmitTimeoutError extends OCPError {
+  constructor(url: string) {
+    super(`OCP submit timed out: ${url}`, "SUBMIT_TIMEOUT")
+    this.name = "OCPSubmitTimeoutError"
+  }
+}

@@ -26,6 +26,17 @@ import {
   LoginResult,
 } from "frontend/integration/internet-identity/api-result-to-login-result"
 import { fromMnemonicWithoutValidation } from "frontend/integration/internet-identity/crypto/ed25519"
+import { ttlCacheService } from "@nfid/client-db"
+import { mutate } from "@nfid/swr"
+import { INITED_TOKENS_CACHE_NAME } from "frontend/integration/ft/ft-service"
+import { ICRC1_ORACLE_CACHE_NAME } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
+import { ICRC1_REGISTRY_CACHE_NAME } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
+import { EVM_BALANCE_CACHE_NAME } from "frontend/integration/ethereum/evm.service"
+import {
+  ERC20_BALANCES_CACHE_NAME,
+  ERC20_TOKENS_CACHE_NAME,
+  ERC20_TOKENS_LIST_CACHE_NAME,
+} from "frontend/integration/ethereum/erc20-abstract.service"
 
 export interface User {
   principal: string
@@ -111,6 +122,19 @@ export const useAuthentication = () => {
         setIsLoading(false)
         return result
       }
+
+      await ttlCacheService.invalidate([
+        INITED_TOKENS_CACHE_NAME,
+        ICRC1_ORACLE_CACHE_NAME,
+        ICRC1_REGISTRY_CACHE_NAME,
+        EVM_BALANCE_CACHE_NAME,
+        ERC20_TOKENS_LIST_CACHE_NAME,
+        ERC20_TOKENS_CACHE_NAME,
+        ERC20_BALANCES_CACHE_NAME,
+      ])
+      await mutate("tokens")
+      await mutate("initedTokens")
+      await mutate("ftUsdValue")
 
       setIsLoading(false)
       return result

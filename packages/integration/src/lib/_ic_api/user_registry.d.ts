@@ -45,7 +45,7 @@ export interface VaultCanister {
   created_at: bigint
 }
 export interface _SERVICE {
-  add_vault_canister: ActorMethod<[string, string], undefined>
+  add_vault_canister: ActorMethod<[string, string, string], undefined>
   get_all_vault_canisters: ActorMethod<[], Array<VaultCanister>>
   address_book_delete: ActorMethod<[string], Result_1>
   address_book_delete_all: ActorMethod<[], Result>

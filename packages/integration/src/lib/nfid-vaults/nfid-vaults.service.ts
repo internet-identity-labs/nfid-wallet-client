@@ -175,7 +175,7 @@ export class NfidVaultsService {
     // independent of each other, so they run together, each retried on its own.
     const [named, recorded] = await Promise.all([
       this.nameVault(canisterId.toText(), name, identity),
-      this.recordVault(canisterId.toText(), name),
+      this.recordVault(canisterId.toText(), name, controller.toText()),
     ])
 
     // Report what is left undone, but never by losing the canister id: the user has
@@ -195,10 +195,14 @@ export class NfidVaultsService {
   /**
    * Vaults the caller owns.
    *
-   * Signed by the device identity, through the shared `userRegistry` actor. The
-   * registry resolves the user root from the caller itself, so this returns the
+   * The registry resolves the user root from the caller itself, so this returns the
    * vaults of whoever is authenticated and never anyone else's, and the same list
    * comes back on every device the user signs in from.
+   *
+   * This goes through the shared `userRegistry` actor, so it is signed by the device
+   * identity. An actor built on the global identity works just as well: the registry
+   * recognises both, because `createVault` registers the global principal with the
+   * vault.
    */
   async getVaults(): Promise<StoredVault[]> {
     const vaults = await userRegistry.get_all_vault_canisters()
@@ -216,13 +220,17 @@ export class NfidVaultsService {
    *
    * Signed by the device identity the shared actor carries, not by the global one
    * that created the vault: the registry keys vaults by user root, which either
-   * identity resolves to.
+   * identity resolves to. The global principal is registered alongside so that the
+   * list can also be read when only that identity is at hand.
    */
   private async recordVault(
     vaultCanisterId: string,
     name: string,
+    globalPrincipal: string,
   ): Promise<StepResult> {
-    return attempt(() => userRegistry.add_vault_canister(vaultCanisterId, name))
+    return attempt(() =>
+      userRegistry.add_vault_canister(vaultCanisterId, name, globalPrincipal),
+    )
   }
 
   /**

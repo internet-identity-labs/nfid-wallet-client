@@ -156,8 +156,14 @@ No parameter: the registry resolves the user root from the caller and returns on
 user's vaults. This is the only place the association between a user and their vaults
 is stored — neither the vault nor the manager knows who owns a vault.
 
+**Either identity reads the same list.** The registry knows the device identity through
+the identity manager, and it knows the global principal because `createVault` registers
+it with the vault. A global principal has no access point, so the identity manager
+cannot resolve it — the registry keeps its own index for exactly that reason. Whichever
+of the two signs the call, the answer is the same.
+
 A vault missing from this list is not lost; it just was never recorded. Its id can be
-re-added with `userRegistry.add_vault_canister(canisterId, name)`.
+re-added with `userRegistry.add_vault_canister(canisterId, name, globalPrincipal)`.
 
 ---
 

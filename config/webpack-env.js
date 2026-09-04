@@ -85,6 +85,9 @@ export function getServiceConfig() {
       process.env.CYCLES_MINTER_CANISTER_ID,
     ),
     VAULT_CANISTER_ID: JSON.stringify(process.env.VAULT_CANISTER_ID),
+    NFID_VAULT_MANAGER_CANISTER_ID: JSON.stringify(
+      process.env.NFID_VAULT_MANAGER_CANISTER_ID,
+    ),
     II_PROVIDER: JSON.stringify(process.env.II_PROVIDER),
     ECDSA_SIGNER_CANISTER_ID: JSON.stringify(
       process.env.ECDSA_SIGNER_CANISTER_ID,

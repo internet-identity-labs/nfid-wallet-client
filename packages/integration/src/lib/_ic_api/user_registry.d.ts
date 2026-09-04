@@ -39,7 +39,14 @@ export type Result = { Ok: null } | { Err: AddressBookError }
 export type Result_1 =
   | { Ok: Array<AddressBookUserAddress> }
   | { Err: AddressBookError }
+export interface VaultCanister {
+  canister_id: string
+  name: string
+  created_at: bigint
+}
 export interface _SERVICE {
+  add_vault_canister: ActorMethod<[string, string], undefined>
+  get_all_vault_canisters: ActorMethod<[], Array<VaultCanister>>
   address_book_delete: ActorMethod<[string], Result_1>
   address_book_delete_all: ActorMethod<[], Result>
   address_book_find_all: ActorMethod<[], Result_1>

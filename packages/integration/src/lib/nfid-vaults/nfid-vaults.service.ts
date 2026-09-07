@@ -13,6 +13,9 @@ import {
 } from "./vault-manager.idl"
 import { StoredVault, VaultCreationPrice } from "./types"
 
+/** The canister timestamps in nanoseconds, the frontend works in milliseconds. */
+const NS_PER_MS = BigInt(1_000_000)
+
 /** How many times a step that follows a paid-for vault is attempted. */
 const ATTEMPTS = 3
 
@@ -210,8 +213,7 @@ export class NfidVaultsService {
     return vaults.map((vault) => ({
       canisterId: vault.canister_id,
       name: vault.name,
-      // The canister timestamps in nanoseconds, the frontend works in millis.
-      createdAt: Number(vault.created_at / 1_000_000n),
+      createdAt: Number(vault.created_at / NS_PER_MS),
     }))
   }
 

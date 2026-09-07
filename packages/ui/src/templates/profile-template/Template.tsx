@@ -678,9 +678,11 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
                     : authState.getUserIdData().publicKey
                 }
               />
-              <BannerCarousel
-                slides={[...(dappSlide ? [dappSlide] : []), ...bannerSlides]}
-              />
+              {!isViewOnlyMode && (
+                <BannerCarousel
+                  slides={[...(dappSlide ? [dappSlide] : []), ...bannerSlides]}
+                />
+              )}
               <TabsSwitcher
                 className="my-[30px]"
                 tabs={tabs}

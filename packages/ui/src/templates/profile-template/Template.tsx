@@ -69,6 +69,7 @@ import {
 } from "frontend/integration/ethereum/evm-transaction.service"
 import { ACTIVITY_CACHE_NAME } from "@nfid/integration/token/icrc1"
 import { ICP_NFT_GEEK_CACHE_NAME } from "frontend/integration/nft/geek/nft-geek-service"
+import { EVM_NFT_FLOOR_PRICE_CACHE_NAME } from "frontend/integration/nft/impl/evm/evm-nft-floor-price.service"
 import { getAllActivity } from "frontend/features/activity/utils/activity"
 import { PAGINATION_ITEMS } from "frontend/features/activity/constants"
 import {
@@ -448,6 +449,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         await ttlCacheService.invalidate([
           ICP_NFT_GEEK_CACHE_NAME,
           EVM_NFTS_CACHE_NAME,
+          EVM_NFT_FLOOR_PRICE_CACHE_NAME,
         ])
         await Promise.all([
           mutate("nftList"),
@@ -676,9 +678,11 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
                     : authState.getUserIdData().publicKey
                 }
               />
-              <BannerCarousel
-                slides={[...(dappSlide ? [dappSlide] : []), ...bannerSlides]}
-              />
+              {!isViewOnlyMode && (
+                <BannerCarousel
+                  slides={[...(dappSlide ? [dappSlide] : []), ...bannerSlides]}
+                />
+              )}
               <TabsSwitcher
                 className="my-[30px]"
                 tabs={tabs}

@@ -13,6 +13,7 @@ import { DiscoverySkeleton } from "../../atoms/skeleton/discovery-skeleton"
 import DiscoveryPlaceholder from "../discovery/assets/discovery-placeholder.jpg"
 import DiscoveryDarkPlaceholder from "../discovery/assets/discovery-placeholder-dark.jpg"
 import { useNavigate } from "react-router-dom"
+import { ReactComponent as EmptyPrivateAccounts } from "./assets/empty-private-accounts.svg"
 
 interface PrivateAccountsProps {
   privateAccounts?: DiscoveryAppData[]
@@ -40,7 +41,7 @@ export const PrivateAccounts: FC<PrivateAccountsProps> = ({
         innerClassName="!px-0"
         titleClassName="!px-0"
       >
-        {isLoading ? (
+        {isLoading || !privateAccounts ? (
           <DiscoverySkeleton amount={PAGE_SIZE} />
         ) : (
           <>
@@ -50,66 +51,75 @@ export const PrivateAccounts: FC<PrivateAccountsProps> = ({
                 "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
               )}
             >
-              {privateAccounts?.map((app) => (
-                <div
-                  key={app.id}
-                  className={clsx(
-                    "block rounded-[12px] overflow-hidden cursor-pointer",
-                    "bg-gray-50 hover:bg-white dark:bg-zinc-800 dark:hover:bg-zinc-700",
-                    "group hover:shadow-[0px_2px_15px_rgba(0,0,0,0.1)] dark:hover:bg-zinc-700 transition-all",
-                  )}
-                  onClick={() => {
-                    navigate({
-                      pathname: `${links.privateAccounts}/${app.id}`,
-                    })
-                  }}
-                >
-                  <div className="rounded-[12px] overflow-hidden relative">
-                    <ImageWithFallback
-                      alt={app.name}
-                      src={`${app.image || "#"}`}
-                      fallbackSrc={
-                        isDarkTheme
-                          ? DiscoveryDarkPlaceholder
-                          : DiscoveryPlaceholder
-                      }
-                      className="w-full h-full object-cover aspect-[335/175]"
-                    />
-                    {app.desc && (
-                      <div
-                        className={clsx(
-                          "absolute top-0 left-0 right-0 m-auto z-2 flex items-center justify-center w-full h-full p-5 text-center",
-                          "bg-white/60 dark:bg-zinc-500/60",
-                          "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
-                          "text-sm leading-5 overflow-hidden rounded-[12px]",
-                        )}
-                        style={{
-                          backdropFilter: "blur(10px)",
-                          WebkitBackdropFilter: "blur(10px)",
-                        }}
-                      >
-                        {app.desc}
-                      </div>
+              {privateAccounts.length ? (
+                privateAccounts.map((app) => (
+                  <div
+                    key={app.id}
+                    className={clsx(
+                      "block rounded-[12px] overflow-hidden cursor-pointer",
+                      "bg-gray-50 hover:bg-white dark:bg-zinc-800 dark:hover:bg-zinc-700",
+                      "group hover:shadow-[0px_2px_15px_rgba(0,0,0,0.1)] dark:hover:bg-zinc-700 transition-all",
                     )}
-                  </div>
-                  <div className="px-2.5 pt-3 pb-[15px]">
-                    <div className="flex justify-between items-center mb-1 gap-2.5">
-                      <span className="text-sm font-bold leading-5 dark:text-white">
-                        {app.name}
-                      </span>
-                      <div className="flex items-center gap-[6px]">
-                        <DiscoveryUsersIcon
-                          strokeColor={isDarkTheme ? "white" : "black"}
-                        />
-                        <span>{Number(app.uniqueUsers)}</span>
-                      </div>
+                    onClick={() => {
+                      navigate({
+                        pathname: `${links.privateAccounts}/${app.id}`,
+                      })
+                    }}
+                  >
+                    <div className="rounded-[12px] overflow-hidden relative">
+                      <ImageWithFallback
+                        alt={app.name}
+                        src={`${app.image || "#"}`}
+                        fallbackSrc={
+                          isDarkTheme
+                            ? DiscoveryDarkPlaceholder
+                            : DiscoveryPlaceholder
+                        }
+                        className="w-full h-full object-cover aspect-[335/175]"
+                      />
+                      {app.desc && (
+                        <div
+                          className={clsx(
+                            "absolute top-0 left-0 right-0 m-auto z-2 flex items-center justify-center w-full h-full p-5 text-center",
+                            "bg-white/60 dark:bg-zinc-500/60",
+                            "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+                            "text-sm leading-5 overflow-hidden rounded-[12px]",
+                          )}
+                          style={{
+                            backdropFilter: "blur(10px)",
+                            WebkitBackdropFilter: "blur(10px)",
+                          }}
+                        >
+                          {app.desc}
+                        </div>
+                      )}
                     </div>
-                    <A target="_blank" href={app.url}>
-                      {app.url}
-                    </A>
+                    <div className="px-2.5 pt-3 pb-[15px]">
+                      <div className="flex justify-between items-center mb-1 gap-2.5">
+                        <span className="text-sm font-bold leading-5 dark:text-white">
+                          {app.name}
+                        </span>
+                        <div className="flex items-center gap-[6px]">
+                          <DiscoveryUsersIcon
+                            strokeColor={isDarkTheme ? "white" : "black"}
+                          />
+                          <span>{Number(app.uniqueUsers)}</span>
+                        </div>
+                      </div>
+                      <A target="_blank" href={app.url}>
+                        {app.url}
+                      </A>
+                    </div>
                   </div>
+                ))
+              ) : (
+                <div className="py-[50px] col-span-full text-center text-secondary dark:text-zinc-500">
+                  <EmptyPrivateAccounts className="mx-auto" />
+                  <p className="mt-5 text-sm leading-5">
+                    No private accounts found.
+                  </p>
                 </div>
-              ))}
+              )}
             </div>
             <Button
               disabled={isLoading}

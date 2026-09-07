@@ -28,7 +28,7 @@ export const SendAddressBook: React.FC<SendAddressBookProps> = ({
       className={clsx(
         "text-black dark:text-white text-center w-full h-full",
         "px-5 pb-5 pt-[18px] absolute left-0 top-0 z-[3]",
-        "bg-white dark:bg-darkGray",
+        "bg-white dark:bg-darkGray overflow-auto",
         !isOpen && "hidden",
       )}
     >
@@ -46,7 +46,7 @@ export const SendAddressBook: React.FC<SendAddressBookProps> = ({
           alt="NFID address book"
         />
       </div>
-      <div className="flex flex-col gap-2 mb-[30px]">
+      <div className="flex flex-col gap-2">
         <Button
           type="primary"
           block

@@ -35,6 +35,7 @@ import {
 } from "@nfid/integration/token/ckerc20.config"
 import { transfer as transferICP } from "@nfid/integration/token/icp"
 import { mutate, mutateWithTimestamp } from "@nfid/swr"
+import { NFT } from "frontend/integration/nft/nft"
 
 import { getWalletDelegationAdapter } from "frontend/integration/adapters/delegations"
 import { transferEXT } from "frontend/integration/entrepot/ext"
@@ -669,4 +670,16 @@ export const getFeeSymbol = (chainId: ChainId) => {
 export const isTokenWithBalance = (token: FT) => {
   const balance = token.getTokenBalance()
   return balance !== undefined && balance > BigInt(0)
+}
+
+export const updateNftList = async (
+  nfts: { items: NFT[] },
+  tokenId: string,
+) => {
+  const updated = {
+    ...nfts,
+    items: nfts.items.filter((nft) => nft.getTokenId() !== tokenId),
+  }
+  mutate("nftList", updated, false)
+  mutate((key) => Array.isArray(key) && key[0] === "nftList", updated, false)
 }

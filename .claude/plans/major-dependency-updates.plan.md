@@ -39,7 +39,8 @@
 - [x] Run `npx nx migrate --run-migrations` to auto-apply workspace config patches
 - [x] Verify `nx.json` schema is still valid (check for renamed/removed fields)
 - [x] Run `yarn nx run-many --target=build --all` and fix any executor errors
-- [ ] **Open PR: "chore: upgrade Nx to v23"**
+- [ ] Run `yarn nx test nfid-frontend` — all passing
+- [ ] Run `yarn test:e2e:frontend` — all passing
 
 ---
 
@@ -49,7 +50,8 @@
 - [ ] Run `yarn install`
 - [ ] Update `babel.config.json`: remove `@babel/plugin-proposal-private-property-in-object` (merged into Babel 8 core — no longer needed as a plugin); verify `@babel/preset-env` `targets.ios` still accepted
 - [ ] Verify dev build starts without transpilation errors: `yarn nx serve nfid-frontend`
-- [ ] **Open PR: "chore: upgrade Babel to v8"**
+- [ ] Run `yarn nx test nfid-frontend` — all passing
+- [ ] Run `yarn test:e2e:frontend` — all passing
 
 ---
 
@@ -59,7 +61,8 @@
 - [ ] Run `yarn install`
 - [ ] Run `yarn nx run nfid-frontend:typecheck` and address any new strict-mode errors (`import type` enforcement, `isolatedModules` issues, removed `--importsNotUsedAsValues` flag)
 - [ ] Run typecheck across all packages: `yarn nx run-many --target=typecheck --all`
-- [ ] **Open PR: "chore: upgrade TypeScript to v7"**
+- [ ] Run `yarn nx test nfid-frontend` — all passing
+- [ ] Run `yarn test:e2e:frontend` — all passing
 
 ---
 
@@ -70,7 +73,8 @@
 - [ ] Migrate `apps/nfid-frontend-e2e/src/.eslintrc.yaml` to flat config format (inline the `env`, `globals`, and `rules` into the nearest `eslint.config.js` for that workspace package)
 - [ ] Verify root `eslint.config.js` and all `packages/*/eslint.config.js` are ESLint 10 compatible (check for removed rule names and deprecated config keys)
 - [ ] Run `yarn lint` and fix any rule-name or config errors
-- [ ] **Open PR: "chore: upgrade ESLint to v10"**
+- [ ] Run `yarn nx test nfid-frontend` — all passing
+- [ ] Run `yarn test:e2e:frontend` — all passing
 
 ---
 
@@ -85,7 +89,8 @@
 - [ ] Update `packages/ui-tailwind-core/` plugin to Tailwind 4 plugin API if needed
 - [ ] Run `yarn nx build nfid-frontend` and fix any PostCSS/class errors
 - [ ] Visual smoke-test: auth page, wallet page, transfer modal — check dark mode, scrollbars, Radix states
-- [ ] **Open PR: "chore: upgrade Tailwind CSS to v4"**
+- [ ] Run `yarn nx test nfid-frontend` — all passing
+- [ ] Run `yarn test:e2e:frontend` — all passing
 
 ---
 
@@ -104,7 +109,8 @@
 - [ ] Update all `@xstate/react` call sites (`useMachine`, `useActor`, `useInterpret`) to v6 API throughout `apps/nfid-frontend/src/`
 - [ ] Run `yarn nx test nfid-frontend` and fix failing machine tests
 - [ ] Smoke-test: auth flow, transfer modal, wallet-connect end-to-end in dev server
-- [ ] **Open PR: "chore: upgrade XState to v5"**
+- [ ] Run `yarn nx test nfid-frontend` — all passing
+- [ ] Run `yarn test:e2e:frontend` — all passing
 
 ---
 
@@ -118,7 +124,8 @@
 - [ ] Run `yarn nx run nfid-frontend:typecheck` and fix new React 19 type errors
 - [ ] Run `yarn nx test nfid-frontend` and fix failures
 - [ ] Full smoke-test: auth flow, wallet, transfer modal, identity manager
-- [ ] **Open PR: "chore: upgrade React to v19"**
+- [ ] Run `yarn nx test nfid-frontend` — all passing
+- [ ] Run `yarn test:e2e:frontend` — all passing
 
 ---
 
@@ -132,7 +139,6 @@
 - [ ] Fix any `cucumber-html-reporter` config option renames in E2E report config
 - [ ] Run `yarn nx test nfid-frontend` — all passing
 - [ ] Run `yarn test:e2e:frontend` — all passing
-- [ ] **Open PR: "chore: upgrade misc dev and test tools"**
 
 ---
 

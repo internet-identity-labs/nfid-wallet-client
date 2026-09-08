@@ -7,6 +7,7 @@ import {
 import { DEFAULT_DELEGATION_TTL } from "@nfid/config"
 
 import { ic } from "../agent"
+import { registrationGuardService } from "../authentication/registration-guard.service"
 
 const signinV2 = "/signin/v2"
 
@@ -47,6 +48,7 @@ export const googleSigninV2Service: GoogleSigninV2Service = {
 
     const text = await response.text()
     if (!response.ok) {
+      registrationGuardService.assertRegistrationAllowed(response.status, text)
       throw new Error(text)
     }
 

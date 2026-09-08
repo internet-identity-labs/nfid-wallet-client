@@ -70,7 +70,7 @@ export const NFTs: FC<INFTs> = ({
             }
             placeholder="Search"
             inputClassName="bg-white !border-black dark:!border-zinc-500"
-            className="w-full"
+            className="w-full !mb-0"
           />
           <div className={clsx("flex items-center space-x-6 shrink-0")}>
             <NFTDisplaySwitch state={display} setState={setDisplay} />

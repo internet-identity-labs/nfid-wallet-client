@@ -292,7 +292,7 @@ export async function addDevice(
   keyType: KeyType,
   purpose: Purpose,
   newPublicKey: DerEncodedPublicKey,
-  credentialId?: ArrayBuffer,
+  credentialId?: ArrayBuffer | Uint8Array,
   protect?: boolean,
 ) {
   //register only protected recovery phrase

@@ -262,7 +262,7 @@ export async function createDelegationChain(
   )
 }
 
-export function toHexString(bytes: ArrayBuffer): string {
+export function toHexString(bytes: ArrayBuffer | Uint8Array): string {
   return new Uint8Array(bytes).reduce(
     (str, byte) => str + byte.toString(16).padStart(2, "0"),
     "",

@@ -1,9 +1,9 @@
-import { getJestProjects } from "@nx/jest"
+import { getJestProjectsAsync } from "@nx/jest"
 
-export default {
+export default async () => ({
   projects: [
     "<rootDir>/apps/nfid-frontend",
     "<rootDir>/apps/nfid-demo",
-    ...getJestProjects(),
+    ...(await getJestProjectsAsync()),
   ],
-}
+})

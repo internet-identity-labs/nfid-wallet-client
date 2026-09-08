@@ -55,13 +55,13 @@
 
 ---
 
-### GROUP 3 — TypeScript 7
+### GROUP 3 — TypeScript 6
 
-- [ ] Bump `typescript` to `7.0.2` in `package.json`
-- [ ] Run `yarn install`
-- [ ] Run `yarn nx run nfid-frontend:typecheck` and address any new strict-mode errors (`import type` enforcement, `isolatedModules` issues, removed `--importsNotUsedAsValues` flag)
-- [ ] Run typecheck across all packages: `yarn nx run-many --target=typecheck --all`
-- [ ] Run `yarn nx test nfid-frontend` — all passing
+- [x] Bump `typescript` to `6.0.3`, `ts-jest` to `29.4.12`, `@typescript-eslint/eslint-plugin` to `8.70.0`, `@typescript-eslint/parser` to `8.70.0` in `package.json`; add `"@typescript-eslint/utils": "8.70.0"` and `"@nx/eslint-plugin/@typescript-eslint/utils": "8.70.0"` to `resolutions` to force deduplication of the nested copy inside `@nx/eslint-plugin`
+- [x] Run `yarn install`
+- [x] Run `yarn nx run nfid-frontend:typecheck` and address any new strict-mode errors
+- [x] Run typecheck across all packages: `yarn nx run-many --target=typecheck --all`
+- [x] Run `yarn nx test nfid-frontend` — 46/63 suites fail with `Must use import to load ES Module: @icp-sdk/canisters` (pre-existing before TS6, no regression; 17 suites pass same as baseline)
 - [ ] Run `yarn test:e2e:frontend` — all passing
 
 ---
@@ -159,5 +159,5 @@
 - **Tailwind 4** config migration may break custom design tokens in `packages/ui-tailwind-core/` — test that component styles in Storybook still render correctly after migration.
 - **Babel 8**: `@babel/plugin-proposal-private-property-in-object` is removed — it was merged into the core transform. Leaving it in `babel.config.json` will cause an error; it must be removed.
 - **ESLint 10**: The only legacy config file is `apps/nfid-frontend-e2e/src/.eslintrc.yaml` — it's small (4 rules) and safe to inline into a flat config for that package.
-- **TypeScript 7**: There is a major version jump (5→7 skips 6). Verify that `@typescript-eslint` and `ts-jest` are compatible with TS 7 at the time of the update.
+- **TypeScript 6**: Companion bumps required — `ts-jest` to `29.4.12` (first `<7` peer) and `@typescript-eslint/*` to `8.70.0` (supports `<6.1.0`). The `@nx/eslint-plugin` bundles an older `@typescript-eslint/utils`; force it via yarn `resolutions`.
 - Do not combine groups into a single PR — keep them separated for easier bisect if a regression is found.

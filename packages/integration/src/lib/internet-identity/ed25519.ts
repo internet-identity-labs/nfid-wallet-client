@@ -83,7 +83,7 @@ async function derive(
   const data = new Uint8Array([0, ...parentKey, ...toBigEndianArray(i)])
   const key = await window.crypto.subtle.importKey(
     "raw",
-    parentChaincode,
+    parentChaincode as unknown as ArrayBuffer,
     {
       name: "HMAC",
       hash: { name: "SHA-512" },

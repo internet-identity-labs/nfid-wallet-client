@@ -157,8 +157,8 @@
     "@types/react-tooltip": "4.2.4",
     "@types/sha256": "0.2.2",
     "@types/uuid": "11.0.0",
-    "@typescript-eslint/eslint-plugin": "8.55.0",
-    "@typescript-eslint/parser": "8.55.0",
+    "@typescript-eslint/eslint-plugin": "8.70.0",
+    "@typescript-eslint/parser": "8.70.0",
     "@wdio/allure-reporter": "9.27.0",
     "@wdio/cli": "9.27.0",
     "@wdio/cucumber-framework": "9.27.0",
@@ -178,7 +178,7 @@
     "dotenv": "17.4.1",
     "elliptic": "6.6.1",
     "env-cmd": "11.0.0",
-    "eslint": "9.39.2",
+    "eslint": "10.10.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-import": "2.32.0",
     "eslint-plugin-prettier": "5.5.5",
@@ -228,6 +228,8 @@
     "whatwg-fetch": "3.6.20"
   },
   "resolutions": {
+    "@typescript-eslint/utils": "8.70.0",
+    "@nx/eslint-plugin/@typescript-eslint/utils": "8.70.0",
     "axios": "1.15.0",
     "basic-ftp": "5.2.2",
     "handlebars": "4.7.9",

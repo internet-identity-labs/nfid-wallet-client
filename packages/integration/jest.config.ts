@@ -27,7 +27,9 @@ export default {
       "<rootDir>/../../node_modules/@dfinity/utils/dist/index.js",
     "^uuid$": "<rootDir>/../../__mocks__/uuid.ts",
   },
-  transformIgnorePatterns: ["node_modules/(?!(@icp-sdk|@dfinity)/)"],
+  transformIgnorePatterns: [
+    "node_modules/(?!(@icp-sdk|@dfinity|fake-indexeddb)/)",
+  ],
   moduleFileExtensions: ["mjs", "ts", "js", "html"],
   coverageDirectory: "../../coverage/packages/integration",
   setupFiles: ["./src/setup-tests.ts"],

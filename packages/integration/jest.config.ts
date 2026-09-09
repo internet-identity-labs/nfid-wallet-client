@@ -26,10 +26,10 @@ export default {
     "^@dfinity/utils$":
       "<rootDir>/../../node_modules/@dfinity/utils/dist/index.js",
     "^uuid$": "<rootDir>/../../__mocks__/uuid.ts",
+    "^fake-indexeddb/auto$":
+      "<rootDir>/../../node_modules/fake-indexeddb/auto/index.js",
   },
-  transformIgnorePatterns: [
-    "node_modules/(?!(@icp-sdk|@dfinity|fake-indexeddb|jose)/)",
-  ],
+  transformIgnorePatterns: ["node_modules/(?!(@icp-sdk|@dfinity|jose)/)"],
   moduleFileExtensions: ["mjs", "ts", "js", "html"],
   coverageDirectory: "../../coverage/packages/integration",
   setupFiles: ["./src/setup-tests.ts"],

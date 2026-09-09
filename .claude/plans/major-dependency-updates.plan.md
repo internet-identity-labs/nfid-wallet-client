@@ -46,10 +46,10 @@
 
 ### GROUP 2 — Babel 8
 
-- [ ] Bump all `@babel/*` packages and `babel-plugin-polyfill-regenerator` to new major versions in `package.json`
-- [ ] Run `yarn install`
-- [ ] Update `babel.config.json`: remove `@babel/plugin-proposal-private-property-in-object` (merged into Babel 8 core — no longer needed as a plugin); verify `@babel/preset-env` `targets.ios` still accepted
-- [ ] Verify dev build starts without transpilation errors: `yarn nx serve nfid-frontend`
+- [x] Bump all `@babel/*` packages and `babel-plugin-polyfill-regenerator` to new major versions in `package.json`
+- [x] Run `yarn install`
+- [x] Update `babel.config.json`: remove `@babel/plugin-proposal-private-property-in-object` (merged into Babel 8 core — no longer needed as a plugin); verify `@babel/preset-env` `targets.ios` still accepted
+- [x] Verify dev build starts without transpilation errors: `yarn nx serve nfid-frontend`
 - [ ] Run `yarn nx test nfid-frontend` — all passing
 - [ ] Run `yarn test:e2e:frontend` — all passing
 

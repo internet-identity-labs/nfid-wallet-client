@@ -116,13 +116,13 @@
 
 ### GROUP 7 — React 19
 
-- [ ] Bump `react`, `react-dom`, `@types/react`, `@types/react-dom` to `19.x`, `react-helmet-async` to `3.0.0`, `framer-motion` to `13.2.0` in `package.json`
-- [ ] Run `yarn install`
-- [ ] Search for any `ReactDOM.render` / `ReactDOM.hydrate` / `findDOMNode` / `createFactory` / `defaultProps` on function components usages and replace with React 19 equivalents
-- [ ] Update `react-helmet-async` usage to v3 provider API (check `HelmetProvider` import and usage in `App.tsx` / `provider.tsx`)
-- [ ] Check `framer-motion` `AnimatePresence` and `motion.*` static variant usage for v13 removals
-- [ ] Run `yarn nx run nfid-frontend:typecheck` and fix new React 19 type errors
-- [ ] Run `yarn nx test nfid-frontend` and fix failures
+- [x] Bump `react`, `react-dom`, `@types/react`, `@types/react-dom` to `19.x`, `react-helmet-async` to `3.0.0`, `framer-motion` to `13.2.0` in `package.json`
+- [x] Run `yarn install`
+- [x] Search for any `ReactDOM.render` / `ReactDOM.hydrate` / `findDOMNode` / `createFactory` / `defaultProps` on function components usages and replace with React 19 equivalents
+- [x] Update `react-helmet-async` usage to v3 provider API (check `HelmetProvider` import and usage in `App.tsx` / `provider.tsx`)
+- [x] Check `framer-motion` `AnimatePresence` and `motion.*` static variant usage for v13 removals
+- [x] Run `yarn nx run nfid-frontend:typecheck` and fix new React 19 type errors
+- [x] Run `yarn nx test nfid-frontend` and fix failures
 - [ ] Full smoke-test: auth flow, wallet, transfer modal, identity manager
 - [ ] Run `yarn nx test nfid-frontend` — all passing
 - [ ] Run `yarn test:e2e:frontend` — all passing

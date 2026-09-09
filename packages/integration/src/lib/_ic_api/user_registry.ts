@@ -41,7 +41,18 @@ export const idlFactory = ({ IDL }: any) => {
     ledger: IDL.Text,
     network: IDL.Nat32,
   })
+  const VaultCanister = IDL.Record({
+    canister_id: IDL.Text,
+    name: IDL.Text,
+    created_at: IDL.Nat64,
+  })
   return IDL.Service({
+    add_vault_canister: IDL.Func([IDL.Text, IDL.Text, IDL.Text], [], []),
+    get_all_vault_canisters: IDL.Func(
+      [],
+      [IDL.Vec(VaultCanister)],
+      ["composite_query"],
+    ),
     address_book_delete: IDL.Func([IDL.Text], [Result_1], []),
     address_book_delete_all: IDL.Func([], [Result], []),
     address_book_find_all: IDL.Func([], [Result_1], ["query"]),

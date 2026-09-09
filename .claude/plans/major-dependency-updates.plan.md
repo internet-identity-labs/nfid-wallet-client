@@ -68,11 +68,11 @@
 
 ### GROUP 4 — ESLint 10
 
-- [ ] Bump `eslint` to `10.10.0` in `package.json`
-- [ ] Run `yarn install`
-- [ ] Migrate `apps/nfid-frontend-e2e/src/.eslintrc.yaml` to flat config format (inline the `env`, `globals`, and `rules` into the nearest `eslint.config.js` for that workspace package)
-- [ ] Verify root `eslint.config.js` and all `packages/*/eslint.config.js` are ESLint 10 compatible (check for removed rule names and deprecated config keys)
-- [ ] Run `yarn lint` and fix any rule-name or config errors
+- [x] Bump `eslint` to `10.10.0` in `package.json`
+- [x] Run `yarn install`
+- [x] Migrate `apps/nfid-frontend-e2e/src/.eslintrc.yaml` to flat config format (inline the `env`, `globals`, and `rules` into the nearest `eslint.config.js` for that workspace package)
+- [x] Verify root `eslint.config.js` and all `packages/*/eslint.config.js` are ESLint 10 compatible (check for removed rule names and deprecated config keys); bump `@typescript-eslint/eslint-plugin` and `@typescript-eslint/parser` to `8.70.0` (first version with `^10.0.0` peer dep) and add `"@typescript-eslint/utils": "8.70.0"` to `resolutions` to deduplicate the nested copy inside `@nx/eslint-plugin`; run `yarn install`
+- [x] Run `yarn lint` and fix any rule-name or config errors
 - [ ] Run `yarn nx test nfid-frontend` — all passing
 - [ ] Run `yarn test:e2e:frontend` — all passing
 

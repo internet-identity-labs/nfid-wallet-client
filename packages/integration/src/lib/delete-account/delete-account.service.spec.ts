@@ -19,11 +19,67 @@ import { deleteAccountService } from "./delete-account.service"
 import { DeletionMode } from "./enum/deletion-mode.enum"
 import { IncorrectCodeError } from "./error/incorrect-code.error"
 import { IncorrectSeedPhraseError } from "./error/incorrect-seed-phrase.error"
+import type { AccessPointResponse } from "../_ic_api/identity_manager.d"
 
 const TEST_EMAIL = "delete-account-spec@test.test"
 const RECOVERY_MNEMONIC =
   "vessel ladder alter error federal sibling chat ability sun glass valve picture"
 const RECOVERY_SEED_PHRASE = `10001 ${RECOVERY_MNEMONIC}`
+
+// Prevent real ICP canister calls by mocking getLambdaActor (requires LAMBDA_IDENTITY env var)
+jest.mock("../lambda/util", () => ({
+  ...jest.requireActual("../lambda/util"),
+  getLambdaActor: jest.fn().mockResolvedValue({
+    add_email_and_principal_for_create_account_validation: jest
+      .fn()
+      .mockResolvedValue({}),
+  }),
+}))
+
+function makeAccessPoint(
+  principal: string,
+  type: "Email" | "Recovery",
+): AccessPointResponse {
+  return {
+    icon: "Icon",
+    device: type === "Recovery" ? "Recovery" : "Browser",
+    device_type: type === "Recovery" ? { Recovery: null } : { Email: null },
+    browser: "Browser",
+    last_used: BigInt(0),
+    principal_id: principal,
+    credential_id: [],
+  }
+}
+
+function makeAccountResponse(
+  principal: string,
+  options: { email?: string; recoveryPrincipal?: string } = {},
+) {
+  const accessPoints: AccessPointResponse[] = [
+    makeAccessPoint(
+      principal,
+      options.recoveryPrincipal ? "Recovery" : "Email",
+    ),
+  ]
+  if (options.recoveryPrincipal && options.email) {
+    // Account has both recovery (primary) and an email access point
+    accessPoints[0] = makeAccessPoint(options.recoveryPrincipal, "Recovery")
+    accessPoints.push(makeAccessPoint(principal, "Email"))
+  } else if (options.recoveryPrincipal) {
+    accessPoints[0] = makeAccessPoint(options.recoveryPrincipal, "Recovery")
+  }
+  return {
+    name: [] as [],
+    anchor: BigInt(0),
+    access_points: accessPoints,
+    personas: [] as [],
+    is2fa_enabled: false,
+    wallet: { NFID: null } as { NFID: null },
+    principal_id: principal,
+    phone_number: [] as [],
+    email: (options.email ? [options.email] : []) as [] | [string],
+  }
+}
 
 describe("deleteAccountService", () => {
   jest.setTimeout(120000)
@@ -33,11 +89,36 @@ describe("deleteAccountService", () => {
   })
 
   it("should delete account via EMAIL step when correct code is provided", async () => {
-    // Given an IM account with email, authState returning that email, and lambda confirming the code
+    // Spy on canister methods before createAccount to prevent real ICP calls
+    jest
+      .spyOn(im, "create_account")
+      .mockResolvedValue({ status_code: 200, data: [], error: [] })
+
     const { principal } = await createAccount("delete-spec-email-v1", {
       email: TEST_EMAIL,
     })
     mockUserIdData(principal, TEST_EMAIL)
+
+    const mockAccount = makeAccountResponse(principal, { email: TEST_EMAIL })
+    jest
+      .spyOn(im, "get_account")
+      .mockResolvedValueOnce({
+        status_code: 200,
+        data: [mockAccount],
+        error: [],
+      })
+      .mockResolvedValueOnce({
+        status_code: 404,
+        data: [],
+        error: ["Unable to find Account"],
+      })
+    jest
+      .spyOn(im, "remove_account")
+      .mockResolvedValue({ status_code: 200, data: [true], error: [] })
+    jest
+      .spyOn(userRegistry, "address_book_delete_all")
+      .mockResolvedValue({ Ok: null })
+
     const fetchMock = jest
       .fn()
       .mockResolvedValueOnce({ ok: true, status: 200, text: async () => "{}" })
@@ -65,10 +146,8 @@ describe("deleteAccountService", () => {
       .mockResolvedValue()
     jest.spyOn(walletStorage, "set").mockResolvedValue()
 
-    // When the full deletion flow is executed with a valid code
     const result = await deleteAccountService.executeStep(plan, "123456")
 
-    // Then EMAIL step was required, lambda received correct params, account is fully deleted, and the local wallet profile entry is removed
     expect(plan.steps).toContain(DeletionMode.EMAIL)
     expect(result.isCompleted).toBe(true)
     const [[, sendOptions], [, confirmOptions]] = fetchMock.mock.calls
@@ -87,11 +166,22 @@ describe("deleteAccountService", () => {
   })
 
   it("should throw IncorrectCodeError when wrong email deletion code is submitted", async () => {
-    // Given an IM account with email, authState returning that email, and lambda rejecting the code
+    jest
+      .spyOn(im, "create_account")
+      .mockResolvedValue({ status_code: 200, data: [], error: [] })
+
     const { principal } = await createAccount("delete-spec-email-v2", {
       email: TEST_EMAIL,
     })
     mockUserIdData(principal, TEST_EMAIL)
+
+    const mockAccount = makeAccountResponse(principal, { email: TEST_EMAIL })
+    jest.spyOn(im, "get_account").mockResolvedValue({
+      status_code: 200,
+      data: [mockAccount],
+      error: [],
+    })
+
     const fetchMock = jest
       .fn()
       .mockResolvedValueOnce({ ok: true, status: 200, text: async () => "{}" })
@@ -102,14 +192,12 @@ describe("deleteAccountService", () => {
       })
     global.fetch = fetchMock
 
-    // When the email step is prepared and executed with a wrong code
     const plan = await deleteAccountService.getPlan()
     await deleteAccountService.prepareStep(plan)
     await expect(
       deleteAccountService.executeStep(plan, "wrong"),
     ).rejects.toThrow(IncorrectCodeError)
 
-    // Then IncorrectCodeError is thrown and the wrong code was passed to lambda; account still exists
     const [[, sendOptions], [, confirmOptions]] = fetchMock.mock.calls
     expect(JSON.parse(sendOptions.body)).toMatchObject({
       email: TEST_EMAIL,
@@ -124,7 +212,6 @@ describe("deleteAccountService", () => {
   })
 
   it("should chain RECOVERY_PHRASE then EMAIL steps when both are configured on the account", async () => {
-    // Given an account with both email and a recovery access point, and lambda confirming the code
     const recoveryIdentity = await fromMnemonicWithoutValidation(
       RECOVERY_MNEMONIC,
       IC_DERIVATION_PATH,
@@ -132,6 +219,14 @@ describe("deleteAccountService", () => {
     const recoveryPrincipal = Principal.selfAuthenticating(
       recoveryIdentity.getPublicKey().toDer(),
     ).toText()
+
+    jest
+      .spyOn(im, "create_account")
+      .mockResolvedValue({ status_code: 200, data: [], error: [] })
+    jest
+      .spyOn(im, "create_access_point")
+      .mockResolvedValue({ status_code: 200, data: [], error: [] })
+
     const { principal } = await createAccount("delete-spec-chain-v1", {
       email: TEST_EMAIL,
     })
@@ -144,15 +239,39 @@ describe("deleteAccountService", () => {
       credential_id: [],
     })
     mockUserIdData(principal, TEST_EMAIL)
+
+    const mockAccount = makeAccountResponse(principal, {
+      email: TEST_EMAIL,
+      recoveryPrincipal,
+    })
+    jest
+      .spyOn(im, "get_account")
+      .mockResolvedValueOnce({
+        status_code: 200,
+        data: [mockAccount],
+        error: [],
+      })
+      .mockResolvedValueOnce({
+        status_code: 404,
+        data: [],
+        error: ["Unable to find Account"],
+      })
+    jest
+      .spyOn(im, "remove_account")
+      .mockResolvedValue({ status_code: 200, data: [true], error: [] })
+    jest
+      .spyOn(userRegistry, "address_book_delete_all")
+      .mockResolvedValue({ Ok: null })
+
     const fetchMock = jest
       .fn()
       .mockResolvedValueOnce({ ok: true, status: 200, text: async () => "{}" })
       .mockResolvedValueOnce({ ok: true, status: 200, text: async () => "{}" })
     global.fetch = fetchMock
 
-    const authSetSpy = jest.spyOn(authState, "set")
+    // Mock authState.set to prevent createUserIdData from making additional im.get_account() calls
+    const authSetSpy = jest.spyOn(authState, "set").mockResolvedValue()
 
-    // When RECOVERY_PHRASE step is executed first, then EMAIL step
     const plan = await deleteAccountService.getPlan()
     await deleteAccountService.prepareStep(plan)
     const afterRecovery = await deleteAccountService.executeStep(
@@ -165,8 +284,6 @@ describe("deleteAccountService", () => {
       "123456",
     )
 
-    // Then both steps were required in order, the session identity was switched to the recovery identity
-    // after the seed phrase step, lambda received correct params, and the account is fully deleted
     const [[, sendOptions], [, confirmOptions]] = fetchMock.mock.calls
     const { identity: signedInIdentity } = authSetSpy.mock.calls[0][0]
     const signedInPrincipal = Principal.selfAuthenticating(
@@ -196,7 +313,6 @@ describe("deleteAccountService", () => {
   })
 
   it("should throw IncorrectSeedPhraseError when wrong recovery phrase is submitted", async () => {
-    // Given an IM account with a Recovery access point and authState reporting no email
     const recoveryIdentity = await fromMnemonicWithoutValidation(
       RECOVERY_MNEMONIC,
       IC_DERIVATION_PATH,
@@ -204,15 +320,25 @@ describe("deleteAccountService", () => {
     const recoveryPrincipal = Principal.selfAuthenticating(
       recoveryIdentity.getPublicKey().toDer(),
     ).toText()
+
+    jest
+      .spyOn(im, "create_account")
+      .mockResolvedValue({ status_code: 200, data: [], error: [] })
+
     const { principal } = await createAccount("delete-spec-recovery-v2", {
       recoveryPrincipal,
     })
     mockUserIdData(principal)
 
-    // When the deletion is attempted with a phrase that does not match the registered principal
+    const mockAccount = makeAccountResponse(principal, { recoveryPrincipal })
+    jest.spyOn(im, "get_account").mockResolvedValue({
+      status_code: 200,
+      data: [mockAccount],
+      error: [],
+    })
+
     const plan = await deleteAccountService.getPlan()
 
-    // Then IncorrectSeedPhraseError is thrown; account still exists
     await expect(
       deleteAccountService.executeStep(
         plan,

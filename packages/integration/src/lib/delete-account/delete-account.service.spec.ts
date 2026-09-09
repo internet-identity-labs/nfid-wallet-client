@@ -269,7 +269,8 @@ describe("deleteAccountService", () => {
       .mockResolvedValueOnce({ ok: true, status: 200, text: async () => "{}" })
     global.fetch = fetchMock
 
-    const authSetSpy = jest.spyOn(authState, "set")
+    // Mock authState.set to prevent createUserIdData from making additional im.get_account() calls
+    const authSetSpy = jest.spyOn(authState, "set").mockResolvedValue()
 
     const plan = await deleteAccountService.getPlan()
     await deleteAccountService.prepareStep(plan)

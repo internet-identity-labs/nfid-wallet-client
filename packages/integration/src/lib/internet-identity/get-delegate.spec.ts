@@ -71,7 +71,7 @@ describe("get-delegate suite", () => {
           signedDelegation.delegation.expiration,
           signedDelegation.delegation.targets,
         ),
-        signature: signedDelegation.signature.buffer as Signature,
+        signature: signedDelegation.signature.buffer as unknown as Signature,
       }
     })
 

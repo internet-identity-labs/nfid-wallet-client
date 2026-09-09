@@ -299,7 +299,9 @@ export const ChooseTokenModal = <T extends FT | NFT>({
           >
             {filteredTokens.map((token, index) => (
               <div
-                ref={(el) => (itemRefs.current[index] = el)}
+                ref={(el) => {
+                  itemRefs.current[index] = el
+                }}
                 onClick={() => handleSelect(token)}
                 key={`${token.getTokenName()}_${index}`}
               >

@@ -452,7 +452,7 @@ export const useDevices = () => {
           protect,
         ),
         createRecoveryDevice(
-          new Blob([recoverIdentity.getPublicKey().toDer()]),
+          new Blob([new Uint8Array(recoverIdentity.getPublicKey().toDer())]),
           "document",
           deviceName,
         ),
@@ -498,7 +498,7 @@ export const useDevices = () => {
             recoverIdentity.rawId,
           ),
           createRecoveryDevice(
-            new Blob([recoverIdentity.getPublicKey().toDer()]),
+            new Blob([new Uint8Array(recoverIdentity.getPublicKey().toDer())]),
             "usb",
             deviceName,
           ),

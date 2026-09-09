@@ -21,7 +21,7 @@ const isDeviceWithCredentialId = (device: {
   !!device.credential_id[0] && Object.keys(device.credential_id[0]).length > 0
 
 interface ExcludeCredential {
-  id: Uint8Array
+  id: Uint8Array<ArrayBuffer>
   type: "public-key"
 }
 
@@ -42,7 +42,7 @@ export const transformDeviceDataToExcludeCredentials = (
 
 type Credentials = {
   pubkey: DerEncodedPublicKey
-  credentialId: Buffer
+  credentialId: Uint8Array<ArrayBuffer>
 }
 
 export function getCredentials(devices: Device[]): Credentials[] {
@@ -54,7 +54,9 @@ export function getCredentials(devices: Device[]): Credentials[] {
     .map((device) => {
       return {
         pubkey: derFromPubkey(device.pubkey),
-        credentialId: Buffer.from(device.credentialId),
+        credentialId: new Uint8Array(
+          device.credentialId,
+        ) as Uint8Array<ArrayBuffer>,
       }
     })
 }
@@ -91,7 +93,9 @@ export const creationOptions = (
       ...(IS_E2E_TEST === "true" ? {} : { authenticatorAttachment }),
     },
     excludeCredentials: transformDeviceDataToExcludeCredentials(devices),
-    challenge: window.crypto.getRandomValues(new Uint8Array(16)),
+    challenge: window.crypto.getRandomValues(
+      new Uint8Array(16) as Uint8Array<ArrayBuffer>,
+    ),
     pubKeyCredParams: [
       {
         type: "public-key",
@@ -108,7 +112,7 @@ export const creationOptions = (
       name: "Internet Identity Service",
     },
     user: {
-      id: tweetnacl.randomBytes(16),
+      id: tweetnacl.randomBytes(16) as unknown as Uint8Array<ArrayBuffer>,
       name: "Internet Identity",
       displayName: "Internet Identity",
     },

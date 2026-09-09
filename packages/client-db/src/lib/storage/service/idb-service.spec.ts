@@ -163,25 +163,6 @@ describe("idbService.deleteAll", () => {
     )
   })
 
-  it("should still resolve when only the defensive auth-client-db delete fails", async () => {
-    // Given a registered store and only the auth-client-db delete rejecting
-    new Storage<string>({
-      dbName: "delete-ok-db",
-      storeName: "delete-ok-store",
-    })
-    deleteDbMock.mockImplementation((name, options) => {
-      if (name === "auth-client-db") {
-        return Promise.reject(new Error("auth-client-db locked")) as ReturnType<
-          typeof deleteDB
-        >
-      }
-      return realDeleteDb(name, options)
-    })
-
-    // When / Then it still resolves — the registered databases were deleted
-    await expect(idbService.deleteAll()).resolves.toBeUndefined()
-  })
-
   it("should leave an unregistered on-disk database untouched", async () => {
     // Given one registered store and one unrelated database that nobody registered
     new Storage<string>({

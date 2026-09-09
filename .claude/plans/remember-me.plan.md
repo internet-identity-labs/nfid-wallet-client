@@ -152,7 +152,7 @@ and the tables in this upper half are kept for history.
 - [x] 4 frontend call sites → `rememberMeKeyVal`
 - [x] `security/index.tsx` dev panel repointed to the new API
 - [ ] **Manual smoke (dev server)** — for the engineer. `yarn nx serve
-    nfid-frontend`, sign in → `anchor` + IDBs present; call
+  nfid-frontend`, sign in → `anchor` + IDBs present; call
       `rememberMeService.doNotRememberMe()` via the dev panel → IDBs gone, `anchor`
       gone, app still works; reload → logged out, `isRemembered() === false`.
 
@@ -324,7 +324,7 @@ Deleted: `memory-keyval-cache.ts` (+`.spec.ts`).
 
 - [x] `yarn nx lint client-db` — 0 errors, 17 warnings (= revision-2 baseline;
       all pre-existing `_db`-probe `no-floating-promises`). `yarn nx lint
-    integration` — passed, 0 errors. `yarn nx lint nfid-wallet-client` —
+  integration` — passed, 0 errors. `yarn nx lint nfid-wallet-client` —
       "Successfully ran target lint", 0 errors.
 - [x] `yarn nx test client-db` — 6 suites / 25 tests green (revision 2 was 7
       suites / 25; `memory-keyval-cache.spec.ts` deleted, its 3 cases re-homed
@@ -724,3 +724,69 @@ No `apps/` file changes — `security/index.tsx` touches neither symbol.
   it — a reorder is now harmless.
 - Every `@nfid/*` consumer imports from the package barrel, so only the singleton
   name changes outside `packages/client-db/src/lib/storage/`.
+
+# Revision 6
+
+> Status: COMPLETE — 2026-09-10 (approved; manual dev-server smoke unchanged from
+> revisions 1–5, for the engineer)
+
+## Rationale
+
+`IdbService.deleteAll()` carried a defensive `deleteDB("auth-client-db")`.
+`auth-client-db` is the default DB name baked into `IdbKeyVal`
+(`@default 'auth-client-db'` / `'ic-keyval'`, the DFINITY `@dfinity/auth-client`
+convention). NFID never constructs `IdbKeyVal` without an explicit `dbName` (the
+auth session lives in `authstate`), so `auth-client-db` is never created on the
+NFID client and the call was a permanent no-op — costing a dedicated `.catch`, a
+doc paragraph, and a whole unit test. The registered set (`getDbNames()`) is the
+real atomic wipe list; if `AuthClient`'s default storage is ever adopted, the fix
+is to register that store, not hardcode a magic name here.
+
+## Modified Files
+
+| File                                                             | Change                                                                                                                                                                                                                                             |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/client-db/src/lib/storage/service/idb-service.ts`      | `deleteAll()` body → the single `Promise.all` over `getDbNames()`; dropped the `#deleteSingleDb("auth-client-db").catch(...)` block. Class + method doc comments lose the `auth-client-db` paragraph.                                              |
+| `packages/client-db/src/lib/storage/service/idb-service.spec.ts` | Removed the `"should still resolve when only the defensive auth-client-db delete fails"` case (its `deleteDbMock.mockImplementation` branch went with it). The other two `deleteAll` cases stay.                                                   |
+| `.claude/specs/remember-me.spec.md`                              | Struck the `auth-client-db` / defensive-delete language in six spots (added a Revision 6 note block; scope list; naming table; `deleteAll()` pseudocode; Edge Cases bullet reframed to "Non-registered IndexedDB databases"; Open Questions line). |
+
+## Implementation Checklist (revision 6)
+
+<!-- Execute EXACTLY ONE checkbox at a time using /execute-ui-plan -->
+
+- [x] `service/idb-service.ts` — remove the `auth-client-db` defensive delete
+      from `deleteAll()`; trim the class doc comment + the `deleteAll()` doc
+      comment so neither mentions `auth-client-db`.
+- [x] `service/idb-service.spec.ts` — delete the `auth-client-db` test case and
+      its mock branch; the remaining `describe("idbService.deleteAll")` cases
+      (reject on registered-db fail; leave an unregistered on-disk db untouched)
+      stay.
+- [x] `.claude/specs/remember-me.spec.md` — strike the `auth-client-db` /
+      defensive-delete language in all six spots.
+- [ ] Manual smoke (dev server) — unchanged from revisions 1–5; for the engineer.
+
+### Verification (revision 6) — results
+
+- [x] `yarn nx lint client-db` — "Successfully ran target lint", **0 errors / 17
+      warnings** (= revision-5 baseline).
+- [x] `yarn nx test client-db` — **5 suites / 29 tests** green (was 30; the
+      `auth-client-db` case removed). All other suites unchanged.
+- [x] `yarn nx test integration remember-me.service.spec.ts` — **8/8**;
+      `yarn nx test integration auth-state.spec.ts` — **2/2**. Both exercise
+      `deleteAll()`; neither asserted on `auth-client-db`.
+- [x] `tsc -p packages/client-db/tsconfig.lib.json --noEmit` — clean, EXIT 0.
+- [x] `grep` repo-wide (`packages/` + `apps/`) for `auth-client-db` → the only
+      hit is the pre-existing `@default 'auth-client-db'` JSDoc in
+      `keyval/idb-keyval.ts` (documents the DFINITY default, unrelated).
+
+## Risks & Notes (revision 6)
+
+- **Behaviour change is intentional, observable only in the null case:**
+  `deleteAll()` no longer issues `deleteDB("auth-client-db")`. That DB is never
+  created on the NFID path, so no real session is affected. A user carrying an
+  `auth-client-db` from a pre-refactor build or a stray default-storage
+  `AuthClient.create()` would no longer have it swept on logout / opt-out —
+  judged acceptable (not a code path this app produces).
+- No API surface change: `deleteAll()` keeps its signature and its
+  reject-on-registered-failure contract.
+- `#deleteSingleDb` / `#deleteTimeoutMs` stay — still used for the registered set.

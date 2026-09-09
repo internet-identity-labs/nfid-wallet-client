@@ -17,9 +17,7 @@ interface RegisteredStore {
  * own.
  *
  * `deleteAll()`: the registered databases (`getDbNames()`) are the atomic set —
- * if any one cannot be deleted this rejects. The defensive `auth-client-db`
- * (`@icp-sdk/auth`, never written on the NFID path) is attempted too, best-effort
- * and never a rejection cause. No `indexedDB.databases()` origin sweep.
+ * if any one cannot be deleted this rejects.
  */
 export class IdbService {
   readonly #deleteTimeoutMs = 3000
@@ -93,16 +91,11 @@ export class IdbService {
 
   /**
    * Delete every registered IndexedDB database (`getDbNames()`), each raced
-   * against a ~3s timeout; rejects if any registered delete fails. The defensive
-   * `auth-client-db` delete is attempted too, log-only, never a rejection cause.
+   * against a ~3s timeout; rejects if any delete fails.
    */
   async deleteAll(): Promise<void> {
     const registeredNames = this.getDbNames()
     await Promise.all(registeredNames.map((name) => this.#deleteSingleDb(name)))
-
-    await this.#deleteSingleDb("auth-client-db").catch((error) => {
-      console.warn("defensive auth-client-db delete failed", error)
-    })
   }
 
   #deleteSingleDb(name: string): Promise<void> {

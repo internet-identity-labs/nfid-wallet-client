@@ -3,7 +3,7 @@ import { DerEncodedPublicKey } from "@icp-sdk/core/agent"
 import { DeviceKey } from "frontend/integration/_ic_api/internet_identity.d"
 
 export const derFromPubkey = (pubkey: DeviceKey): DerEncodedPublicKey =>
-  new Uint8Array(pubkey).buffer as DerEncodedPublicKey
+  new Uint8Array(pubkey).buffer as unknown as DerEncodedPublicKey
 
 // A `hasOwnProperty` that produces evidence for the typechecker
 export function hasOwnProperty<

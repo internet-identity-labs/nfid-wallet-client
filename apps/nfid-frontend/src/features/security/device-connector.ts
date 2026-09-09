@@ -138,7 +138,7 @@ export class SecurityConnector {
         pub_key: Principal.selfAuthenticating(
           new Uint8Array(
             await new Blob([
-              recoverIdentity.getPublicKey().toDer(),
+              new Uint8Array(recoverIdentity.getPublicKey().toDer()),
             ]).arrayBuffer(),
           ),
         ).toText(),

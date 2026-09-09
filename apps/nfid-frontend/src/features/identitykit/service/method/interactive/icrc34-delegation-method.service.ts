@@ -244,9 +244,10 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
     throw Error("Could not decode base64 string")
   }
 
-  private toBase64(bytes: ArrayBuffer): string {
+  private toBase64(bytes: ArrayBuffer | Uint8Array): string {
+    const buf = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes)
     if (typeof globalThis.Buffer !== "undefined") {
-      return globalThis.Buffer.from(bytes).toString("base64")
+      return globalThis.Buffer.from(buf).toString("base64")
     }
     if (typeof globalThis.btoa !== "undefined") {
       return btoa(

@@ -32,5 +32,5 @@ export default {
   transformIgnorePatterns: ["node_modules/(?!(@icp-sdk|@dfinity|jose)/)"],
   moduleFileExtensions: ["mjs", "ts", "js", "html"],
   coverageDirectory: "../../coverage/packages/integration",
-  setupFiles: ["./src/setup-tests.ts"],
+  setupFilesAfterEnv: ["./src/setup-tests.ts"],
 }

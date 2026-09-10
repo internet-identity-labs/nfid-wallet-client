@@ -51,7 +51,7 @@ const asset =
 const section2 =
   "flex-col lg:flex-row justify-between block md:flex sm:gap-[60px] items-center"
 const card =
-  "px-5 bg-[#112525] overflow-hidden relative bg-opacity-40 md:px-[16px] lg:px-[74px] py-[50px] md:pt-[100px] md:pb-[120px] rounded-[30px] group card"
+  "px-5 bg-[#112525]/40 overflow-hidden relative md:px-[16px] lg:px-[74px] py-[50px] md:pt-[100px] md:pb-[120px] rounded-[30px] group card"
 const cardItem =
   "mt-[10px] md:mt-[45px] font-medium text-xl md:text-[30px] tracking-[0.2px} md:tracking-[0.28px] leading-6 md:leading-[140%] max-w-[350px] lg:max-w-full text-teal-100"
 const cardImg = "w-full lg:w-[200px] absolute ml-[40px]"
@@ -602,7 +602,7 @@ const HomeContent = ({
           </div>
         </div>
       </Container>
-      <Container className="p-[20px] bg-opacity-40 lg:py-[40px] lg:px-[34px] bg-[#112525] rounded-[30px] my-[30px] lg:my-[100px]">
+      <Container className="p-[20px] lg:py-[40px] lg:px-[34px] bg-[#112525]/40 rounded-[30px] my-[30px] lg:my-[100px]">
         <InfoCopy
           text="$NFIDW Ledger Canister ID"
           value="mih44-vaaaa-aaaaq-aaekq-cai"

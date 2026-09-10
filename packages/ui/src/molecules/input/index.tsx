@@ -112,7 +112,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             {innerText && (
               <div
                 className={clsx(
-                  "bg-black bg-opacity-[0.04] h-full px-3 rounded-r-md",
+                  "bg-black/[0.04] h-full px-3 rounded-r-md",
                   "flex items-center flex-shrink-0",
                   "text-sm text-secondary",
                 )}

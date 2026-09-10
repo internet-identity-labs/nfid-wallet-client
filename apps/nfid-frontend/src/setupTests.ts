@@ -2,6 +2,12 @@
 // allows you to do things like:
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
+
+// jsdom does not expose structuredClone; polyfill it for fake-indexeddb
+if (typeof globalThis.structuredClone === "undefined") {
+  globalThis.structuredClone = <T>(val: T): T => JSON.parse(JSON.stringify(val))
+}
+
 import "@testing-library/jest-dom"
 import "fake-indexeddb/auto"
 import { TextEncoder, TextDecoder } from "util"

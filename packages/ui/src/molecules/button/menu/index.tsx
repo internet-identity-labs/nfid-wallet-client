@@ -1,8 +1,10 @@
 import clsx from "clsx"
 import React from "react"
 
-export interface ButtonMenuProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+export interface ButtonMenuProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "children"
+> {
   children: (toggle: () => void) => React.ReactNode
   buttonElement?: React.ReactElement | string
   toggleMenu: boolean
@@ -53,7 +55,7 @@ export const ButtonMenu: React.FC<ButtonMenuProps> = ({
 
       {toggleMenu && (
         <div
-          className="absolute top-0 left-0 z-[1] block w-full h-screen bg-black bg-opacity-25 overflow-hidden"
+          className="absolute top-0 left-0 z-[1] block w-full h-screen bg-black/25 overflow-hidden"
           onClick={() => setToggleMenu(false)}
         />
       )}

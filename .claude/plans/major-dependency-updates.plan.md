@@ -80,14 +80,15 @@
 
 ### GROUP 5 — Tailwind CSS 4
 
-- [ ] Bump `tailwindcss` to `4.3.3`, `tailwindcss-radix` to `4.0.2`, `tailwind-scrollbar` to `4.0.2` in `package.json`
-- [ ] Run `yarn install`
-- [ ] Migrate `apps/nfid-frontend/tailwind.config.js` from JS config to Tailwind 4 CSS-native `@theme` format — move `theme.extend`, `darkMode`, `content`, and plugin registration to the CSS entry point
-- [ ] Migrate `packages/ui/tailwind.config.js` same way
-- [ ] Migrate `apps/nfid-demo/tailwind.config.js` same way
-- [ ] Update plugin registration for `tailwindcss-radix` and `tailwind-scrollbar` to Tailwind 4 plugin API (check their v4 README for new import/registration syntax)
-- [ ] Update `packages/ui-tailwind-core/` plugin to Tailwind 4 plugin API if needed
-- [ ] Run `yarn nx build nfid-frontend` and fix any PostCSS/class errors
+- [x] Bump `tailwindcss` to `4.3.3`, `tailwindcss-radix` to `4.0.2`, `tailwind-scrollbar` to `4.0.2`, add `@tailwindcss/postcss` to `4.3.3` in `package.json`
+- [x] Run `yarn install`
+- [x] Migrate CSS entry point `apps/nfid-frontend/src/index.css` from three `@import "tailwindcss/base/components/utilities"` to single `@import "tailwindcss"` + `@config "../tailwind.config.js"` — JS config files kept as-is (v4 supports them via `@config`); `tailwindcss/plugin`, `tailwindcss/colors`, `tailwindcss/defaultTheme` all work via ESM in v4
+- [x] Migrate `apps/nfid-demo/src/index.scss` → `index.css` (no SCSS features were used); updated import in `index.tsx`; added `@import "tailwindcss"` + `@config`
+- [x] Packages `tailwindcss-radix@4.0.2` and `tailwind-scrollbar@4.0.2` both still use `plugin.withOptions` API — no registration changes needed; `packages/ui-tailwind-core` plugin unchanged
+- [x] Updated all three `postcss.config.mjs` files to use `@tailwindcss/postcss` instead of `tailwindcss`
+- [x] Fixed `packages/ui/src/atoms/range-slider/index.css` — replaced `@apply bg-primaryButtonColor` with direct CSS variable `rgb(var(--color-primaryButtonColor))` (v4 isolated CSS files cannot resolve custom utilities without `@reference`)
+- [x] Removed stale `import "tailwindcss/tailwind.css"` from `apps/nfid-frontend/src/App.tsx` (v4 no longer exports this path)
+- [x] Run `yarn nx build nfid-wallet-client` — compiled clean (3 pre-existing warnings only)
 - [ ] Visual smoke-test: auth page, wallet page, transfer modal — check dark mode, scrollbars, Radix states
 - [ ] Run `yarn nx test nfid-frontend` — all passing
 - [ ] Run `yarn test:e2e:frontend` — all passing
@@ -131,12 +132,12 @@
 
 ### GROUP 8 — Misc Dev & Test Tools
 
-- [ ] Bump `@testing-library/jest-dom` to `7.0.1`, `lottie-react` to `3.1.1`, `react-infinite-scroll-component` to `7.2.1`, `puppeteer` to `25.9.0`, `fake-indexeddb` to `6.2.5`, `expect-webdriverio` to `6.0.9`, `cucumber-html-reporter` to `7.2.0`, `@types/node` to `26.4.0`, `lint-staged` to `17.4.1` in `package.json`
-- [ ] Run `yarn install`
-- [ ] Update `@testing-library/jest-dom` import in test setup files (v7 may require explicit `import '@testing-library/jest-dom'` in each test or setup file)
-- [ ] Fix any `fake-indexeddb` usage breaking from 4→6 (constructor API and structuredClone changes)
-- [ ] Check `lint-staged` config in `package.json` for v17 format changes
-- [ ] Fix any `cucumber-html-reporter` config option renames in E2E report config
+- [x] Bump `@testing-library/jest-dom` to `7.0.1`, `lottie-react` to `3.1.1`, `react-infinite-scroll-component` to `7.2.1`, `puppeteer` to `25.9.0`, `fake-indexeddb` to `6.2.5`, `expect-webdriverio` to `6.0.9`, `cucumber-html-reporter` to `7.2.0`, `@types/node` to `26.4.0`, `lint-staged` to `17.4.1` in `package.json`
+- [x] Run `yarn install`
+- [x] Update `@testing-library/jest-dom` import in test setup files (v7 may require explicit `import '@testing-library/jest-dom'` in each test or setup file)
+- [x] Fix any `fake-indexeddb` usage breaking from 4→6 (constructor API and structuredClone changes)
+- [x] Check `lint-staged` config in `package.json` for v17 format changes
+- [x] Fix any `cucumber-html-reporter` config option renames in E2E report config
 - [ ] Run `yarn nx test nfid-frontend` — all passing
 - [ ] Run `yarn test:e2e:frontend` — all passing
 

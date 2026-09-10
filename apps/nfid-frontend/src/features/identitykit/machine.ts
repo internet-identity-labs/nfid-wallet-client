@@ -1,4 +1,4 @@
-import { assign, createMachine } from "xstate"
+import { assign, createMachine, fromCallback, fromPromise } from "xstate"
 
 import AuthenticationMachine, {
   AuthenticationContext,
@@ -35,13 +35,11 @@ const machineConfig = {
   type: "parallel" as const,
   states: {
     RPCReceiverV3: {
-      invoke: {
-        src: "RPCReceiverV3",
-      },
+      invoke: { src: "RPCReceiverV3" },
       on: {
         ON_REQUEST: [
           {
-            cond: "isRequestProcessing",
+            guard: "isRequestProcessing",
             actions: ["assignRequest"],
           },
           {
@@ -58,7 +56,7 @@ const machineConfig = {
           always: [
             {
               target: "ValidateRequest",
-              cond: "hasActiveRequest",
+              guard: "hasActiveRequest",
             },
           ],
         },
@@ -66,15 +64,17 @@ const machineConfig = {
         ValidateRequest: {
           invoke: {
             src: "validateRequest",
+            input: ({ context }: { context: IdentityKitRPCMachineContext }) =>
+              context,
             onDone: [
               {
                 actions: ["assignRequestMetadata"],
-                cond: "shouldAuthenticate",
+                guard: "shouldAuthenticate",
                 target: "Authentication",
               },
               {
                 actions: ["assignRequestMetadata"],
-                cond: "isSilentRequest",
+                guard: "isSilentRequest",
                 target: "ExecuteSilentRequest",
               },
               {
@@ -82,7 +82,10 @@ const machineConfig = {
                 target: "InteractiveRequest",
               },
             ],
-            onError: "SendResponse",
+            onError: {
+              target: "SendResponse",
+              actions: ["assignPendingResponse"],
+            },
           },
         },
 
@@ -95,7 +98,7 @@ const machineConfig = {
                 onDone: [
                   {
                     target: "#IdentityKitRPCMachine.Main.ExecuteSilentRequest",
-                    cond: "isSilentRequest",
+                    guard: "isSilentRequest",
                   },
                   {
                     target: "#IdentityKitRPCMachine.Main.InteractiveRequest",
@@ -107,7 +110,11 @@ const machineConfig = {
             Authenticate: {
               invoke: {
                 src: "AuthenticationMachine",
-                data: (context: IdentityKitRPCMachineContext) =>
+                input: ({
+                  context,
+                }: {
+                  context: IdentityKitRPCMachineContext
+                }) =>
                   ({
                     authRequest: {
                       hostname: context.activeRequest?.origin,
@@ -116,11 +123,7 @@ const machineConfig = {
                       url: context.activeRequest?.origin,
                     },
                   }) as AuthenticationContext,
-                onDone: [
-                  {
-                    target: "CheckAuthentication",
-                  },
-                ],
+                onDone: [{ target: "CheckAuthentication" }],
               },
             },
           },
@@ -132,6 +135,11 @@ const machineConfig = {
             PrepareComponentData: {
               invoke: {
                 src: "getInteractiveMethodData",
+                input: ({
+                  context,
+                }: {
+                  context: IdentityKitRPCMachineContext
+                }) => context,
                 onDone: {
                   target: "PromptInteractiveRequest",
                   actions: ["assignComponentData"],
@@ -152,7 +160,15 @@ const machineConfig = {
             CancelInteractiveRequest: {
               invoke: {
                 src: "prepareCancelResponse",
-                onDone: "#IdentityKitRPCMachine.Main.SendResponse",
+                input: ({
+                  context,
+                }: {
+                  context: IdentityKitRPCMachineContext
+                }) => context,
+                onDone: {
+                  target: "#IdentityKitRPCMachine.Main.SendResponse",
+                  actions: ["assignPendingResponse"],
+                },
                 onError: {
                   target: "Error",
                   actions: ["assignError"],
@@ -162,7 +178,17 @@ const machineConfig = {
             ExecuteInteractiveRequest: {
               invoke: {
                 src: "executeInteractiveMethod",
-                onDone: "#IdentityKitRPCMachine.Main.SendResponse",
+                input: ({
+                  context,
+                  event,
+                }: {
+                  context: IdentityKitRPCMachineContext
+                  event: any
+                }) => ({ context, event }),
+                onDone: {
+                  target: "#IdentityKitRPCMachine.Main.SendResponse",
+                  actions: ["assignPendingResponse"],
+                },
                 onError: {
                   target: "Error",
                   actions: ["assignError"],
@@ -185,9 +211,14 @@ const machineConfig = {
         ExecuteSilentRequest: {
           invoke: {
             src: "executeSilentMethod",
-            onDone: "SendResponse",
+            input: ({ context }: { context: IdentityKitRPCMachineContext }) =>
+              context,
+            onDone: {
+              target: "SendResponse",
+              actions: ["assignPendingResponse"],
+            },
             onError: {
-              actions: ["prepareFailedResponse"],
+              actions: ["assignPendingResponseFromError"],
               target: "#IdentityKitRPCMachine.Main.SendResponse",
             },
           },
@@ -196,6 +227,8 @@ const machineConfig = {
         SendResponse: {
           invoke: {
             src: "sendResponse",
+            input: ({ context }: { context: IdentityKitRPCMachineContext }) =>
+              context,
             onError: {
               target: "Ready",
               actions: ["resetActiveRequest", "moveQueue"],
@@ -213,91 +246,141 @@ const machineConfig = {
 
 const machineServices = {
   guards: {
-    isSilentRequest: (context: IdentityKitRPCMachineContext, event: any) => {
-      if (typeof event.data === "object" && "isSilent" in event.data)
-        return !!event.data.isSilent
+    isSilentRequest: ({
+      context,
+      event,
+    }: {
+      context: IdentityKitRPCMachineContext
+      event: any
+    }) => {
+      if (
+        typeof event.output === "object" &&
+        event.output &&
+        "isSilent" in event.output
+      )
+        return !!event.output.isSilent
 
       return !!context.activeRequestMetadata?.isSilent
     },
-    shouldAuthenticate: (
-      _context: IdentityKitRPCMachineContext,
-      event: any,
-    ) => {
-      return !!event.data.requiresAuthentication
+    shouldAuthenticate: ({ event }: { event: any }) => {
+      return !!event.output?.requiresAuthentication
     },
-    isRequestProcessing: (context: IdentityKitRPCMachineContext) => {
+    isRequestProcessing: ({
+      context,
+    }: {
+      context: IdentityKitRPCMachineContext
+    }) => {
       return !!context.activeRequest
     },
-    hasActiveRequest: (context: IdentityKitRPCMachineContext) =>
-      !!context.activeRequest,
+    hasActiveRequest: ({
+      context,
+    }: {
+      context: IdentityKitRPCMachineContext
+    }) => !!context.activeRequest,
   },
   actions: {
     assignRequest: assign(
-      (context: IdentityKitRPCMachineContext, event: any) => ({
+      ({
+        context,
+        event,
+      }: {
+        context: IdentityKitRPCMachineContext
+        event: any
+      }) => ({
         requestsQueue: [...context.requestsQueue, event.data],
       }),
     ),
-    assignRequestMetadata: assign(
-      (_context: IdentityKitRPCMachineContext, event: any) => ({
-        activeRequestMetadata: event.data,
-      }),
-    ),
-    moveQueue: assign((context: IdentityKitRPCMachineContext, _event: any) => ({
-      requestsQueue:
-        context.requestsQueue.length > 1
-          ? context.requestsQueue.slice(1, context.requestsQueue.length)
-          : [],
-      activeRequest:
-        context.requestsQueue.length > 0 ? context.requestsQueue[0] : undefined,
-      activeRequestMetadata: undefined,
+    assignRequestMetadata: assign(({ event }: { event: any }) => ({
+      activeRequestMetadata: event.output,
     })),
-    resetActiveRequest: assign(
-      (_context: IdentityKitRPCMachineContext, _event: any) => ({
-        activeRequest: undefined,
+    moveQueue: assign(
+      ({ context }: { context: IdentityKitRPCMachineContext }) => ({
+        requestsQueue:
+          context.requestsQueue.length > 1
+            ? context.requestsQueue.slice(1, context.requestsQueue.length)
+            : [],
+        activeRequest:
+          context.requestsQueue.length > 0
+            ? context.requestsQueue[0]
+            : undefined,
         activeRequestMetadata: undefined,
       }),
     ),
-    assignComponentData: assign(
-      (context: IdentityKitRPCMachineContext, event: any) => ({
-        componentData: event.data,
-      }),
+    resetActiveRequest: assign(() => ({
+      activeRequest: undefined,
+      activeRequestMetadata: undefined,
+      pendingResponse: undefined,
+    })),
+    assignComponentData: assign(({ event }: { event: any }) => ({
+      componentData: event.output,
+    })),
+    assignError: assign(({ event }: { event: any }) => ({
+      error: event.error,
+    })),
+    // Store response payload in context before entering SendResponse
+    assignPendingResponse: assign(({ event }: { event: any }) => ({
+      pendingResponse: event.output,
+    })),
+    assignPendingResponseFromError: assign(({ event }: { event: any }) => ({
+      pendingResponse: event.error,
+    })),
+    prepareFailedResponse: assign(
+      ({ context }: { context: IdentityKitRPCMachineContext }) => {
+        if (!context.activeRequest) return {}
+        const response: RPCErrorResponse = {
+          origin: context.activeRequest.origin,
+          jsonrpc: context.activeRequest.data.jsonrpc,
+          id: context.activeRequest.data.id,
+          error: { code: 1001, message: "Unknown error" },
+        }
+        return { pendingResponse: response }
+      },
     ),
-    assignError: assign((context: IdentityKitRPCMachineContext, event: any) => {
-      return {
-        error: event.data,
-      }
-    }),
-    prepareFailedResponse: prepareFailedResponseEffect,
   },
-  services: {
-    RPCReceiverV3: ((...args: any[]) => (RPCReceiverV3 as any)(...args)) as any,
-    executeSilentMethod,
-    validateRequest,
-    getInteractiveMethodData,
-    executeInteractiveMethod,
-    checkAuthenticationStatus,
+  actors: {
+    RPCReceiverV3: fromCallback(({ send }: { send: (event: any) => void }) =>
+      RPCReceiverV3()(send as any),
+    ),
+    executeSilentMethod: fromPromise(
+      ({ input }: { input: IdentityKitRPCMachineContext }) =>
+        executeSilentMethod(input),
+    ),
+    validateRequest: fromPromise(
+      ({ input }: { input: IdentityKitRPCMachineContext }) =>
+        validateRequest(input),
+    ),
+    getInteractiveMethodData: fromPromise(
+      ({ input }: { input: IdentityKitRPCMachineContext }) =>
+        getInteractiveMethodData(input),
+    ),
+    executeInteractiveMethod: fromPromise(
+      ({
+        input,
+      }: {
+        input: { context: IdentityKitRPCMachineContext; event: any }
+      }) => executeInteractiveMethod(input.context, input.event),
+    ),
+    checkAuthenticationStatus: fromPromise(() => checkAuthenticationStatus()),
     AuthenticationMachine,
-    prepareCancelResponse: prepareCancelResponseEffect,
-    sendResponse: async (context: any, event: any) => {
-      if (event.data instanceof NoActionError) {
-        return
-      }
-
-      await sendResponseEffect(context, event)
-    },
+    prepareCancelResponse: fromPromise(
+      ({ input }: { input: IdentityKitRPCMachineContext }) =>
+        prepareCancelResponseEffect(input),
+    ),
+    sendResponse: fromPromise(
+      async ({
+        input,
+      }: {
+        input: IdentityKitRPCMachineContext & { pendingResponse?: any }
+      }) => {
+        const payload = input.pendingResponse
+        if (payload instanceof NoActionError) return
+        await sendResponseEffect(input, { data: payload })
+      },
+    ),
   },
 }
 
 export const IdentityKitRPCMachine = createMachine(
-  {
-    predictableActionArguments: true,
-    tsTypes: {} as import("./machine.typegen").Typegen0,
-    schema: {
-      context: {} as IdentityKitRPCMachineContext,
-      // Narrow event typing later if desired; keep `any` to avoid breaking changes.
-      events: {} as any,
-    },
-    ...machineConfig,
-  },
+  machineConfig,
   machineServices,
 )

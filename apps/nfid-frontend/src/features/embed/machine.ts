@@ -1,5 +1,5 @@
 import { getExpirationDelay } from "packages/integration/src/lib/authentication/get-expiration"
-import { assign, createMachine } from "xstate"
+import { assign, createMachine, fromCallback, fromPromise } from "xstate"
 
 import { ONE_DAY_IN_MS } from "@nfid/config"
 import { Application, authState, Chain } from "@nfid/integration"
@@ -30,19 +30,10 @@ import {
   sendRPCCancelResponseEffect,
 } from "./effects"
 
-type InvokationErrors = {
-  type: "error.platform.NFIDEmbedMachine.HANDLE_PROCEDURE.EXECUTE_PROCEDURE:invocation[0]"
-  data: Error
-}
-
 type Events =
-  | InvokationErrors
   | ProcedureCallEvent
   | { type: "SESSION_EXPIRED" }
-  | {
-      type: "APPROVE"
-      data?: ApproveSignatureEvent
-    }
+  | { type: "APPROVE"; data?: ApproveSignatureEvent }
   | {
       type: "APPROVE_IC_GET_DELEGATION"
       data: ApproveIcGetDelegationSdkResponse
@@ -52,24 +43,6 @@ type Events =
   | { type: "CANCEL_ERROR" }
   | { type: "RETRY" }
   | { type: "RESET" }
-
-type Services = {
-  RPCReceiver: {
-    data: null
-  }
-  CheckAuthState: {
-    data: { authSession: AuthSession }
-  }
-  AuthenticationMachine: {
-    data: { authSession: AuthSession }
-  }
-  ExecuteProcedureService: {
-    data: RPCResponse
-  }
-  CheckApplicationMeta: {
-    data: Application
-  }
-}
 
 export type NFIDEmbedMachineContext = {
   appMeta: AuthorizingAppMeta
@@ -88,27 +61,17 @@ export type NFIDEmbedMachineContext = {
 }
 
 const nfidEmbedMachineConfig = {
-  predictableActionArguments: true,
-  /** @xstate-layout N4IgpgJg5mDOIC5QDkBiBJAIgUQLYCNIBZAQwGMALASwDswA1AJgDoAlABQGEB9V7T7OnrZWAYnasA8gMwBVPt04BBADIqA2gAYAuolAAHAPawqAFyqGaekAA9EAZgAsLRgDZXAdjeuAnIwCs-h72HgA0IACeDgAcrsya9rEesY4+Ho7urgC+WeFoWHiEEKSUtAwsHDx8AkIi4lIy8tiKqhoAjLpIIEYm5pbWdgj2w8z2Pm2Ompnjmv4+-uFRCI7RPqOMIYyrHpo+4045eRg4BMTk1HRMzEqyACoAEsycFGBkANZKAK6mLzTmZCQ+jRRFpOgZjGYLFYuoNGH5mGkfLtovY2sEPB5XItEG1US5NClXG4Mm0EocQPkTkUShdytc7o9nq8Pt9fv9AVCQR1rD1If0YQ4EsxVvZNG1XP5XKlktiEG1-ELGJNXG1GIw2hNieTKYUzqVLiwbg9rqywH8qADTGBRBBLGBmLQAG6GN72nWnYrnMpXI2PL4-M3sq0IJ2GS1Q0GgnkQoEDRDRBXMBWJJzRHZuNqyiYeNb+CZi0XzRjJHza466z36um+5i3ABOn1gpkwYEdFuttroDpoztdzHd1K9BvpxvrjebrfbIZ7YY5lkjOmjvShcblgRY8o8-kcmP8SvsSqzCpY8xR-lW0Wl6TLBQ9NO9hoZJoD5stkFEAGVsB+P+hJMhuGwAANdh0D4TAoy6XlYwFBAiX8BEfEcIJoi2TQMi3LN7H8exmDVUV7HcMUMMcG8qT1WkrnuJRkEwFRmgkaRsDkPg2GwJRMAATRBRcoJjFdYLaNJmAyJE8ycCV0VlS9cMcRIVkcSYcw8eUyIre9h2o2j6O4RjGlYpQAHUlHQW5dIaZimm4JR2EY+hVFEGy7OwSDwWXflQEGaIhOYLd1U0YICWwnxpMcNpmDaaIE3QvMpQlRg1LvIc6S0uiGIsljsGuYzTPMpjMus2ypHslRRGUZABA0Xi3L5aFPMQVIEIVCUnCVHc5icWUfEIkTutcEIJkRPNEsHKsqJotK8v0rLgP4O50vypobTtbtezdcskrGlhUp0vTLNY2bOHmqb9uwadnXDecdFc7p+I82wcQSRxmHcYIfCind0gCrrkgReLUVxfDUJGiiH2YHaFum5hDuOvbMtEMA6zrQw62YfQABtAQAMxR3B+w20bKO2ibdoyppoaAubbkh07ztnIEFzBW73Lqh65TC8Lok0LY0zcJwfBVUKWBUkJZhzeVsI8EHKyJ8GSZpzLodYKQxD4W5WE4m7oIE+q5Q2NZUUIrwDz2NJGFlYJnrC4ZSTGeYFVLXIKQJ0HNPlk7FZEFWypozgdK9yRWC1u7WcGeUpTw1V3GGHZJXNyJHuEwIhMSVYVhCHInZoQwIDgawB1d8ol1q1cAFolSTXZtw2bynASTME4QOFoiTRJPB3LYo4Sp2C5lsHKl4fhBGEVhi5g3XRSTUk9lrrd0QJWUOdGS8MT8XFUhWaWNOrBkx51tmNl6mLMUiiUBZCxvVQrnZYkCbnvPPfwt+Sn0nyZd5-TZC051Z7X7sGFSR9kIn1vufI8mhNCIVmGmfqao8zdyOLeQmYMayf0DN-K0e9-4NS5i9ISzgxhixVA3JYExAijAlNuIkaYcKxGfltEcjwxxNhbG2MgYAsGhxxJFJqiQ-ABACgqNMWZkIIUItud6sw77oXobLVBppXyAkgJw1ckVUijFPsMTwUp5giPIeIqhWwtxt1kWDCGHsmgqNggEeIYxXquHQmmNEujG5xQRIDbqOZiwqkdog8ifc3baQVuTPgHFOJWN1sEWxAttGOJUtEUK4VIor1xKKOS4pTGBMmnDcmRkTJmRyQoJyxVVARLZmFOIhEtgHgSMmdIWJG6XiSVFBUyFxQZD3JklK7tCkzUpkdamFi+BlLDgkDcKoO7vUUkSaSaIXofRzGmYIGw2hdPGkEoZM1laBxGTiLwHgIrt0IkiXcYRGlhQigs1J6FUTZEzkAA */
   id: "NFIDEmbedMachine",
   preserveActionOrder: true,
-  tsTypes: {} as import("./machine.typegen").Typegen0,
   type: "parallel" as const,
-  schema: {
-    context: {} as NFIDEmbedMachineContext,
-    events: {} as Events,
-    services: {} as Services,
-  },
   context: {
     messageQueue: [],
     appMeta: {},
     authRequest: {},
-  },
+  } as NFIDEmbedMachineContext,
   states: {
     RPC_RECEIVER: {
-      invoke: {
-        src: "RPCReceiver",
-      },
+      invoke: { src: "RPCReceiver" },
       order: 1,
       entry: ["nfid_ready"],
       on: {
@@ -116,7 +79,7 @@ const nfidEmbedMachineConfig = {
           {
             target: "RPC_RECEIVER",
             actions: "assignProcedure",
-            cond: "isReady",
+            guard: "isReady",
           },
           {
             target: "RPC_RECEIVER",
@@ -128,9 +91,7 @@ const nfidEmbedMachineConfig = {
 
     AUTH: {
       initial: "CheckAppMeta",
-      on: {
-        RESET: "AUTH.CheckAppMeta",
-      },
+      on: { RESET: "AUTH.CheckAppMeta" },
       states: {
         CheckAppMeta: {
           invoke: {
@@ -154,42 +115,15 @@ const nfidEmbedMachineConfig = {
         Authenticate: {
           invoke: {
             src: "AuthenticationMachine",
-            data: (context: NFIDEmbedMachineContext) => context,
-            onDone: [
-              {
-                target: "Authenticated",
-                actions: "assignAuthSession",
-              },
-            ],
+            input: ({ context }: { context: NFIDEmbedMachineContext }) =>
+              context,
+            onDone: [{ target: "Authenticated", actions: "assignAuthSession" }],
           },
         },
         Authenticated: {
           entry: "nfid_authenticated",
           invoke: {
-            src: () => (send: (event: Events["type"]) => void) => {
-              const { delegationIdentity } = authState.get()
-              if (!delegationIdentity) return send("SESSION_EXPIRED")
-
-              const expiresIn = getExpirationDelay(delegationIdentity)
-              const timeoutIn = expiresIn * 0.8
-
-              const now = Date.now()
-
-              console.debug("NFIDEmbedMachine delegation expires at", {
-                expiresAt: new Date(now + expiresIn),
-                timeoutAt: new Date(now + timeoutIn),
-              })
-
-              const timeout = setTimeout(
-                () => {
-                  console.debug("NFIDEmbedMachine delegation expired")
-                  send("SESSION_EXPIRED")
-                },
-                timeoutIn > ONE_DAY_IN_MS ? ONE_DAY_IN_MS : timeoutIn,
-              )
-
-              return () => clearTimeout(timeout)
-            },
+            src: "sessionExpiryWatcher",
             onError: {
               target: "Authenticate",
               actions: "nfid_unauthenticated",
@@ -207,23 +141,14 @@ const nfidEmbedMachineConfig = {
 
     HANDLE_PROCEDURE: {
       initial: "READY",
-      on: {
-        RESET: "HANDLE_PROCEDURE.READY",
-      },
+      on: { RESET: "HANDLE_PROCEDURE.READY" },
       states: {
         READY: {
           always: [
-            {
-              target: "EXECUTE_PROCEDURE",
-              cond: "isAutoApprovable",
-            },
-            {
-              target: "AWAIT_PROCEDURE_APPROVAL",
-              cond: "hasProcedure",
-            },
+            { target: "EXECUTE_PROCEDURE", guard: "isAutoApprovable" },
+            { target: "AWAIT_PROCEDURE_APPROVAL", guard: "hasProcedure" },
           ],
         },
-
         AWAIT_PROCEDURE_APPROVAL: {
           on: {
             APPROVE: "EXECUTE_PROCEDURE",
@@ -235,10 +160,16 @@ const nfidEmbedMachineConfig = {
             },
           },
         },
-
         EXECUTE_PROCEDURE: {
           invoke: {
             src: "ExecuteProcedureService",
+            input: ({
+              context,
+              event,
+            }: {
+              context: NFIDEmbedMachineContext
+              event: Events
+            }) => ({ context, event }),
             onDone: {
               actions: ["sendRPCResponse", "updateProcedure"],
               target: "READY",
@@ -246,7 +177,6 @@ const nfidEmbedMachineConfig = {
             onError: { target: "ERROR", actions: "assignError" },
           },
         },
-
         ERROR: {
           on: {
             RETRY: "AWAIT_PROCEDURE_APPROVAL",
@@ -261,82 +191,137 @@ const nfidEmbedMachineConfig = {
   },
 }
 
-const nfidEmbedMachineOptions: Parameters<
-  typeof createMachine<NFIDEmbedMachineContext, Events, any>
->[1] = {
+const nfidEmbedMachineOptions = {
   actions: {
-    assignAppMeta: assign((context: NFIDEmbedMachineContext, event: any) => ({
-      appMeta: {
-        logo: event.data?.logo,
-        name: event?.data?.name,
-        url: new URL(event?.data?.domain).host,
-      },
-      authRequest: { ...context.authRequest, hostname: event?.data?.domain },
-    })),
-    assignProcedure: assign((context: NFIDEmbedMachineContext, event: any) => ({
-      rpcMessage: {
-        ...event.data.rpcMessage,
-        origin: event.data.origin,
-      },
-      authRequest: {
-        ...context.authRequest,
-        sessionPublicKey: event.data.rpcMessage.params[0].sessionPublicKey,
-        derivationOrigin: event.data.rpcMessage.params[0].derivationOrigin,
-        maxTimeToLive: event.data.rpcMessage.params[0].maxTimeToLive,
-        targets: event.data.rpcMessage.params[0].targets,
-      },
-    })),
-    updateProcedure: assign(
-      ({ messageQueue }: NFIDEmbedMachineContext, _event: any) => {
-        return {
-          rpcMessage: messageQueue[0],
-          messageQueue: messageQueue.slice(1, messageQueue.length),
-        }
-      },
+    assignAppMeta: assign(
+      ({
+        context,
+        event,
+      }: {
+        context: NFIDEmbedMachineContext
+        event: any
+      }) => ({
+        appMeta: {
+          logo: event.output?.logo,
+          name: event.output?.name,
+          url: new URL(event.output?.domain).host,
+        },
+        authRequest: { ...context.authRequest, hostname: event.output?.domain },
+      }),
     ),
-    assignAuthSession: assign((_: NFIDEmbedMachineContext, event: any) => {
+    assignProcedure: assign(
+      ({
+        context,
+        event,
+      }: {
+        context: NFIDEmbedMachineContext
+        event: any
+      }) => ({
+        rpcMessage: { ...event.data.rpcMessage, origin: event.data.origin },
+        authRequest: {
+          ...context.authRequest,
+          sessionPublicKey: event.data.rpcMessage.params[0].sessionPublicKey,
+          derivationOrigin: event.data.rpcMessage.params[0].derivationOrigin,
+          maxTimeToLive: event.data.rpcMessage.params[0].maxTimeToLive,
+          targets: event.data.rpcMessage.params[0].targets,
+        },
+      }),
+    ),
+    updateProcedure: assign(
+      ({ context }: { context: NFIDEmbedMachineContext }) => ({
+        rpcMessage: context.messageQueue[0],
+        messageQueue: context.messageQueue.slice(
+          1,
+          context.messageQueue.length,
+        ),
+      }),
+    ),
+    assignAuthSession: assign(({ event }: { event: any }) => {
       console.debug("assignAuthSession", { event })
-      return { authSession: event.data.authSession }
+      return { authSession: event.output?.authSession ?? event.output }
     }),
-    queueRequest: assign((context: NFIDEmbedMachineContext, event: any) => ({
-      messageQueue: [...context.messageQueue, event.data.rpcMessage],
-    })),
-    assignError: assign((context: NFIDEmbedMachineContext, event: any) => ({
-      error: event.data,
+    queueRequest: assign(
+      ({
+        context,
+        event,
+      }: {
+        context: NFIDEmbedMachineContext
+        event: any
+      }) => ({
+        messageQueue: [...context.messageQueue, event.data.rpcMessage],
+      }),
+    ),
+    assignError: assign(({ event }: { event: any }) => ({
+      error: event.error,
     })),
     nfid_ready: nfidReady,
     nfid_authenticated: nfidAuthenticated,
-    nfid_unauthenticated: nfidUnauthenticated,
-    sendRPCResponse: sendRPCResponseEffect,
-    sendRPCCancelResponse: sendRPCCancelResponseEffect,
+    nfid_unauthenticated: ({ context }: { context: NFIDEmbedMachineContext }) =>
+      nfidUnauthenticated(context),
+    sendRPCResponse: ({ event }: { event: any }) =>
+      sendRPCResponseEffect({} as any, event),
+    sendRPCCancelResponse: ({
+      context,
+    }: {
+      context: NFIDEmbedMachineContext
+    }) => sendRPCCancelResponseEffect(context),
   },
   guards: {
-    hasProcedure: (context: NFIDEmbedMachineContext) => !!context.rpcMessage,
+    hasProcedure: ({ context }: { context: NFIDEmbedMachineContext }) =>
+      !!context.rpcMessage,
     isReady: (
-      _: NFIDEmbedMachineContext,
-      __: Events,
+      _: any,
+      __: any,
       { state }: { state: { matches: (value: string) => boolean } },
     ) => state.matches("HANDLE_PROCEDURE.READY"),
-    isAutoApprovable: (context: NFIDEmbedMachineContext) => {
-      const isAuthoApprovable = ["ic_renewDelegation"].includes(
-        context.rpcMessage?.method ?? "",
-      )
-      console.debug("NFIDEmbedMachine", {
-        isAuthoApprovable,
-        context,
-      })
+    isAutoApprovable: ({ context }: { context: NFIDEmbedMachineContext }) => {
+      console.debug("NFIDEmbedMachine", { context })
       return ["ic_renewDelegation"].includes(context.rpcMessage?.method ?? "")
     },
   },
-  services: {
-    CheckApplicationMeta,
-    ExecuteProcedureService: (
-      context: NFIDEmbedMachineContext,
-      event: Events,
-    ) => executeProcedureServiceImpl(context as any, event as any),
+  actors: {
+    CheckApplicationMeta: fromPromise(() => CheckApplicationMeta()),
+    CheckAuthState: fromPromise(() => CheckAuthState()),
+    ExecuteProcedureService: fromPromise(
+      ({
+        input,
+      }: {
+        input: { context: NFIDEmbedMachineContext; event: Events }
+      }) =>
+        executeProcedureServiceImpl(input.context as any, input.event as any),
+    ),
     AuthenticationMachine,
-    RPCReceiver,
-    CheckAuthState,
+    RPCReceiver: fromCallback(({ send }: { send: (event: any) => void }) =>
+      RPCReceiver()(send as any),
+    ),
+    sessionExpiryWatcher: fromCallback(
+      ({ send }: { send: (event: any) => void }) => {
+        const { delegationIdentity } = authState.get()
+        if (!delegationIdentity) {
+          send({ type: "SESSION_EXPIRED" })
+          return
+        }
+
+        const expiresIn = getExpirationDelay(delegationIdentity)
+        const timeoutIn = expiresIn * 0.8
+        const now = Date.now()
+
+        console.debug("NFIDEmbedMachine delegation expires at", {
+          expiresAt: new Date(now + expiresIn),
+          timeoutAt: new Date(now + timeoutIn),
+        })
+
+        const timeout = setTimeout(
+          () => {
+            console.debug("NFIDEmbedMachine delegation expired")
+            send({ type: "SESSION_EXPIRED" })
+          },
+          timeoutIn > ONE_DAY_IN_MS ? ONE_DAY_IN_MS : timeoutIn,
+        )
+
+        return () => clearTimeout(timeout)
+      },
+    ),
   },
 }
 

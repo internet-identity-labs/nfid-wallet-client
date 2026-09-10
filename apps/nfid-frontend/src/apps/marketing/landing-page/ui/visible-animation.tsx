@@ -1,5 +1,5 @@
 import clsx from "clsx"
-import Lottie from "lottie-react"
+import { Lottie } from "lottie-react"
 import React, { useRef, useEffect, useState } from "react"
 
 interface Props {
@@ -43,7 +43,7 @@ const AnimationWrapper: React.FC<Props> = ({ animationData, className }) => {
     <div ref={animationRef} className={clsx(className)}>
       <Lottie
         lottieRef={lottieRef}
-        animationData={animationData}
+        src={animationData}
         autoplay={false} // disable autoplay because we're handling play state manually
         loop={false}
         rendererSettings={{
@@ -51,8 +51,7 @@ const AnimationWrapper: React.FC<Props> = ({ animationData, className }) => {
           imagePreserveAspectRatio: "xMidYMid slice",
           className: className,
         }}
-        // @ts-ignore
-        renderer={"canvas"}
+        renderer="canvas"
       />
     </div>
   )

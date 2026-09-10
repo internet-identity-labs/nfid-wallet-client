@@ -1,4 +1,4 @@
-import { ActorRefFrom, assign, createMachine } from "xstate"
+import { ActorRefFrom, assign, createMachine, fromPromise } from "xstate"
 
 // Orchestrates top-level authentication flows (email, Google, II, other)
 // and post-auth onboarding steps (2FA, passkeys, recovery prompts).
@@ -43,25 +43,6 @@ export interface AuthenticationContext {
 }
 
 export type Events =
-  | { type: "done.invoke.AuthWithGoogleMachine"; data: AbstractAuthSession }
-  | { type: "done.invoke.AuthWithEmailMachine"; data: AbstractAuthSession }
-  | { type: "done.invoke.AuthWithIIService"; data: AbstractAuthSession }
-  | {
-      type: "done.invoke.checkIf2FAEnabled"
-      data?: { allowedPasskeys: string[]; email?: string }
-    }
-  | {
-      type: "done.invoke.shouldShowPasskeys"
-      data?: { showPasskeys: boolean }
-    }
-  | {
-      type: "done.invoke.shouldShowPasskeys6th"
-      data?: { showPasskeys: boolean }
-    }
-  | {
-      type: "done.invoke.shouldShowRecovery8th"
-      data?: { showRecovery: boolean }
-    }
   | { type: "AUTH_WITH_EMAIL"; data: { email: string; isEmbed: boolean } }
   | { type: "CHOOSE_WALLET" }
   | {
@@ -90,16 +71,9 @@ export type Events =
       data?: AbstractAuthSession
     }
 
-export interface Schema {
-  events: Events
-  context: AuthenticationContext
-}
-
 const authenticationMachineConfig = {
-  predictableActionArguments: true,
-  tsTypes: {} as import("./root-machine.typegen").Typegen0,
-  schema: { events: {}, context: {} } as Schema,
   id: "auth-machine",
+  context: ({ input }: { input: any }) => input as AuthenticationContext,
   initial: "AuthSelection",
   states: {
     AuthSelection: {
@@ -196,15 +170,16 @@ const authenticationMachineConfig = {
       invoke: {
         src: "AuthWithGoogleMachine",
         id: "AuthWithGoogleMachine",
-        data: (
-          _: AuthenticationContext,
-          event: Extract<Events, { type: "AUTH_WITH_GOOGLE" }>,
-        ) => {
+        input: ({
+          event,
+        }: {
+          event: Extract<Events, { type: "AUTH_WITH_GOOGLE" }>
+        }) => {
           return { jwt: event.data.jwt }
         },
         onDone: [
           {
-            cond: "isExistingAccount",
+            guard: "isExistingAccount",
             actions: "assignAuthSession",
             target: "check2FA",
           },
@@ -219,15 +194,16 @@ const authenticationMachineConfig = {
       invoke: {
         src: "AuthWithGoogleMachine",
         id: "AuthWithGoogleMachine",
-        data: (
-          _: AuthenticationContext,
-          event: Extract<Events, { type: "AUTH_WITH_GOOGLE" }>,
-        ) => {
+        input: ({
+          event,
+        }: {
+          event: Extract<Events, { type: "AUTH_WITH_GOOGLE" }>
+        }) => {
           return { jwt: event.data.jwt }
         },
         onDone: [
           {
-            cond: "isExistingAccount",
+            guard: "isExistingAccount",
             actions: "assignAuthSession",
             target: "checkPasskeys",
           },
@@ -241,10 +217,10 @@ const authenticationMachineConfig = {
     AuthWithII: {
       invoke: {
         id: "AuthWithIIService",
-        src: () => signWithIIService(),
+        src: "signWithIIService",
         onDone: [
           {
-            cond: "isExistingAccount",
+            guard: "isExistingAccount",
             actions: "assignAuthSession",
             target: "check2FA",
           },
@@ -258,10 +234,10 @@ const authenticationMachineConfig = {
     SignUpWithII: {
       invoke: {
         id: "AuthWithIIService",
-        src: () => signWithIIService(),
+        src: "signWithIIService",
         onDone: [
           {
-            cond: "isExistingAccount",
+            guard: "isExistingAccount",
             actions: "assignAuthSession",
             target: "checkPasskeys",
           },
@@ -276,13 +252,13 @@ const authenticationMachineConfig = {
       invoke: {
         src: "AuthWithEmailMachine",
         id: "AuthWithEmailMachine",
-        data: (context: AuthenticationContext) => ({
+        input: ({ context }: { context: AuthenticationContext }) => ({
           authRequest: context?.authRequest,
           appMeta: context?.appMeta,
           verificationEmail: context?.verificationEmail,
         }),
         onDone: [
-          { cond: "isReturn", target: "AuthSelectionSignUp" },
+          { guard: "isReturn", target: "AuthSelectionSignUp" },
           {
             actions: "assignAuthSession",
             target: "checkPasskeys",
@@ -294,13 +270,13 @@ const authenticationMachineConfig = {
       invoke: {
         src: "AuthWithEmailMachine",
         id: "AuthWithEmailMachine",
-        data: (context: AuthenticationContext) => ({
+        input: ({ context }: { context: AuthenticationContext }) => ({
           authRequest: context?.authRequest,
           appMeta: context?.appMeta,
           verificationEmail: context?.verificationEmail,
         }),
         onDone: [
-          { cond: "isReturn", target: "AuthSelection" },
+          { guard: "isReturn", target: "AuthSelection" },
           {
             actions: "assignAuthSession",
             target: "check2FA",
@@ -324,9 +300,10 @@ const authenticationMachineConfig = {
       invoke: {
         src: "checkIf2FAEnabled",
         id: "checkIf2FAEnabled",
+        input: ({ context }: { context: AuthenticationContext }) => context,
         onDone: [
           {
-            cond: "is2FAEnabled",
+            guard: "is2FAEnabled",
             target: "TwoFA",
             actions: "assignAllowedDevices",
           },
@@ -346,17 +323,17 @@ const authenticationMachineConfig = {
     },
     checkPasskeys6th: {
       invoke: {
-        src: (context: AuthenticationContext) =>
-          shouldShowPasskeysEvery6thTime(context),
+        src: "shouldShowPasskeysEvery6thTime",
         id: "shouldShowPasskeys6th",
+        input: ({ context }: { context: AuthenticationContext }) => context,
         onDone: [
           {
             actions: "assignShowPasskeys",
-            cond: "showPasskeys",
+            guard: "showPasskeys",
             target: "AddPasskeys",
           },
           {
-            cond: (context: AuthenticationContext) =>
+            guard: ({ context }: { context: AuthenticationContext }) =>
               !!context.shouldShowRecoveryEvery8th,
             target: "checkRecovery8th",
           },
@@ -366,12 +343,12 @@ const authenticationMachineConfig = {
     },
     checkRecovery8th: {
       invoke: {
-        src: () => shouldShowRecoveryPhraseEvery8thTime(),
+        src: "shouldShowRecoveryPhraseEvery8thTime",
         id: "shouldShowRecovery8th",
         onDone: [
           {
             actions: "assignShowRecovery",
-            cond: "showRecovery",
+            guard: "showRecovery",
             target: "BackupWallet",
           },
           { target: "End" },
@@ -380,12 +357,13 @@ const authenticationMachineConfig = {
     },
     checkPasskeys: {
       invoke: {
-        src: (context: AuthenticationContext) => shouldShowPasskeys(context),
+        src: "shouldShowPasskeys",
         id: "shouldShowPasskeys",
+        input: ({ context }: { context: AuthenticationContext }) => context,
         onDone: [
           {
             actions: "assignShowPasskeys",
-            cond: "showPasskeys",
+            guard: "showPasskeys",
             target: "AddPasskeys",
           },
           { target: "End" },
@@ -412,84 +390,81 @@ const authenticationMachineConfig = {
     },
     End: {
       type: "final" as const,
-      data: (context: AuthenticationContext) => ({ ...context }),
+      output: ({ context }: { context: AuthenticationContext }) => ({
+        ...context,
+      }),
     },
   },
 }
 
-const authenticationMachineOptions: Parameters<
-  typeof createMachine<AuthenticationContext, Events, any>
->[1] = {
+const authenticationMachineOptions = {
   guards: {
-    isExistingAccount: (_: AuthenticationContext, event: any) =>
-      !!event?.data?.anchor,
-    isReturn: (_: AuthenticationContext, event: any) => {
-      return !event.data
+    isExistingAccount: ({ event }: { event: any }) => !!event?.output?.anchor,
+    isReturn: ({ event }: { event: any }) => {
+      return !event.output
     },
-    is2FAEnabled: (_: AuthenticationContext, event: any) => {
-      return !!event.data
+    is2FAEnabled: ({ event }: { event: any }) => {
+      return !!event.output
     },
-    showPasskeys: (_: AuthenticationContext, event: any) => {
-      const showPasskeys = event.data?.showPasskeys
+    showPasskeys: ({ event }: { event: any }) => {
+      const showPasskeys = event.output?.showPasskeys
       if (showPasskeys === undefined) return true
       return showPasskeys
     },
-    showRecovery: (_: AuthenticationContext, event: any) => {
-      const showRecovery = event.data?.showRecovery
+    showRecovery: ({ event }: { event: any }) => {
+      const showRecovery = event.output?.showRecovery
       if (showRecovery === undefined) return true
       return showRecovery
     },
   },
   actions: {
-    setShouldCheckRecoveryEvery8th: assign<AuthenticationContext, Events, any>(
-      () => {
-        return {
-          shouldShowRecoveryEvery8th: true,
-        }
-      },
-    ),
-    assignAuthSession: assign<AuthenticationContext, Events, any>(
-      (_: AuthenticationContext, event: any) => {
-        return {
-          authSession: event.data,
-        }
-      },
-    ),
-    assignVerificationEmail: assign<AuthenticationContext, Events, any>(
-      (_: AuthenticationContext, event: any) => ({
-        verificationEmail: event.data.email,
-      }),
-    ),
-    assignAllowedDevices: assign<AuthenticationContext, Events, any>(
-      (_: AuthenticationContext, event: any) => ({
-        allowedDevices: event.data?.allowedPasskeys,
-      }),
-    ),
-    assignEmail: assign<AuthenticationContext, Events, any>(
-      (_: AuthenticationContext, event: any) => ({
-        email: event.data?.email,
-      }),
-    ),
-    assignShowPasskeys: assign<AuthenticationContext, Events, any>(
-      (_: AuthenticationContext, event: any) => ({
-        showPasskeys: event.data?.showPasskeys,
-      }),
-    ),
-    assignShowRecovery: assign<AuthenticationContext, Events, any>(
-      (_: AuthenticationContext, event: any) => ({
-        showRecovery: event.data?.showRecovery,
-      }),
-    ),
-    assignIsEmbed: assign<AuthenticationContext, Events, any>(
-      (_: AuthenticationContext, event: any) => ({
-        isEmbed: event.data?.isEmbed,
-      }),
-    ),
+    setShouldCheckRecoveryEvery8th: assign(() => {
+      return {
+        shouldShowRecoveryEvery8th: true,
+      }
+    }),
+    assignAuthSession: assign(({ event }: { event: any }) => {
+      return {
+        authSession: event.output ?? event.data,
+      }
+    }),
+    assignVerificationEmail: assign(({ event }: { event: any }) => ({
+      verificationEmail: event.data.email,
+    })),
+    assignAllowedDevices: assign(({ event }: { event: any }) => ({
+      allowedDevices: event.output?.allowedPasskeys,
+    })),
+    assignEmail: assign(({ event }: { event: any }) => ({
+      email: event.data?.email,
+    })),
+    assignShowPasskeys: assign(({ event }: { event: any }) => ({
+      showPasskeys: event.output?.showPasskeys,
+    })),
+    assignShowRecovery: assign(({ event }: { event: any }) => ({
+      showRecovery: event.output?.showRecovery,
+    })),
+    assignIsEmbed: assign(({ event }: { event: any }) => ({
+      isEmbed: event.data?.isEmbed,
+    })),
   },
-  services: {
+  actors: {
     AuthWithEmailMachine,
     AuthWithGoogleMachine,
-    checkIf2FAEnabled,
+    signWithIIService: fromPromise(() => signWithIIService()),
+    checkIf2FAEnabled: fromPromise(
+      ({ input }: { input: AuthenticationContext }) => checkIf2FAEnabled(input),
+    ),
+    shouldShowPasskeysEvery6thTime: fromPromise(
+      ({ input }: { input: AuthenticationContext }) =>
+        shouldShowPasskeysEvery6thTime(input),
+    ),
+    shouldShowRecoveryPhraseEvery8thTime: fromPromise(() =>
+      shouldShowRecoveryPhraseEvery8thTime(),
+    ),
+    shouldShowPasskeys: fromPromise(
+      ({ input }: { input: AuthenticationContext }) =>
+        shouldShowPasskeys(input),
+    ),
   },
 }
 

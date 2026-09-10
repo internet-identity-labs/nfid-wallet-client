@@ -1,4 +1,4 @@
-import { interpret } from "xstate"
+import { createActor } from "xstate"
 
 import { IdentityKitRPCMachine } from "./machine"
 
@@ -14,7 +14,7 @@ describe("IdentityKitRPCMachine", () => {
   it("should be defined", () => {
     expect(IdentityKitRPCMachine).toBeDefined()
 
-    const service = interpret(IdentityKitRPCMachine)
-    service.stop()
+    const actor = createActor(IdentityKitRPCMachine)
+    actor.stop()
   })
 })

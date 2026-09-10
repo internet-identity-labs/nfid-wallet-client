@@ -1,43 +1,43 @@
-import { IdbKeyVal } from "./idb-keyval"
-import { MemoryKeyVal } from "./memory-keyval"
+import { StorageMode } from "./enum/storage-mode"
+import { IdbKeyVal } from "./keyval/idb-keyval"
+import { storageModeState } from "./state/storage-mode-state"
 import { KeyValueStore } from "./types"
+
+import { IdbStore } from "./idb-store"
 
 const DB_NAME = "ttl-db"
 const OBJECT_STORE_NAME = "ttl-store"
 
-export class TtlStorage<T> {
-  // Initializes a KeyVal on first request
-  private initializedDb: IdbKeyVal | undefined
-
-  constructor(
-    private options: {
-      dbName: string
-      storeName: string
-      dbVersion?: number
-    },
-  ) {}
-
+export class TtlStorage<T> extends IdbStore {
   get _db(): Promise<KeyValueStore> {
     const db = new Promise<KeyValueStore>((resolve) => {
-      if (this.initializedDb) {
-        this.initializedDb.set("test", "test")
-        this.initializedDb.get("test")
-        resolve(this.initializedDb)
+      if (this.initializedStore) {
+        this.initializedStore.set("test", "test")
+        this.initializedStore.get("test")
+        resolve(this.initializedStore)
         return
       }
+
+      if (storageModeState.get() === StorageMode.MEMORY) {
+        this.initializedStore = this.memoryStore()
+        resolve(this.initializedStore)
+        return
+      }
+
       IdbKeyVal.create({
-        version: this.options.dbVersion || 1,
+        version: this.options.dbVersion ?? 1,
         dbName: this.options.dbName,
         storeName: this.options.storeName,
       })
         .then((db) => {
-          this.initializedDb = db
-          this.initializedDb.set("test", "test")
-          this.initializedDb.get("test")
+          this.initializedStore = db
+          this.initializedStore.set("test", "test")
+          this.initializedStore.get("test")
           resolve(db)
         })
         .catch(() => {
-          return resolve(MemoryKeyVal.create())
+          this.initializedStore = this.memoryStore()
+          return resolve(this.initializedStore)
         })
     })
     return db

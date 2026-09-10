@@ -10,6 +10,8 @@ import {
 import base64url from "base64url"
 import { BehaviorSubject, find, lastValueFrom, map } from "rxjs"
 
+import { idbService, rememberMeLocalStorage } from "@nfid/client-db"
+
 import { PassKeyData } from "../_ic_api/passkey_storage.d"
 import { im, passkeyStorage, replaceActorIdentity } from "../actors"
 import { agent } from "../agent"
@@ -33,8 +35,6 @@ import {
   serializeUserIdData,
   UserIdData,
 } from "./user-id-data"
-import { domainKeyStorage } from "../lambda/domain-key-storage"
-import { storageWithTtl } from "@nfid/client-db"
 
 interface ObservableAuthState {
   cacheLoaded: boolean
@@ -195,10 +195,12 @@ function makeAuthState() {
       localStorage.removeItem(KEY_BTC_ADDRESS)
       localStorage.removeItem(KEY_ETH_ADDRESS)
       localStorage.removeItem(KEY_ANCHOR)
-      storageWithTtl.clear()
-      domainKeyStorage.clear()
+      try {
+        await idbService.deleteAll()
+      } catch (error) {
+        console.error("idb wipe on logout failed", error)
+      }
     }
-    await authStorage.clear()
     return true
   }
 
@@ -224,7 +226,7 @@ function makeAuthState() {
   }: SetProps) {
     console.debug("makeAuthState set new auth state")
     const userIdData = await createUserIdData(delegationIdentity)
-    localStorage.setItem(KEY_ANCHOR, userIdData.anchor.toString())
+    rememberMeLocalStorage.setItem(KEY_ANCHOR, userIdData.anchor.toString())
 
     const current = await walletStorage.get(
       getUserIdDataStorageKey(delegationIdentity),

@@ -201,7 +201,7 @@
     "nx": "23.2.0",
     "os-browserify": "0.3.0",
     "path-browserify": "1.0.1",
-    "postcss": "8.5.10",
+    "postcss": "8.5.12",
     "prettier": "3.8.1",
     "puppeteer": "25.10.0",
     "react-refresh": "0.18.0",

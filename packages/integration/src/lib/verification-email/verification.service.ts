@@ -8,6 +8,7 @@ import { importPKCS8, SignJWT } from "jose"
 import { DEFAULT_DELEGATION_TTL } from "@nfid/config"
 
 import { ic } from "../agent"
+import { registrationGuardService } from "../authentication/registration-guard.service"
 import { antiPhishingCodeService } from "../utils/anti-phishing-code.service"
 
 export type VerificationStatus = "success" | "invalid-token" | "link-required"
@@ -83,6 +84,7 @@ export const verificationService = {
 
     const text = await response.text()
     if (!response.ok) {
+      registrationGuardService.assertRegistrationAllowed(response.status, text)
       if (response.status === 429) {
         throw new PrevTokenHasNotExpiredError(text)
       }

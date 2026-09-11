@@ -1,51 +1,51 @@
-import { IdbKeyVal } from "./idb-keyval"
-import { MemoryKeyVal } from "./memory-keyval"
+import { StorageMode } from "./enum/storage-mode"
+import { IdbKeyVal } from "./keyval/idb-keyval"
+import { storageModeState } from "./state/storage-mode-state"
 import { KeyValueStore } from "./types"
 
-export class Storage<T> {
-  // Initializes a KeyVal on first request
-  private initializedDb: IdbKeyVal | undefined
+import { IdbStore } from "./idb-store"
 
-  constructor(
-    private options: {
-      dbName: string
-      storeName: string
-      dbVersion?: number
-    },
-  ) {}
-
+export class Storage<T> extends IdbStore {
   get _db(): Promise<KeyValueStore> {
     const db = new Promise<KeyValueStore>((resolve) => {
-      if (this.initializedDb) {
-        this.initializedDb.set("test", "test").then(() => {
-          this.initializedDb!.get("test").then(() => {
-            this.initializedDb!.remove("test").then(() => {
-              resolve(this.initializedDb!)
+      if (this.initializedStore) {
+        this.initializedStore.set("test", "test").then(() => {
+          this.initializedStore!.get("test").then(() => {
+            this.initializedStore!.remove("test").then(() => {
+              resolve(this.initializedStore!)
             })
           })
         })
         return
       }
+
+      if (storageModeState.get() === StorageMode.MEMORY) {
+        this.initializedStore = this.memoryStore()
+        resolve(this.initializedStore)
+        return
+      }
+
       IdbKeyVal.create({
-        version: this.options.dbVersion || 1,
+        version: this.options.dbVersion ?? 1,
         dbName: this.options.dbName,
         storeName: this.options.storeName,
       })
         .then((db) => {
-          this.initializedDb = db
-          return this.initializedDb.set("test", "test")
+          this.initializedStore = db
+          return this.initializedStore.set("test", "test")
         })
         .then(() => {
-          return this.initializedDb!.get("test")
+          return this.initializedStore!.get("test")
         })
         .then(() => {
-          return this.initializedDb!.remove("test")
+          return this.initializedStore!.remove("test")
         })
         .then(() => {
-          resolve(this.initializedDb!)
+          resolve(this.initializedStore!)
         })
         .catch(() => {
-          return resolve(MemoryKeyVal.create())
+          this.initializedStore = this.memoryStore()
+          return resolve(this.initializedStore)
         })
     })
     return db

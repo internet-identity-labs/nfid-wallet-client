@@ -20,7 +20,7 @@ const Template: StoryFn<IFeeModal> = (args) => (
     className={clsx([
       "transition ease-in-out delay-150 duration-300",
       "z-40 top-0 left-0 w-full h-screen",
-      "fixed bg-opacity-80 bg-[#18181B]",
+      "fixed bg-[#18181B]/80",
     ])}
     style={{ margin: 0 }}
   >

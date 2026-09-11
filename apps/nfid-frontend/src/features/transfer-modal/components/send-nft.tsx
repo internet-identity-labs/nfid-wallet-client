@@ -13,7 +13,7 @@ import { isAddress } from "ethers"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 import { FormValues, SendStatus } from "../types"
-import { validateETHAddress, validateNftAddress } from "../utils"
+import { updateNftList, validateETHAddress, validateNftAddress } from "../utils"
 import {
   addressBookFacade,
   NftSearchRequest,
@@ -206,6 +206,10 @@ export const TransferNFT = ({
   const successHandler = () => {
     setSuccessMessage(`Transaction ${selectedNFT?.getTokenName()} successful`)
     setStatus(SendStatus.COMPLETED)
+
+    if (selectedNFT && nfts) {
+      updateNftList(nfts, selectedNFT.getTokenId())
+    }
 
     if (Boolean(tokenId)) {
       send({ type: "ASSIGN_SELECTED_FT", data: undefined })

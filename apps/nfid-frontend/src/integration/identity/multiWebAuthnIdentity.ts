@@ -29,7 +29,7 @@ import { IPasskeyMetadata } from "@nfid/integration"
 
 import { passkeyConnector } from "frontend/features/authentication/auth-selection/passkey-flow/services"
 
-export type CredentialId = ArrayBuffer
+export type CredentialId = ArrayBuffer | Uint8Array<ArrayBuffer>
 export type CredentialData = {
   pubkey: DerEncodedPublicKey
   credentialId: CredentialId
@@ -111,13 +111,13 @@ export class MultiWebAuthnIdentity extends SignIdentity {
     }
   }
 
-  public async sign(blob: ArrayBuffer): Promise<Signature> {
+  public async sign(blob: Uint8Array): Promise<Signature> {
     const transports: AuthenticatorTransport[] = this._withSecurityDevices
       ? ["usb", "nfc", "ble"]
       : []
 
     const publicKeyOptions: PublicKeyCredentialRequestOptions = {
-      challenge: blob,
+      challenge: blob as unknown as Uint8Array<ArrayBuffer>,
       userVerification: "preferred",
     }
 
@@ -137,12 +137,16 @@ export class MultiWebAuthnIdentity extends SignIdentity {
 
     if (!this._isNewDevice) {
       this.credentialData.forEach((cd) => {
-        if (arrayBufferEqual(cd.credentialId, Buffer.from(result.rawId))) {
+        if (arrayBufferEqual(cd.credentialId, new Uint8Array(result.rawId))) {
           const strippedKey = unwrapDER(cd.pubkey, DER_COSE_OID)
 
           const id = WebAuthnIdentity.fromJSON(
             JSON.stringify({
-              rawId: Buffer.from(cd.credentialId).toString("hex"),
+              rawId: Buffer.from(
+                cd.credentialId instanceof ArrayBuffer
+                  ? new Uint8Array(cd.credentialId)
+                  : cd.credentialId,
+              ).toString("hex"),
               publicKey: Buffer.from(strippedKey).toString("hex"),
             }),
           )

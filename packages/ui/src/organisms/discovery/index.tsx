@@ -261,7 +261,10 @@ export const Discovery: FC<DiscoveryProps> = ({
                         {app.desc}
                         {!promotionStatus?.locked && (
                           <Button
-                            className="w-[144px] mt-4 mx-auto"
+                            className={clsx(
+                              "w-[144px] block mx-auto",
+                              app.desc && "mt-4",
+                            )}
                             onClick={(e) => {
                               e.preventDefault()
                               onPromoteClick?.(app.id)

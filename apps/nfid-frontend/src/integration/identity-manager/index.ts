@@ -20,6 +20,7 @@ import {
   reverseMapOptional,
   RootWallet,
 } from "@nfid/integration"
+import { rememberMeLocalStorage } from "@nfid/client-db"
 
 import { NFIDPersona } from "frontend/integration/identity-manager/persona/types"
 
@@ -131,7 +132,7 @@ export async function fetchProfile() {
       }
       throw new Error(`fetchProfile im.get_account: ${e.message}`)
     })
-  const anchor = localStorage.getItem(KEY_ANCHOR)
+  const anchor = rememberMeLocalStorage.getItem(KEY_ANCHOR)
   if (anchor && anchor !== response.anchor.toString()) {
     console.debug("fetchProfile anchor mismatch, resetting auth state")
     await authState.reset(true)

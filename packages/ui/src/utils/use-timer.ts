@@ -14,7 +14,7 @@ export const useTimer = ({
   onElapsed,
 }: useTimerProps) => {
   const [counter, setCounter] = React.useState(defaultCounter)
-  const timer = React.useRef<NodeJS.Timer>()
+  const timer = React.useRef<NodeJS.Timer>(undefined)
   const [elapsed, setElapsed] = React.useState(false)
 
   const handleInterval = React.useCallback(() => {

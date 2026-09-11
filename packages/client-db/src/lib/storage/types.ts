@@ -6,4 +6,5 @@ export interface KeyValueStore {
   clear(): Promise<void>
   getAllKeys(): Promise<string[]>
   getAll<T>(): Promise<Array<{ key: string; value: T }>>
+  close?(): void
 }

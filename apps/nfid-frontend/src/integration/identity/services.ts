@@ -39,7 +39,10 @@ export async function postRemoteDelegationService(
   return undefined
 }
 
-export function arrayBufferEqual(a1: ArrayBuffer, a2: ArrayBuffer): boolean {
+export function arrayBufferEqual(
+  a1: ArrayBuffer | Uint8Array,
+  a2: ArrayBuffer | Uint8Array,
+): boolean {
   if (a1 === a2) {
     return true
   }

@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { Suspense, useEffect, useState, lazy } from "react"
 import { Route, Routes, useLocation } from "react-router-dom"
-import "tailwindcss/tailwind.css"
 import { BlurredLoader, Loader, ScreenResponsive } from "@nfid-frontend/ui"
 import { ROUTE_EMBED, ROUTE_RPC, ROUTE_WALLETCONNECT } from "@nfid/config"
 import { authState, exchangeRateService } from "@nfid/integration"

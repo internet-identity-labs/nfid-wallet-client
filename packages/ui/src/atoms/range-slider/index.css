@@ -22,7 +22,7 @@
 }
 
 .SliderThumb {
-  @apply bg-primaryButtonColor;
+  background-color: rgb(var(--color-primaryButtonColor));
   border: 4px solid white;
   display: block;
   width: 20px;

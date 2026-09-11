@@ -39,6 +39,8 @@ export const RemoveAccountModal = ({
 
   if (steps?.isCompleted) return null
 
+  const isDefaultStep = currentStep === DeletionMode.DEFAULT
+
   return (
     <>
       <ModalComponent
@@ -111,7 +113,7 @@ export const RemoveAccountModal = ({
             </Button>
             <Button
               className="w-full"
-              disabled={!value || !isValueValid}
+              disabled={!isDefaultStep && (!value || !isValueValid)}
               type="red"
               onClick={() => executeStep(value)}
             >

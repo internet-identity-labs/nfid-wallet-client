@@ -9,6 +9,7 @@ import {
   KEY_STORAGE_KEY,
 } from "packages/integration/src/lib/authentication/storage"
 
+import { rememberMeLocalStorage } from "@nfid/client-db"
 import {
   authState,
   DeviceType,
@@ -77,12 +78,12 @@ export const checkEmailVerification = async (
         }
       }
     }, 3000)
-    window.localStorage.setItem("emailIntervalId", int.toString())
+    rememberMeLocalStorage.setItem("emailIntervalId", int.toString())
   })
 }
 
 export const stopIntervalVerification = () => {
-  const intervalId = window.localStorage.getItem("emailIntervalId")
+  const intervalId = rememberMeLocalStorage.getItem("emailIntervalId")
   if (!intervalId) return
   clearInterval(parseInt(intervalId))
 }

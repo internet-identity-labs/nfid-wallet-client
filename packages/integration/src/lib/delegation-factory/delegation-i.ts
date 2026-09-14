@@ -207,6 +207,7 @@ export async function getAnonymousDelegation(
       sessionKey,
       identity,
       maxTimeToLive,
+      targets,
     )
   }
 }

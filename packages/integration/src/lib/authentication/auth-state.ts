@@ -197,6 +197,7 @@ function makeAuthState() {
       localStorage.removeItem(KEY_ANCHOR)
       try {
         await idbService.deleteAll()
+        await idbService.deleteExternalDbs()
       } catch (error) {
         console.error("idb wipe on logout failed", error)
       }

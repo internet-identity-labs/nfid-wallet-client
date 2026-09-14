@@ -10,6 +10,10 @@ import {
   AuthorizingAppMeta,
 } from "frontend/state/authorization"
 
+import { ExistingWallet, getAllWalletsFromThisDevice } from "@nfid/integration"
+
+import { isWebAuthNSupported } from "frontend/integration/device"
+
 import { ApproveIcGetDelegationSdkResponse } from "../3rd-party/choose-account/types"
 import {
   checkIf2FAEnabled,
@@ -40,9 +44,14 @@ export interface AuthenticationContext {
   showRecovery?: boolean
   isEmbed?: boolean
   shouldShowRecoveryEvery8th?: boolean
+  wallets?: ExistingWallet[]
 }
 
 export type Events =
+  | {
+      type: "done.invoke.getAllWalletsFromThisDevice"
+      data: ExistingWallet[]
+    }
   | { type: "done.invoke.AuthWithGoogleMachine"; data: AbstractAuthSession }
   | { type: "done.invoke.AuthWithEmailMachine"; data: AbstractAuthSession }
   | { type: "done.invoke.AuthWithIIService"; data: AbstractAuthSession }
@@ -86,7 +95,7 @@ export type Events =
   | { type: "SIGN_IN" }
   | { type: "SIGN_UP_WITH_PASSKEY" }
   | {
-      type: "SIGN_IN_PASSKEY"
+      type: "AUTH_WITH_PASSKEY"
       data?: AbstractAuthSession
     }
 
@@ -100,8 +109,40 @@ const authenticationMachineConfig = {
   tsTypes: {} as import("./root-machine.typegen").Typegen0,
   schema: { events: {}, context: {} } as Schema,
   id: "auth-machine",
-  initial: "AuthSelection",
+  initial: "CheckWallets",
+  context: {
+    wallets: [],
+  },
   states: {
+    CheckWallets: {
+      invoke: {
+        src: "getAllWalletsFromThisDevice",
+        id: "getAllWalletsFromThisDevice",
+        onDone: [
+          {
+            cond: (_: AuthenticationContext, event: any) =>
+              event.data.length > 0 && isWebAuthNSupported(),
+            actions: "assignWallets",
+            target: "ChooseWallet",
+          },
+          { target: "AuthSelection" },
+        ],
+      },
+    },
+    ChooseWallet: {
+      on: {
+        AUTH_WITH_PASSKEY: {
+          actions: "assignAuthSession",
+          target: "checkRecovery8th",
+        },
+        CHOOSE_WALLET: {
+          target: "AuthSelection",
+        },
+        BACK: {
+          target: "AuthSelection",
+        },
+      },
+    },
     AuthSelection: {
       on: {
         AUTH_WITH_EMAIL: {
@@ -127,9 +168,12 @@ const authenticationMachineConfig = {
         SIGN_UP: {
           target: "AuthSelectionSignUp",
         },
-        SIGN_IN_PASSKEY: {
+        AUTH_WITH_PASSKEY: {
           actions: "assignAuthSession",
           target: "checkRecovery8th",
+        },
+        CHOOSE_WALLET: {
+          target: "ChooseWallet",
         },
       },
     },
@@ -177,15 +221,15 @@ const authenticationMachineConfig = {
         },
       },
     },
-    BackupWallet: {
+    AuthAddRecoveryPhrase: {
       on: {
         SKIP: {
           target: "End",
         },
-        DONE: "BackupWalletSavePhrase",
+        DONE: "AuthSaveRecoveryPhrase",
       },
     },
-    BackupWalletSavePhrase: {
+    AuthSaveRecoveryPhrase: {
       on: {
         DONE: {
           target: "End",
@@ -372,7 +416,7 @@ const authenticationMachineConfig = {
           {
             actions: "assignShowRecovery",
             cond: "showRecovery",
-            target: "BackupWallet",
+            target: "AuthAddRecoveryPhrase",
           },
           { target: "End" },
         ],
@@ -485,8 +529,14 @@ const authenticationMachineOptions: Parameters<
         isEmbed: event.data?.isEmbed,
       }),
     ),
+    assignWallets: assign<AuthenticationContext, Events, any>(
+      (_: AuthenticationContext, event: any) => ({
+        wallets: event.data,
+      }),
+    ),
   },
   services: {
+    getAllWalletsFromThisDevice,
     AuthWithEmailMachine,
     AuthWithGoogleMachine,
     checkIf2FAEnabled,

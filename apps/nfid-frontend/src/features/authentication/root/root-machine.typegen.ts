@@ -23,6 +23,11 @@ export interface Typegen0 {
       data: unknown
       __tip: "See the XState TS docs to learn how to strongly type this."
     }
+    "done.invoke.getAllWalletsFromThisDevice": {
+      type: "done.invoke.getAllWalletsFromThisDevice"
+      data: unknown
+      __tip: "See the XState TS docs to learn how to strongly type this."
+    }
     "done.invoke.shouldShowPasskeys": {
       type: "done.invoke.shouldShowPasskeys"
       data: unknown
@@ -50,12 +55,17 @@ export interface Typegen0 {
       type: "error.platform.checkIf2FAEnabled"
       data: unknown
     }
+    "error.platform.getAllWalletsFromThisDevice": {
+      type: "error.platform.getAllWalletsFromThisDevice"
+      data: unknown
+    }
     "xstate.init": { type: "xstate.init" }
   }
   invokeSrcNameMap: {
     AuthWithEmailMachine: "done.invoke.AuthWithEmailMachine"
     AuthWithGoogleMachine: "done.invoke.AuthWithGoogleMachine"
     checkIf2FAEnabled: "done.invoke.checkIf2FAEnabled"
+    getAllWalletsFromThisDevice: "done.invoke.getAllWalletsFromThisDevice"
   }
   missingImplementations: {
     actions: never
@@ -68,7 +78,7 @@ export interface Typegen0 {
     assignAuthSession:
       | "AUTHENTICATED"
       | "AUTH_WITH_II"
-      | "SIGN_IN_PASSKEY"
+      | "AUTH_WITH_PASSKEY"
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
       | "done.invoke.AuthWithIIService"
@@ -79,6 +89,7 @@ export interface Typegen0 {
       | "done.invoke.shouldShowPasskeys6th"
     assignShowRecovery: "done.invoke.shouldShowRecovery8th"
     assignVerificationEmail: "AUTH_WITH_EMAIL"
+    assignWallets: "done.invoke.getAllWalletsFromThisDevice"
     setShouldCheckRecoveryEvery8th: "done.invoke.checkIf2FAEnabled"
   }
   eventsCausingDelays: {}
@@ -101,6 +112,7 @@ export interface Typegen0 {
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
       | "done.invoke.AuthWithIIService"
+    getAllWalletsFromThisDevice: "xstate.init"
     shouldShowPasskeys:
       | "done.invoke.AuthWithEmailMachine"
       | "done.invoke.AuthWithGoogleMachine"
@@ -108,18 +120,20 @@ export interface Typegen0 {
     shouldShowPasskeys6th: "AUTHENTICATED" | "done.invoke.checkIf2FAEnabled"
     shouldShowRecovery8th:
       | "AUTHENTICATED"
-      | "SIGN_IN_PASSKEY"
+      | "AUTH_WITH_PASSKEY"
       | "done.invoke.shouldShowPasskeys6th"
   }
   matchesStates:
     | "AddPasskeys"
     | "AddPasskeysSuccess"
+    | "AuthAddRecoveryPhrase"
+    | "AuthSaveRecoveryPhrase"
     | "AuthSelection"
     | "AuthSelectionSignUp"
     | "AuthWithGoogle"
     | "AuthWithII"
-    | "BackupWallet"
-    | "BackupWalletSavePhrase"
+    | "CheckWallets"
+    | "ChooseWallet"
     | "EmailAuthentication"
     | "End"
     | "OtherSignOptions"

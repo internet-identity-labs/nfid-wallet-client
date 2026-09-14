@@ -1,4 +1,3 @@
-import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import React, { useCallback, useContext } from "react"
 
@@ -35,21 +34,21 @@ export const VaultsWalletsTableRow: React.FC<VaultsWalletsTableRowProps> = ({
   isArchived,
 }: VaultsWalletsTableRowProps) => {
   const globalServices = useContext(ProfileContext)
-  const [, send] = useActor(globalServices.transferService)
   const { wallets } = useAllWallets()
 
   const onSendFromVaultWallet = useCallback(() => {
-    send({ type: "ASSIGN_SOURCE_WALLET", data: address ?? "" })
-    send({
+    const ts = globalServices.transferService
+    ts.send({ type: "ASSIGN_SOURCE_WALLET", data: address ?? "" })
+    ts.send({
       type: "ASSIGN_SOURCE_ACCOUNT",
       data: wallets.find((w) => w.address === address) ?? ({} as any),
     })
-    send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
-    send({ type: "CHANGE_TOKEN_TYPE", data: "ft" })
-    send({ type: "ASSIGN_VAULTS", data: true })
+    ts.send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
+    ts.send({ type: "CHANGE_TOKEN_TYPE", data: "ft" })
+    ts.send({ type: "ASSIGN_VAULTS", data: true })
 
-    send({ type: "SHOW" })
-  }, [address, send, wallets])
+    ts.send({ type: "SHOW" })
+  }, [address, globalServices.transferService, wallets])
 
   return (
     <TableRow

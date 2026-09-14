@@ -1,4 +1,3 @@
-import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { NFTs } from "packages/ui/src/organisms/nfts"
@@ -36,7 +35,7 @@ const NFTsPage = memo(() => {
     globalServices
   const [nfts, setNfts] = useState<NFT[]>([])
   const [currentPage, setCurrentPage] = useState(1)
-  const [, send] = useActor(globalServices.transferService)
+  const { transferService } = globalServices
 
   const { data: allNfts, isLoading: isAllNFTsLoading } = useSWR(
     isViewOnlyMode ? ["nftList", viewOnlyAddress] : "nftList",
@@ -110,13 +109,13 @@ const NFTsPage = memo(() => {
 
   const onTransferNFT = useCallback(
     (nftId: string) => {
-      send({ type: "ASSIGN_SELECTED_NFT", data: nftId })
-      send({ type: "CHANGE_TOKEN_TYPE", data: "nft" })
-      send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
+      transferService.send({ type: "ASSIGN_SELECTED_NFT", data: nftId })
+      transferService.send({ type: "CHANGE_TOKEN_TYPE", data: "nft" })
+      transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
 
-      send("SHOW")
+      transferService.send({ type: "SHOW" })
     },
-    [send],
+    [transferService],
   )
 
   useEffect(() => {

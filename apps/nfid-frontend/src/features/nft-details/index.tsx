@@ -1,4 +1,3 @@
-import { useActor } from "@xstate/react"
 import clsx from "clsx"
 import { NFTDetails } from "packages/ui/src/organisms/nft-details"
 import {
@@ -48,7 +47,6 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
     viewOnlyAddressType,
   } = useContext(ProfileContext)
   const [state, dispatch] = useReducer(nftReducer, nftInitialState)
-  const [, send] = useActor(transferService)
   const { tokenId } = useParams()
   const location = useLocation()
   const currentPage = location.state?.currentPage
@@ -155,13 +153,16 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
       if (!nft) return
       e.preventDefault()
 
-      send({ type: "ASSIGN_SELECTED_NFT", data: nft.getTokenId() })
-      send({ type: "CHANGE_TOKEN_TYPE", data: "nft" })
-      send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
+      transferService.send({
+        type: "ASSIGN_SELECTED_NFT",
+        data: nft.getTokenId(),
+      })
+      transferService.send({ type: "CHANGE_TOKEN_TYPE", data: "nft" })
+      transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
 
-      send("SHOW")
+      transferService.send({ type: "SHOW" })
     },
-    [nft, send],
+    [nft, transferService],
   )
 
   if (isLoading) return <Loader isLoading />

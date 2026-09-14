@@ -24,6 +24,16 @@ function getRandomLoadingMessage() {
   return LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)]
 }
 
+type MainState =
+  | string
+  | { Authentication: string }
+  | { InteractiveRequest: string }
+
+type IdentityKitStateValue = {
+  RPCReceiverV3: string
+  Main: MainState
+}
+
 export default function IdentityKitRPCCoordinator() {
   const [state, send] = useMachine(IdentityKitRPCMachine)
   console.debug("IdentityKitRPCCoordinator", { state })
@@ -37,8 +47,18 @@ export default function IdentityKitRPCCoordinator() {
   }, [state])
 
   const Component = useMemo(() => {
+    const sv = state.value as IdentityKitStateValue
+    const mainAuth =
+      typeof sv.Main === "object" && "Authentication" in sv.Main
+        ? sv.Main.Authentication
+        : null
+    const mainInteractive =
+      typeof sv.Main === "object" && "InteractiveRequest" in sv.Main
+        ? sv.Main.InteractiveRequest
+        : null
+
     switch (true) {
-      case state.matches("Main.Authentication.Authenticate"):
+      case mainAuth === "Authenticate":
         return (
           <AuthenticationCoordinator
             isIdentityKit
@@ -55,7 +75,7 @@ export default function IdentityKitRPCCoordinator() {
             }
           />
         )
-      case state.matches("Main.InteractiveRequest.PromptInteractiveRequest"):
+      case mainInteractive === "PromptInteractiveRequest":
         return (
           <RPCComponent
             method={
@@ -64,7 +84,7 @@ export default function IdentityKitRPCCoordinator() {
               ) as RPCComponentsUI
             }
             props={{
-              onApprove: (data: any) =>
+              onApprove: (data: unknown) =>
                 send({ type: "ON_APPROVE", data: data }),
               onReject: () => send({ type: "ON_CANCEL" }),
               onBack: async () => {
@@ -76,7 +96,7 @@ export default function IdentityKitRPCCoordinator() {
             }}
           />
         )
-      case state.matches("Main.InteractiveRequest.Error"):
+      case mainInteractive === "Error":
         return (
           <RPCComponentError
             onRetry={() => send({ type: "TRY_AGAIN" })}

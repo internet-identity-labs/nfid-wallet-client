@@ -1,4 +1,3 @@
-import { useActor } from "@xstate/react"
 import { EarnDetails } from "packages/ui/src/organisms/earn/earn-details"
 import { useContext, useMemo, memo } from "react"
 import { useParams } from "react-router-dom"
@@ -25,7 +24,6 @@ const EarnDetailsPage = memo(() => {
     viewOnlyAddressType,
     transferService,
   } = useContext(ProfileContext)
-  const [, send] = useActor(transferService)
 
   const { data: tokens } = useSWRWithTimestamp(
     isViewOnlyMode ? ["tokens", viewOnlyAddress] : "tokens",
@@ -70,34 +68,37 @@ const EarnDetailsPage = memo(() => {
 
   const onSupply = () => {
     if (!token) return
-    send({ type: "ASSIGN_VAULTS", data: false })
-    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: ModalType.EARN })
-    send({
+    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.EARN })
+    transferService.send({
       type: "ASSIGN_SELECTED_FT",
       data: {
         address: token.getTokenAddress(),
         chainId: token.getChainId(),
       },
     })
-    send({ type: "ASSIGN_IS_EARN_UPDATE", data: true })
-    send("SHOW")
+    transferService.send({ type: "ASSIGN_IS_EARN_UPDATE", data: true })
+    transferService.send({ type: "SHOW" })
   }
 
   const onWithdraw = () => {
     if (!token || !earnPosition) return
-    send({ type: "ASSIGN_VAULTS", data: false })
-    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: ModalType.WITHDRAW })
-    send({
+    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.WITHDRAW })
+    transferService.send({
       type: "ASSIGN_SELECTED_FT",
       data: {
         address: token.getTokenAddress(),
         chainId: token.getChainId(),
       },
     })
-    send({ type: "ASSIGN_WITHDRAW_BALANCE", data: earnPosition.balance })
-    send("SHOW")
+    transferService.send({
+      type: "ASSIGN_WITHDRAW_BALANCE",
+      data: earnPosition.balance,
+    })
+    transferService.send({ type: "SHOW" })
   }
 
   const earnPosition = useMemo(() => {

@@ -1,4 +1,4 @@
-import { interpret } from "xstate"
+import { createActor } from "xstate"
 
 import { transferMachine } from "./machine"
 
@@ -9,7 +9,7 @@ describe("transferMachine", () => {
     // Static check: initial state
     expect(transferMachine.initialState.value).toBe("Hidden")
 
-    const service = interpret(transferMachine).start()
+    const service = createActor(transferMachine).start()
     expect(service.getSnapshot().value).toBe("Hidden")
     service.stop()
   })

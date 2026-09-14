@@ -10,27 +10,21 @@ import { NFIDEmbedMachine } from "./machine"
 import { ProcedureApprovalCoordinator } from "./procedure-approval-coordinator"
 import { PageError } from "./ui/error"
 
+type EmbedStateValue = {
+  RPC_RECEIVER: string
+  AUTH: string
+  HANDLE_PROCEDURE: string
+}
+
 export default function NFIDEmbedCoordinator() {
   const [state, send] = useMachine(NFIDEmbedMachine)
   console.debug("NFIDEmbedCoordinator")
 
   const Component = useMemo(() => {
-    switch (true) {
-      case state.matches("HANDLE_PROCEDURE.EXECUTE_PROCEDURE"):
-      case state.matches("AUTH.CheckAppMeta"):
-      case state.matches("AUTH.CheckAuthentication"):
-      default:
-        return (
-          <BlurredLoader
-            isLoading
-            loadingMessage={
-              state.context.rpcMessage?.method === "eth_accounts" &&
-              "Requesting account..."
-            }
-          />
-        )
+    const sv = state.value as EmbedStateValue
 
-      case state.matches("AUTH.Authenticate"):
+    switch (true) {
+      case sv.AUTH === "Authenticate":
         return (
           <AuthenticationCoordinator
             isEmbed
@@ -41,7 +35,7 @@ export default function NFIDEmbedCoordinator() {
             }
           />
         )
-      case state.matches("HANDLE_PROCEDURE.AWAIT_PROCEDURE_APPROVAL"):
+      case sv.HANDLE_PROCEDURE === "AWAIT_PROCEDURE_APPROVAL":
         if (!state.context.rpcMessage) throw new Error("missing rpcMessage")
         if (!state.context.authSession) throw new Error("missing authSession")
 
@@ -74,12 +68,22 @@ export default function NFIDEmbedCoordinator() {
             onReject={() => send({ type: "CANCEL" })}
           />
         )
-      case state.matches("HANDLE_PROCEDURE.ERROR"):
+      case sv.HANDLE_PROCEDURE === "ERROR":
         return (
           <PageError
             error={state.context.error}
             onCancel={() => send({ type: "CANCEL_ERROR" })}
             onRetry={() => send({ type: "RETRY" })}
+          />
+        )
+      default:
+        return (
+          <BlurredLoader
+            isLoading
+            loadingMessage={
+              state.context.rpcMessage?.method === "eth_accounts" &&
+              "Requesting account..."
+            }
           />
         )
     }

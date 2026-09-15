@@ -1,3 +1,4 @@
+import { StorageMode } from "./enum/storage-mode"
 import { IdbKeyVal } from "./keyval/idb-keyval"
 import { MemoryKeyVal } from "./keyval/memory-keyval"
 import { idbService } from "./service/idb-service"
@@ -7,6 +8,10 @@ export interface IdbStoreOptions {
   dbName: string
   storeName: string
   dbVersion?: number
+  // Which persistence modes this store participates in. Defaults to both —
+  // a store restricted to [DISK] is never wiped by IdbService.deleteAll() and
+  // never migrated to memory by migrateAllToMemory().
+  persistenceType?: StorageMode[]
 }
 
 /**
@@ -26,8 +31,20 @@ export abstract class IdbStore {
   // the singleton so a store rebound to `MEMORY` and read back sees its data.
   #memory: MemoryKeyVal = MemoryKeyVal.create()
 
+  // Which persistence modes this store participates in. Private and read-only
+  // from the outside — set once at construction via IdbStoreOptions.
+  #persistenceType: StorageMode[]
+
   constructor(protected options: IdbStoreOptions) {
+    this.#persistenceType = options.persistenceType ?? [
+      StorageMode.DISK,
+      StorageMode.MEMORY,
+    ]
     idbService.register(options.dbName, options.storeName, this)
+  }
+
+  public get persistenceType(): StorageMode[] {
+    return this.#persistenceType
   }
 
   protected get storeKey(): string {

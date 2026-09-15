@@ -1,4 +1,4 @@
-import { Storage } from "@nfid/client-db"
+import { Storage, StorageMode } from "@nfid/client-db"
 
 const AUTH_DB_NAME = "authstate"
 const OBJECT_STORE_NAME = "ic-keyval"
@@ -22,4 +22,5 @@ export const authStorage = new Storage<StoredKey>({
 export const walletStorage = new Storage<StoredKey>({
   dbName: WALLET_DB_NAME,
   storeName: WALLET_STORE_NAME,
+  persistenceType: [StorageMode.DISK],
 })

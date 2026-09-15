@@ -14,10 +14,10 @@ export default function NFIDAuthCoordinator() {
   const navigate = useNavigate()
 
   React.useEffect(() => {
-    if (state.value === "End" && state.context?.authSession) {
+    if (state.matches("End")) {
       navigate(`${ProfileConstants.base}/${ProfileConstants.tokens}`)
     }
-  }, [navigate, state.context?.authSession, state.value])
+  }, [navigate, state])
 
   switch (true) {
     case state.matches("AuthenticationMachine"):

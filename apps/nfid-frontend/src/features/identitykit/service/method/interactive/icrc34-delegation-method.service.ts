@@ -181,6 +181,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
         icrc34Dto.maxTimeToLive
           ? Number(BigInt(icrc34Dto.maxTimeToLive) / BigInt(1000000))
           : undefined,
+        icrc34Dto.targets,
       )
       this.recordAnonymousVisit(
         chain,
@@ -198,6 +199,7 @@ class Icrc34DelegationMethodService extends InteractiveMethodService {
         icrc34Dto.maxTimeToLive
           ? Number(BigInt(icrc34Dto.maxTimeToLive) / BigInt(1000000))
           : undefined,
+        icrc34Dto.targets,
       )
       this.recordAnonymousVisit(
         chain,

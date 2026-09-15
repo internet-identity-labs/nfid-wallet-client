@@ -40,6 +40,48 @@
 > permanent no-op. The registered set (`getDbNames()`) is the sole wipe list; a
 > store that must be cleared on logout has to be a registered `Storage` /
 > `TtlStorage`.
+> Revision 7 — behaviour delta, `wallets` db exempted + 3 external dbs added to
+> the hard-logout wipe (see "## Revision 7" in the plan): every `IdbStore` gains
+> `persistenceType: StorageMode[]` — **no new enum**, it reuses the existing
+> `StorageMode` (`DISK` / `MEMORY`). It's a private field (`#persistenceType`)
+> set once in the `IdbStore` constructor from an optional `persistenceType?:
+StorageMode[]` on `IdbStoreOptions`, defaulting to
+> `[StorageMode.DISK, StorageMode.MEMORY]` when omitted, and exposed read-only
+> via a public `get persistenceType()` — external code can read it but not
+> reassign it. `walletStorage`
+> (`packages/integration/src/lib/authentication/storage.ts`, `dbName: "wallets"`)
+> is constructed with `persistenceType: [StorageMode.DISK]`.
+> `IdbService.deleteAll()` and `migrateAllToMemory()` both filter the registry to
+> entries whose `persistenceType` includes `StorageMode.MEMORY`; a store
+> that returns `[DISK]` only is never wiped (hard logout **or**
+> `doNotRememberMe()`) and never migrated to memory (stays disk-backed even in a
+> `MEMORY`-mode session). `rebindAllToDisk()` is unaffected (such a store was
+> never rebound off disk).
+> Separately, `IdbService` gains `deleteExternalDbs(): Promise<void>` — deletes 3
+> hardcoded **unregistered** third-party db names —
+> `WALLET_CONNECT_V2_INDEXED_DB`, `icp-sdk-ic0.app`, `icp-sdk-icp-api.io`
+> (WalletConnect SDK + `@icp-sdk` agent caches; never go through
+> `Storage`/`TtlStorage`, so they never register and can't carry a
+> `persistenceType`), reusing the same `#deleteSingleDb` timeout-raced
+> delete as `deleteAll()`. **The external list is not merged into `deleteAll()`**
+> — `deleteAll()` still only ever touches registry entries (now filtered by
+> persistence type, see above); the 3 external names live solely in
+> `deleteExternalDbs()`. `_clearAuthSessionFromCache(hard)` is the sole caller of
+> `deleteExternalDbs()`, called alongside its existing `idbService.deleteAll()`,
+> inside the same `if (hard)` block — so the 3 external dbs are wiped on hard
+> logout only; `doNotRememberMe()` (`remember-me.service.ts`) calls `deleteAll()`
+> only, unchanged, and never touches them. This reintroduces a narrow, explicit
+> exception to the Revision 4/6 "no origin sweep, no unregistered db" rule —
+> scoped to these 3 named databases only, not a general `indexedDB.databases()`
+> sweep.
+> **No new guard on the logout path itself** — `_clearAuthSessionFromCache(hard)`
+> (`packages/integration/src/lib/authentication/auth-state.ts:193-205`) already
+> only touches `localStorage` / calls `idbService.deleteAll()` inside `if (hard)`;
+> a soft logout (`hard === false` — idle timeout, account switch, 3rd-party
+> disconnect, `identitykit` coordinator) was already a no-op for every IndexedDB
+> database, wallets and the 3 external dbs included. Confirmed by reading the
+> current implementation; this revision documents the invariant, it does not
+> change it.
 > Created: 2026-09-08
 
 ## Overview
@@ -70,16 +112,25 @@ surface are out of scope.
 
 - **`packages/client-db/src/lib/storage/`** — SRP-split modules (one class per
   file, each with a matching `*.spec.ts`), grouped into subfolders:
-  - `enum/storage-mode.ts` — the enum (no spec)
+  - `enum/storage-mode.ts` — the enum (no spec); Revision 7 reuses it as the
+    return type of `persistenceType` — no new enum file
   - `state/storage-mode-state.ts` — `StorageModeState` / `storageModeState`
   - `service/idb-service.ts` — `IdbService` / `idbService` (store registry +
     two-phase migration + `deleteAll()` on-disk wipe; no constructor args; holds
     **no** in-memory backings; `deleteAll()` covers the registered databases only
-    — no `auth-client-db`, no origin sweep)
+    — no `auth-client-db`, no origin sweep — and, as of Revision 7, excludes any
+    store whose `persistenceType` does not include `StorageMode.MEMORY`;
+    `migrateAllToMemory()` excludes the same set. Also gains `deleteExternalDbs()`
+    — Revision 7, deletes the 3 hardcoded external db names, called only from
+    `_clearAuthSessionFromCache(hard)`)
   - `service/ttl-cache-service.ts` — `TtlCacheService` / `ttlCacheService`
   - `keyval/idb-keyval.ts` (+`close()`, +`.spec.ts`), `keyval/memory-keyval.ts`
   - root: `idb-store.ts` — `IdbStore` abstract base (no `MigratableStore`
-    interface), owns its own `#memory` `MemoryKeyVal`; `storage.ts`,
+    interface), owns its own `#memory` `MemoryKeyVal`; declares
+    a private `#persistenceType` field with public read-only
+    `get persistenceType(): StorageMode[]`, set once in the constructor from
+    the optional `persistenceType?: StorageMode[]` on `IdbStoreOptions`,
+    defaulting to `[StorageMode.DISK, StorageMode.MEMORY]`; `storage.ts`,
     `ttl-storage.ts` extend it; `remember-me-local-storage.ts` —
     `RememberMeLocalStorage` / `rememberMeLocalStorage`; `types.ts`, `index.ts`
 
@@ -94,6 +145,15 @@ surface are out of scope.
 - **`apps/nfid-frontend`** — 4 raw `localStorage` call sites moved onto the
   `rememberMeLocalStorage` facade (`anchor`, BTC address, ETH address,
   `emailIntervalId`).
+- **`packages/integration/src/lib/authentication/storage.ts`** — `walletStorage`
+  (`dbName: "wallets"`) constructed with `persistenceType: [StorageMode.DISK]`.
+  This is the only store pinned as of Revision 7;
+  every other registered `Storage` / `TtlStorage` (`authstate`, `profile-db`,
+  `domainkey-db`, `ic-explorer-db`, `ttl-db`, `notes-db`) keeps the default
+  `[StorageMode.DISK, StorageMode.MEMORY]` and is unaffected.
+- **`auth-state.ts`** `_clearAuthSessionFromCache(hard)` — Revision 7 adds one
+  call, `await idbService.deleteExternalDbs()`, alongside the existing
+  `await idbService.deleteAll()`, both inside `if (hard)`.
 - **Bootstrap** — storage always boots `DISK`. No startup resolver, no hook in
   `makeAuthState()`. Mode becomes `MEMORY` only via `doNotRememberMe()`; a hard
   logout reload re-creates the `storageModeState` singleton at its `DISK` default.
@@ -104,18 +164,18 @@ surface are out of scope.
 
 ## Naming
 
-| Concept                       | Name                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| module dir                    | `remember-me/`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| service singleton / interface | `rememberMeService` / `RememberMeService`                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| error class                   | `RememberMeError` (extends `Error`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| mode enum                     | `StorageMode` (`DISK` / `MEMORY`) — `enum/storage-mode.ts`, re-exported from `@nfid/client-db`                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| "remembered" signal           | presence of `anchor` in raw `localStorage` (no flag key)                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| mode state                    | `StorageModeState` → `storageModeState`: `get()` / `set(mode)` / `reset()`                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| idb service                   | `IdbService` → `idbService` (`service/idb-service.ts`, no constructor args): `register(dbName, storeName, store)` / `getDbNames()` / `migrateAllToMemory()` / `rebindAllToDisk()` / `clear()` (registrations; also resets each registered store's memory) / `clearMemory()` (resets each registered store's `MemoryKeyVal` only — for the logout spec) / `deleteAll()` (deletes the registered databases only — no `auth-client-db`, no origin sweep; reads `this.getDbNames()`). Holds no memory map of its own. |
-| store base                    | `IdbStore` abstract base (`IdbStoreOptions`): `storeKey`, constructor self-register, private `#memory` `MemoryKeyVal` (created on construction), `copyToMemory` / `commitToMemory` / `rebindToDisk`, `protected memoryStore()` (→ its own `#memory`), `clearMemory()` (swap in a fresh `#memory`) — `Storage` / `TtlStorage` extend it. **No `MigratableStore` interface** — the registry types its entries as `IdbStore` (imported type-only).                                                                   |
-| raw-key facade                | `RememberMeLocalStorage` → `rememberMeLocalStorage` (`remember-me-local-storage.ts`, storage root): `getItem` / `setItem` / `removeItem` / `clear()` / `moveToMemory(keys: string[])` (pull each key from `window.localStorage` into `#memory`, then raw `window.localStorage.removeItem` — mode-independent); private `#memory`                                                                                                                                                                                  |
-| ttl cache                     | `TtlCacheService` → `ttlCacheService` — `service/ttl-cache-service.ts`                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Concept                       | Name                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| module dir                    | `remember-me/`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| service singleton / interface | `rememberMeService` / `RememberMeService`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| error class                   | `RememberMeError` (extends `Error`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| mode enum                     | `StorageMode` (`DISK` / `MEMORY`) — `enum/storage-mode.ts`, re-exported from `@nfid/client-db`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| "remembered" signal           | presence of `anchor` in raw `localStorage` (no flag key)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| mode state                    | `StorageModeState` → `storageModeState`: `get()` / `set(mode)` / `reset()`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| idb service                   | `IdbService` → `idbService` (`service/idb-service.ts`, no constructor args): `register(dbName, storeName, store)` / `getDbNames()` / `migrateAllToMemory()` / `rebindAllToDisk()` / `clear()` (registrations; also resets each registered store's memory) / `clearMemory()` (resets each registered store's `MemoryKeyVal` only — for the logout spec) / `deleteAll()` (deletes the registered databases only — no `auth-client-db`, no origin sweep; reads `this.getDbNames()`) / `deleteExternalDbs()` (Revision 7 — deletes the 3 hardcoded unregistered db names; called only from `_clearAuthSessionFromCache(hard)`). Holds no memory map of its own. As of Revision 7, `deleteAll()` and `migrateAllToMemory()` both skip any registered entry whose `store.persistenceType` does not include `StorageMode.MEMORY` before computing their target set. |
+| store base                    | `IdbStore` abstract base (`IdbStoreOptions`): `storeKey`, constructor self-register, private `#memory` `MemoryKeyVal` (created on construction), `copyToMemory` / `commitToMemory` / `rebindToDisk`, `protected memoryStore()` (→ its own `#memory`), `clearMemory()` (swap in a fresh `#memory`) — `Storage` / `TtlStorage` extend it. **No `MigratableStore` interface** — the registry types its entries as `IdbStore` (imported type-only). private `#persistenceType` with public read-only `get persistenceType(): StorageMode[]` (Revision 7 — default `[StorageMode.DISK, StorageMode.MEMORY]`, set from optional `persistenceType?: StorageMode[]` on `IdbStoreOptions`; reuses the existing `StorageMode` enum, no new enum type).                                                                                                                 |
+| raw-key facade                | `RememberMeLocalStorage` → `rememberMeLocalStorage` (`remember-me-local-storage.ts`, storage root): `getItem` / `setItem` / `removeItem` / `clear()` / `moveToMemory(keys: string[])` (pull each key from `window.localStorage` into `#memory`, then raw `window.localStorage.removeItem` — mode-independent); private `#memory`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ttl cache                     | `TtlCacheService` → `ttlCacheService` — `service/ttl-cache-service.ts`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 
 ## Contract
 
@@ -189,19 +249,37 @@ class StorageModeState {
 // service/idb-service.ts — store registry + two-phase migration + on-disk wipe. No constructor args.
 class IdbService {
   register(dbName: string, storeName: string, store: IdbStore): void // deduped by `${dbName}:${storeName}`
-  getDbNames(): string[] // distinct
+  getDbNames(): string[] // distinct, ALL registered stores (persistence-agnostic — unfiltered)
   migrateAllToMemory(): Promise<void> // atomic: COPY phase (read every store's IDB rows into its
   // own #memory, nothing closed/rebound) then COMMIT phase
   // (close + rebind) only when EVERY copy succeeded.
   // Copy-phase failure REJECTS having rebound nothing.
+  // Revision 7: only touches entries whose persistenceType
+  // includes StorageMode.MEMORY — a [DISK]-only store is skipped
+  // entirely (never copied, never closed/rebound).
   rebindAllToDisk(): void // undo COMMIT: drop every store's bound instance; sync, never throws
   clear(): void // registrations; also resets each registered store's #memory
   clearMemory(): void // resets each registered store's #memory only —
   // auth-state.spec.ts keeps its registrations
-  deleteAll(): Promise<void> // delete the distinct registered dbNames (this.getDbNames(), 7) via
-  // deleteDB raced against a ~3s timeout. REJECTS if any registered db
-  // fails. No "auth-client-db" defensive delete, no indexedDB.databases() sweep.
+  deleteAll(): Promise<void> // delete the distinct dbNames of registered stores whose
+  // persistenceType includes StorageMode.MEMORY (Revision 7 —
+  // was unconditionally this.getDbNames(), 7 dbs; now excludes any
+  // [DISK]-only store, e.g. "wallets") via deleteDB raced against a
+  // ~3s timeout. REJECTS if any targeted db fails. No "auth-client-db"
+  // defensive delete, no indexedDB.databases() sweep.
   // Per-db delete + timeout are PRIVATE methods.
+  deleteExternalDbs(): Promise<void> // Revision 7 — delete a hardcoded list of 3
+  // unregistered third-party db names (WALLET_CONNECT_V2_INDEXED_DB,
+  // icp-sdk-ic0.app, icp-sdk-icp-api.io) via the same #deleteSingleDb
+  // timeout-raced delete. Independent of the registry. Called only
+  // from auth-state.ts _clearAuthSessionFromCache(hard), inside
+  // if (hard) — never from doNotRememberMe(). NEVER REJECTS: unlike
+  // deleteAll(), each of the 3 deletes is individually caught and
+  // console.error-logged — these are best-effort cache sweeps, not
+  // part of the atomic wipe, so a failure never blocks the rest of
+  // hard logout (deleteDB is a no-op/resolves if the db doesn't
+  // exist, so a db never created by this browser/session is not an
+  // error either).
 }
 
 // remember-me-local-storage.ts (storage root) — string facade for the raw identifying-key call sites; owns #memory
@@ -332,11 +410,39 @@ storage")`. The populated `MemoryKeyVal`s are inert while `DISK` and discarded
   built a fresh empty map each call. Fixed by routing every backing through the
   store's own cached `#memory`.
 - **Non-registered IndexedDB databases** — `deleteAll()` only touches the
-  registered `Storage` / `TtlStorage` databases (`getDbNames()`). Anything else on
-  the origin — including a stray `auth-client-db` from `@dfinity/auth-client`
-  default storage, which the NFID path never creates — is left alone; there is no
+  registered `Storage` / `TtlStorage` databases whose `persistenceType`
+  includes `StorageMode.MEMORY` (`getDbNames()` remains unfiltered — it's
+  `deleteAll()` and `migrateAllToMemory()` that filter). Anything else on the
+  origin — including a stray `auth-client-db` from `@dfinity/auth-client` default
+  storage, which the NFID path never creates — is left alone; there is no general
   `indexedDB.databases()` origin sweep. Any store that must be wiped on logout has
-  to be a registered `Storage` / `TtlStorage`.
+  to be a registered `Storage` / `TtlStorage` with the default persistence type.
+  **Revision 7 exception:** 3 specific unregistered db names
+  (`WALLET_CONNECT_V2_INDEXED_DB`, `icp-sdk-ic0.app`, `icp-sdk-icp-api.io`) are
+  wiped anyway, but only via the separate `deleteExternalDbs()` call from hard
+  logout — this is a hardcoded, named exception, not a reversal of "no origin
+  sweep."
+- **`wallets` db never deleted** — `walletStorage`'s `persistenceType`
+  returns `[StorageMode.DISK]` only, so `deleteAll()` skips it on both hard
+  logout and `doNotRememberMe()`, and `migrateAllToMemory()` never copies/rebinds
+  it — it stays on disk, readable, even during a `MEMORY`-mode session. Signing
+  out (any `hard` value) and back in with a different anchor/account therefore
+  does **not** clear stale wallet rows for the previous account from this db;
+  whatever currently reads `walletStorage` must already key its rows so a
+  different anchor/account doesn't collide with or leak another's data (this spec
+  does not audit that — flag it in the plan if it needs checking).
+- **Soft logout (`hard === false`) touches no IndexedDB at all** — confirmed,
+  unchanged by this revision: idle timeout, account switching, 3rd-party
+  disconnect, and the `identitykit` coordinator all call `logout(false)` /
+  `reset(false)`, none of which reach `idbService.deleteAll()` or
+  `deleteExternalDbs()` (`_clearAuthSessionFromCache` gates both behind
+  `if (hard)`). `wallets` and the 3 external dbs were already untouched here
+  before this revision, same as every other registered db.
+- **`deleteExternalDbs()` failure** — unlike `deleteAll()`, never rejects: each
+  of the 3 deletes is individually caught and `console.error`-logged inside
+  `deleteExternalDbs()` itself, so a single external-db failure never affects
+  the other two and never propagates to `_clearAuthSessionFromCache`'s
+  try/catch (that catch still exists for `deleteAll()`, unchanged).
 - **`anchor` write path** — `KEY_ANCHOR` is written in exactly one place
   (`authState.set(...)`, unconditional), which every sign-in funnels through, so
   `isRemembered()` is reliable. No auth-machine changes.

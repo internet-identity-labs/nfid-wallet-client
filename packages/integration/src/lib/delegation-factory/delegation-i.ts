@@ -189,12 +189,13 @@ export async function getAnonymousDelegation(
   sessionKey: Uint8Array,
   identity: DelegationIdentity,
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
+  targets?: string[],
 ): Promise<DelegationChain> {
   const userData = authState.getUserIdData()
   if (isCanisterDelegation(userData.anchor)) {
     return await getDelegationChainSignedByCanister(
       identity,
-      undefined,
+      targets,
       sessionKey,
       userData.anchor,
       domain,
@@ -206,6 +207,7 @@ export async function getAnonymousDelegation(
       sessionKey,
       identity,
       maxTimeToLive,
+      targets,
     )
   }
 }

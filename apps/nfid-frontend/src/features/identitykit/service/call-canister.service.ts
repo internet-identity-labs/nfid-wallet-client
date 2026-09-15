@@ -57,6 +57,7 @@ export interface CallCanisterRequest {
   canisterId: string
   calledMethodName: string
   parameters: string
+  nonce?: string
   agent: Agent
   useV4?: boolean
 }
@@ -77,6 +78,9 @@ class CallCanisterService {
         request.agent,
         new Uint8Array(Buffer.from(request.parameters, "base64")),
         request.useV4,
+        request.nonce
+          ? new Uint8Array(Buffer.from(request.nonce, "base64"))
+          : undefined,
       )
       const certificate: string = Buffer.from(response.certificate).toString(
         "base64",
@@ -100,6 +104,7 @@ class CallCanisterService {
     agent: Agent,
     arg: Uint8Array,
     useV4?: boolean,
+    nonce?: Uint8Array,
   ): Promise<{ certificate: Uint8Array; contentMap: CallRequest | undefined }> {
     const cid = Principal.from(canisterId)
 
@@ -111,6 +116,7 @@ class CallCanisterService {
       arg,
       effectiveCanisterId: cid,
       callSync: useV4 ?? false,
+      nonce,
     })
 
     let certificate: Certificate | undefined

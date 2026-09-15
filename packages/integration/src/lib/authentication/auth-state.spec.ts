@@ -53,6 +53,7 @@ beforeEach(() => {
   storageModeState.reset()
   idbService.clearMemory()
   rememberMeLocalStorage.clear()
+  deleteDbMock.mockClear()
   deleteDbMock.mockImplementation((...args: Parameters<typeof deleteDB>) =>
     jest.requireActual<typeof import("idb")>("idb").deleteDB(...args),
   )
@@ -63,10 +64,11 @@ afterEach(() => {
 })
 
 describe("_clearAuthSessionFromCache(hard) — logout IndexedDB wipe", () => {
-  it("should delete every registered database on a hard clear", async () => {
+  it("should delete every registered database except wallets on a hard clear", async () => {
     // Given every registered database exists on disk and the raw keys are set
     const registeredNames = await seedRegisteredDatabasesOnDisk()
     expect(registeredNames.length).toBeGreaterThan(0)
+    expect(registeredNames).toContain("wallets")
     window.localStorage.setItem(KEY_BTC_ADDRESS, "bc1xyz")
     window.localStorage.setItem(KEY_ETH_ADDRESS, "0xabc")
     window.localStorage.setItem(KEY_ANCHOR, "anchor-value")
@@ -74,16 +76,80 @@ describe("_clearAuthSessionFromCache(hard) — logout IndexedDB wipe", () => {
     // When a hard clear runs
     await getResetAuthState()(true)
 
-    // Then no registered database remains and the raw keys are gone
+    // Then every registered database except wallets is gone and the raw keys are gone
     const remaining = (await global.indexedDB.databases()).map(
       (entry) => entry.name,
     )
     for (const name of registeredNames) {
+      if (name === "wallets") continue
       expect(remaining).not.toContain(name)
     }
+    expect(remaining).toContain("wallets")
     expect(window.localStorage.getItem(KEY_BTC_ADDRESS)).toBeNull()
     expect(window.localStorage.getItem(KEY_ETH_ADDRESS)).toBeNull()
     expect(window.localStorage.getItem(KEY_ANCHOR)).toBeNull()
+  })
+
+  it("should delete the 3 external databases on a hard clear", async () => {
+    // Given the 3 external, unregistered databases exist on disk
+    const externalDbNames = [
+      "WALLET_CONNECT_V2_INDEXED_DB",
+      "icp-sdk-ic0.app",
+      "icp-sdk-icp-api.io",
+    ]
+    await Promise.all(
+      externalDbNames.map(async (name) => {
+        const database = await openDB(name, 1, {
+          upgrade(db) {
+            db.createObjectStore("seed-store")
+          },
+        })
+        database.close()
+      }),
+    )
+
+    // When a hard clear runs
+    await getResetAuthState()(true)
+
+    // Then none of the 3 external databases remain
+    const remaining = (await global.indexedDB.databases()).map(
+      (entry) => entry.name,
+    )
+    for (const name of externalDbNames) {
+      expect(remaining).not.toContain(name)
+    }
+  })
+
+  it("should touch no IndexedDB database on a soft clear", async () => {
+    // Given every registered database plus the 3 external databases exist on disk
+    const registeredNames = await seedRegisteredDatabasesOnDisk()
+    const externalDbNames = [
+      "WALLET_CONNECT_V2_INDEXED_DB",
+      "icp-sdk-ic0.app",
+      "icp-sdk-icp-api.io",
+    ]
+    await Promise.all(
+      externalDbNames.map(async (name) => {
+        const database = await openDB(name, 1, {
+          upgrade(db) {
+            db.createObjectStore("seed-store")
+          },
+        })
+        database.close()
+      }),
+    )
+
+    // When a soft clear runs
+    await getResetAuthState()(false)
+
+    // Then every database — registered and external — is untouched
+    const remaining = (await global.indexedDB.databases()).map(
+      (entry) => entry.name,
+    )
+    for (const name of [...registeredNames, ...externalDbNames]) {
+      expect(remaining).toContain(name)
+    }
+    expect(deleteDbMock).not.toHaveBeenCalled()
   })
 
   it("should still complete logout when the database wipe throws", async () => {

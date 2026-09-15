@@ -146,6 +146,26 @@ describe("idbService", () => {
     // Then the next read re-opens the untouched on-disk database
     expect(await store.get("key")).toBe("on-disk")
   })
+
+  it("should skip a [DISK]-only store during migrateAllToMemory", async () => {
+    // Given a [DISK]-only store seeded with a row
+    const diskOnlyStore = new Storage<string>({
+      dbName: "disk-only-migrate-db",
+      storeName: "disk-only-store",
+      persistenceType: [StorageMode.DISK],
+    })
+    await diskOnlyStore.set("key", "on-disk")
+    const copySpy = jest.spyOn(diskOnlyStore, "copyToMemory")
+    const commitSpy = jest.spyOn(diskOnlyStore, "commitToMemory")
+
+    // When migration runs
+    await idbService.migrateAllToMemory()
+
+    // Then the disk-only store was never copied or committed to memory
+    expect(copySpy).not.toHaveBeenCalled()
+    expect(commitSpy).not.toHaveBeenCalled()
+    expect(await diskOnlyStore.get("key")).toBe("on-disk")
+  })
 })
 
 describe("idbService.deleteAll", () => {
@@ -185,6 +205,71 @@ describe("idbService.deleteAll", () => {
     )
     expect(remaining).toContain("stray-db")
     expect(remaining).not.toContain("registered-db")
+  })
+
+  it("should leave a [DISK]-only store's database untouched", async () => {
+    // Given a default-persistence store and a [DISK]-only store
+    new Storage<string>({
+      dbName: "deletable-db",
+      storeName: "deletable-store",
+    })
+    new Storage<string>({
+      dbName: "disk-only-db",
+      storeName: "disk-only-store",
+      persistenceType: [StorageMode.DISK],
+    })
+
+    // When everything migratable is deleted
+    await idbService.deleteAll()
+
+    // Then deleteDB was called for the default store's db but not the disk-only one
+    const deletedNames = deleteDbMock.mock.calls.map((call) => call[0])
+    expect(deletedNames).toContain("deletable-db")
+    expect(deletedNames).not.toContain("disk-only-db")
+  })
+})
+
+describe("idbService.deleteExternalDbs", () => {
+  const externalDbNames = [
+    "WALLET_CONNECT_V2_INDEXED_DB",
+    "icp-sdk-ic0.app",
+    "icp-sdk-icp-api.io",
+  ]
+
+  it("should delete all 3 hardcoded external database names", async () => {
+    // Given all 3 external databases actually exist on disk
+    await Promise.all(
+      externalDbNames.map(async (name) => {
+        const database = await openDB(name, 1, {
+          upgrade(db) {
+            db.createObjectStore("store")
+          },
+        })
+        database.close()
+      }),
+    )
+
+    // When deleteExternalDbs runs
+    await idbService.deleteExternalDbs()
+
+    // Then none of the 3 databases remain
+    const remaining = (await global.indexedDB.databases()).map(
+      (entry) => entry.name,
+    )
+    for (const name of externalDbNames) {
+      expect(remaining).not.toContain(name)
+    }
+  })
+
+  it("should still resolve when one of the 3 deletes fails", async () => {
+    // Given every deleteDB call rejecting
+    const errorSpy = jest.spyOn(console, "error").mockImplementation(() => {})
+    deleteDbMock.mockRejectedValue(new Error("delete blocked past timeout"))
+
+    // When deleteExternalDbs runs
+    // Then it resolves instead of rejecting, and logs each failure
+    await expect(idbService.deleteExternalDbs()).resolves.toBeUndefined()
+    expect(errorSpy).toHaveBeenCalledTimes(externalDbNames.length)
   })
 })
 

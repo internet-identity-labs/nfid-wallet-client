@@ -1,3 +1,4 @@
+import { StorageMode } from "./enum/storage-mode"
 import { IdbKeyVal } from "./keyval/idb-keyval"
 import { MemoryKeyVal } from "./keyval/memory-keyval"
 import { idbService } from "./service/idb-service"
@@ -149,5 +150,31 @@ describe("IdbStore", () => {
 
     // Then the next request builds a new one
     expect(store.memory).not.toBe(before)
+  })
+
+  it("should default persistenceType to [DISK, MEMORY]", () => {
+    // When a store is constructed without a persistenceType option
+    const store = new FakeStore({
+      dbName: "persistence-default-db",
+      storeName: "persistence-default-store",
+    })
+
+    // Then it participates in both persistence modes
+    expect(store.persistenceType).toEqual([
+      StorageMode.DISK,
+      StorageMode.MEMORY,
+    ])
+  })
+
+  it("should use the constructor-supplied persistenceType instead of the base default", () => {
+    // When a store is constructed with an explicit persistenceType override
+    const store = new FakeStore({
+      dbName: "persistence-override-db",
+      storeName: "persistence-override-store",
+      persistenceType: [StorageMode.DISK],
+    })
+
+    // Then it reports only DISK
+    expect(store.persistenceType).toEqual([StorageMode.DISK])
   })
 })

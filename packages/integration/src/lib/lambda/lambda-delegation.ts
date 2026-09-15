@@ -31,6 +31,7 @@ export async function getAnonymousDelegationThroughLambda(
   sessionKey: Uint8Array,
   identity: DelegationIdentity,
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
+  targets?: string[],
 ) {
   const lambdaPublicKey = await fetchLambdaPublicKey(Chain.IC)
 
@@ -48,6 +49,7 @@ export async function getAnonymousDelegationThroughLambda(
     domain,
     sessionPublicKey: toHexString(sessionKey),
     delegationTtl: maxTimeToLive,
+    targets,
   }
   const signUrl = ic.isLocal ? `/ecdsa_get_anonymous` : AWS_ECDSA_GET_ANONYMOUS
   return await fetch(signUrl, {

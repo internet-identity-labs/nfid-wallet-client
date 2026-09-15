@@ -1,5 +1,6 @@
 import { deleteDB } from "idb"
 
+import { StorageMode } from "../enum/storage-mode"
 import type { IdbStore } from "../idb-store"
 
 interface RegisteredStore {
@@ -22,6 +23,15 @@ interface RegisteredStore {
 export class IdbService {
   readonly #deleteTimeoutMs = 3000
   #registry = new Map<string, RegisteredStore>()
+
+  // Third-party IndexedDB databases created outside Storage/TtlStorage
+  // (WalletConnect SDK, @icp-sdk agent caches) — never registered, so never
+  // touched by deleteAll(). Swept explicitly by deleteExternalDbs() instead.
+  readonly #externalDbNames = [
+    "WALLET_CONNECT_V2_INDEXED_DB",
+    "icp-sdk-ic0.app",
+    "icp-sdk-icp-api.io",
+  ]
 
   /**
    * Called by every `IdbStore` constructor. First write wins so duplicate
@@ -52,10 +62,10 @@ export class IdbService {
    *    throws.
    */
   async migrateAllToMemory(): Promise<void> {
-    for (const entry of this.#registry.values()) {
+    for (const entry of this.#getMemoryCapableStores()) {
       await entry.store.copyToMemory()
     }
-    for (const entry of this.#registry.values()) {
+    for (const entry of this.#getMemoryCapableStores()) {
       entry.store.commitToMemory()
     }
   }
@@ -90,12 +100,40 @@ export class IdbService {
   }
 
   /**
-   * Delete every registered IndexedDB database (`getDbNames()`), each raced
-   * against a ~3s timeout; rejects if any delete fails.
+   * Delete every registered IndexedDB database whose store is not pinned to
+   * `[DISK]` only (see `#getMemoryCapableStores()`), each raced against a ~3s timeout;
+   * rejects if any delete fails.
    */
   async deleteAll(): Promise<void> {
-    const registeredNames = this.getDbNames()
-    await Promise.all(registeredNames.map((name) => this.#deleteSingleDb(name)))
+    const names = new Set<string>()
+    for (const entry of this.#getMemoryCapableStores()) names.add(entry.dbName)
+    await Promise.all(
+      Array.from(names).map((name) => this.#deleteSingleDb(name)),
+    )
+  }
+
+  /**
+   * Delete the 3 hardcoded, unregistered third-party databases (see
+   * `#externalDbNames`), each raced against the same ~3s timeout as
+   * `deleteAll()`. Unlike `deleteAll()`, a single failure is caught and
+   * logged rather than rejecting — these are best-effort cache sweeps, not
+   * part of the atomic wipe, so logout proceeds regardless. Called only from
+   * a hard logout, alongside `deleteAll()` — never from `doNotRememberMe()`.
+   */
+  async deleteExternalDbs(): Promise<void> {
+    await Promise.all(
+      this.#externalDbNames.map((name) =>
+        this.#deleteSingleDb(name).catch((error) => {
+          console.error(`Failed to delete external db "${name}"`, error)
+        }),
+      ),
+    )
+  }
+
+  #getMemoryCapableStores(): RegisteredStore[] {
+    return Array.from(this.#registry.values()).filter((entry) =>
+      entry.store.persistenceType.includes(StorageMode.MEMORY),
+    )
   }
 
   #deleteSingleDb(name: string): Promise<void> {

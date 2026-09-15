@@ -118,6 +118,49 @@ describe("Lambda Sign/Register ECDSA", () => {
       )
     })
 
+    it("get anonymous IC keys scoped to targets", async function () {
+      // Given a legacy (lambda-issued) anonymous account and a set of requested targets
+      const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
+
+      const nfidSessionKey = Ed25519KeyIdentity.generate()
+      const chainRoot = await DelegationChain.create(
+        mockedIdentity,
+        nfidSessionKey.getPublicKey(),
+        new Date(Date.now() + 3_600_000 * 44),
+        {},
+      )
+      const nfidDelegationIdentity = DelegationIdentity.fromDelegation(
+        nfidSessionKey,
+        chainRoot,
+      )
+
+      const dappSessionKey = Ed25519KeyIdentity.generate()
+      const dappSessionPublicKey = new Uint8Array(
+        dappSessionKey.getPublicKey().toDer(),
+      )
+
+      await authState.set({
+        identity: nfidDelegationIdentity,
+        delegationIdentity: nfidDelegationIdentity,
+      })
+
+      const targets = ["74gpt-tiaaa-aaaak-aacaa-cai"]
+
+      // When requesting an anonymous delegation through the lambda flow with those targets
+      const delegationChain = await getAnonymousDelegation(
+        "nfid.one",
+        dappSessionPublicKey,
+        nfidDelegationIdentity,
+        undefined,
+        targets,
+      )
+
+      // Then the returned delegation is scoped to exactly the requested targets
+      const actualTargets = delegationChain.delegations[0].delegation.targets
+
+      expect(actualTargets?.map((t) => t.toText())).toEqual(targets)
+    })
+
     it("get third party global keys", async function () {
       const canisterId = "irshc-3aaaa-aaaam-absla-cai"
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)

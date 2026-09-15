@@ -152,7 +152,7 @@ and the tables in this upper half are kept for history.
 - [x] 4 frontend call sites → `rememberMeKeyVal`
 - [x] `security/index.tsx` dev panel repointed to the new API
 - [ ] **Manual smoke (dev server)** — for the engineer. `yarn nx serve
-  nfid-frontend`, sign in → `anchor` + IDBs present; call
+nfid-frontend`, sign in → `anchor` + IDBs present; call
       `rememberMeService.doNotRememberMe()` via the dev panel → IDBs gone, `anchor`
       gone, app still works; reload → logged out, `isRemembered() === false`.
 
@@ -324,7 +324,7 @@ Deleted: `memory-keyval-cache.ts` (+`.spec.ts`).
 
 - [x] `yarn nx lint client-db` — 0 errors, 17 warnings (= revision-2 baseline;
       all pre-existing `_db`-probe `no-floating-promises`). `yarn nx lint
-  integration` — passed, 0 errors. `yarn nx lint nfid-wallet-client` —
+integration` — passed, 0 errors. `yarn nx lint nfid-wallet-client` —
       "Successfully ran target lint", 0 errors.
 - [x] `yarn nx test client-db` — 6 suites / 25 tests green (revision 2 was 7
       suites / 25; `memory-keyval-cache.spec.ts` deleted, its 3 cases re-homed
@@ -790,3 +790,109 @@ is to register that store, not hardcode a magic name here.
 - No API surface change: `deleteAll()` keeps its signature and its
   reject-on-registered-failure contract.
 - `#deleteSingleDb` / `#deleteTimeoutMs` stay — still used for the registered set.
+
+# Revision 7
+
+> Status: CODE COMPLETE — 2026-09-14 (all implementation, test, lint, and
+> typecheck checkboxes done; manual dev-server smoke test deferred to the
+> engineer, same convention as revisions 1-5)
+> Spec: .claude/specs/remember-me.spec.md (Revision 7)
+> Created: 2026-09-14
+
+## Rationale
+
+Two changes requested by the engineer: (a) `walletStorage` (`dbName: "wallets"`)
+must survive every logout path — it's a registered store today, so
+`idbService.deleteAll()` wipes it indiscriminately on both hard logout and
+`doNotRememberMe()`; (b) three third-party IndexedDB databases visible in
+DevTools (`WALLET_CONNECT_V2_INDEXED_DB`, `icp-sdk-ic0.app`,
+`icp-sdk-icp-api.io`) are never created through `Storage`/`TtlStorage`, so they
+never register with `idbService` and are never touched by `deleteAll()` — the
+engineer wants these swept on hard logout too. Also re-confirmed (no code
+change needed, see spec Revision 7 note and the soft-logout test below): a soft
+logout (`hard === false`) already never calls `idbService.deleteAll()` at all —
+`_clearAuthSessionFromCache(hard)` gates it behind `if (hard)`.
+
+## Modified Files
+
+| File                                                             | Change                                                                                                                                                                                                                                               |
+| ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/client-db/src/lib/storage/idb-store.ts`                | Add `persistenceType?: StorageMode[]` to `IdbStoreOptions`; add a private `#persistenceType` field (default `[StorageMode.DISK, StorageMode.MEMORY]`, overridden from the option in the constructor) with a public read-only `get persistenceType()` |
+| `packages/client-db/src/lib/storage/service/idb-service.ts`      | `deleteAll()` and `migrateAllToMemory()` operate only on registry entries whose `persistenceType` includes `StorageMode.MEMORY`; add `deleteExternalDbs(): Promise<void>` + a private hardcoded 3-name array, reusing `#deleteSingleDb`              |
+| `packages/client-db/src/lib/storage/idb-store.spec.ts`           | Add coverage for `persistenceType` default + override                                                                                                                                                                                                |
+| `packages/client-db/src/lib/storage/service/idb-service.spec.ts` | Add coverage: `deleteAll()` skips a `[DISK]`-only store; `migrateAllToMemory()` skips the same; `deleteExternalDbs()` deletes its 3 names and still resolves (logging) when one delete fails                                                         |
+| `packages/integration/src/lib/authentication/storage.ts`         | `walletStorage` constructor gains `persistenceType: [StorageMode.DISK]`; import `StorageMode` from `@nfid/client-db`                                                                                                                                 |
+| `packages/integration/src/lib/authentication/auth-state.ts`      | `_clearAuthSessionFromCache(hard)` (lines 193-205): add `await idbService.deleteExternalDbs()` next to the existing `await idbService.deleteAll()`, inside the same `if (hard)` / `try` block                                                        |
+| `packages/integration/src/lib/authentication/auth-state.spec.ts` | Add coverage: hard logout calls `deleteExternalDbs()`; soft logout (`hard = false`) calls neither `deleteAll()` nor `deleteExternalDbs()`                                                                                                            |
+
+No new files — everything extends existing classes/methods per the spec's "no
+homeless functions" convention.
+
+## Implementation Checklist (revision 7)
+
+<!-- Execute EXACTLY ONE checkbox at a time using /execute-ui-plan -->
+
+### Store base — persistence type
+
+- [x] `idb-store.ts`: import `StorageMode` from `./enum/storage-mode`
+- [x] `idb-store.ts`: add `persistenceType?: StorageMode[]` to `IdbStoreOptions`; add private `#persistenceType` field (default `[StorageMode.DISK, StorageMode.MEMORY]`, set from the option in the constructor) with a public read-only `get persistenceType()`
+
+### IdbService — filtering
+
+- [x] `idb-service.ts`: add a private helper (e.g. `#getMemoryCapableStores(): RegisteredStore[]`) filtering `this.#registry.values()` to entries where `store.persistenceType.includes(StorageMode.MEMORY)`; import `StorageMode`
+- [x] `idb-service.ts`: `migrateAllToMemory()` iterates `#getMemoryCapableStores()` in both the copy and commit loops (was `this.#registry.values()`)
+- [x] `idb-service.ts`: `deleteAll()` computes its target dbName set from `#getMemoryCapableStores()` (distinct dbNames) — `getDbNames()` itself stays unfiltered, per the spec's Naming table
+
+### IdbService — external db cleanup
+
+- [x] `idb-service.ts`: add a private readonly array of the 3 external db names (`WALLET_CONNECT_V2_INDEXED_DB`, `icp-sdk-ic0.app`, `icp-sdk-icp-api.io`)
+- [x] `idb-service.ts`: add `deleteExternalDbs(): Promise<void>` — `Promise.all` over the 3 names via the existing `#deleteSingleDb`, each wrapped in its own `.catch()` that `console.error`-logs and swallows — never rejects, unlike `deleteAll()`
+
+### wallets db — pin to disk
+
+- [x] `packages/integration/src/lib/authentication/storage.ts`: import `StorageMode` from `@nfid/client-db`; add `persistenceType: [StorageMode.DISK]` to the `walletStorage` constructor call
+
+### auth-state.ts — hard logout wiring
+
+- [x] `auth-state.ts` `_clearAuthSessionFromCache(hard)`: add `await idbService.deleteExternalDbs()` next to the existing `await idbService.deleteAll()`, inside the same `if (hard)` / `try` block (one catch covers both — a failure in either logs `"idb wipe on logout failed"` and doesn't block the rest of hard logout)
+
+### Tests
+
+- [x] `idb-store.spec.ts`: `persistenceType` defaults to `[DISK, MEMORY]` on the base `IdbStore`
+- [x] `idb-store.spec.ts`: a subclass overriding `persistenceType` returns its own array instead of the base default
+- [x] `idb-service.spec.ts`: `deleteAll()` deletes a default-persistence store's db but leaves a `[DISK]`-only store's db in place
+- [x] `idb-service.spec.ts`: `migrateAllToMemory()` skips a `[DISK]`-only store — stays bound to `DISK` (`initializedStore` untouched), data never copied into `#memory`
+- [x] `idb-service.spec.ts`: `deleteExternalDbs()` deletes all 3 hardcoded external names (seed each via `openDB` first, assert absence after)
+- [x] `idb-service.spec.ts`: `deleteExternalDbs()` still resolves and logs (not rejects) when one of the 3 deletes fails/times out
+- [x] `auth-state.spec.ts`: hard logout (`_clearAuthSessionFromCache(true)` / `reset(true)` / `logout()`) calls both `idbService.deleteAll()` and `idbService.deleteExternalDbs()`
+- [x] `auth-state.spec.ts`: soft logout (`hard = false`) calls neither `idbService.deleteAll()` nor `idbService.deleteExternalDbs()` — makes the spec's Edge Case invariant an executable test, not just a reading of the code
+
+### Verification (revision 7)
+
+- [x] `yarn nx lint client-db` — zero new errors
+- [x] `yarn nx lint integration` — zero new errors
+- [x] `yarn nx test client-db` — all passing (35/35)
+- [x] `yarn nx test integration` — all passing except 5 pre-existing unrelated failures in `verification-email/verification.service.spec.ts` (jose/jsonwebtoken lib compatibility issue, untouched by this revision); `auth-state.spec.ts` 4/4 passing
+- [x] `tsc --noEmit -p apps/nfid-frontend/tsconfig.json` — zero errors in any file touched by this revision (one pre-existing, unrelated error in `apps/marketing/landing-page/ui/visible-animation.tsx`, a `lottie-react` import issue)
+- [ ] Manual smoke test in dev server — sign in, open DevTools → Application → IndexedDB, hard-log-out, confirm `wallets` still present and every other registered db + the 3 external dbs (if present) are gone; for the engineer.
+
+## Risks & Notes (revision 7)
+
+- **Shared dbName edge case (theoretical, not applicable today):** if a future
+  `dbName` were ever registered by both a `[DISK]`-only store and a default
+  store, `deleteAll()`'s distinct-name computation (from `#getMemoryCapableStores()` only)
+  would leave that db entirely undeleted, silently keeping the default store's
+  data too. Not an issue today — `wallets` is the only pinned store and its
+  `dbName` is unique. Worth a one-line comment in `idb-service.ts`.
+- **`deleteExternalDbs()` names never existing** — `deleteDB` on a nonexistent
+  database resolves normally, so a browser/session that never created
+  WalletConnect or ICP SDK caches sees no error; no special-casing needed.
+- **Stale wallet data across accounts** — `walletStorage` now survives every
+  logout path. Its existing key scheme (`user_profile_data_<principal>` etc.,
+  keyed by principal per `auth-state.ts` `set()`) appears to already avoid
+  cross-account collisions on the same browser, but this revision does not add
+  a task to formally audit that — flag to the engineer to confirm before
+  shipping, since `wallets` is now the one store that outlives every logout.
+- **No behaviour change to `doNotRememberMe()`'s public contract or error
+  messages** — only its internal `deleteAll()`/`migrateAllToMemory()` now
+  operate on a filtered set; the `RememberMeService` interface is untouched.

@@ -2763,12 +2763,12 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/retry/-/retry-0.4.3.tgz#c2b9d2e374ee62c586d3adbea87199b1d7a7a6ba"
   integrity sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==
 
-"@icp-sdk/auth@7.1.0":
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/@icp-sdk/auth/-/auth-7.1.0.tgz#17a3fbcfd4e970730e1a718437d6ec9e5bd51821"
-  integrity sha512-WpJiSN6E90kQlpumA835O8GO4A397tbkbikeJayumpO8BqePuwcXRvuV/Lc8pStmNbFmrBacDrWbHCRhKOzg1g==
+"@icp-sdk/auth@8.0.3":
+  version "8.0.3"
+  resolved "https://registry.yarnpkg.com/@icp-sdk/auth/-/auth-8.0.3.tgz#04d6db6be3bb83f305d251531544d095b3c007ec"
+  integrity sha512-HXndLoKt22+KTBye6l9wblMSqArhAALnPWfR8Zqv9h8UNLSznjtXYMDbQT4A0qd5xa5hEMfg1TCu5iQkMxyW1w==
   dependencies:
-    "@icp-sdk/signer" "^5.4.0"
+    "@icp-sdk/signer" "^5.6.2"
     idb "^7.1.1"
 
 "@icp-sdk/canisters@3.6.0":
@@ -2793,10 +2793,10 @@
     "@scure/bip39" "^1.6.0"
     asn1js "^3.0.7"
 
-"@icp-sdk/signer@^5.4.0":
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/@icp-sdk/signer/-/signer-5.4.0.tgz#5be60bf23ecafbdcab9868fb9828432e2c6a6e5b"
-  integrity sha512-l7HKJ02ZszAWvBV0dSW7uNVNVwsVAlWp9zMirHk/wrtQpglMDSxh1kcXiha5R5YkIooy/d5Pt8QKHDPG4Orj6A==
+"@icp-sdk/signer@^5.6.2":
+  version "5.6.3"
+  resolved "https://registry.yarnpkg.com/@icp-sdk/signer/-/signer-5.6.3.tgz#96f9f604140c4a2e24d0797c2d2221b512a558c4"
+  integrity sha512-wkQJ+MFBIdhCMXKc3NYAgiCSSqB3Gh9UnuzoP9DisPA6gMQ1mTXG9cO5eyEdfJyR08xTx9AsK7MEOBhxwd41YA==
 
 "@inquirer/checkbox@^4.2.2":
   version "4.2.2"

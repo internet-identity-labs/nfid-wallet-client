@@ -29,10 +29,13 @@ export const TransferModalCoordinator = () => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
   const [successMessage, setSuccessMessage] = useState<string | undefined>()
   const globalServices = useContext(ProfileContext)
-  const state = useSelector(globalServices.transferService, (s) => s)
   const { transferService } = globalServices
-  const send = (event: Parameters<typeof transferService.send>[0]) =>
-    transferService.send(event)
+  const state = useSelector(transferService, (s) => s)
+  const send = useCallback(
+    (event: Parameters<typeof transferService.send>[0]) =>
+      transferService.send(event),
+    [transferService],
+  )
   const [hasSwapError, setHasSwapError] = useState(false)
   const [hasBtcError, setHasBtcError] = useState(false)
   const [hasBridgeError, setHasBridgeError] = useState(false)

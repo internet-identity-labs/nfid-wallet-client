@@ -7,7 +7,7 @@ describe("transferMachine", () => {
     expect(transferMachine).toBeDefined()
 
     // Static check: initial state
-    expect(transferMachine.initialState.value).toBe("Hidden")
+    expect(createActor(transferMachine).getSnapshot().value).toBe("Hidden")
 
     const service = createActor(transferMachine).start()
     expect(service.getSnapshot().value).toBe("Hidden")

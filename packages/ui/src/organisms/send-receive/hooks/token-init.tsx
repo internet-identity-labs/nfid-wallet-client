@@ -50,7 +50,7 @@ export const useTokensInit = (
     [tokens, testnetEnabled, arbitrumEnabled, baseEnabled, polygonEnabled],
   )
 
-  const state = useSelector(transferService, (s) => s)
+  const isModalHidden = useSelector(transferService, (s) => s.matches("Hidden"))
 
   const addressesReady =
     isViewOnlyMode ||
@@ -99,8 +99,7 @@ export const useTokensInit = (
       revalidateOnFocus: false,
       revalidateOnMount: true,
       revalidateIfStale: false,
-      refreshInterval:
-        state.value !== "Hidden" ? undefined : TOKENS_REFRESH_INTERVAL,
+      refreshInterval: isModalHidden ? TOKENS_REFRESH_INTERVAL : undefined,
       keepPreviousData: true,
       onSuccess: () => {
         mutateData(

@@ -16,6 +16,8 @@ updates:
       dependencies:
         patterns:
           - "*"
+    ignore:
+      - dependency-name: "lint-staged"
 
   # This section configures Dependabot to update GitHub Actions dependencies.
   - package-ecosystem: "github-actions"

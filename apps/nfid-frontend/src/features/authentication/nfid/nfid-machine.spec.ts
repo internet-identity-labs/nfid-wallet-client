@@ -7,7 +7,9 @@ describe("NFIDAuthMachine", () => {
     expect(NFIDAuthMachine).toBeDefined()
 
     // Static check: initial state
-    expect(NFIDAuthMachine.initialState.value).toBe("AuthenticationMachine")
+    expect(createActor(NFIDAuthMachine).getSnapshot().value).toBe(
+      "AuthenticationMachine",
+    )
 
     const service = createActor(NFIDAuthMachine).start()
     expect(service.getSnapshot().value).toBe("AuthenticationMachine")

@@ -8,6 +8,13 @@ if (typeof globalThis.structuredClone === "undefined") {
   globalThis.structuredClone = <T>(val: T): T => JSON.parse(JSON.stringify(val))
 }
 
+// @simplewebauthn/server v14 reads globalThis.SubtleCrypto at module init time; not exposed in jest env
+if (typeof (globalThis as any).SubtleCrypto === "undefined") {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (globalThis as any).SubtleCrypto =
+    (globalThis as any).crypto?.subtle?.constructor ?? {}
+}
+
 import "@testing-library/jest-dom"
 import "fake-indexeddb/auto"
 import { TextEncoder, TextDecoder } from "util"

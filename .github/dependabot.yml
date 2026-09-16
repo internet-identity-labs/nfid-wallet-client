@@ -16,6 +16,11 @@ updates:
       dependencies:
         patterns:
           - "*"
+    ignore:
+      - dependency-name: "lint-staged"
+      - dependency-name: "typescript"
+      - dependency-name: "@icp-sdk/core"
+      - dependency-name: "webpack-dev-server"
 
   # This section configures Dependabot to update GitHub Actions dependencies.
   - package-ecosystem: "github-actions"

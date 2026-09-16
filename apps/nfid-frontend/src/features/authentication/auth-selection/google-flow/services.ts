@@ -12,6 +12,7 @@ import {
   Icon,
   im,
   Profile,
+  RegistrationDisabledError,
   replaceActorIdentity,
 } from "@nfid/integration"
 
@@ -36,6 +37,7 @@ export const signWithGoogleService = async (
     identity = result.identity
   } catch (e: any) {
     console.error(e)
+    if (e instanceof RegistrationDisabledError) throw e
     throw new Error(e.message)
   }
 

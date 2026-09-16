@@ -1,4 +1,4 @@
-import { ActorRefFrom, assign, createMachine } from "xstate"
+import { actions, ActorRefFrom, assign, createMachine } from "xstate"
 
 import { GoogleAuthSession } from "frontend/state/authentication"
 import { AuthWithGoogleResult } from "../../auth-types"
@@ -38,6 +38,10 @@ const AuthWithGoogleMachineConfig = {
           target: "End",
           actions: "assignAuthSession",
         },
+        onError: {
+          target: "End",
+          actions: "escalateError",
+        },
       },
     },
     End: {
@@ -61,6 +65,9 @@ const AuthWithGoogleMachineOptions: Parameters<
         return event.data
       },
     }),
+    escalateError: actions.escalate(
+      (_: AuthWithGoogleMachineContext, event: any) => event.data,
+    ),
   },
   services: {
     signWithGoogleService,

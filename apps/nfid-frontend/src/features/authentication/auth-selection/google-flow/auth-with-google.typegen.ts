@@ -25,6 +25,7 @@ export interface Typegen0 {
   }
   eventsCausingActions: {
     assignAuthSession: "done.invoke.signWithGoogleService"
+    escalateError: "error.platform.signWithGoogleService"
   }
   eventsCausingDelays: {}
   eventsCausingGuards: {}

@@ -16,6 +16,8 @@ declare const AWS_PASSKEY: string
 declare const AWS_PUBLIC_KEY: string
 declare const AWS_SYMMETRIC: string
 declare const IC_SIGNER_CANISTER_ID: string
+/** Legacy (anchor < 200M) delegation signer; empty means the AWS lambda is used. */
+declare const ECDSA_STORAGE_CANISTER_ID: string
 declare const CHAIN_NETWORK: string
 declare const CYCLES_MINTER_CANISTER_ID: string
 declare const ECDSA_SIGNER_CANISTER_ID: string

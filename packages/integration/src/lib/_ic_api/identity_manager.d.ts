@@ -267,6 +267,11 @@ export interface ValidatePhoneRequest {
   principal_id: string
 }
 export type WalletVariant = { II: null } | { NFID: null }
+export interface CertifiedResponse {
+  response: string
+  certificate: Uint8Array | number[]
+  witness: Uint8Array | number[]
+}
 export interface _SERVICE {
   add_all_accounts_json: ActorMethod<[string], undefined>
   anchors: ActorMethod<[], HTTPAnchorsResponse>
@@ -338,6 +343,7 @@ export interface _SERVICE {
   validate_signature: ActorMethod<[[] | [string]], [bigint, [] | [string]]>
   verify_token: ActorMethod<[Token], Response>
   get_root_by_principal: ActorMethod<[string], [] | [string]>
+  get_root_certified: ActorMethod<[], CertifiedResponse>
   add_email_and_principal_for_create_account_validation: ActorMethod<
     [string, string, number],
     BoolHttpResponse

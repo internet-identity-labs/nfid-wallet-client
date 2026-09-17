@@ -1,4 +1,7 @@
+import toaster from "packages/ui/src/atoms/toast"
 import { ActorRefFrom, assign, createMachine } from "xstate"
+
+import { RegistrationDisabledError } from "@nfid/integration"
 
 // Orchestrates top-level authentication flows (email, Google, II, other)
 // and post-auth onboarding steps (2FA, passkeys, recovery prompts).
@@ -213,6 +216,10 @@ const authenticationMachineConfig = {
             target: "AuthSelection",
           },
         ],
+        onError: {
+          target: "End",
+          actions: "toastRegistrationDisabled",
+        },
       },
     },
     SignUpWithGoogle: {
@@ -236,6 +243,10 @@ const authenticationMachineConfig = {
             target: "AuthSelectionSignUp",
           },
         ],
+        onError: {
+          target: "End",
+          actions: "toastRegistrationDisabled",
+        },
       },
     },
     AuthWithII: {
@@ -441,6 +452,18 @@ const authenticationMachineOptions: Parameters<
     },
   },
   actions: {
+    toastRegistrationDisabled: (
+      _context: AuthenticationContext,
+      event: any,
+    ) => {
+      if (event.data instanceof RegistrationDisabledError) {
+        toaster.info(
+          "Creating new accounts via email or Google is no longer supported as NFID transitions to full decentralization. Please use a passkey or web3 sign-in method instead.",
+          undefined,
+          "Email Signup Deprecated",
+        )
+      }
+    },
     setShouldCheckRecoveryEvery8th: assign<AuthenticationContext, Events, any>(
       () => {
         return {

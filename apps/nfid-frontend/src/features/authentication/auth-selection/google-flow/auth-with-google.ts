@@ -41,6 +41,9 @@ const AuthWithGoogleMachine = setup({
           target: "End",
           actions: "assignAuthSession",
         },
+        onError: {
+          target: "CheckWallets",
+        },
       },
     },
     End: {

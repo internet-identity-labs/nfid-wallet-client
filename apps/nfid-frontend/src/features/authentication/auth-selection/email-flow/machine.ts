@@ -6,7 +6,7 @@ import {
 import toaster from "packages/ui/src/atoms/toast"
 import { setup, fromPromise, assign, sendParent, ActorRefFrom } from "xstate"
 
-import { KeyPair } from "@nfid/integration"
+import { KeyPair, RegistrationDisabledError } from "@nfid/integration"
 
 import { AuthSession } from "frontend/state/authentication"
 
@@ -70,6 +70,14 @@ const AuthWithEmailMachine = setup({
       delegation: event.output.delegation,
     })),
     toastError: ({ event }: { event: any }) => {
+      if (event.error instanceof RegistrationDisabledError) {
+        toaster.info(
+          "Creating new accounts via email or Google is no longer supported as NFID transitions to full decentralization. Please use a passkey or web3 sign-in method instead.",
+          undefined,
+          "Email Signup Deprecated",
+        )
+        return
+      }
       try {
         const message = JSON.parse((event.error as Error).message)
         toaster.error(message.error)

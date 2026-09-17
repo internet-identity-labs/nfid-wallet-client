@@ -233,6 +233,7 @@ export const IdentityKitRPCMachine = setup({
             Authenticate: {
               invoke: {
                 src: "AuthenticationMachine",
+                id: "AuthenticationMachine",
                 input: ({
                   context,
                 }: {

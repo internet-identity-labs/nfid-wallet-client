@@ -36,7 +36,7 @@ export const SectionTemplate: React.FC<SectionTemplateProps> = ({
   return (
     <div
       className={clsx(
-        "grid grid-cols-1 md:grid-cols-[3fr,2fr] w-full group min-h-[400px]",
+        "grid grid-cols-1 md:grid-cols-[3fr_2fr] w-full group min-h-[400px]",
         "gap-6",
       )}
       id={id}

@@ -24,17 +24,13 @@ export default function NFIDEmbedCoordinator() {
     const sv = state.value as EmbedStateValue
 
     switch (true) {
-      case sv.AUTH === "Authenticate":
-        return (
-          <AuthenticationCoordinator
-            isEmbed
-            actor={
-              state.children[
-                "NFIDEmbedMachine.AUTH.Authenticate:invocation[0]"
-              ] as AuthenticationMachineActor
-            }
-          />
-        )
+      case sv.AUTH === "Authenticate": {
+        const childActor = state.children["AuthenticationMachine"] as
+          | AuthenticationMachineActor
+          | undefined
+        if (!childActor) return <BlurredLoader isLoading />
+        return <AuthenticationCoordinator isEmbed actor={childActor} />
+      }
       case sv.HANDLE_PROCEDURE === "AWAIT_PROCEDURE_APPROVAL":
         if (!state.context.rpcMessage) throw new Error("missing rpcMessage")
         if (!state.context.authSession) throw new Error("missing authSession")

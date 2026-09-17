@@ -119,7 +119,7 @@ export const NFIDEmbedMachine = setup({
   },
   guards: {
     hasProcedure: ({ context }: { context: NFIDEmbedMachineContext }) =>
-      !!context.rpcMessage,
+      !!context.rpcMessage && !!context.authSession,
     isReady: ({ context }: { context: NFIDEmbedMachineContext }) =>
       !context.rpcMessage,
     isAutoApprovable: ({ context }: { context: NFIDEmbedMachineContext }) => {
@@ -175,7 +175,6 @@ export const NFIDEmbedMachine = setup({
       }),
     ),
     assignAuthSession: assign(({ event }: { event: any }) => {
-      console.debug("assignAuthSession", { event })
       return { authSession: event.output?.authSession }
     }),
     queueRequest: assign(
@@ -261,6 +260,7 @@ export const NFIDEmbedMachine = setup({
         Authenticate: {
           invoke: {
             src: "AuthenticationMachine",
+            id: "AuthenticationMachine",
             input: ({ context }: { context: NFIDEmbedMachineContext }) =>
               context,
             onDone: [

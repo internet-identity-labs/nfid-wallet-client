@@ -94,7 +94,7 @@ const CallCanisterLedgerTransfer = (props: CallCanisterLedgerTransferProps) => {
       </div>
       <div
         className={clsx(
-          "grid grid-cols-[22px,1fr] gap-2.5 text-sm rounded-xl",
+          "grid grid-cols-[22px_1fr] gap-2.5 text-sm rounded-xl",
           "bg-orange-50 dark:bg-orange-500/10 p-[15px] mt-4 text-orange-900 dark:text-amber-600",
           consentMessage?.length && "hidden",
         )}

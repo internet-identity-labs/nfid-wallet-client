@@ -162,6 +162,23 @@ export default composePlugins(withNx(), withReact(), withSvgr(), (config) => {
   config.resolve.alias = {
     ...config.resolve.alias,
     "frontend/hooks": path.resolve(__dirname, "src/stubs/frontend-hooks.ts"),
+    // @nfid/embed has unmet @dfinity/* peer deps — map them to @icp-sdk/* equivalents
+    "@dfinity/agent": path.resolve(
+      __dirname,
+      "../../node_modules/@icp-sdk/core/lib/cjs/agent/index.js",
+    ),
+    "@dfinity/identity": path.resolve(
+      __dirname,
+      "../../node_modules/@icp-sdk/core/lib/cjs/identity/index.js",
+    ),
+    "@dfinity/principal": path.resolve(
+      __dirname,
+      "../../node_modules/@icp-sdk/core/lib/cjs/principal/index.js",
+    ),
+    "@dfinity/auth-client": path.resolve(
+      __dirname,
+      "../../node_modules/@icp-sdk/auth/dist/esm/client/index.js",
+    ),
   }
   config.resolve.plugins = config.resolve.plugins || []
   config.resolve.plugins.push(

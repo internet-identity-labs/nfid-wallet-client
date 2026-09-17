@@ -31,7 +31,7 @@
             "output": "."
           }
         ],
-        "styles": ["apps/nfid-demo/src/index.scss"],
+        "styles": ["apps/nfid-demo/src/index.css"],
         "optimization": false,
         "sourceMap": true,
         "skipTypeChecking": true

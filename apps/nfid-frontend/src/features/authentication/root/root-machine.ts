@@ -48,6 +48,7 @@ const AuthenticationMachine = setup({
   types: {} as {
     context: AuthenticationContext
     input: Partial<AuthenticationContext>
+    output: { authSession: AbstractAuthSession | undefined }
   },
   actors: {
     getAllWalletsFromThisDevice: fromPromise(async () =>
@@ -139,6 +140,9 @@ const AuthenticationMachine = setup({
   context: ({ input }) => ({
     wallets: [],
     ...input,
+  }),
+  output: ({ context }: { context: AuthenticationContext }) => ({
+    authSession: context.authSession,
   }),
   initial: "CheckWallets",
   states: {
@@ -477,7 +481,6 @@ const AuthenticationMachine = setup({
     },
     End: {
       type: "final" as const,
-      output: ({ context }) => ({ ...context }),
     },
   },
 })

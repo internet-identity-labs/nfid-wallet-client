@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { FC, memo, useState } from "react"
 
@@ -61,7 +62,7 @@ export const PrivateAccountDetails: FC<PrivateAccounDetailstProps> = memo(
           <div
             className={clsx(
               "grid gap-[30px] max-w-[100vw] mb-[20px] sm:mb-[30px]",
-              "grid-cols-1 lg:grid-cols-[auto,1fr]",
+              "grid-cols-1 lg:grid-cols-[auto_1fr]",
             )}
           >
             <div

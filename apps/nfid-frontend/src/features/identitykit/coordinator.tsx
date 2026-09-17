@@ -64,7 +64,7 @@ export default function IdentityKitRPCCoordinator() {
             isIdentityKit
             actor={
               state.children[
-                "IdentityKitRPCMachine.Main.Authentication.Authenticate:invocation[0]"
+                "AuthenticationMachine"
               ] as AuthenticationMachineActor
             }
             loader={

@@ -13,7 +13,7 @@ export const renderArgs = (args: unknown) => {
   if (args instanceof Object) {
     return Object.entries(args as { [key: string]: unknown }).map(
       ([key, value]) => (
-        <div key={`argument_${key}`} className="grid grid-cols-[180px,1fr]">
+        <div key={`argument_${key}`} className="grid grid-cols-[180px_1fr]">
           <div className="ml-3">{key}</div>
           <div className="">
             {JSON.stringify(
@@ -80,11 +80,11 @@ export const CallCanisterDetails = ({
               "text-gray-500 dark:text-zinc-500 break-all text-sm mt-5",
             )}
           >
-            <div className="grid grid-cols-[180px,1fr]">
+            <div className="grid grid-cols-[180px_1fr]">
               <div className="font-bold">Canister ID</div>
               <div>{canisterId}</div>
             </div>
-            <div className="grid grid-cols-[180px,1fr]">
+            <div className="grid grid-cols-[180px_1fr]">
               <div className="font-bold">Sender</div>
               <div>{sender}</div>
             </div>

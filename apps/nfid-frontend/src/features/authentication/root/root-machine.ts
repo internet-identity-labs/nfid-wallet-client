@@ -88,7 +88,6 @@ const AuthenticationMachine = setup({
     needsPasskey: ({ event }: { event: any }) =>
       event.output?.steps[0] === RecoveryProvisioningMode.PASSKEY,
     needsRecoveryPhrase: ({ event }: { event: any }) => {
-      console.log("needsRecoveryPhrase", event.output)
       return event.output?.steps[0] === RecoveryProvisioningMode.RECOVERY_PHRASE
     },
   },

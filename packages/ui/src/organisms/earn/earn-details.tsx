@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { FC, useCallback, useContext } from "react"
 
@@ -72,7 +73,7 @@ export const EarnDetails: FC<EarnDetailsProps> = ({
         titleClassName="dark:text-white mt-4"
         title="Earning details"
       >
-        <div className="grid grid-cols-[110px,1fr] text-sm items-center h-[54px]">
+        <div className="grid grid-cols-[110px_1fr] text-sm items-center h-[54px]">
           <div className="flex items-center gap-1">
             <p className="text-gray-400 dark:text-zinc-500">Supplied</p>
           </div>
@@ -84,7 +85,7 @@ export const EarnDetails: FC<EarnDetailsProps> = ({
           </div>
         </div>
         <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
-        <div className="grid grid-cols-[110px,1fr] text-sm items-center h-[54px]">
+        <div className="grid grid-cols-[110px_1fr] text-sm items-center h-[54px]">
           <div className="flex items-center gap-1">
             <p className="text-gray-400 dark:text-zinc-500">APY</p>
           </div>

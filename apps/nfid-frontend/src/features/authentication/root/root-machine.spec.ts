@@ -1,13 +1,13 @@
-import { interpret } from "xstate"
+import { createActor } from "xstate"
 
 import AuthenticationMachine from "./root-machine"
 
 describe("AuthenticationMachine", () => {
-  it("should be defined and start in AuthSelection", () => {
+  it("should be defined and start in CheckWallets", () => {
     expect(AuthenticationMachine).toBeDefined()
 
-    const service = interpret(AuthenticationMachine).start()
-    expect(service.getSnapshot().value).toBe("AuthSelection")
+    const service = createActor(AuthenticationMachine).start()
+    expect(service.getSnapshot().value).toBe("CheckWallets")
     service.stop()
   })
 })

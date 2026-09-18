@@ -1,16 +1,96 @@
-import { ActorRefFrom, assign, createMachine } from "xstate"
+import { setup, assign, ActorRefFrom } from "xstate"
 
-import { Events, Services, TransferMachineContext } from "./types"
+import { Events, TransferMachineContext } from "./types"
 
-const transferMachineConfig = {
-  predictableActionArguments: true,
-  tsTypes: {} as import("./machine.typegen").Typegen0,
-  schema: {
-    events: {} as Events,
-    context: {} as TransferMachineContext,
-    services: {} as Services,
+export const transferMachine = setup({
+  types: {} as {
+    context: TransferMachineContext
+    events: Events
   },
+  guards: {
+    isSendMachine: ({ context }: { context: TransferMachineContext }) =>
+      context.direction === "send",
+    isSendFungible: ({ context }: { context: TransferMachineContext }) =>
+      context.tokenType === "ft",
+    isReceiveMachine: ({ context }: { context: TransferMachineContext }) =>
+      context.direction === "receive",
+    isSwapMachine: ({ context }: { context: TransferMachineContext }) =>
+      context.direction === "swap",
+    isConvertMachine: ({ context }: { context: TransferMachineContext }) =>
+      context.direction === "convert",
+    isBridgeMachine: ({ context }: { context: TransferMachineContext }) =>
+      context.direction === "bridge",
+    isEarnMachine: ({ context }: { context: TransferMachineContext }) =>
+      context.direction === "earn",
+    isWithdrawMachine: ({ context }: { context: TransferMachineContext }) =>
+      context.direction === "withdraw",
+    isPayMachine: ({ context }: { context: TransferMachineContext }) =>
+      context.direction === "pay",
+    isPromoteMachine: ({ context }: { context: TransferMachineContext }) =>
+      context.direction === "promote",
+    isStakeMachine: ({ context }: { context: TransferMachineContext }) =>
+      context.direction === "stake",
+    isRedeemMachine: ({ context }: { context: TransferMachineContext }) =>
+      context.direction === "redeem",
+  },
+  actions: {
+    assignTokenType: assign({
+      tokenType: ({ event }: { event: any }) => event?.data,
+    }),
+    assignDirection: assign({
+      direction: ({ event }: { event: any }) => event?.data,
+    }),
+    assignAmount: assign({
+      amount: ({ event }: { event: any }) => event?.data,
+    }),
+    assignSourceAccount: assign({
+      sourceAccount: ({ event }: { event: any }) => event?.data,
+    }),
+    assignIsEarnUpdate: assign({
+      isEarnUpdate: ({ event }: { event: any }) => event?.data,
+    }),
+    assignSourceWallet: assign({
+      sourceWalletAddress: ({ event }: { event: any }) => event?.data,
+    }),
+    assignReceiverWallet: assign({
+      receiverWallet: ({ event }: { event: any }) => event?.data,
+    }),
+    assignSelectedFT: assign({
+      selectedFT: ({ event }: { event: any }) => event?.data,
+    }),
+    assignSelectedDapp: assign({
+      selectedDapp: ({ event }: { event: any }) => event?.data,
+    }),
+    assignWithdrawBalance: assign({
+      withdrawBalance: ({ event }: { event: any }) => event?.data,
+    }),
+    assignOpenCryptopayParams: assign(({ event }: { event: any }) => ({
+      openCryptoPayParams: event?.data,
+      openCryptoPayPreselect: event?.preselect,
+    })),
+    assignSelectedTargetFT: assign({
+      selectedTargetFT: ({ event }: { event: any }) => event?.data,
+    }),
+    assignSelectedNFTId: assign({
+      selectedNFTId: ({ event }: { event: any }) => event?.data,
+    }),
+    assignTransferObject: assign({
+      transferObject: ({ event }: { event: any }) => event?.data,
+    }),
+    assignTokenStandard: assign({
+      tokenStandard: ({ event }: { event: any }) => event?.data,
+    }),
+    assignStakeId: assign({
+      stakeId: ({ event }: { event: any }) => event?.data,
+    }),
+    assignIsVault: assign({
+      isOpenedFromVaults: ({ event }: { event: any }) => event?.data,
+    }),
+    assignError: assign({ error: ({ event }: { event: any }) => event?.data }),
+  },
+}).createMachine({
   id: "TransferMachine",
+  context: {} as TransferMachineContext,
   initial: "Hidden",
   on: {
     CHANGE_TOKEN_TYPE: {
@@ -18,7 +98,7 @@ const transferMachineConfig = {
       actions: "assignTokenType",
     },
     CHANGE_DIRECTION: {
-      target: "TransferModal",
+      target: "#TransferMachine.TransferModal",
       actions: "assignDirection",
     },
     ASSIGN_IS_EARN_UPDATE: {
@@ -80,50 +160,17 @@ const transferMachineConfig = {
     },
     TransferModal: {
       always: [
-        {
-          target: "SendMachine",
-          cond: "isSendMachine",
-        },
-        {
-          target: "ReceiveMachine",
-          cond: "isReceiveMachine",
-        },
-        {
-          target: "SwapMachine",
-          cond: "isSwapMachine",
-        },
-        {
-          target: "ConvertMachine",
-          cond: "isConvertMachine",
-        },
-        {
-          target: "StakeMachine",
-          cond: "isStakeMachine",
-        },
-        {
-          target: "RedeemMachine",
-          cond: "isRedeemMachine",
-        },
-        {
-          target: "BridgeMachine",
-          cond: "isBridgeMachine",
-        },
-        {
-          target: "EarnMachine",
-          cond: "isEarnMachine",
-        },
-        {
-          target: "WithdrawMachine",
-          cond: "isWithdrawMachine",
-        },
-        {
-          target: "PayMachine",
-          cond: "isPayMachine",
-        },
-        {
-          target: "PromoteMachine",
-          cond: "isPromoteMachine",
-        },
+        { target: "SendMachine", guard: "isSendMachine" },
+        { target: "ReceiveMachine", guard: "isReceiveMachine" },
+        { target: "SwapMachine", guard: "isSwapMachine" },
+        { target: "ConvertMachine", guard: "isConvertMachine" },
+        { target: "StakeMachine", guard: "isStakeMachine" },
+        { target: "RedeemMachine", guard: "isRedeemMachine" },
+        { target: "BridgeMachine", guard: "isBridgeMachine" },
+        { target: "EarnMachine", guard: "isEarnMachine" },
+        { target: "WithdrawMachine", guard: "isWithdrawMachine" },
+        { target: "PayMachine", guard: "isPayMachine" },
+        { target: "PromoteMachine", guard: "isPromoteMachine" },
       ],
     },
     ReceiveMachine: {},
@@ -142,13 +189,8 @@ const transferMachineConfig = {
       states: {
         CheckSendType: {
           always: [
-            {
-              target: "#SendMachine.SendFT",
-              cond: "isSendFungible",
-            },
-            {
-              target: "#SendMachine.SendNFT",
-            },
+            { target: "#SendMachine.SendFT", guard: "isSendFungible" },
+            { target: "#SendMachine.SendNFT" },
           ],
         },
         SendFT: {
@@ -180,102 +222,6 @@ const transferMachineConfig = {
       },
     },
   },
-}
-
-const transferMachineOptions: Parameters<
-  typeof createMachine<TransferMachineContext, Events, any>
->[1] = {
-  guards: {
-    isSendMachine: (context: TransferMachineContext) =>
-      context.direction === "send",
-    isSendFungible: (context: TransferMachineContext) =>
-      context.tokenType === "ft",
-    isReceiveMachine: (context: TransferMachineContext) =>
-      context.direction === "receive",
-    isSwapMachine: (context: TransferMachineContext) =>
-      context.direction === "swap",
-    isConvertMachine: (context: TransferMachineContext) =>
-      context.direction === "convert",
-    isBridgeMachine: (context: TransferMachineContext) =>
-      context.direction === "bridge",
-    isEarnMachine: (context: TransferMachineContext) =>
-      context.direction === "earn",
-    isWithdrawMachine: (context: TransferMachineContext) =>
-      context.direction === "withdraw",
-    isPayMachine: (context: TransferMachineContext) =>
-      context.direction === "pay",
-    isPromoteMachine: (context: TransferMachineContext) =>
-      context.direction === "promote",
-    isStakeMachine: (context: TransferMachineContext) =>
-      context.direction === "stake",
-    isRedeemMachine: (context: TransferMachineContext) =>
-      context.direction === "redeem",
-  },
-  actions: {
-    assignTokenType: assign((_, event: any) => ({
-      tokenType: event?.data,
-    })),
-    assignDirection: assign((_, event: any) => ({
-      direction: event?.data,
-    })),
-    assignAmount: assign((_, event: any) => ({
-      amount: event?.data,
-    })),
-    assignSourceAccount: assign((_, event: any) => ({
-      sourceAccount: event?.data,
-    })),
-    assignIsEarnUpdate: assign((_, event: any) => ({
-      isEarnUpdate: event?.data,
-    })),
-    assignSourceWallet: assign((_, event: any) => ({
-      sourceWalletAddress: event?.data,
-    })),
-    assignReceiverWallet: assign((_, event: any) => ({
-      receiverWallet: event?.data,
-    })),
-    assignSelectedFT: assign((_, event: any) => ({
-      selectedFT: event?.data,
-    })),
-    assignSelectedDapp: assign((_, event: any) => ({
-      selectedDapp: event?.data,
-    })),
-    assignWithdrawBalance: assign((_, event: any) => ({
-      withdrawBalance: event?.data,
-    })),
-    assignOpenCryptopayParams: assign((_, event: any) => ({
-      openCryptoPayParams: event?.data,
-      openCryptoPayPreselect: event?.preselect,
-    })),
-    assignSelectedTargetFT: assign((_, event: any) => ({
-      selectedTargetFT: event?.data,
-    })),
-    assignSelectedNFTId: assign((_, event: any) => ({
-      selectedNFTId: event?.data,
-    })),
-    assignTransferObject: assign((_, event: any) => ({
-      transferObject: event?.data,
-    })),
-    assignTokenStandard: assign((_, event: any) => ({
-      tokenStandard: event?.data,
-    })),
-    assignStakeId: assign((_, event: any) => ({
-      stakeId: event?.data,
-    })),
-    assignIsVault: assign((_, event: any) => ({
-      isOpenedFromVaults: event?.data,
-    })),
-    assignError: assign({
-      // @ts-ignore
-      error: (_: TransferMachineContext, event: { data: unknown }) =>
-        event.data,
-    }),
-  },
-  services: {},
-}
-
-export const transferMachine = createMachine(
-  transferMachineConfig,
-  transferMachineOptions,
-)
+})
 
 export type TransferMachineActor = ActorRefFrom<typeof transferMachine>

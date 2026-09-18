@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { SignIdentity } from "@icp-sdk/core/agent"
 import { Followees as IcpFollowees, Topic } from "@icp-sdk/canisters/nns"
 import { uint8ArrayToHexString } from "@nfid-frontend/utils"
@@ -194,7 +195,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
               >
                 <div className="border border-gray-200 dark:border-zinc-700 rounded-3xl px-[30px] py-[20px] relative">
                   <div>
-                    <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
+                    <div className="grid grid-cols-[160px_1fr] text-sm items-center h-[54px]">
                       <div className="flex items-center gap-1">
                         <p className="text-gray-400 dark:text-zinc-500">
                           Stake ID
@@ -226,7 +227,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       </div>
                     </div>
                     <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
-                    <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
+                    <div className="grid grid-cols-[160px_1fr] text-sm items-center h-[54px]">
                       <p className="text-gray-400 dark:text-zinc-500">
                         Initial stake
                       </p>
@@ -247,7 +248,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       </div>
                     </div>
                     <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
-                    <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
+                    <div className="grid grid-cols-[160px_1fr] text-sm items-center h-[54px]">
                       <div className="flex items-center gap-1">
                         <p className="text-gray-400 dark:text-zinc-500">
                           Rewards
@@ -292,7 +293,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                       </div>
                     </div>
                     <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
-                    <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
+                    <div className="grid grid-cols-[160px_1fr] text-sm items-center h-[54px]">
                       <div className="flex items-center gap-1">
                         <p className="text-gray-400 dark:text-zinc-500">
                           Total value
@@ -333,7 +334,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                     {sidePanelOption.state === StakingState.Unlocking && (
                       <>
                         <div className="w-full h-[1px] w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
-                        <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
+                        <div className="grid grid-cols-[160px_1fr] text-sm items-center h-[54px]">
                           <p className="text-gray-400 dark:text-zinc-500">
                             Unlock in
                           </p>
@@ -354,7 +355,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                   <div className="text-[24px] leading-[50px] mb-[10px] dark:text-white">
                     Details
                   </div>
-                  <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
+                  <div className="grid grid-cols-[160px_1fr] text-sm items-center h-[54px]">
                     <p className="text-gray-400 dark:text-zinc-500">
                       Date created
                     </p>
@@ -379,7 +380,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                   )}
                   {sidePanelOption.state == StakingState.Locked && (
                     <>
-                      <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
+                      <div className="grid grid-cols-[160px_1fr] text-sm items-center h-[54px]">
                         <p className="text-gray-400 dark:text-zinc-500">
                           Lock time
                         </p>
@@ -398,7 +399,7 @@ export const StakingSidePanel: FC<StakingSidePanelProps> = ({
                     </>
                   )}
                   {sidePanelOption.state === StakingState.Unlocking && (
-                    <div className="grid grid-cols-[160px,1fr] text-sm items-center h-[54px]">
+                    <div className="grid grid-cols-[160px_1fr] text-sm items-center h-[54px]">
                       <p className="text-gray-400 dark:text-zinc-500">
                         Unlock date
                       </p>

@@ -62,7 +62,7 @@ export const checkEmailVerification = async (
           verificationMethod,
           context.verificationEmail,
           context.keyPair!,
-          context.requestId,
+          context.requestId!,
           nonce - 1,
         )
 
@@ -119,7 +119,7 @@ export const authorizeWithEmail = async (
   if (!context?.emailDelegation) throw new Error("No email delegation")
 
   let profile: Profile
-  const delegationIdentity = context.delegation // email delegation
+  const delegationIdentity = context.delegation! // email delegation
 
   try {
     await replaceActorIdentity(im, delegationIdentity)

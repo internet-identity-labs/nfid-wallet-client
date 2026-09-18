@@ -1,4 +1,3 @@
-import { useActor } from "@xstate/react"
 import { Earn } from "packages/ui/src/organisms/earn"
 import { useContext, memo } from "react"
 
@@ -20,26 +19,25 @@ const EarnPage = memo(() => {
     viewOnlyAddressType,
     transferService,
   } = useContext(ProfileContext)
-  const [, send] = useActor(transferService)
 
   const onEarnClick = (selectedToken?: SelectedToken) => {
-    send({ type: "ASSIGN_VAULTS", data: false })
-    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: ModalType.EARN })
+    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.EARN })
     if (selectedToken) {
-      send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
-      send({ type: "ASSIGN_IS_EARN_UPDATE", data: true })
+      transferService.send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
+      transferService.send({ type: "ASSIGN_IS_EARN_UPDATE", data: true })
     }
-    send("SHOW")
+    transferService.send({ type: "SHOW" })
   }
 
   const onWithdrawClick = (selectedToken: SelectedToken, balance: bigint) => {
-    send({ type: "ASSIGN_VAULTS", data: false })
-    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: ModalType.WITHDRAW })
-    send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
-    send({ type: "ASSIGN_WITHDRAW_BALANCE", data: balance })
-    send("SHOW")
+    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.WITHDRAW })
+    transferService.send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
+    transferService.send({ type: "ASSIGN_WITHDRAW_BALANCE", data: balance })
+    transferService.send({ type: "SHOW" })
   }
 
   const { data: tokens } = useSWRWithTimestamp(

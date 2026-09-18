@@ -89,7 +89,7 @@ export const RouteHome: React.FC = () => {
   return (
     <Route path={RoutePathHome}>
       <main className="relative font-inter">
-        <div className="grid grid-cols-1 md:grid-cols-[260px,1fr]">
+        <div className="grid grid-cols-1 md:grid-cols-[260px_1fr]">
           <SideNav sections={sections} activeSection={activeSection} />
           <div className="p-3 pb-16 space-y-5 md:p-5">
             <Warning>

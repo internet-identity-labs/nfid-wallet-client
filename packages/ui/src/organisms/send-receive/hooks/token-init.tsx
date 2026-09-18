@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { Principal } from "@icp-sdk/core/principal"
 
 import { useSWRWithTimestamp, mutate as mutateData } from "@nfid/swr"
@@ -14,7 +15,7 @@ import {
   State,
 } from "@nfid/integration/token/icrc1/enum/enums"
 import { useContext, useEffect, useMemo, useRef } from "react"
-import { useActor } from "@xstate/react"
+import { useSelector } from "@xstate/react"
 import { ProfileContext } from "frontend/provider"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { useUserPrefs } from "frontend/hooks/user-prefs"
@@ -49,7 +50,7 @@ export const useTokensInit = (
     [tokens, testnetEnabled, arbitrumEnabled, baseEnabled, polygonEnabled],
   )
 
-  const [state] = useActor(transferService)
+  const isModalHidden = useSelector(transferService, (s) => s.matches("Hidden"))
 
   const addressesReady =
     isViewOnlyMode ||
@@ -98,8 +99,7 @@ export const useTokensInit = (
       revalidateOnFocus: false,
       revalidateOnMount: true,
       revalidateIfStale: false,
-      refreshInterval:
-        state.value !== "Hidden" ? undefined : TOKENS_REFRESH_INTERVAL,
+      refreshInterval: isModalHidden ? TOKENS_REFRESH_INTERVAL : undefined,
       keepPreviousData: true,
       onSuccess: () => {
         mutateData(

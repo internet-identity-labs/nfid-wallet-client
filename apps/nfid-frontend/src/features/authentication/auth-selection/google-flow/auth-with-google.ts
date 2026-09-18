@@ -42,7 +42,7 @@ const AuthWithGoogleMachine = setup({
           actions: "assignAuthSession",
         },
         onError: {
-          target: "AuthSelection",
+          target: "End",
         },
       },
     },

@@ -297,7 +297,7 @@ const AuthenticationMachine = setup({
           },
         ],
         onError: {
-          target: "CheckWallets",
+          target: "AuthSelection",
           actions: "toastRegistrationDisabled",
         },
       },
@@ -319,7 +319,7 @@ const AuthenticationMachine = setup({
           },
         ],
         onError: {
-          target: "CheckWallets",
+          target: "AuthSelectionSignUp",
           actions: "toastRegistrationDisabled",
         },
       },

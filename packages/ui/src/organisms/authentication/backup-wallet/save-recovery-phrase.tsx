@@ -61,7 +61,7 @@ export const AuthSaveRecoveryPhrase: FC<AuthSaveRecoveryPhraseProps> = ({
           onClick={copyToClipboard}
         >
           <div className="flex text-sm font-bold">
-            <CopyIcon className="text-black dark:text-white stroke-black mr-[8px]" />
+            <CopyIcon className="text-black dark:text-white stroke-black dark:stroke-white mr-[8px]" />
             {copied ? "Copied" : "Copy"}
           </div>
         </div>

@@ -6,7 +6,6 @@ import { Button } from "@nfid-frontend/ui"
 import Image from "./backup-wallet.png"
 
 export interface AuthAddRecoveryPhraseProps {
-  onSkip: () => void
   onCreate: () => void
   name?: string | number
   className?: string
@@ -14,7 +13,6 @@ export interface AuthAddRecoveryPhraseProps {
 }
 
 export const AuthAddRecoveryPhrase: FC<AuthAddRecoveryPhraseProps> = ({
-  onSkip,
   onCreate,
   name,
   className,
@@ -47,9 +45,6 @@ export const AuthAddRecoveryPhrase: FC<AuthAddRecoveryPhraseProps> = ({
       />
       <Button className="mt-auto" block onClick={onCreate} type="primary">
         Create recovery phrase
-      </Button>
-      <Button className="mt-2.5" block onClick={onSkip} type="ghost">
-        Skip for now
       </Button>
     </div>
   )

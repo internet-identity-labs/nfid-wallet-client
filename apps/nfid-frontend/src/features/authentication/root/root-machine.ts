@@ -3,8 +3,11 @@ import toaster from "packages/ui/src/atoms/toast"
 
 import {
   ExistingWallet,
-  getAllWalletsFromThisDevice,
+  RecoveryProvisioningMode,
+  RecoveryProvisioningPlan,
   RegistrationDisabledError,
+  getAllWalletsFromThisDevice,
+  recoveryProvisioningService,
 } from "@nfid/integration"
 
 import { isWebAuthNSupported } from "frontend/integration/device"
@@ -15,12 +18,7 @@ import {
 } from "frontend/state/authorization"
 
 import { ApproveIcGetDelegationSdkResponse } from "../3rd-party/choose-account/types"
-import {
-  checkIf2FAEnabled,
-  shouldShowPasskeys,
-  shouldShowPasskeysEvery6thTime,
-  shouldShowRecoveryPhraseEvery8thTime,
-} from "../services"
+import { checkIf2FAEnabled } from "../services"
 import { signWithIIService } from "../auth-selection/ii-flow/ii-auth.service"
 import AuthWithEmailMachine from "../auth-selection/email-flow/machine"
 import { signWithGoogleService } from "../auth-selection/google-flow/services"
@@ -42,11 +40,9 @@ export interface AuthenticationContext {
   email?: string
   walletName?: string
   anchor?: number
-  showPasskeys?: boolean
-  showRecovery?: boolean
   isEmbed?: boolean
-  shouldShowRecoveryEvery8th?: boolean
   wallets?: ExistingWallet[]
+  recoveryProvisioningPlan?: RecoveryProvisioningPlan
 }
 
 const AuthenticationMachine = setup({
@@ -73,16 +69,12 @@ const AuthenticationMachine = setup({
       async ({ input }: { input: AuthenticationContext }) =>
         checkIf2FAEnabled(input),
     ),
-    shouldShowPasskeysEvery6thTime: fromPromise(
-      async ({ input }: { input: AuthenticationContext }) =>
-        shouldShowPasskeysEvery6thTime(input),
+    getRecoveryProvisioningPlan: fromPromise(async () =>
+      recoveryProvisioningService.getPlan(),
     ),
-    shouldShowRecoveryPhraseEvery8thTime: fromPromise(async () =>
-      shouldShowRecoveryPhraseEvery8thTime(),
-    ),
-    shouldShowPasskeys: fromPromise(
-      async ({ input }: { input: AuthenticationContext }) =>
-        shouldShowPasskeys(input),
+    verifyRecoveryProvisioning: fromPromise(
+      async ({ input }: { input: { plan: RecoveryProvisioningPlan } }) =>
+        recoveryProvisioningService.checkAccount(input.plan),
     ),
   },
   guards: {
@@ -93,21 +85,12 @@ const AuthenticationMachine = setup({
     isReturn: ({ context }: { context: AuthenticationContext }) =>
       !context.authSession,
     is2FAEnabled: ({ event }: { event: any }) => !!event.output,
-    showPasskeys: ({ event }: { event: any }) => {
-      const showPasskeys = event.output?.showPasskeys
-      if (showPasskeys === undefined) return true
-      return showPasskeys
+    needsPasskey: ({ event }: { event: any }) =>
+      event.output?.steps[0] === RecoveryProvisioningMode.PASSKEY,
+    needsRecoveryPhrase: ({ event }: { event: any }) => {
+      console.log("needsRecoveryPhrase", event.output)
+      return event.output?.steps[0] === RecoveryProvisioningMode.RECOVERY_PHRASE
     },
-    showRecovery: ({ event }: { event: any }) => {
-      const showRecovery = event.output?.showRecovery
-      if (showRecovery === undefined) return true
-      return showRecovery
-    },
-    shouldShowRecoveryEvery8th: ({
-      context,
-    }: {
-      context: AuthenticationContext
-    }) => !!context.shouldShowRecoveryEvery8th,
   },
   actions: {
     assignWallets: assign({
@@ -130,14 +113,9 @@ const AuthenticationMachine = setup({
       allowedDevices: ({ event }: { event: any }) =>
         event.output?.allowedPasskeys,
     }),
-    assignShowPasskeys: assign({
-      showPasskeys: ({ event }: { event: any }) => event.output?.showPasskeys,
-    }),
-    assignShowRecovery: assign({
-      showRecovery: ({ event }: { event: any }) => event.output?.showRecovery,
-    }),
-    setShouldCheckRecoveryEvery8th: assign({
-      shouldShowRecoveryEvery8th: () => true,
+    assignRecoveryProvisioningPlan: assign({
+      recoveryProvisioningPlan: ({ event }: { event: any }) =>
+        event.output as RecoveryProvisioningPlan,
     }),
     toastRegistrationDisabled: ({ event }: { event: any }) => {
       if (event.error instanceof RegistrationDisabledError) {
@@ -177,7 +155,7 @@ const AuthenticationMachine = setup({
       on: {
         AUTH_WITH_PASSKEY: {
           actions: "assignAuthSession",
-          target: "checkRecovery8th",
+          target: "GetRecoveryProvisioningPlan",
         },
         CHOOSE_WALLET: {
           target: "AuthSelection",
@@ -214,7 +192,7 @@ const AuthenticationMachine = setup({
         },
         AUTH_WITH_PASSKEY: {
           actions: "assignAuthSession",
-          target: "checkRecovery8th",
+          target: "GetRecoveryProvisioningPlan",
         },
         CHOOSE_WALLET: {
           target: "ChooseWallet",
@@ -260,23 +238,20 @@ const AuthenticationMachine = setup({
       on: {
         BACK: "OtherSignOptions",
         AUTHENTICATED: {
-          target: "checkPasskeys6th",
+          target: "GetRecoveryProvisioningPlan",
           actions: "assignAuthSession",
         },
       },
     },
     AuthAddRecoveryPhrase: {
       on: {
-        SKIP: {
-          target: "End",
-        },
         DONE: "AuthSaveRecoveryPhrase",
       },
     },
     AuthSaveRecoveryPhrase: {
       on: {
         DONE: {
-          target: "End",
+          target: "VerifyRecoveryProvisioning",
         },
       },
     },
@@ -311,7 +286,7 @@ const AuthenticationMachine = setup({
           {
             guard: "isExistingAccount",
             actions: "assignAuthSession",
-            target: "checkPasskeys",
+            target: "GetRecoveryProvisioningPlan",
           },
           {
             actions: "assignAuthSession",
@@ -349,7 +324,7 @@ const AuthenticationMachine = setup({
           {
             guard: "isExistingAccount",
             actions: "assignAuthSession",
-            target: "checkPasskeys",
+            target: "GetRecoveryProvisioningPlan",
           },
           {
             actions: "assignAuthSession",
@@ -370,7 +345,7 @@ const AuthenticationMachine = setup({
         }),
         onDone: [
           { guard: "isReturn", target: "AuthSelectionSignUp" },
-          { target: "checkPasskeys" },
+          { target: "GetRecoveryProvisioningPlan" },
         ],
       },
       on: {
@@ -418,73 +393,60 @@ const AuthenticationMachine = setup({
             target: "TwoFA",
             actions: "assignAllowedDevices",
           },
-          {
-            target: "checkPasskeys6th",
-            actions: "setShouldCheckRecoveryEvery8th",
-          },
+          { target: "GetRecoveryProvisioningPlan" },
         ],
       },
     },
     TwoFA: {
       on: {
         AUTHENTICATED: {
-          target: "checkRecovery8th",
+          target: "GetRecoveryProvisioningPlan",
         },
       },
     },
-    checkPasskeys6th: {
+    GetRecoveryProvisioningPlan: {
       invoke: {
-        src: "shouldShowPasskeysEvery6thTime",
-        input: ({ context }) => context,
+        src: "getRecoveryProvisioningPlan",
         onDone: [
           {
-            actions: "assignShowPasskeys",
-            guard: "showPasskeys",
-            target: "AddPasskeys",
-          },
-          {
-            guard: "shouldShowRecoveryEvery8th",
-            target: "checkRecovery8th",
-          },
-          { target: "End" },
-        ],
-      },
-    },
-    checkRecovery8th: {
-      invoke: {
-        src: "shouldShowRecoveryPhraseEvery8thTime",
-        onDone: [
-          {
-            actions: "assignShowRecovery",
-            guard: "showRecovery",
+            guard: "needsRecoveryPhrase",
+            actions: "assignRecoveryProvisioningPlan",
             target: "AuthAddRecoveryPhrase",
           },
-          { target: "End" },
-        ],
-      },
-    },
-    checkPasskeys: {
-      invoke: {
-        src: "shouldShowPasskeys",
-        input: ({ context }) => context,
-        onDone: [
           {
-            actions: "assignShowPasskeys",
-            guard: "showPasskeys",
+            guard: "needsPasskey",
+            actions: "assignRecoveryProvisioningPlan",
             target: "AddPasskeys",
           },
           { target: "End" },
         ],
+        onError: { target: "End" },
+      },
+    },
+    VerifyPasskeyProvisioning: {
+      invoke: {
+        src: "verifyRecoveryProvisioning",
+        input: ({ context }: { context: AuthenticationContext }) => ({
+          plan: context.recoveryProvisioningPlan!,
+        }),
+        onDone: { target: "AddPasskeysSuccess" },
+        onError: { target: "End" },
+      },
+    },
+    VerifyRecoveryProvisioning: {
+      invoke: {
+        src: "verifyRecoveryProvisioning",
+        input: ({ context }: { context: AuthenticationContext }) => ({
+          plan: context.recoveryProvisioningPlan!,
+        }),
+        onDone: { target: "End" },
+        onError: { target: "End" },
       },
     },
     AddPasskeys: {
       on: {
-        BACK: "AuthSelection",
         CONTINUE: {
-          target: "AddPasskeysSuccess",
-        },
-        SKIP: {
-          target: "End",
+          target: "VerifyPasskeyProvisioning",
         },
       },
     },

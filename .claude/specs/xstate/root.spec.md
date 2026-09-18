@@ -37,11 +37,9 @@
   email?: string
   walletName?: string
   anchor?: number
-  showPasskeys?: boolean
-  showRecovery?: boolean
   isEmbed?: boolean
-  shouldShowRecoveryEvery8th?: boolean
   wallets: ExistingWallet[]                 // wallets found on this device; populated by CheckWallets
+  recoveryProvisioningPlan?: RecoveryProvisioningPlan  // set by GetRecoveryProvisioningPlan
 }
 ```
 
@@ -56,7 +54,7 @@
 │    onDone [else]                             ──────────────────► AuthSelection                  │
 │                                                                                                  │
 │  ChooseWallet                                                                                    │
-│    AUTH_WITH_PASSKEY ──(assignAuthSession)──► checkRecovery8th                                    │
+│    AUTH_WITH_PASSKEY ──(assignAuthSession)──► GetRecoveryProvisioningPlan                        │
 │    CHOOSE_WALLET   ──────────────────────► AuthSelection  (use different method)                │
 │    BACK            ──────────────────────► AuthSelection                                        │
 │                                                                                                  │
@@ -66,12 +64,12 @@
 │  │              │  AUTH_WITH_OTHER   ──► OtherSignOptions                                       │
 │  │              │  SIGN_UP           ──► AuthSelectionSignUp                                    │
 │  │              │  AUTHENTICATED     ──► End  (passkey sign-in completes here directly)         │
-│  │              │  AUTH_WITH_PASSKEY ──► checkRecovery8th  (session assigned)                   │
+│  │              │  AUTH_WITH_PASSKEY ──► GetRecoveryProvisioningPlan  (session assigned)        │
 │  │              │  CHOOSE_WALLET     ──► ChooseWallet  (back arrow, only when wallets in ctx)   │
 │  └──────────────┘                                                                                │
 │                                                                                                  │
 │  OtherSignOptions ──AUTH_WITH_RECOVERY_PHRASE──► SignInWithRecoveryPhrase                        │
-│  SignInWithRecoveryPhrase ──AUTHENTICATED──► checkPasskeys6th                                    │
+│  SignInWithRecoveryPhrase ──AUTHENTICATED──► GetRecoveryProvisioningPlan                         │
 │                                                                                                  │
 │  ┌─────────────────┐  AUTH_WITH_EMAIL   ──► SignUpWithEmail                                     │
 │  │AuthSelectionSignUp  AUTH_WITH_GOOGLE  ──► SignUpWithGoogle                                   │
@@ -84,105 +82,107 @@
 │  AuthWithGoogle / AuthWithII  ──onDone──►  isExistingAccount? → check2FA                        │
 │                                        └─ else (new account)  → AuthSelection                   │
 │                                                                                                  │
-│  SignUpWithGoogle / SignUpWithII  ──onDone──►  isExistingAccount? → checkPasskeys                │
+│  SignUpWithGoogle / SignUpWithII  ──onDone──►  isExistingAccount? → GetRecoveryProvisioningPlan  │
 │                                           └─ else (new account)  → AuthSelectionSignUp          │
 │                                                                                                  │
 │  EmailAuthentication / SignUpWithEmail  ──onDone──►  isReturn? → AuthSelection/AuthSelectionSignUp
-│                                                  └─ else      → check2FA / checkPasskeys         │
+│                                                  └─ else      → check2FA / GetRecoveryProvisioningPlan
 │                                                                                                  │
 │  check2FA ──onDone──► is2FAEnabled? → TwoFA (+ assignAllowedDevices)                            │
-│                   └─ else          → checkPasskeys6th (+ setShouldCheckRecoveryEvery8th)         │
+│                   └─ else           → GetRecoveryProvisioningPlan                               │
 │                                                                                                  │
-│  TwoFA ──AUTHENTICATED──► checkRecovery8th  (skips checkPasskeys6th)                            │
+│  TwoFA ──AUTHENTICATED──► GetRecoveryProvisioningPlan                                           │
 │                                                                                                  │
-│  checkPasskeys6th ──onDone──► showPasskeys?            → AddPasskeys                            │
-│                           ├─ shouldShowRecoveryEvery8th → checkRecovery8th                      │
-│                           └─ else                       → End                                   │
+│  GetRecoveryProvisioningPlan ──onDone──► needsPasskey?       → AddPasskeys                      │
+│  (invokes recoveryProvisioningService    needsRecoveryPhrase? → AuthAddRecoveryPhrase            │
+│   .getPlan(); one device per login)      else (completed)    → End                              │
+│                              ──onError──► End  (fail-open: re-prompted next login)              │
 │                                                                                                  │
-│  checkRecovery8th ──onDone──► showRecovery? → AuthAddRecoveryPhrase                                      │
-│                           └─ else           → End                                               │
+│  AddPasskeys ──CONTINUE──► VerifyPasskeyProvisioning                                            │
+│  (mandatory — no SKIP, no BACK)                                                                  │
 │                                                                                                  │
-│  checkPasskeys (signup path) ──onDone──► showPasskeys? → AddPasskeys                            │
-│                                      └─ else           → End                                    │
+│  VerifyPasskeyProvisioning ──onDone──► AddPasskeysSuccess ──DONE──► End                         │
+│  (invokes recoveryProvisioningService  ──onError──► End  (fail-open)                            │
+│   .checkAccount(plan))                                                                           │
 │                                                                                                  │
-│  AddPasskeys ──CONTINUE──► AddPasskeysSuccess ──DONE──► End                                     │
-│             ──SKIP──► End                                                                        │
-│             ──BACK──► AuthSelection                                                              │
+│  AuthAddRecoveryPhrase ──DONE──► AuthSaveRecoveryPhrase ──DONE──► VerifyRecoveryProvisioning    │
+│  (mandatory — no SKIP)                                                                           │
 │                                                                                                  │
-│  AuthAddRecoveryPhrase ──DONE──► AuthSaveRecoveryPhrase ──DONE──► End                                    │
-│              ──SKIP──► End                                                                       │
+│  VerifyRecoveryProvisioning ──onDone──► End                                                     │
+│  (invokes recoveryProvisioningService  ──onError──► End  (fail-open)                            │
+│   .checkAccount(plan))                                                                           │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### States
 
-| State                      | Description                            | Invokes                                |
-| -------------------------- | -------------------------------------- | -------------------------------------- |
-| `CheckWallets`             | **Initial.** Loads wallets from device | `getAllWalletsFromThisDevice`          |
-| `ChooseWallet`             | Shows wallet list for passkey sign-in  | —                                      |
-| `AuthSelection`            | Auth method chooser                    | —                                      |
-| `AuthSelectionSignUp`      | Sign-up variant of method chooser      | —                                      |
-| `SignUpPassKey`            | Passkey registration                   | —                                      |
-| `SignInWithRecoveryPhrase` | Recovery phrase entry                  | —                                      |
-| `AuthAddRecoveryPhrase`    | Step 1 of recovery backup              | —                                      |
-| `AuthSaveRecoveryPhrase`   | Step 2 of recovery backup              | —                                      |
-| `AuthWithGoogle`           | Google OAuth                           | `AuthWithGoogleMachine`                |
-| `SignUpWithGoogle`         | Google OAuth for new accounts          | `AuthWithGoogleMachine`                |
-| `AuthWithII`               | Internet Identity auth                 | `signWithIIService`                    |
-| `SignUpWithII`             | II for new accounts                    | `signWithIIService`                    |
-| `SignUpWithEmail`          | Email signup                           | `AuthWithEmailMachine`                 |
-| `EmailAuthentication`      | Email sign-in                          | `AuthWithEmailMachine`                 |
-| `OtherSignOptions`         | Alternative methods                    | —                                      |
-| `check2FA`                 | Check if 2FA is enabled                | `checkIf2FAEnabled`                    |
-| `TwoFA`                    | 2FA code entry                         | —                                      |
-| `checkPasskeys6th`         | Prompt passkeys every 6th login        | `shouldShowPasskeysEvery6thTime`       |
-| `checkRecovery8th`         | Prompt recovery every 8th login        | `shouldShowRecoveryPhraseEvery8thTime` |
-| `checkPasskeys`            | Check passkey availability for signup  | `shouldShowPasskeys`                   |
-| `AddPasskeys`              | Add passkey onboarding step            | —                                      |
-| `AddPasskeysSuccess`       | Passkey added confirmation             | —                                      |
-| `End`                      | **Final.** Carries `authSession`       | —                                      |
+| State                         | Description                                                                       | Invokes                       |
+| ----------------------------- | --------------------------------------------------------------------------------- | ----------------------------- |
+| `CheckWallets`                | **Initial.** Loads wallets from device                                            | `getAllWalletsFromThisDevice` |
+| `ChooseWallet`                | Shows wallet list for passkey sign-in                                             | —                             |
+| `AuthSelection`               | Auth method chooser                                                               | —                             |
+| `AuthSelectionSignUp`         | Sign-up variant of method chooser                                                 | —                             |
+| `SignUpPassKey`               | Passkey registration                                                              | —                             |
+| `SignInWithRecoveryPhrase`    | Recovery phrase entry                                                             | —                             |
+| `AuthAddRecoveryPhrase`       | Step 1 of recovery backup (mandatory, no skip)                                    | —                             |
+| `AuthSaveRecoveryPhrase`      | Step 2 of recovery backup                                                         | —                             |
+| `AuthWithGoogle`              | Google OAuth                                                                      | `signWithGoogleService`       |
+| `SignUpWithGoogle`            | Google OAuth for new accounts                                                     | `signWithGoogleService`       |
+| `AuthWithII`                  | Internet Identity auth                                                            | `signWithIIService`           |
+| `SignUpWithII`                | II for new accounts                                                               | `signWithIIService`           |
+| `SignUpWithEmail`             | Email signup                                                                      | `AuthWithEmailMachine`        |
+| `EmailAuthentication`         | Email sign-in                                                                     | `AuthWithEmailMachine`        |
+| `OtherSignOptions`            | Alternative methods                                                               | —                             |
+| `check2FA`                    | Check if 2FA is enabled                                                           | `checkIf2FAEnabled`           |
+| `TwoFA`                       | 2FA code entry                                                                    | —                             |
+| `GetRecoveryProvisioningPlan` | Mandatory post-login check via `recoveryProvisioningService.getPlan()`            | `getRecoveryProvisioningPlan` |
+| `VerifyPasskeyProvisioning`   | Verify passkey was added via `recoveryProvisioningService.checkAccount()`         | `verifyRecoveryProvisioning`  |
+| `VerifyRecoveryProvisioning`  | Verify recovery phrase was added via `recoveryProvisioningService.checkAccount()` | `verifyRecoveryProvisioning`  |
+| `AddPasskeys`                 | Add passkey onboarding (mandatory, no skip/back)                                  | —                             |
+| `AddPasskeysSuccess`          | Passkey added confirmation                                                        | —                             |
+| `End`                         | **Final.** Carries `authSession`                                                  | —                             |
 
 ### Events
 
-| Event                       | Payload                   | Origin State(s)                                                                                       | Target                                               |
-| --------------------------- | ------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| `AUTH_WITH_EMAIL`           | `{ email, isEmbed }`      | `AuthSelection`                                                                                       | `EmailAuthentication`                                |
-| `AUTH_WITH_EMAIL`           | `{ email, isEmbed }`      | `AuthSelectionSignUp`                                                                                 | `SignUpWithEmail`                                    |
-| `AUTH_WITH_GOOGLE`          | `{ jwt, email, isEmbed }` | `AuthSelection`                                                                                       | `AuthWithGoogle`                                     |
-| `AUTH_WITH_GOOGLE`          | `{ jwt, email, isEmbed }` | `AuthSelectionSignUp`                                                                                 | `SignUpWithGoogle`                                   |
-| `AUTH_WITH_II`              | `AbstractAuthSession?`    | `AuthSelection`                                                                                       | `AuthWithII`                                         |
-| `AUTH_WITH_II`              | `AbstractAuthSession?`    | `AuthSelectionSignUp`                                                                                 | `SignUpWithII`                                       |
-| `AUTH_WITH_OTHER`           | `{ isEmbed }`             | `AuthSelection`                                                                                       | `OtherSignOptions`                                   |
-| `AUTH_WITH_RECOVERY_PHRASE` | —                         | `OtherSignOptions`                                                                                    | `SignInWithRecoveryPhrase`                           |
-| `SIGN_UP`                   | —                         | `AuthSelection`                                                                                       | `AuthSelectionSignUp`                                |
-| `SIGN_IN`                   | —                         | `AuthSelectionSignUp`                                                                                 | `AuthSelection`                                      |
-| `SIGN_UP_WITH_PASSKEY`      | —                         | `AuthSelectionSignUp`                                                                                 | `SignUpPassKey`                                      |
-| `AUTH_WITH_PASSKEY`         | `AbstractAuthSession?`    | `AuthSelection`                                                                                       | `checkRecovery8th`                                   |
-| `AUTH_WITH_PASSKEY`         | `AbstractAuthSession?`    | `ChooseWallet`                                                                                        | `checkRecovery8th`                                   |
-| `CHOOSE_WALLET`             | —                         | `ChooseWallet`                                                                                        | `AuthSelection` (use different method)               |
-| `CHOOSE_WALLET`             | —                         | `AuthSelection`                                                                                       | `ChooseWallet` (back arrow, requires wallets in ctx) |
-| `AUTHENTICATED`             | `AbstractAuthSession?`    | `AuthSelection`, `AuthSelectionSignUp`                                                                | `End`                                                |
-| `AUTHENTICATED`             | `AbstractAuthSession?`    | `SignUpPassKey`                                                                                       | `End`                                                |
-| `AUTHENTICATED`             | `AbstractAuthSession?`    | `OtherSignOptions`                                                                                    | `End`                                                |
-| `AUTHENTICATED`             | `AbstractAuthSession?`    | `SignInWithRecoveryPhrase`                                                                            | `checkPasskeys6th`                                   |
-| `AUTHENTICATED`             | —                         | `TwoFA`                                                                                               | `checkRecovery8th`                                   |
-| `BACK`                      | —                         | `SignUpPassKey`, `SignInWithRecoveryPhrase` (→ `OtherSignOptions`), `OtherSignOptions`, `AddPasskeys` | varies                                               |
-| `CONTINUE`                  | —                         | `AddPasskeys`                                                                                         | `AddPasskeysSuccess`                                 |
-| `SKIP`                      | —                         | `AddPasskeys`, `AuthAddRecoveryPhrase`                                                                | `End`                                                |
-| `DONE`                      | —                         | `AddPasskeysSuccess`, `AuthAddRecoveryPhrase`, `AuthSaveRecoveryPhrase`                               | `AddPasskeysSuccess` / `End`                         |
+| Event                       | Payload                   | Origin State(s)                                                                        | Target                                               |
+| --------------------------- | ------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `AUTH_WITH_EMAIL`           | `{ email, isEmbed }`      | `AuthSelection`                                                                        | `EmailAuthentication`                                |
+| `AUTH_WITH_EMAIL`           | `{ email, isEmbed }`      | `AuthSelectionSignUp`                                                                  | `SignUpWithEmail`                                    |
+| `AUTH_WITH_GOOGLE`          | `{ jwt, email, isEmbed }` | `AuthSelection`                                                                        | `AuthWithGoogle`                                     |
+| `AUTH_WITH_GOOGLE`          | `{ jwt, email, isEmbed }` | `AuthSelectionSignUp`                                                                  | `SignUpWithGoogle`                                   |
+| `AUTH_WITH_II`              | `AbstractAuthSession?`    | `AuthSelection`                                                                        | `AuthWithII`                                         |
+| `AUTH_WITH_II`              | `AbstractAuthSession?`    | `AuthSelectionSignUp`                                                                  | `SignUpWithII`                                       |
+| `AUTH_WITH_OTHER`           | `{ isEmbed }`             | `AuthSelection`                                                                        | `OtherSignOptions`                                   |
+| `AUTH_WITH_RECOVERY_PHRASE` | —                         | `OtherSignOptions`                                                                     | `SignInWithRecoveryPhrase`                           |
+| `SIGN_UP`                   | —                         | `AuthSelection`                                                                        | `AuthSelectionSignUp`                                |
+| `SIGN_IN`                   | —                         | `AuthSelectionSignUp`                                                                  | `AuthSelection`                                      |
+| `SIGN_UP_WITH_PASSKEY`      | —                         | `AuthSelectionSignUp`                                                                  | `SignUpPassKey`                                      |
+| `AUTH_WITH_PASSKEY`         | `AbstractAuthSession?`    | `AuthSelection`                                                                        | `GetRecoveryProvisioningPlan`                        |
+| `AUTH_WITH_PASSKEY`         | `AbstractAuthSession?`    | `ChooseWallet`                                                                         | `GetRecoveryProvisioningPlan`                        |
+| `CHOOSE_WALLET`             | —                         | `ChooseWallet`                                                                         | `AuthSelection` (use different method)               |
+| `CHOOSE_WALLET`             | —                         | `AuthSelection`                                                                        | `ChooseWallet` (back arrow, requires wallets in ctx) |
+| `AUTHENTICATED`             | `AbstractAuthSession?`    | `AuthSelection`, `AuthSelectionSignUp`                                                 | `End`                                                |
+| `AUTHENTICATED`             | `AbstractAuthSession?`    | `SignUpPassKey`                                                                        | `End`                                                |
+| `AUTHENTICATED`             | `AbstractAuthSession?`    | `OtherSignOptions`                                                                     | `End`                                                |
+| `AUTHENTICATED`             | `AbstractAuthSession?`    | `SignInWithRecoveryPhrase`                                                             | `GetRecoveryProvisioningPlan`                        |
+| `AUTHENTICATED`             | —                         | `TwoFA`                                                                                | `GetRecoveryProvisioningPlan`                        |
+| `BACK`                      | —                         | `SignUpPassKey`, `SignInWithRecoveryPhrase` (→ `OtherSignOptions`), `OtherSignOptions` | varies                                               |
+| `CONTINUE`                  | —                         | `AddPasskeys`                                                                          | `VerifyPasskeyProvisioning`                          |
+| `DONE`                      | —                         | `AddPasskeysSuccess`                                                                   | `End`                                                |
+| `DONE`                      | —                         | `AuthAddRecoveryPhrase`                                                                | `AuthSaveRecoveryPhrase`                             |
+| `DONE`                      | —                         | `AuthSaveRecoveryPhrase`                                                               | `VerifyRecoveryProvisioning`                         |
 
 ### Guards
 
-| Guard                        | Condition                                                                          |
-| ---------------------------- | ---------------------------------------------------------------------------------- |
-| `hasWallets`                 | `event.data.length > 0` (wallets returned by `getAllWalletsFromThisDevice`)        |
-| `isPasskeySupported`         | `isWebAuthNSupported()` — device supports WebAuthn                                 |
-| `isExistingAccount`          | `event.data.anchor` is truthy (returned from Google/II invoke)                     |
-| `isReturn`                   | Email machine `onDone` data is falsy (user navigated back)                         |
-| `is2FAEnabled`               | `checkIf2FAEnabled` result is truthy                                               |
-| `showPasskeys`               | `event.data.showPasskeys` is `true` (or `undefined`, defaults to `true`)           |
-| `showRecovery`               | `event.data.showRecovery` is `true` (or `undefined`, defaults to `true`)           |
-| `shouldShowRecoveryEvery8th` | `context.shouldShowRecoveryEvery8th === true` — inline guard in `checkPasskeys6th` |
+| Guard                 | Condition                                                                   |
+| --------------------- | --------------------------------------------------------------------------- |
+| `hasWallets`          | `event.data.length > 0` (wallets returned by `getAllWalletsFromThisDevice`) |
+| `isPasskeySupported`  | `isWebAuthNSupported()` — device supports WebAuthn                          |
+| `isExistingAccount`   | `event.data.anchor` is truthy (returned from Google/II invoke)              |
+| `isReturn`            | Email machine `onDone` data is falsy (user navigated back)                  |
+| `is2FAEnabled`        | `checkIf2FAEnabled` result is truthy                                        |
+| `needsPasskey`        | `event.output.steps[0] === RecoveryProvisioningMode.PASSKEY`                |
+| `needsRecoveryPhrase` | `event.output.steps[0] === RecoveryProvisioningMode.RECOVERY_PHRASE`        |
 
 ### Actions
 
@@ -193,10 +193,8 @@
 | `assignVerificationEmail`        | `context.verificationEmail = event.data.email`        |
 | `assignEmail`                    | `context.email = event.data.email`                    |
 | `assignAllowedDevices`           | `context.allowedDevices = event.data.allowedPasskeys` |
-| `assignShowPasskeys`             | `context.showPasskeys = event.data.showPasskeys`      |
-| `assignShowRecovery`             | `context.showRecovery = event.data.showRecovery`      |
 | `assignIsEmbed`                  | `context.isEmbed = event.data.isEmbed`                |
-| `setShouldCheckRecoveryEvery8th` | `context.shouldShowRecoveryEvery8th = true`           |
+| `assignRecoveryProvisioningPlan` | `context.recoveryProvisioningPlan = event.output`     |
 
 ---
 

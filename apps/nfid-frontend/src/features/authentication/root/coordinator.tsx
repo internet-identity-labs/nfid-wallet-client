@@ -493,7 +493,6 @@ export default function AuthenticationCoordinator({
           >
             <AuthAddRecoveryPhrase
               name={walletName}
-              onSkip={() => send({ type: "SKIP" })}
               onCreate={() => send({ type: "DONE" })}
               titleClassName={isIdentityKit ? "lg:text-[28px]" : undefined}
             />
@@ -579,7 +578,6 @@ export default function AuthenticationCoordinator({
             <AuthAddPasskey
               isLoading={isAddPasskeyLoading}
               name={walletName}
-              onSkip={() => send({ type: "SKIP" })}
               onAdd={() => {
                 setIsAddPasskeyLoading(true)
                 passkeyConnector

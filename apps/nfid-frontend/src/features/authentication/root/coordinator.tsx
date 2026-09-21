@@ -14,7 +14,6 @@ import {
 import { ChooseWallet } from "packages/ui/src/organisms/authentication/choose-wallet"
 import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/other-sign-options.tsx"
 import { AuthSignInWithRecoveryPhrase } from "packages/ui/src/organisms/authentication/sign-in-with-recovery-phrase"
-import { AuthSignUpPassKey } from "packages/ui/src/organisms/authentication/sign-up-passkey"
 import { ReactNode, useCallback, useMemo, useState } from "react"
 import { openIIWindow } from "frontend/features/authentication/auth-selection/ii-flow/ii-auth.service"
 
@@ -56,10 +55,8 @@ export default function AuthenticationCoordinator({
   const [isOtherOptionsLoading, setIsOtherOptionsLoading] = useState(false)
   const [isAddPasskeyLoading, setIsAddPasskeyLoading] = useState(false)
   const [loginWithRecoverError, setLoginWithRecoverError] = useState("")
-  const [signUpPasskeyLoading, setSignUpPasskeyLoading] = useState(false)
   const [loginWithRecoveryLoading, setLoginWithRecoveryLoading] =
     useState(false)
-  const [signUpWithPassKeyError, setSignUpWithPasskeyError] = useState("")
 
   const onSelectGoogleAuth = (credential: string) => {
     send({
@@ -146,47 +143,6 @@ export default function AuthenticationCoordinator({
       } else {
         toaster.error((e as Error).message)
       }
-    }
-  }
-
-  const onSignUpWithPasskey = async ({
-    walletName,
-    challengeKey,
-    enteredCaptcha,
-  }: {
-    walletName: string
-    challengeKey: string
-    enteredCaptcha?: string
-  }) => {
-    setSignUpPasskeyLoading(true)
-    try {
-      const response = await passkeyConnector.registerWithPasskey(walletName, {
-        challengeKey,
-        chars: enteredCaptcha,
-      })
-      send({
-        type: "AUTHENTICATED",
-        data: response,
-      })
-    } catch (e) {
-      const msg = (e as Error).message
-      if (msg.includes("Incorrect captcha key"))
-        return setSignUpWithPasskeyError("Captcha expired. Please try again.")
-      if (msg.includes("Incorrect captcha solution"))
-        return setSignUpWithPasskeyError(
-          "That captcha wasn’t quite right. Let’s try again!",
-        )
-      if (msg.includes("either timed out or was not allowed")) {
-        toaster.info(
-          "It seems like the process was interrupted. Feel free to try again!",
-        )
-        return
-      }
-      return setSignUpWithPasskeyError(
-        "We ran into a hiccup. Give it another shot",
-      )
-    } finally {
-      setSignUpPasskeyLoading(false)
     }
   }
 
@@ -331,112 +287,6 @@ export default function AuthenticationCoordinator({
                   Continue with Internet Identity
                 </Button>
               }
-              onTypeChange={() => send({ type: "SIGN_UP" })}
-            />
-          </motion.div>
-        )
-      case state.matches("AuthSelectionSignUp"):
-        return (
-          <motion.div
-            key="AuthSelectionSignUp"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="flex flex-col flex-1"
-          >
-            <AuthSelection
-              type="sign-up"
-              isIdentityKit={isIdentityKit}
-              onSelectEmailAuth={(email: string) => {
-                send({
-                  type: "AUTH_WITH_EMAIL",
-                  data: {
-                    email,
-                    isEmbed,
-                  },
-                })
-              }}
-              passKeySupported={isWebAuthNSupported()}
-              isLoading={isPasskeyLoading}
-              applicationURL={state.context.authRequest?.hostname}
-              onLoginWithPasskey={async () => {
-                send({ type: "SIGN_UP_WITH_PASSKEY" })
-              }}
-              googleButton={
-                <SignInWithGoogle
-                  onLogin={onSelectGoogleAuth}
-                  button={
-                    <Button
-                      id="google-sign-button"
-                      className="h-12 !p-0"
-                      type="stroke"
-                      icon={<IconCmpGoogle />}
-                      block
-                    >
-                      Continue with Google
-                    </Button>
-                  }
-                />
-              }
-              iiButton={
-                <Button
-                  id="ii-sign-button"
-                  className="h-12 !p-0 active:!text-black dark:active:!text-white"
-                  type="stroke"
-                  icon={<IconCmpDfinity className="w-6 h-6 min-w-6" />}
-                  block
-                  onClick={onSelectIIAuth}
-                >
-                  Continue with Internet Identity
-                </Button>
-              }
-              onTypeChange={() => send({ type: "SIGN_IN" })}
-            />
-          </motion.div>
-        )
-      case state.matches("SignUpPassKey"):
-        return (
-          <motion.div
-            key="SignUpPassKey"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="flex flex-col flex-1"
-          >
-            <AuthSignUpPassKey
-              onPasskeyCreate={onSignUpWithPasskey}
-              clearError={() => setSignUpWithPasskeyError("")}
-              isPasskeyCreating={signUpPasskeyLoading}
-              getCaptcha={passkeyConnector.getCaptchaChallenge}
-              withLogo={!isIdentityKit}
-              title={isIdentityKit ? "Sign up" : undefined}
-              subTitle={
-                isIdentityKit ? "to continue to" : "Sign up to continue to"
-              }
-              onBack={() => {
-                send({ type: "BACK" })
-                setSignUpWithPasskeyError("")
-              }}
-              createPasskeyError={signUpWithPassKeyError}
-              applicationURL={state.context.authRequest?.hostname}
-            />
-          </motion.div>
-        )
-      case state.matches("SignUpWithEmail"):
-        return (
-          <motion.div
-            key="EmailAuthentication"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="flex flex-col flex-1"
-          >
-            <AuthEmailFlowCoordinator
-              isIdentityKit={isIdentityKit}
-              actor={state.children.AuthWithEmailMachine as AuthWithEmailActor}
             />
           </motion.div>
         )

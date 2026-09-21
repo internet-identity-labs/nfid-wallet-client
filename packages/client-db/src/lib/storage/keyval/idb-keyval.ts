@@ -1,6 +1,6 @@
 import { openDB, IDBPDatabase } from "idb"
 
-import { KeyValueStore } from "./types"
+import { KeyValueStore } from "../types"
 
 type Database = IDBPDatabase<unknown>
 type DBCreateOptions = {
@@ -131,6 +131,15 @@ export class IdbKeyVal implements KeyValueStore {
    */
   public async clear() {
     return await _clear(this._db, this._storeName)
+  }
+
+  /**
+   * Close the underlying IndexedDB connection so a pending
+   * `deleteDatabase` is not blocked by this handle.
+   * @returns void
+   */
+  public close(): void {
+    this._db.close()
   }
 
   public async getAllKeys(): Promise<string[]> {

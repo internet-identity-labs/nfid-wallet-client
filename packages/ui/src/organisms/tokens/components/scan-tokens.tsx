@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { Button } from "packages/ui/src/molecules/button"
 import { ModalComponent } from "@nfid-frontend/ui"
@@ -112,9 +113,9 @@ export function ScanTokens({
                   <div className="relative">
                     <Skeleton className="rounded-[12px] h-[40px] w-[40px] mr-[10px]" />
                     <div className="flex absolute top-[calc(50%-3px)] left-[calc(50%-18px)]">
-                      <div className="h-[6px] w-[6px] rounded-[1.5px] bg-[#D2D2D2] dark:bg-zinc-700 bg-opacity-20 mr-[4px]" />
-                      <div className="h-[6px] w-[6px] rounded-[1.5px] bg-[#D2D2D2] dark:bg-zinc-700 bg-opacity-20 mr-[4px]" />
-                      <div className="h-[6px] w-[6px] rounded-[1.5px] bg-[#D2D2D2] dark:bg-zinc-700 bg-opacity-20" />
+                      <div className="h-[6px] w-[6px] rounded-[1.5px] bg-[#D2D2D2]/20 dark:bg-zinc-700/20 mr-[4px]" />
+                      <div className="h-[6px] w-[6px] rounded-[1.5px] bg-[#D2D2D2]/20 dark:bg-zinc-700/20 mr-[4px]" />
+                      <div className="h-[6px] w-[6px] rounded-[1.5px] bg-[#D2D2D2]/20 dark:bg-zinc-700/20" />
                     </div>
                   </div>
                   <div className="flex flex-col">

@@ -101,7 +101,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         <div
           id={id}
           className={clsx(
-            "flex items-center justify-center space-x-2 h-full",
+            "flex items-center justify-center gap-2 h-full",
             innerClassName,
           )}
         >

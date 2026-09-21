@@ -38,7 +38,6 @@ import { arbSepoliaService } from "frontend/integration/ethereum/arbitrum/testne
 import { polygonAmoyService } from "frontend/integration/ethereum/polygon/testnetwork/pol-amoy.service"
 import { useNavigate, useParams } from "react-router-dom"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { useActor } from "@xstate/react"
 import { ProfileContext } from "frontend/provider"
 
 const EVM_SERVICE_MAP: Partial<Record<number, EVMService>> = {
@@ -76,7 +75,6 @@ export const TransferNFT = ({
   const { tokenId } = useParams()
   const navigate = useNavigate()
   const { transferService } = useContext(ProfileContext)
-  const [, send] = useActor(transferService)
 
   const formMethods = useForm<FormValues>({
     mode: "all",
@@ -212,12 +210,12 @@ export const TransferNFT = ({
     }
 
     if (Boolean(tokenId)) {
-      send({ type: "ASSIGN_SELECTED_FT", data: undefined })
-      send({ type: "ASSIGN_SELECTED_TARGET_FT", data: "" })
-      send({ type: "ASSIGN_SELECTED_NFT", data: "" })
-      send({ type: "CHANGE_TOKEN_TYPE", data: "ft" })
-      send({ type: "CHANGE_DIRECTION", data: null })
-      send({ type: "HIDE" })
+      transferService.send({ type: "ASSIGN_SELECTED_FT", data: undefined })
+      transferService.send({ type: "ASSIGN_SELECTED_TARGET_FT", data: "" })
+      transferService.send({ type: "ASSIGN_SELECTED_NFT", data: "" })
+      transferService.send({ type: "CHANGE_TOKEN_TYPE", data: "ft" })
+      transferService.send({ type: "CHANGE_DIRECTION", data: null })
+      transferService.send({ type: "HIDE" })
       navigate(`${ProfileConstants.base}/${ProfileConstants.nfts}`)
     }
   }

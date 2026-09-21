@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { FC, Fragment, memo, useState } from "react"
 
@@ -77,7 +78,7 @@ export const NFTDetails: FC<NFTDetailsProps> = memo(
         <div
           className={clsx(
             "grid gap-[30px] max-w-[100vw] mb-[20px] sm:mb-[30px]",
-            "grid-cols-1 lg:grid-cols-[auto,1fr]",
+            "grid-cols-1 lg:grid-cols-[auto_1fr]",
           )}
         >
           <div
@@ -271,7 +272,7 @@ export const NFTDetails: FC<NFTDetailsProps> = memo(
             <ProfileContainer
               className={clsx(
                 "!px-0 md:!px-[30px] mb-[20px] sm:mb-[30px] min-h-[250px] relative dark:text-white",
-                (!properties.mappedValues || !properties.mappedValues.length) &&
+                !properties.mappedValues?.length &&
                   !isPropertiesLoading &&
                   "hidden",
               )}
@@ -320,7 +321,7 @@ export const NFTDetails: FC<NFTDetailsProps> = memo(
             <ProfileContainer
               className={clsx(
                 "!p-[20px] sm:!p-[30px] mb-[20px] sm:mb-[30px] relative dark:text-white",
-                (!transactions.activity || !transactions.activity.length) &&
+                !transactions.activity?.length &&
                   !isTransactionsLoading &&
                   "hidden",
               )}

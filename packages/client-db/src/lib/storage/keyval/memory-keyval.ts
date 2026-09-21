@@ -1,4 +1,4 @@
-import { KeyValueStore } from "./types"
+import { KeyValueStore } from "../types"
 
 type IDBValidKey = string | number | Date | BufferSource | IDBValidKey[]
 

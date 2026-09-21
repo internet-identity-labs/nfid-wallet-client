@@ -97,7 +97,7 @@ export const Modal: React.FC<ModalProps> = ({
         {isOpen && (
           <motion.div
             key="modal-overlay"
-            className="fixed top-0 left-0 z-50 flex items-center justify-center w-full h-screen bg-opacity-80 bg-[#18181B]"
+            className="fixed top-0 left-0 z-50 flex items-center justify-center w-full h-screen bg-[#18181B]/80"
             onClick={handleClose}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -126,8 +126,8 @@ export const Modal: React.FC<ModalProps> = ({
       <RadixDialog.Portal>
         <RadixDialog.Overlay
           className={clsx(
-            "fixed inset-0 bg-black",
-            backgroundClassnames || "bg-opacity-40",
+            "fixed inset-0",
+            backgroundClassnames || "bg-black/40",
           )}
         />
         {isLoading && <Loader isLoading={isLoading} />}

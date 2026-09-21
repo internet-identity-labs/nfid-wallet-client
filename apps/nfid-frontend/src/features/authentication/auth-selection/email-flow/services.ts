@@ -9,6 +9,7 @@ import {
   KEY_STORAGE_KEY,
 } from "packages/integration/src/lib/authentication/storage"
 
+import { rememberMeLocalStorage } from "@nfid/client-db"
 import {
   authState,
   DeviceType,
@@ -61,7 +62,7 @@ export const checkEmailVerification = async (
           verificationMethod,
           context.verificationEmail,
           context.keyPair!,
-          context.requestId,
+          context.requestId!,
           nonce - 1,
         )
 
@@ -77,12 +78,12 @@ export const checkEmailVerification = async (
         }
       }
     }, 3000)
-    window.localStorage.setItem("emailIntervalId", int.toString())
+    rememberMeLocalStorage.setItem("emailIntervalId", int.toString())
   })
 }
 
 export const stopIntervalVerification = () => {
-  const intervalId = window.localStorage.getItem("emailIntervalId")
+  const intervalId = rememberMeLocalStorage.getItem("emailIntervalId")
   if (!intervalId) return
   clearInterval(parseInt(intervalId))
 }
@@ -118,7 +119,7 @@ export const authorizeWithEmail = async (
   if (!context?.emailDelegation) throw new Error("No email delegation")
 
   let profile: Profile
-  const delegationIdentity = context.delegation // email delegation
+  const delegationIdentity = context.delegation! // email delegation
 
   try {
     await replaceActorIdentity(im, delegationIdentity)

@@ -14,7 +14,7 @@ export const TransactionInfoRow = ({
   return (
     <div
       className={clsx(
-        "grid grid-cols-[160px,1fr] w-full text-sm",
+        "grid grid-cols-[160px_1fr] w-full text-sm",
         "border-b-[1px] border-gray-100 min-h-[48px]",
         "items-center py-1",
       )}

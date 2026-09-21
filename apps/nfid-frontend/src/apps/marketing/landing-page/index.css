@@ -194,16 +194,18 @@
   opacity: 1;
 }
 
-h1,
-h2,
-h4 {
-  font-family: "Poppins", sans-serif !important;
-  font-weight: 700;
-  font-style: normal;
-}
+@layer base {
+  h1,
+  h2,
+  h4 {
+    font-family: "Poppins", sans-serif !important;
+    font-weight: 700;
+    font-style: normal;
+  }
 
-h5 {
-  font-weight: 400 !important;
+  h5 {
+    font-weight: 400 !important;
+  }
 }
 
 body.homescreen {

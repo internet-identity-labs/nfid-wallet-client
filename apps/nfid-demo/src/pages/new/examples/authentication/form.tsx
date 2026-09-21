@@ -88,12 +88,12 @@ export const AuthenticationForm = ({
         <ul className="flex flex-col gap-2">
           {fields.map((field, index) => {
             return (
-              <div key={field.id} className="flex gap-2 center">
+              <div key={field.id} className="flex gap-2 mb-5 center">
                 <Input
                   labelText={`target canisterId ${index + 1}`}
                   {...register(`canisterIds.${index}.canisterId`)} // Use index to name the input fields
                   placeholder={`add canisterId ${index + 1}`}
-                  className="flex-1"
+                  className="flex-1 !mb-0"
                 />
                 <div className="flex items-end flex-end">
                   <Button

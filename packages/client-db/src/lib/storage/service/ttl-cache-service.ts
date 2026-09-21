@@ -1,4 +1,4 @@
-import { TtlStorage, storageWithTtl } from "./ttl-storage"
+import { TtlStorage, storageWithTtl } from "../ttl-storage"
 
 export interface TtlGetOrFetchOptions<T> {
   /**

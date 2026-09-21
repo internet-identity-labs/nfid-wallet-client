@@ -2,6 +2,7 @@ import { SignIdentity } from "@icp-sdk/core/agent"
 import { SelectedUtxosFeeResponse } from "packages/integration/src/lib/_ic_api/icrc1_oracle.d"
 import { getWalletDelegation } from "frontend/integration/facade/wallet"
 
+import { rememberMeLocalStorage } from "@nfid/client-db"
 import { Balance } from "@nfid/integration"
 
 import { bitcoinCanisterService } from "./services/bitcoin-canister.service"
@@ -55,7 +56,7 @@ export class BitcoinService {
 
     await patronService.askToPayFor(identity)
     const address: string = await chainFusionSignerService.getAddress(identity)
-    localStorage.setItem(key, address)
+    rememberMeLocalStorage.setItem(key, address)
     return address
   }
 
@@ -225,7 +226,7 @@ export class BitcoinService {
 
   private getAddressFromCache() {
     const key = KEY_BTC_ADDRESS
-    const cachedValue = localStorage.getItem(key)
+    const cachedValue = rememberMeLocalStorage.getItem(key)
 
     return {
       cachedValue,

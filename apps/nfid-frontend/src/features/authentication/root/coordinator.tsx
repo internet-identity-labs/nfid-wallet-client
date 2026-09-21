@@ -1,4 +1,4 @@
-import { useActor } from "@xstate/react"
+import { useSelector } from "@xstate/react"
 import { motion } from "framer-motion"
 import { decodeJwt } from "jose"
 import toaster from "packages/ui/src/atoms/toast"
@@ -8,9 +8,10 @@ import { AuthAddPasskey } from "packages/ui/src/organisms/authentication/auth-ad
 import { AuthAddPasskeySuccess } from "packages/ui/src/organisms/authentication/auth-add-passkey/success"
 import { AuthSelection } from "packages/ui/src/organisms/authentication/auth-selection"
 import {
-  AuthBackupWallet,
+  AuthAddRecoveryPhrase,
   AuthSaveRecoveryPhrase,
 } from "packages/ui/src/organisms/authentication/backup-wallet"
+import { ChooseWallet } from "packages/ui/src/organisms/authentication/choose-wallet"
 import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/other-sign-options.tsx"
 import { AuthSignInWithRecoveryPhrase } from "packages/ui/src/organisms/authentication/sign-in-with-recovery-phrase"
 import { AuthSignUpPassKey } from "packages/ui/src/organisms/authentication/sign-up-passkey"
@@ -18,7 +19,6 @@ import { ReactNode, useCallback, useMemo, useState } from "react"
 import { openIIWindow } from "frontend/features/authentication/auth-selection/ii-flow/ii-auth.service"
 
 import { Button, IconCmpGoogle, IconCmpDfinity } from "@nfid-frontend/ui"
-import { getAllWalletsFromThisDevice } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { AuthEmailFlowCoordinator } from "frontend/features/authentication/auth-selection/email-flow/coordination"
@@ -29,6 +29,8 @@ import { generate } from "frontend/integration/internet-identity/crypto/mnemonic
 import { parseUserNumber } from "frontend/integration/internet-identity/userNumber"
 import { AbstractAuthSession } from "frontend/state/authentication"
 import { BlurredLoader } from "@nfid-frontend/ui"
+
+import { isWebAuthNSupported } from "frontend/integration/device"
 
 import { authWithAnchor } from "../auth-selection/other-sign-options/services"
 import { passkeyConnector } from "../auth-selection/passkey-flow/services"
@@ -47,7 +49,8 @@ export default function AuthenticationCoordinator({
 }) {
   const { loginWithRecovery } = useAuthentication()
   const { storageProfile, storageProfileLoading } = useLoadProfileFromStorage()
-  const [state, send] = useActor(actor)
+  const state = useSelector(actor, (s) => s)
+  const send = (event: Parameters<typeof actor.send>[0]) => actor.send(event)
   const [isPasskeyLoading, setIsPasskeyLoading] = useState(false)
   const [is2FALoading, setIs2FALoading] = useState(false)
   const [isOtherOptionsLoading, setIsOtherOptionsLoading] = useState(false)
@@ -76,7 +79,7 @@ export default function AuthenticationCoordinator({
 
   const onAuthWithPasskey = (authSession: AbstractAuthSession) => {
     send({
-      type: "SIGN_IN_PASSKEY",
+      type: "AUTH_WITH_PASSKEY",
       data: authSession,
     })
   }
@@ -242,6 +245,27 @@ export default function AuthenticationCoordinator({
 
   const renderAuthSteps = () => {
     switch (true) {
+      case state.matches("ChooseWallet"):
+        return (
+          <motion.div
+            key="ChooseWallet"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="flex flex-col flex-1"
+          >
+            <ChooseWallet
+              applicationURL={state.context.authRequest?.hostname}
+              showLogo={isIdentityKit}
+              wallets={state.context.wallets}
+              onLoginWithPasskey={(allowedPasskeys) =>
+                onLoginWithPasskey(allowedPasskeys)
+              }
+              onAuthSelection={() => send({ type: "CHOOSE_WALLET" })}
+            />
+          </motion.div>
+        )
       case state.matches("AuthSelection"):
         return (
           <motion.div
@@ -254,7 +278,12 @@ export default function AuthenticationCoordinator({
           >
             <AuthSelection
               isIdentityKit={isIdentityKit}
-              getAllWalletsFromThisDevice={getAllWalletsFromThisDevice}
+              wallets={state.context.wallets}
+              onShowWallets={
+                (state.context.wallets?.length ?? 0) > 0
+                  ? () => send({ type: "CHOOSE_WALLET" })
+                  : undefined
+              }
               onSelectEmailAuth={(email: string) => {
                 send({
                   type: "AUTH_WITH_EMAIL",
@@ -270,6 +299,7 @@ export default function AuthenticationCoordinator({
                   data: { isEmbed },
                 })
               }}
+              passKeySupported={isWebAuthNSupported()}
               isLoading={isPasskeyLoading}
               applicationURL={state.context.authRequest?.hostname}
               onLoginWithPasskey={onLoginWithPasskey}
@@ -318,7 +348,6 @@ export default function AuthenticationCoordinator({
             <AuthSelection
               type="sign-up"
               isIdentityKit={isIdentityKit}
-              getAllWalletsFromThisDevice={getAllWalletsFromThisDevice}
               onSelectEmailAuth={(email: string) => {
                 send({
                   type: "AUTH_WITH_EMAIL",
@@ -328,6 +357,7 @@ export default function AuthenticationCoordinator({
                   },
                 })
               }}
+              passKeySupported={isWebAuthNSupported()}
               isLoading={isPasskeyLoading}
               applicationURL={state.context.authRequest?.hostname}
               onLoginWithPasskey={async () => {
@@ -451,28 +481,27 @@ export default function AuthenticationCoordinator({
             />
           </motion.div>
         )
-      case state.matches("BackupWallet"):
+      case state.matches("AuthAddRecoveryPhrase"):
         return (
           <motion.div
-            key="BackupWallet"
+            key="AuthAddRecoveryPhrase"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             className="flex flex-col flex-1"
           >
-            <AuthBackupWallet
+            <AuthAddRecoveryPhrase
               name={walletName}
-              onSkip={() => send({ type: "SKIP" })}
               onCreate={() => send({ type: "DONE" })}
               titleClassName={isIdentityKit ? "lg:text-[28px]" : undefined}
             />
           </motion.div>
         )
-      case state.matches("BackupWalletSavePhrase"):
+      case state.matches("AuthSaveRecoveryPhrase"):
         return (
           <motion.div
-            key="BackupWalletSavePhrase"
+            key="AuthSaveRecoveryPhrase"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -549,7 +578,6 @@ export default function AuthenticationCoordinator({
             <AuthAddPasskey
               isLoading={isAddPasskeyLoading}
               name={walletName}
-              onSkip={() => send({ type: "SKIP" })}
               onAdd={() => {
                 setIsAddPasskeyLoading(true)
                 passkeyConnector

@@ -28,7 +28,7 @@ export function InfoCopy({
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         className={clsx(
-          "transition-all duration-200 flex px-0 lg:px-[20px] py-[20px] rounded-[12px] lg:hover:bg-teal-500 lg:hover:bg-opacity-10 cursor-pointer",
+          "transition-all duration-200 flex px-0 lg:px-[20px] py-[20px] rounded-[12px] lg:hover:bg-teal-500/10 cursor-pointer",
           className,
         )}
       >
@@ -47,9 +47,7 @@ export function InfoCopy({
           {copied ? <CopiedIcon /> : <CopyIcon />}
         </div>
       </div>
-      {withBorder && (
-        <div className="mx-auto w-[95%] h-[1px] bg-teal-500 bg-opacity-10" />
-      )}
+      {withBorder && <div className="mx-auto w-[95%] h-[1px] bg-teal-500/10" />}
     </Copy>
   )
 }

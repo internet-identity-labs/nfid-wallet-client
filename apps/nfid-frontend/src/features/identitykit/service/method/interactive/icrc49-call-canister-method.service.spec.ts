@@ -354,6 +354,44 @@ describe("Icrc49CallCanisterMethodService", () => {
         result: { contentMap: "cbor", certificate: "cert" },
       })
     })
+
+    it("should forward the nonce from the request params to the canister call", async () => {
+      (authStorage.get as jest.Mock).mockResolvedValue(
+        JSON.stringify([buildAccount()]),
+      )
+      ;(authState.get as jest.Mock).mockReturnValue({
+        delegationIdentity: "root-delegation",
+      })
+      ;(getGlobalDelegation as jest.Mock).mockResolvedValue(
+        "resolved-delegation",
+      )
+      ;(callCanisterService.call as jest.Mock).mockResolvedValue({
+        contentMap: "cbor",
+        certificate: "cert",
+      })
+
+      const message = {
+        origin: ORIGIN,
+        data: {
+          jsonrpc: "2.0",
+          id: "42",
+          method: "icrc49_call_canister",
+          params: {
+            canisterId: "aaaaa-aa",
+            sender: "2vxsx-fae",
+            method: "icrc1_transfer",
+            arg: "AA==",
+            nonce: "AQIDBA==",
+          },
+        },
+      } as unknown as MessageEvent<RPCMessage>
+
+      await service.onApprove(message)
+
+      expect(callCanisterService.call).toHaveBeenCalledWith(
+        expect.objectContaining({ nonce: "AQIDBA==" }),
+      )
+    })
   })
 
   describe("getComponentData", () => {

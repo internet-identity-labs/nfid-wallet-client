@@ -67,7 +67,7 @@ flowchart TD
 
 - **Purpose**: Orchestrates top-level authentication flows (email, Google, Internet Identity, other options) and post-auth onboarding (2FA, passkeys, recovery reminders).
 - **Inputs**:
-  - Events like `AUTH_WITH_EMAIL`, `AUTH_WITH_GOOGLE`, `AUTH_WITH_II`, `AUTH_WITH_OTHER`, `SIGN_UP`, `SIGN_IN_PASSKEY`, `AUTHENTICATED`.
+  - Events like `AUTH_WITH_EMAIL`, `AUTH_WITH_GOOGLE`, `AUTH_WITH_II`, `AUTH_WITH_OTHER`, `SIGN_UP`, `AUTH_WITH_PASSKEY`, `AUTHENTICATED`.
   - Optional `authRequest` and `appMeta` describing the calling app.
 - **Outputs**:
   - Final `End` state whose `data` is the full `AuthenticationContext` (including `authSession` and flags like `showPasskeys`, `showRecovery`).

@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@layer base {
+  html {
+    @apply font-sans antialiased;
+    scroll-behavior: smooth;
+  }
+}

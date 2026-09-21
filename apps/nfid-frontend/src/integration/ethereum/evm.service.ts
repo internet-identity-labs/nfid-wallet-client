@@ -23,7 +23,7 @@ import {
   type FeeData,
   type TransactionResponse,
 } from "ethers"
-import { ttlCacheService } from "@nfid/client-db"
+import { rememberMeLocalStorage, ttlCacheService } from "@nfid/client-db"
 import { agentBaseConfig } from "packages/integration/src/lib/actors"
 
 import { transferICRC1 } from "@nfid/integration/token/icrc1"
@@ -216,7 +216,7 @@ export abstract class EVMService {
     await patronService.askToPayFor(identity)
 
     const address = await chainFusionSignerService.getEthAddress(identity)
-    localStorage.setItem(key, address)
+    rememberMeLocalStorage.setItem(key, address)
     return address
   }
 
@@ -1115,7 +1115,7 @@ export abstract class EVMService {
   }
 
   private getAddressFromCache() {
-    const cachedValue = localStorage.getItem(KEY_ETH_ADDRESS)
+    const cachedValue = rememberMeLocalStorage.getItem(KEY_ETH_ADDRESS)
 
     return {
       cachedValue,

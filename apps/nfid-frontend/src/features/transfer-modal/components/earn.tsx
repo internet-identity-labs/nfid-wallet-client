@@ -57,7 +57,7 @@ export const Earn = ({
   const [isFetchingEarnData, setIsFetchingEarnData] = useState(false)
   const [earnError, setEarnError] = useState<string | undefined>()
   const [tokenAddress, setTokenAddress] = useState(
-    preselectedSourceTokenAddress || ETH_NATIVE_ID,
+    preselectedSourceTokenAddress ?? ETH_NATIVE_ID,
   )
   const [chainId, setChainId] = useState<ChainId | undefined>(
     preselectedSourceChainId,
@@ -188,7 +188,7 @@ export const Earn = ({
   useEffect(() => {
     if (!isAmountValid || !token || hasAmountError) return
 
-    debouncedFetchFee(
+    void debouncedFetchFee(
       token.getChainId() as AaveSupportedChainId,
       token.getTokenAddress(),
       amount,
@@ -196,6 +196,7 @@ export const Earn = ({
     )
 
     return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       fetchGenRef.current++
       debouncedFetchFee.cancel()
     }
@@ -309,6 +310,7 @@ export const Earn = ({
         <EarnUi
           token={token}
           isTokenLoading={isTokensLoading || !supportedTokens}
+          hasSupportedTokens={!!supportedTokens?.length}
           setChosenToken={setChosenToken}
           submit={submit}
           isSuccessOpen={isSuccessOpen}

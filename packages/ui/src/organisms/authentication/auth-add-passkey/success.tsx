@@ -17,27 +17,27 @@ export const AuthAddPasskeySuccess: FC<AuthAddPasskeyProps> = ({
   titleClassName,
 }) => {
   return (
-    <div className="flex flex-col w-full h-full text-sm text-center">
-      <h5
+    <div className="flex flex-col w-full h-full text-sm text-center dark:text-white">
+      <div
         className={clsx(
-          "text-center font-bold mt-[50px] mb-0 text-[20px]",
+          "text-center font-bold mt-[50px] text-[20px]",
           titleClassName,
         )}
       >
         Biometric enabled
-      </h5>
+      </div>
       <p className="mt-2.5 mb-[30px]">NFID Wallet name: {name}</p>
-      <p className="text-center">
+      <p className="text-center tracking-[0.2px]">
         You can now use your fingerprint, face, or screen lock to sign in faster
         and more securely next time.
       </p>
       <img
-        className="flex-1 mt-5 max-h-[245px] object-contain"
+        className="flex-1 my-[50px] max-h-[245px] object-contain"
         src={Image}
         alt="email-verification-error"
       />
       <Button className="mt-auto" block onClick={onFinish} type="primary">
-        Done
+        Continue
       </Button>
     </div>
   )

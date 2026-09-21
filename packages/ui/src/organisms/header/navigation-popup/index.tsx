@@ -1,13 +1,15 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { AnimatePresence, motion } from "framer-motion"
 import { NavDisconnectIcon } from "packages/ui/src/atoms/icons/nav-disconnect"
-import { HTMLAttributes, FC, useState, useContext } from "react"
+import { HTMLAttributes, FC, useState, useContext, useCallback } from "react"
 import { ProfileContext } from "frontend/provider"
 import { useNavigate, useLocation } from "react-router-dom"
 
 import { Skeleton } from "@nfid-frontend/ui"
 
 import { NFIDTheme } from "frontend/App"
+import { ModalType } from "frontend/features/transfer-modal/types"
 import { useDarkTheme } from "frontend/hooks"
 
 import { INavigationPopupLinks } from "../profile-header"
@@ -51,8 +53,26 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
   const location = useLocation()
   const isDarkTheme = useDarkTheme()
   const [isViewOnlyModalOpen, setIsViewOnlyModalOpen] = useState(false)
-  const { isOpenCryptopayModalOpen, setIsOpenCryptopayModalOpen } =
-    useContext(ProfileContext)
+  const {
+    isOpenCryptopayModalOpen,
+    setIsOpenCryptopayModalOpen,
+    transferService,
+  } = useContext(ProfileContext)
+
+  const onSendPay = useCallback(
+    (params: string, preselect?: { method: string; asset: string }) => {
+      transferService.send({ type: "ASSIGN_VAULTS", data: false })
+      transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+      transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.PAY })
+      transferService.send({
+        type: "ASSIGN_OPEN_CRYPTOPAY_PARAMS",
+        data: params,
+        preselect,
+      })
+      transferService.send({ type: "SHOW" })
+    },
+    [transferService],
+  )
 
   return (
     <>
@@ -146,6 +166,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
       <OpenCryptopayModal
         isOpen={isOpenCryptopayModalOpen}
         onCLose={() => setIsOpenCryptopayModalOpen(false)}
+        onSendPay={onSendPay}
       />
     </>
   )

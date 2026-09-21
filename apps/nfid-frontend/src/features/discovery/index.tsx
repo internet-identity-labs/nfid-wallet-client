@@ -6,7 +6,6 @@ import { NFIDTheme } from "frontend/App"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 import { promotionService } from "@nfid/integration/promotion"
 import { ModalType } from "../transfer-modal/types"
-import { useActor } from "@xstate/react"
 import { ProfileContext } from "frontend/provider"
 
 type DiscoveryPageProps = {
@@ -17,7 +16,6 @@ type DiscoveryPageProps = {
 const DiscoveryPage: FC<DiscoveryPageProps> = memo(
   ({ walletTheme, setWalletTheme }) => {
     const { transferService } = useContext(ProfileContext)
-    const [, send] = useActor(transferService)
 
     const { data: discoveryApps, isLoading } = useSWR(
       "discoveryApps",
@@ -31,11 +29,14 @@ const DiscoveryPage: FC<DiscoveryPageProps> = memo(
       })
 
     const onPromoteClick = (dappId: number) => {
-      send({ type: "ASSIGN_VAULTS", data: false })
-      send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-      send({ type: "CHANGE_DIRECTION", data: ModalType.PROMOTE })
-      send({ type: "ASSIGN_SELECTED_DAPP", data: dappId })
-      send("SHOW")
+      transferService.send({ type: "ASSIGN_VAULTS", data: false })
+      transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+      transferService.send({
+        type: "CHANGE_DIRECTION",
+        data: ModalType.PROMOTE,
+      })
+      transferService.send({ type: "ASSIGN_SELECTED_DAPP", data: dappId })
+      transferService.send({ type: "SHOW" })
     }
 
     return (

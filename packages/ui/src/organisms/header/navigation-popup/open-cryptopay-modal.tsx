@@ -1,6 +1,5 @@
-import { FC, useCallback, useContext, useEffect, useState } from "react"
+import { FC, useCallback, useEffect, useState } from "react"
 import clsx from "clsx"
-import { useDarkTheme } from "frontend/hooks"
 import ScanQrInfo from "../assets/scan-qr-info.png"
 import ScanQrInfoDark from "../assets/scan-qr-info-dark.png"
 import { ReactComponent as ArrowLeft } from "../../../atoms/icons/arrow.svg"
@@ -10,26 +9,43 @@ import { IconCmpScanQr } from "packages/ui/src/atoms/icons"
 import { ModalComponent } from "packages/ui/src/molecules/modal"
 import { useQrScanner } from "./use-qr-scanner"
 import { isValidQrCode } from "packages/ui/src/utils/is-valid-qr-code"
-import { useActor } from "@xstate/react"
-import { ProfileContext } from "frontend/provider"
-import { ModalType } from "frontend/features/transfer-modal/types"
 
 export interface OpenCryptopayModalProps {
   isOpen: boolean
   onCLose: () => void
+  onSendPay?: (
+    params: string,
+    preselect?: { method: string; asset: string },
+  ) => void
 }
 
 const QR_SCANNER_ELEMENT_ID = "open-cryptopay-qr-scanner"
 
+const useDarkTheme = () => {
+  const [isDark, setIsDark] = useState(
+    document.documentElement.classList.contains("dark"),
+  )
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains("dark"))
+    })
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    })
+    return () => observer.disconnect()
+  }, [])
+  return isDark
+}
+
 export const OpenCryptopayModal: FC<OpenCryptopayModalProps> = ({
   isOpen,
   onCLose,
+  onSendPay,
 }) => {
   const isDarkTheme = useDarkTheme()
   const [isInfoScreen, setIsInfoScreen] = useState(false)
   const [manualInput, setManualInput] = useState("")
-  const { transferService } = useContext(ProfileContext)
-  const [, send] = useActor(transferService)
   const [incorrectLinkError, setIncorrectLinkError] = useState(false)
 
   useEffect(() => {
@@ -59,13 +75,9 @@ export const OpenCryptopayModal: FC<OpenCryptopayModalProps> = ({
         : url.searchParams.get("lightning")!
 
       onCLose()
-      send({ type: "ASSIGN_VAULTS", data: false })
-      send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-      send({ type: "CHANGE_DIRECTION", data: ModalType.PAY })
-      send({ type: "ASSIGN_OPEN_CRYPTOPAY_PARAMS", data: params, preselect })
-      send("SHOW")
+      onSendPay?.(params, preselect)
     },
-    [onCLose],
+    [onCLose, onSendPay],
   )
 
   const { state, error, start } = useQrScanner(

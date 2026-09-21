@@ -1,7 +1,6 @@
 import { type SnsGovernanceDid } from "@icp-sdk/canisters/sns"
 type NeuronId = SnsGovernanceDid.NeuronId
 import { hexStringToUint8Array } from "@nfid-frontend/utils"
-import { useActor } from "@xstate/react"
 import { StakingDetails } from "packages/ui/src/organisms/staking/staking-details"
 import { useContext, useMemo, memo } from "react"
 import { useParams } from "react-router-dom"
@@ -32,7 +31,6 @@ const StakingDetailsPage = memo(() => {
     viewOnlyAddressType,
     transferService,
   } = useContext(ProfileContext)
-  const [, send] = useActor(transferService)
   const { identity } = useIdentity(isViewOnlyMode)
 
   const { data: tokens = [], isLoading: isTokensLoading } = useSWRWithTimestamp(
@@ -126,9 +124,9 @@ const StakingDetailsPage = memo(() => {
   }
 
   const onRedeemOpen = (id: string) => {
-    send({ type: "CHANGE_DIRECTION", data: ModalType.REDEEM })
-    send({ type: "ASSIGN_STAKE_ID", data: id })
-    send("SHOW")
+    transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.REDEEM })
+    transferService.send({ type: "ASSIGN_STAKE_ID", data: id })
+    transferService.send({ type: "SHOW" })
   }
 
   return (

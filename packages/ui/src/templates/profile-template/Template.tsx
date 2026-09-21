@@ -1,4 +1,4 @@
-import { useActor } from "@xstate/react"
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import {
   BannerCarousel,
@@ -366,64 +366,116 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
 
   const globalServices = useContext(ProfileContext)
 
-  const [, send] = useActor(globalServices.transferService)
-
   const onSendClick = () => {
-    send({ type: "ASSIGN_VAULTS", data: false })
-    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
-    send("SHOW")
+    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_SOURCE_WALLET",
+      data: "",
+    })
+    globalServices.transferService.send({
+      type: "CHANGE_DIRECTION",
+      data: ModalType.SEND,
+    })
+    globalServices.transferService.send({ type: "SHOW" })
   }
 
   const onReceiveClick = () => {
-    send({ type: "ASSIGN_VAULTS", data: false })
-    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: ModalType.RECEIVE })
-    send("SHOW")
+    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_SOURCE_WALLET",
+      data: "",
+    })
+    globalServices.transferService.send({
+      type: "CHANGE_DIRECTION",
+      data: ModalType.RECEIVE,
+    })
+    globalServices.transferService.send({ type: "SHOW" })
   }
 
   const onSwapClick = () => {
-    send({ type: "ASSIGN_VAULTS", data: false })
-    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: ModalType.SWAP })
-    send({ type: "ASSIGN_SELECTED_TARGET_FT", data: "" })
-    send("SHOW")
+    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_SOURCE_WALLET",
+      data: "",
+    })
+    globalServices.transferService.send({
+      type: "CHANGE_DIRECTION",
+      data: ModalType.SWAP,
+    })
+    globalServices.transferService.send({
+      type: "ASSIGN_SELECTED_TARGET_FT",
+      data: "",
+    })
+    globalServices.transferService.send({ type: "SHOW" })
   }
 
   const onBtcSwapClick = () => {
-    send({ type: "ASSIGN_VAULTS", data: false })
-    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: ModalType.SWAP })
-    send({ type: "ASSIGN_SELECTED_TARGET_FT", data: CKBTC_CANISTER_ID })
-    send("SHOW")
+    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_SOURCE_WALLET",
+      data: "",
+    })
+    globalServices.transferService.send({
+      type: "CHANGE_DIRECTION",
+      data: ModalType.SWAP,
+    })
+    globalServices.transferService.send({
+      type: "ASSIGN_SELECTED_TARGET_FT",
+      data: CKBTC_CANISTER_ID,
+    })
+    globalServices.transferService.send({ type: "SHOW" })
   }
 
   const onConvertClick = () => {
-    send({ type: "ASSIGN_VAULTS", data: false })
-    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
-    send("SHOW")
+    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_SOURCE_WALLET",
+      data: "",
+    })
+    globalServices.transferService.send({
+      type: "CHANGE_DIRECTION",
+      data: ModalType.CONVERT,
+    })
+    globalServices.transferService.send({ type: "SHOW" })
   }
 
   const onStakeClick = () => {
-    send({ type: "ASSIGN_VAULTS", data: false })
-    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: ModalType.STAKE })
-    send("SHOW")
+    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_SOURCE_WALLET",
+      data: "",
+    })
+    globalServices.transferService.send({
+      type: "CHANGE_DIRECTION",
+      data: ModalType.STAKE,
+    })
+    globalServices.transferService.send({ type: "SHOW" })
   }
 
   const onBridgeClick = () => {
-    send({ type: "ASSIGN_VAULTS", data: false })
-    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: ModalType.BRIDGE })
-    send("SHOW")
+    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_SOURCE_WALLET",
+      data: "",
+    })
+    globalServices.transferService.send({
+      type: "CHANGE_DIRECTION",
+      data: ModalType.BRIDGE,
+    })
+    globalServices.transferService.send({ type: "SHOW" })
   }
 
   const onEarnClick = () => {
-    send({ type: "ASSIGN_VAULTS", data: false })
-    send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
-    send({ type: "CHANGE_DIRECTION", data: ModalType.EARN })
-    send("SHOW")
+    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_SOURCE_WALLET",
+      data: "",
+    })
+    globalServices.transferService.send({
+      type: "CHANGE_DIRECTION",
+      data: ModalType.EARN,
+    })
+    globalServices.transferService.send({ type: "SHOW" })
   }
 
   const refreshPortfolio = useCallback(async () => {

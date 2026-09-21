@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { debounce } from "@nfid-frontend/utils"
 import clsx from "clsx"
 import { motion } from "framer-motion"
@@ -314,7 +315,7 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                 <div className={clsx("text-sm flex mt-auto")}>
                   {tokenInfo && (
                     <div className="grid w-full h-full grid-rows-3">
-                      <div className="grid grid-cols-[130px,1fr] border-b border-gray-100 items-center h-[50px] dark:text-white">
+                      <div className="grid grid-cols-[130px_1fr] border-b border-gray-100 items-center h-[50px] dark:text-white">
                         <p>Token icon</p>
                         <ImageWithFallback
                           alt="NFID token"
@@ -323,13 +324,13 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                           src={`${tokenInfo.logo}`}
                         />
                       </div>
-                      <div className="grid grid-cols-[130px,1fr] border-b border-gray-100 items-center h-[50px] dark:text-white">
+                      <div className="grid grid-cols-[130px_1fr] border-b border-gray-100 items-center h-[50px] dark:text-white">
                         <p>Token symbol</p>
                         <p className="text-black dark:text-white">
                           {tokenInfo.symbol}
                         </p>
                       </div>
-                      <div className="grid grid-cols-[130px,1fr] border-b border-gray-100 items-center h-[50px] dark:text-white">
+                      <div className="grid grid-cols-[130px_1fr] border-b border-gray-100 items-center h-[50px] dark:text-white">
                         <p>Token name</p>
                         <p className="text-black dark:text-white">
                           {tokenInfo.name}

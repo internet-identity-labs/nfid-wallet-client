@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { motion } from "framer-motion"
 import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
@@ -22,6 +23,7 @@ export interface EarnUiProps {
   submit: () => void
   setChosenToken: (value: SelectedToken) => void
   isTokenLoading: boolean
+  hasSupportedTokens: boolean
   status: SendStatus
   error: string | undefined
   earnError: string | undefined
@@ -41,6 +43,7 @@ export const EarnUi: FC<EarnUiProps> = ({
   submit,
   setChosenToken,
   isTokenLoading,
+  hasSupportedTokens,
   status,
   error,
   earnError,
@@ -69,6 +72,18 @@ export const EarnUi: FC<EarnUiProps> = ({
     Boolean(errors["amount"]?.message) ||
     !earnFeeData ||
     Boolean(earnError)
+
+  if (!hasSupportedTokens)
+    return (
+      <div
+        className={clsx(
+          "absolute top-0 bottom-0 left-0 right-0 text-sm text-gray-400 dark:text-zinc-500",
+          "flex items-center justify-center",
+        )}
+      >
+        No tokens available yet
+      </div>
+    )
 
   if (isTokenLoading || !token)
     return (

@@ -21,6 +21,7 @@ updates:
       - dependency-name: "typescript"
       - dependency-name: "@icp-sdk/core"
       - dependency-name: "webpack-dev-server"
+      - dependency-name: "@icp-sdk/auth"
 
   # This section configures Dependabot to update GitHub Actions dependencies.
   - package-ecosystem: "github-actions"

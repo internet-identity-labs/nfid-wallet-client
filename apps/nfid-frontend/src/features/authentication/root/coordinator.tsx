@@ -370,9 +370,7 @@ export default function AuthenticationCoordinator({
               getCaptcha={passkeyConnector.getCaptchaChallenge}
               withLogo={!isIdentityKit}
               title={isIdentityKit ? "Connect" : undefined}
-              subTitle={
-                isIdentityKit ? "to continue to" : "Connect to continue to"
-              }
+              subTitle={isIdentityKit ? "to continue to" : "Connect to"}
               onBack={() => {
                 send({ type: "BACK" })
                 setSignUpWithPasskeyError("")

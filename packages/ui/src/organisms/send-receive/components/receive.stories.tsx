@@ -43,7 +43,6 @@ export const ReceiveUiProps = {
       ],
     },
   ],
-  isVault: false,
   isAccountsValidating: false,
   setSelectedAccountAddress: () => {},
   isLoading: false,

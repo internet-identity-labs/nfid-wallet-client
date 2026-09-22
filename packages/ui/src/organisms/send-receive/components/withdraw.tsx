@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { motion } from "framer-motion"
 import { FC, useState } from "react"
 import { useFormContext } from "react-hook-form"
@@ -17,7 +18,7 @@ import { WithdrawSuccessUi } from "./withdraw-success"
 
 export interface WithdrawUiProps {
   token: FT | undefined
-  balance: bigint
+  withdrawBalance: bigint
   submit: () => void
   isTokenLoading: boolean
   status: SendStatus
@@ -32,7 +33,7 @@ export interface WithdrawUiProps {
 
 export const WithdrawUi: FC<WithdrawUiProps> = ({
   token,
-  balance,
+  withdrawBalance,
   submit,
   isTokenLoading,
   status,
@@ -107,7 +108,7 @@ export const WithdrawUi: FC<WithdrawUiProps> = ({
             <p className="mb-1 text-xs select-none">Amount to withdraw</p>
             <ChooseFromToken
               modalType={IModalType.WITHDRAW}
-              balance={balance}
+              withdrawBalance={withdrawBalance}
               id={"earn-from-title"}
               token={token}
               usdRate={token.getTokenRateFormatted(amount)}

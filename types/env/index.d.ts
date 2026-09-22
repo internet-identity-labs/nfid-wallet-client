@@ -43,7 +43,6 @@ declare const PUB_SUB_CHANNEL_CANISTER_ID: string
 declare const SDK_GIT_HASH: string
 declare const SIGNIN_GOOGLE: string
 declare const AWS_SIGNIN_GOOGLE_V2: string
-declare const VAULT_CANISTER_ID: string
 declare const NFID_VAULT_MANAGER_CANISTER_ID: string
 declare const VERIFIER_CANISTER_ID: string
 declare const VERIFY_PHONE_NUMBER: string

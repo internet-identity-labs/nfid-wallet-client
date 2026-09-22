@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { truncateString } from "@nfid-frontend/utils"
 import { Spinner } from "packages/ui/src/atoms/spinner"
 import { Dispatch, FC, SetStateAction, useMemo, useState } from "react"
@@ -66,12 +67,7 @@ export interface TransferFTUiProps {
   isLoading: boolean
   isBtcEthLoading: boolean
   loadingMessage: string | undefined
-  isVault: boolean
-  accountsOptions: IGroupedOptions[] | undefined
-  selectedVaultsAccountAddress: string
   submit: () => Promise<void | Id>
-  setSelectedVaultsAccountAddress: Dispatch<SetStateAction<string>>
-  vaultsBalance?: bigint | undefined
   status: SendStatus
   isSuccessOpen: boolean
   onClose: () => void
@@ -94,12 +90,7 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   isLoading,
   isBtcEthLoading,
   loadingMessage,
-  isVault,
-  accountsOptions,
-  selectedVaultsAccountAddress,
   submit,
-  setSelectedVaultsAccountAddress,
-  vaultsBalance,
   status,
   isSuccessOpen,
   onClose,
@@ -275,7 +266,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         modalType={IModalType.SEND}
         id={"token-to-send-title"}
         token={token}
-        balance={vaultsBalance}
         fee={fee}
         setFromChosenToken={setChosenToken}
         usdRate={token.getTokenRateFormatted(amount || 0)}
@@ -290,25 +280,6 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
       <div className="h-4 mt-1 text-xs leading-4 text-red-600">
         {errors["amount"]?.message as string}
       </div>
-      {isVault && (
-        <ChooseAccountModal
-          label="From"
-          title="From"
-          optionGroups={accountsOptions ?? []}
-          preselectedValue={selectedVaultsAccountAddress}
-          onSelect={setSelectedVaultsAccountAddress}
-          warningText={
-            isVault ? undefined : (
-              <div className="w-[337px]">
-                Starting September 1, 2023, assets from external applications
-                will not be displayed in NFID. <br /> <br /> To manage those
-                assets in NFID, transfer them to your NFID Wallet. Otherwise,
-                you’ll only have access through the application’s website.
-              </div>
-            )
-          }
-        />
-      )}
       <ChooseAddressModal<FtSearchRequest>
         title="Send to"
         addresses={addressesOptions}

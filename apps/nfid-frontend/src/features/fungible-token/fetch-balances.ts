@@ -1,10 +1,8 @@
 import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp"
 import { Principal } from "@icp-sdk/core/principal"
 
-import { Account, Balance, PrincipalAccount, Wallet } from "@nfid/integration"
+import { Account, Balance, PrincipalAccount } from "@nfid/integration"
 import { getBalance as getICPBalance } from "@nfid/integration"
-
-import { getAddress } from "frontend/util/get-address"
 
 type FetchBalanceArgs = {
   principals: PrincipalAccount[]
@@ -22,8 +20,6 @@ export type AccountBalance = {
   account: Account
   balance: TokenBalance
   address?: string
-  vaultId?: bigint
-  vaultName?: string
 }
 
 export async function fetchBalances({
@@ -47,49 +43,6 @@ export async function fetchBalances({
         // pulling only token key value pairs and drop array specific
         // properties from the result to keep clean return interface
         balance: token.reduce((acc, cur) => ({ ...acc, ...cur }), {}),
-      }
-    }),
-  )
-}
-
-export async function fetchVaultsWalletsBalances(
-  wallets: Wallet[],
-): Promise<AccountBalance[]> {
-  return await Promise.all(
-    wallets.map(async (wallet) => {
-      const principal = Principal.fromText(VAULT_CANISTER_ID)
-      const address = getAddress(principal, wallet.uid)
-      const balance = await getICPBalance(address)
-
-      return {
-        principal: principal,
-        account: {
-          domain: "nfid.vaults",
-          label: wallet.name ?? "",
-          accountId: wallet.uid,
-        },
-        principalId: principal.toText(),
-        address: address,
-        balance: { ICP: balance },
-        vaultId: wallet?.vaultId,
-        vaultName: wallet?.vaultName,
-      }
-    }),
-  )
-}
-
-export async function fetchVaultWalletsBalances(
-  wallets: Wallet[],
-): Promise<Wallet[]> {
-  return await Promise.all(
-    wallets.map(async (wallet) => {
-      const principal = Principal.fromText(VAULT_CANISTER_ID)
-      const balance = await getICPBalance(getAddress(principal, wallet.uid))
-
-      return {
-        ...wallet,
-        address: getAddress(principal, wallet.uid),
-        balance: { ICP: balance },
       }
     }),
   )

@@ -28,7 +28,7 @@ import { useSupplyPositions } from "frontend/hooks"
 interface WithdrawProps {
   tokenAddress: string
   chainId: ChainId
-  balance: bigint
+  withdrawBalance: bigint
   onClose: () => void
   setErrorMessage: (message: string) => void
   setSuccessMessage: (message: string) => void
@@ -41,7 +41,7 @@ const DEFAULT_EARN_ERROR = "Something went wrong"
 export const Withdraw = ({
   tokenAddress,
   chainId,
-  balance,
+  withdrawBalance,
   onClose,
   setErrorMessage,
   setSuccessMessage,
@@ -289,7 +289,7 @@ export const Withdraw = ({
           error={error}
           withdrawError={withdrawError}
           onMaxResolved={onMaxResolved}
-          balance={balance}
+          withdrawBalance={withdrawBalance}
         />
       </FormProvider>
     </>

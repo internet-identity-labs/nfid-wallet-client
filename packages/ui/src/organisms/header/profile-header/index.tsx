@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { useClickOutside } from "packages/utils/src/index"
 import { FC, SVGProps, useContext, useState } from "react"
@@ -32,7 +33,6 @@ export interface IProfileHeader extends React.HTMLAttributes<HTMLDivElement> {
   logout: () => void
   links: INavigationPopupLinks[]
   assetsLink: string
-  hasVaults: boolean
   profileConstants: {
     base: string
     security: string
@@ -53,7 +53,6 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
   logout,
   links,
   assetsLink,
-  hasVaults,
   profileConstants,
   walletTheme,
   setWalletTheme,
@@ -90,7 +89,6 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
               anchor={anchor}
               links={links}
               assetsLink={assetsLink}
-              hasVaults={hasVaults}
               profileConstants={profileConstants}
               isOpen={isMenuVisible}
               walletTheme={walletTheme!}

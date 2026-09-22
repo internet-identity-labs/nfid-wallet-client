@@ -1,4 +1,3 @@
-import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp"
 import {
   decodeIcrcAccount,
   encodeIcrcAccount,
@@ -6,14 +5,12 @@ import {
 import { Principal } from "@icp-sdk/core/principal"
 import BigNumber from "bignumber.js"
 import debounce from "lodash/debounce"
-import { PRINCIPAL_LENGTH } from "packages/constants"
 import toaster from "packages/ui/src/atoms/toast"
 import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/send-ft"
 import { useCallback, useMemo, useState, useEffect, useRef } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
-import { registerTransaction } from "@nfid/integration"
-import { E8S, ICP_CANISTER_ID } from "@nfid/integration/token/constants"
+import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import {
   getAccountIdentifier,
   transfer as transferICP,
@@ -28,8 +25,6 @@ import {
 
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { FT } from "frontend/integration/ft/ft"
-import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
-import { getVaultWalletByAddress } from "frontend/features/vaults/utils"
 import { useBtcAddress, useEthAddress } from "frontend/hooks"
 import { useIdentity } from "frontend/hooks/identity"
 import { bitcoinService } from "frontend/integration/bitcoin/bitcoin.service"
@@ -38,7 +33,6 @@ import { stringICPtoE8s } from "frontend/integration/wallet/utils"
 import { FormValues, SelectedToken, SendStatus } from "../types"
 import {
   getTokensWithUpdatedBalance,
-  getVaultsAccountsOptions,
   getValidatorByTokenAddress,
   updateCachedInitedTokens,
   mutateTokensCacheMergingBalances,
@@ -83,8 +77,6 @@ const DEFAULT_SELECTED_TOKEN: SelectedToken = {
 
 interface ITransferFT {
   preselectedToken: SelectedToken | undefined
-  isVault: boolean
-  preselectedAccountAddress: string
   onClose: () => void
   setErrorMessage: (message: string) => void
   setSuccessMessage: (message: string) => void
@@ -93,9 +85,7 @@ interface ITransferFT {
 }
 
 export const TransferFT = ({
-  isVault,
   preselectedToken = DEFAULT_SELECTED_TOKEN,
-  preselectedAccountAddress = "",
   onClose,
   setErrorMessage,
   setSuccessMessage,
@@ -107,11 +97,8 @@ export const TransferFT = ({
   const [status, setStatus] = useState(SendStatus.PENDING)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const { identity, isLoading: isIdentityLoading } = useIdentity()
-  const [selectedVaultsAccountAddress, setSelectedVaultsAccountAddress] =
-    useState(preselectedAccountAddress)
   const [error, setError] = useState<string | undefined>()
   const [feeError, setFeeError] = useState<string | undefined>()
-  const { balances } = useAllVaultsWallets()
   const { isBtcAddressLoading } = useBtcAddress()
   const { isEthAddressLoading, ethAddress } = useEthAddress()
   const [fee, setFee] = useState<FeeResponse | undefined>()
@@ -173,11 +160,6 @@ export const TransferFT = ({
     }
   }, [amount, isAmountValid, debouncedUpdate])
 
-  const { data: vaultsAccountsOptions = [] } = useSWR(
-    "vaultsAccountsOptions",
-    getVaultsAccountsOptions,
-  )
-
   useEffect(() => {
     if (!preselectedToken) {
       setTokenSelected({ address: ICP_CANISTER_ID, chainId: ChainId.ICP })
@@ -222,12 +204,6 @@ export const TransferFT = ({
     () => resolveToken(tokenSelected),
     [tokenSelected, resolveToken],
   )
-
-  const balance = useMemo(() => {
-    return balances?.find(
-      (balance) => balance.address === selectedVaultsAccountAddress,
-    )
-  }, [selectedVaultsAccountAddress, balances])
 
   const searchFtAddress = async (req: FtSearchRequest) => {
     return addressBookFacade.ftSearch(req)
@@ -494,43 +470,6 @@ export const TransferFT = ({
     setIsSuccessOpen(true)
 
     if (token.getChainId() === ChainId.ICP) {
-      if (isVault) {
-        const wallet = await getVaultWalletByAddress(
-          selectedVaultsAccountAddress,
-        )
-
-        const address =
-          to.length === PRINCIPAL_LENGTH
-            ? AccountIdentifier.fromPrincipal({
-                principal: Principal.fromText(to),
-              }).toHex()
-            : to
-
-        registerTransaction({
-          address,
-          amount: BigInt(Math.round(Number(amount) * E8S)),
-          from_sub_account: wallet?.uid ?? "",
-        })
-          .then(() => {
-            setSuccessMessage(
-              `Transaction ${amount} ${token.getTokenSymbol()} successful`,
-            )
-            setStatus(SendStatus.COMPLETED)
-          })
-          .catch((e) => {
-            console.error(
-              `Transfer error: ${
-                (e as Error).message ? (e as Error).message : e
-              }`,
-            )
-            setErrorMessage(DEFAULT_TRANSFER_ERROR)
-            setError(DEFAULT_TRANSFER_ERROR)
-            setStatus(SendStatus.FAILED)
-          })
-
-        return
-      }
-
       if (!identity) return
 
       let transferResult
@@ -638,9 +577,7 @@ export const TransferFT = ({
         })
     }
   }, [
-    isVault,
     token,
-    selectedVaultsAccountAddress,
     amount,
     to,
     note,
@@ -664,13 +601,8 @@ export const TransferFT = ({
         )}
         isLoading={isTokensLoading}
         isBtcEthLoading={isBtcAddressLoading || isEthAddressLoading}
-        isVault={isVault}
-        selectedVaultsAccountAddress={selectedVaultsAccountAddress}
         submit={submit}
-        setSelectedVaultsAccountAddress={setSelectedVaultsAccountAddress}
         loadingMessage={"Fetching supported tokens..."}
-        accountsOptions={vaultsAccountsOptions}
-        vaultsBalance={balance?.balance["ICP"]}
         status={status}
         isSuccessOpen={isSuccessOpen}
         onClose={onClose}

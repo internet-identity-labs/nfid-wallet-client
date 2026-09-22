@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { Principal } from "@icp-sdk/core/principal"
 import { Meta, StoryFn } from "@storybook/react-webpack5"
 import { ToggleButton } from "packages/ui/src/molecules/toggle-button"
@@ -73,7 +74,6 @@ export const SendFTProps: any = {
   setSelectedAccountAddress: () => {},
   selectedTokenCurrency: "ICP",
   selectedTokenBlockchain: "Internet Computer",
-  isVault: false,
   selectedAccountAddress:
     "yrfx6-fmprd-wgad6-6or6b-2aw42-5qqhn-o4yt7-plkxr-2jtgv-azhzx-gae",
   amountInUSD: 10,
@@ -110,8 +110,6 @@ export const SendFTProps: any = {
     getTokenFeeFormattedUsd: async () => "0.10 USD",
     isHideable: () => true,
   },
-  selectedVaultsAccountAddress: "",
-  setSelectedVaultsAccountAddress: () => "",
   setUsdAmount: () => {},
 }
 

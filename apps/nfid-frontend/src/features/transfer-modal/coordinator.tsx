@@ -2,10 +2,7 @@ import { useSelector } from "@xstate/react"
 import { motion } from "framer-motion"
 import toaster from "packages/ui/src/atoms/toast"
 import { useDisableScroll } from "packages/ui/src/molecules/modal/hooks/disable-scroll"
-import {
-  TransferModal,
-  TransferVaultModal,
-} from "packages/ui/src/organisms/send-receive"
+import { TransferModal } from "packages/ui/src/organisms/send-receive"
 import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 
 import { authState } from "@nfid/integration"
@@ -102,8 +99,6 @@ export const TransferModalCoordinator = () => {
           >
             <TransferFT
               preselectedToken={state.context.selectedFT}
-              isVault={state.context.isOpenedFromVaults}
-              preselectedAccountAddress={state.context.sourceWalletAddress}
               onClose={hideModal}
               setErrorMessage={setErrorMessage}
               setSuccessMessage={setSuccessMessage}
@@ -214,7 +209,7 @@ export const TransferModalCoordinator = () => {
             <Withdraw
               tokenAddress={state.context.selectedFT!.address}
               chainId={state.context.selectedFT!.chainId}
-              balance={state.context.withdrawBalance}
+              withdrawBalance={state.context.withdrawBalance}
               onClose={hideModal}
               setErrorMessage={setErrorMessage}
               setSuccessMessage={setSuccessMessage}
@@ -318,31 +313,18 @@ export const TransferModalCoordinator = () => {
   )
 
   return (
-    <>
-      {state.context.isOpenedFromVaults ? (
-        <TransferVaultModal
-          onClickOutside={hideModal}
-          isSuccess={state.matches("TransferSuccess")}
-          direction={state.context.direction}
-          component={Components}
-          tokenType={state.context.tokenType}
-          isOpen={!state.matches("Hidden")}
-        />
-      ) : (
-        <TransferModal
-          onClickOutside={hideModal}
-          isSuccess={state.matches("TransferSuccess")}
-          direction={state.context.direction}
-          tokenType={state.context.tokenType}
-          onTokenTypeChange={onTokenTypeChange}
-          component={Components}
-          isOpen={!state.matches("Hidden")}
-          hasSwapError={hasSwapError}
-          hasBtcError={hasBtcError}
-          hasBridgeError={hasBridgeError}
-          isSuccessTx={isSuccessTx}
-        />
-      )}
-    </>
+    <TransferModal
+      onClickOutside={hideModal}
+      isSuccess={state.matches("TransferSuccess")}
+      direction={state.context.direction}
+      tokenType={state.context.tokenType}
+      onTokenTypeChange={onTokenTypeChange}
+      component={Components}
+      isOpen={!state.matches("Hidden")}
+      hasSwapError={hasSwapError}
+      hasBtcError={hasBtcError}
+      hasBridgeError={hasBridgeError}
+      isSuccessTx={isSuccessTx}
+    />
   )
 }

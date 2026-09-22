@@ -54,7 +54,6 @@ import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/toke
 import { syncDeviceIIService } from "frontend/features/security/sync-device-ii-service"
 import { TransferModalCoordinator } from "frontend/features/transfer-modal/coordinator"
 import { ModalType } from "frontend/features/transfer-modal/types"
-import { getAllVaults } from "frontend/features/vaults/services"
 import { useProfile } from "frontend/integration/identity-manager/queries"
 import { ProfileContext } from "frontend/provider"
 import { ttlCacheService } from "@nfid/client-db"
@@ -222,12 +221,9 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
       tabs.find((tab) => location.pathname.startsWith(tab.path)) ?? { name: "" }
     )
   }, [location.pathname, tabs])
-  const { data: vaults } = useSWR(["vaults"], getAllVaults)
   const [isSyncEmailLoading, setIsSyncEmailLoading] = useState(false)
   const { profile } = useProfile()
   const { logout } = useAuthentication()
-
-  const hasVaults = useMemo(() => !!vaults?.length, [vaults])
 
   const { data: tokens = [] } = useSWRWithTimestamp(
     isViewOnlyMode ? ["tokens", viewOnlyAddress] : "tokens",
@@ -652,7 +648,6 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         profileConstants={ProfileConstants}
         links={navigationPopupLinks}
         assetsLink={`${ProfileConstants.base}/${ProfileConstants.tokens}`}
-        hasVaults={hasVaults}
         walletTheme={walletTheme}
         setWalletTheme={setWalletTheme}
       />

@@ -3,7 +3,6 @@ import * as Agent from "@icp-sdk/core/agent"
 import {
   Actor,
   ActorMethod,
-  AnonymousIdentity,
   HttpAgent,
   Identity,
   SignIdentity,
@@ -33,8 +32,6 @@ import { idlFactory as passkeyIDL } from "./_ic_api/passkey_storage"
 import { _SERVICE as PasskeyStorage } from "./_ic_api/passkey_storage.d"
 import { idlFactory as pubsubIDL } from "./_ic_api/pub_sub_channel"
 import { _SERVICE as PubSub } from "./_ic_api/pub_sub_channel.d"
-import { idlFactory as vaultIDL } from "./_ic_api/vault"
-import { _SERVICE as Vault } from "./_ic_api/vault.d"
 import { idlFactory as verifierIDL } from "./_ic_api/verifier"
 import { _SERVICE as Verifier } from "./_ic_api/verifier.d"
 import { agent } from "./agent"
@@ -50,7 +47,6 @@ const canisterConfig = [
   ["Verifier", VERIFIER_CANISTER_ID],
   ["Ledger", LEDGER_CANISTER_ID],
   ["CyclesMinter", CYCLES_MINTER_CANISTER_ID],
-  ["Vault", VAULT_CANISTER_ID],
   ["EcdsaSigner", ECDSA_SIGNER_CANISTER_ID],
   ["SwapTransactionStorage", SWAP_TRS_STORAGE],
   ["ICSigner", IC_SIGNER_CANISTER_ID],
@@ -134,19 +130,6 @@ export const iCRC1OracleActor = actor<ICRC1Oracle>(
   ICRC1_ORACLE_CANISTER_ID,
   iCRC1OracleIDL,
 )
-
-export const vault = Agent.Actor.createActor<Vault>(vaultIDL, {
-  canisterId: VAULT_CANISTER_ID,
-  agent: new HttpAgent({ ...agentBaseConfig }),
-})
-
-export const vaultAnonymous = Agent.Actor.createActor<Vault>(vaultIDL, {
-  canisterId: VAULT_CANISTER_ID,
-  agent: new HttpAgent({
-    ...agentBaseConfig,
-    identity: new AnonymousIdentity(),
-  }),
-})
 
 export const ecdsaSigner = Agent.Actor.createActor<EcdsaSigner>(
   ecdsaSignerIDL,

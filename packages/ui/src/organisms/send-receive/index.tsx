@@ -1,6 +1,7 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { ToggleButton } from "packages/ui/src/molecules/toggle-button"
-import { FC } from "react"
+import { FC, JSX } from "react"
 
 import { ModalType, TokenType } from "frontend/features/transfer-modal/types"
 
@@ -18,15 +19,6 @@ export interface TransferModalProps {
   hasBtcError: boolean
   hasBridgeError: boolean
   isSuccessTx: boolean
-}
-
-export interface TransferVaultModalProps {
-  onClickOutside: () => void
-  isSuccess: boolean
-  direction: ModalType | null
-  tokenType: TokenType
-  component: JSX.Element
-  isOpen: boolean
 }
 
 export const TransferModal: FC<TransferModalProps> = ({
@@ -79,30 +71,6 @@ export const TransferModal: FC<TransferModalProps> = ({
             id="send_type_toggle"
           />
         </>
-      )}
-      {component}
-    </TransferTemplate>
-  )
-}
-
-export const TransferVaultModal: FC<TransferVaultModalProps> = ({
-  onClickOutside,
-  direction,
-  component,
-  isSuccess,
-  isOpen,
-}) => {
-  return (
-    <TransferTemplate
-      onClickOutside={onClickOutside}
-      className={clsx("!h-[530px]")}
-      overlayClassName={!isOpen ? "hidden" : ""}
-      isOpen={isOpen}
-    >
-      {!isSuccess && (
-        <div className="leading-10 text-[20px] font-bold first-letter:capitalize mb-[18px]">
-          {direction}
-        </div>
       )}
       {component}
     </TransferTemplate>

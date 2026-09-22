@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import BigNumber from "bignumber.js"
 import clsx from "clsx"
 import { InputAmount } from "packages/ui/src/molecules/input-amount"
@@ -45,7 +46,7 @@ interface ChooseFromTokenProps {
   id: string
   token: FT | undefined
   tokens?: FT[]
-  balance?: bigint | undefined
+  withdrawBalance?: bigint | undefined
   value?: string
   initialValue?: string
   setFromChosenToken?: (value: SelectedToken) => void
@@ -69,7 +70,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   id,
   token,
   tokens,
-  balance,
+  withdrawBalance,
   value,
   initialValue,
   setFromChosenToken,
@@ -102,7 +103,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
     clearErrors,
     setError,
   } = useFormContext()
-  const userBalance = balance !== undefined ? balance : token?.getTokenBalance()
+  const userBalance = token?.getTokenBalance()
   const decimals = token?.getTokenDecimals()
 
   useEffect(() => {
@@ -307,9 +308,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
   useEffect(() => {
     if (!token || !setIsResponsive) return
 
-    const formattedBalance = balance
-      ? `${Number(balance) / 10 ** token.getTokenDecimals()} ${token.getTokenSymbol()}`
-      : token.getTokenBalanceFormatted()
+    const formattedBalance = token.getTokenBalanceFormatted()
     if (
       !formattedBalance ||
       formattedBalance.length <
@@ -368,7 +367,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
                 }
 
                 const amountValidationError = validateTransferAmountField(
-                  balance || token.getTokenBalance(),
+                  token.getTokenBalance(),
                   modalType === IModalType.SWAP ||
                     (modalType === IModalType.SEND &&
                       token.getTokenCategory() === Category.ERC20)
@@ -478,7 +477,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
             )}
             onClick={maxHandler}
           >
-            {balance === undefined ? (
+            {withdrawBalance === undefined ? (
               <span id="choose-from-token-balance">
                 {token ? (
                   <>
@@ -491,9 +490,7 @@ export const ChooseFromToken: FC<ChooseFromTokenProps> = ({
               </span>
             ) : (
               <span>
-                {modalType === IModalType.WITHDRAW
-                  ? `${formatAssetAmountRaw(new BigNumber(balance.toString()), token.getTokenDecimals())} ${token.getTokenSymbol()}`
-                  : `${Number(balance) / E8S} ICP`}
+                {`${formatAssetAmountRaw(new BigNumber(withdrawBalance.toString()), token.getTokenDecimals())} ${token.getTokenSymbol()}`}
               </span>
             )}
           </span>

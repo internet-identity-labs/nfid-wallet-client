@@ -24,7 +24,6 @@ export interface IAuthenticatedPopup extends HTMLAttributes<HTMLDivElement> {
   isLanding?: boolean
   links: INavigationPopupLinks[]
   assetsLink?: string
-  hasVaults?: boolean
   profileConstants?: {
     base: string
     security: string
@@ -43,7 +42,6 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
   isLanding = false,
   links,
   assetsLink,
-  hasVaults,
   profileConstants,
   isOpen,
   walletTheme,
@@ -125,12 +123,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
               ) : null}
               {links
                 .filter((linkItem) =>
-                  shouldRenderLink(
-                    linkItem,
-                    hasVaults!,
-                    location,
-                    profileConstants,
-                  ),
+                  shouldRenderLink(linkItem, location, profileConstants),
                 )
                 .map((linkItem) =>
                   renderLink(

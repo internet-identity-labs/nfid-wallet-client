@@ -225,7 +225,7 @@
     "wdio-video-reporter": "6.2.0",
     "webdriverio": "9.31.9",
     "webpack": "5.111.1",
-    "webpack-dev-server": "5.2.2",
+    "webpack-dev-server": "5.2.6",
     "whatwg-fetch": "3.6.20"
   },
   "repository": "git@github.com:internet-identity-labs/nfid-wallet-client.git",

@@ -190,8 +190,8 @@ export class PasskeyConnector {
           DeviceType.Unknown in d.device_type,
       )
     } catch (e) {
-      console.error("Passkey error: ", e)
-      throw new Error((e as Error).message)
+      console.warn("Passkey error: ", e)
+      return false
     }
   }
 

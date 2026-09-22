@@ -20,7 +20,7 @@ export interface AuthSelectionProps {
   onSelectOtherAuth?: () => void
   applicationURL?: string
   isIdentityKit?: boolean
-  onLoginWithPasskey: () => Promise<void>
+  onConnectWithPasskey: () => Promise<void>
   wallets?: ExistingWallet[]
   onShowWallets?: () => void
   googleButton: JSX.Element
@@ -34,7 +34,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
   onSelectOtherAuth,
   applicationURL,
   isIdentityKit,
-  onLoginWithPasskey,
+  onConnectWithPasskey,
   wallets,
   onShowWallets,
   googleButton,
@@ -78,7 +78,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
         <AuthAppMeta
           applicationURL={applicationURL}
           withLogo={!isIdentityKit}
-          title={isIdentityKit ? "Connect" : undefined}
+          title={isIdentityKit ? "Connect to" : undefined}
           subTitle={<>Connect to</>}
         />
         <div className="mt-7">
@@ -116,7 +116,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
                 type="stroke"
                 icon={<IconCmpPasskey />}
                 block
-                onClick={onLoginWithPasskey}
+                onClick={onConnectWithPasskey}
               >
                 Continue with a Passkey
               </Button>
@@ -130,7 +130,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
               block
               onClick={onSelectOtherAuth}
             >
-              Other sign in options
+              Other connection options
             </Button>
           </div>
         </div>

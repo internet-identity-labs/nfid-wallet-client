@@ -14,6 +14,7 @@ import {
 import { ChooseWallet } from "packages/ui/src/organisms/authentication/choose-wallet"
 import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/other-sign-options.tsx"
 import { AuthSignInWithRecoveryPhrase } from "packages/ui/src/organisms/authentication/sign-in-with-recovery-phrase"
+import { AuthSignUpPassKey } from "packages/ui/src/organisms/authentication/sign-up-passkey"
 import { ReactNode, useCallback, useMemo, useState } from "react"
 import { openIIWindow } from "frontend/features/authentication/auth-selection/ii-flow/ii-auth.service"
 
@@ -55,8 +56,11 @@ export default function AuthenticationCoordinator({
   const [isOtherOptionsLoading, setIsOtherOptionsLoading] = useState(false)
   const [isAddPasskeyLoading, setIsAddPasskeyLoading] = useState(false)
   const [loginWithRecoverError, setLoginWithRecoverError] = useState("")
+  const [signUpPasskeyLoading, setSignUpPasskeyLoading] = useState(false)
+  const [isSigningUpPasskey, setIsSigningUpPasskey] = useState(false)
   const [loginWithRecoveryLoading, setLoginWithRecoveryLoading] =
     useState(false)
+  const [signUpWithPassKeyError, setSignUpWithPasskeyError] = useState("")
 
   const onSelectGoogleAuth = (credential: string) => {
     send({
@@ -146,6 +150,63 @@ export default function AuthenticationCoordinator({
     }
   }
 
+  const onSignUpWithPasskey = async ({
+    walletName,
+    challengeKey,
+    enteredCaptcha,
+  }: {
+    walletName: string
+    challengeKey: string
+    enteredCaptcha?: string
+  }) => {
+    setSignUpPasskeyLoading(true)
+    try {
+      const response = await passkeyConnector.registerWithPasskey(walletName, {
+        challengeKey,
+        chars: enteredCaptcha,
+      })
+      send({
+        type: "AUTHENTICATED",
+        data: response,
+      })
+    } catch (e) {
+      const msg = (e as Error).message
+      if (msg.includes("Incorrect captcha key"))
+        return setSignUpWithPasskeyError("Captcha expired. Please try again.")
+      if (msg.includes("Incorrect captcha solution"))
+        return setSignUpWithPasskeyError(
+          "That captcha wasn’t quite right. Let’s try again!",
+        )
+      if (msg.includes("either timed out or was not allowed")) {
+        toaster.info(
+          "It seems like the process was interrupted. Feel free to try again!",
+        )
+        return
+      }
+      return setSignUpWithPasskeyError(
+        "We ran into a hiccup. Give it another shot",
+      )
+    } finally {
+      setSignUpPasskeyLoading(false)
+    }
+  }
+
+  const onConnectWithPasskey = useCallback(async () => {
+    setIsPasskeyLoading(true)
+    try {
+      const hasPasskeys = await passkeyConnector.hasPasskeys()
+      if (hasPasskeys) {
+        await onLoginWithPasskey()
+      } else {
+        setIsSigningUpPasskey(true)
+      }
+    } catch (e) {
+      toaster.error((e as Error).message)
+    } finally {
+      setIsPasskeyLoading(false)
+    }
+  }, [])
+
   const onRecover = useCallback(
     async (value: string) => {
       const recoveryPhrase = value.replace(/\s+/g, " ").trim()
@@ -200,6 +261,29 @@ export default function AuthenticationCoordinator({
     state.context.authSession?.anchor
 
   const renderAuthSteps = () => {
+    if (isSigningUpPasskey)
+      return (
+        <motion.div
+          key="SignUpPasskey"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25 }}
+          className="flex flex-col flex-1"
+        >
+          <AuthSignUpPassKey
+            getCaptcha={() => passkeyConnector.getCaptchaChallenge()}
+            onPasskeyCreate={onSignUpWithPasskey}
+            isPasskeyCreating={signUpPasskeyLoading}
+            createPasskeyError={signUpWithPassKeyError}
+            clearError={() => setSignUpWithPasskeyError("")}
+            onBack={() => setIsSigningUpPasskey(false)}
+            withLogo={!isIdentityKit}
+            applicationURL={state.context.authRequest?.hostname}
+          />
+        </motion.div>
+      )
+
     switch (true) {
       case state.matches("ChooseWallet"):
         return (
@@ -213,7 +297,7 @@ export default function AuthenticationCoordinator({
           >
             <ChooseWallet
               applicationURL={state.context.authRequest?.hostname}
-              showLogo={isIdentityKit}
+              isIdentityKit={isIdentityKit}
               wallets={state.context.wallets}
               onLoginWithPasskey={(allowedPasskeys) =>
                 onLoginWithPasskey(allowedPasskeys)
@@ -258,7 +342,7 @@ export default function AuthenticationCoordinator({
               passKeySupported={isWebAuthNSupported()}
               isLoading={isPasskeyLoading}
               applicationURL={state.context.authRequest?.hostname}
-              onLoginWithPasskey={onLoginWithPasskey}
+              onConnectWithPasskey={onConnectWithPasskey}
               googleButton={
                 <SignInWithGoogle
                   onLogin={onSelectGoogleAuth}
@@ -318,8 +402,7 @@ export default function AuthenticationCoordinator({
           >
             <AuthSignInWithRecoveryPhrase
               withLogo={!isIdentityKit}
-              title={isIdentityKit ? "Sign in" : undefined}
-              subTitle={isIdentityKit ? "to continue to" : undefined}
+              title={isIdentityKit ? "Connect to" : undefined}
               appMeta={state.context.authRequest?.hostname}
               onBack={() => {
                 send({ type: "BACK" })
@@ -384,8 +467,7 @@ export default function AuthenticationCoordinator({
           >
             <AuthOtherSignOptions
               withLogo={!isIdentityKit}
-              title={isIdentityKit ? "Sign in" : undefined}
-              subTitle={isIdentityKit ? "to continue to" : undefined}
+              title={isIdentityKit ? "Connect to" : undefined}
               applicationUrl={state.context.authRequest?.hostname}
               onBack={() => send({ type: "BACK" })}
               handleAuth={handleOtherOptionsAuth}

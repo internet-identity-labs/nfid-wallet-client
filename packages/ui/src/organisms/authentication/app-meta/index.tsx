@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { A } from "packages/ui/src/atoms/custom-link"
 
@@ -14,7 +15,7 @@ export interface AuthAppMetaProps {
 
 export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
   applicationURL,
-  subTitle = "Sign in to continue to",
+  subTitle = "Connect to",
   title,
   withLogo = true,
 }) => {

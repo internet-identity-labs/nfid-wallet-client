@@ -190,8 +190,20 @@ const AuthenticationMachine = setup({
           actions: "assignAuthSession",
           target: "GetRecoveryProvisioningPlan",
         },
+        AUTH_WITH_PASSKEY_SIGNUP: {
+          target: "SignUpWithPasskey",
+        },
         CHOOSE_WALLET: {
           target: "ChooseWallet",
+        },
+      },
+    },
+    SignUpWithPasskey: {
+      on: {
+        BACK: "AuthSelection",
+        AUTHENTICATED: {
+          actions: "assignAuthSession",
+          target: "End",
         },
       },
     },

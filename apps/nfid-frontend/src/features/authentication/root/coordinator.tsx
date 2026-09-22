@@ -57,7 +57,6 @@ export default function AuthenticationCoordinator({
   const [isAddPasskeyLoading, setIsAddPasskeyLoading] = useState(false)
   const [loginWithRecoverError, setLoginWithRecoverError] = useState("")
   const [signUpPasskeyLoading, setSignUpPasskeyLoading] = useState(false)
-  const [isSigningUpPasskey, setIsSigningUpPasskey] = useState(false)
   const [loginWithRecoveryLoading, setLoginWithRecoveryLoading] =
     useState(false)
   const [signUpWithPassKeyError, setSignUpWithPasskeyError] = useState("")
@@ -191,22 +190,6 @@ export default function AuthenticationCoordinator({
     }
   }
 
-  const onConnectWithPasskey = useCallback(async () => {
-    setIsPasskeyLoading(true)
-    try {
-      const hasPasskeys = await passkeyConnector.hasPasskeys()
-      if (hasPasskeys) {
-        await onLoginWithPasskey()
-      } else {
-        setIsSigningUpPasskey(true)
-      }
-    } catch (e) {
-      toaster.error((e as Error).message)
-    } finally {
-      setIsPasskeyLoading(false)
-    }
-  }, [])
-
   const onRecover = useCallback(
     async (value: string) => {
       const recoveryPhrase = value.replace(/\s+/g, " ").trim()
@@ -261,29 +244,6 @@ export default function AuthenticationCoordinator({
     state.context.authSession?.anchor
 
   const renderAuthSteps = () => {
-    if (isSigningUpPasskey)
-      return (
-        <motion.div
-          key="SignUpPasskey"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25 }}
-          className="flex flex-col flex-1"
-        >
-          <AuthSignUpPassKey
-            getCaptcha={() => passkeyConnector.getCaptchaChallenge()}
-            onPasskeyCreate={onSignUpWithPasskey}
-            isPasskeyCreating={signUpPasskeyLoading}
-            createPasskeyError={signUpWithPassKeyError}
-            clearError={() => setSignUpWithPasskeyError("")}
-            onBack={() => setIsSigningUpPasskey(false)}
-            withLogo={!isIdentityKit}
-            applicationURL={state.context.authRequest?.hostname}
-          />
-        </motion.div>
-      )
-
     switch (true) {
       case state.matches("ChooseWallet"):
         return (
@@ -342,7 +302,10 @@ export default function AuthenticationCoordinator({
               passKeySupported={isWebAuthNSupported()}
               isLoading={isPasskeyLoading}
               applicationURL={state.context.authRequest?.hostname}
-              onConnectWithPasskey={onConnectWithPasskey}
+              onLoginWithPasskey={onLoginWithPasskey}
+              onSignUpWithPasskey={() =>
+                send({ type: "AUTH_WITH_PASSKEY_SIGNUP" })
+              }
               googleButton={
                 <SignInWithGoogle
                   onLogin={onSelectGoogleAuth}
@@ -387,6 +350,28 @@ export default function AuthenticationCoordinator({
             <AuthEmailFlowCoordinator
               isIdentityKit={isIdentityKit}
               actor={state.children.AuthWithEmailMachine as AuthWithEmailActor}
+            />
+          </motion.div>
+        )
+      case state.matches("SignUpWithPasskey"):
+        return (
+          <motion.div
+            key="SignUpWithPasskey"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="flex flex-col flex-1"
+          >
+            <AuthSignUpPassKey
+              getCaptcha={() => passkeyConnector.getCaptchaChallenge()}
+              onPasskeyCreate={onSignUpWithPasskey}
+              isPasskeyCreating={signUpPasskeyLoading}
+              createPasskeyError={signUpWithPassKeyError}
+              clearError={() => setSignUpWithPasskeyError("")}
+              onBack={() => send({ type: "BACK" })}
+              withLogo={!isIdentityKit}
+              applicationURL={state.context.authRequest?.hostname}
             />
           </motion.div>
         )

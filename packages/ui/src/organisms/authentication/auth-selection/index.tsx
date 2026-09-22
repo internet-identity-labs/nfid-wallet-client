@@ -20,7 +20,8 @@ export interface AuthSelectionProps {
   onSelectOtherAuth?: () => void
   applicationURL?: string
   isIdentityKit?: boolean
-  onConnectWithPasskey: () => Promise<void>
+  onLoginWithPasskey: () => Promise<void>
+  onSignUpWithPasskey: () => void
   wallets?: ExistingWallet[]
   onShowWallets?: () => void
   googleButton: JSX.Element
@@ -34,7 +35,8 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
   onSelectOtherAuth,
   applicationURL,
   isIdentityKit,
-  onConnectWithPasskey,
+  onLoginWithPasskey,
+  onSignUpWithPasskey,
   wallets,
   onShowWallets,
   googleButton,
@@ -108,18 +110,30 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
             </Button>
           </form>
           <Separator className="my-[10px]" />
-          <div className="mb-[30px]">
+          <div>
             {passKeySupported && (
-              <Button
-                id="passkey-sign-button"
-                className="h-12 !p-0 group mt-[10px] active:!text-black dark:active:!text-white mb-2"
-                type="stroke"
-                icon={<IconCmpPasskey />}
-                block
-                onClick={onConnectWithPasskey}
-              >
-                Continue with a Passkey
-              </Button>
+              <>
+                <Button
+                  id="passkey-sign-in-button"
+                  className="h-12 !p-0 group mt-[10px] active:!text-black dark:active:!text-white mb-2"
+                  type="stroke"
+                  icon={<IconCmpPasskey />}
+                  block
+                  onClick={onLoginWithPasskey}
+                >
+                  Continue with a Passkey
+                </Button>
+                <Button
+                  id="passkey-sign-up-button"
+                  className="h-12 !p-0 group mt-[10px] active:!text-black dark:active:!text-white mb-2"
+                  type="stroke"
+                  icon={<IconCmpPasskey />}
+                  block
+                  onClick={() => onSignUpWithPasskey()}
+                >
+                  Create account with a passkey
+                </Button>
+              </>
             )}
             {googleButton}
             {iiButton && <div className="mt-2">{iiButton}</div>}

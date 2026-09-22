@@ -39,10 +39,6 @@
     ]
   },
   "dependencies": {
-    "@dfinity/agent": "1.0.1",
-    "@dfinity/candid": "1.0.1",
-    "@dfinity/identity": "1.0.1",
-    "@dfinity/principal": "1.0.1",
     "@dfinity/utils": "4.2.1",
     "@fancyapps/ui": "^6.1.14",
     "@headlessui/react": "2.2.9",

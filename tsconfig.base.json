@@ -19,6 +19,14 @@
     "resolveJsonModule": true,
     "typeRoots": ["./node_modules/@types", "./types"],
     "paths": {
+      "@dfinity/agent": ["node_modules/@icp-sdk/core/lib/esm/agent/index"],
+      "@dfinity/candid": ["node_modules/@icp-sdk/core/lib/esm/candid/index"],
+      "@dfinity/identity": [
+        "node_modules/@icp-sdk/core/lib/esm/identity/index"
+      ],
+      "@dfinity/principal": [
+        "node_modules/@icp-sdk/core/lib/esm/principal/index"
+      ],
       "@nfid-frontend/ui": ["packages/ui/src/index.ts"],
       "@nfid-frontend/utils": ["packages/utils/src/index.ts"],
       "@nfid/client-db": ["packages/client-db/src/index.ts"],

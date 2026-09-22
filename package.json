@@ -39,10 +39,6 @@
     ]
   },
   "dependencies": {
-    "@dfinity/agent": "1.0.1",
-    "@dfinity/candid": "1.0.1",
-    "@dfinity/identity": "1.0.1",
-    "@dfinity/principal": "1.0.1",
     "@dfinity/utils": "4.2.1",
     "@fancyapps/ui": "^6.1.15",
     "@headlessui/react": "2.2.10",
@@ -124,7 +120,7 @@
     "@babel/preset-env": "8.0.6",
     "@babel/preset-react": "8.0.1",
     "@babel/preset-typescript": "8.0.1",
-    "@chromatic-com/storybook": "5",
+    "@chromatic-com/storybook": "5.3.1",
     "@melloware/csp-webpack-plugin": "6.0.4",
     "@nx/eslint": "23.2.1",
     "@nx/eslint-plugin": "23.2.1",
@@ -180,7 +176,7 @@
     "csp-html-webpack-plugin": "5.1.0",
     "@cucumber/cucumber": "10.9.0",
     "cucumber-html-reporter": "7.2.0",
-    "dotenv": "17.4.1",
+    "dotenv": "18.0.1",
     "elliptic": "6.6.1",
     "env-cmd": "11.0.0",
     "eslint": "10.11.0",

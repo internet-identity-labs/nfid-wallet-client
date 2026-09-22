@@ -305,6 +305,15 @@ export default composePlugins(withNx(), withReact(), withSvgr(), (config) => {
   config.resolve.alias = {
     ...config.resolve.alias,
     frontend: path.resolve(__dirname, "src"),
+    // @nfid/vaults peer-depends on the pre-@icp-sdk generation of the agent, and uses only
+    // HttpAgent and Actor from it — both exported by @icp-sdk/core. Point the old specifiers
+    // at the copy the rest of the app already loads rather than bundling a second agent.
+    // apps/nfid-demo does the same for @nfid/embed. The targets are bare specifiers, not
+    // resolved paths, so webpack reads @icp-sdk/core's exports map and picks the ESM build.
+    "@dfinity/agent": "@icp-sdk/core/agent",
+    "@dfinity/candid": "@icp-sdk/core/candid",
+    "@dfinity/identity": "@icp-sdk/core/identity",
+    "@dfinity/principal": "@icp-sdk/core/principal",
   }
 
   config.resolve.fallback = {

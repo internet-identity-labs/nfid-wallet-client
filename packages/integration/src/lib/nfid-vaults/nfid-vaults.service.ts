@@ -244,9 +244,10 @@ export class NfidVaultsService {
    * the vault was created with.
    */
   getManager(vaultCanisterId: string, identity: Identity): VaultManager {
-    // The SDK is built against the @dfinity/agent identity types while this
-    // package uses @icp-sdk/core. The two are structurally the same.
-    return new VaultManager(vaultCanisterId, identity as never)
+    // The SDK's @dfinity/agent imports resolve to @icp-sdk/core through the aliases in
+    // tsconfig.base.json and apps/nfid-frontend/webpack.config.js, so this Identity is
+    // the type the SDK asks for, not merely a structural match.
+    return new VaultManager(vaultCanisterId, identity)
   }
 
   /**

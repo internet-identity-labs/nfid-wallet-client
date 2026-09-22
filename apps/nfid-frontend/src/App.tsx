@@ -6,10 +6,8 @@ import { ROUTE_EMBED, ROUTE_RPC, ROUTE_WALLETCONNECT } from "@nfid/config"
 import { authState, exchangeRateService } from "@nfid/integration"
 import { useSWR } from "@nfid/swr"
 
-import { AuthWrapper, VaultGuard } from "@nfid-frontend/ui"
+import { AuthWrapper } from "@nfid-frontend/ui"
 import { walletConnectService } from "frontend/integration/walletconnect"
-import { useVaultMember } from "./features/vaults/hooks/use-vault-member"
-import { getAllVaults } from "./features/vaults/services"
 
 import { ProfileConstants } from "./apps/identity-manager/profile/routes"
 import { BtcAddressProvider } from "./contexts"
@@ -45,16 +43,7 @@ const DiscoveryPage = lazy(() => import("../src/features/discovery"))
 const CopyRecoveryPhrase = lazy(
   () => import("../src/apps/identity-manager/profile/copy-recovery-phrase"),
 )
-const VaultsListPage = lazy(
-  () => import("frontend/features/vaults/vaults-list-page"),
-)
-const VaultsDetailsCoordinator = lazy(
-  () => import("frontend/features/vaults/vaults-details"),
-)
-const VaultTransactionsDetailsPage = lazy(
-  () =>
-    import("frontend/features/vaults/vaults-details/transactions-details-page"),
-)
+const VaultsPage = lazy(() => import("frontend/features/vaults"))
 
 const NFTDetailsPage = lazy(() => import("frontend/features/nft-details"))
 
@@ -76,11 +65,6 @@ export const App = () => {
   const [walletTheme, setWalletTheme] = useState<NFIDTheme>(NFIDTheme.SYSTEM)
 
   const { isAuthenticated, cacheLoaded } = useAuthentication()
-  const { isReady } = useVaultMember()
-  const { data: vaults, isLoading: vaultsLoading } = useSWR(
-    isReady ? "vaults" : null,
-    getAllVaults,
-  )
 
   useEffect(() => {
     const sub = authState.subscribe(({ cacheLoaded }) => {
@@ -371,23 +355,7 @@ export const App = () => {
                         isAuthenticated={isAuthenticated}
                         cacheLoaded={cacheLoaded}
                       >
-                        <VaultGuard vaults={vaults} isLoading={vaultsLoading}>
-                          <VaultsListPage
-                            walletTheme={walletTheme}
-                            setWalletTheme={setWalletTheme}
-                          />
-                        </VaultGuard>
-                      </AuthWrapper>
-                    }
-                  />
-                  <Route
-                    path={`${ProfileConstants.vaults}/${ProfileConstants.vault}`}
-                    element={
-                      <AuthWrapper
-                        isAuthenticated={isAuthenticated}
-                        cacheLoaded={cacheLoaded}
-                      >
-                        <VaultsDetailsCoordinator
+                        <VaultsPage
                           walletTheme={walletTheme}
                           setWalletTheme={setWalletTheme}
                         />
@@ -402,20 +370,6 @@ export const App = () => {
                         cacheLoaded={cacheLoaded}
                       >
                         <NFTDetailsPage
-                          walletTheme={walletTheme}
-                          setWalletTheme={setWalletTheme}
-                        />
-                      </AuthWrapper>
-                    }
-                  />
-                  <Route
-                    path={`${ProfileConstants.vaults}/transactions/${ProfileConstants.vaultTransaction}`}
-                    element={
-                      <AuthWrapper
-                        isAuthenticated={isAuthenticated}
-                        cacheLoaded={cacheLoaded}
-                      >
-                        <VaultTransactionsDetailsPage
                           walletTheme={walletTheme}
                           setWalletTheme={setWalletTheme}
                         />

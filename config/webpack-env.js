@@ -89,7 +89,6 @@ export function getServiceConfig() {
     CYCLES_MINTER_CANISTER_ID: JSON.stringify(
       process.env.CYCLES_MINTER_CANISTER_ID,
     ),
-    VAULT_CANISTER_ID: JSON.stringify(process.env.VAULT_CANISTER_ID),
     ECDSA_SIGNER_CANISTER_ID: JSON.stringify(
       process.env.ECDSA_SIGNER_CANISTER_ID,
     ),

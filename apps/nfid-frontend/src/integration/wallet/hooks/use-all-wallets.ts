@@ -6,7 +6,6 @@ import { getWalletName } from "@nfid/integration"
 
 import { TokenBalance } from "frontend/features/fungible-token/fetch-balances"
 import { useUserBalances } from "frontend/features/fungible-token/icp/hooks/use-user-balances"
-import { useAllVaultsWallets } from "frontend/features/vaults/hooks/use-vaults-wallets-balances"
 import { useApplicationsMeta } from "frontend/integration/identity-manager/queries"
 import { sortAlphabetic, keepStaticOrder } from "@nfid-frontend/ui"
 
@@ -17,21 +16,16 @@ export type Wallet = {
   label: string
   accountId: string
   domain: string
-  isVaultWallet?: boolean
   address?: string
-  vaultId?: bigint
-  vaultName?: string
 }
 
 export const useAllWallets = () => {
   const { balances, isLoading } = useUserBalances()
-  const { balances: vaultsBalances, isLoading: isAllWalletsLoading } =
-    useAllVaultsWallets()
 
   const applications = useApplicationsMeta()
 
   const wallets = React.useMemo(() => {
-    if (!balances || !vaultsBalances) return []
+    if (!balances) return []
 
     const wallets = balances
       ?.map(({ principal, account, ...rest }) => ({
@@ -48,22 +42,11 @@ export const useAllWallets = () => {
         ...rest,
       }))
       .sort(sortAlphabetic(({ label }) => label ?? ""))
-      .concat(
-        vaultsBalances?.map(({ principal, account, address, ...rest }) => ({
-          label: account.label,
-          accountId: account.accountId,
-          domain: account.domain,
-          principal,
-          address: address ?? account.accountId,
-          isVaultWallet: true,
-          ...rest,
-        })) ?? [],
-      )
     return keepStaticOrder<Wallet>(
       ({ label }) => label ?? "",
       ["NFID", "NNS"],
     )(wallets || [])
-  }, [applications.applicationsMeta, balances, vaultsBalances])
+  }, [applications.applicationsMeta, balances])
 
-  return { wallets, isLoading: isLoading || isAllWalletsLoading }
+  return { wallets, isLoading }
 }

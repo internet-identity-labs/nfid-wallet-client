@@ -3,7 +3,6 @@ export const JEST_GLOBALS = {
   ArrayBuffer,
   INTERNET_IDENTITY_CANISTER_ID: "nprnb-waaaa-aaaaj-qax4a-cai",
   IDENTITY_MANAGER_CANISTER_ID: "74gpt-tiaaa-aaaak-aacaa-cai",
-  VAULT_CANISTER_ID: "ymvb6-7qaaa-aaaan-qbgga-cai",
   ECDSA_SIGNER_CANISTER_ID: "txkre-oyaaa-aaaap-qa3za-cai",
   SWAP_TRS_STORAGE: "mfoln-bqaaa-aaaao-qeuqq-cai",
   NFID_WALLET_CANISTER: "w44yp-iaaaa-aaaar-qafjq-cai",

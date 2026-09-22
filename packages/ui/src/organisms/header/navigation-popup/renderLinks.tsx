@@ -6,7 +6,6 @@ import { INavigationPopupLinks } from "../profile-header"
 
 export const shouldRenderLink = (
   linkItem: INavigationPopupLinks,
-  hasVaults: boolean,
   location: Location,
   profileConstants?: {
     base: string
@@ -19,7 +18,6 @@ export const shouldRenderLink = (
   const { id } = linkItem
   const { pathname } = location
 
-  if (!hasVaults && id === "nav-vaults") return false
   if (!profileConstants) return true
   if (
     id === "nav-vaults" &&

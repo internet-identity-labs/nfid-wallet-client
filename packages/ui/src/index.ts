@@ -59,7 +59,6 @@ export * from "./templates"
 export {
   NotFound,
   AuthWrapper,
-  VaultGuard,
   NFIDLogin,
   RequestTransferPage,
   ProfileCredentialsPage,

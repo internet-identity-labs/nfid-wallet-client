@@ -356,7 +356,7 @@ export default function AuthenticationCoordinator({
       case state.matches("SignUpWithPasskey"):
         return (
           <motion.div
-            key="SignUpWithPasskey"
+            key="SignUpPassKey"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -364,13 +364,20 @@ export default function AuthenticationCoordinator({
             className="flex flex-col flex-1"
           >
             <AuthSignUpPassKey
-              getCaptcha={() => passkeyConnector.getCaptchaChallenge()}
               onPasskeyCreate={onSignUpWithPasskey}
-              isPasskeyCreating={signUpPasskeyLoading}
-              createPasskeyError={signUpWithPassKeyError}
               clearError={() => setSignUpWithPasskeyError("")}
-              onBack={() => send({ type: "BACK" })}
+              isPasskeyCreating={signUpPasskeyLoading}
+              getCaptcha={passkeyConnector.getCaptchaChallenge}
               withLogo={!isIdentityKit}
+              title={isIdentityKit ? "Connect" : undefined}
+              subTitle={
+                isIdentityKit ? "to continue to" : "Connect to continue to"
+              }
+              onBack={() => {
+                send({ type: "BACK" })
+                setSignUpWithPasskeyError("")
+              }}
+              createPasskeyError={signUpWithPassKeyError}
               applicationURL={state.context.authRequest?.hostname}
             />
           </motion.div>

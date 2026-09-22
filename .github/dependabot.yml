@@ -19,10 +19,6 @@ updates:
     ignore:
       - dependency-name: "@icp-sdk/core"
       - dependency-name: "@icp-sdk/auth"
-      - dependency-name: "@dfinity/agent"
-      - dependency-name: "@dfinity/candid"
-      - dependency-name: "@dfinity/principal"
-      - dependency-name: "@dfinity/identity"
       - dependency-name: "lint-staged"
       - dependency-name: "typescript"
       - dependency-name: "webpack-dev-server"

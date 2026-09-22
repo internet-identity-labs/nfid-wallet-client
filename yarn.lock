@@ -2251,13 +2251,13 @@
     hashery "^1.5.1"
     keyv "^5.6.0"
 
-"@chromatic-com/storybook@5":
-  version "5.2.1"
-  resolved "https://registry.yarnpkg.com/@chromatic-com/storybook/-/storybook-5.2.1.tgz#ecfbcb93e19b7e3f995dfea8313c9357171ffc7a"
-  integrity sha512-z6I7NJk/0VngA64y5TNYaB4Hc2X8+90n4op6lBt9PvWk5TmIlFLDqdX33rlrwbNRkkYijVgA/wO04rVYXi5Mlg==
+"@chromatic-com/storybook@5.3.1":
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/@chromatic-com/storybook/-/storybook-5.3.1.tgz#6123fbe67bf5e42b5810705d0b578cc17db71bae"
+  integrity sha512-eUcbR9CddVmKAnjOiBCOz5rNdT096jiXIjR+qaWbUuTlgRdpc9yjTrk4/hiPAAykZrPYVNJN11p6rJgW9KNpKg==
   dependencies:
     "@neoconfetti/react" "^1.0.0"
-    chromatic "16.10.0"
+    chromatic "^18.0.1"
     jsonfile "^6.1.0"
     strip-ansi "^7.1.0"
 
@@ -10558,10 +10558,10 @@ chokidar@^5.0.0:
   dependencies:
     readdirp "^5.0.0"
 
-chromatic@16.10.0:
-  version "16.10.0"
-  resolved "https://registry.yarnpkg.com/chromatic/-/chromatic-16.10.0.tgz#30891067d703d767e554e7e1d0bc375d88fcbdcd"
-  integrity sha512-nFsztmnu7rFiGafUJgXvLUNpqmRylz92eNvzBoJNTKKQj4EQUyxznwnfpf1dTs7hXtWD8JwcH92jADydaHA1sw==
+chromatic@^18.0.1:
+  version "18.9.4"
+  resolved "https://registry.yarnpkg.com/chromatic/-/chromatic-18.9.4.tgz#f41ab03ad2a9d2d39a5badc946189bca694e1981"
+  integrity sha512-+/socRBceUAk19XwvnnJTgkgw6YJ5Fh58HoWM5ipiLwTnZS82r/cCM164ROKYVajeuCeo3ROsH+6nVHAylin5g==
   dependencies:
     semver "^7.3.5"
 
@@ -11826,10 +11826,10 @@ dotenv@16.4.7:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.4.7.tgz#0e20c5b82950140aa99be360a8a5f52335f53c26"
   integrity sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==
 
-dotenv@17.4.1:
-  version "17.4.1"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-17.4.1.tgz#d8e2179fe287365ef3aecb9459668454168eda88"
-  integrity sha512-k8DaKGP6r1G30Lx8V4+pCsLzKr8vLmV2paqEj1Y55GdAgJuIqpRp5FfajGF8KtwMxCz9qJc6wUIJnm053d/WCw==
+dotenv@18.0.1:
+  version "18.0.1"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-18.0.1.tgz#27ad1fefc173e754a9a0a68fcd8aa71b267ed37f"
+  integrity sha512-0eR4m4D/jH5eaI3evo2ZqqMii5mrTCR12v12VChdie6O1gPHs7XAjzTep0CWc1Bd+oNx3vVfbi734dK4zghigw==
 
 dotenv@^16.4.5:
   version "16.6.1"

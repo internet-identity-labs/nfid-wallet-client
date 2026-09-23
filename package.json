@@ -174,7 +174,7 @@
     "buffer": "6.0.3",
     "crypto-browserify": "3.12.1",
     "csp-html-webpack-plugin": "5.1.0",
-    "@cucumber/cucumber": "10.9.0",
+    "@cucumber/cucumber": "13.2.1",
     "cucumber-html-reporter": "7.2.0",
     "dotenv": "18.0.1",
     "elliptic": "6.6.1",

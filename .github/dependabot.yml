@@ -22,7 +22,6 @@ updates:
       - dependency-name: "lint-staged"
       - dependency-name: "typescript"
       - dependency-name: "webpack-dev-server"
-      - dependency-name: "@icp-sdk/auth"
 
   # This section configures Dependabot to update GitHub Actions dependencies.
   - package-ecosystem: "github-actions"

@@ -131,7 +131,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
                   block
                   onClick={() => onSignUpWithPasskey()}
                 >
-                  Create account with a passkey
+                  Create wallet with a passkey
                 </Button>
               </>
             )}

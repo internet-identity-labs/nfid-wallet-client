@@ -3,6 +3,7 @@ import clsx from "clsx"
 import { A } from "packages/ui/src/atoms/custom-link"
 
 import { H5, LogoMain, LogoLanding } from "@nfid-frontend/ui"
+import { JSX } from "react"
 
 import { useDarkTheme } from "frontend/hooks"
 
@@ -11,13 +12,15 @@ export interface AuthAppMetaProps {
   title?: string
   subTitle?: string | JSX.Element
   withLogo?: boolean
+  isIdentityKit?: boolean
 }
 
 export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
   applicationURL,
   subTitle = "Connect to",
-  title,
+  title = "Connect to",
   withLogo = true,
+  isIdentityKit,
 }) => {
   const isDarkTheme = useDarkTheme()
 
@@ -31,7 +34,7 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
           />
         )}
 
-        {title && (
+        {title && isIdentityKit && (
           <H5
             className={clsx(
               "mt-5 mb-3 text-sm leading-6 text-black dark:text-white",

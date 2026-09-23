@@ -35,12 +35,9 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
           withLogo={!isIdentityKit}
           title={isIdentityKit ? "Choose Wallet" : undefined}
           subTitle={
-            <>
-              {isIdentityKit
-                ? "to continue to"
-                : "Choose wallet to continue to"}
-            </>
+            isIdentityKit ? "to continue to" : "Choose wallet to continue to"
           }
+          isIdentityKit={isIdentityKit}
         />
         <div
           className={clsx(

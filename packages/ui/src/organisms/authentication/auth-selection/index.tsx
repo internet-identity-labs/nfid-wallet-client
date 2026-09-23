@@ -80,8 +80,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
         <AuthAppMeta
           applicationURL={applicationURL}
           withLogo={!isIdentityKit}
-          title={isIdentityKit ? "Connect to" : undefined}
-          subTitle={<>Connect to</>}
+          isIdentityKit={isIdentityKit}
         />
         <div className="mt-7">
           <form

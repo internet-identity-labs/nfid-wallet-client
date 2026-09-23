@@ -369,8 +369,6 @@ export default function AuthenticationCoordinator({
               isPasskeyCreating={signUpPasskeyLoading}
               getCaptcha={passkeyConnector.getCaptchaChallenge}
               withLogo={!isIdentityKit}
-              title={isIdentityKit ? "Connect" : undefined}
-              subTitle={isIdentityKit ? "to continue to" : "Connect to"}
               onBack={() => {
                 send({ type: "BACK" })
                 setSignUpWithPasskeyError("")
@@ -392,7 +390,6 @@ export default function AuthenticationCoordinator({
           >
             <AuthSignInWithRecoveryPhrase
               withLogo={!isIdentityKit}
-              title={isIdentityKit ? "Connect to" : undefined}
               appMeta={state.context.authRequest?.hostname}
               onBack={() => {
                 send({ type: "BACK" })
@@ -457,7 +454,6 @@ export default function AuthenticationCoordinator({
           >
             <AuthOtherSignOptions
               withLogo={!isIdentityKit}
-              title={isIdentityKit ? "Connect to" : undefined}
               applicationUrl={state.context.authRequest?.hostname}
               onBack={() => send({ type: "BACK" })}
               handleAuth={handleOtherOptionsAuth}

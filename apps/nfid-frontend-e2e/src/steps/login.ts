@@ -1,4 +1,4 @@
-import { Given, When } from "@cucumber/cucumber"
+import { Given, When } from "@wdio/cucumber-framework"
 
 import userClient from "../helpers/accounts-service.js"
 import clearAuthState from "../helpers/clear-auth-state.js"

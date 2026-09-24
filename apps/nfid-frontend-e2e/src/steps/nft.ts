@@ -1,4 +1,4 @@
-import { Then } from "@cucumber/cucumber"
+import { Then } from "@wdio/cucumber-framework"
 
 import { softAssertAll } from "../helpers/assertions.js"
 import Nft from "../pages/nft.js"

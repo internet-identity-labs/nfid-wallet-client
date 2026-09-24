@@ -1,4 +1,4 @@
-import { Then, When } from "@cucumber/cucumber"
+import { Then, When } from "@wdio/cucumber-framework"
 
 import { softAssertAll } from "../helpers/assertions.js"
 import { isMobile } from "../../wdio.conf.js"

@@ -1,4 +1,4 @@
-import { When } from "@cucumber/cucumber"
+import { When } from "@wdio/cucumber-framework"
 
 import Activity from "../pages/activity.js"
 import Assets from "../pages/assets.js"

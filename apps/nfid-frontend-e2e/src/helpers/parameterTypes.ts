@@ -1,4 +1,4 @@
-import { defineParameterType } from "@cucumber/cucumber"
+import { defineParameterType } from "@wdio/cucumber-framework"
 import { addressTypes, type AddressType } from "../pages/addressBook"
 
 defineParameterType({

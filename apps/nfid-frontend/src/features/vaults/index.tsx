@@ -16,7 +16,12 @@ const VaultsPage: FC<VaultsPageProps> = memo(
         className="dark:text-white"
         walletTheme={walletTheme}
         setWalletTheme={setWalletTheme}
-      ></ProfileTemplate>
+      >
+        <p className="">
+          Designed to give your blockchain assets the strongest protection
+          against loss, theft, and seizure.
+        </p>
+      </ProfileTemplate>
     )
   },
 )

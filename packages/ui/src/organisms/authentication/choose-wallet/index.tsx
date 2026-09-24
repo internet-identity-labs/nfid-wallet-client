@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { IconCaret } from "packages/ui/src/atoms/icons/caret"
 import { FC } from "react"
@@ -12,7 +13,7 @@ import { AuthAppMeta } from "../app-meta"
 export interface ChooseWalletProps {
   onAuthSelection: () => void
   onLoginWithPasskey: (allowedPasskeys: any[]) => Promise<void>
-  showLogo?: boolean
+  isIdentityKit?: boolean
   applicationURL?: string
   wallets?: ExistingWallet[]
 }
@@ -20,7 +21,7 @@ export interface ChooseWalletProps {
 export const ChooseWallet: FC<ChooseWalletProps> = ({
   onAuthSelection,
   onLoginWithPasskey,
-  showLogo,
+  isIdentityKit,
   applicationURL,
   wallets,
 }) => {
@@ -31,13 +32,16 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
       <div className="flex flex-col w-full h-full text-sm text-center">
         <AuthAppMeta
           applicationURL={applicationURL}
-          withLogo={!showLogo}
-          title={"Choose Wallet"}
-          subTitle={<>to continue to</>}
+          withLogo={!isIdentityKit}
+          title={isIdentityKit ? "Choose Wallet" : undefined}
+          subTitle={
+            isIdentityKit ? "to continue to" : "Choose wallet to continue to"
+          }
+          isIdentityKit={isIdentityKit}
         />
         <div
           className={clsx(
-            "mt-10 text-left max-h-[286px] overflow-auto",
+            "text-left max-h-[286px] overflow-auto",
             "scrollbar scrollbar-w-4 scrollbar-thumb-gray-300",
             "scrollbar-thumb-rounded-full scrollbar-track-rounded-full",
           )}

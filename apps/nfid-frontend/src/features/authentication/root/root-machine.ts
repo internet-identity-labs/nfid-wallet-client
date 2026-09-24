@@ -186,50 +186,24 @@ const AuthenticationMachine = setup({
           actions: "assignAuthSession",
           target: "End",
         },
-        SIGN_UP: {
-          target: "AuthSelectionSignUp",
-        },
         AUTH_WITH_PASSKEY: {
           actions: "assignAuthSession",
           target: "GetRecoveryProvisioningPlan",
+        },
+        AUTH_WITH_PASSKEY_SIGNUP: {
+          target: "SignUpWithPasskey",
         },
         CHOOSE_WALLET: {
           target: "ChooseWallet",
         },
       },
     },
-    AuthSelectionSignUp: {
+    SignUpWithPasskey: {
       on: {
-        AUTH_WITH_EMAIL: {
-          target: "SignUpWithEmail",
-          actions: ["assignVerificationEmail", "assignIsEmbed"],
-        },
-        AUTH_WITH_GOOGLE: {
-          target: "SignUpWithGoogle",
-          actions: ["assignEmail", "assignIsEmbed"],
-        },
-        AUTH_WITH_II: {
-          target: "SignUpWithII",
-          actions: ["assignAuthSession"],
-        },
+        BACK: "AuthSelection",
         AUTHENTICATED: {
           actions: "assignAuthSession",
           target: "End",
-        },
-        SIGN_IN: {
-          target: "AuthSelection",
-        },
-        SIGN_UP_WITH_PASSKEY: {
-          target: "SignUpPassKey",
-        },
-      },
-    },
-    SignUpPassKey: {
-      on: {
-        BACK: "AuthSelectionSignUp",
-        AUTHENTICATED: {
-          target: "End",
-          actions: "assignAuthSession",
         },
       },
     },
@@ -276,28 +250,6 @@ const AuthenticationMachine = setup({
         },
       },
     },
-    SignUpWithGoogle: {
-      invoke: {
-        src: "signWithGoogleService",
-        id: "signWithGoogleService",
-        input: ({ event }: { event: any }) => ({ jwt: event.data.jwt }),
-        onDone: [
-          {
-            guard: "isExistingAccount",
-            actions: "assignAuthSession",
-            target: "GetRecoveryProvisioningPlan",
-          },
-          {
-            actions: "assignAuthSession",
-            target: "AuthSelectionSignUp",
-          },
-        ],
-        onError: {
-          target: "AuthSelectionSignUp",
-          actions: "toastRegistrationDisabled",
-        },
-      },
-    },
     AuthWithII: {
       invoke: {
         src: "signWithIIService",
@@ -313,42 +265,6 @@ const AuthenticationMachine = setup({
             target: "AuthSelection",
           },
         ],
-      },
-    },
-    SignUpWithII: {
-      invoke: {
-        src: "signWithIIService",
-        id: "AuthWithIIService",
-        onDone: [
-          {
-            guard: "isExistingAccount",
-            actions: "assignAuthSession",
-            target: "GetRecoveryProvisioningPlan",
-          },
-          {
-            actions: "assignAuthSession",
-            target: "AuthSelectionSignUp",
-          },
-        ],
-      },
-    },
-    SignUpWithEmail: {
-      entry: assign({ authSession: () => undefined }),
-      invoke: {
-        src: "AuthWithEmailMachine",
-        id: "AuthWithEmailMachine",
-        input: ({ context }: { context: AuthenticationContext }) => ({
-          verificationEmail: context.verificationEmail ?? "",
-          authRequest: context.authRequest,
-          appMeta: context.appMeta,
-        }),
-        onDone: [
-          { guard: "isReturn", target: "AuthSelectionSignUp" },
-          { target: "GetRecoveryProvisioningPlan" },
-        ],
-      },
-      on: {
-        EMAIL_AUTH_COMPLETE: { actions: "assignAuthSession" },
       },
     },
     EmailAuthentication: {

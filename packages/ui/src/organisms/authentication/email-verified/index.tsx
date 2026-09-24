@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { AuthAppMeta } from "packages/ui/src/organisms/authentication/app-meta"
 import React from "react"
@@ -22,7 +23,7 @@ export const AuthEmailVerified: React.FC<AuthEmailVerifiedProps> = ({
 
   return (
     <div className="flex flex-col flex-1 w-full h-full text-sm text-center">
-      <AuthAppMeta title="Sign in verified" withLogo={!isIdentityKit} />
+      <AuthAppMeta title="Connection verified" withLogo={!isIdentityKit} />
       <p className="dark:text-white">
         You may now continue to the application.
       </p>

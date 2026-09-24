@@ -13,10 +13,9 @@ export const EmailMagicLinkLink: React.FC<EmailMagicLinkLinkProps> = ({
     <>
       <AuthAppMeta title="Link account" />
       <p className="text-sm text-center">
-        This email address has previously been registered.
+        This email is already connected to an NFID account.
         <br />
-        Link your account with Google to access your account through either a
-        sign in link or Google sign in.
+        Please sign in using Google or email link to access your wallet.
       </p>
       <img alt="asset" src={LinkAsset} className="w-full h-56 my-10" />
       {googleButton}

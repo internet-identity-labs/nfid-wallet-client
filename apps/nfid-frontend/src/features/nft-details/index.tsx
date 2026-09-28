@@ -27,6 +27,7 @@ import { ProfileTemplate } from "@nfid-frontend/ui"
 import { fetchNFT, fetchViewOnlyNFT } from "../collectibles/utils/util"
 import { ModalType } from "../transfer-modal/types"
 import { nftInitialState, nftReducer } from "./utils"
+import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 
 type NftDetailsProps = {
   walletTheme: NFIDTheme
@@ -172,6 +173,7 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
     <ProfileTemplate
       titleClassNames="hidden sm:block"
       showBackButton
+      backButtonPathname={`${ProfileConstants.base}/${ProfileConstants.nfts}`}
       walletTheme={walletTheme}
       setWalletTheme={setWalletTheme}
       headerMenu={

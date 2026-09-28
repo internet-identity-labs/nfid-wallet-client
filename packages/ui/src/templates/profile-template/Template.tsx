@@ -5,7 +5,7 @@ import {
   BannerSlide,
 } from "packages/ui/src/molecules/banner-carousel"
 import ProfileHeader from "packages/ui/src/organisms/header/profile-header"
-import ProfileInfo from "packages/ui/src/organisms/profile-info"
+import { WalletProfileInfo } from "packages/ui/src/organisms/profile-info"
 import {
   HTMLAttributes,
   useState,
@@ -15,8 +15,9 @@ import {
   useContext,
   useEffect,
   useCallback,
+  SVGProps,
 } from "react"
-import { Outlet, useLocation, useNavigate, useMatch } from "react-router-dom"
+import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { swapTransactionService } from "src/integration/swap/transaction/transaction-service"
 import { SwapStage } from "src/integration/swap/types/enums"
 import useSWRImmutable from "swr/immutable"
@@ -98,8 +99,9 @@ import PromotedDappBannerBg from "../assets/promoted-dapp-banner.png"
 interface IProfileTemplate extends HTMLAttributes<HTMLDivElement> {
   pageTitle?: string
   pageDescription?: string
-  icon?: string
+  icon?: FC<SVGProps<SVGSVGElement>>
   showBackButton?: boolean
+  backButtonPathname?: string
   onIconClick?: () => void
   headerClassName?: string
   containerClassName?: string
@@ -120,6 +122,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   pageDescription,
   icon,
   showBackButton,
+  backButtonPathname = `${ProfileConstants.base}/${ProfileConstants.tokens}`,
   onIconClick,
   children,
   className,
@@ -141,25 +144,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     useContext(ProfileContext)
   const [isRefreshing, setIsRefreshing] = useState(false)
 
-  const isNftDetails = Boolean(
-    useMatch(
-      `${ProfileConstants.base}/${ProfileConstants.nfts}/${ProfileConstants.nftDetails}`,
-    ),
-  )
-
-  const isPrivateAccDetails = Boolean(
-    useMatch(
-      `${ProfileConstants.privateAccounts}/${ProfileConstants.privateAccountsDetails}`,
-    ),
-  )
-
   const handleNavigateBack = () => {
-    const pathname = isNftDetails
-      ? `${ProfileConstants.base}/${ProfileConstants.nfts}`
-      : isPrivateAccDetails
-        ? `${ProfileConstants.privateAccounts}`
-        : `${ProfileConstants.base}/${ProfileConstants.tokens}`
-    navigate({ pathname, search: location.search })
+    navigate({ pathname: backButtonPathname, search: location.search })
   }
 
   const handleNavigateAddressBook = () => {
@@ -687,17 +673,30 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
                 {pageTitle}
               </p>
             </div>
-            {icon && onIconClick && (
-              <Tooltip tip={iconTooltip}>
-                <img
-                  id={iconId}
-                  src={icon}
-                  alt="icon"
-                  onClick={onIconClick}
-                  className="w-6 h-6 transition-all cursor-pointer hover:opacity-70"
-                />
-              </Tooltip>
-            )}
+            {icon &&
+              onIconClick &&
+              (() => {
+                const Icon = icon
+                return (
+                  <>
+                    {iconTooltip ? (
+                      <Tooltip tip={iconTooltip}>
+                        <Icon
+                          id={iconId}
+                          onClick={onIconClick}
+                          className="cursor-pointer"
+                        />
+                      </Tooltip>
+                    ) : (
+                      <Icon
+                        id={iconId}
+                        onClick={onIconClick}
+                        className="cursor-pointer"
+                      />
+                    )}
+                  </>
+                )
+              })()}
             {headerMenu}
           </div>
           {pageDescription && (
@@ -707,7 +706,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
           )}
           {isWallet && (
             <>
-              <ProfileInfo
+              <WalletProfileInfo
                 usdBalance={isUsdBalanceLoading ? undefined : fullUsdBalance}
                 isUsdLoading={isUsdBalanceLoading}
                 onSendClick={onSendClick}

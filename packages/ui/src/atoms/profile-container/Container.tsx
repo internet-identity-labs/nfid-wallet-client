@@ -3,6 +3,8 @@ import React from "react"
 
 interface IProfileContainer {
   title?: string | React.ReactNode
+  titleLabel?: React.ReactNode
+  titleButton?: React.ReactNode
   subTitle?: string | React.ReactNode
   children?: React.ReactNode
   className?: string
@@ -14,6 +16,8 @@ interface IProfileContainer {
 
 const ProfileContainer: React.FC<IProfileContainer> = ({
   title,
+  titleLabel,
+  titleButton,
   subTitle,
   children,
   className,
@@ -31,10 +35,12 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
         className,
       )}
     >
-      <div className={clsx("px-5", titleClassName)}>
+      <div className={clsx("px-5 text-xl leading-[34px] mb-2", titleClassName)}>
         {title && (
-          <div className="flex items-center justify-between mb-[8px] text-xl leading-[34px]">
+          <div className="flex items-center justify-between">
             {title}
+            {titleLabel}
+            {titleButton}
           </div>
         )}
         {subTitle && (
@@ -48,7 +54,6 @@ const ProfileContainer: React.FC<IProfileContainer> = ({
           </div>
         )}
       </div>
-
       <div className={clsx("px-0 md:px-[30px]", innerClassName)}>
         {children}
       </div>

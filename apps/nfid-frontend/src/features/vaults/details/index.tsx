@@ -1,0 +1,57 @@
+import { FC } from "react"
+import { useParams } from "react-router-dom"
+
+import { ProfileTemplate } from "@nfid-frontend/ui"
+import { useSWR } from "@nfid/swr"
+import { VaultDetails } from "packages/ui/src/organisms/vaults/details"
+
+import { NFIDTheme } from "frontend/App"
+import { useIdentity } from "frontend/hooks/identity"
+
+import { DelegationIdentity } from "@icp-sdk/core/identity"
+import { fetchVaultDetails } from "../utils"
+import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+
+type VaultDetailsProps = {
+  walletTheme: NFIDTheme
+  setWalletTheme: (theme: NFIDTheme) => void
+}
+
+const VaultDetailsPage: FC<VaultDetailsProps> = ({
+  walletTheme,
+  setWalletTheme,
+}) => {
+  const { vaultId } = useParams<{ vaultId: string }>()
+  const { identity } = useIdentity()
+
+  const {
+    data: vault,
+    isLoading,
+    isValidating,
+    mutate,
+  } = useSWR(
+    vaultId && identity ? `vault-details-${vaultId}` : null,
+    () => fetchVaultDetails(vaultId!, identity! as DelegationIdentity),
+    { revalidateOnFocus: false, revalidateIfStale: false },
+  )
+
+  return (
+    <ProfileTemplate
+      pageTitle={vault?.state?.name}
+      showBackButton
+      backButtonPathname={`${ProfileConstants.vaults}`}
+      walletTheme={walletTheme}
+      setWalletTheme={setWalletTheme}
+      className="w-full z-[1]"
+    >
+      <VaultDetails
+        vault={vault}
+        address={vaultId}
+        refreshPortfolio={mutate}
+        isLoading={isValidating || isLoading || !identity}
+      />
+    </ProfileTemplate>
+  )
+}
+
+export default VaultDetailsPage

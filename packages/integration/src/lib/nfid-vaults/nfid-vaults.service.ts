@@ -1,4 +1,12 @@
-import { VaultManager, VaultNamingTransactionRequest } from "@nfid/vaults"
+import {
+  MemberCreateTransactionRequestV2,
+  MemberRemoveTransactionRequest,
+  MemberUpdateNameTransactionRequest,
+  QuorumTransactionRequest,
+  VaultManager,
+  VaultNamingTransactionRequest,
+  VaultRole,
+} from "@nfid/vaults"
 import { HttpAgent, Identity, SignIdentity } from "@icp-sdk/core/agent"
 import { Principal } from "@icp-sdk/core/principal"
 
@@ -14,7 +22,7 @@ import {
 import { StoredVault, VaultCreationPrice } from "./types"
 
 /** The canister timestamps in nanoseconds, the frontend works in milliseconds. */
-const NS_PER_MS = BigInt(1_000_000)
+export const NS_PER_MS = BigInt(1_000_000)
 
 /** How many times a step that follows a paid-for vault is attempted. */
 const ATTEMPTS = 3
@@ -144,13 +152,10 @@ export class NfidVaultsService {
    * @param identity the global identity: it pays, controls the vault and signs its
    * transactions, so it has to be the user global one and not a device identity.
    */
-  async createVault(
-    name: string,
-    identity: SignIdentity,
-    vaultType?: VaultType,
-  ): Promise<Principal> {
+  async createVault(name: string, identity: SignIdentity): Promise<Principal> {
     const controller = identity.getPrincipal()
     const price = await this.getPrice(identity)
+    const vaultType: VaultType = { Light: null }
 
     // The price follows the ICP/XDR rate, which can move between quoting it and
     // charging it. approveE8s carries head room for that on top of the ledger fee,
@@ -265,6 +270,78 @@ export class NfidVaultsService {
         new VaultNamingTransactionRequest(name),
       ]),
     )
+  }
+
+  /**
+   * Submits a request to add a new approver (member) to the vault.
+   * Requires admin role. Goes through the quorum approval flow.
+   */
+  async addMember(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    payload: {
+      owner: Principal
+      subaccount?: Uint8Array | number[]
+      name: string
+      role: VaultRole
+    },
+  ): Promise<void> {
+    await this.getManager(vaultCanisterId, identity).requestTransaction([
+      new MemberCreateTransactionRequestV2(
+        { owner: payload.owner, subaccount: payload.subaccount },
+        payload.name,
+        payload.role,
+      ),
+    ])
+  }
+
+  /**
+   * Submits a request to update the name of an existing member.
+   * Requires admin role. Goes through the quorum approval flow.
+   *
+   * @param memberId the member's userId (principal string)
+   */
+  async updateMemberName(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    memberId: string,
+    name: string,
+  ): Promise<void> {
+    await this.getManager(vaultCanisterId, identity).requestTransaction([
+      new MemberUpdateNameTransactionRequest(memberId, name),
+    ])
+  }
+
+  /**
+   * Submits a request to remove a member from the vault.
+   * Requires admin role. Goes through the quorum approval flow.
+   *
+   * @param memberId the member's userId (principal string)
+   */
+  async removeMember(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    memberId: string,
+  ): Promise<void> {
+    await this.getManager(vaultCanisterId, identity).requestTransaction([
+      new MemberRemoveTransactionRequest(memberId),
+    ])
+  }
+
+  /**
+   * Submits a request to update the quorum (approval threshold).
+   * Requires admin role. Goes through the quorum approval flow.
+   *
+   * @param quorum number of approvals required
+   */
+  async updateQuorum(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    quorum: number,
+  ): Promise<void> {
+    await this.getManager(vaultCanisterId, identity).requestTransaction([
+      new QuorumTransactionRequest(quorum),
+    ])
   }
 
   /** Vault manager actor signed by the global identity that pays for the vault. */

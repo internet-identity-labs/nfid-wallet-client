@@ -1,7 +1,7 @@
 import { Then, When } from "@wdio/cucumber-framework"
 
-import { softAssertAll } from "../helpers/assertions.js"
-import Assets from "../pages/assets.js"
+import { softAssertAll } from "../helpers/assertions"
+import Assets from "../pages/assets"
 
 When(/^User selects the (.*) NFT$/, async (tokenName: string) => {
   await (await Assets.getTokenByNameInSend(tokenName)).click()

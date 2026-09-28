@@ -8,6 +8,7 @@ export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode
   disabled?: boolean
   icon?: React.ReactNode
+  iconEnd?: React.ReactNode
   text?: boolean
   type?: ButtonType
   isSmall?: boolean
@@ -26,6 +27,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       type = "primary",
       disabled,
       icon,
+      iconEnd,
       id,
       isSmall,
       block,
@@ -112,6 +114,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           ) : null}
           {children ? (
             <div className={clsx("text-center", textClassName)}>{children}</div>
+          ) : null}
+          {iconEnd ? (
+            <div className="flex items-center justify-center w-5 h-5">
+              {iconEnd}
+            </div>
           ) : null}
         </div>
       </Component>

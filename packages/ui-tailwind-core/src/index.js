@@ -48,6 +48,14 @@ export default plugin(
         checkMarkColor: "rgb(var(--color-checkMarkColor) / <alpha-value>)",
         warningBgColor: "rgb(var(--color-warningBgColor) / <alpha-value>)",
         portfolioColor: "rgb(var(--color-portfolioColor) / <alpha-value>)",
+        portfolioHoverColor:
+          "rgb(var(--color-portfolioHoverColor) / <alpha-value>)",
+        portfolioBorderColor:
+          "rgb(var(--color-portfolioBorderColor) / <alpha-value>)",
+        portfolioDarkHoverColor:
+          "rgb(var(--color-portfolioDarkHoverColor) / <alpha-value>)",
+        rangeSliderNeutral:
+          "rgb(var(--color-rangeSliderNeutral) / <alpha-value>)",
       },
     },
   },

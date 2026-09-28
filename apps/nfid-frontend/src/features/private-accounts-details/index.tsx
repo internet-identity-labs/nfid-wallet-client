@@ -12,6 +12,7 @@ import { ProfileTemplate } from "@nfid-frontend/ui"
 import { icrc1OracleService } from "@nfid/integration/token/icrc1/service/icrc1-oracle-service"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { ftService } from "frontend/integration/ft/ft-service"
+import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 
 type PrivateAccountDetailsProps = {
   walletTheme: NFIDTheme
@@ -76,6 +77,7 @@ const PrivateAccountDetailsPage: FC<PrivateAccountDetailsProps> = ({
     <ProfileTemplate
       pageTitle={dapp.app.name}
       showBackButton
+      backButtonPathname={`${ProfileConstants.privateAccounts}`}
       walletTheme={walletTheme}
       setWalletTheme={setWalletTheme}
       className="w-full z-[1]"

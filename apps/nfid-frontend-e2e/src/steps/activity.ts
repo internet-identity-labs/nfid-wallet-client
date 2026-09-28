@@ -1,6 +1,6 @@
 import { Then, When } from "@wdio/cucumber-framework"
 
-import Activity from "../pages/activity.js"
+import Activity from "../pages/activity"
 
 Then(
   /^Verifying that there are (\d+) activities in the table$/,

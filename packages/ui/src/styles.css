@@ -16,6 +16,10 @@
   --color-checkMarkColor: 16 185 129;
   --color-warningBgColor: 255 247 237;
   --color-portfolioColor: 247 249 246;
+  --color-portfolioHoverColor: 247 249 236;
+  --color-portfolioDarkHoverColor: 27 45 44;
+  --color-rangeSliderNeutral: 220 220 220;
+  --color-portfolioBorderColor: 238 242 214;
   --color-skeletonColor: 210, 210, 210;
   --color-buttonBorderColor: 209 213 219;
   --color-secondaryButtonColor: 0 0 0;

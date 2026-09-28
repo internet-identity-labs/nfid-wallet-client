@@ -228,5 +228,9 @@
     "whatwg-fetch": "3.6.20"
   },
   "repository": "git@github.com:internet-identity-labs/nfid-wallet-client.git",
-  "license": "MIT"
+  "license": "MIT",
+  "resolutions": {
+    "@nx/eslint-plugin/@typescript-eslint/type-utils": "8.70.0",
+    "@nx/eslint-plugin/@typescript-eslint/utils": "8.70.0"
+  }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { Spinner } from "packages/ui/src/atoms/spinner"
 import { FC, useEffect, useState } from "react"
@@ -19,12 +20,11 @@ import { TokensAvailableToSwap } from "frontend/integration/ft/ft-service"
 
 import SwapArrowBoxDark from "../assets/swap-arrow-box-dark.png"
 import SwapArrowBox from "../assets/swap-arrow-box.png"
-import SettingsIconWhite from "../assets/swap-settings-white.svg?url"
-import SettingsIcon from "../assets/swap-settings.svg?url"
 import { IModalType } from "../utils"
 import { ChooseFromToken } from "./choose-from-token"
 import { ChooseToToken } from "./choose-to-token"
 import { SwapModal } from "./swap"
+import { HexagonIcon } from "packages/ui/src/atoms/icons/hexagon"
 
 export interface SwapFTFormProps {
   tokens: FT[]
@@ -112,12 +112,9 @@ export const SwapFTForm: FC<SwapFTFormProps> = ({
               alignOffset={-20}
               tip={<span className="block max-w-[300px]">Swap parameters</span>}
             >
-              <img
-                className="cursor-pointer hover:opacity-60"
-                src={isDarkTheme ? SettingsIconWhite : SettingsIcon}
-                alt="NFID swap settings"
-                onClick={() => setSwapModal(SwapModal.SETTINGS)}
-              />
+              <div onClick={() => setSwapModal(SwapModal.SETTINGS)}>
+                <HexagonIcon className="text-black cursor-pointer dark:text-white hover:opacity-60" />
+              </div>
             </Tooltip>
           )}
         </div>

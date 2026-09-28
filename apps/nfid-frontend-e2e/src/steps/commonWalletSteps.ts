@@ -1,11 +1,11 @@
 import { Then, When } from "@wdio/cucumber-framework"
 
-import Activity from "../pages/activity.js"
-import Assets from "../pages/assets.js"
-import HomePage from "../pages/home-page.js"
-import Nft from "../pages/nft.js"
-import Profile from "../pages/profile.js"
-import Staking from "../pages/staking.js"
+import Activity from "../pages/activity"
+import Assets from "../pages/assets"
+import HomePage from "../pages/home-page"
+import Nft from "../pages/nft"
+import Profile from "../pages/profile"
+import Staking from "../pages/staking"
 import Page from "../pages/page"
 import AddressBook from "../pages/addressBook"
 

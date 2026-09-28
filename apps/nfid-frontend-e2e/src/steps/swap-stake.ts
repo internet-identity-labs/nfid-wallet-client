@@ -1,13 +1,13 @@
 import { When } from "@wdio/cucumber-framework"
 
-import Activity from "../pages/activity.js"
-import Assets from "../pages/assets.js"
-import Staking from "../pages/staking.js"
-import Page from "../pages/page.js"
+import Activity from "../pages/activity"
+import Assets from "../pages/assets"
+import Staking from "../pages/staking"
+import Page from "../pages/page"
 
-import { moveSlider } from "../helpers/performActions.js"
-import { softAssertAll } from "../helpers/assertions.js"
-import { formatDate } from "../helpers/dateCalculation.js"
+import { moveSlider } from "../helpers/performActions"
+import { softAssertAll } from "../helpers/assertions"
+import { formatDate } from "../helpers/dateCalculation"
 
 let tokenUSDPrice: number
 

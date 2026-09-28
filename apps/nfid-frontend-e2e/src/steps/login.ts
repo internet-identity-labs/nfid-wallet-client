@@ -1,9 +1,9 @@
-import { Given, When } from "@cucumber/cucumber"
+import { Given, When } from "@wdio/cucumber-framework"
 
-import userClient from "../helpers/accounts-service.js"
-import clearAuthState from "../helpers/clear-auth-state.js"
-import HomePage from "../pages/home-page.js"
-import Profile from "../pages/profile.js"
+import userClient from "../helpers/accounts-service"
+import clearAuthState from "../helpers/clear-auth-state"
+import HomePage from "../pages/home-page"
+import Profile from "../pages/profile"
 
 const pages = {
   HomePage: HomePage,

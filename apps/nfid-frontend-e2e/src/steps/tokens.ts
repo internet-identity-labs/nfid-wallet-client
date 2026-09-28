@@ -1,10 +1,11 @@
-import { Then, When } from "@cucumber/cucumber"
+import { Then, When } from "@wdio/cucumber-framework"
 
-import { softAssertAll } from "../helpers/assertions.js"
-import { isMobile } from "../../wdio.conf.js"
-import Assets from "../pages/assets.js"
-import HomePage from "../pages/home-page.js"
-import Profile from "../pages/profile.js"
+import { softAssertAll } from "../helpers/assertions"
+// eslint-disable-next-line import/extensions
+import { isMobile } from "../../wdio.conf"
+import Assets from "../pages/assets"
+import HomePage from "../pages/home-page"
+import Profile from "../pages/profile"
 
 When(/^Verifying that tokens are displayed on assets tab$/, async () => {
   await Profile.waitUntilBalanceLoaded()

@@ -257,7 +257,7 @@ export default function AuthenticationCoordinator({
           >
             <ChooseWallet
               applicationURL={state.context.authRequest?.hostname}
-              showLogo={isIdentityKit}
+              isIdentityKit={isIdentityKit}
               wallets={state.context.wallets}
               onLoginWithPasskey={(allowedPasskeys) =>
                 onLoginWithPasskey(allowedPasskeys)
@@ -303,6 +303,9 @@ export default function AuthenticationCoordinator({
               isLoading={isPasskeyLoading}
               applicationURL={state.context.authRequest?.hostname}
               onLoginWithPasskey={onLoginWithPasskey}
+              onSignUpWithPasskey={() =>
+                send({ type: "AUTH_WITH_PASSKEY_SIGNUP" })
+              }
               googleButton={
                 <SignInWithGoogle
                   onLogin={onSelectGoogleAuth}
@@ -331,112 +334,6 @@ export default function AuthenticationCoordinator({
                   Continue with Internet Identity
                 </Button>
               }
-              onTypeChange={() => send({ type: "SIGN_UP" })}
-            />
-          </motion.div>
-        )
-      case state.matches("AuthSelectionSignUp"):
-        return (
-          <motion.div
-            key="AuthSelectionSignUp"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="flex flex-col flex-1"
-          >
-            <AuthSelection
-              type="sign-up"
-              isIdentityKit={isIdentityKit}
-              onSelectEmailAuth={(email: string) => {
-                send({
-                  type: "AUTH_WITH_EMAIL",
-                  data: {
-                    email,
-                    isEmbed,
-                  },
-                })
-              }}
-              passKeySupported={isWebAuthNSupported()}
-              isLoading={isPasskeyLoading}
-              applicationURL={state.context.authRequest?.hostname}
-              onLoginWithPasskey={async () => {
-                send({ type: "SIGN_UP_WITH_PASSKEY" })
-              }}
-              googleButton={
-                <SignInWithGoogle
-                  onLogin={onSelectGoogleAuth}
-                  button={
-                    <Button
-                      id="google-sign-button"
-                      className="h-12 !p-0"
-                      type="stroke"
-                      icon={<IconCmpGoogle />}
-                      block
-                    >
-                      Continue with Google
-                    </Button>
-                  }
-                />
-              }
-              iiButton={
-                <Button
-                  id="ii-sign-button"
-                  className="h-12 !p-0 active:!text-black dark:active:!text-white"
-                  type="stroke"
-                  icon={<IconCmpDfinity className="w-6 h-6 min-w-6" />}
-                  block
-                  onClick={onSelectIIAuth}
-                >
-                  Continue with Internet Identity
-                </Button>
-              }
-              onTypeChange={() => send({ type: "SIGN_IN" })}
-            />
-          </motion.div>
-        )
-      case state.matches("SignUpPassKey"):
-        return (
-          <motion.div
-            key="SignUpPassKey"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="flex flex-col flex-1"
-          >
-            <AuthSignUpPassKey
-              onPasskeyCreate={onSignUpWithPasskey}
-              clearError={() => setSignUpWithPasskeyError("")}
-              isPasskeyCreating={signUpPasskeyLoading}
-              getCaptcha={passkeyConnector.getCaptchaChallenge}
-              withLogo={!isIdentityKit}
-              title={isIdentityKit ? "Sign up" : undefined}
-              subTitle={
-                isIdentityKit ? "to continue to" : "Sign up to continue to"
-              }
-              onBack={() => {
-                send({ type: "BACK" })
-                setSignUpWithPasskeyError("")
-              }}
-              createPasskeyError={signUpWithPassKeyError}
-              applicationURL={state.context.authRequest?.hostname}
-            />
-          </motion.div>
-        )
-      case state.matches("SignUpWithEmail"):
-        return (
-          <motion.div
-            key="EmailAuthentication"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="flex flex-col flex-1"
-          >
-            <AuthEmailFlowCoordinator
-              isIdentityKit={isIdentityKit}
-              actor={state.children.AuthWithEmailMachine as AuthWithEmailActor}
             />
           </motion.div>
         )
@@ -456,6 +353,31 @@ export default function AuthenticationCoordinator({
             />
           </motion.div>
         )
+      case state.matches("SignUpWithPasskey"):
+        return (
+          <motion.div
+            key="SignUpPassKey"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="flex flex-col flex-1"
+          >
+            <AuthSignUpPassKey
+              onPasskeyCreate={onSignUpWithPasskey}
+              clearError={() => setSignUpWithPasskeyError("")}
+              isPasskeyCreating={signUpPasskeyLoading}
+              getCaptcha={passkeyConnector.getCaptchaChallenge}
+              withLogo={!isIdentityKit}
+              onBack={() => {
+                send({ type: "BACK" })
+                setSignUpWithPasskeyError("")
+              }}
+              createPasskeyError={signUpWithPassKeyError}
+              applicationURL={state.context.authRequest?.hostname}
+            />
+          </motion.div>
+        )
       case state.matches("SignInWithRecoveryPhrase"):
         return (
           <motion.div
@@ -468,8 +390,6 @@ export default function AuthenticationCoordinator({
           >
             <AuthSignInWithRecoveryPhrase
               withLogo={!isIdentityKit}
-              title={isIdentityKit ? "Sign in" : undefined}
-              subTitle={isIdentityKit ? "to continue to" : undefined}
               appMeta={state.context.authRequest?.hostname}
               onBack={() => {
                 send({ type: "BACK" })
@@ -534,8 +454,6 @@ export default function AuthenticationCoordinator({
           >
             <AuthOtherSignOptions
               withLogo={!isIdentityKit}
-              title={isIdentityKit ? "Sign in" : undefined}
-              subTitle={isIdentityKit ? "to continue to" : undefined}
               applicationUrl={state.context.authRequest?.hostname}
               onBack={() => send({ type: "BACK" })}
               handleAuth={handleOtherOptionsAuth}

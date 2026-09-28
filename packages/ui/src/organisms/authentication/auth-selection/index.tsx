@@ -1,6 +1,5 @@
 import clsx from "clsx"
 import { motion } from "framer-motion"
-import { A } from "packages/ui/src/atoms/custom-link"
 import { Separator } from "packages/ui/src/atoms/separator"
 import { JSX } from "react"
 import { useForm } from "react-hook-form"
@@ -22,14 +21,13 @@ export interface AuthSelectionProps {
   applicationURL?: string
   isIdentityKit?: boolean
   onLoginWithPasskey: () => Promise<void>
+  onSignUpWithPasskey: () => void
   wallets?: ExistingWallet[]
   onShowWallets?: () => void
   googleButton: JSX.Element
   iiButton?: JSX.Element
   isLoading: boolean
   passKeySupported?: boolean
-  type?: "sign-in" | "sign-up"
-  onTypeChange: () => unknown
 }
 
 export const AuthSelection: React.FC<AuthSelectionProps> = ({
@@ -38,21 +36,18 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
   applicationURL,
   isIdentityKit,
   onLoginWithPasskey,
+  onSignUpWithPasskey,
   wallets,
   onShowWallets,
   googleButton,
   iiButton,
   isLoading,
   passKeySupported = false,
-  type = "sign-in",
-  onTypeChange,
 }) => {
   const { register, handleSubmit, formState } = useForm({
     defaultValues: { email: "" },
     mode: "all",
   })
-
-  const isSignIn = type === "sign-in"
 
   const errorMessage =
     formState.errors.email?.type === "required"
@@ -85,13 +80,7 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
         <AuthAppMeta
           applicationURL={applicationURL}
           withLogo={!isIdentityKit}
-          title={isIdentityKit ? (isSignIn ? "Sign in" : "Sign up") : undefined}
-          subTitle={
-            <>
-              {!isIdentityKit && isSignIn ? "Sign in " : "Sign up "}to continue
-              to
-            </>
-          }
+          isIdentityKit={isIdentityKit}
         />
         <div className="mt-7">
           <form
@@ -120,64 +109,43 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
             </Button>
           </form>
           <Separator className="my-[10px]" />
-          <div className={`mb-[${isSignIn ? "30px" : "50px"}]`}>
+          <div>
             {passKeySupported && (
-              <Button
-                id="passkey-sign-button"
-                className="h-12 !p-0 group mt-[10px] active:!text-black dark:active:!text-white mb-2"
-                type="stroke"
-                icon={<IconCmpPasskey />}
-                block
-                onClick={onLoginWithPasskey}
-              >
-                Continue with a Passkey
-              </Button>
+              <>
+                <Button
+                  id="passkey-sign-in-button"
+                  className="h-12 !p-0 group mt-[10px] active:!text-black dark:active:!text-white mb-2"
+                  type="stroke"
+                  icon={<IconCmpPasskey />}
+                  block
+                  onClick={onLoginWithPasskey}
+                >
+                  Continue with a Passkey
+                </Button>
+                <Button
+                  id="passkey-sign-up-button"
+                  className="h-12 !p-0 group mt-[10px] active:!text-black dark:active:!text-white mb-2"
+                  type="stroke"
+                  icon={<IconCmpPasskey />}
+                  block
+                  onClick={() => onSignUpWithPasskey()}
+                >
+                  Create wallet with a passkey
+                </Button>
+              </>
             )}
             {googleButton}
             {iiButton && <div className="mt-2">{iiButton}</div>}
-            {isSignIn && (
-              <Button
-                id="other-sign-button"
-                className="h-12 !p-0 mt-2"
-                type="ghost"
-                block
-                onClick={onSelectOtherAuth}
-              >
-                Other sign in options
-              </Button>
-            )}
+            <Button
+              id="other-sign-button"
+              className="h-12 !p-0 mt-2"
+              type="ghost"
+              block
+              onClick={onSelectOtherAuth}
+            >
+              Other connection options
+            </Button>
           </div>
-        </div>
-        <div className="flex justify-center mt-auto">
-          {isSignIn ? (
-            <div className="text-sm dark:text-white">
-              Don’t have an NFID Wallet?{" "}
-              <A
-                href={window.location.href}
-                onClick={(e) => {
-                  e.preventDefault()
-                  onTypeChange()
-                }}
-                className="font-bold"
-              >
-                Sign up
-              </A>
-            </div>
-          ) : (
-            <div className="text-sm dark:text-white">
-              Already have an NFID Wallet?{" "}
-              <A
-                href={window.location.href}
-                onClick={(e) => {
-                  e.preventDefault()
-                  onTypeChange()
-                }}
-                className="font-bold"
-              >
-                Sign in
-              </A>
-            </div>
-          )}
         </div>
       </motion.div>
     </BlurredLoader>

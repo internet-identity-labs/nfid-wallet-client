@@ -1,7 +1,7 @@
-import { When } from "@cucumber/cucumber"
+import { When } from "@wdio/cucumber-framework"
 
-import userClient from "../helpers/accounts-service.js"
-import HomePage from "../pages/home-page.js"
+import userClient from "../helpers/accounts-service"
+import HomePage from "../pages/home-page"
 
 When(/^User opens Auth modal window$/, async () => {
   await HomePage.openAuthModal()

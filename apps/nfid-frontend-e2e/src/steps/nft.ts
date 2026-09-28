@@ -1,7 +1,7 @@
-import { Then } from "@cucumber/cucumber"
+import { Then } from "@wdio/cucumber-framework"
 
-import { softAssertAll } from "../helpers/assertions.js"
-import Nft from "../pages/nft.js"
+import { softAssertAll } from "../helpers/assertions"
+import Nft from "../pages/nft"
 
 Then(
   /^Verifying that the token with name (.+) and collection (.+?)(?: and ID (.+))? is displayed$/,

@@ -1,4 +1,3 @@
- 
 import { Meta, StoryFn } from "@storybook/react-webpack5"
 
 import { ReceiveProps, Receive } from "./receive"

@@ -80,6 +80,7 @@ export type UpdayePolicyModalProps = {
   updateMember: (memberId: string, name: string) => Promise<void>
   removeMember: (memberId: string) => Promise<void>
   selectedMember?: VaultMember
+  approversCurrentQuantity: number
   approversQuantity: number | undefined
   setApproversQuantity: (v: number) => void
   membersQuantity: number

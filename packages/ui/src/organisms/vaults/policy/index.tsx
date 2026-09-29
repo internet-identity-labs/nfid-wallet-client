@@ -1,4 +1,3 @@
- 
 import { FC, memo, useEffect, useState } from "react"
 import { Button, CopyAddress, NotFound } from "@nfid-frontend/ui"
 
@@ -56,6 +55,7 @@ export const VaultPolicy: FC<VaultPolicyProps> = memo(
           updateMember={updateMember}
           removeMember={removeMember}
           selectedMember={selectedMember}
+          approversCurrentQuantity={vault.state.quorum.quorum}
           approversQuantity={approversQuantity}
           setApproversQuantity={setApproversQuantity}
           membersQuantity={state.members.length}
@@ -85,13 +85,12 @@ export const VaultPolicy: FC<VaultPolicyProps> = memo(
                 <RangeSlider
                   value={state.quorum.quorum}
                   min={1}
-                  // max={state.members.length}
-                  max={3}
+                  max={state.members.length}
                   step={1}
                   disabled
                   showMarks
                   segmentGap={2}
-                  highlightedSegments={[4]}
+                  highlightedSegments={[state.members.length - 1]}
                   className="!px-0"
                 />
               )}

@@ -56,7 +56,8 @@ const VaultPolicyPage: FC<VaultPolicyProps> = ({
           role: VaultRole.ADMIN,
         },
       )
-      mutate()
+      setTimeout(mutate, 2000)
+      //mutate()
     },
     [vaultId, identity],
   )
@@ -70,7 +71,7 @@ const VaultPolicyPage: FC<VaultPolicyProps> = ({
         identity as DelegationIdentity,
         quorum,
       )
-      mutate()
+      setTimeout(mutate, 5000)
     },
     [vaultId, identity],
   )

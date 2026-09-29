@@ -30,6 +30,7 @@ export const PolicyUpdateModal: FC<UpdayePolicyModalProps> = ({
   removeMember,
   updateQuorum,
   selectedMember,
+  approversCurrentQuantity,
   approversQuantity,
   setApproversQuantity,
   membersQuantity,
@@ -201,21 +202,51 @@ export const PolicyUpdateModal: FC<UpdayePolicyModalProps> = ({
       {type !== PolicyUpdateType.EDIT_APPROVER && (
         <>
           <p className="dark:text-white text-sm leading-5 mb-5 tracking-[0.3px]">
-            <b>{approversQuantity}</b> of <b>{membersQuantity}</b> approvals
-            will be required to initiate transactions and changes to NFID Vault
-            settings once this approver is added.
+            <b>
+              {type === PolicyUpdateType.REMOVE_APPROVER &&
+              approversQuantity === membersQuantity
+                ? approversQuantity! - 1
+                : approversQuantity}
+            </b>{" "}
+            of{" "}
+            <b>
+              {type === PolicyUpdateType.ADD_APPROVER
+                ? membersQuantity + 1
+                : type === PolicyUpdateType.REMOVE_APPROVER
+                  ? membersQuantity - 1
+                  : membersQuantity}
+            </b>{" "}
+            approvals will be required to initiate transactions and changes to
+            NFID Vault settings once this approver is added.
           </p>
-          <RangeSlider
-            value={approversQuantity}
-            setValue={setApproversQuantity}
-            min={1}
-            max={membersQuantity}
-            step={1}
-            showMarks
-            segmentGap={2}
-            highlightedSegments={[membersQuantity - 1]}
-            className="!px-0"
-          />
+          {!(
+            type === PolicyUpdateType.REMOVE_APPROVER && membersQuantity === 2
+          ) && (
+            <RangeSlider
+              value={approversQuantity}
+              setValue={setApproversQuantity}
+              min={1}
+              //max={membersQuantity}
+              max={
+                type === PolicyUpdateType.ADD_APPROVER
+                  ? membersQuantity + 1
+                  : type === PolicyUpdateType.REMOVE_APPROVER
+                    ? membersQuantity - 1
+                    : membersQuantity
+              }
+              step={1}
+              showMarks
+              segmentGap={2}
+              highlightedSegments={
+                type === PolicyUpdateType.ADD_APPROVER
+                  ? [membersQuantity]
+                  : type === PolicyUpdateType.REMOVE_APPROVER
+                    ? [membersQuantity + 1]
+                    : [membersQuantity - 1]
+              }
+              className="!px-0"
+            />
+          )}
         </>
       )}
 
@@ -264,7 +295,9 @@ export const PolicyUpdateModal: FC<UpdayePolicyModalProps> = ({
             isLoading ||
             ((type === PolicyUpdateType.ADD_APPROVER ||
               type === PolicyUpdateType.EDIT_APPROVER) &&
-              !isValid)
+              !isValid) ||
+            (approversCurrentQuantity === approversQuantity &&
+              type === PolicyUpdateType.THRESHOLD)
           }
           iconEnd={isLoading ? <Spinner /> : null}
         >

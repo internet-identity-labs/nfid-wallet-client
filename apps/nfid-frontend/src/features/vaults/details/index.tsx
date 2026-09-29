@@ -12,6 +12,7 @@ import { DelegationIdentity } from "@icp-sdk/core/identity"
 import { fetchVaultDetails, fetchVaultInitedTokens } from "../utils"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { portfolioService } from "frontend/integration/portfolio-balance/portfolio-service"
+import { nfidVaultsService } from "@nfid/integration"
 
 type VaultDetailsProps = {
   walletTheme: NFIDTheme
@@ -35,6 +36,8 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
     () => fetchVaultDetails(vaultId!, identity! as DelegationIdentity),
     { revalidateOnFocus: false, revalidateIfStale: false },
   )
+
+  console.log("vaulttt", vault)
 
   const { data: vaultTokens, isLoading: isTokensLoading } = useSWR(
     vaultId && identity ? ["vaultInitedTokens", vaultId] : null,
@@ -67,6 +70,22 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
         isUsdLoading={isUsdLoading || isTokensLoading}
         usdBalance={usdBalance}
       />
+      <div
+        className="dark:text-white"
+        onClick={() => nfidVaultsService.createWallet(vaultId!, identity!)}
+      >
+        Create Wallet
+      </div>
+      <div
+        className="dark:text-white"
+        onClick={() =>
+          nfidVaultsService.approveTransactions(vaultId!, identity!, [
+            BigInt(6),
+          ])
+        }
+      >
+        Approve
+      </div>
     </ProfileTemplate>
   )
 }

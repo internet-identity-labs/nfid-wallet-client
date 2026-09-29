@@ -25,7 +25,6 @@ const VaultsPage: FC<VaultsPageProps> = memo(
       mutate,
     } = useSWR("vaults", fetchVaults, {
       revalidateOnFocus: false,
-      revalidateIfStale: false,
     })
 
     const { identity } = useIdentity()

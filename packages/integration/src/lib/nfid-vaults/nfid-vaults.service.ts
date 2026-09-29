@@ -1,13 +1,19 @@
 import {
+  ApproveRequest,
   ICRC1CanistersAddTransactionRequest,
   ICRC1CanistersRemoveTransactionRequest,
   MemberCreateTransactionRequestV2,
   MemberRemoveTransactionRequest,
   MemberUpdateNameTransactionRequest,
+  Network,
   QuorumTransactionRequest,
+  Transaction,
+  TransactionState,
   VaultManager,
   VaultNamingTransactionRequest,
   VaultRole,
+  WalletCreateTransactionRequest,
+  generateRandomString,
 } from "@nfid/vaults"
 import { HttpAgent, Identity, SignIdentity } from "@icp-sdk/core/agent"
 import { Principal } from "@icp-sdk/core/principal"
@@ -347,6 +353,26 @@ export class NfidVaultsService {
   }
 
   /**
+   * Submits a request to create a new wallet (subaccount) inside the vault.
+   * Requires admin role. Goes through the quorum approval flow.
+   */
+  async createWallet(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+  ): Promise<void> {
+    try {
+      const uid = generateRandomString()
+      console.log("create wallet START")
+      await this.getManager(vaultCanisterId, identity).requestTransaction([
+        new WalletCreateTransactionRequest(uid, "Main wallet", Network.IC),
+      ])
+      console.log("create wallet FINISH")
+    } catch (e) {
+      console.log("create wallet error", e)
+    }
+  }
+
+  /**
    * Submits a request to add an ICRC-1 token canister to the vault.
    * Requires admin role. Goes through the quorum approval flow.
    */
@@ -378,6 +404,40 @@ export class NfidVaultsService {
         Principal.fromText(ledgerCanisterId),
       ),
     ])
+  }
+
+  /**
+   * Approves one or more pending transactions.
+   */
+  async approveTransactions(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    transactionIds: bigint[],
+  ): Promise<Transaction[]> {
+    const approves: ApproveRequest[] = transactionIds.map((trId) => ({
+      trId,
+      state: TransactionState.Approved,
+    }))
+    return this.getManager(vaultCanisterId, identity).approveTransaction(
+      approves,
+    )
+  }
+
+  /**
+   * Rejects one or more pending transactions.
+   */
+  async rejectTransactions(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    transactionIds: bigint[],
+  ): Promise<Transaction[]> {
+    const approves: ApproveRequest[] = transactionIds.map((trId) => ({
+      trId,
+      state: TransactionState.Rejected,
+    }))
+    return this.getManager(vaultCanisterId, identity).approveTransaction(
+      approves,
+    )
   }
 
   /** Vault manager actor signed by the global identity that pays for the vault. */

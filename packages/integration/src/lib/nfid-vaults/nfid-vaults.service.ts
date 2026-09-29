@@ -1,12 +1,8 @@
 import {
-  ApproveRequest,
-  ICRC1CanistersAddTransactionRequest,
-  ICRC1CanistersRemoveTransactionRequest,
   MemberCreateTransactionRequestV2,
   MemberRemoveTransactionRequest,
   MemberUpdateNameTransactionRequest,
   Network,
-  PurgeTransactionRequest,
   QuorumTransactionRequest,
   Transaction,
   TransactionRequest,
@@ -420,60 +416,6 @@ export class NfidVaultsService {
   }
 
   /**
-   * Submits a request to create a new wallet (subaccount) inside the vault.
-   * Requires admin role. Goes through the quorum approval flow.
-   */
-  async createWallet(
-    vaultCanisterId: string,
-    identity: SignIdentity,
-  ): Promise<void> {
-    try {
-      const uid = generateRandomString()
-      console.log("create wallet START")
-      await this.getManager(vaultCanisterId, identity).requestTransaction([
-        new WalletCreateTransactionRequest(uid, "Main wallet", Network.IC),
-      ])
-      console.log("create wallet FINISH")
-    } catch (e) {
-      console.log("create wallet error", e)
-    }
-  }
-
-  /**
-   * Submits a request to add an ICRC-1 token canister to the vault.
-   * Requires admin role. Goes through the quorum approval flow.
-   */
-  async addIcrc1Canister(
-    vaultCanisterId: string,
-    identity: SignIdentity,
-    ledgerCanisterId: string,
-    indexCanisterId?: string,
-  ): Promise<void> {
-    await this.getManager(vaultCanisterId, identity).requestTransaction([
-      new ICRC1CanistersAddTransactionRequest(
-        Principal.fromText(ledgerCanisterId),
-        indexCanisterId ? Principal.fromText(indexCanisterId) : undefined,
-      ),
-    ])
-  }
-
-  /**
-   * Submits a request to remove an ICRC-1 token canister from the vault.
-   * Requires admin role. Goes through the quorum approval flow.
-   */
-  async removeIcrc1Canister(
-    vaultCanisterId: string,
-    identity: SignIdentity,
-    ledgerCanisterId: string,
-  ): Promise<void> {
-    await this.getManager(vaultCanisterId, identity).requestTransaction([
-      new ICRC1CanistersRemoveTransactionRequest(
-        Principal.fromText(ledgerCanisterId),
-      ),
-    ])
-  }
-
-  /**
    * Submits multiple transactions as a batch — they all share a batch_uid so
    * the vault executes or rejects them together.
    * For a single transaction no batch_uid is set (same as a plain requestTransaction).
@@ -489,53 +431,6 @@ export class NfidVaultsService {
     }
     return this.getManager(vaultCanisterId, identity).requestTransaction(
       transactions,
-    )
-  }
-
-  /**
-   * Purges all blocked transactions from the vault.
-   * Requires admin role.
-   */
-  async purgeTransactions(
-    vaultCanisterId: string,
-    identity: SignIdentity,
-  ): Promise<void> {
-    await this.getManager(vaultCanisterId, identity).requestTransaction([
-      new PurgeTransactionRequest(),
-    ])
-  }
-
-  /**
-   * Approves one or more pending transactions.
-   */
-  async approveTransactions(
-    vaultCanisterId: string,
-    identity: SignIdentity,
-    transactionIds: bigint[],
-  ): Promise<Transaction[]> {
-    const approves: ApproveRequest[] = transactionIds.map((trId) => ({
-      trId,
-      state: TransactionState.Approved,
-    }))
-    return this.getManager(vaultCanisterId, identity).approveTransaction(
-      approves,
-    )
-  }
-
-  /**
-   * Rejects one or more pending transactions.
-   */
-  async rejectTransactions(
-    vaultCanisterId: string,
-    identity: SignIdentity,
-    transactionIds: bigint[],
-  ): Promise<Transaction[]> {
-    const approves: ApproveRequest[] = transactionIds.map((trId) => ({
-      trId,
-      state: TransactionState.Rejected,
-    }))
-    return this.getManager(vaultCanisterId, identity).approveTransaction(
-      approves,
     )
   }
 

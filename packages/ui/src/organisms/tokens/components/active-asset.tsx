@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { HTMLAttributes, FC, useState, useContext } from "react"
 import { FT } from "src/integration/ft/ft"
@@ -42,7 +43,6 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   polygonEnabled?: boolean
   aaveTokens?: FT[]
   isPrivateAccount?: boolean
-  isVault?: boolean
 }
 
 export const ActiveToken: FC<ActiveTokenProps> = ({
@@ -72,7 +72,6 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   polygonEnabled,
   aaveTokens,
   isPrivateAccount = false,
-  isVault,
   ...props
 }) => {
   const [isTokenProcessed, setIsTokenProcessed] = useState(false)
@@ -106,46 +105,42 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
           onStakeClick={onStakeClick}
           onConvertToCkEth={onConvertToCkEth}
           onConvertToEth={onConvertToEth}
-          withActions={!isViewOnlyMode && !isVault}
+          withActions={!isViewOnlyMode}
           onConvertToSepoliaEth={onConvertToSepoliaEth}
           onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
           onConvertToErc20={onConvertToErc20}
           onConvertToCkErc20={onConvertToCkErc20}
         />
       </td>
-      {!isVault && (
-        <>
-          <td
-            id={`token_${token
-              .getTokenCategoryFormatted()
-              .replace(/\s/g, "")}_${token.getChainId()}_category`}
-            className="hidden md:table-cell pr-[10px] min-w-[120px] dark:text-white"
-          >
-            {token.getTokenCategoryFormatted()}
-          </td>
-          <td className="pr-[10px] hidden md:table-cell min-w-[120px] dark:text-white">
-            {tokenPrice === undefined ? (
-              <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
-            ) : tokenPrice !== null ? (
-              <div>
-                <div
-                  id={`token_${token.getTokenName().replace(/\s/g, "")}_${token.getChainId()}_price`}
-                >
-                  {tokenPrice}
-                </div>
-                {tokenRateDayChange && (
-                  <ArrowPercentChange
-                    value={tokenRateDayChange?.value || "0"}
-                    positive={tokenRateDayChange?.positive}
-                  />
-                )}
-              </div>
-            ) : (
-              "Not listed"
+      <td
+        id={`token_${token
+          .getTokenCategoryFormatted()
+          .replace(/\s/g, "")}_${token.getChainId()}_category`}
+        className="hidden md:table-cell pr-[10px] min-w-[120px] dark:text-white"
+      >
+        {token.getTokenCategoryFormatted()}
+      </td>
+      <td className="pr-[10px] hidden md:table-cell min-w-[120px] dark:text-white">
+        {tokenPrice === undefined ? (
+          <Skeleton className={clsx("max-w-full h-[10px] w-[100px]")} />
+        ) : tokenPrice !== null ? (
+          <div>
+            <div
+              id={`token_${token.getTokenName().replace(/\s/g, "")}_${token.getChainId()}_price`}
+            >
+              {tokenPrice}
+            </div>
+            {tokenRateDayChange && (
+              <ArrowPercentChange
+                value={tokenRateDayChange?.value || "0"}
+                positive={tokenRateDayChange?.positive}
+              />
             )}
-          </td>
-        </>
-      )}
+          </div>
+        ) : (
+          "Not listed"
+        )}
+      </td>
       <td
         id={`token_${token.getTokenName().replace(/\s/g, "")}_${token.getChainId()}_balance`}
         className="pr-[10px] text-right md:text-left pr-[10px] flex-grow min-w-0 sm:w-auto min-w-[120px]"

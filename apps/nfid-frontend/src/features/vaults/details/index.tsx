@@ -9,10 +9,8 @@ import { NFIDTheme } from "frontend/App"
 import { useIdentity } from "frontend/hooks/identity"
 
 import { DelegationIdentity } from "@icp-sdk/core/identity"
-import { fetchVaultDetails, fetchVaultInitedTokens } from "../utils"
+import { fetchVaultDetails } from "../utils"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { portfolioService } from "frontend/integration/portfolio-balance/portfolio-service"
-import { nfidVaultsService } from "@nfid/integration"
 
 type VaultDetailsProps = {
   walletTheme: NFIDTheme
@@ -37,22 +35,6 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
     { revalidateOnFocus: false, revalidateIfStale: false },
   )
 
-  console.log("vaulttt", vault)
-
-  const { data: vaultTokens, isLoading: isTokensLoading } = useSWR(
-    vaultId && identity ? ["vaultInitedTokens", vaultId] : null,
-    () => fetchVaultInitedTokens(vaultId!, identity! as DelegationIdentity),
-    { revalidateOnFocus: false },
-  )
-
-  const initedTokens = vaultTokens?.initedTokens ?? []
-
-  const { data: usdBalance, isLoading: isUsdLoading } = useSWR(
-    initedTokens.length ? ["vaultUsdBalance", vaultId] : null,
-    () => portfolioService.getVaultPortfolioUSDBalance(initedTokens),
-    { revalidateOnFocus: false },
-  )
-
   return (
     <ProfileTemplate
       pageTitle={vault?.state?.name}
@@ -67,8 +49,8 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
         address={vaultId}
         refreshPortfolio={mutate}
         isLoading={isValidating || isLoading || !identity}
-        isUsdLoading={isUsdLoading || isTokensLoading}
-        usdBalance={usdBalance}
+        isUsdLoading={false}
+        usdBalance={"0.123" as any}
       />
     </ProfileTemplate>
   )

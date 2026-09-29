@@ -49,10 +49,6 @@ const VaultDetailsPage = lazy(() => import("frontend/features/vaults/details"))
 
 const VaultPolicyPage = lazy(() => import("frontend/features/vaults/policy"))
 
-const VaultPortfolioPage = lazy(
-  () => import("frontend/features/vaults/portfolio"),
-)
-
 const NFTDetailsPage = lazy(() => import("frontend/features/nft-details"))
 
 const PrivateAccountsPage = lazy(
@@ -398,21 +394,6 @@ export const App = () => {
                       </AuthWrapper>
                     }
                   />
-                  <Route
-                    path={`${ProfileConstants.vaults}/${ProfileConstants.vault}/${ProfileConstants.vaultPortfolio}`}
-                    element={
-                      <AuthWrapper
-                        isAuthenticated={isAuthenticated}
-                        cacheLoaded={cacheLoaded}
-                      >
-                        <VaultPortfolioPage
-                          walletTheme={walletTheme}
-                          setWalletTheme={setWalletTheme}
-                        />
-                      </AuthWrapper>
-                    }
-                  />
-
                   <Route
                     path={`${ProfileConstants.base}/${ProfileConstants.nfts}/${ProfileConstants.nftDetails}`}
                     element={

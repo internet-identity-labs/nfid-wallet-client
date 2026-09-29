@@ -29,8 +29,6 @@ import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
 import { FilteredToken } from "./filtered-asset"
 import { ChainFilter } from "./chain-filter"
-import { KeyedMutator } from "swr"
-import { Transaction, Vault } from "@nfid/vaults"
 
 export interface ICRC1Metadata {
   name: string
@@ -56,11 +54,6 @@ interface ManageTokensProps {
   setLoadingToken: (value: FT | null) => void
   manageBtnDisabled?: boolean
   className?: string
-  isVault?: boolean
-  updateVault?: KeyedMutator<{
-    state: Vault
-    transactions: Transaction[]
-  }>
 }
 
 export const ManageTokens: FC<ManageTokensProps> = ({
@@ -70,8 +63,6 @@ export const ManageTokens: FC<ManageTokensProps> = ({
   setLoadingToken,
   manageBtnDisabled,
   className,
-  isVault,
-  updateVault,
 }) => {
   const isDarkTheme = useDarkTheme()
   const [modalStep, setModalStep] = useState<"manage" | "import" | null>(null)
@@ -265,8 +256,6 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                       token={token}
                       tokens={tokens}
                       setLoadingToken={setLoadingToken}
-                      isVault={isVault}
-                      updateVault={updateVault}
                     />
                   )
                 })}

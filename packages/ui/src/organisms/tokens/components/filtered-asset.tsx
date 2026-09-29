@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { Principal } from "@icp-sdk/core/principal"
 import { Spinner } from "packages/ui/src/atoms/spinner"
 import toaster from "packages/ui/src/atoms/toast"
@@ -15,26 +16,17 @@ import { useDarkTheme } from "frontend/hooks"
 import { FT } from "frontend/integration/ft/ft"
 import { TokenIdentity } from "./token-identity"
 import { getUpdatedInitedTokens } from "frontend/features/transfer-modal/utils"
-import { KeyedMutator } from "swr"
-import { Transaction, Vault } from "@nfid/vaults"
 
 interface FilteredTokenProps {
   token: FT
   tokens: FT[]
   setLoadingToken: (value: FT | null) => void
-  isVault?: boolean
-  updateVault?: KeyedMutator<{
-    state: Vault
-    transactions: Transaction[]
-  }>
 }
 
 export const FilteredToken: FC<FilteredTokenProps> = ({
   token,
   tokens,
   setLoadingToken,
-  isVault,
-  updateVault,
 }) => {
   const [showTokenLoading, setShowTokenLoading] = useState(false)
   const [hideTokenLoading, setHideTokenLoading] = useState(false)
@@ -46,7 +38,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({
         setHideTokenLoading(true)
         setLoadingToken(token)
         await token.hideToken()
-        await (isVault ? updateVault?.() : getUpdatedInitedTokens(tokens))
+        await getUpdatedInitedTokens(tokens)
       } catch (e) {
         toaster.error("Token hiding failed: " + (e as Error).message)
       } finally {
@@ -54,7 +46,7 @@ export const FilteredToken: FC<FilteredTokenProps> = ({
         setLoadingToken(null)
       }
     },
-    [tokens, setLoadingToken, isVault, updateVault],
+    [tokens, setLoadingToken],
   )
 
   const showToken = useCallback(
@@ -62,20 +54,18 @@ export const FilteredToken: FC<FilteredTokenProps> = ({
       try {
         setShowTokenLoading(true)
         await token.showToken()
+        const { publicKey } = await getUserPrincipalId()
 
-        if (!isVault) {
-          const { publicKey } = await getUserPrincipalId()
-          await token.init(Principal.fromText(publicKey))
-        }
+        await token.init(Principal.fromText(publicKey))
 
-        await (isVault ? updateVault?.() : getUpdatedInitedTokens(tokens))
+        await getUpdatedInitedTokens(tokens)
       } catch (e) {
-        toaster.error("Token showing failed: " + (e as Error).message)
+        toaster.error("Token shhowing failed: " + (e as Error).message)
       } finally {
         setShowTokenLoading(false)
       }
     },
-    [tokens, isVault, updateVault],
+    [tokens],
   )
 
   return (

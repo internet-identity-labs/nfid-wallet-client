@@ -19,6 +19,8 @@ import { SelectedToken } from "frontend/features/transfer-modal/types"
 import { IconCmpPortfolioOptions } from "../../atoms/icons"
 import { PortfolioOptions } from "./components/portfolio-options"
 import { ProfileContext } from "frontend/provider"
+import { KeyedMutator } from "swr"
+import { Transaction, Vault } from "@nfid/vaults"
 
 export interface IProfileConstants {
   base: string
@@ -72,6 +74,11 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   polygonEnabled?: boolean
   onPolygonToggle?: () => void
   isPrivateAccount?: boolean
+  isVault?: boolean
+  updateVault?: KeyedMutator<{
+    state: Vault
+    transactions: Transaction[]
+  }>
 }
 
 export const Tokens: FC<TokensProps> = ({
@@ -112,6 +119,8 @@ export const Tokens: FC<TokensProps> = ({
   polygonEnabled = false,
   onPolygonToggle = () => {},
   isPrivateAccount = false,
+  isVault,
+  updateVault,
 }) => {
   const [token, setToken] = useState<FT | undefined>()
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -192,7 +201,7 @@ export const Tokens: FC<TokensProps> = ({
   return (
     <>
       <div className="relative flex flex-col">
-        {!isViewOnlyMode && !isPrivateAccount && (
+        {!isViewOnlyMode && !isPrivateAccount && !isVault && (
           <div className={clsx("flex justify-end mb-1", isLoading && "hidden")}>
             <ChainFilter
               filter={filter}
@@ -209,9 +218,22 @@ export const Tokens: FC<TokensProps> = ({
           <table className="w-full text-left">
             <thead className="text-secondary dark:text-zinc-500 h-[40px] hidden md:table-header-group">
               <tr className="text-sm font-bold leading-5">
-                <th className="w-[25%] min-w-[100px] pr-[30px]">Name</th>
-                <th className="w-[25%] pr-[10px] min-w-[100px]">Category</th>
-                <th className="w-[25%] pr-[10px] min-w-[100px]">Price</th>
+                <th
+                  className={clsx(
+                    "min-w-[100px] pr-[30px]",
+                    isVault ? "w-[75%]" : "w-[25%]",
+                  )}
+                >
+                  Name
+                </th>
+                {!isVault && (
+                  <>
+                    <th className="w-[25%] pr-[10px] min-w-[100px]">
+                      Category
+                    </th>
+                    <th className="w-[25%] pr-[10px] min-w-[100px]">Price</th>
+                  </>
+                )}
                 <th className="w-[25%] pr-[10px] min-w-[100px]">
                   Token balance
                 </th>
@@ -273,6 +295,7 @@ export const Tokens: FC<TokensProps> = ({
                     onConvertToErc20={onConvertToErc20}
                     onConvertToCkErc20={onConvertToCkErc20}
                     isPrivateAccount={isPrivateAccount}
+                    isVault={isVault}
                   />
                 ))
               )}
@@ -287,6 +310,8 @@ export const Tokens: FC<TokensProps> = ({
             onFetch={onFetch}
             setLoadingToken={setLoadingToken}
             manageBtnDisabled={isLoading}
+            isVault={isVault}
+            updateVault={updateVault}
           />
         )}
         <PortfolioOptions

@@ -1,7 +1,9 @@
 import { StoredVault, VaultCreationPrice } from "@nfid/integration"
 import { Principal } from "@dfinity/principal"
-import { Transaction, Vault, VaultMember } from "@nfid/vaults"
+import { Transaction, TransactionType, Vault, VaultMember } from "@nfid/vaults"
 import { KeyedMutator } from "swr"
+import { FT } from "frontend/integration/ft/ft"
+
 export interface VaultsProps {
   vaults: StoredVault[] | undefined
   isLoading: boolean
@@ -33,6 +35,15 @@ export interface VaultDetailstProps {
     transactions: Transaction[]
   }>
   isLoading: boolean
+  isUsdLoading: boolean
+  usdBalance:
+    | {
+        value: string
+        dayChange?: string
+        dayChangePercent?: string
+        dayChangePositive?: boolean
+      }
+    | undefined
 }
 
 export interface VaultPolicyProps {
@@ -74,6 +85,27 @@ export type UpdayePolicyModalProps = {
   membersQuantity: number
 }
 
+export interface VaultPortfolioProps {
+  tokens: FT[] | undefined
+  allTokens: FT[]
+  isLoading: boolean
+  isTokensLoading: boolean
+  isUsdLoading: boolean
+  usdBalance:
+    | {
+        value: string
+        dayChange?: string
+        dayChangePercent?: string
+        dayChangePositive?: boolean
+      }
+    | undefined
+  vault: Vault | undefined
+  updateVault: KeyedMutator<{
+    state: Vault
+    transactions: Transaction[]
+  }>
+}
+
 export type VaultCreationPriceFormatted = {
   icpPrice: string
   cyclePrice: string
@@ -98,4 +130,17 @@ export enum PolicyUpdateType {
   ADD_APPROVER = "ADD_APPROVER",
   EDIT_APPROVER = "EDIT_APPROVER",
   REMOVE_APPROVER = "REMOVE_APPROVER",
+}
+
+export interface IVaultRow {
+  id: string
+  action: TransactionType
+  timestamp: Date
+  from: string
+  to: string
+}
+
+export interface IVaultRowGroup {
+  date: string
+  rows: IVaultRow[]
 }

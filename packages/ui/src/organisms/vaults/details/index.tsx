@@ -2,50 +2,27 @@
 import { FC, memo, useMemo } from "react"
 
 import ProfileContainer from "../../../atoms/profile-container/Container"
-import { Button, NotFound, Table } from "@nfid-frontend/ui"
-import {
-  Transaction,
-  TransactionState,
-  TransactionType,
-  Vault,
-} from "@nfid/vaults"
+import { Button, NotFound } from "@nfid-frontend/ui"
+import { TransactionState, TransactionType } from "@nfid/vaults"
 import { VaultSkeleton } from "../../../atoms/skeleton/vault-skeleton"
 import { VaultProfileInfo } from "../../profile-info"
-import { KeyedMutator } from "swr"
-import {
-  addressBookFacade,
-  SearchRequest,
-} from "frontend/integration/address-book"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { useNavigate } from "react-router-dom"
 import { VaultTableRow } from "../components/vault-table"
-
-export interface VaultDetailstProps {
-  address: string | undefined
-  vault:
-    | {
-        state: Vault
-        transactions: Transaction[]
-      }
-    | undefined
-  refreshPortfolio: KeyedMutator<{
-    state: Vault
-    transactions: Transaction[]
-  }>
-  isLoading: boolean
-}
+import { VaultDetailstProps } from "../types"
 
 export const VaultDetails: FC<VaultDetailstProps> = memo(
-  ({ address, vault, refreshPortfolio, isLoading }) => {
+  ({
+    address,
+    vault,
+    refreshPortfolio,
+    isLoading,
+    isUsdLoading,
+    usdBalance,
+  }) => {
     const navigate = useNavigate()
-    const searchAddress = async (req: SearchRequest) => {
-      return addressBookFacade.search(req)
-    }
-
     const state = vault?.state
     const transactions = vault?.transactions
-
-    console.log("tokenzz", transactions)
 
     const pendingTransactions = useMemo(() => {
       if (!transactions) return
@@ -61,12 +38,12 @@ export const VaultDetails: FC<VaultDetailstProps> = memo(
       )
     }, [transactions])
 
-    const addmember = useMemo(() => {
-      if (!transactions) return
-      return transactions.filter(
-        (tx) => tx.transactionType === TransactionType.MemberCreateV2,
-      )
-    }, [transactions])
+    // const addmember = useMemo(() => {
+    //   if (!transactions) return
+    //   return transactions.filter(
+    //     (tx) => tx.transactionType === TransactionType.MemberCreateV2,
+    //   )
+    // }, [transactions])
 
     if (isLoading) return <VaultSkeleton />
     if (!vault) return <NotFound hideNavigation />
@@ -74,9 +51,8 @@ export const VaultDetails: FC<VaultDetailstProps> = memo(
     return (
       <div className="my-[30px] font-inter">
         <VaultProfileInfo
-          address={address}
-          usdBalance="1.23"
-          isUsdLoading={true}
+          usdBalance={usdBalance}
+          isUsdLoading={isUsdLoading}
           onSendClick={() => 1}
           onReceiveClick={() => 1}
           refreshPortfolio={refreshPortfolio}

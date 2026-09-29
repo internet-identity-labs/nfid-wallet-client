@@ -1,4 +1,6 @@
 import {
+  ICRC1CanistersAddTransactionRequest,
+  ICRC1CanistersRemoveTransactionRequest,
   MemberCreateTransactionRequestV2,
   MemberRemoveTransactionRequest,
   MemberUpdateNameTransactionRequest,
@@ -341,6 +343,40 @@ export class NfidVaultsService {
   ): Promise<void> {
     await this.getManager(vaultCanisterId, identity).requestTransaction([
       new QuorumTransactionRequest(quorum),
+    ])
+  }
+
+  /**
+   * Submits a request to add an ICRC-1 token canister to the vault.
+   * Requires admin role. Goes through the quorum approval flow.
+   */
+  async addIcrc1Canister(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    ledgerCanisterId: string,
+    indexCanisterId?: string,
+  ): Promise<void> {
+    await this.getManager(vaultCanisterId, identity).requestTransaction([
+      new ICRC1CanistersAddTransactionRequest(
+        Principal.fromText(ledgerCanisterId),
+        indexCanisterId ? Principal.fromText(indexCanisterId) : undefined,
+      ),
+    ])
+  }
+
+  /**
+   * Submits a request to remove an ICRC-1 token canister from the vault.
+   * Requires admin role. Goes through the quorum approval flow.
+   */
+  async removeIcrc1Canister(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    ledgerCanisterId: string,
+  ): Promise<void> {
+    await this.getManager(vaultCanisterId, identity).requestTransaction([
+      new ICRC1CanistersRemoveTransactionRequest(
+        Principal.fromText(ledgerCanisterId),
+      ),
     ])
   }
 

@@ -77,7 +77,14 @@ export const PolicyUpdateModal: FC<UpdayePolicyModalProps> = ({
       try {
         setIsLoading(true)
         const { owner, subaccount } = decodeIcrcAccount(approverAddress)
-        await addMember(owner, approverName, subaccount)
+        await addMember(
+          owner,
+          approverName,
+          subaccount,
+          approversCurrentQuantity === approversQuantity
+            ? undefined
+            : approversQuantity,
+        )
         onClose()
       } catch (e) {
         console.error((e as Error).message)
@@ -92,7 +99,12 @@ export const PolicyUpdateModal: FC<UpdayePolicyModalProps> = ({
     if (!selectedMember) return
     try {
       setIsLoading(true)
-      await removeMember(selectedMember.userId)
+      await removeMember(
+        selectedMember.userId,
+        approversCurrentQuantity === approversQuantity
+          ? undefined
+          : approversQuantity,
+      )
       onClose()
     } catch (e) {
       console.error((e as Error).message)

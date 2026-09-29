@@ -99,6 +99,7 @@ export const VaultPolicy: FC<VaultPolicyProps> = memo(
               <div className="absolute w-[1px] bg-gray-200 left-[-20px] sm:left-[-55px] -top-5 sm:-top-10 bottom-6"></div>
               {state.members.map((member) => (
                 <div
+                  key={member.userId}
                   className={clsx(
                     "bg-portfolioColor dark:bg-zinc-800 rounded-[24px] flex items-center px-2.5 py-[11px] transition duration-200",
                     "group has-[.pencil-trigger:hover]:bg-portfolioHoverColor has-[.pencil-trigger:hover]:dark:bg-darkGrayHover relative",

@@ -43,21 +43,16 @@ const VaultPolicyPage: FC<VaultPolicyProps> = ({
       owner: Principal,
       name: string,
       subaccount?: Uint8Array | number[],
+      newQuorum?: number,
     ) => {
       if (!vaultId) return
-
       await nfidVaultsService.addMember(
         vaultId,
         identity as DelegationIdentity,
-        {
-          owner,
-          subaccount,
-          name,
-          role: VaultRole.ADMIN,
-        },
+        { owner, subaccount, name, role: VaultRole.ADMIN },
+        newQuorum,
       )
-      setTimeout(mutate, 2000)
-      //mutate()
+      mutate()
     },
     [vaultId, identity],
   )
@@ -65,13 +60,12 @@ const VaultPolicyPage: FC<VaultPolicyProps> = ({
   const updateQuorum = useCallback(
     async (quorum: number) => {
       if (!vaultId) return
-
       await nfidVaultsService.updateQuorum(
         vaultId,
         identity as DelegationIdentity,
         quorum,
       )
-      setTimeout(mutate, 5000)
+      mutate()
     },
     [vaultId, identity],
   )
@@ -79,7 +73,6 @@ const VaultPolicyPage: FC<VaultPolicyProps> = ({
   const updateMember = useCallback(
     async (memberId: string, name: string) => {
       if (!vaultId) return
-
       await nfidVaultsService.updateMemberName(
         vaultId,
         identity as DelegationIdentity,
@@ -92,13 +85,13 @@ const VaultPolicyPage: FC<VaultPolicyProps> = ({
   )
 
   const removeMember = useCallback(
-    async (memberId: string) => {
+    async (memberId: string, newQuorum?: number) => {
       if (!vaultId) return
-
       await nfidVaultsService.removeMember(
         vaultId,
         identity as DelegationIdentity,
         memberId,
+        newQuorum,
       )
       mutate()
     },

@@ -70,22 +70,6 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
         isUsdLoading={isUsdLoading || isTokensLoading}
         usdBalance={usdBalance}
       />
-      <div
-        className="dark:text-white"
-        onClick={() => nfidVaultsService.createWallet(vaultId!, identity!)}
-      >
-        Create Wallet
-      </div>
-      <div
-        className="dark:text-white"
-        onClick={() =>
-          nfidVaultsService.approveTransactions(vaultId!, identity!, [
-            BigInt(6),
-          ])
-        }
-      >
-        Approve
-      </div>
     </ProfileTemplate>
   )
 }

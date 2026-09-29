@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { StoredVault, VaultCreationPrice } from "@nfid/integration"
 import { Principal } from "@dfinity/principal"
 import { Transaction, TransactionType, Vault, VaultMember } from "@nfid/vaults"
@@ -52,10 +53,11 @@ export interface VaultPolicyProps {
     owner: Principal,
     name: string,
     subaccount?: Uint8Array | number[],
+    newQuorum?: number,
   ) => Promise<void>
   updateQuorum: (quorum: number) => Promise<void>
   updateMember: (memberId: string, name: string) => Promise<void>
-  removeMember: (memberId: string) => Promise<void>
+  removeMember: (memberId: string, newQuorum?: number) => Promise<void>
   isLoading: boolean
   vault:
     | {
@@ -75,10 +77,11 @@ export type UpdayePolicyModalProps = {
     owner: Principal,
     name: string,
     subaccount?: Uint8Array | number[],
+    newQuorum?: number,
   ) => Promise<void>
   updateQuorum: (quorum: number) => Promise<void>
   updateMember: (memberId: string, name: string) => Promise<void>
-  removeMember: (memberId: string) => Promise<void>
+  removeMember: (memberId: string, newQuorum?: number) => Promise<void>
   selectedMember?: VaultMember
   approversCurrentQuantity: number
   approversQuantity: number | undefined

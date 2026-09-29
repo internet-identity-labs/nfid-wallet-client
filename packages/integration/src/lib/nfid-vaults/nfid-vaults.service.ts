@@ -6,8 +6,10 @@ import {
   MemberRemoveTransactionRequest,
   MemberUpdateNameTransactionRequest,
   Network,
+  PurgeTransactionRequest,
   QuorumTransactionRequest,
   Transaction,
+  TransactionRequest,
   TransactionState,
   VaultManager,
   VaultNamingTransactionRequest,
@@ -160,7 +162,11 @@ export class NfidVaultsService {
    * @param identity the global identity: it pays, controls the vault and signs its
    * transactions, so it has to be the user global one and not a device identity.
    */
-  async createVault(name: string, identity: SignIdentity): Promise<Principal> {
+  async createVault(
+    name: string,
+    identity: SignIdentity,
+    walletName = "Main Wallet",
+  ): Promise<Principal> {
     const controller = identity.getPrincipal()
     const price = await this.getPrice(identity)
     const vaultType: VaultType = { Light: null }
@@ -190,7 +196,7 @@ export class NfidVaultsService {
     // The vault exists and is paid for from here on. Naming it and recording it are
     // independent of each other, so they run together, each retried on its own.
     const [named, recorded] = await Promise.all([
-      this.nameVault(canisterId.toText(), name, identity),
+      this.initVault(canisterId.toText(), name, walletName, identity),
       this.recordVault(canisterId.toText(), name, controller.toText()),
     ])
 
@@ -268,14 +274,51 @@ export class NfidVaultsService {
    * Signed by the global identity: the vault only accepts transactions from the
    * member it was created with.
    */
-  private async nameVault(
+  /**
+   * Polls until the transaction reaches a terminal state (Executed or Rejected).
+   * Useful after submitting a single-approver transaction that auto-executes.
+   */
+  private async waitForTransaction(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    transactionId: bigint,
+    intervalMs = 1000,
+    timeoutMs = 30_000,
+  ): Promise<Transaction> {
+    const deadline = Date.now() + timeoutMs
+    const manager = this.getManager(vaultCanisterId, identity)
+    const terminal = new Set([
+      TransactionState.Executed,
+      TransactionState.Rejected,
+      TransactionState.Purged,
+    ])
+
+    while (Date.now() < deadline) {
+      const transactions = await manager.getTransactions()
+      const tx = transactions.find((t) => t.id === transactionId)
+      if (tx && terminal.has(tx.state)) return tx
+      await new Promise((resolve) => setTimeout(resolve, intervalMs))
+    }
+
+    throw new Error(
+      `Transaction ${transactionId} did not reach a terminal state within ${timeoutMs}ms`,
+    )
+  }
+
+  private async initVault(
     vaultCanisterId: string,
     name: string,
+    walletName: string,
     identity: SignIdentity,
   ): Promise<StepResult> {
     return attempt(() =>
-      this.getManager(vaultCanisterId, identity).requestTransaction([
+      this.requestBatchTransactions(vaultCanisterId, identity, [
         new VaultNamingTransactionRequest(name),
+        new WalletCreateTransactionRequest(
+          generateRandomString(),
+          walletName,
+          Network.IC,
+        ),
       ]),
     )
   }
@@ -293,14 +336,23 @@ export class NfidVaultsService {
       name: string
       role: VaultRole
     },
-  ): Promise<void> {
-    await this.getManager(vaultCanisterId, identity).requestTransaction([
+    newQuorum?: number,
+  ): Promise<Transaction> {
+    const requests: (TransactionRequest & { batch_uid?: string })[] = [
       new MemberCreateTransactionRequestV2(
         { owner: payload.owner, subaccount: payload.subaccount },
         payload.name,
         payload.role,
       ),
-    ])
+    ]
+    if (newQuorum !== undefined)
+      requests.push(new QuorumTransactionRequest(newQuorum))
+    const [tx] = await this.requestBatchTransactions(
+      vaultCanisterId,
+      identity,
+      requests,
+    )
+    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
   }
 
   /**
@@ -314,10 +366,14 @@ export class NfidVaultsService {
     identity: SignIdentity,
     memberId: string,
     name: string,
-  ): Promise<void> {
-    await this.getManager(vaultCanisterId, identity).requestTransaction([
+  ): Promise<Transaction> {
+    const [tx] = await this.getManager(
+      vaultCanisterId,
+      identity,
+    ).requestTransaction([
       new MemberUpdateNameTransactionRequest(memberId, name),
     ])
+    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
   }
 
   /**
@@ -330,10 +386,19 @@ export class NfidVaultsService {
     vaultCanisterId: string,
     identity: SignIdentity,
     memberId: string,
-  ): Promise<void> {
-    await this.getManager(vaultCanisterId, identity).requestTransaction([
+    newQuorum?: number,
+  ): Promise<Transaction> {
+    const requests: (TransactionRequest & { batch_uid?: string })[] = [
       new MemberRemoveTransactionRequest(memberId),
-    ])
+    ]
+    if (newQuorum !== undefined)
+      requests.push(new QuorumTransactionRequest(newQuorum))
+    const [tx] = await this.requestBatchTransactions(
+      vaultCanisterId,
+      identity,
+      requests,
+    )
+    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
   }
 
   /**
@@ -346,10 +411,12 @@ export class NfidVaultsService {
     vaultCanisterId: string,
     identity: SignIdentity,
     quorum: number,
-  ): Promise<void> {
-    await this.getManager(vaultCanisterId, identity).requestTransaction([
-      new QuorumTransactionRequest(quorum),
-    ])
+  ): Promise<Transaction> {
+    const [tx] = await this.getManager(
+      vaultCanisterId,
+      identity,
+    ).requestTransaction([new QuorumTransactionRequest(quorum)])
+    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
   }
 
   /**
@@ -403,6 +470,38 @@ export class NfidVaultsService {
       new ICRC1CanistersRemoveTransactionRequest(
         Principal.fromText(ledgerCanisterId),
       ),
+    ])
+  }
+
+  /**
+   * Submits multiple transactions as a batch — they all share a batch_uid so
+   * the vault executes or rejects them together.
+   * For a single transaction no batch_uid is set (same as a plain requestTransaction).
+   */
+  async requestBatchTransactions(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    transactions: (TransactionRequest & { batch_uid?: string })[],
+  ): Promise<Transaction[]> {
+    if (transactions.length > 1) {
+      const batchUid = generateRandomString()
+      transactions.forEach((tx) => (tx.batch_uid = batchUid))
+    }
+    return this.getManager(vaultCanisterId, identity).requestTransaction(
+      transactions,
+    )
+  }
+
+  /**
+   * Purges all blocked transactions from the vault.
+   * Requires admin role.
+   */
+  async purgeTransactions(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+  ): Promise<void> {
+    await this.getManager(vaultCanisterId, identity).requestTransaction([
+      new PurgeTransactionRequest(),
     ])
   }
 

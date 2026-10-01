@@ -68,7 +68,7 @@ const EarnDetailsPage = memo(() => {
 
   const onSupply = () => {
     if (!token) return
-    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
     transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.EARN })
     transferService.send({
@@ -84,7 +84,7 @@ const EarnDetailsPage = memo(() => {
 
   const onWithdraw = () => {
     if (!token || !earnPosition) return
-    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
     transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.WITHDRAW })
     transferService.send({

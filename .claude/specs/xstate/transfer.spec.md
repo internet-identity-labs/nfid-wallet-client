@@ -40,7 +40,7 @@
   withdrawBalance: bigint
   openCryptoPayParams: string
   openCryptoPayPreselect?: { method: string; asset: string }
-  isOpenedFromVaults: boolean
+  vaultCanister: string
   stakeId?: string
 }
 ```
@@ -106,7 +106,7 @@ SwapSuccess     ──HIDE──► Hidden
 | `ASSIGN_WITHDRAW_BALANCE`      | `assignWithdrawBalance`     | —                           |
 | `ASSIGN_OPEN_CRYPTOPAY_PARAMS` | `assignOpenCryptopayParams` | —                           |
 | `ASSIGN_IS_EARN_UPDATE`        | `assignIsEarnUpdate`        | —                           |
-| `ASSIGN_VAULTS`                | `assignIsVault`             | —                           |
+| `ASSIGN_VAULTS_CANISTER`       | `assignIsVault`             | —                           |
 | `ASSIGN_ERROR`                 | `assignError`               | —                           |
 
 ### Guards

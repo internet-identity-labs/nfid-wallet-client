@@ -16,6 +16,8 @@ export const VaultDetails: FC<VaultDetailstProps> = memo(
     isLoading,
     isUsdLoading,
     usdBalance,
+    onSendClick,
+    onReceiveClick,
   }) => {
     const navigate = useNavigate()
     const state = vault?.state
@@ -28,8 +30,8 @@ export const VaultDetails: FC<VaultDetailstProps> = memo(
         <VaultProfileInfo
           usdBalance={usdBalance}
           isUsdLoading={isUsdLoading}
-          onSendClick={() => 1}
-          onReceiveClick={() => 1}
+          onSendClick={onSendClick}
+          onReceiveClick={onReceiveClick}
           refreshPortfolio={refreshPortfolio}
           goToPortfolio={() => navigate(ProfileConstants.vaultPortfolio)}
         />

@@ -5,6 +5,7 @@ import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 
 import { FT } from "../ft/ft"
 import { ftService } from "../ft/ft-service"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { NFT } from "../nft/nft"
 import { nftService } from "../nft/nft-service"
 import { stakingService } from "../staking/service/staking-service-impl"
@@ -65,6 +66,22 @@ export class PortfolioService {
       dayChange: valueSum.minus(valueSum24h).toFixed(2),
       dayChangePositive: valueSum.minus(valueSum24h).gte(0),
     }
+  }
+
+  async getVaultPortfolioUSDBalance(ft: FT[]): Promise<
+    | {
+        value: string
+        dayChangePercent?: string
+        dayChange?: string
+        dayChangePositive?: boolean
+        value24h?: string
+      }
+    | undefined
+  > {
+    const activeTokens = ft.filter(
+      (token) => token.getTokenState() === State.Active,
+    )
+    return ftService.getFTUSDBalance(activeTokens)
   }
 }
 

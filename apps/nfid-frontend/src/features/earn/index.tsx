@@ -21,7 +21,7 @@ const EarnPage = memo(() => {
   } = useContext(ProfileContext)
 
   const onEarnClick = (selectedToken?: SelectedToken) => {
-    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
     transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.EARN })
     if (selectedToken) {
@@ -32,7 +32,7 @@ const EarnPage = memo(() => {
   }
 
   const onWithdrawClick = (selectedToken: SelectedToken, balance: bigint) => {
-    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
     transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.WITHDRAW })
     transferService.send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })

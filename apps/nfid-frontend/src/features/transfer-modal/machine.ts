@@ -84,7 +84,7 @@ export const transferMachine = setup({
       stakeId: ({ event }: { event: any }) => event?.data,
     }),
     assignIsVault: assign({
-      isOpenedFromVaults: ({ event }: { event: any }) => event?.data,
+      vaultCanister: ({ event }: { event: any }) => event?.data,
     }),
     assignError: assign({ error: ({ event }: { event: any }) => event?.data }),
   },
@@ -137,7 +137,7 @@ export const transferMachine = setup({
     ASSIGN_AMOUNT: {
       actions: "assignAmount",
     },
-    ASSIGN_VAULTS: {
+    ASSIGN_VAULTS_CANISTER: {
       actions: "assignIsVault",
     },
     HIDE: {

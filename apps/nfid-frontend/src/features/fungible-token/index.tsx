@@ -55,7 +55,7 @@ const TokensPage = memo(() => {
     : authState.getUserIdData().userId
 
   const onSendClick = (selectedToken: SelectedToken) => {
-    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
     transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.SEND })
     transferService.send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
@@ -63,7 +63,7 @@ const TokensPage = memo(() => {
   }
 
   const onSwapClick = (selectedToken: SelectedToken) => {
-    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
     transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.SWAP })
     transferService.send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
@@ -72,14 +72,14 @@ const TokensPage = memo(() => {
   }
 
   const onConvertToCkBtc = () => {
-    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
     transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
     transferService.send({ type: "SHOW" })
   }
 
   const onConvertToBtc = () => {
-    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
     transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
     transferService.send({
@@ -90,7 +90,7 @@ const TokensPage = memo(() => {
   }
 
   const onConvertToCkEth = () => {
-    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
     transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
     transferService.send({
@@ -101,7 +101,7 @@ const TokensPage = memo(() => {
   }
 
   const onConvertToCkSepoliaEth = () => {
-    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
     transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
     transferService.send({
@@ -112,7 +112,7 @@ const TokensPage = memo(() => {
   }
 
   const onConvertToEth = () => {
-    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
     transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
     transferService.send({
@@ -123,7 +123,7 @@ const TokensPage = memo(() => {
   }
 
   const onConvertToSepoliaEth = () => {
-    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
     transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
     transferService.send({
@@ -134,7 +134,7 @@ const TokensPage = memo(() => {
   }
 
   const onConvertToErc20 = (tokenAddress: string) => {
-    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
     transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
     transferService.send({
@@ -145,7 +145,7 @@ const TokensPage = memo(() => {
   }
 
   const onConvertToCkErc20 = (tokenAddress: string) => {
-    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
     transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.CONVERT })
     transferService.send({
@@ -156,7 +156,7 @@ const TokensPage = memo(() => {
   }
 
   const onStakeClick = (selectedToken: SelectedToken) => {
-    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
     transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.STAKE })
     transferService.send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
@@ -164,7 +164,7 @@ const TokensPage = memo(() => {
   }
 
   const onBridgeClick = (selectedToken: SelectedToken) => {
-    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
     transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.BRIDGE })
     transferService.send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })
@@ -172,7 +172,7 @@ const TokensPage = memo(() => {
   }
 
   const onEarnClick = (selectedToken: SelectedToken) => {
-    transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
     transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
     transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.EARN })
     transferService.send({ type: "ASSIGN_SELECTED_FT", data: selectedToken })

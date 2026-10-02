@@ -10,7 +10,10 @@ import { TransferFTUi } from "packages/ui/src/organisms/send-receive/components/
 import { useCallback, useMemo, useState, useEffect, useRef } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 
-import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
+import {
+  ICP_CANISTER_ID,
+  ICP_DECIMALS,
+} from "@nfid/integration/token/constants"
 import {
   getAccountIdentifier,
   transfer as transferICP,
@@ -67,6 +70,13 @@ import {
   EvmNoteKey,
   IcpNoteKey,
 } from "frontend/integration/note/note-key"
+import {
+  fetchVaultDetails,
+  fetchVaultInitedTokens,
+} from "frontend/features/vaults/utils"
+import { DelegationIdentity } from "@dfinity/identity"
+import { nfidVaultsService } from "@nfid/integration"
+import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp"
 
 const DEFAULT_TRANSFER_ERROR = "Something went wrong"
 
@@ -82,6 +92,7 @@ interface ITransferFT {
   setSuccessMessage: (message: string) => void
   onError: (value: boolean) => void
   setIsSendSuccess: (value: boolean) => void
+  vaultCanister: string
 }
 
 export const TransferFT = ({
@@ -91,6 +102,7 @@ export const TransferFT = ({
   setSuccessMessage,
   onError,
   setIsSendSuccess,
+  vaultCanister,
 }: ITransferFT) => {
   const [tokenSelected, setTokenSelected] =
     useState<SelectedToken>(preselectedToken)
@@ -101,6 +113,7 @@ export const TransferFT = ({
   const [feeError, setFeeError] = useState<string | undefined>()
   const { isBtcAddressLoading } = useBtcAddress()
   const { isEthAddressLoading, ethAddress } = useEthAddress()
+  const [isVaultTxLoading, setIsVaultTxLoading] = useState(false)
   const [fee, setFee] = useState<FeeResponse | undefined>()
   const [isFeeLoading, setIsFeeLoading] = useState(false)
   const skipFeeCalculation = useRef(false)
@@ -176,7 +189,27 @@ export const TransferFT = ({
 
   const { initedTokens, mutate: mutateInitedTokens } = useTokensInit(tokens)
 
+  const { data: vaultTokens } = useSWR(
+    vaultCanister && identity ? ["vaultInitedTokens", vaultCanister] : null,
+    () =>
+      fetchVaultInitedTokens(vaultCanister!, identity! as DelegationIdentity),
+    { revalidateOnFocus: false },
+  )
+
+  const initedVaultTokens = vaultTokens?.initedTokens
+
+  const { data: vaultDetails, mutate: mutateVaultDetails } = useSWR(
+    vaultCanister && identity ? `vault-details-${vaultCanister}` : null,
+    () => fetchVaultDetails(vaultCanister!, identity! as DelegationIdentity),
+    { revalidateOnFocus: false },
+  )
+  const walletUid = vaultDetails?.state.wallets[0]?.uid
+
   const filteredTokens = useMemo(() => {
+    if (vaultCanister) {
+      if (!initedVaultTokens) return
+      return initedVaultTokens
+    }
     if (!initedTokens) return
     const tokensWithBalance = initedTokens.filter(
       (token) =>
@@ -184,7 +217,7 @@ export const TransferFT = ({
         isTokenWithBalance(token),
     )
     return tokensWithBalance
-  }, [initedTokens])
+  }, [initedTokens, initedVaultTokens, vaultCanister])
 
   const resolveToken = useCallback(
     (selected: SelectedToken): FT | undefined => {
@@ -277,7 +310,6 @@ export const TransferFT = ({
       setFee(undefined)
       setIsFeeLoading(true)
       try {
-        console.log("debouncedAmount", debouncedAmount)
         const fee = await token?.getTokenFee(
           debouncedAmount,
           undefined,
@@ -330,6 +362,57 @@ export const TransferFT = ({
 
   const submit = useCallback(async () => {
     if (!token) return toaster.error("No selected token")
+
+    if (Boolean(vaultCanister)) {
+      if (!identity || !walletUid) return
+
+      setIsSuccessOpen(true)
+      setIsVaultTxLoading(true)
+      try {
+        if (token.getTokenAddress() === ICP_CANISTER_ID) {
+          await nfidVaultsService.transferVaultIcp(
+            vaultCanister,
+            identity,
+            walletUid,
+            getAccountIdentifier(to),
+            BigInt(
+              BigNumber(amount)
+                .multipliedBy(10 ** ICP_DECIMALS)
+                .toFixed(),
+            ),
+            note.trim() || undefined,
+          )
+        } else {
+          const { owner, subaccount } = decodeIcrcAccount(to)
+          await nfidVaultsService.transferVaultIcrc1(
+            vaultCanister,
+            identity,
+            walletUid,
+            token.getTokenAddress(),
+            owner,
+            subaccount,
+            BigInt(
+              BigNumber(amount)
+                .multipliedBy(10 ** token.getTokenDecimals()!)
+                .toFixed(),
+            ),
+            note.trim() || undefined,
+          )
+        }
+        setSuccessMessage(
+          `Transaction ${amount} ${token.getTokenSymbol()} successful`,
+        )
+        mutateVaultDetails()
+      } catch (e) {
+        console.error(`Vault transfer error: ${(e as Error).message ?? e}`)
+        setErrorMessage(DEFAULT_TRANSFER_ERROR)
+        setError(DEFAULT_TRANSFER_ERROR)
+        setIsSuccessOpen(false)
+      } finally {
+        setIsVaultTxLoading(false)
+      }
+      return
+    }
 
     setIsSendSuccess(true)
 
@@ -587,6 +670,8 @@ export const TransferFT = ({
     fee,
     identity,
     mutateInitedTokens,
+    vaultCanister,
+    walletUid,
   ])
 
   return (
@@ -615,6 +700,31 @@ export const TransferFT = ({
         searchAddress={searchFtAddress}
         onCreateContact={createContact}
         onUpdateContact={updateContact}
+        isVault={Boolean(vaultCanister)}
+        vaultDetails={vaultDetails?.state}
+        initiatorName={
+          vaultDetails?.state.members.find(
+            (m) =>
+              m.userId ===
+              AccountIdentifier.fromPrincipal({
+                principal: Principal.fromText(
+                  identity!.getPrincipal().toText(),
+                ),
+              }).toHex(),
+          )?.name
+        }
+        approverNames={vaultDetails?.state.members
+          .filter(
+            (m) =>
+              m.userId !==
+              AccountIdentifier.fromPrincipal({
+                principal: Principal.fromText(
+                  identity!.getPrincipal().toText(),
+                ),
+              }).toHex(),
+          )
+          .map((m) => m.name ?? m.userId)}
+        isVaultTxLoading={isVaultTxLoading}
       />
     </FormProvider>
   )

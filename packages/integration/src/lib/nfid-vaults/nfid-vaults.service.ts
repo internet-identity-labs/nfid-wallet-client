@@ -1,4 +1,7 @@
 import {
+  Currency,
+  ICRC1CanistersAddTransactionRequest,
+  ICRC1CanistersRemoveTransactionRequest,
   MemberCreateTransactionRequestV2,
   MemberRemoveTransactionRequest,
   MemberUpdateNameTransactionRequest,
@@ -7,6 +10,8 @@ import {
   Transaction,
   TransactionRequest,
   TransactionState,
+  TransferICRC1QuorumTransactionRequest,
+  TransferQuorumTransactionRequest,
   VaultManager,
   VaultNamingTransactionRequest,
   VaultRole,
@@ -29,6 +34,12 @@ import { StoredVault, VaultCreationPrice } from "./types"
 
 /** The canister timestamps in nanoseconds, the frontend works in milliseconds. */
 export const NS_PER_MS = BigInt(1_000_000)
+
+const DEFAULT_SUB_ACCOUNT =
+  "0000000000000000000000000000000000000000000000000000000000000000"
+
+const INTERVAL = 1000
+const TIMEOUT = 30_000
 
 /** How many times a step that follows a paid-for vault is attempted. */
 const ATTEMPTS = 3
@@ -278,8 +289,8 @@ export class NfidVaultsService {
     vaultCanisterId: string,
     identity: SignIdentity,
     transactionId: bigint,
-    intervalMs = 1000,
-    timeoutMs = 30_000,
+    intervalMs = INTERVAL,
+    timeoutMs = TIMEOUT,
   ): Promise<Transaction> {
     const deadline = Date.now() + timeoutMs
     const manager = this.getManager(vaultCanisterId, identity)
@@ -311,7 +322,7 @@ export class NfidVaultsService {
       this.requestBatchTransactions(vaultCanisterId, identity, [
         new VaultNamingTransactionRequest(name),
         new WalletCreateTransactionRequest(
-          generateRandomString(),
+          DEFAULT_SUB_ACCOUNT,
           walletName,
           Network.IC,
         ),
@@ -416,6 +427,48 @@ export class NfidVaultsService {
   }
 
   /**
+   * Submits a request to add an ICRC-1 token canister to the vault.
+   * Requires admin role. Goes through the quorum approval flow.
+   */
+  async addIcrc1Canister(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    ledgerCanisterId: string,
+    indexCanisterId?: string,
+  ): Promise<Transaction> {
+    const [tx] = await this.getManager(
+      vaultCanisterId,
+      identity,
+    ).requestTransaction([
+      new ICRC1CanistersAddTransactionRequest(
+        Principal.fromText(ledgerCanisterId),
+        indexCanisterId ? Principal.fromText(indexCanisterId) : undefined,
+      ),
+    ])
+    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+  }
+
+  /**
+   * Submits a request to remove an ICRC-1 token canister from the vault.
+   * Requires admin role. Goes through the quorum approval flow.
+   */
+  async removeIcrc1Canister(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    ledgerCanisterId: string,
+  ): Promise<Transaction> {
+    const [tx] = await this.getManager(
+      vaultCanisterId,
+      identity,
+    ).requestTransaction([
+      new ICRC1CanistersRemoveTransactionRequest(
+        Principal.fromText(ledgerCanisterId),
+      ),
+    ])
+    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+  }
+
+  /**
    * Submits multiple transactions as a batch — they all share a batch_uid so
    * the vault executes or rejects them together.
    * For a single transaction no batch_uid is set (same as a plain requestTransaction).
@@ -432,6 +485,62 @@ export class NfidVaultsService {
     return this.getManager(vaultCanisterId, identity).requestTransaction(
       transactions,
     )
+  }
+
+  /**
+   * Submits an ICP transfer from the vault's wallet and waits for execution.
+   * `address` must be an AccountIdentifier hex string.
+   */
+  async transferVaultIcp(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    walletUid: string,
+    address: string,
+    amount: bigint,
+    memo?: string,
+  ): Promise<Transaction> {
+    const [tx] = await this.getManager(
+      vaultCanisterId,
+      identity,
+    ).requestTransaction([
+      new TransferQuorumTransactionRequest(
+        Currency.ICP,
+        address,
+        walletUid,
+        amount,
+        memo,
+      ),
+    ])
+    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+  }
+
+  /**
+   * Submits an ICRC-1 token transfer from the vault's wallet and waits for execution.
+   */
+  async transferVaultIcrc1(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    walletUid: string,
+    ledgerId: string,
+    toPrincipal: Principal,
+    toSubaccount: Uint8Array | number[] | undefined,
+    amount: bigint,
+    memo?: string,
+  ): Promise<Transaction> {
+    const [tx] = await this.getManager(
+      vaultCanisterId,
+      identity,
+    ).requestTransaction([
+      new TransferICRC1QuorumTransactionRequest(
+        toPrincipal,
+        toSubaccount,
+        Principal.fromText(ledgerId),
+        walletUid,
+        amount,
+        memo,
+      ),
+    ])
+    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
   }
 
   /** Vault manager actor signed by the global identity that pays for the vault. */

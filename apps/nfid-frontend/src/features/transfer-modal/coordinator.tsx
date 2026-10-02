@@ -41,6 +41,7 @@ export const TransferModalCoordinator = () => {
   const hideModal = useCallback(() => {
     send({ type: "ASSIGN_SELECTED_FT", data: undefined })
     send({ type: "ASSIGN_SELECTED_TARGET_FT", data: "" })
+    send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
     send({ type: "ASSIGN_SELECTED_NFT", data: "" })
     send({ type: "CHANGE_TOKEN_TYPE", data: "ft" })
     send({ type: "ASSIGN_IS_EARN_UPDATE", data: false })
@@ -104,6 +105,7 @@ export const TransferModalCoordinator = () => {
               setSuccessMessage={setSuccessMessage}
               onError={setHasBtcError}
               setIsSendSuccess={setIsSuccessTx}
+              vaultCanister={state.context.vaultCanister}
             />
           </motion.div>
         )}
@@ -265,6 +267,7 @@ export const TransferModalCoordinator = () => {
             <TransferReceive
               publicKey={publicKey}
               preselectedAccountAddress={state.context.sourceWalletAddress}
+              vaultCanister={state.context.vaultCanister}
             />
           </motion.div>
         )}
@@ -325,6 +328,7 @@ export const TransferModalCoordinator = () => {
       hasBtcError={hasBtcError}
       hasBridgeError={hasBridgeError}
       isSuccessTx={isSuccessTx}
+      isVault={Boolean(state.context.vaultCanister)}
     />
   )
 }

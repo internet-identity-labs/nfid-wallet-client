@@ -20,7 +20,6 @@ export const shouldRenderLink = (
 ) => {
   const { id } = linkItem
   const { pathname } = location
-  console.log(id, pathname)
 
   if (!profileConstants) return true
   if (

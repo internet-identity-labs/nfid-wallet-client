@@ -366,7 +366,10 @@ jobs:
         with:
           retention-days: 1
           path: apps/nfid-frontend-e2e/src/reporter/desktop/allure-results
-          name: allure-results-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
+          # No RUN_ATTEMPT in the name: "Re-run failed jobs" re-runs only the report job,
+          # which must still find the results uploaded by the original attempt.
+          name: allure-results-${{github.RUN_ID}}
+          overwrite: true
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v7
@@ -485,7 +488,10 @@ jobs:
         with:
           retention-days: 1
           path: apps/nfid-frontend-e2e/src/reporter/mobile/allure-results
-          name: allure-results-mobile-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
+          # No RUN_ATTEMPT in the name: "Re-run failed jobs" re-runs only the report job,
+          # which must still find the results uploaded by the original attempt.
+          name: allure-results-mobile-${{github.RUN_ID}}
+          overwrite: true
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v7
@@ -501,49 +507,69 @@ jobs:
     needs: e2e-tests
     if: ${{ ! cancelled() }}
     runs-on: ubuntu-latest
+    # Allure and the AWS CLI run directly on the runner instead of via Docker-based actions:
+    # building their images pulls base images from public.ecr.aws / Docker Hub anonymously,
+    # which fails with "429 Too Many Requests" on shared GitHub runners.
     env:
+      ALLURE_VERSION: "2.44.0"
+      REPORT_BUCKET: s3://nfid-wallet-client-e2e-report/desktop
+      REPORT_BASE_URL: https://nfid-wallet-client-e2e-report.s3.amazonaws.com/desktop
+      REPORT_ID: ${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
       TARGET_URL: https://nfid-wallet-client-e2e-report.s3.amazonaws.com/desktop/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html
-      NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID: ${{secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID}}
-      NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY: ${{secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY}}
+      AWS_ACCESS_KEY_ID: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: us-east-1
 
     steps:
-      - name: Download report history from S3
-        uses: keithweaver/aws-s3-github-action@v1.0.0
+      - name: Set up Java
+        uses: actions/setup-java@v6
         with:
-          command: cp
-          source: s3://nfid-wallet-client-e2e-report/desktop/last-history
-          destination: gh-pages/last-history
-          aws_access_key_id: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY }}
-          aws_region: us-east-1
-          flags: --recursive
+          distribution: temurin
+          java-version: "21"
+
+      - name: Install Allure
+        run: |
+          curl -fsSL --retry 5 --retry-all-errors \
+            "https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/${ALLURE_VERSION}/allure-commandline-${ALLURE_VERSION}.tgz" \
+            | tar -xz -C "${RUNNER_TEMP}"
+          echo "${RUNNER_TEMP}/allure-${ALLURE_VERSION}/bin" >> "${GITHUB_PATH}"
 
       - name: Load test results
         uses: actions/download-artifact@v8
         with:
-          name: allure-results-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
-          path: apps/nfid-frontend-e2e/src/reporter/desktop/allure-results
+          name: allure-results-${{github.RUN_ID}}
+          path: allure-results
+
+      - name: Download report history from S3
+        run: aws s3 cp "${REPORT_BUCKET}/last-history" allure-results/history --recursive
 
       - name: Preparing the report
-        uses: simple-elf/allure-report-action@master
-        id: allure-report
-        with:
-          allure_results: apps/nfid-frontend-e2e/src/reporter/desktop/allure-results
-          gh_pages: gh-pages
-          allure_report: apps/nfid-frontend-e2e/src/reporter/desktop/allure-report
-          allure_history: apps/nfid-frontend-e2e/src/reporter/desktop/allure-history
-          github_run_num: ${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
+        run: |
+          cat > allure-results/executor.json << EOF
+          {
+            "name": "GitHub Actions",
+            "type": "github",
+            "reportName": "Allure Report with history",
+            "url": "${REPORT_BASE_URL}",
+            "reportUrl": "${REPORT_BASE_URL}/${REPORT_ID}",
+            "buildUrl": "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}",
+            "buildName": "GitHub Actions Run #${GITHUB_RUN_ID}",
+            "buildOrder": "${REPORT_ID}"
+          }
+          EOF
+
+          allure generate --clean allure-results -o allure-report
+
+          cat > index.html << EOF
+          <!DOCTYPE html><meta charset="utf-8"><meta http-equiv="refresh" content="0; URL=${TARGET_URL}">
+          <meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
+          EOF
 
       - name: Upload report to S3
-        uses: keithweaver/aws-s3-github-action@v1.0.0
-        with:
-          command: cp
-          source: apps/nfid-frontend-e2e/src/reporter/desktop/allure-history
-          destination: s3://nfid-wallet-client-e2e-report/desktop
-          aws_access_key_id: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY }}
-          aws_region: us-east-1
-          flags: --recursive
+        run: |
+          aws s3 cp allure-report "${REPORT_BUCKET}/${REPORT_ID}" --recursive --only-show-errors
+          aws s3 cp allure-report/history "${REPORT_BUCKET}/last-history" --recursive --only-show-errors
+          aws s3 cp index.html "${REPORT_BUCKET}/index.html"
 
       - name: Upload report_url.txt
         run: echo "$TARGET_URL" > "report_url_desktop.txt"
@@ -560,49 +586,69 @@ jobs:
     needs: e2e-mobile-tests
     if: ${{ ! cancelled() }}
     runs-on: ubuntu-latest
+    # Allure and the AWS CLI run directly on the runner instead of via Docker-based actions:
+    # building their images pulls base images from public.ecr.aws / Docker Hub anonymously,
+    # which fails with "429 Too Many Requests" on shared GitHub runners.
     env:
+      ALLURE_VERSION: "2.44.0"
+      REPORT_BUCKET: s3://nfid-wallet-client-e2e-report/mobile
+      REPORT_BASE_URL: https://nfid-wallet-client-e2e-report.s3.amazonaws.com/mobile
+      REPORT_ID: ${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
       TARGET_URL: https://nfid-wallet-client-e2e-report.s3.amazonaws.com/mobile/${{github.RUN_ID}}${{github.RUN_ATTEMPT}}/index.html
-      NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID: ${{secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID}}
-      NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY: ${{secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY}}
+      AWS_ACCESS_KEY_ID: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: us-east-1
 
     steps:
-      - name: Download report history from S3
-        uses: keithweaver/aws-s3-github-action@v1.0.0
+      - name: Set up Java
+        uses: actions/setup-java@v6
         with:
-          command: cp
-          source: s3://nfid-wallet-client-e2e-report/mobile/last-history
-          destination: gh-pages/last-history
-          aws_access_key_id: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY }}
-          aws_region: us-east-1
-          flags: --recursive
+          distribution: temurin
+          java-version: "21"
+
+      - name: Install Allure
+        run: |
+          curl -fsSL --retry 5 --retry-all-errors \
+            "https://repo.maven.apache.org/maven2/io/qameta/allure/allure-commandline/${ALLURE_VERSION}/allure-commandline-${ALLURE_VERSION}.tgz" \
+            | tar -xz -C "${RUNNER_TEMP}"
+          echo "${RUNNER_TEMP}/allure-${ALLURE_VERSION}/bin" >> "${GITHUB_PATH}"
 
       - name: Load test results
         uses: actions/download-artifact@v8
         with:
-          name: allure-results-mobile-${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
-          path: apps/nfid-frontend-e2e/src/reporter/mobile/allure-results
+          name: allure-results-mobile-${{github.RUN_ID}}
+          path: allure-results
+
+      - name: Download report history from S3
+        run: aws s3 cp "${REPORT_BUCKET}/last-history" allure-results/history --recursive
 
       - name: Preparing the report
-        uses: simple-elf/allure-report-action@master
-        id: allure-report
-        with:
-          allure_results: apps/nfid-frontend-e2e/src/reporter/mobile/allure-results
-          gh_pages: gh-pages
-          allure_report: apps/nfid-frontend-e2e/src/reporter/mobile/allure-report
-          allure_history: apps/nfid-frontend-e2e/src/reporter/mobile/allure-history
-          github_run_num: ${{github.RUN_ID}}${{github.RUN_ATTEMPT}}
+        run: |
+          cat > allure-results/executor.json << EOF
+          {
+            "name": "GitHub Actions",
+            "type": "github",
+            "reportName": "Allure Report with history",
+            "url": "${REPORT_BASE_URL}",
+            "reportUrl": "${REPORT_BASE_URL}/${REPORT_ID}",
+            "buildUrl": "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}",
+            "buildName": "GitHub Actions Run #${GITHUB_RUN_ID}",
+            "buildOrder": "${REPORT_ID}"
+          }
+          EOF
+
+          allure generate --clean allure-results -o allure-report
+
+          cat > index.html << EOF
+          <!DOCTYPE html><meta charset="utf-8"><meta http-equiv="refresh" content="0; URL=${TARGET_URL}">
+          <meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
+          EOF
 
       - name: Upload report to S3
-        uses: keithweaver/aws-s3-github-action@v1.0.0
-        with:
-          command: cp
-          source: apps/nfid-frontend-e2e/src/reporter/mobile/allure-history
-          destination: s3://nfid-wallet-client-e2e-report/mobile
-          aws_access_key_id: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.NFID_FRONTEND_E2E_REPORT_AWS_SECRET_ACCESS_KEY }}
-          aws_region: us-east-1
-          flags: --recursive
+        run: |
+          aws s3 cp allure-report "${REPORT_BUCKET}/${REPORT_ID}" --recursive --only-show-errors
+          aws s3 cp allure-report/history "${REPORT_BUCKET}/last-history" --recursive --only-show-errors
+          aws s3 cp index.html "${REPORT_BUCKET}/index.html"
 
       - name: Upload report_url.txt
         run: echo "$TARGET_URL" > "report_url_mobile.txt"

@@ -8,6 +8,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   placeholder?: string
   type?: string
   icon?: ReactElement
+  iconClassnames?: string
   errorText?: string
   helperText?: string | JSX.Element
   labelText?: string
@@ -33,6 +34,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       type = "text",
       pin,
       icon,
+      iconClassnames,
       small,
       errorText,
       helperText,
@@ -70,6 +72,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
               className={clsx(
                 "flex-shrink-0 absolute left-2 top-1/2 -translate-y-1/2 z-10",
                 inputProps.disabled && "text-secondary dark:text-zinc-500",
+                iconClassnames,
               )}
             >
               {icon}

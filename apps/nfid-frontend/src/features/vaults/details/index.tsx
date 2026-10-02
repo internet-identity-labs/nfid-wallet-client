@@ -15,6 +15,12 @@ import { portfolioService } from "frontend/integration/portfolio-balance/portfol
 import { ProfileContext } from "frontend/provider"
 import { ModalType } from "frontend/features/transfer-modal/types"
 import { nfidVaultsService } from "@nfid/integration"
+import {
+  ICP_CANISTER_ID,
+  ICP_DECIMALS,
+  WALLET_FEE,
+  TRILLION,
+} from "@nfid/integration/token/constants"
 
 type VaultDetailsProps = {
   walletTheme: NFIDTheme
@@ -53,6 +59,31 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
     () => portfolioService.getVaultPortfolioUSDBalance(initedTokens),
     { revalidateOnFocus: false },
   )
+
+  const { data: cyclesBalance } = useSWR(
+    vaultId && identity ? ["vault-cycles", vaultId] : null,
+    () => nfidVaultsService.getCyclesBalance(vaultId!, identity!),
+  )
+
+  const { data: xdrPermyriadPerIcp } = useSWR(
+    identity ? "xdr-permyriad-per-icp" : null,
+    () => nfidVaultsService.getXdrPermyriadPerIcp(identity!),
+  )
+
+  const icpTokenBalance = vaultTokens?.initedTokens
+    .find((t) => t.getTokenAddress() === ICP_CANISTER_ID)
+    ?.getTokenBalance()
+
+  const vaultIcpBalance =
+    icpTokenBalance !== undefined
+      ? Number(icpTokenBalance) / 10 ** ICP_DECIMALS - WALLET_FEE
+      : undefined
+
+  const topUp = async (amount: string) => {
+    if (!vaultId || !identity) return
+    const amountRaw = BigInt(Math.round(Number(amount) * 10 ** ICP_DECIMALS))
+    await nfidVaultsService.topUp(vaultId, identity, amountRaw)
+  }
 
   const onSendClick = () => {
     globalServices.transferService.send({
@@ -108,6 +139,10 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
         usdBalance={usdBalance}
         onSendClick={onSendClick}
         onReceiveClick={onReceiveClick}
+        isLowCyclesBalance={!!cyclesBalance && cyclesBalance < TRILLION}
+        xdrPermyriadPerIcp={xdrPermyriadPerIcp}
+        topUp={topUp}
+        vaultIcpBalance={vaultIcpBalance}
       />
     </ProfileTemplate>
   )

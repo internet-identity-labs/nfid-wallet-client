@@ -1,4 +1,5 @@
 import {
+  ControllersUpdateTransactionRequest,
   Currency,
   ICRC1CanistersAddTransactionRequest,
   ICRC1CanistersRemoveTransactionRequest,
@@ -6,7 +7,9 @@ import {
   MemberRemoveTransactionRequest,
   MemberUpdateNameTransactionRequest,
   Network,
+  PurgeTransactionRequest,
   QuorumTransactionRequest,
+  TopUpQuorumTransactionRequest,
   Transaction,
   TransactionRequest,
   TransactionState,
@@ -469,6 +472,56 @@ export class NfidVaultsService {
   }
 
   /**
+   * Submits a request to update the vault controllers.
+   * Replaces the current controller list with the provided principals.
+   * Requires admin role. Goes through the quorum approval flow.
+   *
+   * @param principals the new list of controller principals
+   */
+  async getControllers(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+  ): Promise<string[]> {
+    const controllers = await this.getManager(
+      vaultCanisterId,
+      identity,
+    ).getControllers()
+    const texts = controllers.map((p) => p.toText())
+    return [vaultCanisterId, ...texts.filter((p) => p !== vaultCanisterId)]
+  }
+
+  async getXdrPermyriadPerIcp(identity: SignIdentity): Promise<bigint> {
+    const price = await this.getPrice(identity)
+    return price.xdrPermyriadPerIcp
+  }
+
+  async getCyclesBalance(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+  ): Promise<bigint> {
+    return this.getManager(vaultCanisterId, identity).canisterBalance()
+  }
+
+  async updateControllers(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    principals: string[],
+  ): Promise<Transaction> {
+    const all = principals.includes(vaultCanisterId)
+      ? principals
+      : [vaultCanisterId, ...principals]
+    const [tx] = await this.getManager(
+      vaultCanisterId,
+      identity,
+    ).requestTransaction([
+      new ControllersUpdateTransactionRequest(
+        all.map((p) => Principal.fromText(p)),
+      ),
+    ])
+    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+  }
+
+  /**
    * Submits multiple transactions as a batch — they all share a batch_uid so
    * the vault executes or rejects them together.
    * For a single transaction no batch_uid is set (same as a plain requestTransaction).
@@ -538,6 +591,39 @@ export class NfidVaultsService {
         walletUid,
         amount,
         memo,
+      ),
+    ])
+    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+  }
+
+  /**
+   * Purges all blocked transactions from the vault.
+   * Requires admin role.
+   */
+  async purgeTransactions(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+  ): Promise<Transaction> {
+    const [tx] = await this.getManager(
+      vaultCanisterId,
+      identity,
+    ).requestTransaction([new PurgeTransactionRequest()])
+    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+  }
+
+  async topUp(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    amountE8s: bigint,
+  ): Promise<Transaction> {
+    const [tx] = await this.getManager(
+      vaultCanisterId,
+      identity,
+    ).requestTransaction([
+      new TopUpQuorumTransactionRequest(
+        Currency.ICP,
+        DEFAULT_SUB_ACCOUNT,
+        amountE8s,
       ),
     ])
     return this.waitForTransaction(vaultCanisterId, identity, tx.id)

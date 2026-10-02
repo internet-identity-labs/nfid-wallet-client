@@ -2,7 +2,7 @@ import { nfidVaultsService } from "@nfid/integration"
 import { DelegationIdentity } from "@icp-sdk/core/identity"
 import { Principal } from "@dfinity/principal"
 import { ChainId, State } from "@nfid/integration/token/icrc1/enum/enums"
-import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
+import { ICP_CANISTER_ID, TRIM_ZEROS } from "@nfid/integration/token/constants"
 import { FT } from "frontend/integration/ft/ft"
 import { VaultTokenBuilder } from "frontend/integration/ft/token-creator/vault-token-builder"
 import { fetchTokens } from "frontend/features/fungible-token/utils"
@@ -67,4 +67,28 @@ export const fetchVaultInitedTokens = async (
   )
 
   return { initedTokens, allTokens }
+}
+
+export const formatCycles = (cycles: bigint | undefined): string => {
+  if (cycles === undefined) return ""
+  return `${(Number(cycles) / 1e12).toFixed(3).replace(TRIM_ZEROS, "")} T`
+}
+
+// xdrPermyriadPerIcp: how many 1/10000 XDR equal 1 ICP (from NNS cycles minting canister)
+// 1 XDR = 1 T cycles (1_000_000_000_000)
+
+export const icpToTCycles = (
+  icpAmount: number,
+  xdrPermyriadPerIcp: bigint,
+): number => {
+  const xdrPerIcp = Number(xdrPermyriadPerIcp) / 10_000
+  return icpAmount * xdrPerIcp
+}
+
+export const tCyclesToIcp = (
+  tCycles: number,
+  xdrPermyriadPerIcp: bigint,
+): number => {
+  const xdrPerIcp = Number(xdrPermyriadPerIcp) / 10_000
+  return tCycles / xdrPerIcp
 }

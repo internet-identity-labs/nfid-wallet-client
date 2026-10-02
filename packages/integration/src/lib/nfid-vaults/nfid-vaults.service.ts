@@ -1,4 +1,18 @@
-import { VaultManager, VaultNamingTransactionRequest } from "@nfid/vaults"
+import {
+  MemberCreateTransactionRequestV2,
+  MemberRemoveTransactionRequest,
+  MemberUpdateNameTransactionRequest,
+  Network,
+  QuorumTransactionRequest,
+  Transaction,
+  TransactionRequest,
+  TransactionState,
+  VaultManager,
+  VaultNamingTransactionRequest,
+  VaultRole,
+  WalletCreateTransactionRequest,
+  generateRandomString,
+} from "@nfid/vaults"
 import { HttpAgent, Identity, SignIdentity } from "@icp-sdk/core/agent"
 import { Principal } from "@icp-sdk/core/principal"
 
@@ -14,7 +28,7 @@ import {
 import { StoredVault, VaultCreationPrice } from "./types"
 
 /** The canister timestamps in nanoseconds, the frontend works in milliseconds. */
-const NS_PER_MS = BigInt(1_000_000)
+export const NS_PER_MS = BigInt(1_000_000)
 
 /** How many times a step that follows a paid-for vault is attempted. */
 const ATTEMPTS = 3
@@ -147,10 +161,11 @@ export class NfidVaultsService {
   async createVault(
     name: string,
     identity: SignIdentity,
-    vaultType?: VaultType,
+    walletName = "Main Wallet",
   ): Promise<Principal> {
     const controller = identity.getPrincipal()
     const price = await this.getPrice(identity)
+    const vaultType: VaultType = { Light: null }
 
     // The price follows the ICP/XDR rate, which can move between quoting it and
     // charging it. approveE8s carries head room for that on top of the ledger fee,
@@ -177,7 +192,7 @@ export class NfidVaultsService {
     // The vault exists and is paid for from here on. Naming it and recording it are
     // independent of each other, so they run together, each retried on its own.
     const [named, recorded] = await Promise.all([
-      this.nameVault(canisterId.toText(), name, identity),
+      this.initVault(canisterId.toText(), name, walletName, identity),
       this.recordVault(canisterId.toText(), name, controller.toText()),
     ])
 
@@ -255,15 +270,167 @@ export class NfidVaultsService {
    * Signed by the global identity: the vault only accepts transactions from the
    * member it was created with.
    */
-  private async nameVault(
+  /**
+   * Polls until the transaction reaches a terminal state (Executed or Rejected).
+   * Useful after submitting a single-approver transaction that auto-executes.
+   */
+  private async waitForTransaction(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    transactionId: bigint,
+    intervalMs = 1000,
+    timeoutMs = 30_000,
+  ): Promise<Transaction> {
+    const deadline = Date.now() + timeoutMs
+    const manager = this.getManager(vaultCanisterId, identity)
+    const terminal = new Set([
+      TransactionState.Executed,
+      TransactionState.Rejected,
+      TransactionState.Purged,
+    ])
+
+    while (Date.now() < deadline) {
+      const transactions = await manager.getTransactions()
+      const tx = transactions.find((t) => t.id === transactionId)
+      if (tx && terminal.has(tx.state)) return tx
+      await new Promise((resolve) => setTimeout(resolve, intervalMs))
+    }
+
+    throw new Error(
+      `Transaction ${transactionId} did not reach a terminal state within ${timeoutMs}ms`,
+    )
+  }
+
+  private async initVault(
     vaultCanisterId: string,
     name: string,
+    walletName: string,
     identity: SignIdentity,
   ): Promise<StepResult> {
     return attempt(() =>
-      this.getManager(vaultCanisterId, identity).requestTransaction([
+      this.requestBatchTransactions(vaultCanisterId, identity, [
         new VaultNamingTransactionRequest(name),
+        new WalletCreateTransactionRequest(
+          generateRandomString(),
+          walletName,
+          Network.IC,
+        ),
       ]),
+    )
+  }
+
+  /**
+   * Submits a request to add a new approver (member) to the vault.
+   * Requires admin role. Goes through the quorum approval flow.
+   */
+  async addMember(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    payload: {
+      owner: Principal
+      subaccount?: Uint8Array | number[]
+      name: string
+      role: VaultRole
+    },
+    newQuorum?: number,
+  ): Promise<Transaction> {
+    const requests: (TransactionRequest & { batch_uid?: string })[] = [
+      new MemberCreateTransactionRequestV2(
+        { owner: payload.owner, subaccount: payload.subaccount },
+        payload.name,
+        payload.role,
+      ),
+    ]
+    if (newQuorum !== undefined)
+      requests.push(new QuorumTransactionRequest(newQuorum))
+    const [tx] = await this.requestBatchTransactions(
+      vaultCanisterId,
+      identity,
+      requests,
+    )
+    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+  }
+
+  /**
+   * Submits a request to update the name of an existing member.
+   * Requires admin role. Goes through the quorum approval flow.
+   *
+   * @param memberId the member's userId (principal string)
+   */
+  async updateMemberName(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    memberId: string,
+    name: string,
+  ): Promise<Transaction> {
+    const [tx] = await this.getManager(
+      vaultCanisterId,
+      identity,
+    ).requestTransaction([
+      new MemberUpdateNameTransactionRequest(memberId, name),
+    ])
+    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+  }
+
+  /**
+   * Submits a request to remove a member from the vault.
+   * Requires admin role. Goes through the quorum approval flow.
+   *
+   * @param memberId the member's userId (principal string)
+   */
+  async removeMember(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    memberId: string,
+    newQuorum?: number,
+  ): Promise<Transaction> {
+    const requests: (TransactionRequest & { batch_uid?: string })[] = [
+      new MemberRemoveTransactionRequest(memberId),
+    ]
+    if (newQuorum !== undefined)
+      requests.push(new QuorumTransactionRequest(newQuorum))
+    const [tx] = await this.requestBatchTransactions(
+      vaultCanisterId,
+      identity,
+      requests,
+    )
+    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+  }
+
+  /**
+   * Submits a request to update the quorum (approval threshold).
+   * Requires admin role. Goes through the quorum approval flow.
+   *
+   * @param quorum number of approvals required
+   */
+  async updateQuorum(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    quorum: number,
+  ): Promise<Transaction> {
+    const [tx] = await this.getManager(
+      vaultCanisterId,
+      identity,
+    ).requestTransaction([new QuorumTransactionRequest(quorum)])
+    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+  }
+
+  /**
+   * Submits multiple transactions as a batch — they all share a batch_uid so
+   * the vault executes or rejects them together.
+   * For a single transaction no batch_uid is set (same as a plain requestTransaction).
+   */
+  async requestBatchTransactions(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    transactions: (TransactionRequest & { batch_uid?: string })[],
+  ): Promise<Transaction[]> {
+    if (transactions.length > 1) {
+      const batchUid = generateRandomString()
+      transactions.forEach((tx) => (tx.batch_uid = batchUid))
+    }
+    return this.getManager(vaultCanisterId, identity).requestTransaction(
+      transactions,
     )
   }
 

@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import BigNumber from "bignumber.js"
 import clsx from "clsx"
 import { HTMLAttributes, FC, useState, useMemo, useContext } from "react"

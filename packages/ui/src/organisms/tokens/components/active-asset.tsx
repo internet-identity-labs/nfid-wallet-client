@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { HTMLAttributes, FC, useState, useContext } from "react"
 import { FT } from "src/integration/ft/ft"

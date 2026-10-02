@@ -26,6 +26,8 @@ export const ProfileConstants = {
   addPhoneNumber: "/add-phone-number",
   vaults: "/vaults",
   vault: ":vaultId",
+  vaultPolicy: "policy",
+  vaultPortfolio: "portfolio",
   vaultTransaction: ":transactionId",
 }
 

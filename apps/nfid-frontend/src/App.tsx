@@ -45,6 +45,10 @@ const CopyRecoveryPhrase = lazy(
 )
 const VaultsPage = lazy(() => import("frontend/features/vaults"))
 
+const VaultDetailsPage = lazy(() => import("frontend/features/vaults/details"))
+
+const VaultPolicyPage = lazy(() => import("frontend/features/vaults/policy"))
+
 const NFTDetailsPage = lazy(() => import("frontend/features/nft-details"))
 
 const PrivateAccountsPage = lazy(
@@ -356,6 +360,34 @@ export const App = () => {
                         cacheLoaded={cacheLoaded}
                       >
                         <VaultsPage
+                          walletTheme={walletTheme}
+                          setWalletTheme={setWalletTheme}
+                        />
+                      </AuthWrapper>
+                    }
+                  />
+                  <Route
+                    path={`${ProfileConstants.vaults}/${ProfileConstants.vault}`}
+                    element={
+                      <AuthWrapper
+                        isAuthenticated={isAuthenticated}
+                        cacheLoaded={cacheLoaded}
+                      >
+                        <VaultDetailsPage
+                          walletTheme={walletTheme}
+                          setWalletTheme={setWalletTheme}
+                        />
+                      </AuthWrapper>
+                    }
+                  />
+                  <Route
+                    path={`${ProfileConstants.vaults}/${ProfileConstants.vault}/${ProfileConstants.vaultPolicy}`}
+                    element={
+                      <AuthWrapper
+                        isAuthenticated={isAuthenticated}
+                        cacheLoaded={cacheLoaded}
+                      >
+                        <VaultPolicyPage
                           walletTheme={walletTheme}
                           setWalletTheme={setWalletTheme}
                         />

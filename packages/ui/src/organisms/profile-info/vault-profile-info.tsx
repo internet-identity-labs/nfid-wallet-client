@@ -1,26 +1,24 @@
 /* eslint-disable @nx/enforce-module-boundaries */
 import { FC, HTMLAttributes } from "react"
 
-import {
-  IconCmpArrow,
-  Skeleton,
-  Button,
-  IconCmpRefresh,
-} from "@nfid-frontend/ui"
+import { IconCmpArrow, Button, IconCmpRefresh } from "@nfid-frontend/ui"
 
 import { Balance } from "./balance"
-import { ProfileContext } from "frontend/provider"
-import { getIsMobileDeviceMatch } from "../../utils/is-mobile"
-import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 
 export interface IVaultProfileTemplate extends HTMLAttributes<HTMLDivElement> {
-  usdBalance: string | undefined
+  usdBalance:
+    | {
+        value: string
+        dayChange?: string
+        dayChangePercent?: string
+        dayChangePositive?: boolean
+      }
+    | undefined
   isAddressLoading?: boolean
   isUsdLoading: boolean
   onSendClick: () => void
   onReceiveClick: () => void
   refreshPortfolio: () => void
-  address?: string
   goToPortfolio: () => void
 }
 
@@ -30,7 +28,6 @@ export const VaultProfileInfo: FC<IVaultProfileTemplate> = ({
   onSendClick,
   onReceiveClick,
   refreshPortfolio,
-  address,
   goToPortfolio,
 }) => {
   return (
@@ -58,16 +55,11 @@ export const VaultProfileInfo: FC<IVaultProfileTemplate> = ({
           <p className="text-sm font-bold leading-5 text-gray-400 dark:text-zinc-500 mb-2.5">
             Known token value
           </p>
-          {false ? (
-            <Skeleton className="w-[180px] h-[24px]" />
-          ) : (
-            <div className="text-[22px] sm:text-[28px] font-semibold leading-5 sm:leading-[30px] dark:text-white">
-              {usdBalance || "0.00"}{" "}
-              <span className="text-[16px] leading-3 font-bold uppercase self-end mr-3">
-                usd
-              </span>
-            </div>
-          )}
+          <Balance
+            id={"totalBalance"}
+            isLoading={isUsdLoading}
+            usdBalance={usdBalance}
+          />
         </div>
         <div className="flex gap-2.5 mt-5 sm:mt-0">
           <Button

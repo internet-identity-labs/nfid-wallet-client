@@ -39,9 +39,12 @@ export interface IProfileHeader extends React.HTMLAttributes<HTMLDivElement> {
     vaults: string
     addressBook: string
     permissions: string
+    discovery: string
+    privateAccounts: string
   }
   walletTheme?: NFIDTheme
   setWalletTheme?: (theme: NFIDTheme) => void
+  vaultName?: string
 }
 
 export const ProfileHeader: React.FC<IProfileHeader> = ({
@@ -56,6 +59,7 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
   profileConstants,
   walletTheme,
   setWalletTheme,
+  vaultName,
 }) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false)
   const popupRef = useClickOutside(() => setIsMenuVisible(false))
@@ -93,6 +97,7 @@ export const ProfileHeader: React.FC<IProfileHeader> = ({
               isOpen={isMenuVisible}
               walletTheme={walletTheme!}
               setWalletTheme={setWalletTheme!}
+              vaultName={vaultName}
             />
           </div>
         )}

@@ -18,6 +18,8 @@ type VaultsPageProps = {
 const VaultsPage: FC<VaultsPageProps> = memo(
   ({ walletTheme, setWalletTheme }) => {
     const navigate = useNavigate()
+    const { identity } = useIdentity()
+
     const {
       data: vaults,
       isLoading,
@@ -26,8 +28,6 @@ const VaultsPage: FC<VaultsPageProps> = memo(
     } = useSWR("vaults", fetchVaults, {
       revalidateOnFocus: false,
     })
-
-    const { identity } = useIdentity()
 
     const getPrice = useCallback(async () => {
       if (!identity) return

@@ -55,6 +55,10 @@ const VaultsPage: FC<VaultsPageProps> = memo(
       async (name: string) => {
         if (!identity) return
         const canisterId = await nfidVaultsService.createVault(name, identity)
+        if (principal) {
+          const address = AccountIdentifier.fromPrincipal({ principal }).toHex()
+          await nfidVaultsService.updateDashboardCache(address)
+        }
         mutate()
         navigate(`${ProfileConstants.vaults}/${canisterId.toText()}`)
       },

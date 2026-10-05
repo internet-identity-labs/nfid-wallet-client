@@ -55,6 +55,7 @@ const TIMEOUT = 30_000
 const ATTEMPTS = 3
 
 const VAULT_CACHE_TTL_MS = 5 * 60 * 1000
+const VAULTS_CACHE_NAME = "VAULTS_"
 
 export interface DashboardCache {
   cache: Array<{
@@ -253,7 +254,7 @@ export class NfidVaultsService {
     forceRefetch?: boolean,
   ): Promise<DashboardCache> {
     return ttlCacheService.getOrFetch<DashboardCache>(
-      `VAULTS_${id.toLowerCase()}`,
+      `{VAULTS_CACHE_NAME}${id.toLowerCase()}`,
       () => this.scanVaultsForAddress(id),
       VAULT_CACHE_TTL_MS,
       { forceRefetch: Boolean(forceRefetch) },

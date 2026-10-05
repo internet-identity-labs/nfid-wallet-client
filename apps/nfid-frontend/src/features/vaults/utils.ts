@@ -10,7 +10,7 @@ import { fetchTokens } from "frontend/features/fungible-token/utils"
 
 export const fetchVaults = async (principal: Principal) => {
   const address = AccountIdentifier.fromPrincipal({ principal }).toHex()
-  const result = await nfidVaultsService.getDashboardCacheForAddress(address)
+  const result = await nfidVaultsService.getVaults(address)
   return result.cache.map((v) => ({
     canisterId: v.canister,
     name: v.name,

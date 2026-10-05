@@ -61,7 +61,6 @@ export interface DashboardCache {
   cache: Array<{
     canister: string
     name: string
-    type: "light" | "pro"
     version: string
   }>
   createdDate: number
@@ -249,10 +248,7 @@ export class NfidVaultsService {
    * Serves from IndexedDB if fresh (5-min TTL); scans all vault canisters otherwise.
    * Pass `forceRefetch: true` to bypass the cache and trigger a fresh scan.
    */
-  async getDashboardCacheForAddress(
-    id: string,
-    forceRefetch?: boolean,
-  ): Promise<DashboardCache> {
+  async getVaults(id: string, forceRefetch?: boolean): Promise<DashboardCache> {
     return ttlCacheService.getOrFetch<DashboardCache>(
       `{VAULTS_CACHE_NAME}${id.toLowerCase()}`,
       () => this.scanVaultsForAddress(id),
@@ -262,8 +258,8 @@ export class NfidVaultsService {
   }
 
   /** Force-rescans all vaults and repopulates the cache for the given address. */
-  async updateDashboardCache(id: string): Promise<DashboardCache> {
-    return this.getDashboardCacheForAddress(id, true)
+  async updateVaultsCache(id: string): Promise<DashboardCache> {
+    return this.getVaults(id, true)
   }
 
   /**
@@ -667,11 +663,10 @@ export class NfidVaultsService {
             return null
           const version = await vm.getVersion()
           const name = state.name ?? `NFID Vault ${canisterId}`
-          const type: "light" | "pro" =
-            "Light" in vault.vault_type ? "light" : "pro"
-          return { canister: canisterId, name, type, version }
+          return { canister: canisterId, name, version }
         } catch (e) {
           console.warn(`Error getting vault state for ${canisterId}`, e)
+          return null
         }
       }),
     )

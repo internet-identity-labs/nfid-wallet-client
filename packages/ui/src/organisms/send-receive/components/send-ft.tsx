@@ -1,7 +1,7 @@
 /* eslint-disable @nx/enforce-module-boundaries */
 import { truncateString } from "@nfid-frontend/utils"
 import { Spinner } from "packages/ui/src/atoms/spinner"
-import { Dispatch, FC, SetStateAction, useMemo, useState } from "react"
+import { FC, useMemo, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 
@@ -9,8 +9,6 @@ import {
   Button,
   IconCmpArrow,
   BlurredLoader,
-  IGroupedOptions,
-  ChooseAccountModal,
   Skeleton,
   IGroupedSendAddress,
   Input,
@@ -56,6 +54,8 @@ import {
 } from "frontend/features/transfer-modal/utils"
 import { PRINCIPAL_LENGTH } from "packages/constants"
 import { ChooseAvailableAddressModal } from "packages/ui/src/molecules/choose-modal/available-address-modal"
+import { SendVaultSuccessUi } from "./send-vault-success"
+import { Vault } from "@nfid/vaults"
 
 const MAX_NOTE_LENGTH = 60
 
@@ -80,6 +80,11 @@ export interface TransferFTUiProps {
   searchAddress: (req: FtSearchRequest) => Promise<UserAddressPreview[]>
   onCreateContact: (request: UserAddressSaveRequest) => Promise<void>
   onUpdateContact: (contact: UserAddressUpdateRequest) => Promise<void>
+  isVault: boolean
+  vaultDetails: Vault | undefined
+  initiatorName?: string
+  approverNames?: string[]
+  isVaultTxLoading: boolean
 }
 
 export const TransferFTUi: FC<TransferFTUiProps> = ({
@@ -103,6 +108,11 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
   searchAddress,
   onCreateContact,
   onUpdateContact,
+  isVault,
+  vaultDetails,
+  initiatorName,
+  approverNames,
+  isVaultTxLoading,
 }) => {
   const [isFromResponsive, setIsFromResponsive] = useState(false)
   const [isAddressBookOpen, setIsAddressBookOpen] = useState(false)
@@ -219,13 +229,21 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         subTitle={`${token.getTokenRateFormatted(amount || 0)}`}
         onDone={onDone}
         assetImg={token.getTokenLogo() ?? ""}
-        isOpen={isSuccessOpen}
+        isOpen={isSuccessOpen && !isVault}
         status={status}
         assetImageClassname="w-[100px] h-[100px] top-[161px] sm:w-[115px] sm:h-[115px] sm:top-[154px]"
         error={error}
         isNativeBtc={token.getTokenAddress() === BTC_NATIVE_ID}
         isNativeEth={token.getTokenAddress() === ETH_NATIVE_ID}
         duration={isEvmToken(token.getChainId()) ? 30 : 2}
+      />
+      <SendVaultSuccessUi
+        onDone={onDone}
+        isOpen={isSuccessOpen && isVault}
+        isLoading={isVaultTxLoading}
+        vaultDetails={vaultDetails}
+        initiatorName={initiatorName}
+        approverNames={approverNames}
       />
       <SendAddressBook
         onClose={onClose}
@@ -357,6 +375,9 @@ export const TransferFTUi: FC<TransferFTUiProps> = ({
         </div>
         {feeError && (
           <div className="mt-2 text-xs text-red-600">{feeError}</div>
+        )}
+        {error && isVault && (
+          <div className="mt-2 text-xs text-red-600">{error}</div>
         )}
       </div>
       <Button

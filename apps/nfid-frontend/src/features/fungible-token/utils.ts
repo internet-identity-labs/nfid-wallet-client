@@ -40,6 +40,10 @@ export const fetchTokens = async () => {
   return await ftService.getTokens(userPrincipal)
 }
 
+export const fetchVaultTokens = async (vaultPrincipal: string) => {
+  return await ftService.getTokens(vaultPrincipal)
+}
+
 const fetchErc20TokensSequentially = async (
   ethAddress: string,
 ): Promise<

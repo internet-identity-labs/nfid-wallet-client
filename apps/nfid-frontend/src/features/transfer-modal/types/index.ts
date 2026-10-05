@@ -69,7 +69,7 @@ export type TransferMachineContext = {
   withdrawBalance: bigint
   openCryptoPayParams: string
   openCryptoPayPreselect?: { method: string; asset: string }
-  isOpenedFromVaults: boolean
+  vaultCanister: string
   stakeId?: string
 }
 
@@ -97,7 +97,7 @@ export type Events =
   | { type: "ASSIGN_ERROR"; data: string }
   | { type: "ASSIGN_TOKEN_STANDARD"; data: string }
   | { type: "ON_TRANSFER"; data: ITransferSuccess }
-  | { type: "ASSIGN_VAULTS"; data: boolean }
+  | { type: "ASSIGN_VAULTS_CANISTER"; data: string }
 
 export type Services = {
   transferFT: {

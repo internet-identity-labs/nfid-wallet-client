@@ -29,7 +29,7 @@ const DiscoveryPage: FC<DiscoveryPageProps> = memo(
       })
 
     const onPromoteClick = (dappId: number) => {
-      transferService.send({ type: "ASSIGN_VAULTS", data: false })
+      transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
       transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
       transferService.send({
         type: "CHANGE_DIRECTION",

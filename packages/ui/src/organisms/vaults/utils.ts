@@ -2,6 +2,17 @@ import { format } from "date-fns"
 import { NS_PER_MS } from "@nfid/integration"
 import { PolicyUpdateType } from "./types"
 
+export const vaultTxTimestampToDate = (timestamp: bigint): string => {
+  return format(new Date(Number(timestamp / NS_PER_MS)), "MMMM d, yyyy")
+}
+
+export const vaultTxTimestampToTime = (timestamp: bigint): string => {
+  return format(
+    new Date(Number(timestamp / NS_PER_MS)),
+    "hh:mm:ss aa",
+  ).toLowerCase()
+}
+
 export const memberCreatedToDate = (timestamp: bigint): string => {
   return format(
     new Date(Number(timestamp / NS_PER_MS)),

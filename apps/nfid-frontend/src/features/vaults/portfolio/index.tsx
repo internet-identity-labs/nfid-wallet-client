@@ -2,51 +2,56 @@ import { FC, useContext } from "react"
 import { useParams } from "react-router-dom"
 
 import { ProfileTemplate } from "@nfid-frontend/ui"
-import { useSWR } from "@nfid/swr"
-import { VaultDetails } from "packages/ui/src/organisms/vaults/details"
+import { VaultPortfolio } from "packages/ui/src/organisms/vaults/portfolio"
 
 import { NFIDTheme } from "frontend/App"
 import { useIdentity } from "frontend/hooks/identity"
-
-import { DelegationIdentity } from "@icp-sdk/core/identity"
+import { DelegationIdentity } from "@dfinity/identity"
 import { fetchVaultDetails, fetchVaultInitedTokens } from "../utils"
+import { useSWR } from "@nfid/swr"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { portfolioService } from "frontend/integration/portfolio-balance/portfolio-service"
+import {
+  ModalType,
+  SelectedToken,
+} from "frontend/features/transfer-modal/types"
 import { ProfileContext } from "frontend/provider"
-import { ModalType } from "frontend/features/transfer-modal/types"
-import { nfidVaultsService } from "@nfid/integration"
 
-type VaultDetailsProps = {
+export type VaultPortfolioProps = {
   walletTheme: NFIDTheme
   setWalletTheme: (theme: NFIDTheme) => void
 }
 
-const VaultDetailsPage: FC<VaultDetailsProps> = ({
+const VaultPortfolioPage: FC<VaultPortfolioProps> = ({
   walletTheme,
   setWalletTheme,
 }) => {
-  const globalServices = useContext(ProfileContext)
   const { vaultId } = useParams<{ vaultId: string }>()
   const { identity } = useIdentity()
+  const globalServices = useContext(ProfileContext)
 
   const {
     data: vault,
     isLoading,
-    isValidating,
-    mutate,
+    mutate: updateVault,
   } = useSWR(
     vaultId && identity ? `vault-details-${vaultId}` : null,
     () => fetchVaultDetails(vaultId!, identity! as DelegationIdentity),
-    { revalidateOnFocus: false, revalidateIfStale: false },
+    { revalidateOnFocus: false },
   )
 
-  const { data: vaultTokens, isLoading: isTokensLoading } = useSWR(
+  const {
+    data: vaultTokens,
+    isLoading: isTokensLoading,
+    mutate,
+  } = useSWR(
     vaultId && identity ? ["vaultInitedTokens", vaultId] : null,
     () => fetchVaultInitedTokens(vaultId!, identity! as DelegationIdentity),
     { revalidateOnFocus: false },
   )
 
   const initedTokens = vaultTokens?.initedTokens ?? []
+  const allTokens = vaultTokens?.allTokens ?? []
 
   const { data: usdBalance, isLoading: isUsdLoading } = useSWR(
     initedTokens.length ? ["vaultUsdBalance", vaultId] : null,
@@ -54,7 +59,12 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
     { revalidateOnFocus: false },
   )
 
-  const onSendClick = () => {
+  const updateTokens = async () => {
+    await updateVault()
+    mutate()
+  }
+
+  const onSendClick = (selectedToken: SelectedToken) => {
     globalServices.transferService.send({
       type: "ASSIGN_VAULTS_CANISTER",
       data: vaultId || "",
@@ -62,6 +72,10 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
     globalServices.transferService.send({
       type: "ASSIGN_SOURCE_WALLET",
       data: "",
+    })
+    globalServices.transferService.send({
+      type: "ASSIGN_SELECTED_FT",
+      data: selectedToken,
     })
     globalServices.transferService.send({
       type: "CHANGE_TOKEN_TYPE",
@@ -74,43 +88,28 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
     globalServices.transferService.send({ type: "SHOW" })
   }
 
-  const onReceiveClick = () => {
-    globalServices.transferService.send({
-      type: "ASSIGN_VAULTS_CANISTER",
-      data: vaultId || "",
-    })
-    globalServices.transferService.send({
-      type: "ASSIGN_SOURCE_WALLET",
-      data: "",
-    })
-    globalServices.transferService.send({
-      type: "CHANGE_DIRECTION",
-      data: ModalType.RECEIVE,
-    })
-    globalServices.transferService.send({ type: "SHOW" })
-  }
-
   return (
     <ProfileTemplate
-      pageTitle={vault?.state?.name}
+      pageTitle="Portfolio"
       showBackButton
-      backButtonPathname={`${ProfileConstants.vaults}`}
+      backButtonPathname={`${ProfileConstants.vaults}/${vaultId}`}
       walletTheme={walletTheme}
       setWalletTheme={setWalletTheme}
-      className="w-full z-[1]"
+      className="w-full z-[1] mb-[22px]"
     >
-      <VaultDetails
-        vault={vault}
-        address={vaultId}
-        refreshPortfolio={mutate}
-        isLoading={isValidating || isLoading || !identity}
+      <VaultPortfolio
+        isLoading={isLoading || !identity}
+        isTokensLoading={isTokensLoading}
         isUsdLoading={isUsdLoading || isTokensLoading}
         usdBalance={usdBalance}
+        tokens={initedTokens}
+        allTokens={allTokens}
+        vault={vault?.state}
+        updateVault={updateTokens}
         onSendClick={onSendClick}
-        onReceiveClick={onReceiveClick}
       />
     </ProfileTemplate>
   )
 }
 
-export default VaultDetailsPage
+export default VaultPortfolioPage

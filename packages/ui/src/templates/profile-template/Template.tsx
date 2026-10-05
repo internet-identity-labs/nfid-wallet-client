@@ -349,7 +349,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const globalServices = useContext(ProfileContext)
 
   const onSendClick = () => {
-    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_VAULTS_CANISTER",
+      data: "",
+    })
     globalServices.transferService.send({
       type: "ASSIGN_SOURCE_WALLET",
       data: "",
@@ -362,7 +365,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const onReceiveClick = () => {
-    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_VAULTS_CANISTER",
+      data: "",
+    })
     globalServices.transferService.send({
       type: "ASSIGN_SOURCE_WALLET",
       data: "",
@@ -375,7 +381,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const onSwapClick = () => {
-    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_VAULTS_CANISTER",
+      data: "",
+    })
     globalServices.transferService.send({
       type: "ASSIGN_SOURCE_WALLET",
       data: "",
@@ -392,7 +401,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const onBtcSwapClick = () => {
-    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_VAULTS_CANISTER",
+      data: "",
+    })
     globalServices.transferService.send({
       type: "ASSIGN_SOURCE_WALLET",
       data: "",
@@ -409,7 +421,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const onConvertClick = () => {
-    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_VAULTS_CANISTER",
+      data: "",
+    })
     globalServices.transferService.send({
       type: "ASSIGN_SOURCE_WALLET",
       data: "",
@@ -422,7 +437,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const onStakeClick = () => {
-    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_VAULTS_CANISTER",
+      data: "",
+    })
     globalServices.transferService.send({
       type: "ASSIGN_SOURCE_WALLET",
       data: "",
@@ -435,7 +453,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const onBridgeClick = () => {
-    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_VAULTS_CANISTER",
+      data: "",
+    })
     globalServices.transferService.send({
       type: "ASSIGN_SOURCE_WALLET",
       data: "",
@@ -448,7 +469,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const onEarnClick = () => {
-    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_VAULTS_CANISTER",
+      data: "",
+    })
     globalServices.transferService.send({
       type: "ASSIGN_SOURCE_WALLET",
       data: "",

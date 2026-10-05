@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { useEffect, useMemo, useState } from "react"
 import { useFormContext, UseFormRegisterReturn } from "react-hook-form"
@@ -45,7 +46,7 @@ export const ChooseAddressModal = <T,>({
   useEffect(() => {
     resetField("to")
     setValue(undefined)
-  }, [token])
+  }, [token, resetField])
 
   const selectedAddress = useMemo(() => {
     if (!value || !addresses) return
@@ -137,10 +138,10 @@ export const ChooseAddressModal = <T,>({
               "dark:scrollbar-thumb-zinc-600 dark:scrollbar-track-zinc-800",
             )}
           >
-            {preview.map((p) => (
+            {preview.map((p, index) => (
               <div
                 className="flex items-center gap-2 h-[60px] px-2.5 cursor-pointer"
-                key={p.id}
+                key={`${p.id}_${index}`}
                 onClick={() => {
                   setValue(p.id)
                   setFormValue("to", p.address.value, {
@@ -203,10 +204,9 @@ export const ChooseAddressModal = <T,>({
             "dark:scrollbar-thumb-zinc-600 dark:scrollbar-track-zinc-800",
           )}
         >
-          {filteredAddresses &&
-            filteredAddresses.map((address) => (
+          {filteredAddresses?.map((address, index) => (
               <ChooseAddressItem
-                key={address.id}
+                key={`${address.id}_${index}`}
                 handleClick={() => handleSelect(address)}
                 image={
                   token

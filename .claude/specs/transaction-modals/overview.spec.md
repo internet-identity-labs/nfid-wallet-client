@@ -55,7 +55,7 @@ Transfers a fungible token or NFT to an external address.
 
 **Flow:** Enter address → enter amount → validate → fee estimation → confirm → broadcast → `TransferSuccess`
 
-**Notable:** Vault wallet support via `isOpenedFromVaults`; address book autocomplete; memo field for ICP.
+**Notable:** Vault wallet support via `vaultCanister` (canister ID string in machine context, set by `ASSIGN_VAULTS_CANISTER`); address book autocomplete; memo field for ICP.
 
 ---
 

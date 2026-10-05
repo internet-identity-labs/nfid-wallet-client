@@ -21,8 +21,15 @@ import {
   WalletCreateTransactionRequest,
   generateRandomString,
 } from "@nfid/vaults"
-import { HttpAgent, Identity, SignIdentity } from "@icp-sdk/core/agent"
+import {
+  AnonymousIdentity,
+  HttpAgent,
+  Identity,
+  SignIdentity,
+} from "@icp-sdk/core/agent"
+import * as Agent from "@icp-sdk/core/agent"
 import { Principal } from "@icp-sdk/core/principal"
+import { ttlCacheService } from "@nfid/client-db"
 
 import { actorBuilder, agentBaseConfig, userRegistry } from "../actors"
 import { Icrc1Pair } from "../token/icrc1/icrc1-pair/impl/Icrc1-pair"
@@ -46,6 +53,18 @@ const TIMEOUT = 30_000
 
 /** How many times a step that follows a paid-for vault is attempted. */
 const ATTEMPTS = 3
+
+const VAULT_CACHE_TTL_MS = 5 * 60 * 1000
+
+export interface DashboardCache {
+  cache: Array<{
+    canister: string
+    name: string
+    type: "light" | "pro"
+    version: string
+  }>
+  createdDate: number
+}
 
 /** Runs `fn` until it succeeds, up to `attempts` times, then rethrows. */
 async function withRetry<T>(
@@ -225,25 +244,25 @@ export class NfidVaultsService {
   }
 
   /**
-   * Vaults the caller owns.
-   *
-   * The registry resolves the user root from the caller itself, so this returns the
-   * vaults of whoever is authenticated and never anyone else's, and the same list
-   * comes back on every device the user signs in from.
-   *
-   * This goes through the shared `userRegistry` actor, so it is signed by the device
-   * identity. An actor built on the global identity works just as well: the registry
-   * recognises both, because `createVault` registers the global principal with the
-   * vault.
+   * Returns cached vaults for the given AccountIdentifier hex address.
+   * Serves from IndexedDB if fresh (5-min TTL); scans all vault canisters otherwise.
+   * Pass `forceRefetch: true` to bypass the cache and trigger a fresh scan.
    */
-  async getVaults(): Promise<StoredVault[]> {
-    const vaults = await userRegistry.get_all_vault_canisters()
+  async getDashboardCacheForAddress(
+    id: string,
+    forceRefetch?: boolean,
+  ): Promise<DashboardCache> {
+    return ttlCacheService.getOrFetch<DashboardCache>(
+      `VAULTS_${id.toLowerCase()}`,
+      () => this.scanVaultsForAddress(id),
+      VAULT_CACHE_TTL_MS,
+      { forceRefetch: Boolean(forceRefetch) },
+    )
+  }
 
-    return vaults.map((vault) => ({
-      canisterId: vault.canister_id,
-      name: vault.name,
-      createdAt: Number(vault.created_at / NS_PER_MS),
-    }))
+  /** Force-rescans all vaults and repopulates the cache for the given address. */
+  async updateDashboardCache(id: string): Promise<DashboardCache> {
+    return this.getDashboardCacheForAddress(id, true)
   }
 
   /**
@@ -627,6 +646,49 @@ export class NfidVaultsService {
       ),
     ])
     return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+  }
+
+  private async scanVaultsForAddress(id: string): Promise<DashboardCache> {
+    const vaultCanisters =
+      await this.getAnonymousManagerActor().get_all_canisters()
+    const anonymousIdentity = new AnonymousIdentity()
+    const data = await Promise.all(
+      vaultCanisters.map(async (vault) => {
+        const canisterId = vault.canister_id.toText()
+        const vm = new VaultManager(canisterId, anonymousIdentity)
+        try {
+          const state = await vm.getState()
+          if (
+            !state.members.find(
+              (m) => m.userId.toLocaleLowerCase() === id.toLocaleLowerCase(),
+            )
+          )
+            return null
+          const version = await vm.getVersion()
+          const name = state.name ?? `NFID Vault ${canisterId}`
+          const type: "light" | "pro" =
+            "Light" in vault.vault_type ? "light" : "pro"
+          return { canister: canisterId, name, type, version }
+        } catch (e) {
+          console.warn(`Error getting vault state for ${canisterId}`, e)
+        }
+      }),
+    )
+    const cache = data.filter(
+      (d): d is NonNullable<typeof d> => d !== null && d !== undefined,
+    )
+    return { cache, createdDate: Date.now() }
+  }
+
+  private getAnonymousManagerActor() {
+    const agent = Agent.HttpAgent.createSync({
+      host: "https://ic0.app",
+      identity: new AnonymousIdentity() as unknown as Agent.Identity,
+    })
+    return Agent.Actor.createActor<VaultManagerService>(vaultManagerIDL, {
+      canisterId: this.managerCanisterId,
+      agent,
+    })
   }
 
   /** Vault manager actor signed by the global identity that pays for the vault. */

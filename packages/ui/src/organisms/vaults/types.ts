@@ -48,6 +48,10 @@ export interface VaultDetailstProps {
     | undefined
   onSendClick: () => void
   onReceiveClick: () => void
+  isLowCyclesBalance: boolean
+  xdrPermyriadPerIcp: bigint | undefined
+  topUp: (amount: string) => Promise<void>
+  vaultIcpBalance: number | undefined
 }
 
 export interface VaultPolicyProps {
@@ -70,7 +74,7 @@ export interface VaultPolicyProps {
     | undefined
 }
 
-export type UpdayePolicyModalProps = {
+export type UpdatePolicyModalProps = {
   isOpen: boolean
   onClose: () => void
   type: PolicyUpdateType | null
@@ -92,6 +96,23 @@ export type UpdayePolicyModalProps = {
   membersQuantity: number
 }
 
+export type ControllersModalProps = {
+  isOpen: boolean
+  onClose: () => void
+  validateAddress: (address?: string) => (address: string) => boolean | string
+  updateControllers: (controllers: string[]) => Promise<void>
+  controllers: string[] | undefined
+}
+
+export type TopUpModalProps = {
+  isOpen: boolean
+  onClose: () => void
+  vaultId: string | undefined
+  xdrPermyriadPerIcp: bigint | undefined
+  topUp: (amount: string) => Promise<void>
+  vaultIcpBalance: number | undefined
+}
+
 export interface VaultPortfolioProps {
   tokens: FT[] | undefined
   allTokens: FT[]
@@ -111,6 +132,19 @@ export interface VaultPortfolioProps {
   onSendClick: (selectedToken: SelectedToken) => void
 }
 
+export interface VaultAdvancedControlsProps {
+  updateControllers: (controllers: string[]) => Promise<void>
+  validateAddress: (address?: string) => (address: string) => boolean | string
+  controllers: string[] | undefined
+  isLoading: boolean
+  purge: () => Promise<void>
+  vaultId: string | undefined
+  cyclesBalance: string | undefined
+  xdrPermyriadPerIcp: bigint | undefined
+  topUp: (amount: string) => Promise<void>
+  vaultIcpBalance: number | undefined
+}
+
 export type VaultCreationPriceFormatted = {
   icpPrice: string
   cyclePrice: string
@@ -123,6 +157,14 @@ export type CreateVaultFormValues = {
 export type UpdatePolicyFormValues = {
   approverName: string
   approverAddress: string
+}
+
+export type UpdateControllersValues = {
+  newController: string
+}
+
+export type TopUpAmountValues = {
+  topUpAmount: string
 }
 
 export enum CreateVaultStep {

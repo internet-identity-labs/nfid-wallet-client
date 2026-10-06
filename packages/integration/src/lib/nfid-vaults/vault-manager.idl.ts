@@ -22,12 +22,20 @@ export interface CreationPrice {
 export type CreateCanisterResult = { Ok: CreateResult } | { Err: string }
 export type CreationPriceResult = { Ok: CreationPrice } | { Err: string }
 
+export interface OrchestratorVaultCanister {
+  canister_id: Principal
+  initiator: Principal
+  block_number: bigint
+  vault_type: VaultType
+}
+
 export interface VaultManagerService {
   create_canister_icrc2: ActorMethod<
     [[] | [VaultType], [] | [Principal]],
     CreateCanisterResult
   >
   get_creation_price: ActorMethod<[], CreationPriceResult>
+  get_all_canisters: ActorMethod<[], OrchestratorVaultCanister[]>
 }
 
 export const vaultManagerIDL: IDL.InterfaceFactory = ({ IDL }) => {
@@ -49,6 +57,13 @@ export const vaultManagerIDL: IDL.InterfaceFactory = ({ IDL }) => {
     Err: IDL.Text,
   })
 
+  const OrchestratorVaultCanister = IDL.Record({
+    initiator: IDL.Principal,
+    canister_id: IDL.Principal,
+    block_number: IDL.Nat64,
+    vault_type: VaultType,
+  })
+
   return IDL.Service({
     create_canister_icrc2: IDL.Func(
       [IDL.Opt(VaultType), IDL.Opt(IDL.Principal)],
@@ -56,5 +71,10 @@ export const vaultManagerIDL: IDL.InterfaceFactory = ({ IDL }) => {
       [],
     ),
     get_creation_price: IDL.Func([], [CreationPriceResult], []),
+    get_all_canisters: IDL.Func(
+      [],
+      [IDL.Vec(OrchestratorVaultCanister)],
+      ["query"],
+    ),
   })
 }

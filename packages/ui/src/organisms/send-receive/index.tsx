@@ -19,6 +19,7 @@ export interface TransferModalProps {
   hasBtcError: boolean
   hasBridgeError: boolean
   isSuccessTx: boolean
+  isVault: boolean
 }
 
 export const TransferModal: FC<TransferModalProps> = ({
@@ -33,6 +34,7 @@ export const TransferModal: FC<TransferModalProps> = ({
   hasBtcError,
   hasBridgeError,
   isSuccessTx,
+  isVault,
 }) => {
   const minHeight = (() => {
     if (hasSwapError) return "min-h-[540px]"
@@ -42,6 +44,8 @@ export const TransferModal: FC<TransferModalProps> = ({
     if (direction === ModalType.WITHDRAW) return "min-h-[330px]"
     if (direction === ModalType.PAY) return "min-h-[438px]"
     if (direction === ModalType.PROMOTE) return "min-h-[500px]"
+    if (direction === ModalType.RECEIVE && isVault) return "min-h-[206px]"
+    if (direction === ModalType.SEND && isVault) return "min-h-[526px]"
     return "min-h-[480px]"
   })()
 
@@ -62,14 +66,16 @@ export const TransferModal: FC<TransferModalProps> = ({
           >
             Send
           </div>
-          <ToggleButton
-            firstValue="Token"
-            secondValue="NFT"
-            className="mb-5"
-            onChange={onTokenTypeChange}
-            defaultValue={tokenType === "nft"}
-            id="send_type_toggle"
-          />
+          {!isVault && (
+            <ToggleButton
+              firstValue="Token"
+              secondValue="NFT"
+              className="mb-5"
+              onChange={onTokenTypeChange}
+              defaultValue={tokenType === "nft"}
+              id="send_type_toggle"
+            />
+          )}
         </>
       )}
       {component}

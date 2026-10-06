@@ -7,6 +7,9 @@ import { NavWalletIcon } from "packages/ui/src/atoms/icons/nav-wallet"
 import { NavAddressBookIcon } from "packages/ui/src/atoms/icons/nav-book"
 import { NavViewOnlyIcon } from "packages/ui/src/atoms/icons/nav-view-only"
 import { NavPrivateAccountsIcon } from "packages/ui/src/atoms/icons/nav-private-accounts"
+import { NavSecurityPolicyIcon } from "packages/ui/src/atoms/icons/nav-security-policy"
+import { NavAdvancedControlsIcon } from "packages/ui/src/atoms/icons/nav-advanced-controls"
+import { IconSwitch } from "packages/ui/src/atoms/icons/switch"
 
 export const ProfileConstants = {
   base: "/wallet",
@@ -28,6 +31,7 @@ export const ProfileConstants = {
   vault: ":vaultId",
   vaultPolicy: "policy",
   vaultPortfolio: "portfolio",
+  vaultAdvancedControls: "advanced-controls",
   vaultTransaction: ":transactionId",
 }
 
@@ -87,5 +91,24 @@ export const navigationPopupLinks = [
     title: "View-only mode",
     link: "",
     id: "nav-view-only",
+  },
+  {
+    icon: IconSwitch,
+    title: "My best vault",
+    link: ProfileConstants.vaults,
+    id: "nav-vault-name",
+    separator: true,
+  },
+  {
+    icon: NavSecurityPolicyIcon,
+    title: "Security policy",
+    link: ProfileConstants.vaultPolicy,
+    id: "nav-vault-policy",
+  },
+  {
+    icon: NavAdvancedControlsIcon,
+    title: "Advanced controls",
+    link: ProfileConstants.vaultAdvancedControls,
+    id: "nav-vault-advanced-controls",
   },
 ]

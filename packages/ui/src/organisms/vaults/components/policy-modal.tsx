@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form"
 import {
   PolicyUpdateType,
   UpdatePolicyFormValues,
-  UpdayePolicyModalProps,
+  UpdatePolicyModalProps,
 } from "../types"
 
 import toaster from "packages/ui/src/atoms/toast"
@@ -19,7 +19,7 @@ import { renderPolicyUpdateTitle } from "../utils"
 
 const DEFAULT_ERROR = "Something went wrong. Please try again later"
 
-export const PolicyUpdateModal: FC<UpdayePolicyModalProps> = ({
+export const PolicyUpdateModal: FC<UpdatePolicyModalProps> = ({
   isOpen,
   onClose,
   type,

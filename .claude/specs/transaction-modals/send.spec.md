@@ -19,7 +19,7 @@ Transfers a fungible token or NFT to an external address across all supported ch
 - BTC (native)
 - ETH (native) and ERC20 tokens (Arbitrum, Base, Ethereum, Polygon)
 - NFT transfers
-- Vault wallet support (`isOpenedFromVaults`)
+- Vault wallet support (`vaultCanister` canister ID via `ASSIGN_VAULTS_CANISTER` event)
 - Address book autocomplete
 - Memo field (ICP only)
 

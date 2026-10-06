@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { useCallback, FC } from "react"
 import { useNavigate } from "react-router-dom"
 
@@ -71,6 +72,8 @@ type AssetDropdownProps = {
   setIsTokenProcessed: (value: boolean) => void
   isTokenProcessed: boolean
   isEarnSupported?: boolean
+  isVault?: boolean
+  updateVault?: () => Promise<void>
 }
 
 export const AssetDropdown: FC<AssetDropdownProps> = ({
@@ -95,6 +98,8 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
   setIsTokenProcessed,
   isTokenProcessed,
   isEarnSupported,
+  isVault,
+  updateVault,
 }) => {
   const isDarkTheme = useDarkTheme()
   const navigate = useNavigate()
@@ -156,7 +161,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             }
           />
         )}
-        {token.getChainId() === ChainId.ICP && (
+        {token.getChainId() === ChainId.ICP && !isVault && (
           <DropdownOption
             label="Swap"
             icon={isDarkTheme ? IconSvgSwapActionWhite : IconSvgSwapAction}
@@ -168,7 +173,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             }
           />
         )}
-        {token.getTokenAddress() === CKBTC_CANISTER_ID && (
+        {token.getTokenAddress() === CKBTC_CANISTER_ID && !isVault && (
           <DropdownOption
             label="Convert"
             icon={
@@ -205,7 +210,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
               handler={onConvertToCkSepoliaEth}
             />
           )}
-        {token.getTokenAddress() === CKETH_LEDGER_CANISTER_ID && (
+        {token.getTokenAddress() === CKETH_LEDGER_CANISTER_ID && !isVault && (
           <DropdownOption
             label="Convert"
             icon={
@@ -214,16 +219,17 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             handler={onConvertToEth}
           />
         )}
-        {token.getTokenAddress() === CKSEPOLIA_LEDGER_CANISTER_ID && (
-          <DropdownOption
-            label="Convert"
-            icon={
-              isDarkTheme ? IconSvgConvertActionWhite : IconSvgConvertAction
-            }
-            handler={onConvertToSepoliaEth}
-          />
-        )}
-        {isCkErc20Token(token.getTokenAddress()) && (
+        {token.getTokenAddress() === CKSEPOLIA_LEDGER_CANISTER_ID &&
+          !isVault && (
+            <DropdownOption
+              label="Convert"
+              icon={
+                isDarkTheme ? IconSvgConvertActionWhite : IconSvgConvertAction
+              }
+              handler={onConvertToSepoliaEth}
+            />
+          )}
+        {isCkErc20Token(token.getTokenAddress()) && !isVault && (
           <DropdownOption
             label="Convert"
             icon={
@@ -242,28 +248,31 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
           />
         )}
         {(token.getTokenCategory() === Category.Sns ||
-          token.getTokenAddress() === ICP_CANISTER_ID) && (
-          <DropdownOption
-            label="Stake"
-            icon={isDarkTheme ? IconSvgStakeActionWhite : IconSvgStakeAction}
-            handler={() =>
-              onStakeClick({
-                address: token.getTokenAddress(),
-                chainId: token.getChainId(),
-              })
-            }
-          />
-        )}
+          token.getTokenAddress() === ICP_CANISTER_ID) &&
+          !isVault && (
+            <DropdownOption
+              label="Stake"
+              icon={isDarkTheme ? IconSvgStakeActionWhite : IconSvgStakeAction}
+              handler={() =>
+                onStakeClick({
+                  address: token.getTokenAddress(),
+                  chainId: token.getChainId(),
+                })
+              }
+            />
+          )}
         <DropdownOption
           label="Token information"
           icon={isDarkTheme ? IconSvgTokenInfoWhite : IconSvgTokenInfo}
           handler={() => setToken(token)}
         />
-        <DropdownOption
-          label="Transactions"
-          icon={isDarkTheme ? IconSvgHistoryWhiteIcon : IconSvgHistoryIcon}
-          handler={navigateToTransactions(token.getTokenAddress())}
-        />
+        {!isVault && (
+          <DropdownOption
+            label="Transactions"
+            icon={isDarkTheme ? IconSvgHistoryWhiteIcon : IconSvgHistoryIcon}
+            handler={navigateToTransactions(token.getTokenAddress())}
+          />
+        )}
         {token.isHideable() && (
           <DropdownOption
             label="Hide token"
@@ -271,7 +280,7 @@ export const AssetDropdown: FC<AssetDropdownProps> = ({
             handler={async () => {
               setIsTokenProcessed(true)
               await token.hideToken()
-              await getUpdatedInitedTokens(tokens)
+              await (isVault ? updateVault?.() : getUpdatedInitedTokens(tokens))
               setIsTokenProcessed(false)
             }}
           />

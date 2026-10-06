@@ -54,6 +54,8 @@ interface ManageTokensProps {
   setLoadingToken: (value: FT | null) => void
   manageBtnDisabled?: boolean
   className?: string
+  isVault?: boolean
+  updateVault?: () => Promise<void>
 }
 
 export const ManageTokens: FC<ManageTokensProps> = ({
@@ -63,6 +65,8 @@ export const ManageTokens: FC<ManageTokensProps> = ({
   setLoadingToken,
   manageBtnDisabled,
   className,
+  isVault,
+  updateVault,
 }) => {
   const isDarkTheme = useDarkTheme()
   const [modalStep, setModalStep] = useState<"manage" | "import" | null>(null)
@@ -256,6 +260,8 @@ export const ManageTokens: FC<ManageTokensProps> = ({
                       token={token}
                       tokens={tokens}
                       setLoadingToken={setLoadingToken}
+                      isVault={isVault}
+                      updateVault={updateVault}
                     />
                   )
                 })}

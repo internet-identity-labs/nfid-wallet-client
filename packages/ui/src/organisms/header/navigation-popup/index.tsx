@@ -30,10 +30,13 @@ export interface IAuthenticatedPopup extends HTMLAttributes<HTMLDivElement> {
     vaults: string
     addressBook: string
     permissions: string
+    discovery: string
+    privateAccounts: string
   }
   isOpen: boolean
   walletTheme: NFIDTheme
   setWalletTheme: (theme: NFIDTheme) => void
+  vaultName?: string
 }
 
 export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
@@ -46,6 +49,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
   isOpen,
   walletTheme,
   setWalletTheme,
+  vaultName,
 }) => {
   const navigate = useNavigate()
   const location = useLocation()
@@ -59,7 +63,7 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
 
   const onSendPay = useCallback(
     (params: string, preselect?: { method: string; asset: string }) => {
-      transferService.send({ type: "ASSIGN_VAULTS", data: false })
+      transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
       transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
       transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.PAY })
       transferService.send({
@@ -132,6 +136,9 @@ export const AuthenticatedPopup: FC<IAuthenticatedPopup> = ({
                     isDarkTheme,
                     () => setIsViewOnlyModalOpen(true),
                     () => setIsOpenCryptopayModalOpen(true),
+                    location,
+                    linkItem.id === "nav-vault-name",
+                    vaultName,
                   ),
                 )}
               <ViewOnlyModal

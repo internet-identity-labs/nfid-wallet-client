@@ -44,6 +44,7 @@ import {
   ProfileConstants,
   navigationPopupLinks,
 } from "frontend/apps/identity-manager/profile/routes"
+import { fetchVaults } from "frontend/features/vaults/utils"
 import { fetchNFTs } from "frontend/features/collectibles/utils/util"
 import { nftService } from "frontend/integration/nft/nft-service"
 import {
@@ -140,6 +141,11 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const location = useLocation()
   const navigate = useNavigate()
   const { testnetEnabled } = useUserPrefs()
+
+  const vaultId = location.pathname.match(/^\/vaults\/([^/]+)/)?.[1]
+  const { data: vaults } = useSWR(vaultId ? "vaults" : null, fetchVaults)
+  const vaultName = vaults?.find((v) => v.canisterId === vaultId)?.name
+
   const { isViewOnlyMode, viewOnlyAddress, viewOnlyAddressType } =
     useContext(ProfileContext)
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -349,7 +355,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   const globalServices = useContext(ProfileContext)
 
   const onSendClick = () => {
-    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_VAULTS_CANISTER",
+      data: "",
+    })
     globalServices.transferService.send({
       type: "ASSIGN_SOURCE_WALLET",
       data: "",
@@ -362,7 +371,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const onReceiveClick = () => {
-    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_VAULTS_CANISTER",
+      data: "",
+    })
     globalServices.transferService.send({
       type: "ASSIGN_SOURCE_WALLET",
       data: "",
@@ -375,7 +387,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const onSwapClick = () => {
-    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_VAULTS_CANISTER",
+      data: "",
+    })
     globalServices.transferService.send({
       type: "ASSIGN_SOURCE_WALLET",
       data: "",
@@ -392,7 +407,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const onBtcSwapClick = () => {
-    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_VAULTS_CANISTER",
+      data: "",
+    })
     globalServices.transferService.send({
       type: "ASSIGN_SOURCE_WALLET",
       data: "",
@@ -409,7 +427,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const onConvertClick = () => {
-    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_VAULTS_CANISTER",
+      data: "",
+    })
     globalServices.transferService.send({
       type: "ASSIGN_SOURCE_WALLET",
       data: "",
@@ -422,7 +443,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const onStakeClick = () => {
-    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_VAULTS_CANISTER",
+      data: "",
+    })
     globalServices.transferService.send({
       type: "ASSIGN_SOURCE_WALLET",
       data: "",
@@ -435,7 +459,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const onBridgeClick = () => {
-    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_VAULTS_CANISTER",
+      data: "",
+    })
     globalServices.transferService.send({
       type: "ASSIGN_SOURCE_WALLET",
       data: "",
@@ -448,7 +475,10 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
   }
 
   const onEarnClick = () => {
-    globalServices.transferService.send({ type: "ASSIGN_VAULTS", data: false })
+    globalServices.transferService.send({
+      type: "ASSIGN_VAULTS_CANISTER",
+      data: "",
+    })
     globalServices.transferService.send({
       type: "ASSIGN_SOURCE_WALLET",
       data: "",
@@ -636,6 +666,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         assetsLink={`${ProfileConstants.base}/${ProfileConstants.tokens}`}
         walletTheme={walletTheme}
         setWalletTheme={setWalletTheme}
+        vaultName={vaultName}
       />
       {!isViewOnlyMode && <TransferModalCoordinator />}
       <div

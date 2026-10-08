@@ -9,7 +9,11 @@ import { NFIDTheme } from "frontend/App"
 import { useIdentity } from "frontend/hooks/identity"
 
 import { DelegationIdentity } from "@icp-sdk/core/identity"
-import { fetchVaultDetails, fetchVaultInitedTokens } from "../utils"
+import {
+  fetchVaultDeposits,
+  fetchVaultDetails,
+  fetchVaultInitedTokens,
+} from "../utils"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { portfolioService } from "frontend/integration/portfolio-balance/portfolio-service"
 import { ProfileContext } from "frontend/provider"
@@ -68,6 +72,12 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
   const { data: xdrPermyriadPerIcp } = useSWR(
     identity ? "xdr-permyriad-per-icp" : null,
     () => nfidVaultsService.getXdrPermyriadPerIcp(identity!),
+  )
+
+  const { data: deposits } = useSWR(
+    vaultId && vaultTokens ? ["vault-deposits", vaultId] : null,
+    () => fetchVaultDeposits(vaultId!, vaultTokens!.initedTokens),
+    { revalidateOnFocus: false },
   )
 
   const icpTokenBalance = vaultTokens?.initedTokens
@@ -144,6 +154,7 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
         xdrPermyriadPerIcp={xdrPermyriadPerIcp}
         topUp={topUp}
         vaultIcpBalance={vaultIcpBalance}
+        deposits={deposits}
       />
     </ProfileTemplate>
   )

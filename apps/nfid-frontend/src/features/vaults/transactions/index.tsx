@@ -10,7 +10,11 @@ import { useIdentity } from "frontend/hooks/identity"
 
 import { DelegationIdentity } from "@icp-sdk/core/identity"
 import { nfidVaultsService } from "@nfid/integration"
-import { fetchVaultDetails, fetchVaultInitedTokens } from "../utils"
+import {
+  fetchVaultDeposits,
+  fetchVaultDetails,
+  fetchVaultInitedTokens,
+} from "../utils"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 
 type VaultTransactionsProps = {
@@ -46,6 +50,12 @@ const VaultTransactionsPage: FC<VaultTransactionsProps> = ({
     () => nfidVaultsService.getXdrPermyriadPerIcp(identity!),
   )
 
+  const { data: deposits } = useSWR(
+    vaultId && vaultTokens ? ["vault-deposits", vaultId] : null,
+    () => fetchVaultDeposits(vaultId!, vaultTokens!.initedTokens),
+    { revalidateOnFocus: false },
+  )
+
   return (
     <ProfileTemplate
       pageTitle="Transaction history"
@@ -61,6 +71,7 @@ const VaultTransactionsPage: FC<VaultTransactionsProps> = ({
         tokens={vaultTokens?.allTokens ?? []}
         isLoading={isValidating || isLoading || !identity}
         xdrPermyriadPerIcp={xdrPermyriadPerIcp}
+        deposits={deposits}
       />
     </ProfileTemplate>
   )

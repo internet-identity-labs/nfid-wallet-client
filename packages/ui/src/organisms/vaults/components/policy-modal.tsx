@@ -99,12 +99,13 @@ export const PolicyUpdateModal: FC<UpdatePolicyModalProps> = ({
     if (!selectedMember) return
     try {
       setIsLoading(true)
-      await removeMember(
-        selectedMember.userId,
-        approversCurrentQuantity === approversQuantity
-          ? undefined
-          : approversQuantity,
-      )
+      const newQuorum =
+        approversQuantity === membersQuantity
+          ? approversQuantity - 1
+          : approversCurrentQuantity === approversQuantity
+            ? undefined
+            : approversQuantity
+      await removeMember(selectedMember.userId, newQuorum)
       onClose()
     } catch (e) {
       console.error((e as Error).message)

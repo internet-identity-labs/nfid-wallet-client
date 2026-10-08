@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js"
 import { format } from "date-fns"
 import { NS_PER_MS } from "@nfid/integration"
 import { FT } from "frontend/integration/ft/ft"
-import { PolicyUpdateType } from "./types"
+import { PolicyUpdateType, TableItem, VaultDeposit } from "./types"
 import {
   ControllersUpdateTransaction,
   ICRC1CanistersAddTransaction,
@@ -143,6 +143,42 @@ export const mergeCreateVaultGroup = (
   return groups
     .filter((_, i) => i !== initiatorIdx && i !== creationBatchIdx)
     .concat([merged])
+}
+
+export function getItemTimestampMs(item: TableItem): number {
+  if (item.kind === "tx") {
+    return (
+      Math.max(...item.group.map((t) => Number(t.modifiedDate))) /
+      Number(NS_PER_MS)
+    )
+  }
+  return item.deposit.timestamp.getTime()
+}
+
+export function getItemDateString(item: TableItem): string {
+  if (item.kind === "tx") {
+    const maxTs = BigInt(
+      Math.max(...item.group.map((t) => Number(t.modifiedDate))),
+    )
+    return vaultTxTimestampToDate(maxTs)
+  }
+  return format(item.deposit.timestamp, "MMMM d, yyyy")
+}
+
+export function groupItemsByDate(
+  items: TableItem[],
+): { date: string; rows: TableItem[] }[] {
+  const result: { date: string; rows: TableItem[] }[] = []
+  for (const item of items) {
+    const date = getItemDateString(item)
+    const last = result[result.length - 1]
+    if (last && last.date === date) {
+      last.rows.push(item)
+    } else {
+      result.push({ date, rows: [item] })
+    }
+  }
+  return result
 }
 
 export const getBatchSidePanelContent = (
@@ -435,7 +471,7 @@ export const getSidePanelMarkupByType = (
               <p className="text-gray-400 dark:text-zinc-500 leading-[54px]">
                 Approver name
               </p>
-              <p className="dark:text-white">
+              <p className="dark:text-white leading-[54px]">
                 {(tx as MemberCreateTransactionV2).name}
               </p>
             </div>
@@ -616,7 +652,7 @@ export const getSidePanelMarkupByType = (
                   className="w-10 h-10 rounded-full"
                 />
               ) : (
-                <p className="dark:text-white">—</p>
+                <p className="dark:text-white"></p>
               )}
             </div>
             <div className="w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
@@ -686,21 +722,21 @@ export const getSidePanelMarkupByType = (
                   className="w-10 h-10 rounded-full"
                 />
               ) : (
-                <p className="dark:text-white">—</p>
+                <p className="dark:text-white"></p>
               )}
             </div>
             <div className="w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
             <div className="grid grid-cols-[160px_1fr] text-sm items-center h-[54px]">
               <p className="text-gray-400 dark:text-zinc-500">Token symbol</p>
               <p className="dark:text-white">
-                {icrc1Token?.getTokenSymbol() ?? "—"}
+                {icrc1Token?.getTokenSymbol() ?? ""}
               </p>
             </div>
             <div className="w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
             <div className="grid grid-cols-[160px_1fr] text-sm items-center h-[54px]">
               <p className="text-gray-400 dark:text-zinc-500">Token name</p>
               <p className="dark:text-white">
-                {icrc1Token?.getTokenName() ?? "—"}
+                {icrc1Token?.getTokenName() ?? ""}
               </p>
             </div>
             <div className="w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
@@ -837,6 +873,7 @@ export const getTxMarkupByType = (
             className={clsx(
               "rotate-[135deg] text-cyan-500",
               tx.state !== TransactionState.Pending &&
+                tx.state !== TransactionState.Blocked &&
                 "!text-gray-400 dark:!text-zinc-400",
             )}
           />
@@ -897,6 +934,7 @@ export const getTxMarkupByType = (
             className={clsx(
               "text-indigo-600 dark:text-indigo-400",
               tx.state !== TransactionState.Pending &&
+                tx.state !== TransactionState.Blocked &&
                 "!text-gray-400 dark:!text-zinc-400",
             )}
           />
@@ -916,6 +954,7 @@ export const getTxMarkupByType = (
             className={clsx(
               "text-indigo-600 dark:text-indigo-400",
               tx.state !== TransactionState.Pending &&
+                tx.state !== TransactionState.Blocked &&
                 "!text-gray-400 dark:!text-zinc-400",
             )}
           />
@@ -957,6 +996,7 @@ export const getTxMarkupByType = (
             className={clsx(
               "text-indigo-600 dark:text-indigo-400",
               tx.state !== TransactionState.Pending &&
+                tx.state !== TransactionState.Blocked &&
                 "!text-gray-400 dark:!text-zinc-400",
             )}
           />
@@ -984,6 +1024,7 @@ export const getTxMarkupByType = (
             className={clsx(
               "text-indigo-600 dark:text-indigo-400",
               tx.state !== TransactionState.Pending &&
+                tx.state !== TransactionState.Blocked &&
                 "!text-gray-400 dark:!text-zinc-400",
             )}
           />
@@ -1009,6 +1050,7 @@ export const getTxMarkupByType = (
             className={clsx(
               "text-indigo-600 dark:text-indigo-400",
               tx.state !== TransactionState.Pending &&
+                tx.state !== TransactionState.Blocked &&
                 "!text-gray-400 dark:!text-zinc-400",
             )}
           />
@@ -1032,6 +1074,7 @@ export const getTxMarkupByType = (
             className={clsx(
               "text-indigo-600 dark:text-indigo-400",
               tx.state !== TransactionState.Pending &&
+                tx.state !== TransactionState.Blocked &&
                 "!text-gray-400 dark:!text-zinc-400",
             )}
           />
@@ -1055,6 +1098,7 @@ export const getTxMarkupByType = (
             className={clsx(
               "text-indigo-600 dark:text-indigo-400",
               tx.state !== TransactionState.Pending &&
+                tx.state !== TransactionState.Blocked &&
                 "!text-gray-400 dark:!text-zinc-400",
             )}
           />
@@ -1072,6 +1116,7 @@ export const getTxMarkupByType = (
             className={clsx(
               "text-indigo-600 dark:text-indigo-400",
               tx.state !== TransactionState.Pending &&
+                tx.state !== TransactionState.Blocked &&
                 "!text-gray-400 dark:!text-zinc-400",
             )}
           />
@@ -1082,4 +1127,107 @@ export const getTxMarkupByType = (
     default:
       return null
   }
+}
+
+export const getDepositRowMarkup = (
+  deposit: VaultDeposit,
+  _vaultId?: string,
+  tokens?: FT[],
+) => {
+  const token = tokens?.find((t) => t.getTokenAddress() === deposit.canisterId)
+  const amount = token
+    ? new BigNumber(deposit.amount)
+        .dividedBy(10 ** token.getTokenDecimals())
+        .toFixed(token.getTokenDecimals())
+        .replace(TRIM_ZEROS, "")
+    : null
+
+  return {
+    title: "Deposit",
+    icon: (
+      <IconCmpArrow className="rotate-[315deg] text-gray-400 dark:text-zinc-400" />
+    ),
+    bg: "bg-gray-50 dark:bg-zinc-800",
+    amount: amount ? `${amount} ${token?.getTokenSymbol()}` : null,
+    usdAmount: amount ? token?.getTokenRateFormatted(amount) : null,
+    info: (
+      <div className="flex justify-between w-full relative items-center w-full gap-2">
+        <span onClick={(e) => e.stopPropagation()}>
+          <CopyAddress
+            className="text-sm dark:text-white"
+            address={deposit.from}
+            leadingChars={6}
+            trailingChars={4}
+          />
+        </span>
+        <IconCmpArrow className="rotate-[180deg] w-6 h-6 absolute left-0 top-0 bottom-0 right-0 m-auto" />
+        <span onClick={(e) => e.stopPropagation()}>
+          <CopyAddress
+            className="text-sm dark:text-white"
+            address={deposit.to}
+            leadingChars={6}
+            trailingChars={4}
+          />
+        </span>
+      </div>
+    ),
+  }
+}
+
+export const getDepositSidePanelContent = (
+  deposit: VaultDeposit,
+  _vaultId?: string,
+  tokens?: FT[],
+) => {
+  const token = tokens?.find((t) => t.getTokenAddress() === deposit.canisterId)
+  const amount = token
+    ? new BigNumber(deposit.amount)
+        .dividedBy(10 ** token.getTokenDecimals())
+        .toFixed(token.getTokenDecimals())
+        .replace(TRIM_ZEROS, "")
+    : null
+
+  return (
+    <div className="border border-gray-200 dark:border-zinc-700 rounded-3xl px-[30px] py-[20px]">
+      <div className="grid grid-cols-[160px_1fr] text-sm items-center h-[54px]">
+        <p className="text-gray-400 dark:text-zinc-500">From</p>
+        <span onClick={(e) => e.stopPropagation()}>
+          <CopyAddress
+            className="dark:text-white"
+            address={deposit.from}
+            leadingChars={6}
+            trailingChars={4}
+          />
+        </span>
+      </div>
+      <div className="w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
+      <div className="grid grid-cols-[160px_1fr] text-sm items-center h-[54px]">
+        <p className="text-gray-400 dark:text-zinc-500">To</p>
+        <span onClick={(e) => e.stopPropagation()}>
+          <CopyAddress
+            className="dark:text-white"
+            address={deposit.to}
+            leadingChars={6}
+            trailingChars={4}
+          />
+        </span>
+      </div>
+      <div className="w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
+      <div className="grid grid-cols-[160px_1fr] text-sm items-center h-[54px]">
+        <p className="text-gray-400 dark:text-zinc-500">Token</p>
+        <div>
+          {amount && (
+            <>
+              <p className="dark:text-white">
+                {amount} {token?.getTokenSymbol()}
+              </p>
+              <p className="text-xs text-gray-400 dark:text-zinc-500">
+                {token?.getTokenRateFormatted(amount)}
+              </p>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  )
 }

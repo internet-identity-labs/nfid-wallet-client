@@ -1,4 +1,3 @@
- 
 import clsx from "clsx"
 import { motion } from "framer-motion"
 import { Spinner } from "packages/ui/src/atoms/spinner"
@@ -8,6 +7,7 @@ import { useDisableScroll } from "packages/ui/src/molecules/modal/hooks/disable-
 import { FC, useState } from "react"
 import {
   getBatchSidePanelContent,
+  getDepositSidePanelContent,
   getSidePanelMarkupByType,
   isCreateVaultGroup,
 } from "../utils"
@@ -17,6 +17,7 @@ export const VaultSidePanel: FC<VaultSidePanelProps> = ({
   isOpen,
   onClose,
   txGroup,
+  deposit,
   vaultId,
   tokens,
   members,
@@ -45,7 +46,29 @@ export const VaultSidePanel: FC<VaultSidePanelProps> = ({
           !isOpen ? "translate-x-[800px]" : "translate-x-0",
         )}
       >
-        {!tx ? null : (
+        {deposit ? (
+          <>
+            <div className="flex items-center justify-between h-[70px]">
+              <div className="flex space-x-2.5 items-center">
+                <ArrowButton
+                  buttonClassName="py-[7px] dark:hover:bg-zinc-700"
+                  onClick={onClose}
+                  iconClassName="text-black dark:text-white"
+                />
+                <p className="text-[28px] dark:text-white">Deposit</p>
+              </div>
+            </div>
+            <motion.div
+              key="DepositPanel"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+            >
+              {getDepositSidePanelContent(deposit, vaultId, tokens)}
+            </motion.div>
+          </>
+        ) : !tx ? null : (
           <>
             <div className="flex items-center justify-between h-[70px]">
               <div className="flex space-x-2.5 items-center">

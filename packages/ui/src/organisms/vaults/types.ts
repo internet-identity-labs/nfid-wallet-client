@@ -54,6 +54,7 @@ export interface VaultDetailsProps {
   xdrPermyriadPerIcp: bigint | undefined
   topUp: (amount: string) => Promise<void>
   vaultIcpBalance: number | undefined
+  deposits?: VaultDeposit[]
 }
 
 export interface VaultTransactionsProps {
@@ -67,12 +68,14 @@ export interface VaultTransactionsProps {
     | undefined
   isLoading: boolean
   xdrPermyriadPerIcp?: bigint
+  deposits?: VaultDeposit[]
 }
 
 export interface VaultSidePanelProps {
   isOpen: boolean
   onClose: () => void
   txGroup: Transaction[] | null
+  deposit?: VaultDeposit | null
   vaultId: string | undefined
   tokens: FT[] | undefined
   members?: VaultMember[]
@@ -176,9 +179,19 @@ export interface VaultAdvancedControlsProps {
   vaultIcpBalance: number | undefined
 }
 
+export interface VaultDeposit {
+  id: string
+  from: string
+  to: string
+  amount: number
+  canisterId: string
+  timestamp: Date
+}
+
 export interface VaultTableProps {
   transactions: Transaction[]
   setChosenTransaction: (v: Transaction[] | null) => void
+  setChosenDeposit?: (v: VaultDeposit | null) => void
   tableType: VaultTableType
   vaultId?: string
   tokens?: FT[]
@@ -186,6 +199,7 @@ export interface VaultTableProps {
   members?: VaultMember[]
   xdrPermyriadPerIcp?: bigint
   quorum?: number
+  deposits?: VaultDeposit[]
 }
 
 export interface VaultTableRowProps {
@@ -219,6 +233,12 @@ export type UpdateControllersValues = {
 export type TopUpAmountValues = {
   topUpAmount: string
 }
+
+export type TxItem = { kind: "tx"; group: Transaction[] }
+
+export type DepositItem = { kind: "deposit"; deposit: VaultDeposit }
+
+export type TableItem = TxItem | DepositItem
 
 export enum CreateVaultStep {
   PREPARE = "PREPARE",

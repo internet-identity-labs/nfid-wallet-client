@@ -11,7 +11,7 @@ import { VaultSkeleton } from "../../../atoms/skeleton/vault-skeleton"
 import { VaultProfileInfo } from "../../profile-info"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { useNavigate } from "react-router-dom"
-import { VaultDetailsProps, VaultTableType } from "../types"
+import { VaultDeposit, VaultDetailsProps, VaultTableType } from "../types"
 import clsx from "clsx"
 import { TopUpModal } from "../components/top-up-modal"
 import { Transaction, TransactionState } from "@nfid/vaults"
@@ -33,10 +33,13 @@ export const VaultDetails: FC<VaultDetailsProps> = memo(
     xdrPermyriadPerIcp,
     topUp,
     vaultIcpBalance,
+    deposits,
   }) => {
     const navigate = useNavigate()
     const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false)
     const [sidePanelTx, setSidePanelTx] = useState<Transaction[] | null>(null)
+    const [sidePanelDeposit, setSidePanelDeposit] =
+      useState<VaultDeposit | null>(null)
     const state = vault?.state
     const transactions = vault?.transactions
 
@@ -63,15 +66,21 @@ export const VaultDetails: FC<VaultDetailsProps> = memo(
         .sort((a, b) => Number(b.modifiedDate - a.modifiedDate))
     }, [transactions])
 
+    const closePanel = () => {
+      setSidePanelTx(null)
+      setSidePanelDeposit(null)
+    }
+
     if (isLoading) return <VaultSkeleton />
     if (!vault) return <NotFound hideNavigation />
 
     return (
       <>
         <VaultSidePanel
-          isOpen={Boolean(sidePanelTx)}
-          onClose={() => setSidePanelTx(null)}
+          isOpen={Boolean(sidePanelTx) || Boolean(sidePanelDeposit)}
+          onClose={closePanel}
           txGroup={sidePanelTx}
+          deposit={sidePanelDeposit}
           vaultId={vaultId}
           tokens={tokens}
           members={vault?.state.members}
@@ -212,20 +221,22 @@ export const VaultDetails: FC<VaultDetailsProps> = memo(
             className="p-0 sm:py-[30px] sm:!border mt-2.5 sm:mt-[30px] mb-5 sm:mb-[30px] sm:py-5"
             innerClassName="!p-0"
           >
-            {!recentTransactions?.length ? (
+            {!recentTransactions?.length && !deposits?.length ? (
               <p className="text-[13px] leading-[18px] text-gray-600 dark:text-zinc-500 mb-2.5">
                 No recent transactions.
               </p>
             ) : (
               <VaultTable
-                transactions={recentTransactions}
+                transactions={recentTransactions ?? []}
                 setChosenTransaction={setSidePanelTx}
+                setChosenDeposit={setSidePanelDeposit}
                 vaultId={vaultId}
                 tokens={tokens}
                 tableType={VaultTableType.RECENT}
                 limit={5}
                 members={vault?.state.members}
                 xdrPermyriadPerIcp={xdrPermyriadPerIcp}
+                deposits={deposits}
               />
             )}
           </ProfileContainer>

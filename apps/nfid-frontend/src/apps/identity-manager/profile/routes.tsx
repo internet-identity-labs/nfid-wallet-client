@@ -32,7 +32,7 @@ export const ProfileConstants = {
   vaultPolicy: "policy",
   vaultPortfolio: "portfolio",
   vaultAdvancedControls: "advanced-controls",
-  vaultTransaction: ":transactionId",
+  vaultTransactions: "transactions",
 }
 
 export const navigationPopupLinks = [

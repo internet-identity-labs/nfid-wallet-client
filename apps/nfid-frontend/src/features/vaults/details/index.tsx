@@ -132,7 +132,8 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
     >
       <VaultDetails
         vault={vault}
-        address={vaultId}
+        vaultId={vaultId}
+        tokens={vaultTokens?.allTokens ?? []}
         refreshPortfolio={mutate}
         isLoading={isValidating || isLoading || !identity}
         isUsdLoading={isUsdLoading || isTokensLoading}

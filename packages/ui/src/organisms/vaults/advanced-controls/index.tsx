@@ -5,6 +5,7 @@ import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { ControllersModal } from "../components/controllers-modal"
 import { VaultSkeleton } from "packages/ui/src/atoms/skeleton/vault-skeleton"
 import { TopUpModal } from "../components/top-up-modal"
+import { PurgeModal } from "../components/purge-modal"
 
 export const VaultAdvancedControls: FC<VaultAdvancedControlsProps> = memo(
   ({
@@ -21,6 +22,7 @@ export const VaultAdvancedControls: FC<VaultAdvancedControlsProps> = memo(
   }) => {
     const [isControllersModalOpen, setIsControllersModalOpen] = useState(false)
     const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false)
+    const [isPurgeModalOpen, setIsPurgeModalOpen] = useState(false)
 
     const [isPurging, setIsPurging] = useState(false)
 
@@ -35,6 +37,11 @@ export const VaultAdvancedControls: FC<VaultAdvancedControlsProps> = memo(
 
     return (
       <>
+        <PurgeModal
+          isOpen={isPurgeModalOpen}
+          onClose={() => setIsPurgeModalOpen(false)}
+          purge={onPurge}
+        />
         <TopUpModal
           isOpen={isTopUpModalOpen}
           onClose={() => setIsTopUpModalOpen(false)}
@@ -91,7 +98,7 @@ export const VaultAdvancedControls: FC<VaultAdvancedControlsProps> = memo(
               isSmall
               disabled={isPurging}
               type="ghost"
-              onClick={onPurge}
+              onClick={() => setIsPurgeModalOpen(true)}
             >
               Clear queue
             </Button>

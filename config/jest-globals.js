@@ -9,6 +9,7 @@ export const JEST_GLOBALS = {
   NFID_WALLET_CANISTER: "w44yp-iaaaa-aaaar-qafjq-cai",
   NFID_WALLET_CANISTER_STAKING: "w44yp-iaaaa-aaaar-qafjq-cai",
   IC_SIGNER_CANISTER_ID: "nux62-yqaaa-aaaak-ae2pq-cai",
+  ECDSA_STORAGE_CANISTER_ID: "zhr63-daaaa-aaaap-qbh4q-cai",
   PATRON_CANISTER_ID: "doked-biaaa-aaaar-qag2a-cai",
   CHAIN_FUSION_SIGNER_CANISTER_ID: "grghe-syaaa-aaaar-qabyq-cai",
   BITCOIN_CANISTER_ID: "ghsi2-tqaaa-aaaan-aaaca-cai",

@@ -13,6 +13,7 @@ import {
   fetchVaultDeposits,
   fetchVaultDetails,
   fetchVaultInitedTokens,
+  refetchVaults,
 } from "../utils"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { portfolioService } from "frontend/integration/portfolio-balance/portfolio-service"
@@ -106,7 +107,7 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
         identity,
         txIds.map(BigInt),
       )
-      await mutate()
+      refetchVaults(mutate)
     },
     [vaultId, identity, mutate],
   )
@@ -119,7 +120,7 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
         identity,
         txIds.map(BigInt),
       )
-      await mutate()
+      refetchVaults(mutate)
     },
     [vaultId, identity, mutate],
   )

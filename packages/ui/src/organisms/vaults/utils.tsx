@@ -229,12 +229,38 @@ export const getBatchSidePanelContent = (
   })
 }
 
+const getPreviousMemberName = (
+  memberId: string,
+  currentTxId: bigint,
+  allTransactions: Transaction[],
+  principalText?: string,
+): string | undefined => {
+  const prev = [...allTransactions]
+    .filter((t) => {
+      if (t.id >= currentTxId) return false
+      if (t.transactionType === TransactionType.MemberUpdateName)
+        return (t as MemberUpdateNameTransaction).memberId === memberId
+      if (t.transactionType === TransactionType.MemberCreateV2 && principalText)
+        return (
+          (t as MemberCreateTransactionV2).account.owner.toText() ===
+          principalText
+        )
+      return false
+    })
+    .sort((a, b) => Number(b.id - a.id))[0]
+  if (!prev) return undefined
+  return prev.transactionType === TransactionType.MemberUpdateName
+    ? (prev as MemberUpdateNameTransaction).name
+    : (prev as MemberCreateTransactionV2).name
+}
+
 export const getSidePanelMarkupByType = (
   tx: Transaction,
   vaultId?: string,
   tokens?: FT[],
   members?: VaultMember[],
   xdrPermyriadPerIcp?: bigint,
+  allTransactions?: Transaction[],
 ) => {
   const membersCount = members?.length
   switch (tx.transactionType) {
@@ -503,6 +529,14 @@ export const getSidePanelMarkupByType = (
       const existingMember = members?.find(
         (m) => m.userId === updateTx.memberId,
       )
+      const previousName = allTransactions
+        ? getPreviousMemberName(
+            updateTx.memberId,
+            tx.id,
+            allTransactions,
+            existingMember?.account?.owner.toText(),
+          )
+        : undefined
       return {
         title: "Edit approver",
         info: (
@@ -512,9 +546,9 @@ export const getSidePanelMarkupByType = (
                 Approver name
               </p>
               <div className="dark:text-white">
-                {existingMember?.name ? (
+                {(previousName ?? existingMember?.name) ? (
                   <p className="text-gray-500 dark:text-zinc-500 leading-[54px]">
-                    {existingMember.name}
+                    {previousName ?? existingMember?.name}
                   </p>
                 ) : (
                   <span onClick={(e) => e.stopPropagation()}>
@@ -529,9 +563,6 @@ export const getSidePanelMarkupByType = (
                 <IconCmpArrow
                   className={clsx(
                     "block rotate-[-90deg] w-4 h-4 min-w-4 min-h-4 text-emerald-500",
-                    tx.state !== TransactionState.Pending &&
-                      tx.state !== TransactionState.Blocked &&
-                      "!text-gray-400 dark:!text-zinc-400",
                   )}
                 />
                 <p className="leading-[54px]">{updateTx.name}</p>
@@ -556,15 +587,24 @@ export const getSidePanelMarkupByType = (
     case TransactionType.MemberRemove: {
       const removedId = (tx as MemberRemoveTransaction).memberId
       const removedMember = members?.find((m) => m.userId === removedId)
+      const removedName = allTransactions
+        ? getPreviousMemberName(
+            removedId,
+            tx.id,
+            allTransactions,
+            removedMember?.account?.owner.toText(),
+          )
+        : undefined
+      const displayName = removedName ?? removedMember?.name
       return {
         title: "Remove approver",
         info: (
           <>
-            {removedMember ? (
+            {displayName ? (
               <>
                 <div className="grid grid-cols-[160px_1fr] text-sm items-center h-[54px]">
                   <p className="text-gray-400 dark:text-zinc-500">Name</p>
-                  <p className="dark:text-white">{removedMember.name}</p>
+                  <p className="dark:text-white">{displayName}</p>
                 </div>
                 <div className="w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
                 <div className="grid grid-cols-[160px_1fr] text-sm items-center h-[54px]">
@@ -572,7 +612,7 @@ export const getSidePanelMarkupByType = (
                   <span onClick={(e) => e.stopPropagation()}>
                     <CopyAddress
                       className="dark:text-white"
-                      address={removedMember.account?.owner.toText() || ""}
+                      address={removedMember?.account?.owner.toText() || ""}
                       leadingChars={29}
                       trailingChars={5}
                     />
@@ -838,6 +878,7 @@ export const getTxMarkupByType = (
   tokens?: FT[],
   members?: VaultMember[],
   xdrPermyriadPerIcp?: bigint,
+  allTransactions?: Transaction[],
 ) => {
   const membersCount = members?.length
   switch (tx.transactionType) {
@@ -967,6 +1008,14 @@ export const getTxMarkupByType = (
       const existingMember = members?.find(
         (m) => m.userId === updateTx.memberId,
       )
+      const previousName = allTransactions
+        ? getPreviousMemberName(
+            updateTx.memberId,
+            tx.id,
+            allTransactions,
+            existingMember?.account?.owner.toText(),
+          )
+        : undefined
       return {
         title: "Edit approver",
         icon: (
@@ -980,35 +1029,47 @@ export const getTxMarkupByType = (
           />
         ),
         bg: "bg-indigo-50 dark:bg-indigo-900",
-        info: existingMember?.name ? (
-          <div className="flex items-center gap-2">
-            <p className="dark:text-white">{existingMember.name}</p>
-            <IconCmpArrow className="rotate-[180deg]" />
-            <p className="dark:text-white">
-              {(tx as MemberUpdateNameTransaction).name}
-            </p>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <span onClick={(e) => e.stopPropagation()}>
-              <CopyAddress
-                className="dark:text-white"
-                address={updateTx.memberId || ""}
-                leadingChars={29}
-                trailingChars={5}
-              />
-            </span>
-            <IconCmpArrow className="rotate-[180deg]" />
-            <p className="dark:text-white">
-              {(tx as MemberUpdateNameTransaction).name}
-            </p>
-          </div>
-        ),
+        info:
+          (previousName ?? existingMember?.name) ? (
+            <div className="flex items-center gap-2">
+              <p className="dark:text-white">
+                {previousName ?? existingMember?.name}
+              </p>
+              <IconCmpArrow className="rotate-[180deg]" />
+              <p className="dark:text-white">
+                {(tx as MemberUpdateNameTransaction).name}
+              </p>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span onClick={(e) => e.stopPropagation()}>
+                <CopyAddress
+                  className="dark:text-white"
+                  address={updateTx.memberId || ""}
+                  leadingChars={29}
+                  trailingChars={5}
+                />
+              </span>
+              <IconCmpArrow className="rotate-[180deg]" />
+              <p className="dark:text-white">
+                {(tx as MemberUpdateNameTransaction).name}
+              </p>
+            </div>
+          ),
       }
     }
     case TransactionType.MemberRemove: {
       const removedId = (tx as MemberRemoveTransaction).memberId
       const removedMember = members?.find((m) => m.userId === removedId)
+      const removedName = allTransactions
+        ? getPreviousMemberName(
+            removedId,
+            tx.id,
+            allTransactions,
+            removedMember?.account?.owner.toText(),
+          )
+        : undefined
+      const displayName = removedName ?? removedMember?.name
       return {
         title: "Remove approver",
         icon: (
@@ -1022,8 +1083,8 @@ export const getTxMarkupByType = (
           />
         ),
         bg: "bg-indigo-50 dark:bg-indigo-900",
-        info: removedMember?.name ? (
-          <p className="dark:text-white">{removedMember.name}</p>
+        info: displayName ? (
+          <p className="dark:text-white">{displayName}</p>
         ) : (
           <span onClick={(e) => e.stopPropagation()}>
             <CopyAddress

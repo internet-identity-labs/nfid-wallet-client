@@ -24,6 +24,7 @@ export const VaultTableRow = ({
   members,
   xdrPermyriadPerIcp,
   quorum,
+  allTransactions,
 }: VaultTableRowProps) => {
   const tx = txGroup[0]
   const isBatch = txGroup.length > 1
@@ -118,8 +119,14 @@ export const VaultTableRow = ({
                 {i < arr.length - 1 && " | "}
               </span>
             ))
-          : getTxMarkupByType(tx, vaultId, tokens, members, xdrPermyriadPerIcp)
-              ?.info}
+          : getTxMarkupByType(
+              tx,
+              vaultId,
+              tokens,
+              members,
+              xdrPermyriadPerIcp,
+              allTransactions,
+            )?.info}
       </div>
       <div className="text-sm lg:pl-5">
         {tokenAmount && (

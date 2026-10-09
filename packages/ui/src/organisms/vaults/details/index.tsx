@@ -88,6 +88,7 @@ export const VaultDetails: FC<VaultDetailsProps> = memo(
           members={vault?.state.members}
           xdrPermyriadPerIcp={xdrPermyriadPerIcp}
           quorum={vault?.state.quorum.quorum}
+          allTransactions={vault?.transactions}
           approve={approve}
           reject={reject}
         />
@@ -194,6 +195,7 @@ export const VaultDetails: FC<VaultDetailsProps> = memo(
                       tableType={VaultTableType.PENDING}
                       members={vault?.state.members}
                       quorum={vault?.state.quorum.quorum}
+                      allTransactions={transactions}
                     />
                   )}
                   {!!blockedTransactions?.length && (
@@ -205,6 +207,7 @@ export const VaultDetails: FC<VaultDetailsProps> = memo(
                       tableType={VaultTableType.BLOCKED}
                       members={vault?.state.members}
                       quorum={vault?.state.quorum.quorum}
+                      allTransactions={transactions}
                     />
                   )}
                 </>
@@ -242,6 +245,7 @@ export const VaultDetails: FC<VaultDetailsProps> = memo(
                 members={vault?.state.members}
                 xdrPermyriadPerIcp={xdrPermyriadPerIcp}
                 deposits={deposits}
+                allTransactions={transactions}
               />
             )}
           </ProfileContainer>

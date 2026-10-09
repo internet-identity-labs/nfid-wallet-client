@@ -43,6 +43,7 @@ export const VaultSidePanel: FC<VaultSidePanelProps> = ({
   members,
   xdrPermyriadPerIcp,
   quorum,
+  allTransactions,
   approve,
   reject,
 }) => {
@@ -297,6 +298,7 @@ export const VaultSidePanel: FC<VaultSidePanelProps> = ({
                             tokens,
                             members,
                             xdrPermyriadPerIcp,
+                            allTransactions,
                           )?.info
                         }
                       </>

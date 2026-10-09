@@ -7,7 +7,11 @@ import { VaultPortfolio } from "packages/ui/src/organisms/vaults/portfolio"
 import { NFIDTheme } from "frontend/App"
 import { useIdentity } from "frontend/hooks/identity"
 import { DelegationIdentity } from "@dfinity/identity"
-import { fetchVaultDetails, fetchVaultInitedTokens } from "../utils"
+import {
+  fetchVaultDetails,
+  fetchVaultInitedTokens,
+  refetchVaults,
+} from "../utils"
 import { useSWR } from "@nfid/swr"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { portfolioService } from "frontend/integration/portfolio-balance/portfolio-service"
@@ -60,8 +64,8 @@ const VaultPortfolioPage: FC<VaultPortfolioProps> = ({
   )
 
   const updateTokens = useCallback(async () => {
-    await updateVault()
-    mutate()
+    await refetchVaults(updateVault)
+    refetchVaults(mutate)
   }, [updateVault, mutate])
 
   const onSendClick = (selectedToken: SelectedToken) => {

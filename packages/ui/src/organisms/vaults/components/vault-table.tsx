@@ -30,6 +30,7 @@ export const VaultTable = ({
   xdrPermyriadPerIcp,
   quorum,
   deposits,
+  allTransactions,
 }: VaultTableProps) => {
   const groups = mergeCreateVaultGroup(
     groupTransactionsByBatch(transactions),
@@ -60,6 +61,7 @@ export const VaultTable = ({
               members={members}
               xdrPermyriadPerIcp={xdrPermyriadPerIcp}
               quorum={quorum}
+              allTransactions={allTransactions}
               key={`vault-tx-${txGroup[0].id}`}
             />
           ))}
@@ -100,6 +102,7 @@ export const VaultTable = ({
                 key={`vault-tx-${item.group[0].id}`}
                 members={members}
                 xdrPermyriadPerIcp={xdrPermyriadPerIcp}
+                allTransactions={allTransactions}
               />
             ) : (
               <DepositRow

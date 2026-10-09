@@ -85,6 +85,7 @@ export interface VaultSidePanelProps {
   quorum?: number
   approve?: (txIds: string[]) => Promise<void>
   reject?: (txIds: string[]) => Promise<void>
+  allTransactions?: Transaction[]
 }
 
 export interface VaultPolicyProps {
@@ -205,6 +206,7 @@ export interface VaultTableProps {
   xdrPermyriadPerIcp?: bigint
   quorum?: number
   deposits?: VaultDeposit[]
+  allTransactions?: Transaction[]
 }
 
 export interface VaultTableRowProps {
@@ -215,6 +217,7 @@ export interface VaultTableRowProps {
   members?: VaultMember[]
   xdrPermyriadPerIcp?: bigint
   quorum?: number
+  allTransactions?: Transaction[]
 }
 
 export type VaultCreationPriceFormatted = {

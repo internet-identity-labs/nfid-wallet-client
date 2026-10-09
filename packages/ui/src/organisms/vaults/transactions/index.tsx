@@ -44,6 +44,7 @@ export const VaultTransactions: FC<VaultTransactionsProps> = memo(
           tokens={tokens}
           members={vault?.state.members}
           xdrPermyriadPerIcp={xdrPermyriadPerIcp}
+          quorum={vault?.state.quorum.quorum}
         />
         <ProfileContainer
           titleClassName="dark:text-white !px-0 !text-[24px] sm:!mb-[-30px]"

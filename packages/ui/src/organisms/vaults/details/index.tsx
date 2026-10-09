@@ -34,6 +34,8 @@ export const VaultDetails: FC<VaultDetailsProps> = memo(
     topUp,
     vaultIcpBalance,
     deposits,
+    approve,
+    reject,
   }) => {
     const navigate = useNavigate()
     const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false)
@@ -85,6 +87,9 @@ export const VaultDetails: FC<VaultDetailsProps> = memo(
           tokens={tokens}
           members={vault?.state.members}
           xdrPermyriadPerIcp={xdrPermyriadPerIcp}
+          quorum={vault?.state.quorum.quorum}
+          approve={approve}
+          reject={reject}
         />
         <TopUpModal
           isOpen={isTopUpModalOpen}

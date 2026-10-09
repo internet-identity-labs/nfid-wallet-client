@@ -1,4 +1,4 @@
-import { FC, useContext } from "react"
+import { FC, useCallback, useContext } from "react"
 import { useParams } from "react-router-dom"
 
 import { ProfileTemplate } from "@nfid-frontend/ui"
@@ -89,11 +89,40 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
       ? Number(icpTokenBalance) / 10 ** ICP_DECIMALS - WALLET_FEE
       : undefined
 
-  const topUp = async (amount: string) => {
-    if (!vaultId || !identity) return
-    const amountRaw = BigInt(Math.round(Number(amount) * 10 ** ICP_DECIMALS))
-    await nfidVaultsService.topUp(vaultId, identity, amountRaw)
-  }
+  const topUp = useCallback(
+    async (amount: string) => {
+      if (!vaultId || !identity) return
+      const amountRaw = BigInt(Math.round(Number(amount) * 10 ** ICP_DECIMALS))
+      await nfidVaultsService.topUp(vaultId, identity, amountRaw)
+    },
+    [vaultId, identity],
+  )
+
+  const approve = useCallback(
+    async (txIds: string[]) => {
+      if (!vaultId || !identity) return
+      await nfidVaultsService.approveTransactions(
+        vaultId,
+        identity,
+        txIds.map(BigInt),
+      )
+      await mutate()
+    },
+    [vaultId, identity, mutate],
+  )
+
+  const reject = useCallback(
+    async (txIds: string[]) => {
+      if (!vaultId || !identity) return
+      await nfidVaultsService.rejectTransactions(
+        vaultId,
+        identity,
+        txIds.map(BigInt),
+      )
+      await mutate()
+    },
+    [vaultId, identity, mutate],
+  )
 
   const onSendClick = () => {
     globalServices.transferService.send({
@@ -155,6 +184,8 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
         topUp={topUp}
         vaultIcpBalance={vaultIcpBalance}
         deposits={deposits}
+        approve={approve}
+        reject={reject}
       />
     </ProfileTemplate>
   )

@@ -43,6 +43,14 @@ export const vaultTxTimestampToTime = (timestamp: bigint): string => {
   ).toLowerCase()
 }
 
+export const vaultDateToString = (date: Date): string => {
+  return format(date, "MMMM d, yyyy")
+}
+
+export const vaultDateToTime = (date: Date): string => {
+  return format(date, "hh:mm:ss aa").toLowerCase()
+}
+
 export const memberCreatedToDate = (timestamp: bigint): string => {
   return format(
     new Date(Number(timestamp / NS_PER_MS)),
@@ -529,6 +537,18 @@ export const getSidePanelMarkupByType = (
                 <p className="leading-[54px]">{updateTx.name}</p>
               </div>
             </div>
+            <div className="w-full h-[1px] bg-gray-200 dark:bg-zinc-700" />
+            <div className="grid grid-cols-[160px_1fr] text-sm items-center h-[54px]">
+              <p className="text-gray-400 dark:text-zinc-500">Wallet address</p>
+              <span onClick={(e) => e.stopPropagation()}>
+                <CopyAddress
+                  className="dark:text-white"
+                  address={existingMember?.account?.owner.toText() || ""}
+                  leadingChars={6}
+                  trailingChars={4}
+                />
+              </span>
+            </div>
           </>
         ),
       }
@@ -844,7 +864,7 @@ export const getTxMarkupByType = (
         ),
         bg: "bg-cyan-50 dark:bg-cyan-900",
         info: (
-          <div className="flex justify-between w-full relative">
+          <div className="relative flex justify-between w-full">
             <span onClick={(e) => e.stopPropagation()}>
               <CopyAddress
                 className="text-sm dark:text-white basis-[35%]"
@@ -880,7 +900,7 @@ export const getTxMarkupByType = (
         ),
         bg: "bg-cyan-50 dark:bg-cyan-900",
         info: (
-          <div className="flex justify-between w-full relative">
+          <div className="relative flex justify-between w-full">
             <span onClick={(e) => e.stopPropagation()}>
               <CopyAddress
                 className="text-sm dark:text-white basis-[35%]"
@@ -1105,7 +1125,7 @@ export const getTxMarkupByType = (
         ),
         bg: "bg-indigo-50 dark:bg-indigo-900",
         info: (tx as ControllersUpdateTransaction).current_controllers.join(
-          " | ",
+          ", ",
         ),
       }
     case TransactionType.Purge:
@@ -1151,7 +1171,7 @@ export const getDepositRowMarkup = (
     amount: amount ? `${amount} ${token?.getTokenSymbol()}` : null,
     usdAmount: amount ? token?.getTokenRateFormatted(amount) : null,
     info: (
-      <div className="flex justify-between w-full relative items-center w-full gap-2">
+      <div className="relative flex items-center justify-between w-full gap-2">
         <span onClick={(e) => e.stopPropagation()}>
           <CopyAddress
             className="text-sm dark:text-white"

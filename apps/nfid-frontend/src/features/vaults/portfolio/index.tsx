@@ -1,4 +1,4 @@
-import { FC, useContext } from "react"
+import { FC, useCallback, useContext } from "react"
 import { useParams } from "react-router-dom"
 
 import { ProfileTemplate } from "@nfid-frontend/ui"
@@ -59,10 +59,10 @@ const VaultPortfolioPage: FC<VaultPortfolioProps> = ({
     { revalidateOnFocus: false },
   )
 
-  const updateTokens = async () => {
+  const updateTokens = useCallback(async () => {
     await updateVault()
     mutate()
-  }
+  }, [updateVault, mutate])
 
   const onSendClick = (selectedToken: SelectedToken) => {
     globalServices.transferService.send({

@@ -1,4 +1,5 @@
 import {
+  ApproveRequest,
   ControllersUpdateTransactionRequest,
   Currency,
   ICRC1CanistersAddTransactionRequest,
@@ -40,7 +41,7 @@ import {
   VaultManagerService,
   VaultType,
 } from "./vault-manager.idl"
-import { StoredVault, VaultCreationPrice } from "./types"
+import { VaultCreationPrice } from "./types"
 
 /** The canister timestamps in nanoseconds, the frontend works in milliseconds. */
 export const NS_PER_MS = BigInt(1_000_000)
@@ -628,6 +629,54 @@ export class NfidVaultsService {
       identity,
     ).requestTransaction([new PurgeTransactionRequest()])
     return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+  }
+
+  /**
+   * Approves one or more pending transactions and waits for each to reach a
+   * terminal state. Note: if quorum is not yet met the wait will time out.
+   */
+  async approveTransactions(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    transactionIds: bigint[],
+  ): Promise<Transaction[]> {
+    const approves: ApproveRequest[] = transactionIds.map((trId) => ({
+      trId,
+      state: TransactionState.Approved,
+    }))
+    const approved = await this.getManager(
+      vaultCanisterId,
+      identity,
+    ).approveTransaction(approves)
+    return Promise.all(
+      approved.map((tx) =>
+        this.waitForTransaction(vaultCanisterId, identity, tx.id),
+      ),
+    )
+  }
+
+  /**
+   * Rejects one or more pending transactions and waits for each to reach a
+   * terminal state.
+   */
+  async rejectTransactions(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    transactionIds: bigint[],
+  ): Promise<Transaction[]> {
+    const approves: ApproveRequest[] = transactionIds.map((trId) => ({
+      trId,
+      state: TransactionState.Rejected,
+    }))
+    const rejected = await this.getManager(
+      vaultCanisterId,
+      identity,
+    ).approveTransaction(approves)
+    return Promise.all(
+      rejected.map((tx) =>
+        this.waitForTransaction(vaultCanisterId, identity, tx.id),
+      ),
+    )
   }
 
   async topUp(

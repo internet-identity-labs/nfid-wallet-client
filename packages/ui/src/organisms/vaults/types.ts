@@ -55,6 +55,8 @@ export interface VaultDetailsProps {
   topUp: (amount: string) => Promise<void>
   vaultIcpBalance: number | undefined
   deposits?: VaultDeposit[]
+  approve?: (txIds: string[]) => Promise<void>
+  reject?: (txIds: string[]) => Promise<void>
 }
 
 export interface VaultTransactionsProps {
@@ -80,6 +82,9 @@ export interface VaultSidePanelProps {
   tokens: FT[] | undefined
   members?: VaultMember[]
   xdrPermyriadPerIcp?: bigint
+  quorum?: number
+  approve?: (txIds: string[]) => Promise<void>
+  reject?: (txIds: string[]) => Promise<void>
 }
 
 export interface VaultPolicyProps {

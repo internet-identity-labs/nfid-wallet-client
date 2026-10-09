@@ -13,12 +13,12 @@ import { icrc1TransactionHistoryService } from "@nfid/integration/token/icrc1/se
 import { FT } from "frontend/integration/ft/ft"
 import { VaultTokenBuilder } from "frontend/integration/ft/token-creator/vault-token-builder"
 import { fetchTokens } from "frontend/features/fungible-token/utils"
-import { nanoSecondsToDate } from "frontend/features/activity/utils/activity"
+import { nanoSecondsToDate } from "../activity/utils/activity"
 import { VaultDeposit } from "packages/ui/src/organisms/vaults/types"
 
 export const fetchVaults = async (principal: Principal) => {
   const address = AccountIdentifier.fromPrincipal({ principal }).toHex()
-  const result = await nfidVaultsService.getDashboardCacheForAddress(address)
+  const result = await nfidVaultsService.getVaults(address)
   return result.cache.map((v) => ({
     canisterId: v.canister,
     name: v.name,
@@ -31,7 +31,7 @@ export const refetchVaults = (fn: () => unknown): Promise<void> => {
     setTimeout(() => {
       fn()
       resolve()
-    }, 3000),
+    }, 5000),
   )
 }
 

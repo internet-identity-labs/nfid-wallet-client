@@ -44,7 +44,7 @@ const VaultsPage: FC<VaultsPageProps> = memo(
       const address = AccountIdentifier.fromPrincipal({ principal }).toHex()
       setIsRefreshing(true)
       try {
-        await nfidVaultsService.updateDashboardCache(address)
+        await nfidVaultsService.updateVaultsCache(address)
         await mutate()
       } finally {
         setIsRefreshing(false)
@@ -55,6 +55,10 @@ const VaultsPage: FC<VaultsPageProps> = memo(
       async (name: string) => {
         if (!identity) return
         const canisterId = await nfidVaultsService.createVault(name, identity)
+        if (principal) {
+          const address = AccountIdentifier.fromPrincipal({ principal }).toHex()
+          await nfidVaultsService.updateVaultsCache(address)
+        }
         mutate()
         navigate(`${ProfileConstants.vaults}/${canisterId.toText()}`)
       },

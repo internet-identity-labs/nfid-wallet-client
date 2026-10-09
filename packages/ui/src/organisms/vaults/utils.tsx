@@ -229,6 +229,31 @@ export const getBatchSidePanelContent = (
   })
 }
 
+const DEFAULT_SUBACCOUNT_HEX =
+  "0000000000000000000000000000000000000000000000000000000000000000"
+
+const getMemberPrincipalFromHistory = (
+  memberId: string,
+  allTransactions: Transaction[],
+): string | undefined => {
+  for (const t of allTransactions) {
+    if (t.transactionType !== TransactionType.MemberCreateV2) continue
+    const createTx = t as MemberCreateTransactionV2
+    try {
+      const subAccountHex = createTx.account.subaccount
+        ? Buffer.from(createTx.account.subaccount as Uint8Array)
+            .toString("hex")
+            .padStart(64, "0")
+        : DEFAULT_SUBACCOUNT_HEX
+      const hex = getAddress(createTx.account.owner, subAccountHex)
+      if (hex === memberId) return createTx.account.owner.toText()
+    } catch {
+      // skip if address computation fails
+    }
+  }
+  return undefined
+}
+
 const getPreviousMemberName = (
   memberId: string,
   currentTxId: bigint,
@@ -529,12 +554,17 @@ export const getSidePanelMarkupByType = (
       const existingMember = members?.find(
         (m) => m.userId === updateTx.memberId,
       )
+      const principalText =
+        existingMember?.account?.owner.toText() ??
+        (allTransactions
+          ? getMemberPrincipalFromHistory(updateTx.memberId, allTransactions)
+          : undefined)
       const previousName = allTransactions
         ? getPreviousMemberName(
             updateTx.memberId,
             tx.id,
             allTransactions,
-            existingMember?.account?.owner.toText(),
+            principalText,
           )
         : undefined
       return {
@@ -574,9 +604,9 @@ export const getSidePanelMarkupByType = (
               <span onClick={(e) => e.stopPropagation()}>
                 <CopyAddress
                   className="dark:text-white"
-                  address={existingMember?.account?.owner.toText() || ""}
-                  leadingChars={6}
-                  trailingChars={4}
+                  address={principalText || ""}
+                  leadingChars={29}
+                  trailingChars={5}
                 />
               </span>
             </div>
@@ -587,12 +617,17 @@ export const getSidePanelMarkupByType = (
     case TransactionType.MemberRemove: {
       const removedId = (tx as MemberRemoveTransaction).memberId
       const removedMember = members?.find((m) => m.userId === removedId)
+      const removedPrincipalText =
+        removedMember?.account?.owner.toText() ??
+        (allTransactions
+          ? getMemberPrincipalFromHistory(removedId, allTransactions)
+          : undefined)
       const removedName = allTransactions
         ? getPreviousMemberName(
             removedId,
             tx.id,
             allTransactions,
-            removedMember?.account?.owner.toText(),
+            removedPrincipalText,
           )
         : undefined
       const displayName = removedName ?? removedMember?.name
@@ -612,7 +647,7 @@ export const getSidePanelMarkupByType = (
                   <span onClick={(e) => e.stopPropagation()}>
                     <CopyAddress
                       className="dark:text-white"
-                      address={removedMember?.account?.owner.toText() || ""}
+                      address={removedPrincipalText || ""}
                       leadingChars={29}
                       trailingChars={5}
                     />
@@ -1008,12 +1043,17 @@ export const getTxMarkupByType = (
       const existingMember = members?.find(
         (m) => m.userId === updateTx.memberId,
       )
+      const principalText =
+        existingMember?.account?.owner.toText() ??
+        (allTransactions
+          ? getMemberPrincipalFromHistory(updateTx.memberId, allTransactions)
+          : undefined)
       const previousName = allTransactions
         ? getPreviousMemberName(
             updateTx.memberId,
             tx.id,
             allTransactions,
-            existingMember?.account?.owner.toText(),
+            principalText,
           )
         : undefined
       return {

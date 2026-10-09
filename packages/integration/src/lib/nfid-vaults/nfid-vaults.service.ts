@@ -53,12 +53,12 @@ const DEFAULT_SUB_ACCOUNT =
 const ATTEMPTS = 3
 
 const VAULT_CACHE_TTL_MS = 5 * 60 * 1000
+const VAULTS_CACHE_NAME = "VAULTS_"
 
-export interface DashboardCache {
+export interface VaultsCache {
   cache: Array<{
     canister: string
     name: string
-    type: "light" | "pro"
     version: string
   }>
   createdDate: number
@@ -246,12 +246,9 @@ export class NfidVaultsService {
    * Serves from IndexedDB if fresh (5-min TTL); scans all vault canisters otherwise.
    * Pass `forceRefetch: true` to bypass the cache and trigger a fresh scan.
    */
-  async getDashboardCacheForAddress(
-    id: string,
-    forceRefetch?: boolean,
-  ): Promise<DashboardCache> {
-    return ttlCacheService.getOrFetch<DashboardCache>(
-      `VAULTS_${id.toLowerCase()}`,
+  async getVaults(id: string, forceRefetch?: boolean): Promise<VaultsCache> {
+    return ttlCacheService.getOrFetch<VaultsCache>(
+      `{VAULTS_CACHE_NAME}${id.toLowerCase()}`,
       () => this.scanVaultsForAddress(id),
       VAULT_CACHE_TTL_MS,
       { forceRefetch: Boolean(forceRefetch) },
@@ -259,8 +256,8 @@ export class NfidVaultsService {
   }
 
   /** Force-rescans all vaults and repopulates the cache for the given address. */
-  async updateDashboardCache(id: string): Promise<DashboardCache> {
-    return this.getDashboardCacheForAddress(id, true)
+  async updateVaultsCache(id: string): Promise<VaultsCache> {
+    return this.getVaults(id, true)
   }
 
   /**
@@ -434,7 +431,6 @@ export class NfidVaultsService {
         indexCanisterId ? Principal.fromText(indexCanisterId) : undefined,
       ),
     ])
-    await new Promise((resolve) => setTimeout(resolve, 5000))
     return tx
   }
 
@@ -455,7 +451,6 @@ export class NfidVaultsService {
         Principal.fromText(ledgerCanisterId),
       ),
     ])
-    await new Promise((resolve) => setTimeout(resolve, 5000))
     return tx
   }
 
@@ -596,7 +591,7 @@ export class NfidVaultsService {
       vaultCanisterId,
       identity,
     ).requestTransaction([new PurgeTransactionRequest()])
-    await new Promise((resolve) => setTimeout(resolve, 5000))
+
     return tx
   }
 
@@ -652,7 +647,7 @@ export class NfidVaultsService {
     return tx
   }
 
-  private async scanVaultsForAddress(id: string): Promise<DashboardCache> {
+  private async scanVaultsForAddress(id: string): Promise<VaultsCache> {
     const vaultCanisters =
       await this.getAnonymousManagerActor().get_all_canisters()
     const anonymousIdentity = new AnonymousIdentity()
@@ -670,11 +665,10 @@ export class NfidVaultsService {
             return null
           const version = await vm.getVersion()
           const name = state.name ?? `NFID Vault ${canisterId}`
-          const type: "light" | "pro" =
-            "Light" in vault.vault_type ? "light" : "pro"
-          return { canister: canisterId, name, type, version }
+          return { canister: canisterId, name, version }
         } catch (e) {
           console.warn(`Error getting vault state for ${canisterId}`, e)
+          return null
         }
       }),
     )

@@ -434,7 +434,6 @@ export const App = () => {
                       </AuthWrapper>
                     }
                   />
-
                   <Route
                     path={`${ProfileConstants.vaults}/${ProfileConstants.vault}/${ProfileConstants.vaultAdvancedControls}`}
                     element={

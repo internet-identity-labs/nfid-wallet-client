@@ -73,6 +73,7 @@ import {
 import {
   fetchVaultDetails,
   fetchVaultInitedTokens,
+  refetchVaults,
 } from "frontend/features/vaults/utils"
 import { DelegationIdentity } from "@dfinity/identity"
 import { nfidVaultsService } from "@nfid/integration"
@@ -402,7 +403,7 @@ export const TransferFT = ({
         setSuccessMessage(
           `Transaction ${amount} ${token.getTokenSymbol()} successful`,
         )
-        mutateVaultDetails()
+        refetchVaults(mutateVaultDetails)
       } catch (e) {
         console.error(`Vault transfer error: ${(e as Error).message ?? e}`)
         setErrorMessage(DEFAULT_TRANSFER_ERROR)

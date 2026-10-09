@@ -2,6 +2,7 @@
 import { StoredVault, VaultCreationPrice } from "@nfid/integration"
 import { Principal } from "@dfinity/principal"
 import { Transaction, Vault, VaultMember } from "@nfid/vaults"
+export type { VaultMember }
 import { KeyedMutator } from "swr"
 import { FT } from "frontend/integration/ft/ft"
 import { SelectedToken } from "frontend/features/transfer-modal/types"
@@ -24,8 +25,9 @@ export type CreateVaultModalProps = {
   priceLoading: boolean
 }
 
-export interface VaultDetailstProps {
-  address: string | undefined
+export interface VaultDetailsProps {
+  vaultId: string | undefined
+  tokens?: FT[]
   vault:
     | {
         state: Vault
@@ -52,6 +54,38 @@ export interface VaultDetailstProps {
   xdrPermyriadPerIcp: bigint | undefined
   topUp: (amount: string) => Promise<void>
   vaultIcpBalance: number | undefined
+  deposits?: VaultDeposit[]
+  approve?: (txIds: string[]) => Promise<void>
+  reject?: (txIds: string[]) => Promise<void>
+}
+
+export interface VaultTransactionsProps {
+  vaultId: string | undefined
+  tokens?: FT[]
+  vault:
+    | {
+        state: Vault
+        transactions: Transaction[]
+      }
+    | undefined
+  isLoading: boolean
+  xdrPermyriadPerIcp?: bigint
+  deposits?: VaultDeposit[]
+}
+
+export interface VaultSidePanelProps {
+  isOpen: boolean
+  onClose: () => void
+  txGroup: Transaction[] | null
+  deposit?: VaultDeposit | null
+  vaultId: string | undefined
+  tokens: FT[] | undefined
+  members?: VaultMember[]
+  xdrPermyriadPerIcp?: bigint
+  quorum?: number
+  approve?: (txIds: string[]) => Promise<void>
+  reject?: (txIds: string[]) => Promise<void>
+  allTransactions?: Transaction[]
 }
 
 export interface VaultPolicyProps {
@@ -113,6 +147,12 @@ export type TopUpModalProps = {
   vaultIcpBalance: number | undefined
 }
 
+export type PurgeModalProps = {
+  isOpen: boolean
+  onClose: () => void
+  purge: () => Promise<void>
+}
+
 export interface VaultPortfolioProps {
   tokens: FT[] | undefined
   allTokens: FT[]
@@ -145,6 +185,41 @@ export interface VaultAdvancedControlsProps {
   vaultIcpBalance: number | undefined
 }
 
+export interface VaultDeposit {
+  id: string
+  from: string
+  to: string
+  amount: number
+  canisterId: string
+  timestamp: Date
+}
+
+export interface VaultTableProps {
+  transactions: Transaction[]
+  setChosenTransaction: (v: Transaction[] | null) => void
+  setChosenDeposit?: (v: VaultDeposit | null) => void
+  tableType: VaultTableType
+  vaultId?: string
+  tokens?: FT[]
+  limit?: number
+  members?: VaultMember[]
+  xdrPermyriadPerIcp?: bigint
+  quorum?: number
+  deposits?: VaultDeposit[]
+  allTransactions?: Transaction[]
+}
+
+export interface VaultTableRowProps {
+  setChosenTransaction: (v: Transaction[] | null) => void
+  txGroup: Transaction[]
+  vaultId?: string
+  tokens?: FT[]
+  members?: VaultMember[]
+  xdrPermyriadPerIcp?: bigint
+  quorum?: number
+  allTransactions?: Transaction[]
+}
+
 export type VaultCreationPriceFormatted = {
   icpPrice: string
   cyclePrice: string
@@ -167,6 +242,12 @@ export type TopUpAmountValues = {
   topUpAmount: string
 }
 
+export type TxItem = { kind: "tx"; group: Transaction[] }
+
+export type DepositItem = { kind: "deposit"; deposit: VaultDeposit }
+
+export type TableItem = TxItem | DepositItem
+
 export enum CreateVaultStep {
   PREPARE = "PREPARE",
   PAY = "PAY",
@@ -177,4 +258,11 @@ export enum PolicyUpdateType {
   ADD_APPROVER = "ADD_APPROVER",
   EDIT_APPROVER = "EDIT_APPROVER",
   REMOVE_APPROVER = "REMOVE_APPROVER",
+}
+
+export enum VaultTableType {
+  PENDING = "PENDING",
+  BLOCKED = "BLOCKED",
+  RECENT = "RECENT",
+  ALL = "ALL",
 }

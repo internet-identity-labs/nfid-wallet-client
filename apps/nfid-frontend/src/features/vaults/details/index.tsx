@@ -1,4 +1,4 @@
-import { FC, useContext } from "react"
+import { FC, useCallback, useContext } from "react"
 import { useParams } from "react-router-dom"
 
 import { ProfileTemplate } from "@nfid-frontend/ui"
@@ -9,7 +9,12 @@ import { NFIDTheme } from "frontend/App"
 import { useIdentity } from "frontend/hooks/identity"
 
 import { DelegationIdentity } from "@icp-sdk/core/identity"
-import { fetchVaultDetails, fetchVaultInitedTokens } from "../utils"
+import {
+  fetchVaultDeposits,
+  fetchVaultDetails,
+  fetchVaultInitedTokens,
+  refetchVaults,
+} from "../utils"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { portfolioService } from "frontend/integration/portfolio-balance/portfolio-service"
 import { ProfileContext } from "frontend/provider"
@@ -70,6 +75,12 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
     () => nfidVaultsService.getXdrPermyriadPerIcp(identity!),
   )
 
+  const { data: deposits } = useSWR(
+    vaultId && vaultTokens ? ["vault-deposits", vaultId] : null,
+    () => fetchVaultDeposits(vaultId!, vaultTokens!.initedTokens),
+    { revalidateOnFocus: false },
+  )
+
   const icpTokenBalance = vaultTokens?.initedTokens
     .find((t) => t.getTokenAddress() === ICP_CANISTER_ID)
     ?.getTokenBalance()
@@ -79,11 +90,40 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
       ? Number(icpTokenBalance) / 10 ** ICP_DECIMALS - WALLET_FEE
       : undefined
 
-  const topUp = async (amount: string) => {
-    if (!vaultId || !identity) return
-    const amountRaw = BigInt(Math.round(Number(amount) * 10 ** ICP_DECIMALS))
-    await nfidVaultsService.topUp(vaultId, identity, amountRaw)
-  }
+  const topUp = useCallback(
+    async (amount: string) => {
+      if (!vaultId || !identity) return
+      const amountRaw = BigInt(Math.round(Number(amount) * 10 ** ICP_DECIMALS))
+      await nfidVaultsService.topUp(vaultId, identity, amountRaw)
+    },
+    [vaultId, identity],
+  )
+
+  const approve = useCallback(
+    async (txIds: string[]) => {
+      if (!vaultId || !identity) return
+      await nfidVaultsService.approveTransactions(
+        vaultId,
+        identity,
+        txIds.map(BigInt),
+      )
+      refetchVaults(mutate)
+    },
+    [vaultId, identity, mutate],
+  )
+
+  const reject = useCallback(
+    async (txIds: string[]) => {
+      if (!vaultId || !identity) return
+      await nfidVaultsService.rejectTransactions(
+        vaultId,
+        identity,
+        txIds.map(BigInt),
+      )
+      refetchVaults(mutate)
+    },
+    [vaultId, identity, mutate],
+  )
 
   const onSendClick = () => {
     globalServices.transferService.send({
@@ -132,7 +172,8 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
     >
       <VaultDetails
         vault={vault}
-        address={vaultId}
+        vaultId={vaultId}
+        tokens={vaultTokens?.allTokens ?? []}
         refreshPortfolio={mutate}
         isLoading={isValidating || isLoading || !identity}
         isUsdLoading={isUsdLoading || isTokensLoading}
@@ -143,6 +184,9 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
         xdrPermyriadPerIcp={xdrPermyriadPerIcp}
         topUp={topUp}
         vaultIcpBalance={vaultIcpBalance}
+        deposits={deposits}
+        approve={approve}
+        reject={reject}
       />
     </ProfileTemplate>
   )

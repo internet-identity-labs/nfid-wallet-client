@@ -1,19 +1,28 @@
 /* eslint-disable @nx/enforce-module-boundaries */
-import { FC, memo, useState } from "react"
+import { FC, memo, useMemo, useState } from "react"
 import ProfileContainer from "../../../atoms/profile-container/Container"
-import { Button, IconCmpWarning, NotFound } from "@nfid-frontend/ui"
+import {
+  Button,
+  CopyAddress,
+  IconCmpWarning,
+  NotFound,
+} from "@nfid-frontend/ui"
 import { VaultSkeleton } from "../../../atoms/skeleton/vault-skeleton"
 import { VaultProfileInfo } from "../../profile-info"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { useNavigate } from "react-router-dom"
-import { VaultDetailstProps } from "../types"
+import { VaultDeposit, VaultDetailsProps, VaultTableType } from "../types"
 import clsx from "clsx"
 import { TopUpModal } from "../components/top-up-modal"
+import { Transaction, TransactionState } from "@nfid/vaults"
+import { VaultTable } from "../components/vault-table"
+import { VaultSidePanel } from "../components/side-panel"
 
-export const VaultDetails: FC<VaultDetailstProps> = memo(
+export const VaultDetails: FC<VaultDetailsProps> = memo(
   ({
-    address,
+    vaultId,
     vault,
+    tokens,
     refreshPortfolio,
     isLoading,
     isUsdLoading,
@@ -24,20 +33,69 @@ export const VaultDetails: FC<VaultDetailstProps> = memo(
     xdrPermyriadPerIcp,
     topUp,
     vaultIcpBalance,
+    deposits,
+    approve,
+    reject,
   }) => {
     const navigate = useNavigate()
     const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false)
+    const [sidePanelTx, setSidePanelTx] = useState<Transaction[] | null>(null)
+    const [sidePanelDeposit, setSidePanelDeposit] =
+      useState<VaultDeposit | null>(null)
     const state = vault?.state
+    const transactions = vault?.transactions
+
+    const pendingTransactions = useMemo(() => {
+      if (!transactions) return
+      return transactions.filter((tx) => tx.state === TransactionState.Pending)
+    }, [transactions])
+
+    const blockedTransactions = useMemo(() => {
+      if (!transactions) return
+      return transactions.filter((tx) => tx.state === TransactionState.Blocked)
+    }, [transactions])
+
+    const recentTransactions = useMemo(() => {
+      if (!transactions) return
+      return transactions
+        .filter(
+          (tx) =>
+            tx.state === TransactionState.Executed ||
+            tx.state === TransactionState.Rejected ||
+            tx.state === TransactionState.Failed ||
+            tx.state === TransactionState.Purged,
+        )
+        .sort((a, b) => Number(b.modifiedDate - a.modifiedDate))
+    }, [transactions])
+
+    const closePanel = () => {
+      setSidePanelTx(null)
+      setSidePanelDeposit(null)
+    }
 
     if (isLoading) return <VaultSkeleton />
     if (!vault) return <NotFound hideNavigation />
 
     return (
       <>
+        <VaultSidePanel
+          isOpen={Boolean(sidePanelTx) || Boolean(sidePanelDeposit)}
+          onClose={closePanel}
+          txGroup={sidePanelTx}
+          deposit={sidePanelDeposit}
+          vaultId={vaultId}
+          tokens={tokens}
+          members={vault?.state.members}
+          xdrPermyriadPerIcp={xdrPermyriadPerIcp}
+          quorum={vault?.state.quorum.quorum}
+          allTransactions={vault?.transactions}
+          approve={approve}
+          reject={reject}
+        />
         <TopUpModal
           isOpen={isTopUpModalOpen}
           onClose={() => setIsTopUpModalOpen(false)}
-          vaultId={address}
+          vaultId={vaultId}
           topUp={topUp}
           xdrPermyriadPerIcp={xdrPermyriadPerIcp}
           vaultIcpBalance={vaultIcpBalance}
@@ -65,7 +123,6 @@ export const VaultDetails: FC<VaultDetailstProps> = memo(
               </Button>
             </div>
           )}
-
           <VaultProfileInfo
             usdBalance={usdBalance}
             isUsdLoading={isUsdLoading}
@@ -108,11 +165,96 @@ export const VaultDetails: FC<VaultDetailstProps> = memo(
               </div>
             </div>
           </ProfileContainer>
+          <ProfileContainer
+            title="Requires approval"
+            titleLabel={
+              <div className="py-0.5 px-3 rounded-[12px] bg-black dark:bg-white ml-5 mr-auto min-w-[34px] text-center">
+                <p className="text-sm font-bold leading-5 text-white dark:text-black">
+                  {(pendingTransactions?.length ?? 0) +
+                    (blockedTransactions?.length ?? 0)}
+                </p>
+              </div>
+            }
+            titleClassName="dark:text-white !px-0 sm:!px-[30px] !text-[24px]"
+            className="p-0 sm:py-[30px] sm:!border mt-2.5 sm:mt-[30px] mb-5 sm:mb-[30px] sm:py-5"
+            innerClassName="!p-0"
+          >
+            <div className="mt-[12px] sm:mt-[22px]">
+              {!(pendingTransactions?.length || blockedTransactions?.length) ? (
+                <p className="text-[13px] leading-[18px] text-gray-600 dark:text-zinc-500 mb-2.5 sm:px-[30px]">
+                  No transactions to approve.
+                </p>
+              ) : (
+                <>
+                  {!!pendingTransactions?.length && (
+                    <VaultTable
+                      transactions={pendingTransactions}
+                      setChosenTransaction={setSidePanelTx}
+                      vaultId={vaultId}
+                      tokens={tokens}
+                      tableType={VaultTableType.PENDING}
+                      members={vault?.state.members}
+                      quorum={vault?.state.quorum.quorum}
+                      allTransactions={transactions}
+                    />
+                  )}
+                  {!!blockedTransactions?.length && (
+                    <VaultTable
+                      transactions={blockedTransactions}
+                      setChosenTransaction={setSidePanelTx}
+                      vaultId={vaultId}
+                      tokens={tokens}
+                      tableType={VaultTableType.BLOCKED}
+                      members={vault?.state.members}
+                      quorum={vault?.state.quorum.quorum}
+                      allTransactions={transactions}
+                    />
+                  )}
+                </>
+              )}
+            </div>
+          </ProfileContainer>
+          <ProfileContainer
+            title="Recent transactions"
+            titleButton={
+              <Button
+                className="font-bold text-sm leading-[22px]"
+                type="ghost"
+                onClick={() => navigate(ProfileConstants.vaultTransactions)}
+              >
+                View all
+              </Button>
+            }
+            titleClassName="dark:text-white !px-0 !text-[24px] !mb-0 sm:!px-[30px]"
+            className="p-0 sm:py-[30px] sm:!border mt-2.5 sm:mt-[30px] mb-5 sm:mb-[30px] sm:py-5"
+            innerClassName="!p-0"
+          >
+            {!recentTransactions?.length && !deposits?.length ? (
+              <p className="text-[13px] leading-[18px] text-gray-600 dark:text-zinc-500 mb-2.5">
+                No recent transactions.
+              </p>
+            ) : (
+              <VaultTable
+                transactions={recentTransactions ?? []}
+                setChosenTransaction={setSidePanelTx}
+                setChosenDeposit={setSidePanelDeposit}
+                vaultId={vaultId}
+                tokens={tokens}
+                tableType={VaultTableType.RECENT}
+                limit={5}
+                members={vault?.state.members}
+                xdrPermyriadPerIcp={xdrPermyriadPerIcp}
+                deposits={deposits}
+                allTransactions={transactions}
+              />
+            )}
+          </ProfileContainer>
           <div className="flex items-center gap-1.5 mt-5 sm:mt-[30px]">
             <div className="w-1.5 h-1.5 rounded-full bg-teal-600"></div>
-            <div className="text-xs leading-5 text-gray-400 dark:text-zinc-400">
-              {address}
-            </div>
+            <CopyAddress
+              className="text-xs leading-5 text-gray-400 dark:text-zinc-400"
+              address={vaultId || ""}
+            />
           </div>
         </div>
       </>

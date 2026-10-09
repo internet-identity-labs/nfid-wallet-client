@@ -1,4 +1,4 @@
-import { FC, useContext } from "react"
+import { FC, useCallback, useContext } from "react"
 import { useParams } from "react-router-dom"
 
 import { ProfileTemplate } from "@nfid-frontend/ui"
@@ -7,7 +7,11 @@ import { VaultPortfolio } from "packages/ui/src/organisms/vaults/portfolio"
 import { NFIDTheme } from "frontend/App"
 import { useIdentity } from "frontend/hooks/identity"
 import { DelegationIdentity } from "@dfinity/identity"
-import { fetchVaultDetails, fetchVaultInitedTokens } from "../utils"
+import {
+  fetchVaultDetails,
+  fetchVaultInitedTokens,
+  refetchVaults,
+} from "../utils"
 import { useSWR } from "@nfid/swr"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { portfolioService } from "frontend/integration/portfolio-balance/portfolio-service"
@@ -59,10 +63,10 @@ const VaultPortfolioPage: FC<VaultPortfolioProps> = ({
     { revalidateOnFocus: false },
   )
 
-  const updateTokens = async () => {
-    await updateVault()
-    mutate()
-  }
+  const updateTokens = useCallback(async () => {
+    await refetchVaults(updateVault)
+    refetchVaults(mutate)
+  }, [updateVault, mutate])
 
   const onSendClick = (selectedToken: SelectedToken) => {
     globalServices.transferService.send({

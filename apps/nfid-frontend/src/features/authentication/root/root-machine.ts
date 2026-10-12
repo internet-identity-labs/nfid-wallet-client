@@ -125,6 +125,12 @@ const AuthenticationMachine = setup({
         )
       }
     },
+    IIError: ({ event }: { event: any }) => {
+      toaster.error(
+        (event.error as Error)?.message ??
+          "Internet Identity authentication failed",
+      )
+    },
   },
 }).createMachine({
   id: "auth-machine",
@@ -265,6 +271,10 @@ const AuthenticationMachine = setup({
             target: "AuthSelection",
           },
         ],
+        onError: {
+          target: "AuthSelection",
+          actions: "IIError",
+        },
       },
     },
     EmailAuthentication: {

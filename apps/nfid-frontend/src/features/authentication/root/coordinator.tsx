@@ -507,7 +507,12 @@ export default function AuthenticationCoordinator({
                 passkeyConnector
                   .createCredential()
                   .then(() => send({ type: "CONTINUE" }))
-                  .catch(() => send({ type: "BACK" }))
+                  .catch((e: unknown) => {
+                    toaster.error(
+                      (e as Error)?.message ?? "Failed to create passkey",
+                    )
+                    send({ type: "PASSKEY_FAILED" })
+                  })
                   .finally(() => setIsAddPasskeyLoading(false))
               }}
               titleClassName={isIdentityKit ? "lg:text-[28px]" : undefined}

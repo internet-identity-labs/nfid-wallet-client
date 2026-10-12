@@ -21,6 +21,7 @@ export interface AuthOtherSignOptionsProps {
   title?: string
   subTitle?: string | JSX.Element
   onAuthWithRecoveryPhrase?: () => unknown
+  isIdentityKit?: boolean
 }
 
 export const AuthOtherSignOptions = ({
@@ -32,6 +33,7 @@ export const AuthOtherSignOptions = ({
   withLogo,
   title,
   subTitle,
+  isIdentityKit,
   onAuthWithRecoveryPhrase,
 }: AuthOtherSignOptionsProps) => {
   const {
@@ -60,6 +62,7 @@ export const AuthOtherSignOptions = ({
         withLogo={withLogo}
         title={title}
         subTitle={subTitle}
+        isIdentityKit={isIdentityKit}
       />
       <IconButton
         id={"continue-recovery-phrase"}

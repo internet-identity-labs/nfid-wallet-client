@@ -375,6 +375,9 @@ export default function AuthenticationCoordinator({
               }}
               createPasskeyError={signUpWithPassKeyError}
               applicationURL={state.context.authRequest?.hostname}
+              title={isIdentityKit ? "Connect to" : ""}
+              subTitle={isIdentityKit ? "" : "Connect to"}
+              isIdentityKit={isIdentityKit}
             />
           </motion.div>
         )
@@ -462,6 +465,9 @@ export default function AuthenticationCoordinator({
               }}
               isLoading={isOtherOptionsLoading || storageProfileLoading}
               profileAnchor={storageProfile?.anchor}
+              title={isIdentityKit ? "Connect to" : ""}
+              subTitle={isIdentityKit ? "" : "Connect to"}
+              isIdentityKit={isIdentityKit}
             />
           </motion.div>
         )

@@ -372,15 +372,7 @@ const AuthenticationMachine = setup({
           plan: context.recoveryProvisioningPlan!,
         }),
         onDone: { target: "End" },
-        onError: {
-          target: "AuthAddRecoveryPhrase",
-          actions: assign({
-            recoveryProvisioningPlan: () => ({
-              steps: [RecoveryProvisioningMode.RECOVERY_PHRASE],
-              isCompleted: false,
-            }),
-          }),
-        },
+        onError: { target: "End" },
       },
     },
     AddPasskeys: {
@@ -389,7 +381,13 @@ const AuthenticationMachine = setup({
           target: "VerifyPasskeyProvisioning",
         },
         PASSKEY_FAILED: {
-          target: "VerifyRecoveryProvisioning",
+          target: "AuthAddRecoveryPhrase",
+          actions: assign({
+            recoveryProvisioningPlan: () => ({
+              steps: [RecoveryProvisioningMode.RECOVERY_PHRASE],
+              isCompleted: false,
+            }),
+          }),
         },
       },
     },

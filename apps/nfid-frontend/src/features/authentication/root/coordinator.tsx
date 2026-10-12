@@ -508,10 +508,12 @@ export default function AuthenticationCoordinator({
                   .createCredential()
                   .then(() => send({ type: "CONTINUE" }))
                   .catch((e: unknown) => {
-                    toaster.error(
-                      (e as Error)?.message ?? "Failed to create passkey",
-                    )
-                    send({ type: "PASSKEY_FAILED" })
+                    const msg =
+                      (e as Error)?.message ?? "Failed to create passkey"
+                    toaster.error(msg)
+                    if (msg.includes("publickey-credentials-create")) {
+                      send({ type: "PASSKEY_FAILED" })
+                    }
                   })
                   .finally(() => setIsAddPasskeyLoading(false))
               }}

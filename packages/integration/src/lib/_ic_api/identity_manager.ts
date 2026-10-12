@@ -379,6 +379,17 @@ export const idlFactory = ({ IDL }: any) => {
     ),
     verify_token: IDL.Func([Token], [Response], []),
     get_root_by_principal: IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], ["query"]),
+    get_root_certified: IDL.Func(
+      [],
+      [
+        IDL.Record({
+          response: IDL.Text,
+          certificate: IDL.Vec(IDL.Nat8),
+          witness: IDL.Vec(IDL.Nat8),
+        }),
+      ],
+      ["query"],
+    ),
     add_email_and_principal_for_create_account_validation: IDL.Func(
       [IDL.Text, IDL.Text, IDL.Nat64],
       [BoolHttpResponse],

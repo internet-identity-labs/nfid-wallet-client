@@ -6,7 +6,7 @@ import { VaultAdvancedControls } from "packages/ui/src/organisms/vaults/advanced
 
 import { NFIDTheme } from "frontend/App"
 import { useIdentity } from "frontend/hooks/identity"
-import { fetchVaultInitedTokens, formatCycles } from "../utils"
+import { fetchVaultInitedTokens, formatCycles, refetchVaults } from "../utils"
 import { useSWR } from "@nfid/swr"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { nfidVaultsService } from "@nfid/integration"
@@ -67,7 +67,7 @@ const VaultAdvancedControlsPage: FC<VaultPortfolioProps> = ({
     async (controllers: string[]) => {
       if (!vaultId || !identity) return
       await nfidVaultsService.updateControllers(vaultId, identity, controllers)
-      mutate()
+      refetchVaults(mutate)
     },
     [vaultId, identity, mutate],
   )
@@ -82,7 +82,7 @@ const VaultAdvancedControlsPage: FC<VaultPortfolioProps> = ({
       if (!vaultId || !identity) return
       const amountRaw = BigInt(Number(amount) * 10 ** ICP_DECIMALS)
       await nfidVaultsService.topUp(vaultId, identity, amountRaw)
-      updateCycleBalance()
+      refetchVaults(updateCycleBalance)
     },
     [vaultId, identity],
   )

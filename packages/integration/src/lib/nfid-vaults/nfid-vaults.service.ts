@@ -1,4 +1,5 @@
 import {
+  ApproveRequest,
   ControllersUpdateTransactionRequest,
   Currency,
   ICRC1CanistersAddTransactionRequest,
@@ -40,7 +41,7 @@ import {
   VaultManagerService,
   VaultType,
 } from "./vault-manager.idl"
-import { StoredVault, VaultCreationPrice } from "./types"
+import { VaultCreationPrice } from "./types"
 
 /** The canister timestamps in nanoseconds, the frontend works in milliseconds. */
 export const NS_PER_MS = BigInt(1_000_000)
@@ -48,16 +49,13 @@ export const NS_PER_MS = BigInt(1_000_000)
 const DEFAULT_SUB_ACCOUNT =
   "0000000000000000000000000000000000000000000000000000000000000000"
 
-const INTERVAL = 1000
-const TIMEOUT = 30_000
-
 /** How many times a step that follows a paid-for vault is attempted. */
 const ATTEMPTS = 3
 
 const VAULT_CACHE_TTL_MS = 5 * 60 * 1000
 const VAULTS_CACHE_NAME = "VAULTS_"
 
-export interface DashboardCache {
+export interface VaultsCache {
   cache: Array<{
     canister: string
     name: string
@@ -248,8 +246,8 @@ export class NfidVaultsService {
    * Serves from IndexedDB if fresh (5-min TTL); scans all vault canisters otherwise.
    * Pass `forceRefetch: true` to bypass the cache and trigger a fresh scan.
    */
-  async getVaults(id: string, forceRefetch?: boolean): Promise<DashboardCache> {
-    return ttlCacheService.getOrFetch<DashboardCache>(
+  async getVaults(id: string, forceRefetch?: boolean): Promise<VaultsCache> {
+    return ttlCacheService.getOrFetch<VaultsCache>(
       `{VAULTS_CACHE_NAME}${id.toLowerCase()}`,
       () => this.scanVaultsForAddress(id),
       VAULT_CACHE_TTL_MS,
@@ -258,7 +256,7 @@ export class NfidVaultsService {
   }
 
   /** Force-rescans all vaults and repopulates the cache for the given address. */
-  async updateVaultsCache(id: string): Promise<DashboardCache> {
+  async updateVaultsCache(id: string): Promise<VaultsCache> {
     return this.getVaults(id, true)
   }
 
@@ -300,37 +298,6 @@ export class NfidVaultsService {
    * Signed by the global identity: the vault only accepts transactions from the
    * member it was created with.
    */
-  /**
-   * Polls until the transaction reaches a terminal state (Executed or Rejected).
-   * Useful after submitting a single-approver transaction that auto-executes.
-   */
-  private async waitForTransaction(
-    vaultCanisterId: string,
-    identity: SignIdentity,
-    transactionId: bigint,
-    intervalMs = INTERVAL,
-    timeoutMs = TIMEOUT,
-  ): Promise<Transaction> {
-    const deadline = Date.now() + timeoutMs
-    const manager = this.getManager(vaultCanisterId, identity)
-    const terminal = new Set([
-      TransactionState.Executed,
-      TransactionState.Rejected,
-      TransactionState.Purged,
-    ])
-
-    while (Date.now() < deadline) {
-      const transactions = await manager.getTransactions()
-      const tx = transactions.find((t) => t.id === transactionId)
-      if (tx && terminal.has(tx.state)) return tx
-      await new Promise((resolve) => setTimeout(resolve, intervalMs))
-    }
-
-    throw new Error(
-      `Transaction ${transactionId} did not reach a terminal state within ${timeoutMs}ms`,
-    )
-  }
-
   private async initVault(
     vaultCanisterId: string,
     name: string,
@@ -363,7 +330,7 @@ export class NfidVaultsService {
       role: VaultRole
     },
     newQuorum?: number,
-  ): Promise<Transaction> {
+  ): Promise<Transaction | undefined> {
     const requests: (TransactionRequest & { batch_uid?: string })[] = [
       new MemberCreateTransactionRequestV2(
         { owner: payload.owner, subaccount: payload.subaccount },
@@ -378,7 +345,7 @@ export class NfidVaultsService {
       identity,
       requests,
     )
-    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+    return tx
   }
 
   /**
@@ -392,14 +359,14 @@ export class NfidVaultsService {
     identity: SignIdentity,
     memberId: string,
     name: string,
-  ): Promise<Transaction> {
+  ): Promise<Transaction | undefined> {
     const [tx] = await this.getManager(
       vaultCanisterId,
       identity,
     ).requestTransaction([
       new MemberUpdateNameTransactionRequest(memberId, name),
     ])
-    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+    return tx
   }
 
   /**
@@ -413,7 +380,7 @@ export class NfidVaultsService {
     identity: SignIdentity,
     memberId: string,
     newQuorum?: number,
-  ): Promise<Transaction> {
+  ): Promise<Transaction | undefined> {
     const requests: (TransactionRequest & { batch_uid?: string })[] = [
       new MemberRemoveTransactionRequest(memberId),
     ]
@@ -424,7 +391,7 @@ export class NfidVaultsService {
       identity,
       requests,
     )
-    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+    return tx
   }
 
   /**
@@ -437,12 +404,12 @@ export class NfidVaultsService {
     vaultCanisterId: string,
     identity: SignIdentity,
     quorum: number,
-  ): Promise<Transaction> {
+  ): Promise<Transaction | undefined> {
     const [tx] = await this.getManager(
       vaultCanisterId,
       identity,
     ).requestTransaction([new QuorumTransactionRequest(quorum)])
-    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+    return tx
   }
 
   /**
@@ -454,7 +421,7 @@ export class NfidVaultsService {
     identity: SignIdentity,
     ledgerCanisterId: string,
     indexCanisterId?: string,
-  ): Promise<Transaction> {
+  ): Promise<Transaction | undefined> {
     const [tx] = await this.getManager(
       vaultCanisterId,
       identity,
@@ -464,7 +431,7 @@ export class NfidVaultsService {
         indexCanisterId ? Principal.fromText(indexCanisterId) : undefined,
       ),
     ])
-    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+    return tx
   }
 
   /**
@@ -475,7 +442,7 @@ export class NfidVaultsService {
     vaultCanisterId: string,
     identity: SignIdentity,
     ledgerCanisterId: string,
-  ): Promise<Transaction> {
+  ): Promise<Transaction | undefined> {
     const [tx] = await this.getManager(
       vaultCanisterId,
       identity,
@@ -484,7 +451,7 @@ export class NfidVaultsService {
         Principal.fromText(ledgerCanisterId),
       ),
     ])
-    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+    return tx
   }
 
   /**
@@ -522,7 +489,7 @@ export class NfidVaultsService {
     vaultCanisterId: string,
     identity: SignIdentity,
     principals: string[],
-  ): Promise<Transaction> {
+  ): Promise<Transaction | undefined> {
     const all = principals.includes(vaultCanisterId)
       ? principals
       : [vaultCanisterId, ...principals]
@@ -534,7 +501,7 @@ export class NfidVaultsService {
         all.map((p) => Principal.fromText(p)),
       ),
     ])
-    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+    return tx
   }
 
   /**
@@ -557,7 +524,7 @@ export class NfidVaultsService {
   }
 
   /**
-   * Submits an ICP transfer from the vault's wallet and waits for execution.
+   * Submits an ICP transfer from the vault's wallet.
    * `address` must be an AccountIdentifier hex string.
    */
   async transferVaultIcp(
@@ -567,7 +534,7 @@ export class NfidVaultsService {
     address: string,
     amount: bigint,
     memo?: string,
-  ): Promise<Transaction> {
+  ): Promise<Transaction | undefined> {
     const [tx] = await this.getManager(
       vaultCanisterId,
       identity,
@@ -580,11 +547,11 @@ export class NfidVaultsService {
         memo,
       ),
     ])
-    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+    return tx
   }
 
   /**
-   * Submits an ICRC-1 token transfer from the vault's wallet and waits for execution.
+   * Submits an ICRC-1 token transfer from the vault's wallet.
    */
   async transferVaultIcrc1(
     vaultCanisterId: string,
@@ -595,7 +562,7 @@ export class NfidVaultsService {
     toSubaccount: Uint8Array | number[] | undefined,
     amount: bigint,
     memo?: string,
-  ): Promise<Transaction> {
+  ): Promise<Transaction | undefined> {
     const [tx] = await this.getManager(
       vaultCanisterId,
       identity,
@@ -609,7 +576,7 @@ export class NfidVaultsService {
         memo,
       ),
     ])
-    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+    return tx
   }
 
   /**
@@ -619,19 +586,54 @@ export class NfidVaultsService {
   async purgeTransactions(
     vaultCanisterId: string,
     identity: SignIdentity,
-  ): Promise<Transaction> {
+  ): Promise<Transaction | undefined> {
     const [tx] = await this.getManager(
       vaultCanisterId,
       identity,
     ).requestTransaction([new PurgeTransactionRequest()])
-    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+
+    return tx
+  }
+
+  /**
+   * Approves one or more pending transactions.
+   */
+  async approveTransactions(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    transactionIds: bigint[],
+  ): Promise<Transaction[]> {
+    const approves: ApproveRequest[] = transactionIds.map((trId) => ({
+      trId,
+      state: TransactionState.Approved,
+    }))
+    return this.getManager(vaultCanisterId, identity).approveTransaction(
+      approves,
+    )
+  }
+
+  /**
+   * Rejects one or more pending transactions.
+   */
+  async rejectTransactions(
+    vaultCanisterId: string,
+    identity: SignIdentity,
+    transactionIds: bigint[],
+  ): Promise<Transaction[]> {
+    const approves: ApproveRequest[] = transactionIds.map((trId) => ({
+      trId,
+      state: TransactionState.Rejected,
+    }))
+    return this.getManager(vaultCanisterId, identity).approveTransaction(
+      approves,
+    )
   }
 
   async topUp(
     vaultCanisterId: string,
     identity: SignIdentity,
     amountE8s: bigint,
-  ): Promise<Transaction> {
+  ): Promise<Transaction | undefined> {
     const [tx] = await this.getManager(
       vaultCanisterId,
       identity,
@@ -642,10 +644,10 @@ export class NfidVaultsService {
         amountE8s,
       ),
     ])
-    return this.waitForTransaction(vaultCanisterId, identity, tx.id)
+    return tx
   }
 
-  private async scanVaultsForAddress(id: string): Promise<DashboardCache> {
+  private async scanVaultsForAddress(id: string): Promise<VaultsCache> {
     const vaultCanisters =
       await this.getAnonymousManagerActor().get_all_canisters()
     const anonymousIdentity = new AnonymousIdentity()

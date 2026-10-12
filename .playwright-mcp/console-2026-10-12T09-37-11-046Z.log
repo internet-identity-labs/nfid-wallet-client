@@ -1,0 +1,9 @@
+[  365825ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ webpack-internal:///83784:633
+[  367257ms] [WARNING] [webpack-dev-server] Warnings while compiling. @ webpack-internal:///83784:637
+[  367257ms] [WARNING] [webpack-dev-server] WARNING in ../../node_modules/@icp-sdk/canisters/chunk-YQY4FUNN.js 1:217-224
+Critical dependency: require function is used in a way in which dependencies cannot be statically extracted @ webpack-internal:///83784:637
+[  367258ms] [WARNING] [webpack-dev-server] WARNING in ../../node_modules/@icp-sdk/canisters/chunk-YQY4FUNN.js 1:346-353
+Critical dependency: require function is used in a way in which dependencies cannot be statically extracted @ webpack-internal:///83784:637
+[  367258ms] [INFO] [webpack-dev-server] App hot update... @ webpack-internal:///83784:633
+[  367258ms] [LOG] [HMR] Checking for updates on the server... @ webpack-internal:///55475:38
+[  367330ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ webpack-internal:///83784:633

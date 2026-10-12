@@ -131,6 +131,9 @@ const AuthenticationMachine = setup({
           "Internet Identity authentication failed",
       )
     },
+    twoFANetworkError: () => {
+      toaster.error("Something went wrong, please try again")
+    },
   },
 }).createMachine({
   id: "auth-machine",
@@ -320,6 +323,10 @@ const AuthenticationMachine = setup({
           },
           { target: "GetRecoveryProvisioningPlan" },
         ],
+        onError: {
+          target: "AuthSelection",
+          actions: "twoFANetworkError",
+        },
       },
     },
     TwoFA: {

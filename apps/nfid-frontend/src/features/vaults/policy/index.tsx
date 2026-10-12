@@ -13,7 +13,7 @@ import { VaultRole } from "@nfid/vaults"
 import { Principal } from "@icp-sdk/core/principal"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { useSWR } from "@nfid/swr"
-import { fetchVaultDetails } from "../utils"
+import { fetchVaultDetails, refetchVaults } from "../utils"
 
 export type VaultPolicyProps = {
   walletTheme: NFIDTheme
@@ -52,7 +52,7 @@ const VaultPolicyPage: FC<VaultPolicyProps> = ({
         { owner, subaccount, name, role: VaultRole.ADMIN },
         newQuorum,
       )
-      mutate()
+      refetchVaults(mutate)
     },
     [vaultId, identity],
   )
@@ -65,7 +65,7 @@ const VaultPolicyPage: FC<VaultPolicyProps> = ({
         identity as DelegationIdentity,
         quorum,
       )
-      mutate()
+      refetchVaults(mutate)
     },
     [vaultId, identity],
   )
@@ -79,7 +79,7 @@ const VaultPolicyPage: FC<VaultPolicyProps> = ({
         memberId,
         name,
       )
-      mutate()
+      refetchVaults(mutate)
     },
     [vaultId, identity],
   )
@@ -93,7 +93,7 @@ const VaultPolicyPage: FC<VaultPolicyProps> = ({
         memberId,
         newQuorum,
       )
-      mutate()
+      refetchVaults(mutate)
     },
     [vaultId, identity],
   )

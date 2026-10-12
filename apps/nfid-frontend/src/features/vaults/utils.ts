@@ -3,10 +3,18 @@ import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp"
 import { DelegationIdentity } from "@icp-sdk/core/identity"
 import { Principal } from "@dfinity/principal"
 import { ChainId, State } from "@nfid/integration/token/icrc1/enum/enums"
-import { ICP_CANISTER_ID, TRIM_ZEROS } from "@nfid/integration/token/constants"
+import {
+  ICP_CANISTER_ID,
+  ICP_INDEX_ID,
+  TRIM_ZEROS,
+} from "@nfid/integration/token/constants"
+import { IActivityAction } from "@nfid/integration/token/icrc1/types"
+import { icrc1TransactionHistoryService } from "@nfid/integration/token/icrc1/service/icrc1-transaction-history-service"
 import { FT } from "frontend/integration/ft/ft"
 import { VaultTokenBuilder } from "frontend/integration/ft/token-creator/vault-token-builder"
 import { fetchTokens } from "frontend/features/fungible-token/utils"
+import { nanoSecondsToDate } from "../activity/utils/activity"
+import { VaultDeposit } from "packages/ui/src/organisms/vaults/types"
 
 export const fetchVaults = async (principal: Principal) => {
   const address = AccountIdentifier.fromPrincipal({ principal }).toHex()
@@ -16,6 +24,15 @@ export const fetchVaults = async (principal: Principal) => {
     name: v.name,
     createdAt: 0,
   }))
+}
+
+export const refetchVaults = (fn: () => unknown): Promise<void> => {
+  return new Promise((resolve) =>
+    setTimeout(() => {
+      fn()
+      resolve()
+    }, 5000),
+  )
 }
 
 export const fetchVaultDetails = async (
@@ -100,4 +117,53 @@ export const tCyclesToIcp = (
 ): number => {
   const xdrPerIcp = Number(xdrPermyriadPerIcp) / 10_000
   return tCycles / xdrPerIcp
+}
+
+export const fetchVaultDeposits = async (
+  vaultId: string,
+  initedTokens: FT[],
+): Promise<VaultDeposit[]> => {
+  const canisters: Array<{
+    icrc1: { ledger: string; index: string }
+    blockNumberToStartFrom: undefined
+  }> = [
+    {
+      icrc1: { ledger: ICP_CANISTER_ID, index: ICP_INDEX_ID },
+      blockNumberToStartFrom: undefined,
+    },
+  ]
+
+  for (const token of initedTokens) {
+    const address = token.getTokenAddress()
+    const index = token.getTokenIndex()
+    if (index && address !== ICP_CANISTER_ID) {
+      canisters.push({
+        icrc1: { ledger: address, index },
+        blockNumberToStartFrom: undefined,
+      })
+    }
+  }
+
+  try {
+    const results = await icrc1TransactionHistoryService.getICRC1IndexData(
+      canisters,
+      vaultId,
+      BigInt(Number.MAX_SAFE_INTEGER),
+    )
+
+    return results
+      .flatMap((r) => r.transactions)
+      .filter((tx) => tx.type === IActivityAction.RECEIVED || tx.from === tx.to)
+      .map((tx) => ({
+        id: tx.transactionId.toString(),
+        from: tx.from ?? "",
+        to: tx.to ?? "",
+        amount: Number(tx.amount),
+        canisterId: tx.canister ?? ICP_CANISTER_ID,
+        timestamp: nanoSecondsToDate(tx.timestamp),
+      }))
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+  } catch {
+    return []
+  }
 }

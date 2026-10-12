@@ -99,12 +99,13 @@ export const PolicyUpdateModal: FC<UpdatePolicyModalProps> = ({
     if (!selectedMember) return
     try {
       setIsLoading(true)
-      await removeMember(
-        selectedMember.userId,
-        approversCurrentQuantity === approversQuantity
-          ? undefined
-          : approversQuantity,
-      )
+      const newQuorum =
+        approversQuantity === membersQuantity
+          ? approversQuantity - 1
+          : approversCurrentQuantity === approversQuantity
+            ? undefined
+            : approversQuantity
+      await removeMember(selectedMember.userId, newQuorum)
       onClose()
     } catch (e) {
       console.error((e as Error).message)
@@ -273,16 +274,15 @@ export const PolicyUpdateModal: FC<UpdatePolicyModalProps> = ({
         </div>
       )}
       <div className="mt-5 flex justify-end gap-2.5 h-10">
-        {type === PolicyUpdateType.EDIT_APPROVER &&
-          approversCurrentQuantity !== 1 && (
-            <Button
-              type="red"
-              isSmall
-              className="!px-0 w-10 mr-auto"
-              icon={<TrashIcon className="w-[18px] h-[18px] text-white" />}
-              onClick={() => setType(PolicyUpdateType.REMOVE_APPROVER)}
-            />
-          )}
+        {type === PolicyUpdateType.EDIT_APPROVER && membersQuantity > 1 && (
+          <Button
+            type="red"
+            isSmall
+            className="!px-0 w-10 mr-auto"
+            icon={<TrashIcon className="w-[18px] h-[18px] text-white" />}
+            onClick={() => setType(PolicyUpdateType.REMOVE_APPROVER)}
+          />
+        )}
         <Button
           type="stroke"
           isSmall

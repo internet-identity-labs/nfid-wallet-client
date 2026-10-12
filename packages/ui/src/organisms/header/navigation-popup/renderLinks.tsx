@@ -120,7 +120,7 @@ export const renderLink = (
             if (vaultBase) navigate(vaultBase)
           }}
         >
-          <span className="text-sm font-bold text-black dark:text-white">
+          <span className="text-sm font-semibold text-black dark:text-white">
             {vaultName ?? linkItem.title}
           </span>
           <div

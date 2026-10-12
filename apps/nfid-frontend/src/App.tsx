@@ -53,6 +53,10 @@ const VaultPortfolioPage = lazy(
   () => import("frontend/features/vaults/portfolio"),
 )
 
+const VaultTransactionsPage = lazy(
+  () => import("frontend/features/vaults/transactions"),
+)
+
 const VaultAdvancedControlsPage = lazy(
   () => import("frontend/features/vaults/advanced-controls"),
 )
@@ -410,6 +414,20 @@ export const App = () => {
                         cacheLoaded={cacheLoaded}
                       >
                         <VaultPortfolioPage
+                          walletTheme={walletTheme}
+                          setWalletTheme={setWalletTheme}
+                        />
+                      </AuthWrapper>
+                    }
+                  />
+                  <Route
+                    path={`${ProfileConstants.vaults}/${ProfileConstants.vault}/${ProfileConstants.vaultTransactions}`}
+                    element={
+                      <AuthWrapper
+                        isAuthenticated={isAuthenticated}
+                        cacheLoaded={cacheLoaded}
+                      >
+                        <VaultTransactionsPage
                           walletTheme={walletTheme}
                           setWalletTheme={setWalletTheme}
                         />

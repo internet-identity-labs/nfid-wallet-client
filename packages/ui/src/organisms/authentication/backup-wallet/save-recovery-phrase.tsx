@@ -3,6 +3,7 @@ import { CopyIcon } from "packages/ui/src/atoms/icons/copy"
 import { FC, useState } from "react"
 
 import { Button, Checkbox } from "@nfid-frontend/ui"
+import { Spinner } from "packages/ui/src/atoms/spinner"
 
 export interface AuthSaveRecoveryPhraseProps {
   onDone: () => void
@@ -10,6 +11,7 @@ export interface AuthSaveRecoveryPhraseProps {
   recoveryPhrase: string
   className?: string
   titleClassName?: string
+  isLoading?: boolean
 }
 
 export const AuthSaveRecoveryPhrase: FC<AuthSaveRecoveryPhraseProps> = ({
@@ -18,6 +20,7 @@ export const AuthSaveRecoveryPhrase: FC<AuthSaveRecoveryPhraseProps> = ({
   recoveryPhrase,
   className,
   titleClassName,
+  isLoading = false,
 }) => {
   const [checked, setChecked] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -50,7 +53,7 @@ export const AuthSaveRecoveryPhrase: FC<AuthSaveRecoveryPhraseProps> = ({
       <p>
         This recovery phrase restores your wallet in case your NFID Wallet
         number, password, or passkeys are lost. Keep this phrase secret, safe,
-        and offline,
+        and offline.
       </p>
       <div className="my-[10px] rounded-[12px] border border-black dark:border-zinc-500 flex flex-col">
         <div className="px-[10px] py-[10px] md:px-[14px] text-left h-[220px]">
@@ -79,11 +82,12 @@ export const AuthSaveRecoveryPhrase: FC<AuthSaveRecoveryPhraseProps> = ({
         />
       </div>
       <Button
-        disabled={!checked}
+        disabled={!checked || isLoading}
         className="mt-auto"
         block
         onClick={onDone}
         type="primary"
+        iconEnd={isLoading ? <Spinner /> : null}
       >
         Done
       </Button>

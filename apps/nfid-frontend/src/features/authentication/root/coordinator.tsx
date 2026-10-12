@@ -55,6 +55,7 @@ export default function AuthenticationCoordinator({
   const [is2FALoading, setIs2FALoading] = useState(false)
   const [isOtherOptionsLoading, setIsOtherOptionsLoading] = useState(false)
   const [isAddPasskeyLoading, setIsAddPasskeyLoading] = useState(false)
+  const [isSavingRecoveryPhrase, setIsSavingRecoveryPhrase] = useState(false)
   const [loginWithRecoverError, setLoginWithRecoverError] = useState("")
   const [signUpPasskeyLoading, setSignUpPasskeyLoading] = useState(false)
   const [loginWithRecoveryLoading, setLoginWithRecoveryLoading] =
@@ -433,12 +434,20 @@ export default function AuthenticationCoordinator({
           >
             <AuthSaveRecoveryPhrase
               name={walletName}
+              isLoading={isSavingRecoveryPhrase}
               onDone={() => {
+                setIsSavingRecoveryPhrase(true)
                 securityConnector
                   .createRecoveryPhrase(recoveryPhrase)
                   .then(() => {
                     send({ type: "DONE" })
                   })
+                  .catch((e: unknown) => {
+                    toaster.error(
+                      (e as Error)?.message ?? "Failed to save recovery phrase",
+                    )
+                  })
+                  .finally(() => setIsSavingRecoveryPhrase(false))
               }}
               recoveryPhrase={recoveryPhrase}
               titleClassName={isIdentityKit ? "lg:text-[28px]" : undefined}
@@ -510,9 +519,15 @@ export default function AuthenticationCoordinator({
                   .catch((e: unknown) => {
                     const msg =
                       (e as Error)?.message ?? "Failed to create passkey"
-                    toaster.error(msg)
-                    if (msg.includes("publickey-credentials-create")) {
-                      send({ type: "PASSKEY_FAILED" })
+                    if (msg.includes("either timed out or was not allowed")) {
+                      toaster.info(
+                        "It seems like the process was interrupted. Feel free to try again!",
+                      )
+                    } else {
+                      toaster.error(msg)
+                      if (msg.includes("publickey-credentials-create")) {
+                        send({ type: "PASSKEY_FAILED" })
+                      }
                     }
                   })
                   .finally(() => setIsAddPasskeyLoading(false))

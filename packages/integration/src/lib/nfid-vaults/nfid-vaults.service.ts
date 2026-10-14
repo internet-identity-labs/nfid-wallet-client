@@ -51,6 +51,9 @@ const DEFAULT_SUB_ACCOUNT =
 
 /** How many times a step that follows a paid-for vault is attempted. */
 const ATTEMPTS = 3
+const POLL_INTERVAL_MS = 1000
+const POLL_TIMEOUT_MS = 30_000
+const MULTI_SIG_SETTLE_MS = 5_000
 
 const VAULT_CACHE_TTL_MS = 5 * 60 * 1000
 const VAULTS_CACHE_NAME = "VAULTS_"
@@ -330,6 +333,7 @@ export class NfidVaultsService {
       role: VaultRole
     },
     newQuorum?: number,
+    currentQuorum?: number,
   ): Promise<Transaction | undefined> {
     const requests: (TransactionRequest & { batch_uid?: string })[] = [
       new MemberCreateTransactionRequestV2(
@@ -345,7 +349,7 @@ export class NfidVaultsService {
       identity,
       requests,
     )
-    return tx
+    return this.waitForTransaction(vaultCanisterId, identity, tx, currentQuorum)
   }
 
   /**
@@ -359,6 +363,7 @@ export class NfidVaultsService {
     identity: SignIdentity,
     memberId: string,
     name: string,
+    currentQuorum?: number,
   ): Promise<Transaction | undefined> {
     const [tx] = await this.getManager(
       vaultCanisterId,
@@ -366,7 +371,7 @@ export class NfidVaultsService {
     ).requestTransaction([
       new MemberUpdateNameTransactionRequest(memberId, name),
     ])
-    return tx
+    return this.waitForTransaction(vaultCanisterId, identity, tx, currentQuorum)
   }
 
   /**
@@ -380,6 +385,7 @@ export class NfidVaultsService {
     identity: SignIdentity,
     memberId: string,
     newQuorum?: number,
+    currentQuorum?: number,
   ): Promise<Transaction | undefined> {
     const requests: (TransactionRequest & { batch_uid?: string })[] = [
       new MemberRemoveTransactionRequest(memberId),
@@ -391,7 +397,7 @@ export class NfidVaultsService {
       identity,
       requests,
     )
-    return tx
+    return this.waitForTransaction(vaultCanisterId, identity, tx, currentQuorum)
   }
 
   /**
@@ -404,12 +410,13 @@ export class NfidVaultsService {
     vaultCanisterId: string,
     identity: SignIdentity,
     quorum: number,
+    currentQuorum?: number,
   ): Promise<Transaction | undefined> {
     const [tx] = await this.getManager(
       vaultCanisterId,
       identity,
     ).requestTransaction([new QuorumTransactionRequest(quorum)])
-    return tx
+    return this.waitForTransaction(vaultCanisterId, identity, tx, currentQuorum)
   }
 
   /**
@@ -431,7 +438,7 @@ export class NfidVaultsService {
         indexCanisterId ? Principal.fromText(indexCanisterId) : undefined,
       ),
     ])
-    return tx
+    return this.waitForTransaction(vaultCanisterId, identity, tx)
   }
 
   /**
@@ -451,7 +458,7 @@ export class NfidVaultsService {
         Principal.fromText(ledgerCanisterId),
       ),
     ])
-    return tx
+    return this.waitForTransaction(vaultCanisterId, identity, tx)
   }
 
   /**
@@ -489,6 +496,7 @@ export class NfidVaultsService {
     vaultCanisterId: string,
     identity: SignIdentity,
     principals: string[],
+    currentQuorum?: number,
   ): Promise<Transaction | undefined> {
     const all = principals.includes(vaultCanisterId)
       ? principals
@@ -501,7 +509,7 @@ export class NfidVaultsService {
         all.map((p) => Principal.fromText(p)),
       ),
     ])
-    return tx
+    return this.waitForTransaction(vaultCanisterId, identity, tx, currentQuorum)
   }
 
   /**
@@ -534,6 +542,7 @@ export class NfidVaultsService {
     address: string,
     amount: bigint,
     memo?: string,
+    currentQuorum?: number,
   ): Promise<Transaction | undefined> {
     const [tx] = await this.getManager(
       vaultCanisterId,
@@ -547,7 +556,7 @@ export class NfidVaultsService {
         memo,
       ),
     ])
-    return tx
+    return this.waitForTransaction(vaultCanisterId, identity, tx, currentQuorum)
   }
 
   /**
@@ -562,6 +571,7 @@ export class NfidVaultsService {
     toSubaccount: Uint8Array | number[] | undefined,
     amount: bigint,
     memo?: string,
+    currentQuorum?: number,
   ): Promise<Transaction | undefined> {
     const [tx] = await this.getManager(
       vaultCanisterId,
@@ -576,7 +586,7 @@ export class NfidVaultsService {
         memo,
       ),
     ])
-    return tx
+    return this.waitForTransaction(vaultCanisterId, identity, tx, currentQuorum)
   }
 
   /**
@@ -586,13 +596,13 @@ export class NfidVaultsService {
   async purgeTransactions(
     vaultCanisterId: string,
     identity: SignIdentity,
+    currentQuorum?: number,
   ): Promise<Transaction | undefined> {
     const [tx] = await this.getManager(
       vaultCanisterId,
       identity,
     ).requestTransaction([new PurgeTransactionRequest()])
-
-    return tx
+    return this.waitForTransaction(vaultCanisterId, identity, tx, currentQuorum)
   }
 
   /**
@@ -602,14 +612,23 @@ export class NfidVaultsService {
     vaultCanisterId: string,
     identity: SignIdentity,
     transactionIds: bigint[],
+    currentQuorum?: number,
   ): Promise<Transaction[]> {
     const approves: ApproveRequest[] = transactionIds.map((trId) => ({
       trId,
       state: TransactionState.Approved,
     }))
-    return this.getManager(vaultCanisterId, identity).approveTransaction(
-      approves,
+    const txs = await this.getManager(
+      vaultCanisterId,
+      identity,
+    ).approveTransaction(approves)
+    const settled = await this.waitForTransaction(
+      vaultCanisterId,
+      identity,
+      txs[0],
+      currentQuorum,
     )
+    return settled ? [settled, ...txs.slice(1)] : txs
   }
 
   /**
@@ -633,6 +652,7 @@ export class NfidVaultsService {
     vaultCanisterId: string,
     identity: SignIdentity,
     amountE8s: bigint,
+    currentQuorum?: number,
   ): Promise<Transaction | undefined> {
     const [tx] = await this.getManager(
       vaultCanisterId,
@@ -644,7 +664,7 @@ export class NfidVaultsService {
         amountE8s,
       ),
     ])
-    return tx
+    return this.waitForTransaction(vaultCanisterId, identity, tx, currentQuorum)
   }
 
   private async scanVaultsForAddress(id: string): Promise<VaultsCache> {
@@ -698,6 +718,52 @@ export class NfidVaultsService {
         canisterId: this.managerCanisterId,
         agent: HttpAgent.createSync({ ...agentBaseConfig, identity }),
       },
+    )
+  }
+
+  /**
+   * Polls until `submitted` reaches a terminal state.
+   *
+   * Pass `currentQuorum` for quorum-dependent transactions: the poll only
+   * runs when `currentQuorum === 1` (single approver → auto-executes on submit).
+   * Omit it for non-quorum transactions that always auto-execute.
+   *
+   * Returns `undefined` when `submitted` is undefined (nothing was submitted).
+   * - quorum undefined or 1: full poll up to timeoutMs, throws on timeout.
+   * - quorum > 1: short poll up to MULTI_SIG_SETTLE_MS to catch edge-case fast
+   *   executions (e.g. last-member removal). Returns submitted on timeout instead
+   *   of throwing — the caller's mutate() will reflect pending state.
+   */
+  private async waitForTransaction(
+    vaultCanisterId: string,
+    identity: Identity,
+    submitted: Transaction | undefined,
+    currentQuorum?: number,
+    intervalMs = POLL_INTERVAL_MS,
+    timeoutMs = POLL_TIMEOUT_MS,
+  ): Promise<Transaction | undefined> {
+    if (!submitted) return undefined
+
+    const isMultiSig = currentQuorum !== undefined && currentQuorum !== 1
+    const deadline = Date.now() + (isMultiSig ? MULTI_SIG_SETTLE_MS : timeoutMs)
+    const manager = this.getManager(vaultCanisterId, identity)
+    const terminal = new Set([
+      TransactionState.Executed,
+      TransactionState.Rejected,
+      TransactionState.Purged,
+    ])
+
+    while (Date.now() < deadline) {
+      const transactions = await manager.getTransactions()
+      const tx = transactions.find((t) => t.id === submitted.id)
+      if (tx && terminal.has(tx.state)) return tx
+      await new Promise((resolve) => setTimeout(resolve, intervalMs))
+    }
+
+    if (isMultiSig) return submitted
+
+    throw new Error(
+      `Transaction ${submitted.id} did not reach a terminal state within ${timeoutMs}ms`,
     )
   }
 }

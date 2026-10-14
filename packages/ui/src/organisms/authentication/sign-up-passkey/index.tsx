@@ -14,6 +14,7 @@ export function AuthSignUpPassKey({
   subTitle,
   createPasskeyError,
   clearError,
+  isIdentityKit,
 }: {
   getCaptcha: () => Promise<{
     png_base64: [] | [string]
@@ -32,6 +33,7 @@ export function AuthSignUpPassKey({
   title?: string
   subTitle?: string
   clearError: () => unknown
+  isIdentityKit?: boolean
 }) {
   const [walletName, setWalletName] = useState("")
   const [captcha, setCaptcha] = useState<
@@ -68,6 +70,7 @@ export function AuthSignUpPassKey({
         captchaLoading={captchaLoading}
         isCreatingWallet={isPasskeyCreating}
         error={createPasskeyError}
+        isIdentityKit={isIdentityKit}
       />
     )
 
@@ -98,6 +101,7 @@ export function AuthSignUpPassKey({
       }}
       isCreating={captchaLoading || isPasskeyCreating}
       applicationURL={applicationURL}
+      isIdentityKit={isIdentityKit}
     />
   )
 }

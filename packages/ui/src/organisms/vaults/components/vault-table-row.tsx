@@ -143,7 +143,12 @@ export const VaultTableRow = ({
         tx.state === TransactionState.Blocked ? (
           <>
             <p className="text-sm leading-5">
-              {tx.approves.length}/{tx.threshold || quorum}
+              {
+                tx.approves.filter(
+                  (a) => a.status === TransactionState.Approved,
+                ).length
+              }
+              /{tx.threshold || quorum}
             </p>
             <div className="ml-2 text-black dark:text-white">
               <IconWallet />

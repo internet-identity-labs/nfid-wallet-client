@@ -26,15 +26,6 @@ export const fetchVaults = async (principal: Principal) => {
   }))
 }
 
-export const refetchVaults = (fn: () => unknown): Promise<void> => {
-  return new Promise((resolve) =>
-    setTimeout(() => {
-      fn()
-      resolve()
-    }, 5000),
-  )
-}
-
 export const fetchVaultDetails = async (
   canisterId: string,
   identity: DelegationIdentity,

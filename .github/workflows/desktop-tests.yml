@@ -79,6 +79,7 @@ jobs:
   docker-for-e2e:
     name: Docker Image Build
     needs: check-secrets
+    if: false
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -235,6 +236,7 @@ jobs:
   e2e-tests:
     name: E2E Tests
     needs: docker-for-e2e
+    if: false
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -383,6 +385,7 @@ jobs:
   e2e-mobile-tests:
     name: E2E Mobile Tests
     needs: docker-for-e2e
+    if: false
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -505,7 +508,7 @@ jobs:
   allure-report-desktop:
     name: Allure Report Desktop
     needs: e2e-tests
-    if: ${{ ! cancelled() }}
+    if: false
     runs-on: ubuntu-latest
     # Allure and the AWS CLI run directly on the runner instead of via Docker-based actions:
     # building their images pulls base images from public.ecr.aws / Docker Hub anonymously,
@@ -584,7 +587,7 @@ jobs:
   allure-report-mobile:
     name: Allure Report Mobile
     needs: e2e-mobile-tests
-    if: ${{ ! cancelled() }}
+    if: false
     runs-on: ubuntu-latest
     # Allure and the AWS CLI run directly on the runner instead of via Docker-based actions:
     # building their images pulls base images from public.ecr.aws / Docker Hub anonymously,

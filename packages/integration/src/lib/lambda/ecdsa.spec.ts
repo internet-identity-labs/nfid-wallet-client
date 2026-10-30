@@ -30,7 +30,7 @@ const identity: JsonnableEd25519KeyIdentity = [
 describe("Lambda Sign/Register ECDSA", () => {
   jest.setTimeout(120000)
   const expectedGlobalAcc =
-    "5vmgr-rh2gt-xlv6s-xzynd-vsg5l-2oodj-nomhe-mpv4y-6rgpw-cmwyz-bqe"
+    "le4po-aw6ui-fksig-j5pvl-mbmqi-bk5ki-nzz2f-mmrqs-q3mcn-3iixh-6ae"
   describe("lambdaECDSA", () => {
     it("get global IC keys Lambda Flow", async function () {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
@@ -194,7 +194,9 @@ describe("Lambda Sign/Register ECDSA", () => {
         )
         fail("Should not come here")
       } catch (e: any) {
-        expect(e.message).toContain("not found")
+        expect(e.message).toContain(
+          "Cannot renew delegation for different session public key",
+        )
       }
 
       const dappSessionKey = Ed25519KeyIdentity.generate()

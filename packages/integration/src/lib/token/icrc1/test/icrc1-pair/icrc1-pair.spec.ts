@@ -19,7 +19,7 @@ import {
 } from "@nfid/integration"
 import { Icrc1Pair } from "@nfid/integration/token/icrc1/icrc1-pair/impl/Icrc1-pair"
 
-import { HTTPAccountResponse } from "../../../../_ic_api/identity_manager.d"
+import { ensureTestAccount } from "../../../../test-accounts"
 
 const principal = Principal.fromText(
   "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae",
@@ -38,8 +38,7 @@ describe("ICRC1 pair suite", () => {
       await generateDelegationIdentity(mockedIdentity)
     await replaceActorIdentity(userRegistry, delegationIdentity)
     await replaceActorIdentity(im, delegationIdentity)
-    const account = (await im.get_account()) as HTTPAccountResponse
-    root = account.data[0]!.principal_id
+    root = (await ensureTestAccount(delegationIdentity)).principal_id
   })
 
   it("Fail because already added", async () => {

@@ -9,6 +9,7 @@ import {
   Ed25519KeyIdentity,
 } from "@icp-sdk/core/identity"
 import { JsonnableEd25519KeyIdentity } from "@icp-sdk/core/identity"
+import { Principal } from "@icp-sdk/core/principal"
 
 import { WALLET_SCOPE } from "@nfid/config"
 
@@ -21,16 +22,42 @@ import {
   getPublicKey,
   renewDelegationThirdParty,
 } from "../delegation-factory/delegation-i"
+import { ensureTestAccount } from "../test-accounts"
+import { generateDelegationIdentity } from "../test-utils"
 
 const identity: JsonnableEd25519KeyIdentity = [
   "302a300506032b65700321003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
   "00000000000000000000000000000000000000000000000000000000000000003b6a27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29",
 ]
 
+/** Principal a dapp gets for `origin` through an anonymous delegation. */
+async function anonymousPrincipal(
+  identity: DelegationIdentity,
+  origin: string,
+): Promise<string> {
+  const sessionKey = Ed25519KeyIdentity.generate()
+  const chain = await getAnonymousDelegation(
+    origin,
+    new Uint8Array(sessionKey.getPublicKey().toDer()),
+    identity,
+  )
+  return DelegationIdentity.fromDelegation(sessionKey, chain)
+    .getPrincipal()
+    .toText()
+}
+
 describe("Lambda Sign/Register ECDSA", () => {
   jest.setTimeout(120000)
-  const expectedGlobalAcc =
-    "le4po-aw6ui-fksig-j5pvl-mbmqi-bk5ki-nzz2f-mmrqs-q3mcn-3iixh-6ae"
+  // The derived principals depend on the account's anchor, which changes when
+  // the dev Identity Manager is reset, so the tests check invariants instead
+  // of fixed principals.
+  beforeAll(async () => {
+    const { delegationIdentity } = await generateDelegationIdentity(
+      Ed25519KeyIdentity.fromParsedJson(identity),
+    )
+    await ensureTestAccount(delegationIdentity)
+  })
+
   describe("lambdaECDSA", () => {
     it("get global IC keys Lambda Flow", async function () {
       const mockedIdentity = Ed25519KeyIdentity.fromParsedJson(identity)
@@ -55,11 +82,9 @@ describe("Lambda Sign/Register ECDSA", () => {
       const globalICIdentity = await getGlobalDelegation(delegationIdentity, [
         "74gpt-tiaaa-aaaak-aacaa-cai",
       ])
-      expect(globalICIdentity.getPrincipal().toText()).toEqual(
-        expectedGlobalAcc,
-      )
       const principal = await getPublicKey(delegationIdentity)
-      expect(principal).toEqual(expectedGlobalAcc)
+      expect(globalICIdentity.getPrincipal().toText()).toEqual(principal)
+      expect(Principal.fromText(principal).isAnonymous()).toBe(false)
       await replaceActorIdentity(ii, globalICIdentity)
       try {
         await ii.get_principal(BigInt(1), WALLET_SCOPE)
@@ -113,9 +138,13 @@ describe("Lambda Sign/Register ECDSA", () => {
       const actualPrincipalId = actualIdentity.getPrincipal().toText()
       console.debug("actualPrincipalId", actualPrincipalId)
 
-      expect(actualPrincipalId).toEqual(
-        "hnjwm-ephxs-bqhnh-5cwrm-7ze5g-cgjuw-burgh-v6dqf-hgyrb-z5l2u-hae",
-      )
+      // Same origin, new session: same principal. Another origin gets its own.
+      expect(
+        await anonymousPrincipal(nfidDelegationIdentity, "nfid.one"),
+      ).toEqual(actualPrincipalId)
+      expect(
+        await anonymousPrincipal(nfidDelegationIdentity, "example.org"),
+      ).not.toEqual(actualPrincipalId)
     })
 
     it("get anonymous IC keys scoped to targets", async function () {
@@ -218,7 +247,10 @@ describe("Lambda Sign/Register ECDSA", () => {
       const actualPrincipalId = actualIdentity.getPrincipal().toText()
       console.debug("actualPrincipalId", actualPrincipalId)
 
-      expect(actualPrincipalId).toEqual(expectedGlobalAcc)
+      await replaceActorIdentity(im, nfidDelegationIdentity)
+      expect(actualPrincipalId).toEqual(
+        await getPublicKey(nfidDelegationIdentity),
+      )
 
       const delegationChainRenewed = await renewDelegationThirdParty(
         nfidDelegationIdentity,

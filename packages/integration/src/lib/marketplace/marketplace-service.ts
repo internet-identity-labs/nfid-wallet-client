@@ -61,8 +61,7 @@ export class MarketplaceService {
 
   async getConfig(): Promise<MarketplaceConfig> {
     const [raw] = (await this.oracle().get_marketplace_config()) as
-      | []
-      | [RawMarketplaceConfig]
+      [] | [RawMarketplaceConfig]
     if (!raw) throw new MarketplaceError({ kind: "notConfigured" })
     return {
       icpLedgerId: raw.icp_ledger.toText(),
@@ -334,6 +333,10 @@ export class MarketplaceService {
           ? { kind: "purchaseInProgress" }
           : { kind: "listingNotActive" },
       )
+    }
+    // Checked here too, so no ICP allowance is granted for a doomed call.
+    if (listing.seller === identity.getPrincipal().toText()) {
+      throw new MarketplaceError({ kind: "cannotBuyOwnListing" })
     }
     const config = await this.getConfig()
     const ledger = this.ledger(config.icpLedgerId, identity)

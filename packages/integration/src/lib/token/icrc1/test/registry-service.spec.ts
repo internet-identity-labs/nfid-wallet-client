@@ -8,6 +8,7 @@ import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
 
 import { userRegistry, im, replaceActorIdentity } from "../../../actors"
+import { ensureTestAccount } from "../../../test-accounts"
 import { generateDelegationIdentity } from "../../../test-utils"
 
 describe("ICRC1 suite", () => {
@@ -23,6 +24,7 @@ describe("ICRC1 suite", () => {
     })
     await replaceActorIdentity(userRegistry, delegationIdentity)
     await replaceActorIdentity(im, delegationIdentity)
+    await ensureTestAccount(delegationIdentity)
     const edId = Ed25519KeyIdentity.generate()
     await icrc1RegistryService.storeICRC1Canister(
       edId.getPrincipal().toText(),

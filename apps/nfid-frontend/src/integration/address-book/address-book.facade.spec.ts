@@ -26,6 +26,7 @@ import {
 import { Ed25519KeyIdentity } from "@icp-sdk/core/identity"
 import { mockIdentityA } from "packages/integration/src/lib/identity/mocks"
 import { generateDelegationIdentity } from "packages/integration/src/lib/test-utils"
+import { ensureTestAccount } from "packages/integration/src/lib/test-accounts"
 import { authState } from "packages/integration/src/lib/authentication/auth-state"
 
 describe("Address Book", () => {
@@ -35,6 +36,7 @@ describe("Address Book", () => {
     beforeAll(async () => {
       const identity = Ed25519KeyIdentity.fromParsedJson(mockIdentityA)
       const { delegationIdentity } = await generateDelegationIdentity(identity)
+      await ensureTestAccount(delegationIdentity)
       await authState.set({ delegationIdentity })
     })
 

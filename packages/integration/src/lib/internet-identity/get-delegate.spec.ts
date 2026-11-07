@@ -8,6 +8,8 @@ import {
 
 import { authState } from "@nfid/integration"
 
+import { getAnonymousDelegation } from "../delegation-factory/delegation-i"
+import { ensureTestAccount } from "../test-accounts"
 import { getAnonymousDelegate } from "./get-delegate"
 
 describe("get-delegate suite", () => {
@@ -37,6 +39,7 @@ describe("get-delegate suite", () => {
       dappSessionKey.getPublicKey().toDer(),
     )
 
+    await ensureTestAccount(nfidDelegationIdentity)
     await authState.set({
       identity: nfidDelegationIdentity,
       delegationIdentity: nfidDelegationIdentity,
@@ -85,8 +88,21 @@ describe("get-delegate suite", () => {
     )
 
     const actualPrincipalId = identity.getPrincipal().toText()
-    const expectedPrincipalId =
-      "hnjwm-ephxs-bqhnh-5cwrm-7ze5g-cgjuw-burgh-v6dqf-hgyrb-z5l2u-hae"
+
+    // The principal depends on the account's anchor (dev gets reset), so
+    // compare with a fresh anonymous delegation for the same origin.
+    const otherSessionKey = Ed25519KeyIdentity.generate()
+    const otherChain = await getAnonymousDelegation(
+      "nfid.one",
+      new Uint8Array(otherSessionKey.getPublicKey().toDer()),
+      nfidDelegationIdentity,
+    )
+    const expectedPrincipalId = DelegationIdentity.fromDelegation(
+      otherSessionKey,
+      otherChain,
+    )
+      .getPrincipal()
+      .toText()
 
     expect(actualPrincipalId).toBe(expectedPrincipalId)
   })

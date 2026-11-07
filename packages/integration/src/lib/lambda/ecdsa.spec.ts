@@ -138,14 +138,13 @@ describe("Lambda Sign/Register ECDSA", () => {
       const actualPrincipalId = actualIdentity.getPrincipal().toText()
       console.debug("actualPrincipalId", actualPrincipalId)
 
-      // Same origin, new session: same principal. It differs from the global one.
+      // Same origin, new session: same principal. Another origin gets its own.
       expect(
         await anonymousPrincipal(nfidDelegationIdentity, "nfid.one"),
       ).toEqual(actualPrincipalId)
-      await replaceActorIdentity(im, nfidDelegationIdentity)
-      expect(actualPrincipalId).not.toEqual(
-        await getPublicKey(nfidDelegationIdentity),
-      )
+      expect(
+        await anonymousPrincipal(nfidDelegationIdentity, "example.org"),
+      ).not.toEqual(actualPrincipalId)
     })
 
     it("get anonymous IC keys scoped to targets", async function () {

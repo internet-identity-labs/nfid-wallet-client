@@ -122,6 +122,18 @@ export const getActionMarkup = (
         icon: <IconCmpArrow className="rotate-[135deg] text-red-600" />,
       }
 
+    case IActivityAction.SELL:
+      return {
+        bg: "bg-red-50 dark:bg-red-900/60",
+        icon: <IconCmpArrow className="rotate-[135deg] text-red-600" />,
+      }
+
+    case IActivityAction.BUY:
+      return {
+        bg: "bg-emerald-50 dark:bg-emerald-900/60",
+        icon: <IconCmpArrow className="rotate-[-45deg] text-emerald-600" />,
+      }
+
     case IActivityAction.RECEIVED:
       return {
         bg: "bg-emerald-50 dark:bg-emerald-900/60",
@@ -454,19 +466,25 @@ export const ActivityTableRow = ({
                   "transition-opacity w-[20%] hidden sm:table-cell pl-[28px]",
                 )}
               >
-                <div className="flex items-center gap-2 dark:text-white">
-                  <ImageWithFallback
-                    alt={`${currentToken?.getTokenSymbol()} token`}
-                    fallbackSrc={IconNftPlaceholder}
-                    src={currentToken?.getTokenLogo()}
-                    className="rounded-full w-[28px] h-[28px]"
-                  />
-                  <TickerAmount
-                    value={asset.amount!}
-                    decimals={currentToken?.getTokenDecimals()}
-                    symbol={currentToken?.getTokenSymbol()!}
-                  />
-                </div>
+                {asset.type === "nft" ? (
+                  <p className="leading-5 dark:text-white">
+                    {asset.collectionName}
+                  </p>
+                ) : (
+                  <div className="flex items-center gap-2 dark:text-white">
+                    <ImageWithFallback
+                      alt={`${currentToken?.getTokenSymbol()} token`}
+                      fallbackSrc={IconNftPlaceholder}
+                      src={currentToken?.getTokenLogo()}
+                      className="rounded-full w-[28px] h-[28px]"
+                    />
+                    <TickerAmount
+                      value={asset.amount!}
+                      decimals={currentToken?.getTokenDecimals()}
+                      symbol={currentToken?.getTokenSymbol()!}
+                    />
+                  </div>
+                )}
               </td>
             )}
           </>
@@ -550,8 +568,20 @@ export const ActivityTableRow = ({
         ) : (
           <td className="leading-5 text-right sm:text-left">
             <div className="flex items-center">
-              <img src={asset.preview} className="object-cover w-10 h-10" />
-              <p className="ml-2.5 font-semibold">{asset.name}</p>
+              <ImageWithFallback
+                alt={asset.name}
+                fallbackSrc={IconNftPlaceholder}
+                src={asset.preview}
+                className="object-cover w-10 h-10 rounded-[8px]"
+              />
+              <div className="ml-2.5">
+                <p className="font-semibold dark:text-white">{asset.name}</p>
+                {asset.amount && (
+                  <p className="text-xs text-gray-400 whitespace-nowrap dark:text-zinc-500">
+                    {asset.amount}
+                  </p>
+                )}
+              </div>
             </div>
           </td>
         )}

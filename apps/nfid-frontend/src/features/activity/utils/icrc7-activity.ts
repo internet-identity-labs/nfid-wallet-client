@@ -1,5 +1,6 @@
 import { ActivityAssetNFT } from "packages/integration/src/lib/asset/types"
 
+import { ttlCacheService } from "@nfid/client-db"
 import { authState } from "@nfid/integration"
 import {
   Icrc7EventWithToken,
@@ -14,6 +15,23 @@ import { IActivityRow } from "../types"
 import { nanoSecondsToDate } from "./activity"
 
 const E8S = 100_000_000
+const COLLECTIONS_CACHE_KEY = "Icrc7ActivityCollections"
+const COLLECTIONS_TTL_MS = 60 * 60 * 1000
+
+/**
+ * Collections shown in the activity: all registered ones except Spam and
+ * Hidden. Cached for an hour; an expired list is returned at once and
+ * refreshed in the background.
+ */
+const getActivityCollections = (): Promise<NftCollection[]> =>
+  ttlCacheService.getOrFetch(
+    COLLECTIONS_CACHE_KEY,
+    async () =>
+      (await marketplaceService.getCollections()).filter(
+        (c) => c.status !== "Spam" && c.status !== "Hidden",
+      ),
+    COLLECTIONS_TTL_MS,
+  )
 
 export const formatIcp = (e8s: bigint): string => {
   const whole = e8s / BigInt(E8S)
@@ -83,9 +101,7 @@ export const getIcrc7ActivitiesRows = async (
 ): Promise<IActivityRow[]> => {
   try {
     const user = address ?? authState.getUserIdData().publicKey
-    const collections = (await marketplaceService.getCollections()).filter(
-      (c) => c.status !== "Spam" && c.status !== "Hidden",
-    )
+    const collections = await getActivityCollections()
     if (!collections.length) return []
 
     const byId = new Map(collections.map((c) => [c.canisterId, c]))

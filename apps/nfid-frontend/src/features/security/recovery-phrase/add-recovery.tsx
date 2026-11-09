@@ -57,7 +57,7 @@ export const AddRecoveryPhrase: React.FC<IAddRecoveryPhraseModal> = ({
         <p className="mt-5 text-sm">
           This recovery phrase restores your NFID in case the devices you
           registered are lost. Keep this phrase secret, safe, offline, and only
-          use it on <b>https://nfid.one</b>.
+          use it on <b>{window.location.origin}</b>.
         </p>
         <div>
           <div

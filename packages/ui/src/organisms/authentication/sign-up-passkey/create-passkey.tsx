@@ -15,6 +15,7 @@ export const AuthSignUpCreatePasskey = ({
   title,
   subTitle,
   error,
+  isIdentityKit,
 }: {
   onBack: () => void
   applicationURL?: string
@@ -24,6 +25,7 @@ export const AuthSignUpCreatePasskey = ({
   title?: string
   subTitle?: string | JSX.Element
   error?: string
+  isIdentityKit?: boolean
 }) => {
   const { register, handleSubmit, formState, setError } = useForm<{
     walletName: string
@@ -31,7 +33,7 @@ export const AuthSignUpCreatePasskey = ({
 
   useEffect(() => {
     if (error) setError("walletName", { message: error })
-  }, [error])
+  }, [error, setError])
 
   return (
     <div className="flex flex-col flex-grow h-full">
@@ -44,6 +46,7 @@ export const AuthSignUpCreatePasskey = ({
         withLogo={withLogo}
         title={title}
         subTitle={subTitle}
+        isIdentityKit={isIdentityKit}
       />
       <div className="flex flex-col flex-1">
         <img src={Img} className="my-auto" alt="create passkey" />

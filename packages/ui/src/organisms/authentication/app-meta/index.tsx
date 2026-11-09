@@ -13,6 +13,8 @@ export interface AuthAppMetaProps {
   subTitle?: string | JSX.Element
   withLogo?: boolean
   isIdentityKit?: boolean
+  classnames?: string
+  titleClassnames?: string
 }
 
 export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
@@ -21,12 +23,19 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
   title = "Connect to",
   withLogo = true,
   isIdentityKit,
+  classnames,
+  titleClassnames,
 }) => {
   const isDarkTheme = useDarkTheme()
 
   return (
     <>
-      <div className="flex flex-col items-center w-full pt-8 pb-[30px] dark:text-white">
+      <div
+        className={clsx(
+          "flex flex-col items-center w-full pt-8 pb-[30px] dark:text-white",
+          classnames,
+        )}
+      >
         {withLogo && (
           <img
             src={isDarkTheme ? LogoLanding : LogoMain}
@@ -39,6 +48,7 @@ export const AuthAppMeta: React.FC<AuthAppMetaProps> = ({
             className={clsx(
               "mt-5 mb-3 text-sm leading-6 text-black dark:text-white",
               !withLogo && "!text-[28px]",
+              titleClassnames,
             )}
           >
             {title}

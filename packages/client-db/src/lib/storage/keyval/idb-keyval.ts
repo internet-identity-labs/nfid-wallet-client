@@ -23,6 +23,11 @@ const _openDbStore = async (
       }
       database.createObjectStore(storeName)
     },
+    blocking(_currentVersion, _newVersion, event) {
+      // Another tab requested a version change or deletion on this database.
+      // Close this connection so the pending request isn't blocked indefinitely.
+      (event.target as IDBDatabase).close()
+    },
   })
 }
 

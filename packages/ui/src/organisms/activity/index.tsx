@@ -54,6 +54,8 @@ export const txOptions = [
   { label: "Approve", value: `${IActivityAction.APPROVE}` },
   { label: "Mint", value: `${IActivityAction.MINT}` },
   { label: "Burn", value: `${IActivityAction.BURN}` },
+  { label: "Buy", value: `${IActivityAction.BUY}` },
+  { label: "Sell", value: `${IActivityAction.SELL}` },
 ]
 
 export interface ActivityProps {

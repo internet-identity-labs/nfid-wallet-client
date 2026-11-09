@@ -8,6 +8,7 @@ import { KongSwapTransactionImpl } from "src/integration/swap/kong/impl/kong-swa
 import { SwapStage } from "src/integration/swap/types/enums"
 
 import { authState } from "@nfid/integration"
+import { ensureTestAccount } from "packages/integration/src/lib/test-accounts"
 
 import { IcpSwapTransactionImpl } from "../../icpswap/impl/icp-swap-transaction-impl"
 import { SwapTransaction as SwapTransactionCandid } from "@nfid/integration/_ic_api/swap_trs_storage.d"
@@ -20,7 +21,8 @@ const mock: JsonnableEd25519KeyIdentity = [
 ]
 
 describe("SwapTransactionService", () => {
-  jest.setTimeout(10000)
+  // Creating the test account on a reset dev environment takes a few calls.
+  jest.setTimeout(60000)
 
   let service: SwapTransactionService
 
@@ -98,6 +100,7 @@ describe("SwapTransactionService", () => {
       chainRoot,
     )
 
+    await ensureTestAccount(delegationIdentity)
     await authState.set({
       identity: delegationIdentity,
       delegationIdentity: delegationIdentity,

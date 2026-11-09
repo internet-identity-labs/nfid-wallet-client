@@ -16,6 +16,7 @@ export const AuthSignUpCaptcha = ({
   captcha,
   captchaLoading,
   error,
+  isIdentityKit,
 }: {
   onBack: () => void
   applicationURL?: string
@@ -28,6 +29,7 @@ export const AuthSignUpCaptcha = ({
   captchaLoading?: boolean
   captcha: string
   error?: string
+  isIdentityKit?: boolean
 }) => {
   const { register, handleSubmit, formState, setError, watch } = useForm<{
     captcha: string
@@ -39,12 +41,12 @@ export const AuthSignUpCaptcha = ({
         message: error,
       })
     }
-  }, [error])
+  }, [error, setError])
 
   const inputValue = watch("captcha")
 
   return (
-    <div className="h-full flex-grow flex flex-col">
+    <div className="flex flex-col flex-grow h-full">
       <IconCmpArrow
         className="absolute w-6 transition-opacity cursor-pointer hover:opacity-50 shrink-0 top-5 left-5"
         onClick={onBack}
@@ -54,6 +56,7 @@ export const AuthSignUpCaptcha = ({
         withLogo={withLogo}
         title={title}
         subTitle={subTitle}
+        isIdentityKit={isIdentityKit}
       />
       <div className="flex flex-col flex-1">
         <img

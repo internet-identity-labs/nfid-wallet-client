@@ -36,6 +36,32 @@ export interface IsApprovedArg {
   from_subaccount: [] | [Uint8Array | number[]]
   spender: Account
 }
+export interface GetBlocksRequest {
+  start: bigint
+  length: bigint
+}
+export interface BlockWithId {
+  id: bigint
+  block: Value
+}
+export interface ArchivedBlocks {
+  args: Array<GetBlocksRequest>
+  callback: [Principal, string]
+}
+export interface GetBlocksResult {
+  log_length: bigint
+  blocks: Array<BlockWithId>
+  archived_blocks: Array<ArchivedBlocks>
+}
+export interface ArchiveGetBlocksResult {
+  log_length: bigint
+  blocks: Array<BlockWithId>
+  archived_blocks: unknown
+}
+export type _ARCHIVE_SERVICE = Record<
+  string,
+  ActorMethod<[Array<GetBlocksRequest>], ArchiveGetBlocksResult>
+>
 export interface _SERVICE {
   icrc7_name: ActorMethod<[], string>
   icrc7_symbol: ActorMethod<[], string>
@@ -50,6 +76,7 @@ export interface _SERVICE {
     [Array<bigint>],
     Array<[] | [Array<[string, Value]>]>
   >
+  icrc3_get_blocks: ActorMethod<[Array<GetBlocksRequest>], GetBlocksResult>
   icrc37_is_approved: ActorMethod<[Array<IsApprovedArg>], Array<boolean>>
   icrc37_approve_tokens: ActorMethod<[Array<ApproveTokenArg>], unknown>
   icrc37_revoke_token_approvals: ActorMethod<
@@ -58,4 +85,5 @@ export interface _SERVICE {
   >
 }
 export declare const idlFactory: IDL.InterfaceFactory
+export declare const archiveIdlFactory: (method: string) => IDL.InterfaceFactory
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[]

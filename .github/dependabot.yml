@@ -6,22 +6,37 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 1
+    # One PR per group below; majors are kept apart so a breaking release
+    # does not block the safe minor/patch bumps (see /dependabot-update).
+    open-pull-requests-limit: 3
     versioning-strategy: increase
     commit-message:
       prefix: "[yarn]"
     assignees:
       - "vitalii-pustovyi"
     groups:
-      dependencies:
+      # A package goes to the first group it matches.
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+      e2e-tooling-major:
+        update-types:
+          - "major"
         patterns:
-          - "*"
+          - "@wdio/*"
+          - "webdriverio"
+          - "expect-webdriverio"
+          - "eslint-plugin-wdio"
+          - "geckodriver"
+          - "chromedriver"
+          - "@cucumber/*"
+      major:
+        update-types:
+          - "major"
     ignore:
       - dependency-name: "@icp-sdk/core"
       - dependency-name: "@icp-sdk/auth"
-      - dependency-name: "lint-staged"
-      - dependency-name: "typescript"
-      - dependency-name: "webpack-dev-server"
 
   # This section configures Dependabot to update GitHub Actions dependencies.
   - package-ecosystem: "github-actions"

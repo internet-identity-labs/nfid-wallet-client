@@ -39,6 +39,14 @@ Then(
     }
     const formatedShortAddress = `${address.slice(0, 6)}...${address.slice(-4)}`
 
+    // The previous step refreshes the page; wait for the address book to render
+    // before asserting, otherwise the check runs while the app loader is shown.
+    await (
+      await AddressBook.addressRowByName(name)
+    )
+      .waitForDisplayed({ timeout: 30000 })
+      .catch(() => undefined)
+
     await softAssertAll(
       [
         async () => {

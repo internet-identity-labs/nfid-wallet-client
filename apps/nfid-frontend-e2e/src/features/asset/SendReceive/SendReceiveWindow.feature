@@ -17,7 +17,22 @@ Feature: SendReceive dialog window
     And User opens Receive dialog window
     Then Verifying that the Account ID is <account ID> and the Principal is <wallet address>
     Examples:
-      | NFID number | account ID                            | wallet address                        | nft                   | balance | fee    | currency |
-      | 31870       | 0c754c4a1da28c73bd911e4cd3e88...3ae69 | 6hg7q-37lzt-3lpdo-oocet-itvrv...s-vae | ICPuppiesWearables145 | 0       | 0.0001 | ICP      |
-      | 100000830   | 05f121c2d97efa73386133c27f790...57148 | wlmjt-42cl4-bfewy-wqnsd-onwge...a-bqe | ICPets3808            | 0.0497  | 0.0001 | ICP      |
-      | 200000276   | 3c23a07edbdca387a29d6ba2c644f...f876e | zmfwj-ds7r7-ixsfr-b6mpz-mz46s...i-yae | ICPets349             | 0.0489  | 0.0001 | ICP      |
+      | NFID number | account ID                            | wallet address                        | nft         | balance | fee    | currency |
+      | 200000099   | 88a219cd353c78dfb7973381f3fc5...79fa2 | lnomy-nldge-bihr2-wedzc-ont46...6-eae | BoxyDude265 | 0.2194  | 0.0001 | ICP      |
+
+  @sendreceive
+  Scenario Outline: User checks his balance and fee during send flow and his Receive data
+    Given User opens NFID site
+    And User is already authenticated by <NFID number> anchor
+    And Verifying that tokens are displayed on assets tab
+    When User opens Send dialog window
+    And User selects <currency> from send options
+    And User sets the amount to '0.0001'
+    Then Verifying that the balance is calculated as <balance> and fee is calculated as <fee>
+    When User refreshes the page
+    And User opens Receive dialog window
+    Then Verifying that the Account ID is <account ID> and the Principal is <wallet address>
+    Examples:
+      | NFID number | account ID                            | wallet address                        | balance | fee    | currency |
+      | 200000103   | 1a119fe7a7d14b424652bc29c77a0...9c2ac | eok5k-qews5-724zh-n33hc-4h5bk...r-nae | 0       | 0.0001 | ICP      |
+      | 200000100   | 1ad373cd558bf77ea360d0946b4b1...f173b | 3nuf7-ugqoq-2yuoa-llo2k-db5i2...5-7ae | 0.05    | 0.0001 | ICP      |

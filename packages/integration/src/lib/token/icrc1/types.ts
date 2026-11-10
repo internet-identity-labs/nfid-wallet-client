@@ -9,6 +9,8 @@ export enum IActivityAction {
   MINT = "Mint",
   BURN = "Burn",
   APPROVE = "Approve",
+  BUY = "Buy",
+  SELL = "Sell",
 }
 export interface ICRC1 {
   logo: string | undefined

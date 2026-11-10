@@ -4,7 +4,31 @@
 // `reserved` on return: collections differ in the result shape (the spec
 // returns `vec opt Result`, ORIGYN core_nft wraps it in an outer Result).
 // The effect is verified afterwards with `icrc37_is_approved`.
-export const idlFactory = ({ IDL }: any) => {
+//
+// icrc3_get_blocks reads the transaction log for the activity page.
+
+/** ICRC-3 archive: `method` is the callback name from `archived_blocks`. */
+export const archiveIdlFactory =
+  (method: string) =>
+  ({ IDL }: any) => {
+    const { GetBlocksRequest, BlockWithId } = icrc3Types(IDL)
+    return IDL.Service({
+      [method]: IDL.Func(
+        [IDL.Vec(GetBlocksRequest)],
+        [
+          IDL.Record({
+            log_length: IDL.Nat,
+            blocks: IDL.Vec(BlockWithId),
+            // Nested archives are not followed.
+            archived_blocks: IDL.Reserved,
+          }),
+        ],
+        ["query"],
+      ),
+    })
+  }
+
+const icrc3Types = (IDL: any) => {
   const Value = IDL.Rec()
   Value.fill(
     IDL.Variant({
@@ -16,6 +40,27 @@ export const idlFactory = ({ IDL }: any) => {
       Array: IDL.Vec(Value),
     }),
   )
+  const GetBlocksRequest = IDL.Record({ start: IDL.Nat, length: IDL.Nat })
+  const BlockWithId = IDL.Record({ id: IDL.Nat, block: Value })
+  return { Value, GetBlocksRequest, BlockWithId }
+}
+
+export const idlFactory = ({ IDL }: any) => {
+  const { Value, GetBlocksRequest, BlockWithId } = icrc3Types(IDL)
+  const ArchivedBlocks = IDL.Record({
+    args: IDL.Vec(GetBlocksRequest),
+    callback: IDL.Func(
+      [IDL.Vec(GetBlocksRequest)],
+      [
+        IDL.Record({
+          log_length: IDL.Nat,
+          blocks: IDL.Vec(BlockWithId),
+          archived_blocks: IDL.Reserved,
+        }),
+      ],
+      ["query"],
+    ),
+  })
   const Account = IDL.Record({
     owner: IDL.Principal,
     subaccount: IDL.Opt(IDL.Vec(IDL.Nat8)),
@@ -61,6 +106,17 @@ export const idlFactory = ({ IDL }: any) => {
     icrc7_token_metadata: IDL.Func(
       [IDL.Vec(IDL.Nat)],
       [IDL.Vec(IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, Value))))],
+      ["query"],
+    ),
+    icrc3_get_blocks: IDL.Func(
+      [IDL.Vec(GetBlocksRequest)],
+      [
+        IDL.Record({
+          log_length: IDL.Nat,
+          blocks: IDL.Vec(BlockWithId),
+          archived_blocks: IDL.Vec(ArchivedBlocks),
+        }),
+      ],
       ["query"],
     ),
     icrc37_is_approved: IDL.Func(

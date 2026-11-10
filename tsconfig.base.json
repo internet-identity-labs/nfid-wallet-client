@@ -39,6 +39,9 @@
       "@nfid/integration/promotion": [
         "packages/integration/src/lib/promotion/index.ts"
       ],
+      "@nfid/integration/marketplace": [
+        "packages/integration/src/lib/marketplace/index.ts"
+      ],
       "@nfid/integration/token/*": ["packages/integration/src/lib/token/*"],
       "@nfid/integration/_ic_api/*": ["packages/integration/src/lib/_ic_api/*"],
       "frontend/*": ["apps/nfid-frontend/src/*"],

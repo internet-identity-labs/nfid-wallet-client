@@ -6,6 +6,7 @@ import {
   getIcpViewOnlyActivitiesRows,
 } from "./icrc1-activity"
 import { getSwapActivitiesRows } from "./swap-activity"
+import { getIcrc7ActivitiesRows } from "./icrc7-activity"
 import { fetchBtcAddress } from "frontend/util/fetch-btc-address"
 import { fetchEthAddress } from "frontend/util/fetch-eth-address"
 import { polygonTransactionService } from "frontend/integration/ethereum/polygon/pol-transaction.service"
@@ -36,13 +37,19 @@ export const getAllActivity = async (
   const btcAddress = await fetchBtcAddress()
   const evmAddress = await fetchEthAddress()
 
-  const [icrc1Activities, swapActivities, btcActivities, evmActivities] =
-    await Promise.all([
-      getIcrc1ActivitiesRows(limit, activeTokens),
-      getSwapActivitiesRows(activeTokens),
-      getBtcActivitiesRows(btcAddress),
-      fetchEvmActivitiesSequentially(evmAddress, testnetEnabled),
-    ])
+  const [
+    icrc1Activities,
+    icrc7Activities,
+    swapActivities,
+    btcActivities,
+    evmActivities,
+  ] = await Promise.all([
+    getIcrc1ActivitiesRows(limit, activeTokens),
+    getIcrc7ActivitiesRows(limit),
+    getSwapActivitiesRows(activeTokens),
+    getBtcActivitiesRows(btcAddress),
+    fetchEvmActivitiesSequentially(evmAddress, testnetEnabled),
+  ])
 
   const [
     ethActivities,
@@ -61,6 +68,7 @@ export const getAllActivity = async (
 
   const activitiesArray = [
     ...icrc1Activities,
+    ...icrc7Activities,
     ...swapActivities,
     ...btcActivities,
     ...ethActivities,
@@ -111,7 +119,11 @@ export const getAllViewOnlyActivity = async (
     ]
   }
 
-  return getIcpViewOnlyActivitiesRows(address, limit, activeTokens)
+  const [icrc1Activities, icrc7Activities] = await Promise.all([
+    getIcpViewOnlyActivitiesRows(address, limit, activeTokens),
+    getIcrc7ActivitiesRows(limit, address),
+  ])
+  return [...icrc1Activities, ...icrc7Activities]
 }
 
 const fetchEvmActivitiesSequentially = async (

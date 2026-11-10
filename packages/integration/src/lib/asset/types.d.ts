@@ -230,6 +230,10 @@ declare interface ActivityAssetNFT {
   amount?: string
   amountTo?: string
   error?: string
+  /** Collection canister, used by the token filter. */
+  canister?: string
+  chainId?: ChainId
+  collectionName?: string
 }
 
 declare interface ActivityAssetFT {

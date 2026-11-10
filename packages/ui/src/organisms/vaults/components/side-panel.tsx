@@ -491,7 +491,7 @@ export const VaultSidePanel: FC<VaultSidePanelProps> = ({
                   <Button
                     icon={
                       isApproving ? (
-                        <Spinner className="w-5 h-5 text-gray-300 dark:text-white" />
+                        <Spinner className="w-5 h-5 text-gray-300 !text-white asdrzsd" />
                       ) : null
                     }
                     disabled={

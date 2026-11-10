@@ -13,7 +13,6 @@ import {
   fetchVaultDeposits,
   fetchVaultDetails,
   fetchVaultInitedTokens,
-  refetchVaults,
 } from "../utils"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { portfolioService } from "frontend/integration/portfolio-balance/portfolio-service"
@@ -26,6 +25,12 @@ import {
   WALLET_FEE,
   TRILLION,
 } from "@nfid/integration/token/constants"
+import { TransactionState, TransactionType } from "@nfid/vaults"
+
+const TRANSFER_TYPES = new Set([
+  TransactionType.TransferQuorum,
+  TransactionType.TransferICRC1Quorum,
+])
 
 type VaultDetailsProps = {
   walletTheme: NFIDTheme
@@ -51,7 +56,11 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
     { revalidateOnFocus: false, revalidateIfStale: false },
   )
 
-  const { data: vaultTokens, isLoading: isTokensLoading } = useSWR(
+  const {
+    data: vaultTokens,
+    isLoading: isTokensLoading,
+    mutate: mutateTokens,
+  } = useSWR(
     vaultId && identity ? ["vaultInitedTokens", vaultId] : null,
     () => fetchVaultInitedTokens(vaultId!, identity! as DelegationIdentity),
     { revalidateOnFocus: false },
@@ -59,7 +68,11 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
 
   const initedTokens = vaultTokens?.initedTokens ?? []
 
-  const { data: usdBalance, isLoading: isUsdLoading } = useSWR(
+  const {
+    data: usdBalance,
+    isLoading: isUsdLoading,
+    mutate: mutateUsdBalance,
+  } = useSWR(
     initedTokens.length ? ["vaultUsdBalance", vaultId] : null,
     () => portfolioService.getVaultPortfolioUSDBalance(initedTokens),
     { revalidateOnFocus: false },
@@ -90,26 +103,39 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
       ? Number(icpTokenBalance) / 10 ** ICP_DECIMALS - WALLET_FEE
       : undefined
 
+  const currentQuorum = vault?.state.quorum.quorum
+
   const topUp = useCallback(
     async (amount: string) => {
       if (!vaultId || !identity) return
       const amountRaw = BigInt(Math.round(Number(amount) * 10 ** ICP_DECIMALS))
-      await nfidVaultsService.topUp(vaultId, identity, amountRaw)
+      await nfidVaultsService.topUp(vaultId, identity, amountRaw, currentQuorum)
     },
-    [vaultId, identity],
+    [vaultId, identity, currentQuorum],
   )
 
   const approve = useCallback(
     async (txIds: string[]) => {
       if (!vaultId || !identity) return
-      await nfidVaultsService.approveTransactions(
+      const result = await nfidVaultsService.approveTransactions(
         vaultId,
         identity,
         txIds.map(BigInt),
+        currentQuorum,
       )
-      refetchVaults(mutate)
+      await mutate()
+      if (
+        result?.some(
+          (tx) =>
+            tx.state === TransactionState.Executed &&
+            TRANSFER_TYPES.has(tx.transactionType),
+        )
+      ) {
+        await mutateTokens()
+        mutateUsdBalance()
+      }
     },
-    [vaultId, identity, mutate],
+    [vaultId, identity, currentQuorum, mutate, mutateTokens, mutateUsdBalance],
   )
 
   const reject = useCallback(
@@ -120,7 +146,7 @@ const VaultDetailsPage: FC<VaultDetailsProps> = ({
         identity,
         txIds.map(BigInt),
       )
-      refetchVaults(mutate)
+      await mutate()
     },
     [vaultId, identity, mutate],
   )

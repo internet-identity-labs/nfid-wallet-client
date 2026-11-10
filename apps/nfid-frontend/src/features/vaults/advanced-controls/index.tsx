@@ -6,7 +6,11 @@ import { VaultAdvancedControls } from "packages/ui/src/organisms/vaults/advanced
 
 import { NFIDTheme } from "frontend/App"
 import { useIdentity } from "frontend/hooks/identity"
-import { fetchVaultInitedTokens, formatCycles, refetchVaults } from "../utils"
+import {
+  fetchVaultDetails,
+  fetchVaultInitedTokens,
+  formatCycles,
+} from "../utils"
 import { useSWR } from "@nfid/swr"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { nfidVaultsService } from "@nfid/integration"
@@ -38,6 +42,14 @@ const VaultAdvancedControlsPage: FC<VaultPortfolioProps> = ({
     nfidVaultsService.getControllers(vaultId!, identity!),
   )
 
+  const { data: vault, mutate: mutateVault } = useSWR(
+    vaultId && identity ? `vault-details-${vaultId}` : null,
+    () => fetchVaultDetails(vaultId!, identity! as DelegationIdentity),
+    { revalidateOnFocus: false, revalidateIfStale: false },
+  )
+
+  const currentQuorum = vault?.state.quorum.quorum
+
   const { data: cyclesBalance, mutate: updateCycleBalance } = useSWR(
     vaultId && identity ? ["vault-cycles", vaultId] : null,
     () => nfidVaultsService.getCyclesBalance(vaultId!, identity!),
@@ -66,25 +78,31 @@ const VaultAdvancedControlsPage: FC<VaultPortfolioProps> = ({
   const updateControllers = useCallback(
     async (controllers: string[]) => {
       if (!vaultId || !identity) return
-      await nfidVaultsService.updateControllers(vaultId, identity, controllers)
-      refetchVaults(mutate)
+      await nfidVaultsService.updateControllers(
+        vaultId,
+        identity,
+        controllers,
+        currentQuorum,
+      )
+      mutate()
     },
-    [vaultId, identity, mutate],
+    [vaultId, identity, currentQuorum, mutate],
   )
 
   const purge = useCallback(async () => {
     if (!vaultId || !identity) return
-    await nfidVaultsService.purgeTransactions(vaultId, identity)
-  }, [vaultId, identity])
+    await nfidVaultsService.purgeTransactions(vaultId, identity, currentQuorum)
+    await mutateVault()
+  }, [vaultId, identity, currentQuorum, mutateVault])
 
   const topUp = useCallback(
     async (amount: string) => {
       if (!vaultId || !identity) return
       const amountRaw = BigInt(Number(amount) * 10 ** ICP_DECIMALS)
-      await nfidVaultsService.topUp(vaultId, identity, amountRaw)
-      refetchVaults(updateCycleBalance)
+      await nfidVaultsService.topUp(vaultId, identity, amountRaw, currentQuorum)
+      updateCycleBalance()
     },
-    [vaultId, identity],
+    [vaultId, identity, currentQuorum, updateCycleBalance],
   )
 
   return (

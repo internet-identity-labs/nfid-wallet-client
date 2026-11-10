@@ -73,7 +73,6 @@ import {
 import {
   fetchVaultDetails,
   fetchVaultInitedTokens,
-  refetchVaults,
 } from "frontend/features/vaults/utils"
 import { DelegationIdentity } from "@dfinity/identity"
 import { nfidVaultsService } from "@nfid/integration"
@@ -370,6 +369,7 @@ export const TransferFT = ({
       setIsSuccessOpen(true)
       setIsVaultTxLoading(true)
       try {
+        const currentQuorum = vaultDetails?.state.quorum.quorum
         if (token.getTokenAddress() === ICP_CANISTER_ID) {
           await nfidVaultsService.transferVaultIcp(
             vaultCanister,
@@ -382,6 +382,7 @@ export const TransferFT = ({
                 .toFixed(),
             ),
             note.trim() || undefined,
+            currentQuorum,
           )
         } else {
           const { owner, subaccount } = decodeIcrcAccount(to)
@@ -398,12 +399,13 @@ export const TransferFT = ({
                 .toFixed(),
             ),
             note.trim() || undefined,
+            currentQuorum,
           )
         }
         setSuccessMessage(
           `Transaction ${amount} ${token.getTokenSymbol()} successful`,
         )
-        refetchVaults(mutateVaultDetails)
+        mutateVaultDetails()
       } catch (e) {
         console.error(`Vault transfer error: ${(e as Error).message ?? e}`)
         setErrorMessage(DEFAULT_TRANSFER_ERROR)

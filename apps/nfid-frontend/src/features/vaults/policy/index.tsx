@@ -13,7 +13,7 @@ import { VaultRole } from "@nfid/vaults"
 import { Principal } from "@icp-sdk/core/principal"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { useSWR } from "@nfid/swr"
-import { fetchVaultDetails, refetchVaults } from "../utils"
+import { fetchVaultDetails } from "../utils"
 
 export type VaultPolicyProps = {
   walletTheme: NFIDTheme
@@ -38,6 +38,8 @@ const VaultPolicyPage: FC<VaultPolicyProps> = ({
     { revalidateOnFocus: false, revalidateIfStale: false },
   )
 
+  const currentQuorum = vault?.state.quorum.quorum
+
   const addMember = useCallback(
     async (
       owner: Principal,
@@ -51,10 +53,11 @@ const VaultPolicyPage: FC<VaultPolicyProps> = ({
         identity as DelegationIdentity,
         { owner, subaccount, name, role: VaultRole.ADMIN },
         newQuorum,
+        currentQuorum,
       )
-      refetchVaults(mutate)
+      await mutate()
     },
-    [vaultId, identity],
+    [vaultId, identity, currentQuorum, mutate],
   )
 
   const updateQuorum = useCallback(
@@ -64,10 +67,11 @@ const VaultPolicyPage: FC<VaultPolicyProps> = ({
         vaultId,
         identity as DelegationIdentity,
         quorum,
+        currentQuorum,
       )
-      refetchVaults(mutate)
+      await mutate()
     },
-    [vaultId, identity],
+    [vaultId, identity, currentQuorum, mutate],
   )
 
   const updateMember = useCallback(
@@ -78,10 +82,11 @@ const VaultPolicyPage: FC<VaultPolicyProps> = ({
         identity as DelegationIdentity,
         memberId,
         name,
+        currentQuorum,
       )
-      refetchVaults(mutate)
+      await mutate()
     },
-    [vaultId, identity],
+    [vaultId, identity, currentQuorum, mutate],
   )
 
   const removeMember = useCallback(
@@ -92,10 +97,11 @@ const VaultPolicyPage: FC<VaultPolicyProps> = ({
         identity as DelegationIdentity,
         memberId,
         newQuorum,
+        currentQuorum,
       )
-      refetchVaults(mutate)
+      await mutate()
     },
-    [vaultId, identity],
+    [vaultId, identity, currentQuorum, mutate],
   )
 
   return (

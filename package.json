@@ -209,7 +209,7 @@
     "serve": "14.2.7",
     "sha256": "0.2.0",
     "source-map-explorer": "2.5.3",
-    "storybook": "10.6.6",
+    "storybook": "10.6.7",
     "stream-browserify": "3.0.0",
     "stream-http": "3.2.0",
     "tailwind-scrollbar": "4.0.2",

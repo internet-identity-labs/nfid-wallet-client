@@ -4,7 +4,7 @@ Feature: Swap functionality
   @swap @desktop
   Scenario: User swaps his token
     Given User opens NFID site
-    And User is already authenticated by 28567 anchor
+    And User is already authenticated by 200000104 anchor
     Then Verifying that tokens are displayed on assets tab
     When User opens Swap dialog window
     And User sets the target token to $NFIDW
@@ -19,7 +19,7 @@ Feature: Swap functionality
   @swap @mobile
   Scenario: User swaps his token
     Given User opens NFID site
-    And User is already authenticated by 31870 anchor
+    And User is already authenticated by 200000103 anchor
     Then Verifying that tokens are displayed on assets tab
     When User opens Swap dialog window
     And User sets the target token to $NFIDW

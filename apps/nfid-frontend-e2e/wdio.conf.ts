@@ -71,7 +71,7 @@ export const config: WebdriverIO.Config = {
     // <boolean> fail if there are any undefined or pending steps
     strict: false,
     // <string> (expression) only execute the features or scenarios with tags matching the expression
-    tags: "not @pending and not @mobile",
+    tags: "not @pending and not @mobile and not @skip",
     // <number> timeout for step definitions
     timeout: 280000,
     // <boolean> Enable this config to treat undefined definitions as warnings.

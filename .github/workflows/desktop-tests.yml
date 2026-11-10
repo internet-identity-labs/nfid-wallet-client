@@ -79,7 +79,6 @@ jobs:
   docker-for-e2e:
     name: Docker Image Build
     needs: check-secrets
-    if: false
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -236,7 +235,6 @@ jobs:
   e2e-tests:
     name: E2E Tests
     needs: docker-for-e2e
-    if: false
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -297,7 +295,7 @@ jobs:
           docker pull ${IMAGE_ID}:${VERSION}
 
           # Save VARS for next steps
-          TEST_ADD_PARAMS="--cucumberOpts.tags='not @only_deploy_to_main and not @pending and not @mobile'"
+          TEST_ADD_PARAMS="--cucumberOpts.tags='not @only_deploy_to_main and not @pending and not @mobile and not @skip'"
 
           # If branch main, run full cycle
           if [ "${{ github.ref_name }}" == 'main' ]; then
@@ -385,7 +383,6 @@ jobs:
   e2e-mobile-tests:
     name: E2E Mobile Tests
     needs: docker-for-e2e
-    if: false
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -428,7 +425,7 @@ jobs:
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo ${VERSION} | sed -e 's/^v//')
           [ "${VERSION}" == "main" ] && VERSION=latest
 
-          TEST_ADD_PARAMS="--cucumberOpts.tags='not @only_deploy_to_main and not @pending and not @desktop'"
+          TEST_ADD_PARAMS="--cucumberOpts.tags='not @only_deploy_to_main and not @pending and not @desktop and not @skip'"
           if [ "${{ github.ref_name }}" == 'main' ]; then
             TEST_ADD_PARAMS=""
           fi
@@ -508,7 +505,7 @@ jobs:
   allure-report-desktop:
     name: Allure Report Desktop
     needs: e2e-tests
-    if: false
+    if: ${{ ! cancelled() }}
     runs-on: ubuntu-latest
     # Allure and the AWS CLI run directly on the runner instead of via Docker-based actions:
     # building their images pulls base images from public.ecr.aws / Docker Hub anonymously,
@@ -587,7 +584,7 @@ jobs:
   allure-report-mobile:
     name: Allure Report Mobile
     needs: e2e-mobile-tests
-    if: false
+    if: ${{ ! cancelled() }}
     runs-on: ubuntu-latest
     # Allure and the AWS CLI run directly on the runner instead of via Docker-based actions:
     # building their images pulls base images from public.ecr.aws / Docker Hub anonymously,

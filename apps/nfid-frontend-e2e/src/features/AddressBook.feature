@@ -17,7 +17,7 @@ Feature: Address Book
     Then There is a contact with name "<contactName>" and address <address>
     Examples:
       | nfid number | contactName   | chain        | address                                                          |
-      | 10974       | ICPWalletTest | icpAccountId | 7255539e38f2035fde19be6925afa78cad5237860b1826eab09b3f7e164e9b40 |
+      | 200000105   | ICPWalletTest | icpAccountId | 7255539e38f2035fde19be6925afa78cad5237860b1826eab09b3f7e164e9b40 |
 
   @addressbook @mobile
   Scenario Outline: User checks his activity history
@@ -35,4 +35,4 @@ Feature: Address Book
     Then There is a contact with name "<contactName>" and address <address>
     Examples:
       | nfid number | contactName   | chain        | address                                                          |
-      | 25795       | ICPWalletTest | icpAccountId | 7255539e38f2035fde19be6925afa78cad5237860b1826eab09b3f7e164e9b40 |
+      | 200000106   | ICPWalletTest | icpAccountId | 7255539e38f2035fde19be6925afa78cad5237860b1826eab09b3f7e164e9b40 |

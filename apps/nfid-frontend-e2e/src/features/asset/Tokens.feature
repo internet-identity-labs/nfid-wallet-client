@@ -17,9 +17,9 @@ Feature: Tokens tab
     And User clicks the ShowHide button of <token2> token
     Then Verifying that the <token2> token is displayed
     Examples:
-      | category | currency | nfid number | token1            | stake     | token2  | token balance |
-      | Native   | ICP      | 28542       | Internet Computer | available | Polygon | 0.01007 ICP   |
-      | Native   | ICP      | 100000830   | Internet Computer | available | ckUSDT  | 0.0497 ICP    |
+      | category | currency | nfid number | token1            | stake     | token2 | token balance |
+      | Native   | ICP      | 200000102   | Internet Computer | available | ckPEPE | 0.01 ICP      |
+      | Native   | ICP      | 200000099   | Internet Computer | available | ckPEPE | 0.2194 ICP    |
 
   @assets @mobile
   Scenario Outline: User checks his tokens are displayed and checks the ability to manage his tokens
@@ -37,5 +37,5 @@ Feature: Tokens tab
     And User clicks the ShowHide button of <token2> token
     Then Verifying that the <token2> token is displayed
     Examples:
-      | category     | currency | nfid number | token1 | stake       | token2 | token balance |
-      | Chain Fusion | ckPEPE   | 200000276   | ckPEPE | unavailable | PHASMA | 953 ckPEPE    |
+      | category | currency | nfid number | token1            | stake     | token2 | token balance |
+      | Native   | ICP      | 200000100   | Internet Computer | available | ckPEPE | 0.05 ICP      |

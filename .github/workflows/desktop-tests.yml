@@ -79,7 +79,7 @@ jobs:
   docker-for-e2e:
     name: Docker Image Build
     needs: check-secrets
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       packages: write
       contents: read

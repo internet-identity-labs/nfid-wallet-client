@@ -1,12 +1,4 @@
-import {
-  interval,
-  take,
-  switchMap,
-  of,
-  firstValueFrom,
-  filter,
-  from,
-} from "rxjs"
+import { interval, take, concatMap, first, firstValueFrom } from "rxjs"
 
 import { TransactionId } from "./chain-fusion-signer.service"
 
@@ -18,27 +10,20 @@ export const BLOCK_HEIGHT_URL = `https://mempool.space/api/blocks/tip/height`
 export class MempoolService {
   public async checkTransactionAppeared(
     transactionId: TransactionId,
+    maxAttempts: number = MAX_ATTEMPTS,
+    delayMs: number = DELAY_MS,
   ): Promise<boolean> {
     const url = `https://mempool.space/api/tx/${transactionId}`
 
     return firstValueFrom(
-      interval(DELAY_MS).pipe(
-        take(MAX_ATTEMPTS),
-        switchMap(() =>
-          from(
-            fetch(url)
-              .then((response) => response.status === 200)
-              .catch(() => false),
-          ),
+      interval(delayMs).pipe(
+        take(maxAttempts),
+        concatMap(() =>
+          fetch(url)
+            .then((response) => response.status === 200)
+            .catch(() => false),
         ),
-        switchMap((found, idx) =>
-          found
-            ? of(true)
-            : idx === MAX_ATTEMPTS - 1
-              ? of(false)
-              : of(undefined),
-        ),
-        filter((v) => v !== undefined),
+        first((found) => found, false),
       ),
     )
   }

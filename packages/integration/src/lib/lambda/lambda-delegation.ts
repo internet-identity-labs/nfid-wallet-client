@@ -21,6 +21,11 @@ import {
 } from "@nfid/integration"
 
 import { deleteFromStorage } from "./domain-key-repository"
+import {
+  getAnonymousDelegationFromCanister,
+  getGlobalDelegationFromCanister,
+  isLegacySignerEnabled,
+} from "./legacy-signer"
 
 export enum Chain {
   IC = "IC",
@@ -33,6 +38,18 @@ export async function getAnonymousDelegationThroughLambda(
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
   targets?: string[],
 ) {
+  if (isLegacySignerEnabled()) {
+    const chain = await getAnonymousDelegationFromCanister(
+      identity,
+      domain,
+      sessionKey,
+      targets,
+      maxTimeToLive,
+    )
+    await deleteFromStorage(domain)
+    return chain
+  }
+
   const lambdaPublicKey = await fetchLambdaPublicKey(Chain.IC)
 
   const delegationChainForLambda = await createDelegationChain(
@@ -83,6 +100,15 @@ export async function oldFlowGlobalKeysFromLambda(
   origin: string,
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ) {
+  if (isLegacySignerEnabled()) {
+    return getGlobalDelegationFromCanister(
+      identity,
+      sessionPublicKey,
+      targets,
+      maxTimeToLive,
+    )
+  }
+
   const chain = Chain.IC
   const lambdaPublicKey = await fetchLambdaPublicKey(chain)
 
@@ -110,6 +136,11 @@ export async function ecdsaRegisterNewKeyPair(
   identity: DelegationIdentity,
   chain: Chain,
 ): Promise<string> {
+  // All legacy global keys already exist; the canister does not create new ones.
+  if (isLegacySignerEnabled()) {
+    throw new Error("The global key cannot be found.")
+  }
+
   const lambdaPublicKey = await fetchLambdaPublicKey(chain)
 
   const delegationChainForLambda = await DelegationChain.create(
@@ -186,6 +217,14 @@ export async function oldFlowDelegationChainLambda(
   sessionKey: Ed25519KeyIdentity,
   targets: string[],
 ): Promise<DelegationChain> {
+  if (isLegacySignerEnabled()) {
+    return getGlobalDelegationFromCanister(
+      identity,
+      new Uint8Array(sessionKey.getPublicKey().toDer()),
+      targets,
+    )
+  }
+
   const lambdaPublicKey = await fetchLambdaPublicKey(Chain.IC)
   const delegationChainForLambda = await createDelegationChain(
     identity,

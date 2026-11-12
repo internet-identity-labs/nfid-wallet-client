@@ -104,6 +104,9 @@ export function getServiceConfig() {
       process.env.NFID_WALLET_CANISTER_STAKING,
     ),
     IC_SIGNER_CANISTER_ID: JSON.stringify(process.env.IC_SIGNER_CANISTER_ID),
+    ECDSA_STORAGE_CANISTER_ID: JSON.stringify(
+      process.env.ECDSA_STORAGE_CANISTER_ID,
+    ),
     PATRON_CANISTER_ID: JSON.stringify(process.env.PATRON_CANISTER_ID),
     CHAIN_FUSION_SIGNER_CANISTER_ID: JSON.stringify(
       process.env.CHAIN_FUSION_SIGNER_CANISTER_ID,

@@ -1,3 +1,9 @@
+---
+name: commit
+description: "Create one well-formed commit of the staged work: scan for leftovers, stage explicitly, write a Conventional Commit message. Only when the engineer asks; commit and push still prompt for approval."
+disable-model-invocation: true
+---
+
 # /commit
 
 Clean up the repo and create a single well-formed commit covering all staged work. Always run this checklist in order — do not skip steps.

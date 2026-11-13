@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 Arguments: `$ARGUMENTS` → `<name>` (kebab-case) and an optional Shortcut ID `sc-XXXX`.
 
-First read `.claude/templates/workflow.md` and follow its rules.
+First read `.claude/sdd/workflow.md` and follow its rules.
 
 ## Preconditions
 
@@ -31,7 +31,7 @@ First read `.claude/templates/workflow.md` and follow its rules.
    - **D. Constraints:** edge cases; out of scope; which journeys need E2E coverage.
    - **E. UI** (only if the feature has UI): loading, empty, error and optimistic states; a11y
      beyond baseline; responsive differences; animation.
-3. **Write** `.claude/specs/<name>.spec.md` from `.claude/templates/spec.md`. Keep `Status: DRAFT`.
+3. **Write** `.claude/specs/<name>.spec.md` from this skill's [template.md](template.md). Keep `Status: DRAFT`.
    Requirements must be numbered and testable; `/verify` checks them one by one.
 4. **Gate:** report the file path and the open questions, and say:
    "Review the spec, edit it or tell me what to change, then say **approved**."

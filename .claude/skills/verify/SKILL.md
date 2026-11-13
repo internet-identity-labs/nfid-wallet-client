@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 Arguments: `$ARGUMENTS` → `<name>`.
 
-First read `.claude/templates/workflow.md` and follow its rules.
+First read `.claude/sdd/workflow.md` and follow its rules.
 
 **Best run in a fresh session:** review the plan and the diff, not the memory of writing them.
 
@@ -28,19 +28,19 @@ First read `.claude/templates/workflow.md` and follow its rules.
 
 ### 1. Automated checks vs a `main` baseline
 
-1. Baseline: `dir=$(.claude/scripts/verify.sh baseline-dir)`. It fetches `origin/main` first, so
+1. Baseline: `dir=$(${CLAUDE_SKILL_DIR}/scripts/verify.sh baseline-dir)`. It fetches `origin/main` first, so
    the baseline is the current `main`. If `$dir/status` doesn't end with `done`:
    - `git worktree add <repo>/../nfid-verify-base origin/main`
-   - `.claude/scripts/verify.sh run <that worktree> "$dir"`
+   - `${CLAUDE_SKILL_DIR}/scripts/verify.sh run <that worktree> "$dir"`
    - `git worktree remove` it afterwards
 
    The cache is keyed by the `main` SHA, so later runs reuse it.
 
-2. Branch: `.claude/scripts/verify.sh run <repo> <scratchpad>/verify-<name>`. It installs with
+2. Branch: `${CLAUDE_SKILL_DIR}/scripts/verify.sh run <repo> <scratchpad>/verify-<name>`. It installs with
    `--frozen-lockfile`, so it never changes `yarn.lock`; a lockfile that needs updating fails the
    install stage, and that's a finding. Tell the engineer
    it takes about 15 minutes, and run it in the background.
-3. `.claude/scripts/verify.sh compare "$dir" <scratchpad>/verify-<name>`.
+3. `${CLAUDE_SKILL_DIR}/scripts/verify.sh compare "$dir" <scratchpad>/verify-<name>`.
 4. **For every new failing unit test, re-run that file once**
    (`npx env-cmd -f .env.test yarn nx test <project> --testPathPatterns=<file> --runInBand`):
    - passes now → flaky, noted but not a finding
@@ -70,13 +70,13 @@ First read `.claude/templates/workflow.md` and follow its rules.
 ### 2. Local E2E for this feature
 
 - E2E scope "None" (`E2E N/A`) → skip and say so in the report.
-- Otherwise: `.claude/scripts/e2e-local.sh '<tags from the plan>' <scratchpad>/e2e-<name>`.
+- Otherwise: `${CLAUDE_SKILL_DIR}/scripts/e2e-local.sh '<tags from the plan>' <scratchpad>/e2e-<name>`.
 - A failing scenario → re-run once. If it still fails, check it against `main`. Step 1 has already
   removed its baseline worktree (or never created one, on a cache hit), so:
   - create one: `git worktree add <repo>/../nfid-verify-e2e origin/main`, then
     `yarn install --frozen-lockfile` in it
   - run the same tags from there:
-    `(cd <repo>/../nfid-verify-e2e && <repo>/.claude/scripts/e2e-local.sh '<tags>' <scratchpad>/e2e-<name>-main)`.
+    `(cd <repo>/../nfid-verify-e2e && ${CLAUDE_SKILL_DIR}/scripts/e2e-local.sh '<tags>' <scratchpad>/e2e-<name>-main)`.
     The script uses the checkout it's run from.
   - `git worktree remove <repo>/../nfid-verify-e2e` afterwards
 
@@ -94,7 +94,8 @@ First read `.claude/templates/workflow.md` and follow its rules.
   changed file must be in the plan's file table, and every listed file must be changed or explained.
 - **Code review:** run the built-in `/code-review` on the working-tree diff. Keep findings that
   survive your own check.
-- **Etiquette (CLAUDE.md):**
+- **Etiquette** (read `.claude/rules/frontend.md`; it only auto-loads once an `apps/`/`packages/`
+  file is read):
   - no `any`; no inline styles; Tailwind tokens; a11y labels
   - import order
   - new unit tests mock canister and network calls

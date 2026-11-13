@@ -1,3 +1,10 @@
+---
+name: execute-ui-plan
+description: "Older UI flow, step 3: implement an approved UI plan one checkbox at a time with lint and test gates. For new work, prefer /implement."
+argument-hint: "<feature-name>"
+disable-model-invocation: true
+---
+
 # Skill: execute-ui-plan
 
 ## Purpose

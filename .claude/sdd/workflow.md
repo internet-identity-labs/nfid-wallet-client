@@ -36,7 +36,13 @@ command to run instead. Never "fix up" the status to make a command run.
    approved plan. Tooling work (root config, `.github/`, `docker-*`, `.claude/`, lockfile) needs
    only an approved plan with `Spec: none — tooling tier (<why>)`.
 3. **No commits before `/pr`.** Work stays uncommitted on the branch until `/verify` and `/document`
-   have passed.
+   have passed. Even in `/pr`, show the engineer the staged files, the commit message and the PR
+   text, and wait for an explicit yes before `git commit` / `git push` / `gh pr …`. Claude Code
+   enforces this too: `permissions.ask` in `.claude/settings.json` prompts for `git commit` and
+   `git push` (also with global options such as `git -C <dir> …`) and for
+   `gh pr create|edit|comment|merge|close|review|ready|reopen`, whatever a skill or hook says.
+   It matches command text, so other routes (`gh api`, a script that commits) aren't covered;
+   the rule above still applies to them.
 4. **No destructive git.** Never run `git reset --hard`, `git checkout -- <path>`, `git restore`,
    `git stash`, `git clean` or `git rebase`. Until `/pr`, the work exists only in the working tree.
 5. **Edit `apps/` and `packages/` with the Edit/Write tools only**, never `sed` or shell redirection.
@@ -61,7 +67,8 @@ command to run instead. Never "fix up" the status to make a command run.
    plan without a Branch line counts only while `IN PROGRESS`). When it reports, **stop
    and tell the engineer**: ask before reverting an unintended change, or record a deviation for a
    needed one. All hooks only govern checkouts that use this workflow (`.claude/plans/` exists);
-   a PreToolUse hook that can't load blocks (its exit 1 is mapped to 2 in `settings.json`).
+   both PreToolUse hooks have `"onFailure": "block"` in `settings.json`, so one that can't start
+   or crashes blocks too.
    These hooks guard against _accidental_ changes; they are not a security boundary. Approval is a
    human step, and never write an `APPROVED` status yourself unless the engineer said "approved".
 
@@ -87,4 +94,4 @@ command to run instead. Never "fix up" the status to make a command run.
   suites need `LAMBDA_IDENTITY` and fail without it, so always compare against a `main` baseline
   by test name.
 - E2E: WebdriverIO + Cucumber in `apps/nfid-frontend-e2e/src/{features,steps,pages}`; test accounts
-  in `users.json`; local run by tag via `.claude/scripts/e2e-local.sh`.
+  in `users.json`; local run by tag via `.claude/skills/verify/scripts/e2e-local.sh`.

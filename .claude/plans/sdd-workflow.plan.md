@@ -340,7 +340,7 @@ this plan runs through them. That doubles as the first end-to-end test of the pi
 
 ## Follow-ups (not in this plan)
 
-- Make `/dependabot-update` call `.claude/scripts/verify.sh` instead of its inline suite. Note: its
+- Make `/dependabot-update` call `.claude/skills/verify/scripts/verify.sh` instead of its inline suite. Note: its
   `git worktree` / `git merge origin/main` steps now trigger the pre-bash prompt (expected).
 - Fix the order-dependent `passkey.spec.ts` "store/get" test (feature tier, needs a spec).
 - Decide the status of `enable-email-device-removal.plan.md` ("IMPLEMENTED — awaiting engineer
@@ -1006,3 +1006,12 @@ Verify fixes (2026-11-13):
     Approved by the engineer on 2026-11-13 ("let's go with option 1"). U9 (shared helpers) is done
     **without** a new `lib.js`, which wasn't approved: `pre-tool-use.js` exports its helpers, and the
     other hooks import them from it.
+
+> Note 2026-11-13 (claude-folder-alignment): `.claude/` was reorganised on the same branch. The four
+> commands are now skills (`.claude/commands/<x>.md` → `.claude/skills/<x>/SKILL.md`);
+> `.claude/templates/{plan,spec}.md` → `.claude/skills/{plan,spec}/template.md`;
+> `.claude/templates/workflow.md` → `.claude/sdd/workflow.md`; `.claude/scripts/{verify,e2e-local}.sh`
+> → `.claude/skills/verify/scripts/`. The frontend etiquette moved from `CLAUDE.md` to
+> `.claude/rules/frontend.md`. The PreToolUse hooks use exec form with `"onFailure": "block"` instead of
+> the `rc -eq 1` wrapper, and `permissions.ask` prompts for commit, push and `gh pr` writes. Paths
+> above are as they were when written.

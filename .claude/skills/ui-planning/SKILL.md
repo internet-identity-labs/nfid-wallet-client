@@ -1,3 +1,9 @@
+---
+name: ui-planning
+description: "Older UI flow, step 2: turn an approved UI spec into an executable plan in .claude/plans/. For new work, prefer /plan."
+argument-hint: "<feature-name>"
+---
+
 # Skill: ui-planning
 
 ## Purpose

@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 Arguments: `$ARGUMENTS` → `<name>`.
 
-First read `.claude/templates/workflow.md` and follow its rules.
+First read `.claude/sdd/workflow.md` and follow its rules.
 
 ## Preconditions
 
@@ -41,6 +41,6 @@ Set `> Status: E2E N/A — <reason from the plan>` and stop. Next: `/verify <nam
      `origin/main` (there are 4 known errors in `src/steps/swap-stake.ts`)
    - `yarn nx lint nfid-frontend-e2e` if that target exists, otherwise `npx eslint <changed files>`
 4. **Optional quick run:** if the engineer wants it now, run
-   `.claude/scripts/e2e-local.sh '<tags>' <scratchpad>/e2e-<name>`. `/verify` always runs it anyway.
+   `${CLAUDE_PROJECT_DIR}/.claude/skills/verify/scripts/e2e-local.sh '<tags>' <scratchpad>/e2e-<name>`. `/verify` always runs it anyway.
 5. **Status:** `E2E READY — tags <tags>`. Record the tags in the E2E scope section if they changed.
 6. **Report:** scenarios added/changed, new steps/pages, tags, check results. Next: `/verify <name>`.

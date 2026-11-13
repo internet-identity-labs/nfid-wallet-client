@@ -1,3 +1,9 @@
+---
+name: write-unit-tests
+description: Write Jest unit tests for a file or feature in this repo, following its mock rules (no live canister or network calls) and coverage targets.
+argument-hint: "<path-to-file-or-feature>"
+---
+
 # Command: write-unit-tests
 
 Write unit tests for a given file or feature in the nfid-frontend project.

@@ -6,7 +6,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/pre-tool-use.js\"; rc=$?; [ $rc -eq 1 ] && exit 2; exit $rc"
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/pre-tool-use.js"],
+            "onFailure": "block"
           }
         ]
       },
@@ -15,7 +17,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/pre-bash.js\"; rc=$?; [ $rc -eq 1 ] && exit 2; exit $rc"
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/pre-bash.js"],
+            "onFailure": "block"
           }
         ]
       }
@@ -26,7 +30,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/post-tool-use.js\""
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/post-tool-use.js"]
           }
         ]
       },
@@ -35,7 +40,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/post-bash.js\""
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/post-bash.js"]
           }
         ]
       }
@@ -52,6 +58,20 @@
       "Bash(yarn format:check*)",
       "Bash(npx tsc --noEmit*)",
       "Bash(yarn prettier*)"
+    ],
+    "ask": [
+      "Bash(git commit *)",
+      "Bash(git * commit *)",
+      "Bash(git push *)",
+      "Bash(git * push *)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr edit *)",
+      "Bash(gh pr comment *)",
+      "Bash(gh pr merge *)",
+      "Bash(gh pr close *)",
+      "Bash(gh pr review *)",
+      "Bash(gh pr ready *)",
+      "Bash(gh pr reopen *)"
     ]
   }
 }

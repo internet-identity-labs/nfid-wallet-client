@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 Arguments: `$ARGUMENTS`
 
-First read `.claude/templates/workflow.md` and follow its rules.
+First read `.claude/sdd/workflow.md` and follow its rules.
 
 ## No argument: status overview
 
@@ -46,7 +46,7 @@ and leave committing it to the engineer (e.g. with the next PR).
 
 ### Write
 
-From `.claude/templates/plan.md`:
+From this skill's [template.md](template.md):
 
 - `Shortcut:` and `Branch:` come from the `sc-XXXX` argument if given (`feature/sc-XXXX-<name>`);
   otherwise `feature/<name>`, `fix/<name>` or `chore/<name>` by the type of work.

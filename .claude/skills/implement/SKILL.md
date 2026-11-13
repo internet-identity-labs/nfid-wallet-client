@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 Arguments: `$ARGUMENTS` → `<name>`, optional `--step` (one checkbox, then stop).
 
-First read `.claude/templates/workflow.md` and follow its rules.
+First read `.claude/sdd/workflow.md` and follow its rules.
 
 ## Preconditions
 
@@ -34,10 +34,10 @@ First read `.claude/templates/workflow.md` and follow its rules.
      Treat each as a task and mark it `[fixed]` with a one-line note when done.
    - Otherwise, the first phase with unchecked boxes. With `--step`, only its first unchecked box.
 4. **For each checkbox:**
-   - Unit tests first, following `.claude/commands/write-unit-tests.md`. New tests **mock canister
+   - Unit tests first, following the `/write-unit-tests` skill (`.claude/skills/write-unit-tests/SKILL.md`). New tests **mock canister
      and network calls**; no live dev canisters.
-   - Change only the files the plan lists. Follow CLAUDE.md etiquette: no `any`, Tailwind only,
-     a11y labels, import order.
+   - Change only the files the plan lists. Read `.claude/rules/frontend.md` and follow its
+     etiquette: no `any`, Tailwind only, a11y labels, import order.
    - **Update the READMEs** (and other docs next to the code) that describe what you changed, in the
      same checkbox, so the docs are current as soon as the code is. A stale README that isn't in
      the plan → deviation flow.

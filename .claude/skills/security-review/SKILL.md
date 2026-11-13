@@ -1,3 +1,8 @@
+---
+name: security-review
+description: "Combined security and code-quality review of the current branch's diff against main: confirmed vulnerabilities plus actionable improvements."
+---
+
 # Command: security-review
 
 Run a combined security + code-quality review of all changes on the current branch.

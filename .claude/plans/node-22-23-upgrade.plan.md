@@ -31,7 +31,7 @@ same major, so no runtime/API migration is expected.
 | 7   | `desktop-tests.yml` → `docker-for-e2e` job (image build)                | Builds only if tag `<PR#>-merge` / `latest` is missing, or manual `docker_rebuild=true` | **No — see "Docker image trap"**                                                                                |
 | 8   | `desktop-tests.yml` → 2 E2E run jobs (`pull_image` steps, L264+, L412+) | Recompute the same tag and `docker pull` it                                             | Must stay in sync with #7                                                                                       |
 | 9   | `docker-e2e-tests/README.md` L44                                        | Says default NODE_VERSION is `16`                                                       | Stale doc                                                                                                       |
-| 10  | `.claude/commands/dependabot-update.md` L20, L62                        | Mentions `22.18.0`                                                                      | No (docs for the triage command)                                                                                |
+| 10  | `.claude/skills/dependabot-update/SKILL.md` L22, L64                    | Mentions `22.18.0`                                                                      | No (docs for the triage command)                                                                                |
 | 11  | Developer machines + Husky `pre-commit` (`npx lint-staged`)             | nvm reads `.nvmrc`                                                                      | Each dev runs `nvm install` once; GUI git clients use whatever Node is on their PATH                            |
 
 Checked and **not** affected:
@@ -61,14 +61,14 @@ there is one source of truth.
 
 ## Modified Files
 
-| File                                    | Change                                                                                                                            |
-| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `.nvmrc`                                | `22.18.0` → `22.23.4`                                                                                                             |
-| `package.json`                          | `engines.node` `"22.18.0"` → `"22.23.4"` (keep exact-pin convention, see Decisions)                                               |
-| `docker-e2e-tests/Dockerfile`           | `ARG NODE_VERSION` without default + fail fast if empty; `nvm install` the exact version, `nvm alias default`                     |
-| `.github/workflows/desktop-tests.yml`   | Image build passes `--build-arg NODE_VERSION=$(cat .nvmrc)`; image tag gets a content-hash suffix in all 3 places that compute it |
-| `docker-e2e-tests/README.md`            | Document `NODE_VERSION` as required, sourced from `.nvmrc`                                                                        |
-| `.claude/commands/dependabot-update.md` | Replace hard-coded `22.18.0` with "the version in `.nvmrc`"                                                                       |
+| File                                        | Change                                                                                                                            |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `.nvmrc`                                    | `22.18.0` → `22.23.4`                                                                                                             |
+| `package.json`                              | `engines.node` `"22.18.0"` → `"22.23.4"` (keep exact-pin convention, see Decisions)                                               |
+| `docker-e2e-tests/Dockerfile`               | `ARG NODE_VERSION` without default + fail fast if empty; `nvm install` the exact version, `nvm alias default`                     |
+| `.github/workflows/desktop-tests.yml`       | Image build passes `--build-arg NODE_VERSION=$(cat .nvmrc)`; image tag gets a content-hash suffix in all 3 places that compute it |
+| `docker-e2e-tests/README.md`                | Document `NODE_VERSION` as required, sourced from `.nvmrc`                                                                        |
+| `.claude/skills/dependabot-update/SKILL.md` | Replace hard-coded `22.18.0` with "the version in `.nvmrc`"                                                                       |
 
 `yarn.lock` does not change (engines are not recorded there). No file under `apps/` or `packages/`.
 
@@ -101,7 +101,7 @@ there is one source of truth.
 
 ### Phase 3 — Docs
 
-- [ ] `.claude/commands/dependabot-update.md`: L20 and L62 refer to "the Node version in `.nvmrc`"
+- [ ] `.claude/skills/dependabot-update/SKILL.md`: L22 and L64 refer to "the Node version in `.nvmrc`"
       instead of the literal `22.18.0`.
 
 ### Phase 4 — Verification (PR)

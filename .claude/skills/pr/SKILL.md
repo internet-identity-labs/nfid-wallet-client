@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 Arguments: `$ARGUMENTS` → `<name>`.
 
-First read `.claude/templates/workflow.md` and follow its rules.
+First read `.claude/sdd/workflow.md` and follow its rules.
 
 ## Preconditions
 
@@ -17,7 +17,7 @@ First read `.claude/templates/workflow.md` and follow its rules.
 - You must be on the plan's branch, never `main`.
 - `gh auth status` must succeed.
 
-## 1. Commit (rules from `.claude/commands/commit.md`)
+## 1. Commit (rules from the `/commit` skill, `.claude/skills/commit/SKILL.md`)
 
 0. Set `> Status: PR OPEN — branch <branch>` in the plan **before** committing, so the commit
    already carries the final status. The PR number isn't known yet; `/plan <name> done` finds the
@@ -31,7 +31,17 @@ First read `.claude/templates/workflow.md` and follow its rules.
    plan has a Shortcut ID, e.g. `feat: add ICRC-7 marketplace filters [sc-19901]`. The body is a
    short summary from the plan's Goal and phases, plus the attribution line from the current
    session's instructions.
-4. `git commit`. Husky runs lint-staged; let it, and never use `--no-verify`. If the hook fails,
+4. **Stop and ask for approval.** Show the engineer:
+   - the staged file list (`git diff --cached --stat`)
+   - the full commit message
+   - the PR title and body (or, for an open PR, the comment)
+
+   Then wait for an explicit yes. Choosing a plan or an option that "ends in `/pr`" is not approval
+   of the commit. Approval covers this one commit and push only. Claude Code also prompts for
+   `git commit` / `git push` / the `gh pr` write commands (`permissions.ask`), so the engineer is
+   asked either way.
+
+5. `git commit`. Husky runs lint-staged; let it, and never use `--no-verify`. If the hook fails,
    stop and report it as a finding for `/implement`.
 
 ## 2. Push

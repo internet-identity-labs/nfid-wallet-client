@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 Arguments: `$ARGUMENTS` → `<name>`.
 
-First read `.claude/templates/workflow.md` and follow its rules.
+First read `.claude/sdd/workflow.md` and follow its rules.
 
 ## Preconditions
 
@@ -44,8 +44,8 @@ point to `/implement <name>`.
    - A reference that is now wrong → fix it.
    - A `COMPLETE`/`DONE` plan → add a dated note at the end instead of rewriting history:
      `> Note <date> (<name>): <what changed>`.
-4. **Documentation:** `CLAUDE.md`, `.claude/commands/*`, `.claude/skills/*`, `.claude/templates/*`,
-   and `.github/` docs and templates. Grep for the search terms, and also read the sections that
+4. **Documentation:** `CLAUDE.md`, `.claude/rules/*`, `.claude/skills/**` (each `SKILL.md` and its
+   supporting files), `.claude/sdd/*`, and `.github/` docs and templates. Grep for the search terms, and also read the sections that
    describe behaviour the change altered. Update what's stale.
 5. **READMEs — review only.** Every `README.md` (root, `apps/*`, `packages/*`, `docker-e2e-tests/`),
    checked the same way. READMEs are updated by `/implement` together with the code they describe,

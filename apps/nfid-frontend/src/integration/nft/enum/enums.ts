@@ -4,6 +4,7 @@ export enum MarketPlace {
   YUKU = "YUKU",
   EXT = "EXT",
   EVM = "EVM",
+  ICRC7 = "ICRC7",
 }
 
 export enum TransactionType {

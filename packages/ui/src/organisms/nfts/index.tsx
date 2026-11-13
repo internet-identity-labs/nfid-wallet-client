@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { useState, useMemo, HTMLAttributes, FC, useContext } from "react"
 import { IoIosSearch } from "react-icons/io"
@@ -22,6 +23,8 @@ import { GalleryNftSkeleton, TableNftSkeleton } from "../../atoms/skeleton"
 import { NFTDisplaySwitch } from "./nft-display-switch"
 import { getNetworkIcon } from "../../utils/network-icon"
 import { ProfileContext } from "frontend/provider"
+import { ManageCollections, NftCollectionMetadata } from "./manage-collections"
+import { NftCollection } from "@nfid/integration/marketplace"
 
 export interface INFTs extends HTMLAttributes<HTMLDivElement> {
   isLoading: boolean
@@ -34,6 +37,11 @@ export interface INFTs extends HTMLAttributes<HTMLDivElement> {
   totalItems: number
   currentPage: number
   onTransferNFT: (nftId: string) => void
+  onFetchIcrc7: (canisterId: string) => Promise<NftCollectionMetadata>
+  onSubmitIcrc7: (canisterId: string) => Promise<void>
+  onUpdateCollections?: () => Promise<void>
+  collections: NftCollection[]
+  isCollectionsLoading: boolean
 }
 
 export const NFTs: FC<INFTs> = ({
@@ -44,6 +52,11 @@ export const NFTs: FC<INFTs> = ({
   totalItems: _totalItems,
   currentPage,
   onTransferNFT,
+  onFetchIcrc7,
+  onSubmitIcrc7,
+  onUpdateCollections,
+  collections,
+  isCollectionsLoading,
 }) => {
   const isDarkTheme = useDarkTheme()
   const { isViewOnlyMode } = useContext(ProfileContext)
@@ -52,12 +65,15 @@ export const NFTs: FC<INFTs> = ({
   const navigate = useNavigate()
   const { search: locationSearch } = useLocation()
 
-  const nftsFiltered = useMemo(() => searchTokens(nfts, search), [nfts, search])
+  const nftsFiltered = useMemo(
+    () => searchTokens(nfts, search),
+    [nfts, search, searchTokens],
+  )
 
   return (
     <>
-      {nfts.length > 0 && (
-        <div className="flex items-center justify-between gap-6 mb-5">
+      {!!nfts && (
+        <div className="flex items-center justify-between gap-5 mb-5">
           <Input
             type="text"
             value={search}
@@ -75,6 +91,13 @@ export const NFTs: FC<INFTs> = ({
           <div className={clsx("flex items-center space-x-6 shrink-0")}>
             <NFTDisplaySwitch state={display} setState={setDisplay} />
           </div>
+          <ManageCollections
+            collections={collections}
+            onSubmitCollection={onSubmitIcrc7}
+            onFetch={onFetchIcrc7}
+            onUpdate={onUpdateCollections}
+            manageBtnDisabled={isCollectionsLoading}
+          />
         </div>
       )}
       {isLoading ? (

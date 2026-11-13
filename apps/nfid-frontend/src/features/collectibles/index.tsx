@@ -12,6 +12,7 @@ import {
 } from "react"
 
 import { Button, Skeleton } from "@nfid-frontend/ui"
+import { authState } from "@nfid/integration"
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
@@ -26,6 +27,7 @@ import { ftService } from "frontend/integration/ft/ft-service"
 import { ModalType } from "../transfer-modal/types"
 import { fetchNFTs } from "./utils/util"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
+import { marketplaceService } from "@nfid/integration/marketplace"
 
 const DEFAULT_LIMIT_PER_PAGE = 8
 
@@ -85,6 +87,19 @@ const NFTsPage = memo(() => {
       (token) => token.getTokenAddress() === ICP_CANISTER_ID,
     )
   }, [initedTokens])
+
+  const {
+    data: collections = [],
+    isLoading: isCollectionsLoading,
+    mutate: mutateCollections,
+  } = useSWR(
+    "marketplace-collections",
+    () => marketplaceService.getCollections(),
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    },
+  )
 
   const {
     data: nftTotalPrice,
@@ -147,6 +162,22 @@ const NFTsPage = memo(() => {
   const totalItems = useMemo(() => data?.totalItems || 0, [data])
   const totalPages = useMemo(() => data?.totalPages || 0, [data])
 
+  const onFetchIcrc7 = async (canisterId: string) => {
+    return marketplaceService.getCollectionMetadata(canisterId)
+  }
+
+  const onSubmitIcrc7 = async (canisterId: string) => {
+    const { delegationIdentity } = authState.get()
+    if (!delegationIdentity) throw new Error("Not authenticated")
+    const metadata = await marketplaceService.getCollectionMetadata(canisterId)
+    await marketplaceService.addCollection(delegationIdentity, metadata)
+    await mutateCollections()
+  }
+
+  const onUpdateCollections = async () => {
+    await mutateCollections()
+  }
+
   return (
     <>
       <div className="p-[20px] md:p-[30px] border-gray-200 dark:border-zinc-700 border rounded-[24px] mb-[20px] md:mb-[30px] flex flex-col md:flex-row">
@@ -201,6 +232,11 @@ const NFTsPage = memo(() => {
           totalItems={totalItems}
           currentPage={currentPage}
           onTransferNFT={onTransferNFT}
+          onFetchIcrc7={onFetchIcrc7}
+          onSubmitIcrc7={onSubmitIcrc7}
+          onUpdateCollections={onUpdateCollections}
+          collections={collections}
+          isCollectionsLoading={isCollectionsLoading}
         />
         <Button
           disabled={isLoading}

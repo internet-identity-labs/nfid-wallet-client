@@ -7,12 +7,14 @@ import { baseService } from "frontend/integration/ethereum/base/base.service"
 import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
 import { polygonService } from "frontend/integration/ethereum/polygon/polygon.service"
 import { EvmNftImpl } from "src/integration/nft/impl/evm/nft-evm"
+import { NftIcrc7 } from "src/integration/nft/impl/icrc7/nft-icrc7"
 import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
 import { nftMapper } from "src/integration/nft/impl/nft-mapper"
 import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
 import { NFT } from "src/integration/nft/nft"
 
 import { exchangeRateService } from "@nfid/integration"
+import { marketplaceService } from "@nfid/integration/marketplace"
 
 import type { FT } from "../ft/ft"
 
@@ -99,17 +101,53 @@ export class NftService {
     }
   }
 
+  async getIcrc7NFTs(userPrincipal: Principal): Promise<NFT[]> {
+    const collections = await marketplaceService.getCollections()
+    const results = await Promise.all(
+      collections
+        .filter((c) => c.tradable)
+        .map(async (col) => {
+          const tokenIds = await marketplaceService.getOwnedTokenIds(
+            col.canisterId,
+            userPrincipal,
+          )
+          if (!tokenIds.length) return []
+          const metadataMap = await marketplaceService.getTokenMetadata(
+            col.canisterId,
+            tokenIds,
+          )
+          return tokenIds.map((tokenId): NftIcrc7 => {
+            const entries = metadataMap.get(tokenId) ?? []
+            const getText = (key: string) => {
+              const entry = entries.find(([k]) => k === key)
+              return entry && "Text" in entry[1] ? entry[1].Text : undefined
+            }
+            return new NftIcrc7(
+              col.canisterId,
+              col.name,
+              tokenId,
+              getText("icrc7:name"),
+              getText("icrc7:metadata:uri:image") ??
+                getText("icrc7:metadata:image"),
+            )
+          })
+        }),
+    )
+    return results.flat()
+  }
+
   async getNFTs(
     userPrincipal: Principal,
     page: number = 1,
     limitPerPage: number = Number.MAX_SAFE_INTEGER,
   ): Promise<PaginatedResponse<NFT>> {
-    const [icpNfts, evmNfts] = await Promise.all([
+    const [icpNfts, evmNfts, icrc7Nfts] = await Promise.all([
       this.getICPNFTs(userPrincipal),
       this.getEVMNFTs(userPrincipal),
+      this.getIcrc7NFTs(userPrincipal),
     ])
 
-    const rawData = [...icpNfts, ...evmNfts]
+    const rawData = [...icpNfts, ...evmNfts, ...icrc7Nfts]
 
     const nftsWithoutPrice = rawData.filter(
       (nft) => nft.getTokenFloorPriceUSD() === undefined || nft.getError(),

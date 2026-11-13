@@ -39,6 +39,7 @@ Before writing the plan, silently perform these lookups:
 > Status: DRAFT — awaiting engineer approval
 > Spec: .claude/specs/[feature-name].spec.md
 > Created: [date]
+> Branch: `feature/[feature-name]` <!-- the branch this plan's edits are allowed on -->
 
 ## New Files
 
@@ -102,9 +103,9 @@ Before writing the plan, silently perform these lookups:
 
 ### Verification
 
-- [ ] `yarn nx lint nfid-frontend` — zero new errors
-- [ ] `yarn nx test nfid-frontend` — all passing
-- [ ] `tsc --noEmit` — zero errors
+- [ ] `yarn nx lint nfid-wallet-client` — zero new errors
+- [ ] `yarn nx test nfid-wallet-client` — no new failures vs `main`
+- [ ] `npx tsc --noEmit -p apps/nfid-frontend/tsconfig.app.json` (and `tsconfig.spec.json`) — zero errors
 - [ ] Manual smoke test in dev server
 
 ## Risks & Notes

@@ -6,7 +6,16 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/pre-tool-use.js"
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/pre-tool-use.js\"; rc=$?; [ $rc -eq 1 ] && exit 2; exit $rc"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/pre-bash.js\"; rc=$?; [ $rc -eq 1 ] && exit 2; exit $rc"
           }
         ]
       }
@@ -17,7 +26,16 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/post-tool-use.js"
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/post-tool-use.js\""
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/post-bash.js\""
           }
         ]
       }
@@ -29,11 +47,10 @@
       "Bash(yarn nx test*)",
       "Bash(yarn nx build*)",
       "Bash(yarn nx serve*)",
-      "Bash(yarn nx typecheck*)",
       "Bash(yarn nx storybook*)",
       "Bash(yarn format*)",
       "Bash(yarn format:check*)",
-      "Bash(tsc --noEmit*)",
+      "Bash(npx tsc --noEmit*)",
       "Bash(yarn prettier*)"
     ]
   }

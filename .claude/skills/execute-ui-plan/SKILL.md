@@ -15,6 +15,13 @@ User invokes `/execute-ui-plan [feature-name]`.
 3. Verify `.claude/specs/[feature-name].spec.md` exists and is approved.
 4. If either is missing or still DRAFT, halt and respond:
    > "Cannot execute: plan or spec is missing / not approved for `[feature-name]`."
+5. If the plan has a `> Branch:` line and you're not on that branch: create it from `origin/main`
+   (`git switch -c <branch> origin/main`) or switch to it if it exists and the tree is clean.
+   Older plans without a Branch line only grant edits while `IN PROGRESS`, on any branch.
+6. Set the plan's `> Status:` line to `IN PROGRESS`. The SDD guard hook only allows edits under
+   `apps/` and `packages/` while a plan is in an editing status, belongs to the current branch,
+   and lists the file's exact path in the first column of its **New Files** / **Modified Files**
+   tables.
 
 ## Execution Loop
 
@@ -44,7 +51,7 @@ Rules during implementation:
 - Tailwind classes only for styling — no inline `style={{}}`
 - All new interactive elements need `aria-label` or visible accessible text
 - Import order must follow Prettier config: third-party → @nfid* → frontend/* → ./local
-- XState machines use typed events — run `yarn nx run nfid-frontend:typecheck` mentally before finalizing
+- XState machines use typed events — check with `npx tsc --noEmit -p apps/nfid-frontend/tsconfig.app.json` before finalizing
 
 **5. Mark checkbox complete**
 Update the plan file: change `- [ ]` to `- [x]` for the completed item.
@@ -53,15 +60,21 @@ Update the plan file: change `- [ ]` to `- [x]` for the completed item.
 After each checkbox, run:
 
 ```
-yarn nx lint nfid-frontend --fix
+yarn nx lint nfid-wallet-client
 ```
 
-If lint errors remain after `--fix`, resolve them before continuing.
+(Use the Nx project that owns the changed files: `nfid-wallet-client` for `apps/nfid-frontend`,
+`ui` for `packages/ui`, and so on.)
+
+No `--fix`: the post-edit hook already runs `eslint --fix` and Prettier on every file you edit,
+and a project-wide `--fix` would rewrite files outside the plan (the Bash guard asks before it, and
+the post-bash check reports the result). Fix any errors that remain with the Edit tool before
+continuing.
 
 **7. After every 3 checkboxes OR after any state/type change, also run:**
 
 ```
-yarn nx test nfid-frontend --testPathPattern=[relevant-file]
+yarn nx test nfid-wallet-client --testPathPatterns=[relevant-file]
 ```
 
 If tests fail, fix before proceeding to the next checkbox.
@@ -84,9 +97,10 @@ When all checkboxes are marked `[x]`:
 
 1. Run full verification suite:
    ```
-   yarn nx lint nfid-frontend
-   yarn nx test nfid-frontend
-   tsc --noEmit -p apps/nfid-frontend/tsconfig.json
+   yarn nx lint nfid-wallet-client
+   yarn nx test nfid-wallet-client
+   npx tsc --noEmit -p apps/nfid-frontend/tsconfig.app.json
+   npx tsc --noEmit -p apps/nfid-frontend/tsconfig.spec.json
    ```
 2. Update plan status to `Status: COMPLETE`.
 3. Report:

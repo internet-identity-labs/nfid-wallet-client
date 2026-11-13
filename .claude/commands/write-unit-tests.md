@@ -31,6 +31,10 @@ Write unit tests for a given file or feature in the nfid-frontend project.
 - Never mock the module under test itself.
 - Use `jest.fn().mockResolvedValue(...)` for async dependencies; `jest.fn().mockReturnValue(...)` for sync.
 - Integration tests that hit real networks must use `it.skip(...)` with a comment explaining when to unskip.
+- **New tests must mock canister and network calls** (actors from `@nfid/integration`, `HttpAgent`,
+  `fetch`). Tests that call live dev canisters break whenever the dev environment changes, even when
+  the code is fine. In November 2026, a rotated lambda key and an Identity Manager reset made
+  `passkey.spec.ts` and `identity-manager/index.spec.ts` fail on every PR.
 
 **4. Structure**
 
@@ -60,7 +64,7 @@ The project enforces 100% line/function/statement coverage and 99% branch covera
 After writing the file, run:
 
 ```
-yarn nx test nfid-frontend --testPathPattern=<spec-file-name>
+yarn nx test nfid-wallet-client --testPathPatterns=<spec-file-name>
 ```
 
 Fix any failures before reporting done.

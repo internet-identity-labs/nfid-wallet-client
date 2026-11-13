@@ -1,6 +1,8 @@
 ---
+name: dependabot-update
 description: Triage open Dependabot PRs — keep every compatible bump, revert the incompatible ones, push a fix-up commit to the same PR
 argument-hint: "[PR number] [--dry-run]"
+disable-model-invocation: true
 allowed-tools: Bash(gh pr list*), Bash(gh pr view*), Bash(gh pr diff*), Bash(gh pr checks*), Bash(git *), Bash(yarn*), Bash(npx tsc*), Bash(node *), Read, Grep, Glob, Edit, Write
 ---
 

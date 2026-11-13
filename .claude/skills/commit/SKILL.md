@@ -1,3 +1,9 @@
+---
+name: commit
+description: "Create one well-formed commit of the staged work: scan for leftovers, stage explicitly, write a Conventional Commit message. Only when the engineer asks; commit and push still prompt for approval."
+disable-model-invocation: true
+---
+
 # /commit
 
 Clean up the repo and create a single well-formed commit covering all staged work. Always run this checklist in order — do not skip steps.
@@ -28,10 +34,9 @@ Fix anything you find before staging.
 - Stage only intentional files — never `git add -A` blindly.
 - Explicitly exclude: `.env.local`, auto-generated files, binary or design-asset folders.
 - Write a commit message following the project style (`feat:`, `fix:`, `refactor:` etc.). Keep the first line under 72 chars. Add a short body if the change is complex.
-- End the message with:
-  ```
-  Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
-  ```
+- End the message with the `Co-Authored-By:` line from the current session's attribution
+  instructions, so it names the model actually in use. Never copy a model name from an older commit.
+  If the session provides no attribution line, add none.
 
 ## 5. Verify
 

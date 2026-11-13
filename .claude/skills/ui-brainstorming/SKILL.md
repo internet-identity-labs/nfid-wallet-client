@@ -1,3 +1,9 @@
+---
+name: ui-brainstorming
+description: "Older UI flow, step 1: interview the engineer and write a UI feature spec to .claude/specs/. For new work, prefer /spec."
+argument-hint: "<feature-name>"
+---
+
 # Skill: ui-brainstorming
 
 ## Purpose

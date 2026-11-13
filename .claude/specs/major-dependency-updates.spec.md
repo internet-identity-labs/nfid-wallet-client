@@ -223,3 +223,8 @@ N/A — no UI changes.
 - `@icp-sdk/auth` and `@icp-sdk/core`
 - Runtime feature changes beyond what library migrations require
 - New features piggy-backed onto this branch
+
+> Note 2026-11-13 (sdd-workflow): the Nx project for `apps/nfid-frontend` is `nfid-wallet-client`
+> (there is no `nfid-frontend` project) and there is no `typecheck` target. Use
+> `yarn nx lint|test|build|serve nfid-wallet-client` and
+> `npx tsc --noEmit -p apps/nfid-frontend/tsconfig.app.json` (see CLAUDE.md → Verification Commands).

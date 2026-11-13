@@ -92,3 +92,8 @@ None.
 - **`SignUpPassKey`** new-account passkey registration is removed from the UI. `passkeyConnector.registerWithPasskey` is still callable but unreachable from this flow. Out of scope per spec.
 - **Storybook** — `AuthSelection` stories likely pass `type` and `onTypeChange`; update them after the component change to avoid storybook build errors.
 - **No coordinator changes needed** for nfid, 3rd-party, or identitykit — they all delegate to `AuthenticationCoordinator` which handles state rendering.
+
+> Note 2026-11-13 (sdd-workflow): the Nx project for `apps/nfid-frontend` is `nfid-wallet-client`
+> (there is no `nfid-frontend` project) and there is no `typecheck` target. Use
+> `yarn nx lint|test|build|serve nfid-wallet-client` and
+> `npx tsc --noEmit -p apps/nfid-frontend/tsconfig.app.json` (see CLAUDE.md → Verification Commands).

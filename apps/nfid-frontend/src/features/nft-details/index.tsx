@@ -28,6 +28,9 @@ import { fetchNFT, fetchViewOnlyNFT } from "../collectibles/utils/util"
 import { ModalType } from "../transfer-modal/types"
 import { nftInitialState, nftReducer } from "./utils"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { marketplaceService } from "@nfid/integration/marketplace"
+import { fetchSellerListings } from "../marketplace/utils"
+import { useIdentity } from "frontend/hooks/identity"
 
 type NftDetailsProps = {
   walletTheme: NFIDTheme
@@ -50,6 +53,7 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
   const [state, dispatch] = useReducer(nftReducer, nftInitialState)
   const { tokenId } = useParams()
   const location = useLocation()
+  const { identity } = useIdentity()
   const currentPage = location.state?.currentPage
   const limitPerPage = currentPage ? DEFAULT_LIMIT_PER_PAGE : undefined
 
@@ -166,6 +170,34 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
     [nft, transferService],
   )
 
+  const { data: sellerListings = [] } = useSWR(
+    isViewOnlyMode ? null : "listings/user",
+    () => fetchSellerListings(),
+    { revalidateOnFocus: false },
+  )
+
+  const listing = nft
+    ? sellerListings.find(
+        (l) =>
+          l.collectionId === nft.getCollectionId() &&
+          l.tokenId.toString() === nft.getTokenId(),
+      )
+    : undefined
+
+  const onListNFT = useCallback(async () => {
+    if (!identity) return
+    await marketplaceService.listNft(identity, {
+      collectionId: "vehwg-aiaaa-aaaag-aciuq-cai",
+      tokenId: BigInt(1),
+      priceE8s: BigInt(100000),
+    })
+  }, [identity])
+
+  const onDelistNFT = useCallback(async () => {
+    if (!identity) return
+    await marketplaceService.cancelListing(identity, BigInt(1))
+  }, [identity])
+
   if (isLoading) return <Loader isLoading />
   if (!nft) return <NotFound hideNavigation />
 
@@ -180,13 +212,15 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
         !nft.getError() &&
         !isViewOnlyMode && (
           <div className="flex items-center space-x-4">
-            <Tooltip tip="Send">
+            <Tooltip tip={listing ? "Cannot send while listed" : "Send"}>
               <div
                 className={clsx(
-                  "p-[8px] rounded-[12px] cursor-pointer",
-                  "hover:bg-gray-100 dark:hover:bg-zinc-700 active:bg-gray-200",
+                  "p-[8px] rounded-[12px]",
+                  listing
+                    ? "opacity-30 cursor-not-allowed"
+                    : "cursor-pointer hover:bg-gray-100 dark:hover:bg-zinc-700 active:bg-gray-200",
                 )}
-                onClick={onTransferNFT}
+                onClick={listing ? undefined : onTransferNFT}
               >
                 <img
                   className="rotate-[135deg]"
@@ -210,6 +244,9 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
         isPreviewLoading={state.fullSize.isLoading}
         isPropertiesLoading={state.properties.isLoading}
         isTransactionsLoading={state.transactions.isLoading}
+        onListNFT={onListNFT}
+        onDelistNFT={onDelistNFT}
+        listing={listing}
       />
     </ProfileTemplate>
   )

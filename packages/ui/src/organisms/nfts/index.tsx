@@ -25,6 +25,12 @@ import { getNetworkIcon } from "../../utils/network-icon"
 import { ProfileContext } from "frontend/provider"
 import { ManageCollections, NftCollectionMetadata } from "./manage-collections"
 import { NftCollection } from "@nfid/integration/marketplace"
+import {
+  E8S,
+  ICP_DECIMALS,
+  TRIM_ZEROS,
+} from "@nfid/integration/token/constants"
+import { MarketplaceListingWithMeta } from "../marketplace/types"
 
 export interface INFTs extends HTMLAttributes<HTMLDivElement> {
   isLoading: boolean
@@ -42,6 +48,7 @@ export interface INFTs extends HTMLAttributes<HTMLDivElement> {
   onUpdateCollections?: () => Promise<void>
   collections: NftCollection[]
   isCollectionsLoading: boolean
+  sellerListings: MarketplaceListingWithMeta[]
 }
 
 export const NFTs: FC<INFTs> = ({
@@ -57,6 +64,7 @@ export const NFTs: FC<INFTs> = ({
   onUpdateCollections,
   collections,
   isCollectionsLoading,
+  sellerListings,
 }) => {
   const isDarkTheme = useDarkTheme()
   const { isViewOnlyMode } = useContext(ProfileContext)
@@ -73,23 +81,25 @@ export const NFTs: FC<INFTs> = ({
   return (
     <>
       {!!nfts && (
-        <div className="flex items-center justify-between gap-5 mb-5">
-          <Input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.currentTarget.value)}
-            icon={
-              <IoIosSearch
-                size="20"
-                className="text-black dark:text-zinc-500"
-              />
-            }
-            placeholder="Search"
-            inputClassName="bg-white !border-black dark:!border-zinc-500"
-            className="w-full !mb-0"
-          />
-          <div className={clsx("flex items-center space-x-6 shrink-0")}>
-            <NFTDisplaySwitch state={display} setState={setDisplay} />
+        <div className="flex flex-wrap items-center justify-center gap-5 mb-5">
+          <div className="flex items-center w-full gap-5 sm:w-auto sm:flex-1">
+            <Input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.currentTarget.value)}
+              icon={
+                <IoIosSearch
+                  size="20"
+                  className="text-black dark:text-zinc-500"
+                />
+              }
+              placeholder="Search"
+              inputClassName="bg-white !border-black dark:!border-zinc-500"
+              className="w-full !mb-0"
+            />
+            <div className={clsx("flex items-center space-x-6 shrink-0")}>
+              <NFTDisplaySwitch state={display} setState={setDisplay} />
+            </div>
           </div>
           <ManageCollections
             collections={collections}
@@ -140,6 +150,11 @@ export const NFTs: FC<INFTs> = ({
             }
           >
             {nftsFiltered.map((nft) => {
+              const listing = sellerListings.find(
+                (l) =>
+                  l.collectionId === nft.getCollectionId() &&
+                  l.tokenId.toString() === nft.getTokenId(),
+              )
               if (nft === null) {
                 return (
                   <TableNftSkeleton tableRowsAmount={1} tableCellAmount={5} />
@@ -224,13 +239,22 @@ export const NFTs: FC<INFTs> = ({
                   <td>
                     {!nft.getError() && !isViewOnlyMode && (
                       <div
-                        className="p-[12px] w-[42px] ml-auto hover:bg-gray-100 dark:hover:bg-zinc-700 rounded-[12px]"
+                        className={clsx(
+                          "p-[12px] w-[42px] ml-auto hover:bg-gray-100 dark:hover:bg-zinc-700 rounded-[12px]",
+                          listing && "!cursor-not-allowed",
+                        )}
                         onClick={(e) => {
                           e.stopPropagation()
+                          if (listing) return
                           onTransferNFT(nft.getTokenId())
                         }}
                       >
-                        <IconCmpArrow className="rotate-[135deg] w-[18px] h-[18px] text-gray-400 cursor-pointer ml-auto" />
+                        <IconCmpArrow
+                          className={clsx(
+                            "rotate-[135deg] w-[18px] h-[18px] text-gray-400 cursor-pointer ml-auto",
+                            listing && "!cursor-not-allowed",
+                          )}
+                        />
                       </div>
                     )}
                   </td>
@@ -252,6 +276,11 @@ export const NFTs: FC<INFTs> = ({
                 <GalleryNftSkeleton key={`skeleton_${index}`} nftsAmount={1} />
               )
             }
+            const listing = sellerListings.find(
+              (l) =>
+                l.collectionId === nft.getCollectionId() &&
+                l.tokenId.toString() === nft.getTokenId(),
+            )
             return (
               <Link
                 key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
@@ -264,10 +293,21 @@ export const NFTs: FC<INFTs> = ({
                 <div
                   className={clsx(
                     "cursor-pointer rounded-[12px] bg-gray-50 dark:bg-zinc-800 group hover:shadow-xl dark:hover:bg-zinc-700 transition-all",
-                    "h-full flex flex-col",
+                    "h-full flex flex-col relative",
                   )}
                   key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
                 >
+                  {listing && (
+                    <div
+                      className={clsx(
+                        "absolute top-[11px] left-[11px] bg-white dark:bg-zinc-900",
+                        "flex items-center text-xs font-semibold leading-4 z-[20]",
+                        "h-[25px] text-teal-600 py-[5px] px-1.5 rounded-[8px]",
+                      )}
+                    >
+                      Listed · {listing.icpPriceFormatted}
+                    </div>
+                  )}
                   <div className="relative rounded-[12px] overflow-hidden basis-[100%] flex items-center justify-center relative min-h-[336px]">
                     {nft.getError() || nft.getAssetPreview() === undefined ? (
                       <>

@@ -28,6 +28,7 @@ import { ModalType } from "../transfer-modal/types"
 import { fetchNFTs } from "./utils/util"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { marketplaceService } from "@nfid/integration/marketplace"
+import { fetchSellerListings } from "../marketplace/utils"
 
 const DEFAULT_LIMIT_PER_PAGE = 8
 
@@ -100,6 +101,13 @@ const NFTsPage = memo(() => {
       revalidateIfStale: false,
     },
   )
+
+  const { data: sellerListings = [], isLoading: isSellerListingsLoading } =
+    useSWR(
+      isViewOnlyMode ? null : "listings/user",
+      () => fetchSellerListings(),
+      { revalidateOnFocus: false },
+    )
 
   const {
     data: nftTotalPrice,
@@ -226,7 +234,7 @@ const NFTsPage = memo(() => {
       <ProfileContainer>
         <NFTs
           nfts={nfts}
-          isLoading={isLoading || !data}
+          isLoading={isLoading || !data || isSellerListingsLoading}
           searchTokens={searchTokens}
           links={ProfileConstants}
           totalItems={totalItems}
@@ -237,6 +245,7 @@ const NFTsPage = memo(() => {
           onUpdateCollections={onUpdateCollections}
           collections={collections}
           isCollectionsLoading={isCollectionsLoading}
+          sellerListings={sellerListings}
         />
         <Button
           disabled={isLoading}

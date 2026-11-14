@@ -9,6 +9,7 @@ import {
   Skeleton,
   TableNftActivitySkeleton,
   IconCmpExternalIcon,
+  Button,
 } from "@nfid-frontend/ui"
 import { trimConcat } from "@nfid-frontend/utils"
 
@@ -24,6 +25,7 @@ import ProfileContainer from "../../atoms/profile-container/Container"
 import { ModalComponent } from "@nfid-frontend/ui"
 import { getNetworkIcon } from "../../utils/network-icon"
 import { useDarkTheme } from "frontend/hooks"
+import { MarketplaceListingWithMeta } from "../marketplace/types"
 
 export interface NFTDetailsProps {
   nft: NFT
@@ -35,6 +37,9 @@ export interface NFTDetailsProps {
   isPreviewLoading: boolean
   isPropertiesLoading: boolean
   isTransactionsLoading: boolean
+  onListNFT: () => Promise<void>
+  onDelistNFT: () => Promise<void>
+  listing?: MarketplaceListingWithMeta
 }
 
 export const NFTDetails: FC<NFTDetailsProps> = memo(
@@ -48,6 +53,9 @@ export const NFTDetails: FC<NFTDetailsProps> = memo(
     properties,
     transactions,
     assetPreview,
+    onListNFT,
+    onDelistNFT,
+    listing,
   }) => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const marketPlaceLink = nft.getTokenMarketPlaceLink()
@@ -159,13 +167,58 @@ export const NFTDetails: FC<NFTDetailsProps> = memo(
                 nft.getError()
               ) : (
                 <>
+                  {nft.getNftStandard() === "ICRC-7" && (
+                    <div
+                      className={clsx(
+                        "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100 dark:border-zinc-500",
+                        "block sm:flex items-center dark:text-white pb-5",
+                      )}
+                    >
+                      {listing ? (
+                        <>
+                          <div>
+                            <p className="text-sm text-gray-400 dark:text-zinc-500">
+                              Listed for
+                            </p>
+                            <div className="flex gap-2.5 items-end">
+                              <span className="dark:text-white text-[28px] font-bold leading-[34px]">
+                                {listing.icpPriceFormatted}
+                              </span>
+                              <span className="text-gray-500 dark:text-zinc-400 text-sm leading-[17px] pb-1">
+                                {listing.usdPriceFormatted}
+                              </span>
+                            </div>
+                          </div>
+                          <Button
+                            type="stroke"
+                            className="ml-auto min-w-[80px] mt-2 sm:mt-0"
+                            onClick={onDelistNFT}
+                          >
+                            Delist
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-sm text-gray-400 dark:text-zinc-500">
+                            Not listed
+                          </p>
+                          <Button
+                            className="ml-auto min-w-[111px] mt-2 sm:mt-0"
+                            onClick={onListNFT}
+                          >
+                            List for sale
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  )}
                   <div
                     className={clsx(
                       "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100 dark:border-zinc-500",
                       "block sm:flex items-center dark:text-white",
                     )}
                   >
-                    <p className="text-sm text-gray-400 dark:text-zinc-500 flex-shrink-0 flex-grow-0 basis-[160px] mb-[5px]">
+                    <p className="text-sm text-gray-400 dark:text-zinc-500 flex-shrink-0 flex-grow-0 basis-[160px]">
                       Standard
                     </p>
                     <p className="text-sm" id={"token-standard"}>

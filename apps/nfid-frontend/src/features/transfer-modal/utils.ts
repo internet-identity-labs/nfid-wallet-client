@@ -137,6 +137,12 @@ export const validateNftAddress = (address: string): boolean | string => {
   } else return true
 }
 
+/** ICRC-7 NFTs go to a principal only: the standard has no account ids. */
+export const validateIcrc7NftAddress = (address: string): boolean | string =>
+  addressValidationService.isValidPrincipalId(address)
+    ? true
+    : "Invalid wallet address"
+
 export const validateICRC1Address = (address: string): boolean | string => {
   try {
     decodeIcrcAccount(address)

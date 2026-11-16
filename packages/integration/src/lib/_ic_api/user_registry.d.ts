@@ -6,10 +6,7 @@ export interface AddressBookAddress {
   address_type: AddressBookAddressType
 }
 export type AddressBookAddressType =
-  | { BTC: null }
-  | { ETH: null }
-  | { IcpAddress: null }
-  | { IcpPrincipal: null }
+  { BTC: null } | { ETH: null } | { IcpAddress: null } | { IcpPrincipal: null }
 export interface AddressBookConf {
   max_user_addresses: number
   max_name_length: number
@@ -35,10 +32,13 @@ export interface ICRC1 {
   network: number
 }
 export type ICRC1State = { Inactive: null } | { Active: null }
+export interface ICRC7Collection {
+  canister_id: string
+  state: ICRC1State
+}
 export type Result = { Ok: null } | { Err: AddressBookError }
 export type Result_1 =
-  | { Ok: Array<AddressBookUserAddress> }
-  | { Err: AddressBookError }
+  { Ok: Array<AddressBookUserAddress> } | { Err: AddressBookError }
 export interface VaultCanister {
   canister_id: string
   name: string
@@ -55,6 +55,9 @@ export interface _SERVICE {
   address_book_set_config: ActorMethod<[AddressBookConf], Result>
   get_canisters_by_root: ActorMethod<[string], Array<ICRC1>>
   remove_icrc1_canister: ActorMethod<[string], undefined>
+  get_icrc7_collections_by_root: ActorMethod<[string], Array<ICRC7Collection>>
+  remove_icrc7_collection: ActorMethod<[string], undefined>
+  store_icrc7_collection: ActorMethod<[string, ICRC1State], undefined>
   store_icrc1_canister: ActorMethod<
     [string, ICRC1State, [] | [number]],
     undefined

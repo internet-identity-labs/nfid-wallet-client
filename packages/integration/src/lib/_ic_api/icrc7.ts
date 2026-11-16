@@ -3,7 +3,8 @@
 // icrc37_approve_tokens / icrc37_revoke_token_approvals are typed as
 // `reserved` on return: collections differ in the result shape (the spec
 // returns `vec opt Result`, ORIGYN core_nft wraps it in an outer Result).
-// The effect is verified afterwards with `icrc37_is_approved`.
+// The marketplace calls them through `marketplace/icrc7-calls.ts`, which
+// reads both shapes.
 //
 // icrc3_get_blocks reads the transaction log for the activity page.
 

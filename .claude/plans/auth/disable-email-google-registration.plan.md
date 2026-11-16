@@ -175,7 +175,7 @@
 - [ ] `yarn format:check` — clean
 - [ ] Grep check: no remaining bare `throw new Error(text)` on the
       `REGISTRATION_DISABLED` path in either service; downstream consumers still
-      compile (`yarn nx run nfid-frontend:typecheck` if quick — otherwise note as
+      compile (`npx tsc --noEmit -p apps/nfid-frontend/tsconfig.app.json` if quick — otherwise note as
       the other developer's gate)
 
 ## Risks & Notes

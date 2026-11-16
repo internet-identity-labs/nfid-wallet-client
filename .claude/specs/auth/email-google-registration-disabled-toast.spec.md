@@ -274,3 +274,8 @@ RegistrationDisabledError` → `toaster.info` called with the fixed
    and `root-machine.ts` actions (none currently exist for machine `actions`
    in isolation — may need `machine.spec.ts` created, or coverage added via
    an existing higher-level flow test).
+
+> Note 2026-11-13 (sdd-workflow): the Nx project for `apps/nfid-frontend` is `nfid-wallet-client`
+> (there is no `nfid-frontend` project) and there is no `typecheck` target. Use
+> `yarn nx lint|test|build|serve nfid-wallet-client` and
+> `npx tsc --noEmit -p apps/nfid-frontend/tsconfig.app.json` (see CLAUDE.md → Verification Commands).

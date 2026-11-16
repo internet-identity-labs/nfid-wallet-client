@@ -4,6 +4,7 @@ export enum MarketPlace {
   YUKU = "YUKU",
   EXT = "EXT",
   EVM = "EVM",
+  /** ICRC-7 collections from the NFID marketplace oracle. */
   ICRC7 = "ICRC7",
 }
 

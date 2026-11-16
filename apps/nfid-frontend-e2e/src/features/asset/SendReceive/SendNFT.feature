@@ -12,4 +12,4 @@ Feature: Send NFT flow
     Then Verifying that the transaction is success
     Examples:
       | tokenName  | nfid number | Account ID                                                       |
-      | ICPets4504 | 28567       | f2fcf27d5ae274bca000c90f9e9aa70e5e82fdfcdbd3377a9279e11aa1ec49ce |
+      | BoxyDude28 | 200000099   | 88a219cd353c78dfb7973381f3fc5fc8b0dd5853b0fa7533149d76a12fa79fa2 |

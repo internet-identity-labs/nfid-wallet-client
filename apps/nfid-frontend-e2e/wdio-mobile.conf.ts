@@ -4,6 +4,12 @@ import Video from "wdio-video-reporter"
 
 export const config = Object.assign({}, desktopConfig, {
   capabilities: [mobileChromeBrowser],
+  // Desktop and mobile jobs run in parallel and @desktop/@mobile variants use
+  // different accounts, so the mobile run must not inherit "not @mobile".
+  cucumberOpts: {
+    ...desktopConfig.cucumberOpts,
+    tags: "not @pending and not @desktop and not @skip",
+  },
   reporters: [
     "spec",
     [

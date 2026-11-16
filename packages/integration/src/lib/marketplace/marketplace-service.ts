@@ -17,6 +17,7 @@ import type {
 import { idlFactory as icrc7Idl } from "../_ic_api/icrc7"
 import type { Value, _SERVICE as Icrc7 } from "../_ic_api/icrc7.d"
 import { actorBuilder, agentBaseConfig } from "../actors"
+import { callIcrc7Batch, describeIcrcError } from "./icrc7-calls"
 // ICRC1_ORACLE_CANISTER_ID is a global env var (see types/env/index.d.ts).
 import {
   BuyQuote,
@@ -175,24 +176,39 @@ export class MarketplaceService {
     return approved ?? false
   }
 
-  /** Grants the oracle an ICRC-37 approval on the token. */
+  /**
+   * Grants the oracle an ICRC-37 approval on the token. The collection
+   * reports a refused approval (e.g. `CreatedInFuture` when the device clock
+   * runs ahead) inside a successful reply, so the result is checked here.
+   */
   async approveNft(
     identity: SignIdentity,
     collectionId: string,
     tokenId: bigint,
   ): Promise<void> {
-    await this.nft(collectionId, identity).icrc37_approve_tokens([
-      {
-        token_id: tokenId,
-        approval_info: {
-          spender: this.oracleAccount(),
-          from_subaccount: [],
-          expires_at: [],
-          memo: [],
-          created_at_time: nowNs(),
+    const [result] = await callIcrc7Batch(
+      this.agent(identity),
+      collectionId,
+      "icrc37_approve_tokens",
+      [
+        {
+          token_id: tokenId,
+          approval_info: {
+            spender: this.oracleAccount(),
+            from_subaccount: [],
+            expires_at: [],
+            memo: [],
+            created_at_time: nowNs(),
+          },
         },
-      },
-    ])
+      ],
+    )
+    if (result && "Err" in result) {
+      throw new MarketplaceError({
+        kind: "approvalFailed",
+        reason: describeIcrcError(result.Err),
+      })
+    }
     if (!(await this.isApproved(collectionId, tokenId))) {
       throw new MarketplaceError({ kind: "approvalFailed" })
     }
@@ -204,15 +220,67 @@ export class MarketplaceService {
     collectionId: string,
     tokenId: bigint,
   ): Promise<void> {
-    await this.nft(collectionId, identity).icrc37_revoke_token_approvals([
-      {
-        token_id: tokenId,
-        spender: [this.oracleAccount()],
-        from_subaccount: [],
-        memo: [],
-        created_at_time: [],
-      },
-    ])
+    const [result] = await callIcrc7Batch(
+      this.agent(identity),
+      collectionId,
+      "icrc37_revoke_token_approvals",
+      [
+        {
+          token_id: tokenId,
+          spender: [this.oracleAccount()],
+          from_subaccount: [],
+          memo: [],
+          created_at_time: [],
+        },
+      ],
+    )
+    if (result && "Err" in result && !("ApprovalDoesNotExist" in result.Err)) {
+      console.warn("NFT approval not revoked", describeIcrcError(result.Err))
+    }
+  }
+
+  /**
+   * Sends an ICRC-7 NFT from the identity's default account to `to` (a
+   * principal). Resolves with the transaction id in the collection log,
+   * or undefined if the collection's reply could not be read but the NFT
+   * reached `to`.
+   */
+  async transferNft(
+    identity: SignIdentity,
+    collectionId: string,
+    tokenId: bigint,
+    to: string,
+  ): Promise<bigint | undefined> {
+    const [result] = await callIcrc7Batch(
+      this.agent(identity),
+      collectionId,
+      "icrc7_transfer",
+      [
+        {
+          to: { owner: Principal.fromText(to), subaccount: [] },
+          token_id: tokenId,
+          memo: [],
+          from_subaccount: [],
+          created_at_time: [nowNs()],
+        },
+      ],
+    )
+    if (!result) {
+      // Unknown reply shape: the new owner tells whether it went through.
+      const owner = await this.getOwner(collectionId, tokenId)
+      if (owner?.toText() === to) return undefined
+      throw new MarketplaceError({
+        kind: "transferFailed",
+        reason: "Unexpected reply",
+      })
+    }
+    if ("Err" in result) {
+      throw new MarketplaceError({
+        kind: "transferFailed",
+        reason: describeIcrcError(result.Err),
+      })
+    }
+    return result.Ok
   }
 
   // ── Listings ──────────────────────────────────────────────────────────
@@ -314,13 +382,15 @@ export class MarketplaceService {
     return {
       priceE8s: listing.priceE8s,
       ledgerFeeE8s: fee,
-      totalCostE8s: listing.priceE8s + fee * BigInt(2),
-      sellerReceivesE8s: listing.priceE8s - fee,
+      totalCostE8s: listing.priceE8s + fee * BigInt(3),
+      sellerReceivesE8s: listing.priceE8s,
     }
   }
 
   /**
-   * Buys a listing: approves `price + fee` ICP for the oracle (ICRC-2), then
+   * Buys a listing: approves `price + 2 * fee` ICP for the oracle (ICRC-2):
+   * the oracle pulls `price + fee` into escrow (the extra fee pays the seller
+   * payout) and the ledger charges `fee` for that transfer. Then
    * calls buy. Resolves with the purchase record; check it with
    * `isPurchaseSuccessful`. A pending status means the marketplace keeps
    * retrying (a failed NFT transfer ends in a refund).
@@ -343,7 +413,7 @@ export class MarketplaceService {
     const fee = await ledger.transactionFee({ certified: false })
     await ledger.approve({
       spender: this.oracleAccount(),
-      amount: listing.priceE8s + fee,
+      amount: listing.priceE8s + fee * BigInt(2),
       expires_at: nowNs() + BigInt(BUY_ALLOWANCE_TTL_MS) * NS_PER_MS,
     })
     const res = (await this.oracle(identity).buy_listing(

@@ -16,3 +16,8 @@ export type {
   Icrc7EventWithToken,
   Icrc7TokenInfo,
 } from "./icrc7-history"
+export {
+  Icrc7RegistryService,
+  icrc7RegistryService,
+} from "./icrc7-registry-service"
+export type { UserIcrc7Collection } from "./icrc7-registry-service"

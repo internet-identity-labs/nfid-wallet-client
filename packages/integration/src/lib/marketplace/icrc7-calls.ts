@@ -83,10 +83,22 @@ export type Icrc7BatchMethod = keyof typeof methods
 export const describeIcrcError = (err: Record<string, unknown>): string => {
   const [name, value] = Object.entries(err)[0] ?? ["Unknown", null]
   if (value === null || value === undefined) return name
-  const details = JSON.stringify(value, (_, v) =>
-    typeof v === "bigint" ? v.toString() : v,
-  )
-  return `${name} ${details}`
+  return `${name} ${JSON.stringify(withoutBigints(value))}`
+}
+
+/**
+ * Bigints as decimal strings. Done before JSON.stringify: a replacer would
+ * see the output of a `BigInt.prototype.toJSON` polyfill instead.
+ */
+const withoutBigints = (v: unknown): unknown => {
+  if (typeof v === "bigint") return v.toString()
+  if (Array.isArray(v)) return v.map(withoutBigints)
+  if (v && typeof v === "object") {
+    return Object.fromEntries(
+      Object.entries(v).map(([k, x]) => [k, withoutBigints(x)]),
+    )
+  }
+  return v
 }
 
 /**

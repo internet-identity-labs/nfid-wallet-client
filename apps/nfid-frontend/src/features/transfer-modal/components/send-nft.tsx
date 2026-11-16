@@ -13,7 +13,12 @@ import { isAddress } from "ethers"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 
 import { FormValues, SendStatus } from "../types"
-import { updateNftList, validateETHAddress, validateNftAddress } from "../utils"
+import {
+  updateNftList,
+  validateETHAddress,
+  validateIcrc7NftAddress,
+  validateNftAddress,
+} from "../utils"
 import {
   addressBookFacade,
   NftSearchRequest,
@@ -22,6 +27,7 @@ import {
 } from "frontend/integration/address-book"
 import { FormProvider, useForm } from "react-hook-form"
 import { FeeResponse, FeeResponseETH } from "frontend/integration/ft/utils"
+import { marketplaceService } from "@nfid/integration/marketplace"
 import { Category, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { MarketPlace } from "frontend/integration/nft/enum/enums"
 import {
@@ -50,6 +56,10 @@ const EVM_SERVICE_MAP: Partial<Record<number, EVMService>> = {
   [ChainId.ARB_SEPOLIA]: arbSepoliaService,
   [ChainId.POL_AMOY]: polygonAmoyService,
 }
+
+/** ICRC-7 token id from the NFT id ("<collection>:<id>" or just "<id>"). */
+const icrc7TokenId = (nftId: string): bigint =>
+  BigInt(nftId.split(":").pop() ?? nftId)
 
 interface ITransferNFT {
   preselectedNFTId?: string
@@ -266,17 +276,23 @@ export const TransferNFT = ({
 
       setIsSuccessOpen(true)
 
-      transferEXT(selectedNFT.getTokenId(), identity, values.to)
-        .then(successHandler)
-        .catch((e) => {
-          console.error(
-            `Transfer error: ${
-              (e as Error).message ? (e as Error).message : e
-            }`,
-          )
-          setErrorMessage("Something went wrong")
-          setStatus(SendStatus.FAILED)
-        })
+      const transfer =
+        selectedNFT.getMarketPlace() === MarketPlace.ICRC7
+          ? marketplaceService.transferNft(
+              identity,
+              selectedNFT.getCollectionId(),
+              icrc7TokenId(selectedNFT.getTokenId()),
+              values.to,
+            )
+          : transferEXT(selectedNFT.getTokenId(), identity, values.to)
+
+      transfer.then(successHandler).catch((e) => {
+        console.error(
+          `Transfer error: ${(e as Error).message ? (e as Error).message : e}`,
+        )
+        setErrorMessage("Something went wrong")
+        setStatus(SendStatus.FAILED)
+      })
     },
     [
       selectedNFT,
@@ -291,6 +307,9 @@ export const TransferNFT = ({
   const validateAddress = useMemo(() => {
     if (selectedNFT?.getMarketPlace() === MarketPlace.EVM) {
       return validateETHAddress
+    }
+    if (selectedNFT?.getMarketPlace() === MarketPlace.ICRC7) {
+      return validateIcrc7NftAddress
     }
     return validateNftAddress
   }, [selectedNFT])

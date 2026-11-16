@@ -104,9 +104,12 @@ export interface MarketplaceTx {
 export interface BuyQuote {
   priceE8s: bigint
   ledgerFeeE8s: bigint
-  /** price + approve fee + transfer fee. */
+  /**
+   * price + three ledger fees: approve, transfer into escrow and the payout
+   * to the seller. A 1 ICP listing costs 1.0003 ICP.
+   */
   totalCostE8s: bigint
-  /** price - payout fee. */
+  /** The full price: the buyer pays the payout fee. */
   sellerReceivesE8s: bigint
 }
 
@@ -130,11 +133,17 @@ export type MarketplaceErrorCause =
   | { kind: "txNotFound" }
   | { kind: "invalidTxState" }
   /** The collection did not record the ICRC-37 approval. */
-  | { kind: "approvalFailed" }
+  | { kind: "approvalFailed"; reason?: string }
+  /** The collection refused an ICRC-7 transfer. */
+  | { kind: "transferFailed"; reason: string }
 
 export class MarketplaceError extends Error {
   constructor(public readonly cause: MarketplaceErrorCause) {
-    super(cause.kind)
+    super(
+      "reason" in cause && cause.reason
+        ? `${cause.kind}: ${cause.reason}`
+        : cause.kind,
+    )
     this.name = "MarketplaceError"
   }
 }

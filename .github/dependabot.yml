@@ -6,9 +6,10 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    # One PR per group below; majors are kept apart so a breaking release
-    # does not block the safe minor/patch bumps (see /dependabot-update).
-    open-pull-requests-limit: 3
+    # One PR per group below, plus one PR per major bump outside the groups,
+    # so a breaking release only blocks its own PR (see /dependabot-update).
+    # The limit counts every open npm PR; a group PR counts as one.
+    open-pull-requests-limit: 15
     versioning-strategy: increase
     commit-message:
       prefix: "[yarn]"
@@ -20,6 +21,12 @@ updates:
         update-types:
           - "minor"
           - "patch"
+      nx-major:
+        update-types:
+          - "major"
+        patterns:
+          - "nx"
+          - "@nx/*"
       e2e-tooling-major:
         update-types:
           - "major"
@@ -31,9 +38,71 @@ updates:
           - "geckodriver"
           - "chromedriver"
           - "@cucumber/*"
-      major:
+      storybook-major:
         update-types:
           - "major"
+        patterns:
+          - "storybook"
+          - "@storybook/*"
+          - "eslint-plugin-storybook"
+      babel-major:
+        update-types:
+          - "major"
+        patterns:
+          - "@babel/*"
+          - "babel-loader"
+      typescript-eslint-major:
+        update-types:
+          - "major"
+        patterns:
+          - "@typescript-eslint/*"
+      react-major:
+        update-types:
+          - "major"
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      jest-major:
+        update-types:
+          - "major"
+        patterns:
+          - "jest"
+          - "jest-*"
+          - "ts-jest"
+          - "@types/jest"
+      walletconnect-major:
+        update-types:
+          - "major"
+        patterns:
+          - "@walletconnect/*"
+          - "@reown/*"
+      lifi-major:
+        update-types:
+          - "major"
+        patterns:
+          - "@lifi/*"
+      icp-major:
+        update-types:
+          - "major"
+        patterns:
+          - "@dfinity/*"
+          - "@icp-sdk/*"
+      radix-major:
+        update-types:
+          - "major"
+        patterns:
+          - "@radix-ui/*"
+      eslint-major:
+        update-types:
+          - "major"
+        patterns:
+          - "eslint"
+          - "@eslint/*"
+      # No catch-all major group: every other major bump gets its own PR.
+      # Add a group above only for packages that must move together (lockstep
+      # releases or strict peers); /dependabot-update suggests new ones.
     ignore:
       - dependency-name: "@icp-sdk/core"
       - dependency-name: "@icp-sdk/auth"

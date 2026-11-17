@@ -106,7 +106,7 @@ The current repository is the frontend interface for NFID Wallet, where you'll f
 
 Before setting up, ensure the following are installed:
 
-- **NodeJS** `v22.10.0`
+- **NodeJS** `v22.23.5`
 - **Yarn** `v1.22.22`
 
 ### Install Dependencies

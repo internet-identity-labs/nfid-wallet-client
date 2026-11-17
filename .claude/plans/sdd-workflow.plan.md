@@ -1015,3 +1015,5 @@ Verify fixes (2026-11-13):
 > `.claude/rules/frontend.md`. The PreToolUse hooks use exec form with `"onFailure": "block"` instead of
 > the `rc -eq 1` wrapper, and `permissions.ask` prompts for commit, push and `gh pr` writes. Paths
 > above are as they were when written.
+
+> Note 2026-11-17 (node-22-23-upgrade): the Node pilot was retargeted from 22.23.4 to 22.23.5 (newest 22.x security release, 2026-11-11) and run through the pipeline on branch `chore/node-22-upgrade`; see `node-22-23-upgrade.plan.md`.

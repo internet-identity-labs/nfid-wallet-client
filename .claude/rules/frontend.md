@@ -47,6 +47,9 @@ tooling work doesn't carry it.
 - New unit tests mock canister and network calls; never hit live dev canisters (details in the
   `/write-unit-tests` skill, `.claude/skills/write-unit-tests/SKILL.md`)
 
-## Import Order (enforced by Prettier)
+## Import Order (convention, not enforced by tooling)
 
-`third-party → @nfid* → frontend/* → components/* → ./local`
+`third-party → @nfid* → frontend/* → components/* → ./local`, one blank line between groups.
+
+No Prettier or ESLint rule sorts imports, so keep this order by hand in the files you touch and
+check it in review. Don't reorder imports in files you aren't otherwise changing.

@@ -13,7 +13,7 @@ Goal: **every library is updated whenever it is possible — by changing our cod
 Arguments: `$ARGUMENTS`
 
 - A PR number → process only that PR. Otherwise process every open Dependabot PR.
-- `--dry-run` → do everything except `git commit`, `git push` and `gh pr comment`. Print the report instead.
+- `--dry-run` → do everything except `git commit`, `git push` and `gh pr comment`. Print the PR comment draft with the terminal report instead.
 
 SDD: root `package.json` / `yarn.lock` are tooling tier and need no plan. Code changes under `apps/` / `packages/` use the **dependency-migration tier** (`.claude/sdd/workflow.md` rule 2): one `deps-<PR>` plan per PR, written by this command in step 6, with an inline `## Spec` section instead of a spec file. The engineer approves it once; the edit guard (`.claude/hooks/pre-tool-use.js`) then allows exactly the files it lists.
 
@@ -189,19 +189,29 @@ Note for the user: once a human commit is on the branch, Dependabot stops rebasi
 
 ## 9. Report
 
-Post (unless `--dry-run`) with `gh pr comment <PR> --body-file report.md`, and print the same to the user:
+Two outputs: a **short PR comment** for reviewers, and the **full report** in the terminal for the engineer.
+
+### PR comment (unless `--dry-run`: `gh pr comment <PR> --body-file comment.md`)
+
+Humans scan it on the PR page, so keep it **≤ ~10 lines**: what happened to the bumps, what changed in our code, what the reviewer must watch. No per-package tables (Dependabot's PR body already lists the bumps), no per-check results, no "checked, not affected" lists, no logs, no YAML. Omit empty bullets.
 
 ```markdown
-## Dependency update (automated)
+## Dependency update
 
-**Kept (N):** table of package | from → to
-**Migrated (N):** family | from → to | breaking change | files changed
-**Partially updated (N):** package | wanted → got | why
-**Reverted (N):** package | from → to | stage that failed | one-line evidence (error message)
-**Needs migration (N):** package | to | breaking change | what was tried / why not migrated (blocked, declined, failed)
-**Third-party blockers:** dep | why | option chosen
-**E2E:** tags run locally + result, or "not run locally" — CI's Desktop Tests run is the final check.
+Kept <n> of <total> · Migrated: <family from → to, or "none"> · Reverted: <n>
+
+- **Code changes:** <breaking change in a few words> → `<file>`, `<file>`
+- **Reverted:** <pkg from → to> — <reason in a few words>
+- **Watch:** <one line per thing the reviewer must check, e.g. a CI risk>
+
+Checks vs `main` ✅ · E2E local: <tags> ✅ (or "not run, CI decides") · Plan: `.claude/plans/deps-<PR>.plan.md`
 ```
+
+Example (#3309): `Kept 11 of 11 · Migrated: wdio 9 → 10 · Reverted: 0`, one **Code changes** bullet per breaking change, one **Watch** bullet for the CI `node_modules` cache.
+
+### Terminal report (always)
+
+Everything the engineer may need, in the reply: kept / migrated / partially updated / reverted / needs migration (with evidence: the failing stage and the error line), third-party blockers and the option chosen, verification results, E2E tags + result, and the suggestions below. The deps plan keeps the migration details.
 
 For **blocked** majors, suggest, but **do not apply**, `ignore` entries for `.github/dependabot.yml` so Dependabot stops re-proposing them until the blocker is gone, e.g.:
 
@@ -215,7 +225,7 @@ Also check the **major groups** in `.github/dependabot.yml`, and suggest (but **
 - a single-package major PR failed only because a related package didn't move with it (peer-dependency warning or error naming a package from the same family, or lockstep versions like `foo` + `foo-*` / `@scope/*`), or
 - a family from step 1 has members in `package.json` that no group pattern matches.
 
-Only group packages that must move together (lockstep releases or strict peers). Independent packages stay as single PRs so one blocked major doesn't hold back the others. Put the suggestion in the report under **Suggested Dependabot groups**, as YAML ready to paste.
+Only group packages that must move together (lockstep releases or strict peers). Independent packages stay as single PRs so one blocked major doesn't hold back the others. Put the suggestion in the terminal report under **Suggested Dependabot groups**, as YAML ready to paste (not in the PR comment).
 
 ## Guardrails
 

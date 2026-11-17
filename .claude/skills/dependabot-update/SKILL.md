@@ -20,7 +20,7 @@ Root `package.json` / `yarn.lock` are outside `apps/` and `packages/`, so this c
 ## Repo facts (verified)
 
 - Yarn 1.22; Node is the exact version in `.nvmrc` (also pinned in root `package.json` `engines.node` and `docker-e2e-tests/Dockerfile`). Single Dependabot directory `/`; workspaces' `package.json` files are not bumped.
-- Dependabot (`.github/dependabot.yml`) opens up to three grouped npm PRs, title prefix `[yarn]:`: `minor-and-patch`, `e2e-tooling-major` (`@wdio/*`, `webdriverio`, `@cucumber/*`, … — only affect `apps/nfid-frontend-e2e`) and `major` (everything else). Plus separate security PRs (`dependabot/npm_and_yarn/npm_and_yarn-*`) that usually only touch `yarn.lock` (transitive deps). Process `minor-and-patch` before the majors.
+- Dependabot (`.github/dependabot.yml`) opens npm PRs with title prefix `[yarn]:`: one `minor-and-patch` group PR, one PR per `*-major` family group (`nx-major`, `e2e-tooling-major` — `@wdio/*`, `webdriverio`, `@cucumber/*`, … only affect `apps/nfid-frontend-e2e` —, `storybook-major`, `babel-major`, `typescript-eslint-major`, `react-major`, `jest-major`, `walletconnect-major`, `lifi-major`, `icp-major`, `radix-major`, `eslint-major`), and **one PR per major bump that matches no group** (there is no catch-all `major` group). Plus separate security PRs (`dependabot/npm_and_yarn/npm_and_yarn-*`) that usually only touch `yarn.lock` (transitive deps). Process `minor-and-patch` before the majors.
 - Most deps are pinned exactly (`"1.2.3"`), a few use `^`. Preserve whichever style the base used.
 - `resolutions` in root `package.json` pin `@typescript-eslint/*` for `@nx/eslint-plugin` — keep them in sync if `@typescript-eslint/*` or `@nx/*` moves.
 - Nx project names: `nfid-wallet-client` (= `apps/nfid-frontend`), `nfid-demo`, `ui`, `integration`, `client-db`, `swr`, `utils`, `config`, `ui-tailwind-core`, `nfid-frontend-e2e`. There is no `typecheck` target — use `tsc` directly.
@@ -141,6 +141,13 @@ Then suggest, but **do not apply**, `ignore` entries for `.github/dependabot.yml
 - dependency-name: "@wdio/*"
   update-types: ["version-update:semver-major"]
 ```
+
+Also check the **major groups** in `.github/dependabot.yml`, and suggest (but **do not apply**) a new `*-major` group, or a new pattern for an existing one, when:
+
+- a single-package major PR failed only because a related package didn't move with it (peer-dependency warning or error naming a package from the same family, or lockstep versions like `foo` + `foo-*` / `@scope/*`), or
+- a family from step 1 has members in `package.json` that no group pattern matches.
+
+Only group packages that must move together (lockstep releases or strict peers). Independent packages stay as single PRs so one blocked major doesn't hold back the others. Put the suggestion in the report under **Suggested Dependabot groups**, as YAML ready to paste.
 
 ## Guardrails
 

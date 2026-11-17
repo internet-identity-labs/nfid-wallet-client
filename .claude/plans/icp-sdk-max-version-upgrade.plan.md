@@ -52,3 +52,8 @@ None touch `requestAttributes` (the only breaking API in the 7.1.0 → 8.0.3 ran
 - No manual browser smoke test is in scope per the approved spec's exit criteria (typecheck/lint/test/lockfile-diff review only).
 - If `yarn.lock` pulls in unrelated transitive changes beyond `@icp-sdk/signer`, treat that as a signal to stop rather than proceeding — root cause could be an unrelated lockfile drift unrelated to this bump.
 - This plan does not touch `@icp-sdk/core`, `@icp-sdk/canisters`, or `@dfinity/utils` — confirmed at their peer-compatible ceiling as of 2026-09-15.
+
+> Note 2026-11-13 (sdd-workflow): the Nx project for `apps/nfid-frontend` is `nfid-wallet-client`
+> (there is no `nfid-frontend` project) and there is no `typecheck` target. Use
+> `yarn nx lint|test|build|serve nfid-wallet-client` and
+> `npx tsc --noEmit -p apps/nfid-frontend/tsconfig.app.json` (see CLAUDE.md → Verification Commands).

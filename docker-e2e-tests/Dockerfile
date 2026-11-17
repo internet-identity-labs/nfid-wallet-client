@@ -3,7 +3,8 @@ FROM ubuntu:${TAG}
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000
-ARG NODE_VERSION=22.18
+# Must equal .nvmrc; bump both together
+ARG NODE_VERSION=22.23.5
 ARG NVM_VERSION=0.40.1
 
 ENV NVM_DIR=/usr/local/nvm
@@ -25,7 +26,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y sudo apt-utils cu
 RUN mkdir -p "${NVM_DIR}" \
     && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v${NVM_VERSION}/install.sh | bash \
     && [ -s "${NVM_DIR}/nvm.sh" ] && \. "${NVM_DIR}/nvm.sh" \
-    && nvm install "${NODE_VERSION}"
+    && nvm install "${NODE_VERSION}" \
+    && nvm alias default "${NODE_VERSION}"
 
 # Install YARN
 RUN [ -s "${NVM_DIR}/nvm.sh" ] && \

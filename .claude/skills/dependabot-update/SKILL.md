@@ -19,7 +19,7 @@ Root `package.json` / `yarn.lock` are outside `apps/` and `packages/`, so this c
 
 ## Repo facts (verified)
 
-- Yarn 1.22, Node `22.18.0` (`.nvmrc`). Single Dependabot directory `/`; workspaces' `package.json` files are not bumped.
+- Yarn 1.22; Node is the exact version in `.nvmrc` (also pinned in root `package.json` `engines.node` and `docker-e2e-tests/Dockerfile`). Single Dependabot directory `/`; workspaces' `package.json` files are not bumped.
 - Dependabot (`.github/dependabot.yml`) opens up to three grouped npm PRs, title prefix `[yarn]:`: `minor-and-patch`, `e2e-tooling-major` (`@wdio/*`, `webdriverio`, `@cucumber/*`, … — only affect `apps/nfid-frontend-e2e`) and `major` (everything else). Plus separate security PRs (`dependabot/npm_and_yarn/npm_and_yarn-*`) that usually only touch `yarn.lock` (transitive deps). Process `minor-and-patch` before the majors.
 - Most deps are pinned exactly (`"1.2.3"`), a few use `^`. Preserve whichever style the base used.
 - `resolutions` in root `package.json` pin `@typescript-eslint/*` for `@nx/eslint-plugin` — keep them in sync if `@typescript-eslint/*` or `@nx/*` moves.
@@ -61,7 +61,7 @@ For every **major** (and `0.x` minor) bump, and for any family whose members get
 
 - Read the release notes / CHANGELOG (PR body links, or `npm view <pkg>@<to> repository.url` then the GitHub releases). Note breaking changes.
 - Grep our usage: `grep -rn "from \"<pkg>" apps packages --include=*.ts --include=*.tsx`. Decide if any breaking change hits code we actually use.
-- `npm view <pkg>@<to> engines peerDependencies --json`: flag if `engines.node` excludes `22.18.0`, or if peers exclude versions we pin (e.g. `react`, `typescript`).
+- `npm view <pkg>@<to> engines peerDependencies --json`: flag if `engines.node` excludes the Node version in `.nvmrc`, or if peers exclude versions we pin (e.g. `react`, `typescript`).
 - Flag ESM-only / CJS removal changes for anything used by jest, babel, webpack or wdio configs.
 
 Mark each family: `likely-ok`, `risky`, `needs-migration` (definitely requires code changes → revert without testing, it goes to the report).

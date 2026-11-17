@@ -86,3 +86,5 @@ Script: `scratchpad/vault-bridge-smoke.cjs` (not committed).
   which needs a registered member identity and a real vault. The smoke test proves the
   signature is accepted by the replica, not that a vault authorizes it — that part of the
   flow is independent of the agent version.
+
+> Note 2026-11-17 (node-22-23-upgrade): Node is now 22.23.5 (`.nvmrc`, `engines.node`, `docker-e2e-tests/Dockerfile`); yarn refuses every command on any other version, 22.18.0 included.

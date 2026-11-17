@@ -32,9 +32,14 @@ command to run instead. Never "fix up" the status to make a command run.
 
 1. **Read from disk, not memory.** Start by reading `.claude/plans/<name>.plan.md` and its spec.
    Every step must work in a fresh session.
-2. **Two tiers.** Feature work (anything under `apps/` or `packages/`) needs an approved spec and an
+2. **Three tiers.** Feature work (anything under `apps/` or `packages/`) needs an approved spec and an
    approved plan. Tooling work (root config, `.github/`, `docker-*`, `.claude/`, lockfile) needs
-   only an approved plan with `Spec: none — tooling tier (<why>)`.
+   only an approved plan with `Spec: none — tooling tier (<why>)`. Dependency migration (code
+   changes under `apps/`/`packages/` that a Dependabot bump requires, no functional change) needs
+   only an approved `deps-<PR>` plan with `Spec: inline — dependency-migration tier` and a
+   `## Spec` section; `/dependabot-update` writes it in the PR's worktree, gets it approved, and
+   commits/pushes to the Dependabot branch itself (its own `/pr` step, with the same approval
+   prompts). See `.claude/skills/dependabot-update/SKILL.md` steps 6–8.
 3. **No commits before `/pr`.** Work stays uncommitted on the branch until `/verify` and `/document`
    have passed. Even in `/pr`, show the engineer the staged files, the commit message and the PR
    text, and wait for an explicit yes before `git commit` / `git push` / `gh pr …`. Claude Code

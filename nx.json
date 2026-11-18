@@ -1,5 +1,31 @@
 {
-  "plugins": [],
+  "plugins": [
+    {
+      "plugin": "@nx/jest/plugin",
+      "options": {
+        "targetName": "test"
+      },
+      "include": ["apps/**/*", "packages/**/*"]
+    },
+    {
+      "plugin": "@nx/storybook/plugin",
+      "options": {
+        "buildStorybookTargetName": "build-storybook",
+        "serveStorybookTargetName": "storybook",
+        "staticStorybookTargetName": "static-storybook",
+        "testStorybookTargetName": "test-storybook"
+      }
+    },
+    {
+      "plugin": "@nx/webpack/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "serveTargetName": "serve",
+        "previewTargetName": "preview",
+        "serveStaticTargetName": "serve-static"
+      }
+    }
+  ],
   "pluginsConfig": {
     "@nx/js": {
       "analyzeSourceFiles": true
@@ -34,9 +60,6 @@
       "cache": true
     },
     "test": {
-      "cache": true
-    },
-    "@nx/jest:jest": {
       "cache": true,
       "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
       "options": {
@@ -45,11 +68,11 @@
       "configurations": {
         "ci": {
           "ci": true,
-          "codeCoverage": true
+          "coverage": true
         }
       }
     },
-    "@nx/eslint:lint": {
+    "lint": {
       "inputs": [
         "default",
         "^default",

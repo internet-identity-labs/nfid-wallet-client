@@ -6,9 +6,9 @@
   "tags": ["scope:ui-tailwind-core", "type:library", "layer:shared"],
   "targets": {
     "lint": {
-      "executor": "@nx/eslint:lint",
+      "executor": "nx:run-commands",
       "options": {
-        "lintFilePatterns": ["packages/ui-tailwind-core/**/*.{js,jsx}"]
+        "command": "eslint \"packages/ui-tailwind-core/**/*.{js,jsx}\""
       }
     }
   }

@@ -4,109 +4,24 @@
   "sourceRoot": "apps/nfid-frontend/src",
   "projectType": "application",
   "tags": ["scope:app", "type:application", "layer:app"],
+  "// targets": "build/serve come from @nx/webpack/plugin (webpack.config.js), test from @nx/jest/plugin. webpack.config.js reads the configuration name from NX_TASK_TARGET_CONFIGURATION.",
   "targets": {
     "build": {
-      "executor": "@nx/webpack:webpack",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "webpackConfig": "apps/nfid-frontend/webpack.config.cjs",
-        "outputPath": "dist/apps/nfid-frontend",
-        "index": "apps/nfid-frontend/public/index.html",
-        "main": "apps/nfid-frontend/src/index.tsx",
-        "tsConfig": "apps/nfid-frontend/tsconfig.app.json",
-        "assets": [
-          {
-            "glob": "**/*",
-            "input": "apps/nfid-frontend/public/assets",
-            "output": "assets"
-          },
-          {
-            "glob": "**/*",
-            "input": "apps/nfid-frontend/public/.well-known",
-            "output": ".well-known"
-          },
-          {
-            "glob": "sw.js",
-            "input": "apps/nfid-frontend/public",
-            "output": "."
-          },
-          {
-            "glob": "main.png",
-            "input": "apps/nfid-frontend/public",
-            "output": "."
-          },
-          {
-            "glob": "manifest.json",
-            "input": "apps/nfid-frontend/public",
-            "output": "."
-          }
-        ],
-        "styles": ["apps/nfid-frontend/src/index.css"],
-        "optimization": false,
-        "sourceMap": true
-      },
+      "outputs": ["{workspaceRoot}/dist/apps/nfid-frontend"],
       "configurations": {
-        "production": {
-          "optimization": true,
-          "sourceMap": false,
-          "extractLicenses": true,
-          "vendorChunk": false
-        },
-        "example": {
-          "optimization": false
-        }
+        "production": {},
+        "example": {}
       }
     },
     "serve": {
-      "executor": "@nx/webpack:dev-server",
-      "options": {
-        "buildTarget": "nfid-wallet-client:build",
-        "port": 9090,
-        "hmr": true
-      },
       "configurations": {
-        "production": {
-          "buildTarget": "nfid-wallet-client:build:production"
-        }
-      }
-    },
-    "storybook": {
-      "executor": "@nx/storybook:storybook",
-      "options": {
-        "port": 4400,
-        "configDir": "apps/nfid-frontend/.storybook"
-      },
-      "configurations": {
-        "ci": {
-          "quiet": true
-        }
-      }
-    },
-    "build-storybook": {
-      "executor": "@nx/storybook:build",
-      "outputs": ["{options.outputDir}"],
-      "options": {
-        "configDir": "apps/nfid-frontend/.storybook",
-        "outputDir": "dist/storybook/nfid-frontend"
-      },
-      "configurations": {
-        "ci": {
-          "quiet": true
-        }
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "apps/nfid-frontend/jest.config.ts"
+        "production": {}
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
+      "executor": "nx:run-commands",
       "options": {
-        "lintFilePatterns": ["apps/nfid-frontend/**/*.{ts,tsx,js,jsx}"],
-        "maxWarnings": 2000
+        "command": "eslint \"apps/nfid-frontend/**/*.{ts,tsx,js,jsx}\" --max-warnings 2000"
       }
     }
   }

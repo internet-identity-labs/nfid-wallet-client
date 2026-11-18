@@ -196,6 +196,7 @@
     "wdio-video-reporter": "6.2.0",
     "webdriverio": "10.2.0",
     "webpack": "5.112.2",
+    "webpack-cli": "7.3.1",
     "webpack-dev-server": "5.2.6",
     "whatwg-fetch": "3.6.20",
     "yauzl": "3.4.0"

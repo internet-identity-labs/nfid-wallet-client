@@ -85,8 +85,9 @@ This feature will allow users to easily modify or revoke token spending approval
   - [Copy Environment Configuration](#copy-environment-configuration)
   - [Run the Application](#run-the-application)
   - [Run Legacy SDK Playground (Optional)](#run-legacy-sdk-playground-optional)
+  - [Common Commands](#common-commands)
 - [Testing](#testing)
-  - [Integration Tests](#integration-tests)
+  - [Unit and Integration Tests](#unit-and-integration-tests)
   - [E2E Tests](#e2e-tests)
 - [Deployment](#deployment)
 - [Architecture](#architecture)
@@ -106,7 +107,7 @@ The current repository is the frontend interface for NFID Wallet, where you'll f
 
 Before setting up, ensure the following are installed:
 
-- **NodeJS** `v22.23.5`
+- **NodeJS** `v22.23.5` (pinned in `.nvmrc`, so `nvm use` picks it up)
 - **Yarn** `v1.22.22`
 
 ### Install Dependencies
@@ -116,6 +117,8 @@ Install all necessary dependencies:
 ```bash
 yarn
 ```
+
+Run `yarn` again after pulling changes to `package.json` or `yarn.lock`. A stale `node_modules` can fail in confusing ways, for example a missing `webpack-cli` or Cucumber tag errors in E2E.
 
 ### Copy Environment Configuration
 
@@ -143,16 +146,44 @@ To run the legacy SDK playground:
 npx nx serve nfid-demo
 ```
 
+It runs at [http://localhost:4200](http://localhost:4200).
+
+### Common Commands
+
+Nx project names differ from folder names: `apps/nfid-frontend` is `nfid-wallet-client`. The other projects are `nfid-demo`, `nfid-frontend-e2e`, `ui`, `integration`, `client-db`, `swr`, `utils`, `config` and `ui-tailwind-core`.
+
+| Purpose                  | Command                                                      |
+| ------------------------ | ------------------------------------------------------------ |
+| Dev build                | `npx nx build nfid-wallet-client`                            |
+| Production build         | `npx nx build nfid-wallet-client --configuration=production` |
+| Lint (all projects)      | `yarn lint`                                                  |
+| Lint (one project)       | `npx nx lint nfid-wallet-client`                             |
+| Format check / fix       | `yarn format:check` / `yarn format`                          |
+| TypeScript check         | `npx tsc --noEmit -p apps/nfid-frontend/tsconfig.app.json`   |
+| List a project's targets | `npx nx show project nfid-wallet-client`                     |
+
+Build output goes to `dist/apps/<app>`.
+
 ---
 
 ## Testing
 
-### Integration Tests
+### Unit and Integration Tests
 
-Run integration tests with:
+Run all tests the way CI does:
 
 ```bash
-npx env-cmd -f .env.test nx run-many --target=test --skip-nx-cache --maxAttempts=2 --maxParallel=1
+npx env-cmd -f .env.test nx run-many --target=test --skip-nx-cache --maxAttempts=2 --maxParallel=1 --runInBand
+```
+
+Some suites call live canisters and need the `LAMBDA_IDENTITY` environment variable. Without it, those suites fail locally. That doesn't mean your change broke them.
+
+Run one project, one file, or watch mode:
+
+```bash
+npx nx test nfid-wallet-client
+npx nx test nfid-wallet-client --testPathPatterns=<file>   # Jest 30: plural
+npx nx test nfid-wallet-client --watch
 ```
 
 ### E2E Tests
@@ -161,43 +192,39 @@ npx env-cmd -f .env.test nx run-many --target=test --skip-nx-cache --maxAttempts
 
 Install Google Chrome for E2E tests.
 
-#### Run the Application
-
-To start both client and demo apps for testing:
-
-```bash
-npx nx serve nfid-wallet-client
-npx nx serve nfid-demo
-```
-
 #### Run E2E Tests
 
-Execute all end-to-end tests:
+Run the whole suite:
+
+```bash
+yarn test:e2e:frontend
+```
+
+The script builds the wallet with `.env.test`, serves the build on port 9091 and runs WebdriverIO against it, so you don't need a dev server running. The demo app isn't needed.
+
+To run against a dev server you already started on port 9090 (`npx nx serve nfid-wallet-client`), use:
 
 ```bash
 npx env-cmd -f .env.test nx test:e2e nfid-frontend-e2e
 ```
 
-**Run a specific E2E test by tag:**
+**Run specific tests by tag:**
 
 ```bash
-yarn test:e2e:frontend -- --cucumberOpts.tagExpression='@sendft'
+./scripts/run-e2e-frontend.sh -- "--cucumberOpts.tags='@sendft and not @pending and not @mobile and not @skip'"
 ```
 
-**Common test tags:**
+- Since WebdriverIO 10, the option is `--cucumberOpts.tags`. The old `--cucumberOpts.tagExpression` is ignored, so the whole suite runs.
+- Keep both pairs of quotes. Nx passes the option through a shell, and without the inner `'…'` a multi-word expression gets split.
+- Passing `tags` replaces the default filter in `wdio.conf.ts` (`not @pending and not @mobile and not @skip`). Add that filter back yourself, as in the example above.
 
-- `@sendft` - Send FT tests
-- `@assets` - Asset/token tests
-
-**Combine multiple tags:**
+**Combine tags** with `and`, `or` and parentheses:
 
 ```bash
-# AND condition
-npx env-cmd -f .env.test nx test:e2e nfid-frontend-e2e -- --cucumberOpts.tagExpression='@sendft and @desktop'
-
-# OR condition
-npx env-cmd -f .env.test nx test:e2e nfid-frontend-e2e -- --cucumberOpts.tagExpression='@sendft or @assets'
+./scripts/run-e2e-frontend.sh -- "--cucumberOpts.tags='(@sendft or @assets) and not @pending and not @mobile and not @skip'"
 ```
+
+**Available tags:** `@sendft`, `@sendnft`, `@sendreceive`, `@assets`, `@activity`, `@nft-details`, `@swap`, `@staking`, `@addressbook`, `@recovery-phrase`, plus `@desktop`, `@mobile` and `@skip`. Tags are defined in `apps/nfid-frontend-e2e/src/features/**/*.feature`.
 
 ---
 
@@ -215,7 +242,7 @@ This architecture is inspired by:
 - **[bulletproof-react](https://github.com/alan2207/bulletproof-react/)**
 - **[react-clean-architecture](https://github.com/eduardomoroni/react-clean-architecture)**
 
-Each application, such as `nfid-wallet-client`, consists of `pages` that render specific URLs. Pages are assembled from components exported via our public interface in `package/features`, ensuring modularity and clean separation of concerns.
+Each application, such as `nfid-wallet-client`, consists of `pages` that render specific URLs. Pages are assembled from feature modules in `apps/nfid-frontend/src/features` and shared UI components from `packages/ui`, ensuring modularity and clean separation of concerns.
 
 ### Libraries
 

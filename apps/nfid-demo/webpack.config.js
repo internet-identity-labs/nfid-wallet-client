@@ -2,8 +2,8 @@ import { createRequire } from "module"
 import path from "path"
 import fs from "fs"
 import { fileURLToPath } from "url"
-import { composePlugins, withNx } from "@nx/webpack"
-import { withReact } from "@nx/react"
+import { NxAppWebpackPlugin } from "@nx/webpack/app-plugin"
+import { NxReactWebpackPlugin } from "@nx/react/webpack-plugin"
 import TsConfigPathsPlugin from "tsconfig-paths-webpack-plugin"
 import webpack from "webpack"
 import { getServiceConfig } from "../../config/webpack-env.js"
@@ -157,7 +157,18 @@ function withSvgr() {
   }
 }
 
-export default composePlugins(withNx(), withReact(), withSvgr(), (config) => {
+// Nx 24 removed the @nx/webpack executor and turned composePlugins/withNx/withReact into no-ops.
+// NxAppWebpackPlugin + NxReactWebpackPlugin now build the base config inside compiler.options;
+// this plugin runs after them (same order as composePlugins) and applies our tweaks on top.
+class NfidWebpackOverridesPlugin {
+  apply(compiler) {
+    applyOverrides(compiler.options)
+  }
+}
+
+function applyOverrides(config) {
+  withSvgr()(config)
+
   config.resolve = config.resolve || {}
   config.resolve.alias = {
     ...config.resolve.alias,
@@ -246,14 +257,62 @@ export default composePlugins(withNx(), withReact(), withSvgr(), (config) => {
     }),
   )
 
-  config.ignoreWarnings = [/Failed to parse source map from/]
+  // compiler.options is already normalized here: ignoreWarnings entries must be functions
+  config.ignoreWarnings = [
+    (warning) => /Failed to parse source map from/.test(warning.message),
+  ]
+}
 
-  return {
-    ...config,
-    devServer: {
-      ...config.devServer,
-      open: false,
-      port: 4200,
-    },
-  }
-})
+// The dev-server defaults the removed @nx/webpack:dev-server executor used to set
+const nxDevServerDefaults = {
+  host: "localhost",
+  historyApiFallback: {
+    index: "/index.html",
+    disableDotRule: true,
+    htmlAcceptHeaders: ["text/html", "application/xhtml+xml"],
+  },
+  static: false,
+  compress: false,
+  devMiddleware: { publicPath: "/", stats: false },
+  client: { overlay: { errors: true, warnings: false } },
+  liveReload: false,
+  // `hot` is left to webpack-dev-server's default (true). Setting it here would make
+  // NxReactWebpackPlugin add React Refresh, which the old setup never enabled.
+}
+
+// `production` is the project.json configuration the old executor optimized for
+const isOptimizedBuild =
+  process.env.NX_TASK_TARGET_CONFIGURATION === "production"
+
+export default {
+  output: {
+    path: path.resolve(__dirname, "../../dist/apps/nfid-demo"),
+  },
+  plugins: [
+    new NxAppWebpackPlugin({
+      tsConfig: "./tsconfig.json",
+      main: "./src/index.tsx",
+      index: "./public/index.html",
+      assets: [
+        { glob: "**/*", input: "./public/assets", output: "assets" },
+        { glob: "**/*", input: "./public/.well-known", output: ".well-known" },
+        { glob: ".ic-assets.json", input: "./public", output: "." },
+      ],
+      styles: ["./src/index.css"],
+      compiler: "babel",
+      outputHashing: "none",
+      // the removed executor produced no shared `common` chunk; keep the same chunk layout
+      commonChunk: false,
+      optimization: isOptimizedBuild,
+      sourceMap: !isOptimizedBuild,
+      skipTypeChecking: true,
+    }),
+    new NxReactWebpackPlugin(),
+    new NfidWebpackOverridesPlugin(),
+  ],
+  devServer: {
+    ...nxDevServerDefaults,
+    open: false,
+    port: 4200,
+  },
+}

@@ -120,8 +120,7 @@ export async function getGlobalDelegation(
     identityKey,
   )) as string | null
   const chainFromStorage = (await integrationCache.getItem(chainKey)) as
-    | string
-    | null
+    string | null
   if (identityKeyFromStorage && chainFromStorage) {
     const sessionKey = Ed25519KeyIdentity.fromJSON(identityKeyFromStorage)
     const delegationChain = DelegationChain.fromJSON(chainFromStorage)
@@ -199,6 +198,7 @@ export async function getAnonymousDelegation(
       sessionKey,
       userData.anchor,
       domain,
+      maxTimeToLive,
     )
   } else {
     //deprecated flow

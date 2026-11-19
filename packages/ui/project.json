@@ -4,39 +4,31 @@
   "sourceRoot": "packages/ui/src",
   "projectType": "library",
   "tags": ["scope:ui", "type:library", "layer:presentation"],
+  "// targets": "test/storybook targets come from the @nx/jest and @nx/storybook plugins in nx.json",
   "targets": {
     "lint": {
-      "executor": "@nx/eslint:lint"
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "executor": "nx:run-commands",
       "options": {
-        "jestConfig": "packages/ui/jest.config.ts"
+        "command": "eslint --config packages/ui/eslint.config.js packages/ui"
       }
     },
     "storybook": {
-      "executor": "@nx/storybook:storybook",
       "options": {
-        "port": 4400,
-        "configDir": "packages/ui/.storybook"
+        "port": 4400
       },
       "configurations": {
         "ci": {
-          "quiet": true
+          "args": ["--quiet"]
         }
       }
     },
     "build-storybook": {
-      "executor": "@nx/storybook:build",
-      "outputs": ["{options.outputDir}"],
       "options": {
-        "outputDir": "dist/storybook/ui",
-        "configDir": "packages/ui/.storybook"
+        "output-dir": "../../dist/storybook/ui"
       },
       "configurations": {
         "ci": {
-          "quiet": true
+          "args": ["--quiet"]
         }
       }
     }

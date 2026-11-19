@@ -53,29 +53,28 @@ report it; don't rebase.
 
 - **No PR for the branch yet** (`gh pr list --head <branch>`): `gh pr create --base main` with:
   - Title: the commit's first line.
-  - Body:
+  - Body: written for a reviewer scanning the PR, so **≤ ~15 lines**. Say what changed and what
+    to look at; leave the rest to the plan. No per-check tables, no logs, no file-by-file lists, no
+    "checked, not affected" lists. Omit lines that would be empty.
 
     ```
     ## Summary
-    <2–4 lines from the plan's Goal>
+    <1–3 lines from the plan's Goal: what and why>
 
     ## Changes
-    <phases → bullet list of what changed>
+    - <3–6 bullets a reviewer needs; group by behaviour, not by file>
 
-    ## Verification
-    <from ## Verify findings: checks run vs main, local E2E tags + result, review result>
-
-    ## Not verified locally
-    <full E2E + mobile → CI; live-canister tests; anything else>
-
-    Plan: `.claude/plans/<name>.plan.md`  ·  Spec: `<spec path or "none (tooling tier)">`
-    Shortcut: <link or "—">
+    Verified: <checks vs main ✅, E2E tags ✅> · Not verified locally: <one line, e.g. mobile E2E → CI>
+    Plan: `.claude/plans/<name>.plan.md` · Spec: `<spec path or "none (tooling tier)">` · Shortcut: <link or "—">
 
     <attribution footer from the current session's instructions>
     ```
 
-- **PR already open** (fix loop): push the new commit, then `gh pr comment` with what changed and
-  which finding or review comment it fixes.
+- **PR already open** (fix loop): push the new commit, then `gh pr comment` with **1–3 lines**:
+  `Fixed <finding / review comment>: <what changed>`. Link the review thread if there is one.
+
+Full details (every check, findings, anything surprising) go in the terminal reply to the engineer,
+not in the PR.
 
 ## 4. Finish
 

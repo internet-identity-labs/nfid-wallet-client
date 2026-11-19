@@ -57,7 +57,7 @@ Rules during implementation:
 - No `any` types — use `unknown` + narrowing if type is unclear
 - Tailwind classes only for styling — no inline `style={{}}`
 - All new interactive elements need `aria-label` or visible accessible text
-- Import order must follow Prettier config: third-party → @nfid* → frontend/* → ./local
+- Import order follows the convention in `.claude/rules/frontend.md` (third-party → @nfid* → frontend/* → ./local); no tool sorts it, so keep it by hand
 - XState machines use typed events — check with `npx tsc --noEmit -p apps/nfid-frontend/tsconfig.app.json` before finalizing
 
 **5. Mark checkbox complete**

@@ -4,10 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "nx serve nfid-demo",
-    "build": "nx build nfid-demo",
-    "test": "nx test nfid-demo",
-    "serve": "npm start"
+    "start": "nx serve nfid-demo"
   },
   "browserslist": {
     "production": [

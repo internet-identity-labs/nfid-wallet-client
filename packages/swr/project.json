@@ -16,14 +16,9 @@
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint"
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "executor": "nx:run-commands",
       "options": {
-        "jestConfig": "packages/swr/jest.config.ts",
-        "passWithNoTests": true
+        "command": "eslint --config packages/swr/eslint.config.js packages/swr"
       }
     }
   }

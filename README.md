@@ -211,7 +211,7 @@ npx env-cmd -f .env.test nx test:e2e nfid-frontend-e2e
 **Run specific tests by tag:**
 
 ```bash
-./scripts/run-e2e-frontend.sh -- "--cucumberOpts.tags='@sendft and not @pending and not @mobile and not @skip'"
+yarn test:e2e:frontend "--cucumberOpts.tags='@sendft and not @pending and not @mobile and not @skip'"
 ```
 
 - Since WebdriverIO 10, the option is `--cucumberOpts.tags`. The old `--cucumberOpts.tagExpression` is ignored, so the whole suite runs.
@@ -221,7 +221,7 @@ npx env-cmd -f .env.test nx test:e2e nfid-frontend-e2e
 **Combine tags** with `and`, `or` and parentheses:
 
 ```bash
-./scripts/run-e2e-frontend.sh -- "--cucumberOpts.tags='(@sendft or @assets) and not @pending and not @mobile and not @skip'"
+yarn test:e2e:frontend "--cucumberOpts.tags='(@sendft or @assets) and not @pending and not @mobile and not @skip'"
 ```
 
 **Available tags:** `@sendft`, `@sendnft`, `@sendreceive`, `@assets`, `@activity`, `@nft-details`, `@swap`, `@staking`, `@addressbook`, `@recovery-phrase`, plus `@desktop`, `@mobile` and `@skip`. Tags are defined in `apps/nfid-frontend-e2e/src/features/**/*.feature`.

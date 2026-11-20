@@ -2,12 +2,9 @@
   "type": "module",
   "scripts": {
     "start": "nx serve nfid-wallet-client",
-    "build": "nx build nfid-wallet-client",
     "build:example": "EXAMPLE_BUILD=1 nx build nfid-wallet-client:example",
     "test:dev": "npx jest --passWithNoTests --watch --detectOpenHandles",
-    "test:dev:silent": "yarn test:dev --silent=true",
-    "test": "npx jest --passWithNoTests --silent=true",
-    "serve": "npm start"
+    "test:dev:silent": "yarn test:dev --silent=true"
   },
   "browserslist": {
     "production": [

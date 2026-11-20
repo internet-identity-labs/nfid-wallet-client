@@ -6,7 +6,20 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/pre-tool-use.js"
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/pre-tool-use.js"],
+            "onFailure": "block"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/pre-bash.js"],
+            "onFailure": "block"
           }
         ]
       }
@@ -17,7 +30,18 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/post-tool-use.js"
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/post-tool-use.js"]
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/post-bash.js"]
           }
         ]
       }
@@ -29,12 +53,25 @@
       "Bash(yarn nx test*)",
       "Bash(yarn nx build*)",
       "Bash(yarn nx serve*)",
-      "Bash(yarn nx typecheck*)",
       "Bash(yarn nx storybook*)",
       "Bash(yarn format*)",
       "Bash(yarn format:check*)",
-      "Bash(tsc --noEmit*)",
+      "Bash(npx tsc --noEmit*)",
       "Bash(yarn prettier*)"
+    ],
+    "ask": [
+      "Bash(git commit *)",
+      "Bash(git * commit *)",
+      "Bash(git push *)",
+      "Bash(git * push *)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr edit *)",
+      "Bash(gh pr comment *)",
+      "Bash(gh pr merge *)",
+      "Bash(gh pr close *)",
+      "Bash(gh pr review *)",
+      "Bash(gh pr ready *)",
+      "Bash(gh pr reopen *)"
     ]
   }
 }

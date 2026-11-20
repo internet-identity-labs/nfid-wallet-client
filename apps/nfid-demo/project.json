@@ -4,70 +4,23 @@
   "sourceRoot": "apps/nfid-demo/src",
   "projectType": "application",
   "tags": ["scope:app", "type:application", "layer:app"],
+  "// targets": "build/serve come from @nx/webpack/plugin (webpack.config.js), test from @nx/jest/plugin. webpack.config.js reads the configuration name from NX_TASK_TARGET_CONFIGURATION.",
   "targets": {
     "build": {
-      "executor": "@nx/webpack:webpack",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "webpackConfig": "apps/nfid-demo/webpack.config.cjs",
-        "outputPath": "dist/apps/nfid-demo",
-        "index": "apps/nfid-demo/public/index.html",
-        "main": "apps/nfid-demo/src/index.tsx",
-        "tsConfig": "apps/nfid-demo/tsconfig.json",
-        "assets": [
-          {
-            "glob": "**/*",
-            "input": "apps/nfid-demo/public/assets",
-            "output": "assets"
-          },
-          {
-            "glob": "**/*",
-            "input": "apps/nfid-demo/public/.well-known",
-            "output": ".well-known"
-          },
-          {
-            "glob": ".ic-assets.json",
-            "input": "apps/nfid-demo/public",
-            "output": "."
-          }
-        ],
-        "styles": ["apps/nfid-demo/src/index.css"],
-        "optimization": false,
-        "sourceMap": true,
-        "skipTypeChecking": true
-      },
+      "outputs": ["{workspaceRoot}/dist/apps/nfid-demo"],
       "configurations": {
-        "production": {
-          "optimization": true,
-          "sourceMap": false
-        }
+        "production": {}
       }
     },
     "serve": {
-      "executor": "@nx/webpack:dev-server",
-      "options": {
-        "buildTarget": "nfid-demo:build",
-        "port": 4200,
-        "hmr": true
-      },
       "configurations": {
-        "production": {
-          "buildTarget": "nfid-demo:build:production"
-        }
+        "production": {}
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
+      "executor": "nx:run-commands",
       "options": {
-        "lintFilePatterns": ["apps/nfid-demo/**/*.{ts,tsx,js,jsx}"]
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "apps/nfid-demo/jest.config.ts",
-        "passWithNoTests": true
+        "command": "eslint \"apps/nfid-demo/**/*.{ts,tsx,js,jsx}\""
       }
     }
   }

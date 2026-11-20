@@ -2,8 +2,8 @@ import { fileURLToPath } from "url"
 import path from "path"
 import fs from "fs"
 import { createRequire } from "module"
-import { composePlugins, withNx } from "@nx/webpack"
-import { withReact } from "@nx/react"
+import { NxAppWebpackPlugin } from "@nx/webpack/app-plugin"
+import { NxReactWebpackPlugin } from "@nx/react/webpack-plugin"
 import CspHtmlWebpackPlugin from "@melloware/csp-webpack-plugin"
 import TsConfigPathsPlugin from "tsconfig-paths-webpack-plugin"
 import webpack from "webpack"
@@ -291,7 +291,18 @@ function withSvgr() {
   }
 }
 
-export default composePlugins(withNx(), withReact(), withSvgr(), (config) => {
+// Nx 24 removed the @nx/webpack executor and turned composePlugins/withNx/withReact into no-ops.
+// NxAppWebpackPlugin + NxReactWebpackPlugin now build the base config inside compiler.options;
+// this plugin runs after them (same order as composePlugins) and applies our tweaks on top.
+class NfidWebpackOverridesPlugin {
+  apply(compiler) {
+    applyOverrides(compiler.options)
+  }
+}
+
+function applyOverrides(config) {
+  withSvgr()(config)
+
   config.resolve = config.resolve || {}
   config.resolve.plugins = config.resolve.plugins || []
   config.resolve.plugins.push(
@@ -450,184 +461,236 @@ export default composePlugins(withNx(), withReact(), withSvgr(), (config) => {
     ignored: ["**/dist/**", "**/.nx/**", "**/coverage/**"],
   }
 
-  config.ignoreWarnings = [/Failed to parse source map from/]
+  // compiler.options is already normalized here: ignoreWarnings entries must be functions
+  config.ignoreWarnings = [
+    (warning) => /Failed to parse source map from/.test(warning.message),
+  ]
+}
 
-  return {
-    ...config,
-    devServer: {
-      ...config.devServer,
-      open: false,
-      port: 9090,
-      headers: {
-        "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
-      },
-      proxy: [
-        {
-          context: ["/ic-explorer"],
-          target: "https://api.icexplorer.io",
-          secure: false,
-          changeOrigin: true,
-          pathRewrite: { "^/ic-explorer": "" },
-        },
-        {
-          context: ["/api"],
-          target: `http://0.0.0.0:${DFX_PORT}`,
-        },
-        {
-          context: ["/signin"],
-          target: process.env.AWS_SIGNIN_GOOGLE,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/signin": "" },
-        },
-        {
-          context: ["/signin/v2"],
-          target: process.env.AWS_SIGNIN_GOOGLE_V2,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/signin/v2": "" },
-        },
-        {
-          context: ["/symmetric"],
-          target: process.env.AWS_SYMMETRIC,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/symmetric": "" },
-        },
-        {
-          context: ["/exchange-rate"],
-          target: process.env.AWS_EXCHANGE_RATE,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/exchange-rate": "" },
-        },
-        {
-          context: ["/x/tweet"],
-          target: process.env.AWS_X_TWEET,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/x/tweet": "" },
-        },
-        {
-          context: ["/signature"],
-          target: process.env.AWS_SIGNATURE_EVENT,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/signature": "" },
-        },
-        {
-          context: ["/publickey"],
-          target: process.env.AWS_PUBLIC_KEY,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/publickey": "" },
-        },
-        {
-          context: ["/ecdsa_register"],
-          target: process.env.AWS_ECDSA_REGISTER,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/ecdsa_register": "" },
-        },
-        {
-          context: ["/ecdsa_register_address"],
-          target: process.env.AWS_ECDSA_REGISTER_ADDRESS,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/ecdsa_register_address": "" },
-        },
-        {
-          context: ["/execute_candid"],
-          target: process.env.AWS_EXECUTE_CANDID,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/execute_candid": "" },
-        },
-        {
-          context: ["/ecdsa_get_anonymous"],
-          target: process.env.AWS_ECDSA_GET_ANONYMOUS,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/ecdsa_get_anonymous": "" },
-        },
-        {
-          context: ["/ecdsa_sign"],
-          target: process.env.AWS_ECDSA_SIGN,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/ecdsa_sign": "" },
-        },
-        {
-          context: ["/passkey"],
-          target: process.env.AWS_PASSKEY,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/passkey": "" },
-        },
-        {
-          context: ["/send_verification_email"],
-          target: process.env.AWS_SEND_VERIFICATION_EMAIL,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/send_verification_email": "" },
-        },
-        {
-          context: ["/link_google_account"],
-          target: process.env.AWS_LINK_GOOGLE_ACCOUNT,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/link_google_account": "" },
-        },
-        {
-          context: ["/check_verification"],
-          target: process.env.AWS_CHECK_VERIFICATION,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/check_verification": "" },
-        },
-        {
-          context: ["/verify_email"],
-          target: process.env.AWS_VERIFY_EMAIL,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/verify_email": "" },
-        },
-        {
-          context: ["/login/ip"],
-          target: process.env.AWS_APPROVE_LOGIN_IP,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/login/ip": "" },
-        },
-        {
-          context: ["/send_delete_account_email"],
-          target: process.env.AWS_SEND_DELETE_ACCOUNT_EMAIL,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/send_delete_account_email": "" },
-        },
-        {
-          context: ["/confirm_delete_account"],
-          target: process.env.AWS_CONFIRM_DELETE_ACCOUNT,
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/confirm_delete_account": "" },
-        },
-        {
-          context: ["/nft_geek_api"],
-          target: "https://api.nftgeek.app",
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/nft_geek_api": "/api" },
-        },
-        {
-          context: ["/toniq_io"],
-          target: "https://toniq.io",
-          secure: true,
-          changeOrigin: true,
-          pathRewrite: { "^/toniq_io": "/" },
-        },
-      ].filter((p) => p.target),
+// The dev-server defaults the removed @nx/webpack:dev-server executor used to set
+const nxDevServerDefaults = {
+  host: "localhost",
+  historyApiFallback: {
+    index: "/index.html",
+    disableDotRule: true,
+    htmlAcceptHeaders: ["text/html", "application/xhtml+xml"],
+  },
+  static: false,
+  compress: false,
+  devMiddleware: { publicPath: "/", stats: false },
+  client: { overlay: { errors: true, warnings: false } },
+  liveReload: false,
+  // `hot` is left to webpack-dev-server's default (true). Setting it here would make
+  // NxReactWebpackPlugin add React Refresh, which the old setup never enabled.
+}
+
+// `production` / `example` are the project.json configurations release CI and build:example use
+const nxConfiguration = process.env.NX_TASK_TARGET_CONFIGURATION
+const isOptimizedBuild = nxConfiguration === "production"
+
+export default {
+  output: {
+    path: path.resolve(__dirname, "../../dist/apps/nfid-frontend"),
+  },
+  plugins: [
+    new NxAppWebpackPlugin({
+      tsConfig: "./tsconfig.app.json",
+      main: "./src/index.tsx",
+      index: "./public/index.html",
+      assets: [
+        { glob: "**/*", input: "./public/assets", output: "assets" },
+        { glob: "**/*", input: "./public/.well-known", output: ".well-known" },
+        { glob: "sw.js", input: "./public", output: "." },
+        { glob: "main.png", input: "./public", output: "." },
+        { glob: "manifest.json", input: "./public", output: "." },
+      ],
+      styles: ["./src/index.css"],
+      compiler: "babel",
+      outputHashing: "none",
+      // the removed executor produced no shared `common` chunk; keep the same chunk layout
+      commonChunk: false,
+      optimization: isOptimizedBuild,
+      sourceMap: !isOptimizedBuild,
+      ...(isOptimizedBuild
+        ? { extractLicenses: true, vendorChunk: false }
+        : {}),
+    }),
+    new NxReactWebpackPlugin(),
+    new NfidWebpackOverridesPlugin(),
+  ],
+  devServer: {
+    ...nxDevServerDefaults,
+    open: false,
+    port: 9090,
+    headers: {
+      "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
     },
-  }
-})
+    proxy: [
+      {
+        context: ["/ic-explorer"],
+        target: "https://api.icexplorer.io",
+        secure: false,
+        changeOrigin: true,
+        pathRewrite: { "^/ic-explorer": "" },
+      },
+      {
+        context: ["/api"],
+        target: `http://0.0.0.0:${DFX_PORT}`,
+      },
+      {
+        context: ["/signin"],
+        target: process.env.AWS_SIGNIN_GOOGLE,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/signin": "" },
+      },
+      {
+        context: ["/signin/v2"],
+        target: process.env.AWS_SIGNIN_GOOGLE_V2,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/signin/v2": "" },
+      },
+      {
+        context: ["/symmetric"],
+        target: process.env.AWS_SYMMETRIC,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/symmetric": "" },
+      },
+      {
+        context: ["/exchange-rate"],
+        target: process.env.AWS_EXCHANGE_RATE,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/exchange-rate": "" },
+      },
+      {
+        context: ["/x/tweet"],
+        target: process.env.AWS_X_TWEET,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/x/tweet": "" },
+      },
+      {
+        context: ["/signature"],
+        target: process.env.AWS_SIGNATURE_EVENT,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/signature": "" },
+      },
+      {
+        context: ["/publickey"],
+        target: process.env.AWS_PUBLIC_KEY,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/publickey": "" },
+      },
+      {
+        context: ["/ecdsa_register"],
+        target: process.env.AWS_ECDSA_REGISTER,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/ecdsa_register": "" },
+      },
+      {
+        context: ["/ecdsa_register_address"],
+        target: process.env.AWS_ECDSA_REGISTER_ADDRESS,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/ecdsa_register_address": "" },
+      },
+      {
+        context: ["/execute_candid"],
+        target: process.env.AWS_EXECUTE_CANDID,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/execute_candid": "" },
+      },
+      {
+        context: ["/ecdsa_get_anonymous"],
+        target: process.env.AWS_ECDSA_GET_ANONYMOUS,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/ecdsa_get_anonymous": "" },
+      },
+      {
+        context: ["/ecdsa_sign"],
+        target: process.env.AWS_ECDSA_SIGN,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/ecdsa_sign": "" },
+      },
+      {
+        context: ["/passkey"],
+        target: process.env.AWS_PASSKEY,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/passkey": "" },
+      },
+      {
+        context: ["/send_verification_email"],
+        target: process.env.AWS_SEND_VERIFICATION_EMAIL,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/send_verification_email": "" },
+      },
+      {
+        context: ["/link_google_account"],
+        target: process.env.AWS_LINK_GOOGLE_ACCOUNT,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/link_google_account": "" },
+      },
+      {
+        context: ["/check_verification"],
+        target: process.env.AWS_CHECK_VERIFICATION,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/check_verification": "" },
+      },
+      {
+        context: ["/verify_email"],
+        target: process.env.AWS_VERIFY_EMAIL,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/verify_email": "" },
+      },
+      {
+        context: ["/login/ip"],
+        target: process.env.AWS_APPROVE_LOGIN_IP,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/login/ip": "" },
+      },
+      {
+        context: ["/send_delete_account_email"],
+        target: process.env.AWS_SEND_DELETE_ACCOUNT_EMAIL,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/send_delete_account_email": "" },
+      },
+      {
+        context: ["/confirm_delete_account"],
+        target: process.env.AWS_CONFIRM_DELETE_ACCOUNT,
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/confirm_delete_account": "" },
+      },
+      {
+        context: ["/nft_geek_api"],
+        target: "https://api.nftgeek.app",
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/nft_geek_api": "/api" },
+      },
+      {
+        context: ["/toniq_io"],
+        target: "https://toniq.io",
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: { "^/toniq_io": "/" },
+      },
+    ].filter((p) => p.target),
+  },
+}

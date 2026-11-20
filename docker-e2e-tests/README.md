@@ -41,7 +41,7 @@ The docker container will contain such packages:
 - **TAG** - Version of Ubuntu base image. _( default: 22.04 )_
 - **USER_ID** - Default user id. _( default: 1000 )_
 - **GROUP_ID** - Default group id. _( default: 1000 )_
-- **NODE_VERSION** - Preinstalled version of NodeJs. _( default: 16 )_
+- **NODE_VERSION** - Preinstalled version of NodeJs. _( default: the exact version in the repo's `.nvmrc`, currently 22.23.5; bump both together )_
 
 ### Build Actions:
 

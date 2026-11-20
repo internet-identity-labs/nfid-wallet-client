@@ -19,9 +19,11 @@ mocked unit test for `getAnonymousDelegation()`. No UI, no XState, no atoms.
 
 ## Modified Files
 
-| File                                                              | Change                                                                                                         |
-| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `packages/integration/src/lib/delegation-factory/delegation-i.ts` | In `getAnonymousDelegation`, pass `maxTimeToLive` as the 6th argument of `getDelegationChainSignedByCanister`. |
+| File                                                                              | Change                                                                                                         |
+| --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `packages/integration/src/lib/delegation-factory/delegation-i.ts`                 | In `getAnonymousDelegation`, pass `maxTimeToLive` as the 6th argument of `getDelegationChainSignedByCanister`. |
+| `apps/nfid-frontend-e2e/src/features/asset/Tokens.feature`                        | Deviation 2026-11-20: `200000099` token balance `0.2194 ICP` → `0.1193 ICP` (see below).                       |
+| `apps/nfid-frontend-e2e/src/features/asset/SendReceive/SendReceiveWindow.feature` | Deviation 2026-11-20: `200000099` balance `0.2194` → `0.1193` (see below).                                     |
 
 ## Types
 
@@ -53,3 +55,13 @@ mocked unit test for `getAnonymousDelegation()`. No UI, no XState, no atoms.
   Verified locally on 2026-11-19 against an `nx build` of this branch served on
   `localhost:9090` (dev canisters): the 3 tests pass; on dev.nfid.one without the fix they
   fail. Still to re-run on dev after deploy.
+
+## Deviation (2026-11-20, requested by the engineer in chat)
+
+The e2e account `200000099` funded the identitykit test wallets (0.1 ICP sent to
+`9c79bb3d…`), so its ICP balance went from 0.2194 to 0.1193 and the wallet e2e on this PR
+failed. Expectations updated to the current balance:
+
+Files are listed in **Modified Files** above.
+
+- [ ] 5. Update both expectations, re-run the PR's E2E (desktop + mobile).

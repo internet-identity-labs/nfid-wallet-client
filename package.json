@@ -123,6 +123,7 @@
     "@nx/storybook": "24.0.6",
     "@nx/webpack": "24.0.6",
     "@peculiar/webcrypto": "1.7.2",
+    "@pmmmwh/react-refresh-webpack-plugin": "0.6.3",
     "@radix-ui/react-tooltip": "1.4.1",
     "@storybook/addon-docs": "10.6.7",
     "@storybook/react-webpack5": "10.6.7",

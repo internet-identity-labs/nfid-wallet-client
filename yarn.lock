@@ -4477,10 +4477,10 @@
   dependencies:
     tslib "^2.8.1"
 
-"@peculiar/webcrypto@1.7.1":
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/@peculiar/webcrypto/-/webcrypto-1.7.1.tgz#ef8cfae878ca1f1a44ef0c82cf3fa6f3cbe9c26a"
-  integrity sha512-ODOov0sGMJMf3jPonOkgGqPknTsu+DdQ7kD++gz8aI+aFMOMHFbWAA2taqXXVTdP+OTOQR/znGvSpmkeI0WTYQ==
+"@peculiar/webcrypto@1.7.2":
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/@peculiar/webcrypto/-/webcrypto-1.7.2.tgz#835070b674ae3cd3280931f2a110bfa9a7a26843"
+  integrity sha512-ktTSACRJ5WdpfjHjFT2EWJQQPacGv1cPCDfEbdmpAHOxdFiYqPe4lfnXGA3D8Dg9/0kHPYSvyRlgujIOVlTdvQ==
   dependencies:
     "@peculiar/asn1-schema" "^2.7.0"
     "@peculiar/json-schema" "^1.1.12"

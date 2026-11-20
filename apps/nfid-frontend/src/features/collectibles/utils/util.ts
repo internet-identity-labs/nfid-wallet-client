@@ -35,31 +35,54 @@ export const fetchNFTs = async (page?: number, limit?: number) => {
 
 export const fetchNFT = async (
   id: string,
+  collectionId?: string,
   currentPage?: number,
   limit?: number,
 ) => {
-  const { publicKey } = authState.getUserIdData()
-  const data = await nftService.getNFTByTokenId(
-    id,
-    Principal.fromText(publicKey),
-    currentPage,
-    limit,
-  )
-  return data
+  try {
+    const { publicKey } = authState.getUserIdData()
+    return await nftService.getNFTByTokenId(
+      id,
+      Principal.fromText(publicKey),
+      collectionId,
+      currentPage,
+      limit,
+    )
+  } catch {
+    if (collectionId) {
+      try {
+        return await nftService.getPublicIcrc7NFT(collectionId, id)
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  }
 }
 
 export const fetchViewOnlyNFT = async (
   id: string,
   viewOnlyAddress: string,
   viewOnlyAddressType: "icp" | "evm" | "btc",
+  collectionId?: string,
   currentPage?: number,
   limit?: number,
 ) => {
-  return nftService.getViewOnlyNFTByTokenId(
-    id,
-    viewOnlyAddress,
-    viewOnlyAddressType,
-    currentPage,
-    limit,
-  )
+  try {
+    return await nftService.getViewOnlyNFTByTokenId(
+      id,
+      viewOnlyAddress,
+      viewOnlyAddressType,
+      collectionId,
+      currentPage,
+      limit,
+    )
+  } catch {
+    if (collectionId) {
+      try {
+        return await nftService.getPublicIcrc7NFT(collectionId, id)
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  }
 }

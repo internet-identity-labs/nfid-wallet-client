@@ -21,6 +21,9 @@ import { Earn } from "./components/earn"
 import { Withdraw } from "./components/withdraw"
 import { Pay } from "./components/pay"
 import { Promote } from "./components/promote"
+import { BuyNFT } from "./components/buy-nft"
+import { DelistNFT } from "./components/delist-nft"
+import { ListNFT } from "./components/list-nft"
 
 export const TransferModalCoordinator = () => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>()
@@ -197,6 +200,52 @@ export const TransferModalCoordinator = () => {
               setIsEarnSuccess={setIsSuccessTx}
               onError={setHasBridgeError}
               isUpdate={state.context.isEarnUpdate}
+            />
+          </motion.div>
+        )}
+        {state.matches("BuyNftMachine") && (
+          <motion.div
+            key="buy-nft-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          >
+            <BuyNFT
+              preselectedListing={state.context.selectedListingId?.id}
+              onClose={hideModal}
+              setErrorMessage={setErrorMessage}
+              setSuccessMessage={setSuccessMessage}
+            />
+          </motion.div>
+        )}
+        {state.matches("DelistNftMachine") && (
+          <motion.div
+            key="buy-nft-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          >
+            <DelistNFT
+              preselectedListing={state.context.selectedListingId?.id}
+              onClose={hideModal}
+            />
+          </motion.div>
+        )}
+        {state.matches("ListNftMachine") && (
+          <motion.div
+            key="buy-nft-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+          >
+            <ListNFT
+              preselectedListing={state.context.selectedListingId}
+              onClose={hideModal}
+              setErrorMessage={setErrorMessage}
+              setSuccessMessage={setSuccessMessage}
             />
           </motion.div>
         )}

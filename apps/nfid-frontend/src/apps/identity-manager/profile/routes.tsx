@@ -13,7 +13,7 @@ import { IconSwitch } from "packages/ui/src/atoms/icons/switch"
 
 export const ProfileConstants = {
   base: "/wallet",
-  nftDetails: ":tokenId",
+  nftDetails: ":collectionId/:tokenId",
   privateAccountsDetails: ":dappId",
   privateAccounts: "/private-accounts",
   tokens: "tokens",
@@ -21,6 +21,7 @@ export const ProfileConstants = {
   staking: "staking",
   earn: "earn",
   activity: "activity",
+  marketplace: "marketplace",
   security: "/security",
   permissions: "/permissions",
   addressBook: "/address-book",

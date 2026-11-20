@@ -12,6 +12,7 @@ import { useContext, useEffect } from "react"
 import { bridgeService } from "frontend/integration/ethereum/bridge"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
 import { ProfileContext } from "frontend/provider"
+import MarketplacePage from "../marketplace"
 
 export const WalletRouter = () => {
   const { isViewOnlyMode } = useContext(ProfileContext)
@@ -43,6 +44,10 @@ export const WalletRouter = () => {
             <ActivityPage />
           </ProfileContainer>
         }
+      />
+      <Route
+        path={ProfileConstants.marketplace}
+        element={<MarketplacePage />}
       />
     </Routes>
   )

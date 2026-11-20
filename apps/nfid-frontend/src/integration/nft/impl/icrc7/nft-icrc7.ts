@@ -1,13 +1,36 @@
 import { MarketPlace } from "src/integration/nft/enum/enums"
 import { NftError } from "src/integration/nft/impl/nft-abstract"
 import {
+  TransactionRecordAbstract,
+  TransactionRecordView,
+} from "src/integration/nft/impl/nft-transaction-record"
+import {
   AssetPreview,
   NFTTransactions,
   TokenProperties,
 } from "src/integration/nft/impl/nft-types"
-import { NFT, NFTDetails } from "src/integration/nft/nft"
+import { NFT, NFTDetails, TransactionRecord } from "src/integration/nft/nft"
 
+import { authState } from "@nfid/integration"
+import { icrc7HistoryService } from "@nfid/integration/marketplace"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
+import {
+  E8S,
+  ICP_DECIMALS,
+  TRIM_ZEROS,
+} from "@nfid/integration/token/constants"
+
+class Icrc7TransactionRecord
+  extends TransactionRecordAbstract
+  implements TransactionRecord
+{
+  constructor(private readonly view: TransactionRecordView) {
+    super()
+  }
+  getTransactionView(): TransactionRecordView {
+    return this.view
+  }
+}
 
 export class NftIcrc7 implements NFT {
   private _inited = true
@@ -20,6 +43,9 @@ export class NftIcrc7 implements NFT {
     private readonly _tokenId: bigint,
     private readonly _tokenName?: string,
     private readonly _imageUrl?: string,
+    private readonly _description?: string,
+    private readonly _metadata: [string, string][] = [],
+    private readonly _tradable: boolean = true,
   ) {
     if (_imageUrl) {
       this._assetPreview = { url: _imageUrl, format: "img" }
@@ -56,6 +82,10 @@ export class NftIcrc7 implements NFT {
 
   getNftStandard(): string {
     return "ICRC-7"
+  }
+
+  isTradable(): boolean {
+    return this._tradable
   }
 
   getTokenId(): string {
@@ -111,19 +141,38 @@ export class NftIcrc7 implements NFT {
   }
 
   async getDetails(): Promise<NFTDetails> {
-    const imageUrl = this._imageUrl ?? ""
     return {
-      getAbout: () => "",
+      getAbout: () => this._description ?? "",
       getAssetFullSize: async (): Promise<AssetPreview> => ({
-        url: imageUrl,
+        url: this._imageUrl ?? "",
         format: "img",
       }),
-      getTransactions: async (): Promise<NFTTransactions> => ({
-        activity: [],
-        isLastPage: true,
-      }),
+      getTransactions: async (): Promise<NFTTransactions> => {
+        const { publicKey } = authState.getUserIdData()
+        const events = await icrc7HistoryService.getUserEvents(
+          [this._collectionId],
+          publicKey,
+        )
+        const activity = events
+          .filter((e) => e.tokenId === this._tokenId)
+          .map((e): TransactionRecord => {
+            const price =
+              e.priceE8s !== undefined
+                ? `${(Number(e.priceE8s) / E8S).toFixed(ICP_DECIMALS).replace(TRIM_ZEROS, "")} ICP`
+                : undefined
+            const date = new Date(Number(e.timestamp / BigInt(1_000_000)))
+            const type = e.kind.charAt(0).toUpperCase() + e.kind.slice(1)
+            return new Icrc7TransactionRecord(
+              new TransactionRecordView(type, e.from, e.to, price, date),
+            )
+          })
+        return { activity, isLastPage: true }
+      },
       getProperties: async (): Promise<TokenProperties> => ({
-        mappedValues: [],
+        mappedValues: this._metadata.map(([category, option]) => ({
+          category,
+          option,
+        })),
       }),
     }
   }

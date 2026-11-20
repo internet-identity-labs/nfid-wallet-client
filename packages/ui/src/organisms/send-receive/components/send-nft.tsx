@@ -1,7 +1,8 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { truncateString } from "@nfid-frontend/utils"
 import clsx from "clsx"
 import ImageWithFallback from "packages/ui/src/atoms/image-with-fallback"
-import { Dispatch, FC, SetStateAction, useMemo, useState } from "react"
+import { FC, useMemo, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { Id } from "react-toastify"
 
@@ -47,7 +48,7 @@ export interface TransferNFTUiProps {
   isLoading: boolean
   loadingMessage: string | undefined
   nfts: NFT[] | undefined
-  setSelectedNFTId: Dispatch<SetStateAction<string>>
+  onSelectNFT: (nft: NFT) => void
   selectedNFT: NFT | undefined
   submit: (values: any) => Promise<Id | undefined>
   validateAddress: (value: string) => boolean | string
@@ -67,7 +68,7 @@ export interface TransferNFTUiProps {
 
 export const TransferNFTUi: FC<TransferNFTUiProps> = ({
   nfts,
-  setSelectedNFTId,
+  onSelectNFT,
   selectedNFT,
   submit,
   validateAddress,
@@ -201,9 +202,10 @@ export const TransferNFTUi: FC<TransferNFTUiProps> = ({
           NFT to transfer
         </Label>
         <ChooseNftModal
+          isSendNft={true}
           tokens={nfts ?? []}
           title="NFT to send"
-          onSelect={setSelectedNFTId}
+          onSelect={onSelectNFT}
           trigger={
             <div
               className={clsx(

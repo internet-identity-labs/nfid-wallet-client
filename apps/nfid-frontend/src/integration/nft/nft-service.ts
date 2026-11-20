@@ -14,7 +14,11 @@ import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
 import { NFT } from "src/integration/nft/nft"
 
 import { exchangeRateService } from "@nfid/integration"
-import { marketplaceService } from "@nfid/integration/marketplace"
+import {
+  icrc7RegistryService,
+  marketplaceService,
+} from "@nfid/integration/marketplace"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
 
 import type { FT } from "../ft/ft"
 
@@ -74,7 +78,12 @@ export class NftService {
       }
 
     if (addressType === "icp") {
-      rawData = await this.getICPNFTs(Principal.fromText(address))
+      const principal = Principal.fromText(address)
+      const [icpNfts, icrc7Nfts] = await Promise.all([
+        this.getICPNFTs(principal),
+        this.getIcrc7NFTs(principal),
+      ])
+      rawData = [...icpNfts, ...icrc7Nfts]
     } else if (addressType === "evm") {
       rawData = await this.getEVMNFTsByAddress(address)
     }
@@ -102,10 +111,18 @@ export class NftService {
   }
 
   async getIcrc7NFTs(userPrincipal: Principal): Promise<NFT[]> {
-    const collections = await marketplaceService.getCollections()
+    const [collections, storedCollections] = await Promise.all([
+      marketplaceService.getCollections(),
+      icrc7RegistryService.getStoredCollections(),
+    ])
+    const inactiveIds = new Set(
+      storedCollections
+        .filter((c) => c.state === State.Inactive)
+        .map((c) => c.canisterId),
+    )
     const results = await Promise.all(
       collections
-        .filter((c) => c.tradable)
+        .filter((c) => !inactiveIds.has(c.canisterId))
         .map(async (col) => {
           const tokenIds = await marketplaceService.getOwnedTokenIds(
             col.canisterId,
@@ -122,13 +139,41 @@ export class NftService {
               const entry = entries.find(([k]) => k === key)
               return entry && "Text" in entry[1] ? entry[1].Text : undefined
             }
+            const attributesEntry = entries.find(
+              ([k]) => k === "icrc7:attributes",
+            )
+            const traitEntries: [string, string][] =
+              attributesEntry && "Array" in attributesEntry[1]
+                ? attributesEntry[1].Array.flatMap((item) => {
+                    if (!("Map" in item)) return []
+                    const map = item.Map
+                    const traitType = map.find(([k]) => k === "trait_type")?.[1]
+                    const value = map.find(([k]) => k === "value")?.[1]
+                    if (!traitType || !value) return []
+                    const category =
+                      "Text" in traitType ? traitType.Text : undefined
+                    const option =
+                      "Text" in value
+                        ? value.Text
+                        : "Nat" in value
+                          ? String(value.Nat)
+                          : undefined
+                    return category && option
+                      ? [[category, option] as [string, string]]
+                      : []
+                  })
+                : []
             return new NftIcrc7(
               col.canisterId,
               col.name,
               tokenId,
               getText("icrc7:name"),
               getText("icrc7:metadata:uri:image") ??
-                getText("icrc7:metadata:image"),
+                getText("icrc7:metadata:image") ??
+                getText("icrc7:image"),
+              col.description,
+              traitEntries,
+              col.tradable,
             )
           })
         }),
@@ -237,11 +282,18 @@ export class NftService {
   async getNFTByTokenId(
     id: string,
     userPrincipal: Principal,
+    collectionId?: string,
     pages: number = 1,
     limit: number = Number.MAX_SAFE_INTEGER,
   ): Promise<NFT | undefined> {
     const nftList = await this.getNFTs(userPrincipal, 1, pages * limit)
-    const nft = nftList.items.find((nft) => nft.getTokenId() === id)?.init()
+    const nft = nftList.items
+      .find(
+        (nft) =>
+          nft.getTokenId() === id &&
+          (!collectionId || nft.getCollectionId() === collectionId),
+      )
+      ?.init()
     if (!nft) throw new Error("NFT not found")
     return nft
   }
@@ -250,6 +302,7 @@ export class NftService {
     id: string,
     address: string,
     addressType: "icp" | "evm" | "btc",
+    collectionId?: string,
     pages: number = 1,
     limit: number = Number.MAX_SAFE_INTEGER,
   ): Promise<NFT | undefined> {
@@ -259,9 +312,63 @@ export class NftService {
       1,
       pages * limit,
     )
-    const nft = nftList.items.find((nft) => nft.getTokenId() === id)?.init()
+    const nft = nftList.items
+      .find(
+        (nft) =>
+          nft.getTokenId() === id &&
+          (!collectionId || nft.getCollectionId() === collectionId),
+      )
+      ?.init()
     if (!nft) throw new Error("NFT not found")
     return nft
+  }
+
+  async getPublicIcrc7NFT(collectionId: string, tokenId: string): Promise<NFT> {
+    const tokenIdBig = BigInt(tokenId)
+    const [collections, metadataMap] = await Promise.all([
+      marketplaceService.getCollections(),
+      marketplaceService.getTokenMetadata(collectionId, [tokenIdBig]),
+    ])
+    const collection = collections.find((c) => c.canisterId === collectionId)
+    if (!collection) throw new Error(`Collection ${collectionId} not found`)
+    const entries = metadataMap.get(tokenIdBig) ?? []
+    const getText = (key: string) => {
+      const entry = entries.find(([k]) => k === key)
+      return entry && "Text" in entry[1] ? entry[1].Text : undefined
+    }
+    const attributesEntry = entries.find(([k]) => k === "icrc7:attributes")
+    const traitEntries: [string, string][] =
+      attributesEntry && "Array" in attributesEntry[1]
+        ? attributesEntry[1].Array.flatMap((item) => {
+            if (!("Map" in item)) return []
+            const map = item.Map
+            const traitType = map.find(([k]) => k === "trait_type")?.[1]
+            const value = map.find(([k]) => k === "value")?.[1]
+            if (!traitType || !value) return []
+            const category = "Text" in traitType ? traitType.Text : undefined
+            const option =
+              "Text" in value
+                ? value.Text
+                : "Nat" in value
+                  ? String(value.Nat)
+                  : undefined
+            return category && option
+              ? [[category, option] as [string, string]]
+              : []
+          })
+        : []
+    return new NftIcrc7(
+      collectionId,
+      collection.name,
+      tokenIdBig,
+      getText("icrc7:name"),
+      getText("icrc7:metadata:uri:image") ??
+        getText("icrc7:metadata:image") ??
+        getText("icrc7:image"),
+      collection.description,
+      traitEntries,
+      collection.tradable,
+    )
   }
 }
 

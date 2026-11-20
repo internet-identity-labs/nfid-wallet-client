@@ -3,6 +3,7 @@
 > **Product:** Wallet
 > **Machine:** `features/transfer-modal/machine.ts`
 > **Prerequisite for:** XState v4 → v5 migration
+> **Last updated:** 2026-11-20 (added marketplace modal types)
 
 ---
 
@@ -23,7 +24,7 @@
 
 ```ts
 {
-  direction: ModalType | null   // "send"|"receive"|"swap"|"convert"|"stake"|"redeem"|"bridge"|"earn"|"withdraw"|"pay"|"promote"
+  direction: ModalType | null   // see ModalType enum below
   tokenType: "ft" | "nft"
   sourceWalletAddress: string
   sourceAccount?: Wallet
@@ -31,6 +32,7 @@
   selectedDapp: number
   selectedTargetFT?: string
   selectedNFTId?: string
+  selectedListingId?: { id: bigint; collectionId: string }  // added for marketplace
   receiverWallet: string
   amount: string
   transferObject?: ITransferSuccess
@@ -42,6 +44,27 @@
   openCryptoPayPreselect?: { method: string; asset: string }
   vaultCanister: string
   stakeId?: string
+}
+```
+
+### ModalType Enum (`features/transfer-modal/types/index.ts`)
+
+```ts
+enum ModalType {
+  SEND = "send",
+  RECEIVE = "receive",
+  SWAP = "swap",
+  CONVERT = "convert",
+  STAKE = "stake",
+  REDEEM = "redeem",
+  BRIDGE = "bridge",
+  EARN = "earn",
+  WITHDRAW = "withdraw",
+  PAY = "pay",
+  PROMOTE = "promote",
+  LIST_NFT = "list_nft", // added: list an ICRC-7 NFT for sale
+  DELIST_NFT = "delist_nft", // added: cancel an active listing
+  BUY_NFT = "buy_nft", // added: purchase a listed ICRC-7 NFT
 }
 ```
 
@@ -63,6 +86,9 @@ TransferModal (always transitions, no display)
   │ [isWithdrawMachine] → WithdrawMachine
   │ [isPayMachine]      → PayMachine
   │ [isPromoteMachine]  → PromoteMachine
+  │ [isListNftMachine]  → ListNFTMachine     ← added
+  │ [isDelistNftMachine]→ DelistNFTMachine   ← added
+  │ [isBuyNftMachine]   → BuyNFTMachine      ← added
 
 SendMachine (nested)
 ├─ CheckSendType
@@ -70,6 +96,10 @@ SendMachine (nested)
 │     └─ [else]          → SendNFT
 ├─ SendFT   ──ON_TRANSFER──► TransferSuccess
 └─ SendNFT  ──ON_TRANSFER──► TransferSuccess
+
+ListNFTMachine   ──HIDE──► Hidden
+DelistNFTMachine ──HIDE──► Hidden
+BuyNFTMachine    ──HIDE──► Hidden
 
 ReceiveMachine  ──HIDE──► Hidden
 SwapMachine     ──ON_TRANSFER──► SwapSuccess
@@ -96,6 +126,7 @@ SwapSuccess     ──HIDE──► Hidden
 | `CHANGE_TOKEN_TYPE`            | `assignTokenType`           | `SendMachine.CheckSendType` |
 | `ASSIGN_SELECTED_FT`           | `assignSelectedFT`          | —                           |
 | `ASSIGN_SELECTED_NFT`          | `assignSelectedNFTId`       | —                           |
+| `ASSIGN_SELECTED_LISTING`      | `assignSelectedListing`     | — ← added                   |
 | `ASSIGN_AMOUNT`                | `assignAmount`              | —                           |
 | `ASSIGN_SOURCE_WALLET`         | `assignSourceWallet`        | —                           |
 | `ASSIGN_RECEIVER_WALLET`       | `assignReceiverWallet`      | —                           |
@@ -111,25 +142,60 @@ SwapSuccess     ──HIDE──► Hidden
 
 ### Guards
 
-| Guard               | Condition                  |
-| ------------------- | -------------------------- |
-| `isSendMachine`     | `direction === 'send'`     |
-| `isReceiveMachine`  | `direction === 'receive'`  |
-| `isSwapMachine`     | `direction === 'swap'`     |
-| `isConvertMachine`  | `direction === 'convert'`  |
-| `isBridgeMachine`   | `direction === 'bridge'`   |
-| `isEarnMachine`     | `direction === 'earn'`     |
-| `isWithdrawMachine` | `direction === 'withdraw'` |
-| `isPayMachine`      | `direction === 'pay'`      |
-| `isPromoteMachine`  | `direction === 'promote'`  |
-| `isStakeMachine`    | `direction === 'stake'`    |
-| `isRedeemMachine`   | `direction === 'redeem'`   |
-| `isSendFungible`    | `tokenType === 'ft'`       |
+| Guard                | Condition                    |
+| -------------------- | ---------------------------- |
+| `isSendMachine`      | `direction === 'send'`       |
+| `isReceiveMachine`   | `direction === 'receive'`    |
+| `isSwapMachine`      | `direction === 'swap'`       |
+| `isConvertMachine`   | `direction === 'convert'`    |
+| `isBridgeMachine`    | `direction === 'bridge'`     |
+| `isEarnMachine`      | `direction === 'earn'`       |
+| `isWithdrawMachine`  | `direction === 'withdraw'`   |
+| `isPayMachine`       | `direction === 'pay'`        |
+| `isPromoteMachine`   | `direction === 'promote'`    |
+| `isStakeMachine`     | `direction === 'stake'`      |
+| `isRedeemMachine`    | `direction === 'redeem'`     |
+| `isListNftMachine`   | `direction === 'list_nft'`   |
+| `isDelistNftMachine` | `direction === 'delist_nft'` |
+| `isBuyNftMachine`    | `direction === 'buy_nft'`    |
+| `isSendFungible`     | `tokenType === 'ft'`         |
+
+### Marketplace Modal Usage Pattern
+
+Callers set `selectedListingId` before showing the modal:
+
+```ts
+// Buy
+transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
+transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.BUY_NFT })
+transferService.send({
+  type: "ASSIGN_SELECTED_LISTING",
+  data: { id: listingId, collectionId },
+})
+transferService.send({ type: "SHOW" })
+
+// List
+transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.LIST_NFT })
+transferService.send({
+  type: "ASSIGN_SELECTED_LISTING",
+  data: { id: BigInt(nftId), collectionId },
+})
+transferService.send({ type: "SHOW" })
+
+// Delist
+transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.DELIST_NFT })
+transferService.send({
+  type: "ASSIGN_SELECTED_LISTING",
+  data: { id: BigInt(listingId), collectionId: "" },
+})
+transferService.send({ type: "SHOW" })
+```
 
 ### Transfer Execution Model
 
-The machine itself does **not** invoke async transfer services. Each sub-component (`SendFT`, `SendNFT`, etc.) owns the execution logic and fires `ON_TRANSFER` when complete. The machine tracks metadata state (amount, wallets, token) and routing only.
+The machine itself does **not** invoke async transfer services. Each sub-component (`SendFT`, `SendNFT`, `BuyNFT`, `ListNFT`, `DelistNFT`, etc.) owns the execution logic and fires `HIDE` or `ON_TRANSFER` when complete. The machine tracks metadata state and routing only.
 
 ---
 
-_Spec created: 2026-09-14_
+_Spec created: 2026-09-14 — Updated 2026-11-20: added LIST_NFT, DELIST_NFT, BUY_NFT modal types and selectedListingId context_

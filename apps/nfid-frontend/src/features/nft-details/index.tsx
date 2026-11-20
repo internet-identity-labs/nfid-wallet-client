@@ -24,13 +24,15 @@ import { ProfileContext } from "frontend/provider"
 import { NotFound } from "@nfid-frontend/ui"
 import { ProfileTemplate } from "@nfid-frontend/ui"
 
-import { fetchNFT, fetchViewOnlyNFT } from "../collectibles/utils/util"
+import {
+  fetchNFT,
+  fetchNFTs,
+  fetchViewOnlyNFT,
+} from "../collectibles/utils/util"
 import { ModalType } from "../transfer-modal/types"
 import { nftInitialState, nftReducer } from "./utils"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { marketplaceService } from "@nfid/integration/marketplace"
-import { fetchSellerListings } from "../marketplace/utils"
-import { useIdentity } from "frontend/hooks/identity"
+import { fetchListings } from "../marketplace/utils"
 
 type NftDetailsProps = {
   walletTheme: NFIDTheme
@@ -51,25 +53,39 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
     viewOnlyAddressType,
   } = useContext(ProfileContext)
   const [state, dispatch] = useReducer(nftReducer, nftInitialState)
-  const { tokenId } = useParams()
+  const { collectionId, tokenId } = useParams()
   const location = useLocation()
-  const { identity } = useIdentity()
   const currentPage = location.state?.currentPage
   const limitPerPage = currentPage ? DEFAULT_LIMIT_PER_PAGE : undefined
 
   const { data: nft, isLoading } = useSWR(
-    tokenId ? ["nft", tokenId] : null,
-    ([, tokenId]: [string, string]) =>
+    tokenId ? ["nft", collectionId, tokenId] : null,
+    ([, collectionId, tokenId]: [string, string, string]) =>
       isViewOnlyMode && viewOnlyAddress && viewOnlyAddressType
         ? fetchViewOnlyNFT(
             tokenId,
             viewOnlyAddress,
             viewOnlyAddressType,
+            collectionId,
             currentPage,
             limitPerPage,
           )
-        : fetchNFT(tokenId, currentPage, limitPerPage),
+        : fetchNFT(tokenId, collectionId, currentPage, limitPerPage),
   )
+
+  const { data: nftList, isLoading: isNftLoading } = useSWR(
+    isViewOnlyMode ? ["nftList", viewOnlyAddress] : "nftList",
+    fetchNFTs,
+    { revalidateOnMount: false, revalidateOnFocus: false },
+  )
+
+  const isOwner = nft
+    ? (nftList?.items ?? []).some(
+        (n) =>
+          n.getCollectionId() === nft.getCollectionId() &&
+          n.getTokenId() === nft.getTokenId(),
+      )
+    : false
 
   const getDetails = useCallback(async () => {
     if (!tokenId) return
@@ -80,10 +96,11 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
             tokenId,
             viewOnlyAddress,
             viewOnlyAddressType,
+            collectionId,
             currentPage,
             limitPerPage,
           )
-        : fetchNFT(tokenId, currentPage, limitPerPage)
+        : fetchNFT(tokenId, collectionId, currentPage, limitPerPage)
     ).then((data) => data?.getDetails())
     if (nftDetails) {
       try {
@@ -147,7 +164,7 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
         dispatch({ type: "SET_LOADING", key: "transactions", isLoading: false })
       }
     }
-  }, [tokenId, currentPage, isViewOnlyMode, viewOnlyAddress])
+  }, [tokenId, collectionId, currentPage, isViewOnlyMode, viewOnlyAddress])
 
   useEffect(() => {
     getDetails()
@@ -170,35 +187,63 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
     [nft, transferService],
   )
 
-  const { data: sellerListings = [] } = useSWR(
-    isViewOnlyMode ? null : "listings/user",
-    () => fetchSellerListings(),
+  const { data: listings = [], isLoading: isListingLoading } = useSWR(
+    "listings",
+    () => fetchListings(),
     { revalidateOnFocus: false },
   )
 
   const listing = nft
-    ? sellerListings.find(
+    ? listings.find(
         (l) =>
           l.collectionId === nft.getCollectionId() &&
           l.tokenId.toString() === nft.getTokenId(),
       )
     : undefined
 
-  const onListNFT = useCallback(async () => {
-    if (!identity) return
-    await marketplaceService.listNft(identity, {
-      collectionId: "vehwg-aiaaa-aaaag-aciuq-cai",
-      tokenId: BigInt(1),
-      priceE8s: BigInt(100000),
+  const onListNFT = useCallback(
+    (nftId: string) => {
+      transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
+      transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+      transferService.send({
+        type: "CHANGE_DIRECTION",
+        data: ModalType.LIST_NFT,
+      })
+      transferService.send({
+        type: "ASSIGN_SELECTED_LISTING",
+        data: { id: BigInt(nftId), collectionId: nft?.getCollectionId() ?? "" },
+      })
+      transferService.send({ type: "SHOW" })
+    },
+    [nft, transferService],
+  )
+
+  const onDelistNFT = useCallback((listingId: string) => {
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
+    transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    transferService.send({
+      type: "CHANGE_DIRECTION",
+      data: ModalType.DELIST_NFT,
     })
-  }, [identity])
+    transferService.send({
+      type: "ASSIGN_SELECTED_LISTING",
+      data: { id: BigInt(listingId), collectionId: "" },
+    })
+    transferService.send({ type: "SHOW" })
+  }, [])
 
-  const onDelistNFT = useCallback(async () => {
-    if (!identity) return
-    await marketplaceService.cancelListing(identity, BigInt(1))
-  }, [identity])
+  const onBuy = useCallback((listingId: string) => {
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
+    transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.BUY_NFT })
+    transferService.send({
+      type: "ASSIGN_SELECTED_LISTING",
+      data: { id: BigInt(listingId), collectionId: "" },
+    })
+    transferService.send({ type: "SHOW" })
+  }, [])
 
-  if (isLoading) return <Loader isLoading />
+  if (isLoading || isNftLoading || isListingLoading) return <Loader isLoading />
   if (!nft) return <NotFound hideNavigation />
 
   return (
@@ -247,6 +292,9 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
         onListNFT={onListNFT}
         onDelistNFT={onDelistNFT}
         listing={listing}
+        isOwner={isOwner}
+        onBuy={onBuy}
+        isViewOnlyMode={isViewOnlyMode}
       />
     </ProfileTemplate>
   )

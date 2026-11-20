@@ -632,11 +632,22 @@ export const isTokenWithBalance = (token: FT) => {
 export const updateNftList = async (
   nfts: { items: NFT[] },
   tokenId: string,
+  collectionId?: string,
 ) => {
   const updated = {
     ...nfts,
-    items: nfts.items.filter((nft) => nft.getTokenId() !== tokenId),
+    items: nfts.items.filter(
+      (nft) =>
+        !(
+          nft.getTokenId() === tokenId &&
+          (!collectionId || nft.getCollectionId() === collectionId)
+        ),
+    ),
   }
   mutate("nftList", updated, false)
   mutate((key) => Array.isArray(key) && key[0] === "nftList", updated, false)
 }
+
+/** ICRC-7 token id from the NFT id ("<collection>:<id>" or just "<id>"). */
+export const getIcrc7TokenId = (nftId: string): bigint =>
+  BigInt(nftId.split(":").pop() ?? nftId)

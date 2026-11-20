@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { clsx } from "clsx"
 
 import { trimConcat } from "@nfid-frontend/utils"
@@ -10,9 +11,17 @@ import { Skeleton } from "../../atoms/skeleton"
 
 interface IChooseNftItem {
   token: NFT
+  isListed?: boolean
+  isTradable?: boolean
+  isSendNft?: boolean
 }
 
-export const ChooseNftItem = ({ token }: IChooseNftItem) => {
+export const ChooseNftItem = ({
+  token,
+  isListed,
+  isTradable,
+  isSendNft,
+}: IChooseNftItem) => {
   return (
     <div
       id={trimConcat("choose_option_", token.getTokenName())}
@@ -20,6 +29,9 @@ export const ChooseNftItem = ({ token }: IChooseNftItem) => {
         "hover:opacity-50 transition-opacity",
         "flex items-center justify-between",
         "py-2.5 cursor-pointer h-[60px]",
+        (!isTradable || isListed) &&
+          !isSendNft &&
+          "opacity-50 !cursor-not-allowed",
       )}
     >
       <div className="flex items-center h-[28px]">
@@ -51,12 +63,34 @@ export const ChooseNftItem = ({ token }: IChooseNftItem) => {
         </div>
       </div>
       <div>
-        <p className="text-sm text-right">
-          {token.getTokenFloorPriceFormatted() || "Unknown"}
-        </p>
-        <p className="text-xs text-right text-gray-400 dark:text-zinc-500">
-          {token.getTokenFloorPriceUSDFormatted() ?? null}
-        </p>
+        {isListed && !isSendNft ? (
+          <p
+            className={clsx(
+              "rounded-[6px] text-xs font-semibold leading-[15px] py-[5px] px-2",
+              "bg-teal-50 dark:bg-teal-200 text-primaryButtonColor",
+            )}
+          >
+            Listed
+          </p>
+        ) : !isTradable && !isSendNft ? (
+          <p
+            className={clsx(
+              "rounded-[6px] text-xs font-semibold leading-[15px] py-[5px] px-2",
+              "bg-gray-50 dark:bg-zinc-300 text-gray-500 dark:text-zinc-500",
+            )}
+          >
+            Can't be listed
+          </p>
+        ) : (
+          <>
+            <p className="text-sm text-right">
+              {token.getTokenFloorPriceFormatted() || "Unknown"}
+            </p>
+            <p className="text-xs text-right text-gray-400 dark:text-zinc-500">
+              {token.getTokenFloorPriceUSDFormatted() ?? null}
+            </p>
+          </>
+        )}
       </div>
     </div>
   )

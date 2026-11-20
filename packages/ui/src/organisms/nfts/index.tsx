@@ -24,13 +24,8 @@ import { NFTDisplaySwitch } from "./nft-display-switch"
 import { getNetworkIcon } from "../../utils/network-icon"
 import { ProfileContext } from "frontend/provider"
 import { ManageCollections, NftCollectionMetadata } from "./manage-collections"
-import { NftCollection } from "@nfid/integration/marketplace"
-import {
-  E8S,
-  ICP_DECIMALS,
-  TRIM_ZEROS,
-} from "@nfid/integration/token/constants"
-import { MarketplaceListingWithMeta } from "../marketplace/types"
+import { MarketplaceListingWithFormatting } from "../marketplace/types"
+import { NftCollectionWithState } from "frontend/features/collectibles"
 
 export interface INFTs extends HTMLAttributes<HTMLDivElement> {
   isLoading: boolean
@@ -46,9 +41,9 @@ export interface INFTs extends HTMLAttributes<HTMLDivElement> {
   onFetchIcrc7: (canisterId: string) => Promise<NftCollectionMetadata>
   onSubmitIcrc7: (canisterId: string) => Promise<void>
   onUpdateCollections?: () => Promise<void>
-  collections: NftCollection[]
+  collections: NftCollectionWithState[]
   isCollectionsLoading: boolean
-  sellerListings: MarketplaceListingWithMeta[]
+  sellerListings: MarketplaceListingWithFormatting[]
 }
 
 export const NFTs: FC<INFTs> = ({
@@ -167,7 +162,7 @@ export const NFTs: FC<INFTs> = ({
                   onClick={() =>
                     navigate(
                       {
-                        pathname: `${links.base}/${links.nfts}/${nft.getTokenId()}`,
+                        pathname: `${links.base}/${links.nfts}/${nft.getCollectionId()}/${nft.getTokenId()}`,
                         search: locationSearch,
                       },
                       { state: { currentPage } },
@@ -232,7 +227,7 @@ export const NFTs: FC<INFTs> = ({
                       </>
                     ) : (
                       <p className="text-xs text-gray-400 dark:text-zinc-500 leading-[20px]">
-                        Unknown floor price
+                        No floor price
                       </p>
                     )}
                   </td>
@@ -285,7 +280,7 @@ export const NFTs: FC<INFTs> = ({
               <Link
                 key={`${nft.getCollectionId()}_${nft.getTokenId()}`}
                 to={{
-                  pathname: `${links.base}/${links.nfts}/${nft.getTokenId()}`,
+                  pathname: `${links.base}/${links.nfts}/${nft.getCollectionId()}/${nft.getTokenId()}`,
                   search: locationSearch,
                 }}
                 state={{ currentPage }}
@@ -382,7 +377,7 @@ export const NFTs: FC<INFTs> = ({
                           </>
                         ) : (
                           <p className="text-gray-400 text-xs leading-[20px]">
-                            Unknown floor price
+                            No floor price
                           </p>
                         )}
                       </div>

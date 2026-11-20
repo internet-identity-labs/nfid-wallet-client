@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { Principal } from "@icp-sdk/core/principal"
 import { debounce } from "@nfid-frontend/utils"
 import clsx from "clsx"
@@ -8,6 +9,7 @@ import {
   useRef,
   useState,
   ElementType,
+  JSX,
 } from "react"
 import { IoIosSearch } from "react-icons/io"
 
@@ -55,6 +57,7 @@ export interface IChooseTokenModal<T> {
   isBtcEthLoading?: boolean
   modalType?: IModalType
   tooltipText?: string
+  isDisabled?: (token: T) => boolean
 }
 
 export const ChooseTokenModal = <T extends FT | NFT>({
@@ -71,6 +74,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   isBtcEthLoading,
   modalType,
   tooltipText,
+  isDisabled,
 }: IChooseTokenModal<T>) => {
   const isDarkTheme = useDarkTheme()
   const [searchInput, setSearchInput] = useState("")
@@ -193,6 +197,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   useIntersectionObserver(itemRefs.current, !!isTargetList, onIntersect)
 
   const handleSelect = (token: T) => {
+    if (isDisabled?.(token)) return
     if (token instanceof FTImpl) {
       const isSwappable = isTargetList
         ? tokensAvailableToSwap?.to.includes(token.getTokenAddress())

@@ -17,6 +17,7 @@ enum IModalType {
   WITHDRAW = "WITHDRAW",
   PAY = "PAY",
   PROMOTE = "PROMOTE",
+  LIST_NFT = "LIST_NFT",
 }
 
 const MIN_CK_BTC_AMOUNT_TO_CONVERT = 0.00051
@@ -134,6 +135,14 @@ export const validateTransferAmountField =
       valueNum.isLessThan(minAmount)
     ) {
       return `Minimum amount to promote ${symbol} is ${minAmount}`
+    }
+
+    if (
+      minAmount !== undefined &&
+      modalType === IModalType.LIST_NFT &&
+      valueNum.isLessThan(minAmount)
+    ) {
+      return `Minimum listing price is ${minAmount} ICP`
     }
 
     return true

@@ -22,10 +22,9 @@ import {
   ImageWithFallback,
   IconNftPlaceholder,
 } from "@nfid-frontend/ui"
-import { NftCollection } from "@nfid/integration/marketplace"
+import { icrc7RegistryService } from "@nfid/integration/marketplace"
 import { State } from "@nfid/integration/token/icrc1/enum/enums"
-import { icrc1RegistryService } from "@nfid/integration/token/icrc1/service/icrc1-registry-service"
-import { mapState } from "@nfid/integration/token/icrc1/util"
+import { NftCollectionWithState } from "frontend/features/collectibles"
 
 import { useDarkTheme } from "frontend/hooks"
 import { Spinner } from "../../atoms/spinner"
@@ -44,7 +43,7 @@ export interface NftCollectionMetadata {
 }
 
 interface ManageCollectionsProps {
-  collections: NftCollection[]
+  collections: NftCollectionWithState[]
   onSubmitCollection: (canisterId: string) => Promise<void>
   onFetch: (canisterId: string) => Promise<NftCollectionMetadata>
   onUpdate?: () => Promise<void>
@@ -67,33 +66,14 @@ export const ManageCollections: FC<ManageCollectionsProps> = ({
   const [loadingCollection, setLoadingCollection] = useState<string | null>(
     null,
   )
-  const [collectionStates, setCollectionStates] = useState<Map<string, State>>(
-    new Map(),
-  )
-
-  useEffect(() => {
-    icrc1RegistryService.getStoredUserTokens().then((tokens) => {
-      setCollectionStates(
-        new Map(tokens.map((t) => [t.ledger, mapState(t.state)])),
-      )
-    })
-  }, [])
-
-  const getCollectionState = useCallback(
-    (canisterId: string) => collectionStates.get(canisterId) ?? State.Active,
-    [collectionStates],
-  )
 
   const hideCollection = useCallback(
-    async (collection: NftCollection) => {
+    async (collection: NftCollectionWithState) => {
       try {
         setLoadingCollection(collection.canisterId)
-        await icrc1RegistryService.storeICRC1Canister(
+        await icrc7RegistryService.storeCollection(
           collection.canisterId,
           State.Inactive,
-        )
-        setCollectionStates((prev) =>
-          new Map(prev).set(collection.canisterId, State.Inactive),
         )
         await onUpdate?.()
       } catch (e) {
@@ -106,15 +86,12 @@ export const ManageCollections: FC<ManageCollectionsProps> = ({
   )
 
   const showCollection = useCallback(
-    async (collection: NftCollection) => {
+    async (collection: NftCollectionWithState) => {
       try {
         setLoadingCollection(collection.canisterId)
-        await icrc1RegistryService.storeICRC1Canister(
+        await icrc7RegistryService.storeCollection(
           collection.canisterId,
           State.Active,
-        )
-        setCollectionStates((prev) =>
-          new Map(prev).set(collection.canisterId, State.Active),
         )
         await onUpdate?.()
       } catch (e) {
@@ -126,11 +103,9 @@ export const ManageCollections: FC<ManageCollectionsProps> = ({
     [onUpdate],
   )
 
-  const debouncedSearch = useCallback(
-    debounce((value: string) => {
-      setSearch(value)
-    }, 300),
-    [setSearch, debounce],
+  const debouncedSearch = useMemo(
+    () => debounce((value: string) => setSearch(value), 300),
+    [],
   )
 
   const {
@@ -191,7 +166,6 @@ export const ManageCollections: FC<ManageCollectionsProps> = ({
       )
         console.error(msg)
       return "This does not appear to be an ICRC-7 compatible canister."
-      return "Collection not found"
     }
   }
 
@@ -240,7 +214,7 @@ export const ManageCollections: FC<ManageCollectionsProps> = ({
           debouncedSearch("")
           resetField("canisterId")
         }}
-        className="px-5 py-3 w-[95%] md:w-[450px] z-[100] !rounded-[24px]"
+        className="px-5 py-3 w-[95%] md:w-[450px] z-[100] !rounded-[24px] relative"
       >
         {modalStep === "manage" && (
           <motion.div
@@ -327,8 +301,7 @@ export const ManageCollections: FC<ManageCollectionsProps> = ({
                           id={`${collection.canisterId}_showHideButton`}
                           className="cursor-pointer"
                           src={
-                            getCollectionState(collection.canisterId) !==
-                            State.Active
+                            collection.state !== State.Active
                               ? IconSvgEyeClosed
                               : isDarkTheme
                                 ? IconSvgEyeShownWhite
@@ -336,8 +309,7 @@ export const ManageCollections: FC<ManageCollectionsProps> = ({
                           }
                           alt="Toggle collection visibility"
                           onClick={() =>
-                            getCollectionState(collection.canisterId) ===
-                            State.Active
+                            collection.state === State.Active
                               ? hideCollection(collection)
                               : showCollection(collection)
                           }
@@ -361,7 +333,7 @@ export const ManageCollections: FC<ManageCollectionsProps> = ({
             <BlurredLoader
               isLoading={isImportLoading}
               className="!h-fit"
-              overlayClassnames="rounded-[24px]"
+              overlayClassnames="rounded-[24px] absolute !left-0 !top-0 !bottom-0 !right-0"
               id="import"
             >
               <div className="h-[576px] flex flex-col">
@@ -412,7 +384,7 @@ export const ManageCollections: FC<ManageCollectionsProps> = ({
                       </div>
                       <div className="grid grid-cols-[130px_1fr] pt-4 h-[98px] dark:text-white">
                         <p>Description</p>
-                        <p className="text-black dark:text-white">
+                        <p className="overflow-auto text-black dark:text-white">
                           {collectionInfo.description}
                         </p>
                       </div>

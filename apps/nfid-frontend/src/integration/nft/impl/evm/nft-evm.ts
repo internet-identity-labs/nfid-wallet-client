@@ -109,6 +109,10 @@ export class EvmNftImpl implements NFT {
     return this.asset.type
   }
 
+  isTradable(): boolean {
+    return false
+  }
+
   getTokenNumber(): number {
     return Number(this.asset.tokenId) || 0
   }

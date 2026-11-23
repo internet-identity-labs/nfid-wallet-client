@@ -667,9 +667,16 @@ const CHAIN_FUSION_FIRST = [CKBTC_CANISTER_ID, CKETH_LEDGER_CANISTER_ID]
  * and spam. Stable within a group. Favorites are put on top by the UI.
  */
 export const sortFtTokens = (tokens: FT[]): FT[] => {
+  // Only the first token with a pinned id is pinned: EVM native ETH on Base or
+  // Arbitrum shares ETH_NATIVE_ID and stays with the other natives.
+  const pinnedTokens = new Map<FT, number>()
+  PINNED_IDS.forEach((id, i) => {
+    const first = tokens.find((t) => t.getTokenAddress() === id)
+    if (first) pinnedTokens.set(first, i)
+  })
   const rank = (t: FT): [number, number] => {
-    const pinned = PINNED_IDS.indexOf(t.getTokenAddress())
-    if (pinned >= 0) return [0, pinned]
+    const pinned = pinnedTokens.get(t)
+    if (pinned !== undefined) return [0, pinned]
     const category = CATEGORY_ORDER[t.getTokenCategory()] ?? 10
     const cf = CHAIN_FUSION_FIRST.indexOf(t.getTokenAddress())
     return [category, cf >= 0 ? cf : CHAIN_FUSION_FIRST.length]

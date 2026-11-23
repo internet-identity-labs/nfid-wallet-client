@@ -56,6 +56,18 @@ describe("sortFtTokens", () => {
     ])
   })
 
+  it("pins only the first token of a shared id (EVM native ETH)", () => {
+    const input = [
+      token("native-other", Category.Native),
+      token(ETH_NATIVE_ID, Category.Native),
+      token(ETH_NATIVE_ID, Category.Native),
+    ]
+    const sorted = sortFtTokens(input)
+    expect(sorted[0]).toBe(input[1])
+    expect(sorted[1]).toBe(input[0])
+    expect(sorted[2]).toBe(input[2])
+  })
+
   it("does not modify the input", () => {
     const input = [
       token("sns-1", Category.Sns),

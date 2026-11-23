@@ -163,14 +163,15 @@ describe("ft test suite", () => {
       const filteredResult = ftService.filterTokens(result, "CHAT")
       expect(filteredResult.length).toEqual(1)
 
+      // sc-19793: ICP, NFIDW, native, SNS, chain fusion, …
       expect(result[0].getTokenName()).toEqual("Internet Computer")
-      expect(result[1].getTokenName()).toEqual("Bitcoin")
-      expect(result[2].getTokenName()).toEqual("Ethereum")
-      expect(result[3].getTokenName()).toEqual("A first letter")
-      expect(result[4].getTokenName()).toEqual("Polygon")
-      expect(result[5].getTokenName()).toEqual("Ethereum")
+      expect(result[1].getTokenName()).toEqual("NFID Wallet")
+      expect(result[2].getTokenName()).toEqual("Bitcoin")
+      expect(result[3].getTokenName()).toEqual("Ethereum")
+      expect(result[4].getTokenName()).toEqual("A first letter")
+      expect(result[5].getTokenName()).toEqual("Polygon")
       expect(result[6].getTokenName()).toEqual("Ethereum")
-      expect(result[7].getTokenName()).toEqual("NFID Wallet")
+      expect(result[7].getTokenName()).toEqual("Ethereum")
       expect(result[8].getTokenName()).toEqual("ckBTC")
       expect(result[9].getTokenName()).toEqual("ckETH")
       expect(result[10].getTokenName()).toEqual("Polygon Amoy")
@@ -823,7 +824,8 @@ describe("ft test suite", () => {
         ])
 
       const result: FT[] = await ftService.getTokens(userId)
-      jest.spyOn(result[4], "getTokenBalance").mockReturnValue(undefined)
+      const polygon = result.find((t) => t.getTokenName() === "Polygon")!
+      jest.spyOn(polygon, "getTokenBalance").mockReturnValue(undefined)
       const filteredTokens =
         await ftService.filterNotActiveNotZeroBalancesTokens(result, principal)
       expect(filteredTokens.length).toEqual(1)

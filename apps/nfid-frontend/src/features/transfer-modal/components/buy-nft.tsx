@@ -53,8 +53,6 @@ export const BuyNFT = ({
     revalidateOnMount: false,
   })
 
-  console.log(buyQuote)
-
   const { initedTokens } = useTokensInit(tokens)
 
   const icpToken = useMemo(() => {

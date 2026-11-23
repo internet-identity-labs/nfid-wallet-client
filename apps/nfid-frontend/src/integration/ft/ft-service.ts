@@ -634,52 +634,60 @@ export class FtService {
   }
 
   private sortTokens(tokens: FT[]) {
-    const categoryOrder: Record<Category, number> = {
-      [Category.Sns]: 3,
-      [Category.ChainFusion]: 2,
-      [Category.Known]: 4,
-      [Category.Native]: 1,
-      [Category.ERC20]: 6,
-      [Category.Community]: 5,
-      [Category.Spam]: 9,
-      [Category.ChainFusionTestnet]: 7,
-      [Category.TESTNET]: 8,
-    }
-
-    const topNativeIds = [ICP_CANISTER_ID, BTC_NATIVE_ID, ETH_NATIVE_ID]
-    const nfIdTokens = [
-      NFIDW_CANISTER_ID,
-      CKBTC_CANISTER_ID,
-      CKETH_LEDGER_CANISTER_ID,
-    ]
-
-    const topNative: FT[] = topNativeIds
-      .map((id) => tokens.find((t) => t.getTokenAddress() === id))
-      .filter(Boolean) as FT[]
-    topNative.forEach((t) => tokens.splice(tokens.indexOf(t), 1))
-
-    const afterNative: FT[] = nfIdTokens
-      .map((id) => tokens.find((t) => t.getTokenAddress() === id))
-      .filter(Boolean) as FT[]
-    afterNative.forEach((t) => tokens.splice(tokens.indexOf(t), 1))
-
-    const remainingNative = tokens.filter(
-      (t) => t.getTokenCategory() === Category.Native,
-    )
-    const others = tokens.filter(
-      (t) => t.getTokenCategory() !== Category.Native,
-    )
-
-    others.sort((a, b) => {
-      const aCat =
-        categoryOrder[a.getTokenCategory()] ?? Number.MAX_SAFE_INTEGER
-      const bCat =
-        categoryOrder[b.getTokenCategory()] ?? Number.MAX_SAFE_INTEGER
-      return aCat - bCat
-    })
-
-    return [...topNative, ...remainingNative, ...afterNative, ...others]
+    return sortFtTokens(tokens)
   }
+}
+
+/** Order within a category group; lower comes first. */
+const CATEGORY_ORDER: Partial<Record<Category, number>> = {
+  [Category.Native]: 1,
+  [Category.Sns]: 2,
+  [Category.ChainFusion]: 3,
+  [Category.ERC20]: 4,
+  [Category.Community]: 5,
+  [Category.Known]: 6,
+  [Category.ChainFusionTestnet]: 7,
+  [Category.TESTNET]: 8,
+  [Category.Spam]: 9,
+}
+
+/** Pinned first, in this order, ahead of their category groups. */
+const PINNED_IDS = [
+  ICP_CANISTER_ID,
+  NFIDW_CANISTER_ID,
+  BTC_NATIVE_ID,
+  ETH_NATIVE_ID,
+]
+/** First within the chain fusion group. */
+const CHAIN_FUSION_FIRST = [CKBTC_CANISTER_ID, CKETH_LEDGER_CANISTER_ID]
+
+/**
+ * Default token order (sc-19793): ICP, NFIDW, native (BTC, ETH, others), SNS,
+ * chain fusion (ckBTC, ckETH first), ERC-20, community, then known, testnets
+ * and spam. Stable within a group. Favorites are put on top by the UI.
+ */
+export const sortFtTokens = (tokens: FT[]): FT[] => {
+  // Only the first token with a pinned id is pinned: EVM native ETH on Base or
+  // Arbitrum shares ETH_NATIVE_ID and stays with the other natives.
+  const pinnedTokens = new Map<FT, number>()
+  PINNED_IDS.forEach((id, i) => {
+    const first = tokens.find((t) => t.getTokenAddress() === id)
+    if (first) pinnedTokens.set(first, i)
+  })
+  const rank = (t: FT): [number, number] => {
+    const pinned = pinnedTokens.get(t)
+    if (pinned !== undefined) return [0, pinned]
+    const category = CATEGORY_ORDER[t.getTokenCategory()] ?? 10
+    const cf = CHAIN_FUSION_FIRST.indexOf(t.getTokenAddress())
+    return [category, cf >= 0 ? cf : CHAIN_FUSION_FIRST.length]
+  }
+  return tokens
+    .map((token, index) => ({ token, index, rank: rank(token) }))
+    .sort(
+      (a, b) =>
+        a.rank[0] - b.rank[0] || a.rank[1] - b.rank[1] || a.index - b.index,
+    )
+    .map(({ token }) => token)
 }
 
 export const ftService = new FtService()

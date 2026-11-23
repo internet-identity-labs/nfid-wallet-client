@@ -1,4 +1,30 @@
-export const mockGeekResponse = {
+import { encodeTokenIdentifier } from "src/integration/entrepot/ext"
+import { MarketPlace } from "src/integration/nft/enum/enums"
+import { IcpNftToken } from "src/integration/nft/sources/nft-sources-types"
+
+interface MockRegistry {
+  registry: Record<
+    string,
+    {
+      tokens: Array<{
+        timeMillis: number
+        tokenId: number
+        [k: string]: unknown
+      }>
+      tokenFloorPriceIcp?: number
+      [k: string]: unknown
+    }
+  >
+  collections: Array<{
+    canisterId: string
+    name: string
+    interface: string
+    [k: string]: unknown
+  }>
+}
+
+/** Owned tokens and collections of the test principal (former NFTGeek fixture). */
+const mockRegistry: MockRegistry = {
   registry: {
     "lix2q-6yaaa-aaaal-qdbaa-cai": {
       tokens: [
@@ -205,104 +231,25 @@ export const mockGeekResponse = {
   ],
 }
 
-export const expectedGeekResponse = [
-  {
-    millis: 1721253656611,
-    marketPlace: "EXT",
-    tokenId: 1480,
-    collectionId: "lix2q-6yaaa-aaaal-qdbaa-cai",
-    collectionName: "IC KONG",
-    tokenFloorPriceIcp: 6000000,
-    tokenFloorPriceUSD: 6143,
-  },
-  {
-    millis: 1721253726158,
-    marketPlace: "EXT",
-    tokenId: 2066,
-    collectionId: "64x4q-laaaa-aaaal-qdjca-cai",
-    collectionName: "Cellphones",
-    tokenFloorPriceIcp: 2000000,
-    tokenFloorPriceUSD: 4607,
-  },
-  {
-    millis: 1721253656133,
-    marketPlace: "EXT",
-    tokenId: 963,
-    collectionId: "nbg4r-saaaa-aaaah-qap7a-cai",
-    collectionName: "Starverse",
-    tokenFloorPriceIcp: 75000000,
-    tokenFloorPriceUSD: 76795,
-  },
-  {
-    millis: 1721253870829,
-    marketPlace: "MEMECAKE",
-    tokenId: 5002,
-    collectionId: "gdeb6-lqaaa-aaaah-abvpq-cai",
-    collectionName: "Boxy Land",
-    tokenFloorPriceIcp: undefined,
-    tokenFloorPriceUSD: undefined,
-  },
-  {
-    millis: 1721253214177,
-    marketPlace: "MEMECAKE",
-    tokenId: 5671,
-    collectionId: "gdeb6-lqaaa-aaaah-abvpq-cai",
-    collectionName: "Boxy Land",
-    tokenFloorPriceIcp: undefined,
-    tokenFloorPriceUSD: undefined,
-  },
-  {
-    millis: 1721254927631,
-    marketPlace: "EXT",
-    tokenId: 695,
-    collectionId: "p5jg7-6aaaa-aaaah-qcolq-cai",
-    collectionName: "ICAliens",
-    tokenFloorPriceIcp: 10000,
-    tokenFloorPriceUSD: 10,
-  },
-  {
-    millis: 1721253502478,
-    marketPlace: "ICPSWAP",
-    tokenId: 6050,
-    collectionId: "gfcya-pyaaa-aaaan-qbxda-cai",
-    collectionName: "SNS&GHOST NFT",
-    tokenFloorPriceIcp: 20000000,
-    tokenFloorPriceUSD: 20478,
-  },
-  {
-    millis: 1721253502478,
-    marketPlace: "ICPSWAP",
-    tokenId: 92,
-    collectionId: "p5rex-yqaaa-aaaag-qb42a-cai",
-    collectionName: "SNS&GHOST NFT",
-    tokenFloorPriceIcp: 20000000,
-    tokenFloorPriceUSD: 20478,
-  },
-  {
-    millis: 1721253579367,
-    marketPlace: "YUKU",
-    tokenId: 9103,
-    collectionId: "yzrp5-oaaaa-aaaah-ad2xa-cai",
-    collectionName: "Mifoko",
-    tokenFloorPriceIcp: undefined,
-    tokenFloorPriceUSD: undefined,
-  },
-  {
-    millis: 1721253579367,
-    marketPlace: "YUKU",
-    tokenId: 4612,
-    collectionId: "fab4i-diaaa-aaaah-acr2q-cai",
-    collectionName: "ICTempies",
-    tokenFloorPriceIcp: undefined,
-    tokenFloorPriceUSD: undefined,
-  },
-  {
-    collectionId: "ok3ug-2iaaa-aaaag-qbilq-cai",
-    collectionName: "ICTempies",
-    marketPlace: "EXT",
-    millis: 1721253870829,
-    tokenFloorPriceIcp: undefined,
-    tokenFloorPriceUSD: undefined,
-    tokenId: 2226,
-  },
-]
+/** EXT tokens as `entrepotSource.getUserTokens` returns them (no floor price). */
+export const mockExtTokens: IcpNftToken[] = mockRegistry.collections
+  .filter((c) => c.interface === "EXT")
+  .flatMap((c) =>
+    (mockRegistry.registry[c.canisterId]?.tokens ?? []).map((t) => ({
+      marketPlace: MarketPlace.EXT as const,
+      tokenId: encodeTokenIdentifier(c.canisterId, t.tokenId),
+      tokenNumber: t.tokenId,
+      collectionId: c.canisterId,
+      collectionName: c.name,
+      millis: t.timeMillis,
+    })),
+  )
+
+/** Floor prices in e8s by collection, as `extFloorPriceService` returns them. */
+export const mockExtFloorPrices: Record<string, number | undefined> =
+  Object.fromEntries(
+    Object.entries(mockRegistry.registry).map(([id, r]) => [
+      id,
+      r.tokenFloorPriceIcp,
+    ]),
+  )

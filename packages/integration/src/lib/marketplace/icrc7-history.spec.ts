@@ -108,7 +108,7 @@ describe("parseIcrc7Block", () => {
     expect(parseIcrc7Block(COLLECTION, sale(6, 1, 0), ORACLE)).toBe(undefined)
   })
 
-  it("maps other transfers, approvals and skips revokes", () => {
+  it("maps other transfers, approvals and revokes", () => {
     const xfer = block(1, "7xfer", {
       tid: { Nat: BigInt(2) },
       from: { Text: SELLER },
@@ -132,8 +132,21 @@ describe("parseIcrc7Block", () => {
     const revoke = block(3, "37revoke", {
       tid: { Nat: BigInt(2) },
       from: { Text: SELLER },
+      spender: { Text: ORACLE },
     })
-    expect(parseIcrc7Block(COLLECTION, revoke, SELLER)).toBe(undefined)
+    expect(parseIcrc7Block(COLLECTION, revoke, SELLER)).toEqual({
+      collectionId: COLLECTION,
+      blockId: BigInt(3),
+      kind: "revoke",
+      tokenId: BigInt(2),
+      from: SELLER,
+      spender: ORACLE,
+      timestamp: BigInt(1_003),
+    })
+    expect(parseIcrc7Block(COLLECTION, revoke, BUYER)).toBe(undefined)
+
+    const update = block(4, "7update_token", { tid: { Nat: BigInt(2) } })
+    expect(parseIcrc7Block(COLLECTION, update, SELLER)).toBe(undefined)
   })
 })
 

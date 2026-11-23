@@ -13,6 +13,7 @@ import {
 
 import { IProfileConstants } from ".."
 import { AssetDropdown } from "./asset-dropdown"
+import { FavoriteButton } from "../../../molecules/favorite-button"
 import { TokenIdentity } from "./token-identity"
 import { SelectedToken } from "frontend/features/transfer-modal/types"
 import { ProfileContext } from "frontend/provider"
@@ -42,6 +43,9 @@ interface ActiveTokenProps extends HTMLAttributes<HTMLDivElement> {
   arbitrumEnabled?: boolean
   baseEnabled?: boolean
   polygonEnabled?: boolean
+  /** Shown only when `onToggleFavorite` is passed. */
+  isFavorite?: boolean
+  onToggleFavorite?: (token: FT) => void
   aaveTokens?: FT[]
   isPrivateAccount?: boolean
   isVault?: boolean
@@ -77,6 +81,8 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
   isPrivateAccount = false,
   isVault,
   updateVault,
+  isFavorite = false,
+  onToggleFavorite,
   ...props
 }) => {
   const [isTokenProcessed, setIsTokenProcessed] = useState(false)
@@ -103,19 +109,29 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
       })}
     >
       <td className="py-[10px] sm:py-0 sm:h-16 pr-[10px] sm:pr-[30px] flex-grow min-w-0 sm:w-auto">
-        <TokenIdentity
-          token={token}
-          onConvertToBtc={onConvertToBtc}
-          onConvertToCkBtc={onConvertToCkBtc}
-          onStakeClick={onStakeClick}
-          onConvertToCkEth={onConvertToCkEth}
-          onConvertToEth={onConvertToEth}
-          withActions={!isViewOnlyMode && !isVault}
-          onConvertToSepoliaEth={onConvertToSepoliaEth}
-          onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
-          onConvertToErc20={onConvertToErc20}
-          onConvertToCkErc20={onConvertToCkErc20}
-        />
+        <div className="flex items-center gap-2 min-w-0">
+          {onToggleFavorite && (
+            <FavoriteButton
+              id={`token_${token.getTokenSymbol()}_${token.getChainId()}_favorite`}
+              isFavorite={isFavorite}
+              itemName={token.getTokenSymbol()}
+              onToggle={() => onToggleFavorite(token)}
+            />
+          )}
+          <TokenIdentity
+            token={token}
+            onConvertToBtc={onConvertToBtc}
+            onConvertToCkBtc={onConvertToCkBtc}
+            onStakeClick={onStakeClick}
+            onConvertToCkEth={onConvertToCkEth}
+            onConvertToEth={onConvertToEth}
+            withActions={!isViewOnlyMode && !isVault}
+            onConvertToSepoliaEth={onConvertToSepoliaEth}
+            onConvertToCkSepoliaEth={onConvertToCkSepoliaEth}
+            onConvertToErc20={onConvertToErc20}
+            onConvertToCkErc20={onConvertToCkErc20}
+          />
+        </div>
       </td>
       {!isVault ? (
         <>

@@ -8,6 +8,7 @@ import {
 } from "frontend/integration/address-book"
 import { FC, memo } from "react"
 import { NFIDTheme } from "frontend/App"
+import { useFavorites } from "frontend/integration/favorites/use-favorites"
 
 type AddressBookPageProps = {
   walletTheme: NFIDTheme
@@ -28,6 +29,8 @@ const AddressBookPage: FC<AddressBookPageProps> = memo(
 
     const remove = (id: string) => addressBookFacade.delete(id)
 
+    const { favorites, toggle } = useFavorites()
+
     const { data: addresses, isLoading } = useSWR("addressBook", async () =>
       addressBookFacade.findAll(),
     )
@@ -46,6 +49,8 @@ const AddressBookPage: FC<AddressBookPageProps> = memo(
           onCreate={create}
           onUpdate={update}
           onRemove={remove}
+          favoriteIds={favorites.contacts}
+          onToggleFavorite={(id) => void toggle("contact", id)}
         />
       </ProfileTemplate>
     )

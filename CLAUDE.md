@@ -73,7 +73,8 @@ TypeScript, components, state, styling, a11y and import order rules are in
 > **No file under `apps/` or `packages/` may be created or modified without an approved spec and an
 > approved plan that lists the file's exact path.** Feature work (anything under `apps/` or
 > `packages/`) needs both; tooling work (root config, `.github/`, `docker-*`, `.claude/`, lockfile)
-> needs only the plan.
+> needs only the plan; code migrations required by a Dependabot bump need only a `deps-<PR>` plan
+> with an inline spec, written by `/dependabot-update`.
 
 The engineer runs one command at a time; each checks the plan's `> Status:` and names the next:
 

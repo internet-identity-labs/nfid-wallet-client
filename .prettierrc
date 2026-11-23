@@ -4,25 +4,6 @@
   "tabWidth": 2,
   "trailingComma": "all",
   "useTabs": false,
-  "importOrder": [
-    "<THIRD_PARTY_MODULES>",
-    "^@internet-identity-labs/nfid-sdk-react",
-    "^@nfid*",
-    "^frontend/design-system",
-    "^./flows/(.*)$",
-    "^./flows",
-    "^frontend/(.*)$",
-    "^components/(.*)$",
-    "^./assets/(.*)$",
-    "^./hooks/(.*)$",
-    "^[./]"
-  ],
-  "importOrderSeparation": true,
-  "importOrderParserPlugins": [
-    "jsx",
-    "typescript",
-    "decorators-legacy"
-  ],
   "overrides": [
     {
       "files": [

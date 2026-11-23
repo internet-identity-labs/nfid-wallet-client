@@ -52,6 +52,7 @@ export const txOptions = [
   { label: "Send", value: `${IActivityAction.SENT}` },
   { label: "Swap", value: `${IActivityAction.SWAP}` },
   { label: "Approve", value: `${IActivityAction.APPROVE}` },
+  { label: "Revoke", value: `${IActivityAction.REVOKE}` },
   { label: "Mint", value: `${IActivityAction.MINT}` },
   { label: "Burn", value: `${IActivityAction.BURN}` },
   { label: "Buy", value: `${IActivityAction.BUY}` },

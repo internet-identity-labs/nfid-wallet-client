@@ -17,6 +17,7 @@ import {
 } from "frontend/integration/address-book"
 import { getIsMobileDeviceMatch } from "../../utils/is-mobile"
 import { AddressBookRow } from "./AddressBookRow"
+import { sortAddresses } from "./sort-addresses"
 import { AddressBookModal } from "./AddressBookModal"
 import { ModalComponent } from "@nfid-frontend/ui"
 import { Spinner } from "../../atoms/spinner"
@@ -42,6 +43,10 @@ interface AddressBookProps {
   onCreate: (request: UserAddressSaveRequest) => Promise<void>
   onUpdate: (request: UserAddressUpdateRequest) => Promise<void>
   onRemove: (id: string) => Promise<void>
+  /** Favorite contact ids, in the order they were added. */
+  favoriteIds?: string[]
+  /** Shows the star button on each row. */
+  onToggleFavorite?: (id: string) => void
 }
 
 export const AddressBook: FC<AddressBookProps> = ({
@@ -50,6 +55,8 @@ export const AddressBook: FC<AddressBookProps> = ({
   onCreate,
   onUpdate,
   onRemove,
+  favoriteIds,
+  onToggleFavorite,
 }) => {
   const isDarkTheme = useDarkTheme()
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -94,26 +101,14 @@ export const AddressBook: FC<AddressBookProps> = ({
 
   const sortedAddresses = useMemo(() => {
     if (!addresses) return []
-
-    if (sorting === AddressBookSorting.DEFAULT) {
-      return addresses
-    }
-
-    return [...addresses].sort((a, b) => {
-      const nameA = a.name?.toLowerCase() ?? ""
-      const nameB = b.name?.toLowerCase() ?? ""
-
-      if (sorting === AddressBookSorting.ASCENDING) {
-        return nameA.localeCompare(nameB)
-      }
-
-      if (sorting === AddressBookSorting.DESCENDING) {
-        return nameB.localeCompare(nameA)
-      }
-
-      return 0
-    })
-  }, [addresses, sorting])
+    const order =
+      sorting === AddressBookSorting.ASCENDING
+        ? "ascending"
+        : sorting === AddressBookSorting.DESCENDING
+          ? "descending"
+          : "default"
+    return sortAddresses(addresses, order, favoriteIds)
+  }, [addresses, sorting, favoriteIds])
 
   const getSortingIcon = () => {
     const isActive =
@@ -263,6 +258,8 @@ export const AddressBook: FC<AddressBookProps> = ({
                         }
                         setAddressToEdit={setAddressToEdit}
                         setAddressToRemove={setAddressToRemove}
+                        isFavorite={favoriteIds?.includes(address.id) ?? false}
+                        onToggleFavorite={onToggleFavorite}
                       />
                     ))}
                   </tbody>

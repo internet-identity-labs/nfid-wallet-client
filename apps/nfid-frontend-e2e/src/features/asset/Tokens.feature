@@ -19,7 +19,7 @@ Feature: Tokens tab
     Examples:
       | category | currency | nfid number | token1            | stake     | token2 | token balance |
       | Native   | ICP      | 200000102   | Internet Computer | available | ckPEPE | 0.01 ICP      |
-      | Native   | ICP      | 200000099   | Internet Computer | available | ckPEPE | 0.2194 ICP    |
+      | Native   | ICP      | 200000099   | Internet Computer | available | ckPEPE | 0.1193 ICP    |
 
   @assets @mobile
   Scenario Outline: User checks his tokens are displayed and checks the ability to manage his tokens

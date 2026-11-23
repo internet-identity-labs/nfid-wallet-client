@@ -181,10 +181,7 @@ const setupCSP = () => {
         "https://api.coinbase.com",
         "https://api.pro.coinbase.com",
         "https://icp-api.io",
-        "https://api.nftgeek.app",
         "https://toniq.io",
-        "https://stat.yuku.app",
-        "https://memecake.io",
         "https://web2.icptokens.net/api/tokens",
         "https://accounts.google.com/gsi/",
         "https://sepolia.infura.io/",
@@ -480,8 +477,10 @@ const nxDevServerDefaults = {
   devMiddleware: { publicPath: "/", stats: false },
   client: { overlay: { errors: true, warnings: false } },
   liveReload: false,
-  // `hot` is left to webpack-dev-server's default (true). Setting it here would make
-  // NxReactWebpackPlugin add React Refresh, which the old setup never enabled.
+  // The old executor turned `"hmr": true` into `hot: true` before withReact() ran, so React
+  // Fast Refresh was on. NxReactWebpackPlugin only adds it (babel plugin + runtime) when `hot`
+  // is set in this config; webpack-dev-server's own default doesn't count.
+  hot: true,
 }
 
 // `production` / `example` are the project.json configurations release CI and build:example use
@@ -676,13 +675,6 @@ export default {
         secure: true,
         changeOrigin: true,
         pathRewrite: { "^/confirm_delete_account": "" },
-      },
-      {
-        context: ["/nft_geek_api"],
-        target: "https://api.nftgeek.app",
-        secure: true,
-        changeOrigin: true,
-        pathRewrite: { "^/nft_geek_api": "/api" },
       },
       {
         context: ["/toniq_io"],

@@ -7,23 +7,111 @@ import { baseService } from "frontend/integration/ethereum/base/base.service"
 import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
 import { polygonService } from "frontend/integration/ethereum/polygon/polygon.service"
 import { EvmNftImpl } from "src/integration/nft/impl/evm/nft-evm"
-import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
 import { nftMapper } from "src/integration/nft/impl/nft-mapper"
 import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
 import { NFT } from "src/integration/nft/nft"
+import { entrepotSource } from "src/integration/nft/sources/entrepot-source"
+import { extFloorPriceService } from "src/integration/nft/sources/ext-floor-price"
+import {
+  ICRC7_FLOOR_PRICE_CACHE_NAME,
+  ICRC7_NFT_COLLECTIONS_CACHE_NAME,
+  icrc7Source,
+} from "src/integration/nft/sources/icrc7-source"
+import { IcpNftToken } from "src/integration/nft/sources/nft-sources-types"
+import { ENTREPOT_COLLECTIONS_CACHE_NAME } from "src/integration/nft/sources/entrepot-source"
+import { EXT_FLOOR_PRICE_CACHE_NAME } from "src/integration/nft/sources/ext-floor-price"
 
+import { ttlCacheService } from "@nfid/client-db"
 import { exchangeRateService } from "@nfid/integration"
+import { mutate } from "@nfid/swr"
 
 import type { FT } from "../ft/ft"
 
+const USER_NFTS_TTL_MS = 5 * 60 * 1000
+const EXT_USER_NFTS_CACHE_NAME = "ICP_NFT_EXT_USER_"
+const ICRC7_USER_NFTS_CACHE_NAME = "ICP_NFT_ICRC7_USER_"
+
+/** Cache keys (prefixes) of every ICP NFT source, for a manual refresh. */
+export const ICP_NFT_CACHE_NAMES = [
+  EXT_USER_NFTS_CACHE_NAME,
+  ICRC7_USER_NFTS_CACHE_NAME,
+  ENTREPOT_COLLECTIONS_CACHE_NAME,
+  EXT_FLOOR_PRICE_CACHE_NAME,
+  ICRC7_NFT_COLLECTIONS_CACHE_NAME,
+  ICRC7_FLOOR_PRICE_CACHE_NAME,
+]
+
+const NFT_SWR_KEYS = ["nftList", "nftTotalPrice"]
+
+/** Re-renders the NFT list and totals after a background refresh. */
+const revalidateNftViews = () =>
+  mutate((key: unknown) => {
+    const first = Array.isArray(key) ? key[0] : key
+    if (typeof first !== "string") return false
+    return NFT_SWR_KEYS.some(
+      (k) => first === k || first.startsWith(k) || first.startsWith(`["${k}"`),
+    )
+  })
+
 export class NftService {
-  async getICPNFTs(userPrincipal: Principal): Promise<NFT[]> {
-    const data = await nftGeekService.getNftGeekData(userPrincipal)
-    const nfts = data
-      .map(nftMapper.toNFT)
-      .filter((nft): nft is NFT => nft !== null)
+  /**
+   * ICP NFTs of `userPrincipal`: EXT/legacy from Entrepot and ICRC-7 from the
+   * marketplace oracle collections. Each source is cached and returned from
+   * cache at once, then refreshed in the background; a failing source falls
+   * back to its cache (or nothing) without failing the other one.
+   *
+   * @param isOwnWallet hides ICRC-7 collections the user set Inactive.
+   */
+  async getICPNFTs(
+    userPrincipal: Principal,
+    isOwnWallet = true,
+  ): Promise<NFT[]> {
+    const principal = userPrincipal.toText()
+    const [ext, icrc7] = await Promise.all([
+      this.cachedSource(`${EXT_USER_NFTS_CACHE_NAME}${principal}`, () =>
+        entrepotSource.getUserTokens(userPrincipal),
+      ).then((tokens) => this.withExtFloorPrices(tokens)),
+      this.cachedSource(
+        `${ICRC7_USER_NFTS_CACHE_NAME}${principal}_${isOwnWallet}`,
+        () => icrc7Source.getUserTokens(userPrincipal, isOwnWallet),
+      ),
+    ])
+    const nfts = [...ext, ...icrc7].map(nftMapper.toNFT)
     await Promise.all(nfts.map((nft) => nft.init()))
     return nfts
+  }
+
+  private async cachedSource(
+    key: string,
+    fetcher: () => Promise<IcpNftToken[]>,
+  ): Promise<IcpNftToken[]> {
+    try {
+      return await ttlCacheService.getOrFetch(key, fetcher, USER_NFTS_TTL_MS, {
+        revalidate: "always",
+        onRevalidated: () => void revalidateNftViews(),
+      })
+    } catch (e) {
+      console.error(`ICP NFT source failed: ${key}`, e)
+      return []
+    }
+  }
+
+  private async withExtFloorPrices(
+    tokens: IcpNftToken[],
+  ): Promise<IcpNftToken[]> {
+    const collections = [...new Set(tokens.map((t) => t.collectionId))]
+    const floors = new Map(
+      await Promise.all(
+        collections.map(
+          async (id) =>
+            [id, await extFloorPriceService.getFloorPrice(id)] as const,
+        ),
+      ),
+    )
+    return tokens.map((t) => ({
+      ...t,
+      tokenFloorPriceIcp: floors.get(t.collectionId),
+    }))
   }
 
   async getEVMNFTs(_userPrincipal: Principal): Promise<NFT[]> {
@@ -72,7 +160,7 @@ export class NftService {
       }
 
     if (addressType === "icp") {
-      rawData = await this.getICPNFTs(Principal.fromText(address))
+      rawData = await this.getICPNFTs(Principal.fromText(address), false)
     } else if (addressType === "evm") {
       rawData = await this.getEVMNFTsByAddress(address)
     }

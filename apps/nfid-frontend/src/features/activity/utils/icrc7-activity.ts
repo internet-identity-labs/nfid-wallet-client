@@ -53,6 +53,8 @@ const getAction = (
       return IActivityAction.BURN
     case "approve":
       return IActivityAction.APPROVE
+    case "revoke":
+      return IActivityAction.REVOKE
     case "sale":
       return event.from === user ? IActivityAction.SELL : IActivityAction.BUY
     case "transfer":
@@ -87,7 +89,10 @@ export const mapIcrc7EventToRow = (
     timestamp: nanoSecondsToDate(event.timestamp),
     asset,
     from: event.from ?? "",
-    to: (event.kind === "approve" ? event.spender : event.to) ?? "",
+    to:
+      (event.kind === "approve" || event.kind === "revoke"
+        ? event.spender
+        : event.to) ?? "",
   }
 }
 

@@ -28,6 +28,7 @@ import { arbSepoliaErc20Service } from "frontend/integration/ethereum/arbitrum/t
 import { baseSepoliaErc20Service } from "frontend/integration/ethereum/base/testnetwork/base-sepolia-erc20.service"
 import { polygonAmoyErc20Service } from "frontend/integration/ethereum/polygon/testnetwork/pol-amoy-erc20.service"
 import { ethSepoliaErc20Service } from "frontend/integration/ethereum/eth/testnetwork/eth-sepolia-erc20.service"
+import { icrc7RegistryService } from "@nfid/integration/marketplace"
 
 const userId = "j5zf4-bzab2-e5w4v-kagxz-p35gy-vqyam-gazwu-vhgmz-bb3bh-nlwxc-tae"
 const principal = Principal.fromText(userId)
@@ -42,6 +43,9 @@ describe("ft test suite", () => {
     jest
       .spyOn(ethereumService as any, "getQuickAddress")
       .mockResolvedValue("0x1234567890123456789012345678901234567890")
+    jest
+      .spyOn(icrc7RegistryService, "getStoredCollections")
+      .mockResolvedValue([])
   })
 
   describe("ft", () => {

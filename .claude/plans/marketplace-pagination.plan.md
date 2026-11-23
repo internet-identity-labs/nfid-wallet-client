@@ -24,6 +24,8 @@ Fix fetchNFT / fetchViewOnlyNFT to fall back to public ICRC7 when result is unde
 | `apps/nfid-frontend/src/features/transfer-modal/components/buy-nft.tsx`    | Replace global `"listings"` SWR with `fetchListingById`                                       |
 | `apps/nfid-frontend/src/features/transfer-modal/components/delist-nft.tsx` | Add filter-mutate for `"listing"` cache keys after delist                                     |
 | `apps/nfid-frontend/src/features/transfer-modal/components/list-nft.tsx`   | Add filter-mutate for `"listing"` cache keys after list                                       |
+| `apps/nfid-frontend/src/integration/nft/test/nft.spec.ts`                  | Mock `icrc7RegistryService.getStoredCollections` to fix pre-existing test failure             |
+| `apps/nfid-frontend/src/integration/ft/test/ft.spec.ts`                    | Mock `icrc7RegistryService.getStoredCollections` in `beforeEach` to fix pre-existing failure  |
 
 ## Implementation Checklist
 
@@ -34,3 +36,5 @@ Fix fetchNFT / fetchViewOnlyNFT to fall back to public ICRC7 when result is unde
 - [x] Replace listings SWR in `apps/nfid-frontend/src/features/nft-details/index.tsx` with `fetchListingForNFT`
 - [x] Replace listings SWR in `apps/nfid-frontend/src/features/transfer-modal/components/buy-nft.tsx` with `fetchListingById`; add filter-mutate
 - [x] Add filter-mutate in `delist-nft.tsx` and `list-nft.tsx`
+- [x] Fix pre-existing test failure in `apps/nfid-frontend/src/integration/nft/test/nft.spec.ts`: mock `icrc7RegistryService.getStoredCollections` so `getNFTByTokenId` test doesn't hit `authState`
+- [x] Fix pre-existing test failure in `apps/nfid-frontend/src/integration/ft/test/ft.spec.ts`: same mock in `beforeEach`

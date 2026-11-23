@@ -8,6 +8,7 @@ import { mockGeekResponse } from "src/integration/nft/mock/mock"
 import { nftService } from "src/integration/nft/nft-service"
 
 import { exchangeRateService } from "@nfid/integration"
+import { icrc7RegistryService } from "@nfid/integration/marketplace"
 import {
   CKBTC_CANISTER_ID,
   ICP_CANISTER_ID,
@@ -290,8 +291,11 @@ describe("nft test suite", () => {
       jest
         .spyOn(exchangeRateService as any, "getICP2USD")
         .mockReturnValue(new BigNumber(8.957874722))
+      jest
+        .spyOn(icrc7RegistryService, "getStoredCollections")
+        .mockResolvedValue([])
 
-      const nft = await nftService.getNFTByTokenId(nftId, principal, 1)
+      const nft = await nftService.getNFTByTokenId(nftId, principal)
 
       expect(nft).toBeDefined()
       if (!nft) return

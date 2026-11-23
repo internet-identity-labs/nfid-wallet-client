@@ -7,12 +7,5 @@
         "useBuiltIns": "usage"
       }
     ]
-  ],
-  "env": {
-    "development": {
-      "plugins": [
-        "react-refresh/babel"
-      ]
-    }
-  }
+  ]
 }

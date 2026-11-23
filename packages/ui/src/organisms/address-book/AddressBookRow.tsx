@@ -7,6 +7,7 @@ import { IcpNetworkIcon } from "packages/ui/src/atoms/icons/IcpNetworkIcon"
 import { BtcNetworkIcon } from "packages/ui/src/atoms/icons/BtcNetworkIcon"
 import { EthNetworkIcon } from "packages/ui/src/atoms/icons/EthNetworkIcon"
 import { AddressBookDropdown } from "./AddressBookDropdown"
+import { FavoriteButton } from "../../molecules/favorite-button"
 import { useDarkTheme } from "frontend/hooks"
 
 interface AddressBookRowProps {
@@ -14,6 +15,8 @@ interface AddressBookRowProps {
   dropdownPosition: IDropdownPosition
   setAddressToEdit: (id: string) => void
   setAddressToRemove: (id: string) => void
+  isFavorite?: boolean
+  onToggleFavorite?: (id: string) => void
 }
 
 export const AddressBookRow: FC<AddressBookRowProps> = ({
@@ -21,6 +24,8 @@ export const AddressBookRow: FC<AddressBookRowProps> = ({
   dropdownPosition,
   setAddressToEdit,
   setAddressToRemove,
+  isFavorite = false,
+  onToggleFavorite,
 }) => {
   const isDarkTheme = useDarkTheme()
 
@@ -38,7 +43,17 @@ export const AddressBookRow: FC<AddressBookRowProps> = ({
             "min-w-0 w-[100%] md:w-auto mb-5 mt-2.5 md:mt-0 md:mb-0",
           )}
         >
-          <p className="font-semibold leading-5">{address.name}</p>
+          <div className="flex items-center gap-2 min-w-0">
+            {onToggleFavorite && (
+              <FavoriteButton
+                id={`address_${address.id}_favorite`}
+                isFavorite={isFavorite}
+                itemName={address.name}
+                onToggle={() => onToggleFavorite(address.id)}
+              />
+            )}
+            <p className="font-semibold leading-5">{address.name}</p>
+          </div>
         </td>
         <td
           id={`address_${address.id}_icpAccountId`}

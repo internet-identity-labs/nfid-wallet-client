@@ -3,8 +3,13 @@
  */
 import { Principal } from "@icp-sdk/core/principal"
 import BigNumber from "bignumber.js"
-import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
-import { mockGeekResponse } from "src/integration/nft/mock/mock"
+import { entrepotSource } from "src/integration/nft/sources/entrepot-source"
+import { extFloorPriceService } from "src/integration/nft/sources/ext-floor-price"
+import { icrc7Source } from "src/integration/nft/sources/icrc7-source"
+import {
+  mockExtFloorPrices,
+  mockExtTokens,
+} from "src/integration/nft/mock/mock"
 import { nftService } from "src/integration/nft/nft-service"
 
 import { exchangeRateService } from "@nfid/integration"
@@ -30,8 +35,12 @@ describe("nft test suite", () => {
   describe("nft", () => {
     it.skip("should return", async () => {
       jest
-        .spyOn(nftGeekService as any, "fetchNftGeekData")
-        .mockResolvedValue(mockGeekResponse)
+        .spyOn(entrepotSource, "getUserTokens")
+        .mockResolvedValue(mockExtTokens)
+      jest.spyOn(icrc7Source, "getUserTokens").mockResolvedValue([])
+      jest
+        .spyOn(extFloorPriceService, "getFloorPrice")
+        .mockImplementation(async (id) => mockExtFloorPrices[id])
       jest
         .spyOn(exchangeRateService as any, "getICP2USD")
         .mockReturnValue(new BigNumber(8.957874722))
@@ -218,8 +227,12 @@ describe("nft test suite", () => {
 
     it.skip("should calculate usd price", async () => {
       jest
-        .spyOn(nftGeekService as any, "fetchNftGeekData")
-        .mockResolvedValue(mockGeekResponse)
+        .spyOn(entrepotSource, "getUserTokens")
+        .mockResolvedValue(mockExtTokens)
+      jest.spyOn(icrc7Source, "getUserTokens").mockResolvedValue([])
+      jest
+        .spyOn(extFloorPriceService, "getFloorPrice")
+        .mockImplementation(async (id) => mockExtFloorPrices[id])
       jest
         .spyOn(exchangeRateService as any, "getICP2USD")
         .mockReturnValue(new BigNumber(8.957874722))
@@ -285,8 +298,12 @@ describe("nft test suite", () => {
       const nftId = "yfmjl-eakor-uwiaa-aaaaa-c4a2i-qaqca-aabaj-a"
 
       jest
-        .spyOn(nftGeekService as any, "fetchNftGeekData")
-        .mockResolvedValue(mockGeekResponse)
+        .spyOn(entrepotSource, "getUserTokens")
+        .mockResolvedValue(mockExtTokens)
+      jest.spyOn(icrc7Source, "getUserTokens").mockResolvedValue([])
+      jest
+        .spyOn(extFloorPriceService, "getFloorPrice")
+        .mockImplementation(async (id) => mockExtFloorPrices[id])
       jest
         .spyOn(exchangeRateService as any, "getICP2USD")
         .mockReturnValue(new BigNumber(8.957874722))

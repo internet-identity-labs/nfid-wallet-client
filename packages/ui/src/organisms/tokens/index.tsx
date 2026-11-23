@@ -75,7 +75,14 @@ export interface TokensProps extends HTMLAttributes<HTMLDivElement> {
   isPrivateAccount?: boolean
   isVault?: boolean
   updateVault?: () => Promise<void>
+  /** Favorite token ids (`<chainId>:<address>`), in the order they were added. */
+  favoriteTokenIds?: string[]
+  /** Shows the star button; omit in view-only mode, for vaults and private accounts. */
+  onToggleFavorite?: (token: FT) => void
 }
+
+const favoriteId = (token: FT) =>
+  `${token.getChainId()}:${token.getTokenAddress()}`
 
 export const Tokens: FC<TokensProps> = ({
   initedTokens,
@@ -117,6 +124,8 @@ export const Tokens: FC<TokensProps> = ({
   isPrivateAccount = false,
   isVault,
   updateVault,
+  favoriteTokenIds,
+  onToggleFavorite,
 }) => {
   const [token, setToken] = useState<FT | undefined>()
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -184,8 +193,16 @@ export const Tokens: FC<TokensProps> = ({
       })
     }
 
-    return initedTokens
-  }, [initedTokens, sorting])
+    if (!favoriteTokenIds?.length) return initedTokens
+    const rank = new Map(favoriteTokenIds.map((id, i) => [id, i]))
+    const favorites = initedTokens
+      .filter((t) => rank.has(favoriteId(t)))
+      .sort((a, b) => rank.get(favoriteId(a))! - rank.get(favoriteId(b))!)
+    return [
+      ...favorites,
+      ...initedTokens.filter((t) => !rank.has(favoriteId(t))),
+    ]
+  }, [initedTokens, sorting, favoriteTokenIds])
 
   const filteredTokens = useMemo(() => {
     if (filter.length === 0) return sortedTokens
@@ -295,6 +312,10 @@ export const Tokens: FC<TokensProps> = ({
                     isPrivateAccount={isPrivateAccount}
                     isVault={isVault}
                     updateVault={updateVault}
+                    isFavorite={
+                      favoriteTokenIds?.includes(favoriteId(token)) ?? false
+                    }
+                    onToggleFavorite={onToggleFavorite}
                   />
                 ))
               )}

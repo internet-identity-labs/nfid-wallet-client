@@ -171,6 +171,12 @@ export const getActionMarkup = (
         icon: <IconCmpApproveActivity className="text-emerald-600" />,
       }
 
+    case IActivityAction.REVOKE:
+      return {
+        bg: "bg-gray-100 dark:bg-zinc-700",
+        icon: <IconCmpApproveActivity className="text-gray-500" />,
+      }
+
     default:
       return {
         bg: "bg-gray-100",
@@ -305,6 +311,7 @@ export const ActivityTableRow = ({
         </td>
         {![
           IActivityAction.APPROVE,
+          IActivityAction.REVOKE,
           IActivityAction.MINT,
           IActivityAction.BURN,
         ].includes(action) ? (
@@ -396,7 +403,8 @@ export const ActivityTableRow = ({
           </>
         ) : (
           <>
-            {action === IActivityAction.APPROVE ? (
+            {action === IActivityAction.APPROVE ||
+            action === IActivityAction.REVOKE ? (
               <>
                 <td
                   className={clsx(

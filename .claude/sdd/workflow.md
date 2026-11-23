@@ -63,8 +63,10 @@ command to run instead. Never "fix up" the status to make a command run.
    If the hook itself errors, or its input is unreadable, it blocks (fail closed). Worktrees are
    guarded the same way against their own plans; plans stay uncommitted until `/pr`, so a fresh
    worktree normally has none, and guarded edits there are blocked.
-   `.claude/hooks/pre-bash.js` asks the engineer before any shell command that looks like it
-   writes under `apps/` or `packages/`, or rewrites the working tree (`git checkout/reset/stash/…`).
+   `.claude/hooks/pre-bash.js` asks the engineer before shell commands that rewrite the working
+   tree (`git checkout/reset/stash/…`) or the whole repo (`yarn format`, Nx generators). Ordinary
+   file operations under `apps/` or `packages/` (`rm`, `mv`, `sed -i`, redirects) aren't asked
+   about; `SDD_STRICT_BASH=1` restores that.
    Because guessing from command text can't be complete, `.claude/hooks/post-bash.js` checks the
    result: after every shell command it runs `git status` on `apps/` and `packages/` and reports
    any changed file that no plan on this branch lists (exact path, first column, any status except

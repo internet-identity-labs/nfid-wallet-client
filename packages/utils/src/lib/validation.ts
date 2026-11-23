@@ -64,7 +64,8 @@ export const validateTransferAmountField =
     if (!decimals || !balance) return "Insufficient funds"
     const balanceNum = BigNumber(balance.toString()).div(10 ** decimals)
     const valueNum = new BigNumber(value)
-    if (balanceNum.isLessThan(valueNum)) return "Insufficient funds"
+    if (modalType !== IModalType.LIST_NFT && balanceNum.isLessThan(valueNum))
+      return "Insufficient funds"
 
     if (fee === undefined) return true
 
@@ -76,7 +77,10 @@ export const validateTransferAmountField =
       return "The transferred sum cannot be excessively large."
     if (valueNum.isEqualTo(0)) return "You can't send 0"
 
-    if (balanceNum.minus(feeNum).isLessThan(valueNum))
+    if (
+      modalType !== IModalType.LIST_NFT &&
+      balanceNum.minus(feeNum).isLessThan(valueNum)
+    )
       return "Insufficient funds"
 
     if (

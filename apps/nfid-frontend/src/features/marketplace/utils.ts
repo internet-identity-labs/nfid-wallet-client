@@ -17,6 +17,8 @@ import {
   MarketplaceListingWithFormatting,
 } from "packages/ui/src/organisms/marketplace/types"
 
+export const PAGE_SIZE = 8
+
 const fetchTokenImageUrl = async (
   collectionId: string,
   tokenId: bigint,
@@ -60,15 +62,45 @@ const enrichListing = async (
 }
 
 export const fetchListings = async (
-  query?: ListingQuery,
-): Promise<MarketplaceListingWithFormatting[]> => {
+  pageNumber: number,
+  query?: Omit<ListingQuery, "offset">,
+): Promise<{ items: MarketplaceListingWithFormatting[]; total: number }> => {
   const { publicKey } = authState.getUserIdData()
-  const page = await marketplaceService.getListings(query)
-  return Promise.all(
+  const limit = query?.limit ?? PAGE_SIZE
+  const page = await marketplaceService.getListings({
+    ...query,
+    offset: (pageNumber - 1) * limit,
+    limit,
+  })
+  const items = await Promise.all(
     page.items.map((listing) =>
       enrichListing(listing, listing.seller === publicKey),
     ),
   )
+  return { items, total: page.total }
+}
+
+export const fetchListingById = async (
+  id: bigint,
+): Promise<MarketplaceListingWithFormatting | undefined> => {
+  const { publicKey } = authState.getUserIdData()
+  const listing = await marketplaceService.getListing(id)
+  if (!listing) return undefined
+  return enrichListing(listing, listing.seller === publicKey)
+}
+
+export const fetchListingForNFT = async (
+  collectionId: string,
+  tokenId: string,
+): Promise<MarketplaceListingWithFormatting | undefined> => {
+  const { publicKey } = authState.getUserIdData()
+  const page = await marketplaceService.getListings({
+    collectionId,
+    limit: 100,
+  })
+  const listing = page.items.find((l) => l.tokenId.toString() === tokenId)
+  if (!listing) return undefined
+  return enrichListing(listing, listing.seller === publicKey)
 }
 
 export const fetchSellerListings = async (): Promise<

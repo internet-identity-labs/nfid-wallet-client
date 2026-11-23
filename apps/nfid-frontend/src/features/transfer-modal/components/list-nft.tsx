@@ -112,7 +112,8 @@ export const ListNFT = ({
         })
         .then(() => {
           mutate("user-listings")
-          mutate("listings")
+          mutate((key) => Array.isArray(key) && key[0] === "listings")
+          mutate((key) => Array.isArray(key) && key[0] === "listing")
           setSuccessMessage(`NFT listed successful`)
           setStatus(SendStatus.COMPLETED)
         })

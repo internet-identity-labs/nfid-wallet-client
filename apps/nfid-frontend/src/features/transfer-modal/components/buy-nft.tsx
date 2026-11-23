@@ -9,7 +9,7 @@ import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/toke
 import { SendStatus } from "../types"
 import {
   fetchBuyQuote,
-  fetchListings,
+  fetchListingById,
 } from "frontend/features/marketplace/utils"
 import { marketplaceService } from "@nfid/integration/marketplace"
 import { mutate } from "@nfid/swr"
@@ -34,15 +34,13 @@ export const BuyNFT = ({
   const [error, setError] = useState<string | undefined>()
   const { identity } = useIdentity()
 
-  const { data: listings = [], isLoading: isListingsLoading } = useSWR(
-    "listings",
-    () => fetchListings(),
+  const { data: listing, isLoading: isListingsLoading } = useSWR(
+    preselectedListing !== undefined
+      ? ["listing", preselectedListing.toString()]
+      : null,
+    ([, id]: [string, string]) => fetchListingById(BigInt(id)),
     { revalidateOnFocus: false },
   )
-
-  const listing = useMemo(() => {
-    return listings.find((l) => l.id === preselectedListing)
-  }, [listings])
 
   const { data: buyQuote, isLoading: isQuoteLoading } = useSWR(
     listing ? ["buyQuote", listing.id] : null,
@@ -69,7 +67,8 @@ export const BuyNFT = ({
   const handleClose = useCallback(() => {
     if (status === SendStatus.COMPLETED) {
       mutate("user-listings")
-      mutate("listings")
+      mutate((key) => Array.isArray(key) && key[0] === "listings")
+      mutate((key) => Array.isArray(key) && key[0] === "listing")
       mutate("nftList")
     }
     onClose()

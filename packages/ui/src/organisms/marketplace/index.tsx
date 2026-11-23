@@ -24,6 +24,9 @@ interface MarketplaceProps {
   onList: () => void
   initialTab?: MarketplaceType
   isViewOnlyMode: boolean
+  onLoadMore?: () => void
+  hasMore?: boolean
+  isLoadMoreLoading?: boolean
 }
 
 export const Marketplace: FC<MarketplaceProps> = ({
@@ -36,6 +39,9 @@ export const Marketplace: FC<MarketplaceProps> = ({
   onList,
   initialTab,
   isViewOnlyMode,
+  onLoadMore,
+  hasMore,
+  isLoadMoreLoading,
 }) => {
   const [marketplaceType, setMarketplaceType] = useState<MarketplaceType>(
     initialTab ?? MarketplaceType.Browsing,
@@ -266,6 +272,19 @@ export const Marketplace: FC<MarketplaceProps> = ({
                 />
               ))}
             </div>
+          )}
+          {!search && onLoadMore && (
+            <Button
+              disabled={isLoadMoreLoading}
+              className={clsx(
+                "block mx-auto mt-4",
+                (!hasMore || !listings.length || isLoadMoreLoading) && "hidden",
+              )}
+              onClick={onLoadMore}
+              type="ghost"
+            >
+              {isLoadMoreLoading ? "Loading..." : "Load more"}
+            </Button>
           )}
         </>
       ) : isSellerListingsLoading ? (

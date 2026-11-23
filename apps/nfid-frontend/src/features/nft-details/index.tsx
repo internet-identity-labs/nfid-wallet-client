@@ -32,7 +32,7 @@ import {
 import { ModalType } from "../transfer-modal/types"
 import { nftInitialState, nftReducer } from "./utils"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
-import { fetchListings } from "../marketplace/utils"
+import { fetchListingForNFT } from "../marketplace/utils"
 
 type NftDetailsProps = {
   walletTheme: NFIDTheme
@@ -187,19 +187,11 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
     [nft, transferService],
   )
 
-  const { data: listings = [], isLoading: isListingLoading } = useSWR(
-    "listings",
-    () => fetchListings(),
+  const { data: listing, isLoading: isListingLoading } = useSWR(
+    collectionId && tokenId ? ["listing", collectionId, tokenId] : null,
+    ([, cId, tId]: [string, string, string]) => fetchListingForNFT(cId, tId),
     { revalidateOnFocus: false },
   )
-
-  const listing = nft
-    ? listings.find(
-        (l) =>
-          l.collectionId === nft.getCollectionId() &&
-          l.tokenId.toString() === nft.getTokenId(),
-      )
-    : undefined
 
   const onListNFT = useCallback(
     (nftId: string) => {

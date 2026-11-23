@@ -57,7 +57,8 @@ export const DelistNFT = ({ preselectedListing, onClose }: DelistNFTProps) => {
     marketplaceService
       .cancelListing(identity, listing.id)
       .then(() => {
-        mutate("listings")
+        mutate((key) => Array.isArray(key) && key[0] === "listings")
+        mutate((key) => Array.isArray(key) && key[0] === "listing")
         mutate("user-listings")
         mutate(["buyQuote", listing.id])
         toaster.success("NFT delisted successfully")

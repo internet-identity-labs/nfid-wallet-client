@@ -2,14 +2,20 @@ import { Principal } from "@icp-sdk/core/principal"
 import BigNumber from "bignumber.js"
 import { FT } from "src/integration/ft/ft"
 import { ftService } from "src/integration/ft/ft-service"
-import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
-import { mockGeekResponse } from "src/integration/nft/mock/mock"
+import { entrepotSource } from "src/integration/nft/sources/entrepot-source"
+import { extFloorPriceService } from "src/integration/nft/sources/ext-floor-price"
+import { icrc7Source } from "src/integration/nft/sources/icrc7-source"
+import {
+  mockExtFloorPrices,
+  mockExtTokens,
+} from "src/integration/nft/mock/mock"
 import * as wallet from "frontend/integration/facade/wallet"
 
 import { exchangeRateService } from "@nfid/integration"
 import {
   CKBTC_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
+  ICP_CANISTER_ID,
   NFIDW_CANISTER_ID,
 } from "@nfid/integration/token/constants"
 import { Category } from "@nfid/integration/token/icrc1/enum/enums"
@@ -493,16 +499,17 @@ describe("ft test suite", () => {
       const result: FT[] = await ftService.getTokens(userId)
 
       expect(result.length).toEqual(15)
-      expect(result[0].getTokenCategory()).toEqual(Category.Native)
-      expect(result[1].getTokenCategory()).toEqual(Category.Native)
+      // sc-19793: ICP, NFIDW, native, SNS, chain fusion, …
+      expect(result[0].getTokenAddress()).toEqual(ICP_CANISTER_ID)
+      expect(result[1].getTokenAddress()).toEqual(NFIDW_CANISTER_ID)
       expect(result[2].getTokenCategory()).toEqual(Category.Native)
       expect(result[3].getTokenCategory()).toEqual(Category.Native)
       expect(result[4].getTokenCategory()).toEqual(Category.Native)
       expect(result[5].getTokenCategory()).toEqual(Category.Native)
-      expect(result[6].getTokenCategory()).toEqual(Category.Community)
-      expect(result[7].getTokenCategory()).toEqual(Category.ChainFusion)
+      expect(result[6].getTokenCategory()).toEqual(Category.Native)
+      expect(result[7].getTokenCategory()).toEqual(Category.Sns)
       expect(result[8].getTokenCategory()).toEqual(Category.ChainFusion)
-      expect(result[9].getTokenCategory()).toEqual(Category.Sns)
+      expect(result[9].getTokenCategory()).toEqual(Category.ChainFusion)
       expect(result[10].getTokenCategory()).toEqual(Category.TESTNET)
       expect(result[11].getTokenCategory()).toEqual(Category.TESTNET)
       expect(result[12].getTokenCategory()).toEqual(Category.TESTNET)
@@ -512,8 +519,12 @@ describe("ft test suite", () => {
 
     it("should calculate USD balance", async function () {
       jest
-        .spyOn(nftGeekService as any, "fetchNftGeekData")
-        .mockResolvedValue(mockGeekResponse)
+        .spyOn(entrepotSource, "getUserTokens")
+        .mockResolvedValue(mockExtTokens)
+      jest.spyOn(icrc7Source, "getUserTokens").mockResolvedValue([])
+      jest
+        .spyOn(extFloorPriceService, "getFloorPrice")
+        .mockImplementation(async (id) => mockExtFloorPrices[id])
       jest
         .spyOn(exchangeRateService as any, "getICP2USD")
         .mockReturnValue(new BigNumber(8.957874722))

@@ -9,6 +9,7 @@ export enum IActivityAction {
   MINT = "Mint",
   BURN = "Burn",
   APPROVE = "Approve",
+  REVOKE = "Revoke",
   BUY = "Buy",
   SELL = "Sell",
 }

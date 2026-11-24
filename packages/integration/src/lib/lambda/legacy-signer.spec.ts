@@ -2,7 +2,103 @@ import { DelegationChain, Ed25519KeyIdentity } from "@icp-sdk/core/identity"
 import { Principal } from "@icp-sdk/core/principal"
 
 import { type DelegationChain as CandidDelegationChain } from "../_ic_api/ecdsa_storage.d"
-import { toDelegationChain, unwrap } from "./legacy-signer"
+import {
+  isCanisterOnly,
+  toDelegationChain,
+  unwrap,
+  withCanisterFallback,
+} from "./legacy-signer"
+
+const CANISTER_ID = "nux62-yqaaa-aaaak-ae2pq-cai"
+const OTHER_CANISTER_ID = "zhr63-daaaa-aaaap-qbh4q-cai"
+const flagKey = (canisterId: string) =>
+  `nfid.legacySigner.canisterOnly.${canisterId}`
+const env = globalThis as unknown as { IC_SIGNER_CANISTER_ID: string }
+
+describe("withCanisterFallback", () => {
+  const original = env.IC_SIGNER_CANISTER_ID
+
+  beforeEach(() => {
+    env.IC_SIGNER_CANISTER_ID = CANISTER_ID
+    localStorage.clear()
+    jest.spyOn(console, "warn").mockImplementation(() => undefined)
+  })
+
+  afterEach(() => {
+    env.IC_SIGNER_CANISTER_ID = original
+    localStorage.clear()
+    jest.restoreAllMocks()
+  })
+
+  it("returns the lambda result without calling the canister", async () => {
+    const lambda = jest.fn().mockResolvedValue("lambda")
+    const canister = jest.fn().mockResolvedValue("canister")
+
+    await expect(withCanisterFallback(lambda, canister)).resolves.toBe("lambda")
+
+    expect(canister).not.toHaveBeenCalled()
+    expect(isCanisterOnly()).toBe(false)
+  })
+
+  it("falls back to the canister when the lambda fails and remembers it", async () => {
+    const lambda = jest.fn().mockRejectedValue(new Error("Forbidden"))
+    const canister = jest.fn().mockResolvedValue("canister")
+
+    await expect(withCanisterFallback(lambda, canister)).resolves.toBe(
+      "canister",
+    )
+
+    expect(localStorage.getItem(flagKey(CANISTER_ID))).toBe("1")
+  })
+
+  it("skips the lambda once the canister is remembered", async () => {
+    localStorage.setItem(flagKey(CANISTER_ID), "1")
+    const lambda = jest.fn().mockResolvedValue("lambda")
+    const canister = jest.fn().mockResolvedValue("canister")
+
+    await expect(withCanisterFallback(lambda, canister)).resolves.toBe(
+      "canister",
+    )
+
+    expect(lambda).not.toHaveBeenCalled()
+  })
+
+  it("ignores the flag of another canister", async () => {
+    localStorage.setItem(flagKey(OTHER_CANISTER_ID), "1")
+    const lambda = jest.fn().mockResolvedValue("lambda")
+    const canister = jest.fn().mockResolvedValue("canister")
+
+    await expect(withCanisterFallback(lambda, canister)).resolves.toBe("lambda")
+
+    expect(canister).not.toHaveBeenCalled()
+  })
+
+  it("throws the canister error when both fail and does not remember it", async () => {
+    const lambda = jest.fn().mockRejectedValue(new Error("lambda down"))
+    const canister = jest
+      .fn()
+      .mockRejectedValue(new Error("No global key for this account"))
+
+    await expect(withCanisterFallback(lambda, canister)).rejects.toThrow(
+      "No global key for this account",
+    )
+
+    expect(isCanisterOnly()).toBe(false)
+  })
+
+  it("throws the lambda error when no canister is configured", async () => {
+    env.IC_SIGNER_CANISTER_ID = ""
+    localStorage.setItem(flagKey(""), "1")
+    const lambda = jest.fn().mockRejectedValue(new Error("lambda down"))
+    const canister = jest.fn().mockResolvedValue("canister")
+
+    await expect(withCanisterFallback(lambda, canister)).rejects.toThrow(
+      "lambda down",
+    )
+
+    expect(canister).not.toHaveBeenCalled()
+  })
+})
 
 describe("legacy signer", () => {
   it("maps the canister delegation chain without changing any byte", async () => {

@@ -21,6 +21,11 @@ import {
 } from "@nfid/integration"
 
 import { deleteFromStorage } from "./domain-key-repository"
+import {
+  getAnonymousDelegationFromCanister,
+  getGlobalDelegationFromCanister,
+  withCanisterFallback,
+} from "./legacy-signer"
 
 export enum Chain {
   IC = "IC",
@@ -33,6 +38,35 @@ export async function getAnonymousDelegationThroughLambda(
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
   targets?: string[],
 ) {
+  const chain = await withCanisterFallback(
+    () =>
+      getAnonymousDelegationFromLambda(
+        domain,
+        sessionKey,
+        identity,
+        maxTimeToLive,
+        targets,
+      ),
+    () =>
+      getAnonymousDelegationFromCanister(
+        identity,
+        domain,
+        sessionKey,
+        targets,
+        maxTimeToLive,
+      ),
+  )
+  await deleteFromStorage(domain)
+  return chain
+}
+
+async function getAnonymousDelegationFromLambda(
+  domain: string,
+  sessionKey: Uint8Array,
+  identity: DelegationIdentity,
+  maxTimeToLive: number,
+  targets?: string[],
+): Promise<DelegationChain> {
   const lambdaPublicKey = await fetchLambdaPublicKey(Chain.IC)
 
   const delegationChainForLambda = await createDelegationChain(
@@ -58,9 +92,7 @@ export async function getAnonymousDelegationThroughLambda(
     body: JSON.stringify(request),
   }).then(async (response) => {
     if (!response.ok) throw new Error(await response.text())
-    const a = await response.json()
-    await deleteFromStorage(domain)
-    return DelegationChain.fromJSON(a)
+    return DelegationChain.fromJSON(await response.json())
   })
 }
 
@@ -83,6 +115,30 @@ export async function oldFlowGlobalKeysFromLambda(
   origin: string,
   maxTimeToLive = ONE_HOUR_IN_MS * 2,
 ) {
+  return withCanisterFallback(
+    () =>
+      globalDelegationFromLambda(
+        identity,
+        targets,
+        sessionPublicKey,
+        maxTimeToLive,
+      ),
+    () =>
+      getGlobalDelegationFromCanister(
+        identity,
+        sessionPublicKey,
+        targets,
+        maxTimeToLive,
+      ),
+  )
+}
+
+async function globalDelegationFromLambda(
+  identity: DelegationIdentity,
+  targets: string[],
+  sessionPublicKey: Uint8Array,
+  maxTimeToLive: number,
+): Promise<DelegationChain> {
   const chain = Chain.IC
   const lambdaPublicKey = await fetchLambdaPublicKey(chain)
 
@@ -110,6 +166,7 @@ export async function ecdsaRegisterNewKeyPair(
   identity: DelegationIdentity,
   chain: Chain,
 ): Promise<string> {
+  // Only the lambda creates keys; signer_ic stores them and signs with them.
   const lambdaPublicKey = await fetchLambdaPublicKey(chain)
 
   const delegationChainForLambda = await DelegationChain.create(
@@ -182,6 +239,22 @@ export async function getLambdaPublicKey(
 }
 
 export async function oldFlowDelegationChainLambda(
+  identity: DelegationIdentity,
+  sessionKey: Ed25519KeyIdentity,
+  targets: string[],
+): Promise<DelegationChain> {
+  return withCanisterFallback(
+    () => sessionDelegationFromLambda(identity, sessionKey, targets),
+    () =>
+      getGlobalDelegationFromCanister(
+        identity,
+        new Uint8Array(sessionKey.getPublicKey().toDer()),
+        targets,
+      ),
+  )
+}
+
+async function sessionDelegationFromLambda(
   identity: DelegationIdentity,
   sessionKey: Ed25519KeyIdentity,
   targets: string[],

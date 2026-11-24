@@ -10,7 +10,7 @@ import { ICRC7TransferMetadata } from "../../service/canister-calls-helpers/inte
 import { RPCPromptTemplate } from "../templates/prompt-template"
 import { CallCanisterDetails } from "./details"
 
-export interface CallCanisterICRC7TransferProps {
+export interface CallCanisterICRC37SpendingCapProps {
   origin: string
   canisterId: string
   args: string
@@ -20,7 +20,7 @@ export interface CallCanisterICRC7TransferProps {
   onReject: () => void
 }
 
-const CallCanisterICRC7Transfer = ({
+const CallCanisterICRC37SpendingCap = ({
   origin,
   canisterId,
   args,
@@ -28,7 +28,7 @@ const CallCanisterICRC7Transfer = ({
   metadata,
   onApprove,
   onReject,
-}: CallCanisterICRC7TransferProps) => {
+}: CallCanisterICRC37SpendingCapProps) => {
   const applicationName = new URL(origin).host
 
   return (
@@ -59,14 +59,14 @@ const CallCanisterICRC7Transfer = ({
             className="w-[48px] h-[48px] rounded-[8px] object-cover shrink-0"
           />
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-sm truncate dark:text-white">
+            <p className="text-sm font-semibold truncate dark:text-white">
               {metadata.tokenName}
             </p>
-            <p className="text-xs text-gray-400 dark:text-zinc-500 truncate">
+            <p className="text-xs text-gray-400 truncate dark:text-zinc-500">
               {metadata.collectionName}
             </p>
           </div>
-          <IconCmpArrow className="rotate-180 shrink-0 text-gray-400 dark:text-zinc-500 w-4 h-4" />
+          <IconCmpArrow className="w-4 h-4 text-gray-400 rotate-180 shrink-0 dark:text-zinc-500" />
         </div>
 
         <div className="flex items-center justify-between h-[54px] text-sm dark:text-white">
@@ -84,4 +84,4 @@ const CallCanisterICRC7Transfer = ({
   )
 }
 
-export default CallCanisterICRC7Transfer
+export default CallCanisterICRC37SpendingCap

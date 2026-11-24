@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { FC } from "react"
 import {
@@ -8,6 +9,7 @@ import {
   Skeleton,
 } from "@nfid-frontend/ui"
 import { Allowance } from "."
+import { NftApproval } from "frontend/features/permissions/utils"
 import { getNetworkIcon } from "../../utils/network-icon"
 import { useDarkTheme } from "frontend/hooks"
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
@@ -155,5 +157,72 @@ export const PermissionsToken: FC<PermissionsRowProps> = ({
         </td>
       </tr>
     </>
+  )
+}
+
+interface NftApprovalRowProps {
+  nft: NftApproval
+  setChosenNftRevoke: (nft: NftApproval) => void
+}
+
+export const NftApprovalRow: FC<NftApprovalRowProps> = ({
+  nft,
+  setChosenNftRevoke,
+}) => {
+  return (
+    <tr className="py-5 border-b border-gray-100 md:py-0 md:border-0">
+      <td className="flex md:items-center py-[10px] md:py-0 md:h-16 pr-[10px] md:pr-[30px] flex-grow min-w-0 w-[100%] md:w-auto mb-5 mt-2.5 md:mt-0 md:mb-0">
+        <div className="w-[24px] h-[24px] md:w-[40px] md:h-[40px] mr-[12px] rounded-[8px] bg-zinc-50 mt-3 md:mt-0 shrink-0 overflow-hidden">
+          <ImageWithFallback
+            alt={nft.tokenName}
+            fallbackSrc={IconNftPlaceholder}
+            src={nft.tokenImage ?? nft.collectionLogo ?? ""}
+            className="w-[24px] h-[24px] md:w-[40px] md:h-[40px] object-cover"
+          />
+        </div>
+        <div className="md:overflow-hidden md:text-ellipsis md:whitespace-nowrap">
+          <p className="text-sm dark:text-white font-semibold leading-[25px]">
+            {nft.tokenName}
+          </p>
+          <p className="text-secondary text-xs leading-[20px] dark:text-zinc-400">
+            {nft.collectionName}
+          </p>
+          <CopyAddress
+            className="mt-3 dark:text-white md:hidden"
+            address={nft.spender}
+            leadingChars={6}
+            trailingChars={4}
+          />
+        </div>
+      </td>
+      <td className="w-[50%] md:w-auto md:pr-[10px] min-w-[120px] dark:text-white text-right md:text-left mt-2.5 md:mt-0 md:mb-0">
+        <div className="md:hidden">
+          <Button
+            className="mt-2.5"
+            type="stroke"
+            isSmall
+            onClick={() => setChosenNftRevoke(nft)}
+          >
+            Revoke
+          </Button>
+        </div>
+      </td>
+      <td className="pr-[10px] hidden md:table-cell min-w-[120px] dark:text-white" />
+      <td className="hidden md:table-cell pr-[10px] text-right md:text-left flex-grow min-w-0 md:w-auto min-w-[120px]">
+        <CopyAddress
+          className="dark:text-white"
+          address={nft.spender}
+          leadingChars={6}
+          trailingChars={4}
+        />
+      </td>
+      <td className="hidden md:table-cell w-[24px] min-w-[30px] lg:min-w-[50px] lg:ps-[25px]">
+        <div className="flex gap-2.5 justify-end">
+          <Button type="stroke" isSmall onClick={() => setChosenNftRevoke(nft)}>
+            Revoke
+          </Button>
+        </div>
+      </td>
+    </tr>
   )
 }

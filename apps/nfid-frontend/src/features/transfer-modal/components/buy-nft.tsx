@@ -1,5 +1,5 @@
 import { BuyNFTUi } from "packages/ui/src/organisms/send-receive/components/buy-nft"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 import { fetchTokens } from "frontend/features/fungible-token/utils"
@@ -13,6 +13,7 @@ import {
 } from "frontend/features/marketplace/utils"
 import { marketplaceService } from "@nfid/integration/marketplace"
 import { mutate } from "@nfid/swr"
+import { icrc7Source } from "frontend/integration/nft/sources/icrc7-source"
 
 interface BuyNFTProps {
   preselectedListing: bigint | undefined
@@ -62,24 +63,28 @@ export const BuyNFT = ({
     )
   }, [initedTokens])
 
-  const handleClose = useCallback(() => {
-    if (status === SendStatus.COMPLETED) {
-      mutate("user-listings")
-      mutate((key) => Array.isArray(key) && key[0] === "listings")
-      mutate((key) => Array.isArray(key) && key[0] === "listing")
-      mutate("nftList")
+  const statusRef = useRef(status)
+  statusRef.current = status
+
+  useEffect(() => {
+    return () => {
+      if (statusRef.current === SendStatus.COMPLETED) {
+        mutate("user-listings")
+        mutate((key) => Array.isArray(key) && key[0] === "listings")
+        mutate((key) => Array.isArray(key) && key[0] === "listing")
+        mutate("nftList")
+      }
     }
-    onClose()
-  }, [onClose, status])
+  }, [])
 
   const submit = useCallback(async () => {
     if (!identity || !listing) return
 
     setIsSuccessOpen(true)
-
     marketplaceService
       .buy(identity, listing.id)
-      .then(() => {
+      .then(async () => {
+        await icrc7Source.invalidateFloorPrice(listing.collectionId)
         setSuccessMessage(`NFT purchased successfully`)
         setStatus(SendStatus.COMPLETED)
       })
@@ -93,14 +98,14 @@ export const BuyNFT = ({
         setStatus(SendStatus.FAILED)
         setError(DEFAULT_EARN_ERROR)
       })
-  }, [identity, setErrorMessage, setSuccessMessage])
+  }, [identity, setErrorMessage, setSuccessMessage, listing])
 
   return (
     <>
       <BuyNFTUi
         listing={listing}
         isSuccessOpen={isSuccessOpen}
-        onClose={handleClose}
+        onClose={onClose}
         error={error}
         isLoading={isListingsLoading || isQuoteLoading}
         icpToken={icpToken}

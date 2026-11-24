@@ -2,10 +2,15 @@
 /**
  * PreToolUse guard for Bash — the early warning for shell commands.
  *
- * pre-tool-use.js only sees the Write/Edit tools. A shell command can change
- * apps/ or packages/ too (sed -i, redirects, cp/mv/rm, formatters, git
- * checkout/reset/pull…), so this hook asks the engineer before running any
- * command that looks like it writes there or rewrites the working tree.
+ * pre-tool-use.js only sees the Write/Edit tools. This hook asks the engineer
+ * only before commands that can lose work or rewrite the whole repo: git
+ * subcommands that rewrite the working tree (checkout/reset/stash/pull…) and
+ * repo-wide formatters/generators. Ordinary file operations in apps/ or
+ * packages/ (cp/mv/rm, sed -i, redirects, scripts) are no longer asked about
+ * (relaxed 2026-11-23 at the engineer's request): post-bash.js reports any
+ * resulting change that no plan lists.
+ *
+ * Set SDD_STRICT_BASH=1 to restore the strict behaviour (ask for those too).
  *
  * "Looks like it touches apps/ or packages/" means one of:
  *   - the command names such a path
@@ -125,7 +130,8 @@ function reasonFor(command, cwd) {
     ? `apps/ or packages/ (working in ${guardedDir})`
     : "apps/ or packages/"
 
-  for (const target of redirectTargets(command)) {
+  const strict = process.env.SDD_STRICT_BASH === "1"
+  for (const target of strict ? redirectTargets(command) : []) {
     if (
       GUARDED_PATH.test(` ${target}`) ||
       dirs.some((d) => inGuardedArea(target, d))
@@ -133,7 +139,7 @@ function reasonFor(command, cwd) {
       return `writes to \`${target}\` (shell redirect / tee)`
     }
   }
-  if (touchesGuarded) {
+  if (strict && touchesGuarded) {
     if (/\bsed\b[^|;&]*\s-[a-zA-Z]*i/.test(command))
       return `edits files in place with \`sed -i\` in ${where}`
     if (/\bperl\b[^|;&]*\s-[a-zA-Z]*i/.test(command))

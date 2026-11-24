@@ -29,12 +29,15 @@ export const ChooseNftItem = ({
         "hover:opacity-50 transition-opacity",
         "flex items-center justify-between",
         "py-2.5 cursor-pointer h-[60px]",
-        (!isTradable || isListed) &&
-          !isSendNft &&
-          "opacity-50 !cursor-not-allowed",
+        (!isTradable || isListed) && !isSendNft && "!cursor-not-allowed",
       )}
     >
-      <div className="flex items-center h-[28px]">
+      <div
+        className={clsx(
+          "flex items-center h-[28px]",
+          (!isTradable || isListed) && !isSendNft && "opacity-50",
+        )}
+      >
         {!token.isInited() ? (
           <Skeleton className="w-12 h-12 mr-[18px] rounded-[12px]" />
         ) : token.getAssetPreview()?.format === "video" ? (
@@ -84,7 +87,7 @@ export const ChooseNftItem = ({
         ) : (
           <>
             <p className="text-sm text-right">
-              {token.getTokenFloorPriceFormatted() || "Unknown"}
+              {token.getTokenFloorPriceFormatted() || "No floor price"}
             </p>
             <p className="text-xs text-right text-gray-400 dark:text-zinc-500">
               {token.getTokenFloorPriceUSDFormatted() ?? null}

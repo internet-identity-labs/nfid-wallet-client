@@ -235,7 +235,7 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
     transferService.send({ type: "SHOW" })
   }, [])
 
-  if (isLoading || isNftLoading || isListingLoading) return <Loader isLoading />
+  if (isLoading || isNftLoading) return <Loader isLoading />
   if (!nft) return <NotFound hideNavigation />
 
   return (
@@ -281,6 +281,7 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
         isPreviewLoading={state.fullSize.isLoading}
         isPropertiesLoading={state.properties.isLoading}
         isTransactionsLoading={state.transactions.isLoading}
+        isListingLoading={isListingLoading}
         onListNFT={onListNFT}
         onDelistNFT={onDelistNFT}
         listing={listing}

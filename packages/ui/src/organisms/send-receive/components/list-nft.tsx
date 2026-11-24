@@ -22,8 +22,7 @@ import { NFTMarketplaceSuccessUi } from "./nft-marketplace-success"
 import { ChooseFromToken } from "./choose-from-token"
 import { IModalType } from "../utils"
 import { FT } from "frontend/integration/ft/ft"
-
-const ICP_FEE_E8S = BigInt(10_000)
+import { ICP_FEE_E8S } from ".."
 
 export interface ListNFTUiProps {
   isLoading: boolean
@@ -101,6 +100,8 @@ export const ListNFTUi: FC<ListNFTUiProps> = ({
           title="Choose an NFT to list"
           onSelect={onSelectNFT}
           listedNftKeys={listedNftKeys}
+          isMarketplace={true}
+          searchInputId="choose-marketplace-nft"
           trigger={
             <div
               className={clsx(
@@ -167,21 +168,6 @@ export const ListNFTUi: FC<ListNFTUiProps> = ({
         />
         <div className="h-4 mt-1 text-xs leading-4 text-red-600">
           {errors["amount"] && (errors["amount"]?.message as string)}
-        </div>
-        <div className="flex justify-between mt-5">
-          <div className="text-xs text-gray-500 dark:text-zinc-400">
-            Network fee
-          </div>
-          <div>
-            <div className="text-right">
-              <p className="text-xs leading-5 text-gray-600 dark:text-zinc-400">
-                {token?.getTokenFeeFormatted(ICP_FEE_E8S)}
-              </p>
-              <p className="text-xs leading-5 text-gray-600 dark:text-zinc-400">
-                {token?.getTokenFeeFormattedUsd(ICP_FEE_E8S)}
-              </p>
-            </div>
-          </div>
         </div>
         <Button
           id={"listButton"}

@@ -58,6 +58,7 @@ export interface IChooseTokenModal<T> {
   modalType?: IModalType
   tooltipText?: string
   isDisabled?: (token: T) => boolean
+  isMarketplace?: boolean
 }
 
 export const ChooseTokenModal = <T extends FT | NFT>({
@@ -75,6 +76,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
   modalType,
   tooltipText,
   isDisabled,
+  isMarketplace,
 }: IChooseTokenModal<T>) => {
   const isDarkTheme = useDarkTheme()
   const [searchInput, setSearchInput] = useState("")
@@ -262,7 +264,7 @@ export const ChooseTokenModal = <T extends FT | NFT>({
             <Input
               id={searchInputId}
               type="text"
-              placeholder="Search by token name"
+              placeholder="Search"
               inputClassName="!border-black dark:!border-zinc-500"
               icon={
                 <IoIosSearch
@@ -302,6 +304,16 @@ export const ChooseTokenModal = <T extends FT | NFT>({
               !searchInputId && "mt-4",
             )}
           >
+            {isMarketplace && (
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs leading-[15px] text-gray-500 dark:text-zinc-500">
+                  NFT
+                </span>
+                <span className="text-xs leading-[15px] text-gray-500 dark:text-zinc-500">
+                  Floor price
+                </span>
+              </div>
+            )}
             {filteredTokens.map((token, index) => (
               <div
                 ref={(el) => {

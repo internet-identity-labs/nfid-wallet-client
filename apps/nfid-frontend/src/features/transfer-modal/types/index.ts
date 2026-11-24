@@ -94,7 +94,7 @@ export type Events =
   | { type: "ASSIGN_SOURCE_WALLET"; data: string }
   | {
       type: "ASSIGN_SELECTED_LISTING"
-      data: { id: bigint; collectionId: string }
+      data?: { id: bigint; collectionId: string }
     }
   | { type: "ASSIGN_STAKE_ID"; data: string }
   | { type: "ASSIGN_AMOUNT"; data: string }

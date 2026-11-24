@@ -95,7 +95,7 @@ export const DelistNFTUi: FC<DelistNFTUiProps> = ({
             </p>
           </div>
         </div>
-        <div className="flex items-center justify-between h-[56px]">
+        <div className="flex items-center justify-between h-[56px] my-[45px]">
           <p className="text-sm">Listed for</p>
           <div className="text-right">
             <p className="text-sm leading-5 dark:text-white">
@@ -106,20 +106,9 @@ export const DelistNFTUi: FC<DelistNFTUiProps> = ({
             </p>
           </div>
         </div>
-        <div className="flex items-center justify-between h-[56px]">
-          <p className="text-sm">Network fee</p>
-          <div className="text-right">
-            <p className="text-sm leading-5 dark:text-white">
-              {buyQuote.icpFeeFormatted}
-            </p>
-            <p className="text-xs leading-5 text-gray-400 dark:text-zinc-500 dark:text-white">
-              {buyQuote.icpFeeUsdFormatted}
-            </p>
-          </div>
-        </div>
         <div
           className={clsx(
-            "flex gap-2.5 p-[15px] rounded-[12px] mt-6 mb-5",
+            "flex gap-2.5 p-[15px] rounded-[12px] mb-5",
             hasEnoughBalance
               ? "bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-500"
               : "bg-orange-50 dark:bg-orange-500/10 text-orange-900 dark:text-amber-600",

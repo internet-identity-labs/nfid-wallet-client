@@ -21,7 +21,8 @@ import { marketplaceService } from "./marketplace-service"
  * later loads fetch only the new blocks.
  */
 
-export type Icrc7EventKind = "mint" | "burn" | "transfer" | "approve" | "sale"
+export type Icrc7EventKind =
+  "mint" | "burn" | "transfer" | "approve" | "revoke" | "sale"
 
 export interface Icrc7Event {
   collectionId: string
@@ -56,7 +57,8 @@ interface CollectionHistory {
 }
 
 const CACHE_VERSION = 1
-const CACHE_PREFIX = "Icrc7Activity_"
+// v2: revokes are kept since 2026-11; older caches skipped them.
+const CACHE_PREFIX = "Icrc7Activity_v2_"
 const CACHE_TTL_MS = 30 * 24 * 60 * 60 * 1000
 /** Blocks per request; core_nft caps a response at 100. */
 const PAGE = BigInt(100)
@@ -158,8 +160,13 @@ export const parseIcrc7Block = (
       return from === user
         ? { ...base, kind: "approve", from, spender }
         : undefined
+    case "37revoke":
+    case "37revoke_coll":
+      return from === user
+        ? { ...base, kind: "revoke", from, spender }
+        : undefined
     default:
-      // Revokes and metadata updates are not shown.
+      // Metadata updates are not shown.
       return undefined
   }
 }

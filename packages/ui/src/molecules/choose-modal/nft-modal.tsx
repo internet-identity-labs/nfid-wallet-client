@@ -13,6 +13,8 @@ export interface IChooseNftModal {
   trigger?: JSX.Element
   listedNftKeys?: Set<string>
   isSendNft?: boolean
+  isMarketplace?: boolean
+  searchInputId?: string
 }
 
 export const ChooseNftModal = ({
@@ -22,6 +24,8 @@ export const ChooseNftModal = ({
   trigger,
   listedNftKeys,
   isSendNft,
+  isMarketplace,
+  searchInputId,
 }: IChooseNftModal) => {
   const filterTokensBySearchInput = useCallback(
     (token: NFT, searchInput: string) => {
@@ -75,6 +79,8 @@ export const ChooseNftModal = ({
         renderItem={ChooseNftItemWithStatus}
         tokensAvailableToSwap={{ to: [], from: [] }}
         isDisabled={isDisabled}
+        isMarketplace={isMarketplace}
+        searchInputId={searchInputId}
       />
     </>
   )

@@ -49,6 +49,7 @@ export const TransferModalCoordinator = () => {
     send({ type: "CHANGE_TOKEN_TYPE", data: "ft" })
     send({ type: "ASSIGN_IS_EARN_UPDATE", data: false })
     send({ type: "CHANGE_DIRECTION", data: null })
+    send({ type: "ASSIGN_SELECTED_LISTING", data: undefined })
     send({ type: "HIDE" })
     setIsSuccessTx(false)
   }, [send])

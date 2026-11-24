@@ -1,8 +1,7 @@
 import { DelistNFTUi } from "packages/ui/src/organisms/send-receive/components/delist-nft"
 import { useCallback, useMemo } from "react"
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
-import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
-import { mutate } from "swr"
+import { mutate, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useIdentity } from "frontend/hooks/identity"
 import { FT } from "frontend/integration/ft/ft"
@@ -13,6 +12,7 @@ import {
 } from "frontend/features/marketplace/utils"
 import { marketplaceService } from "@nfid/integration/marketplace"
 import toaster from "packages/ui/src/atoms/toast"
+import { icrc7Source } from "frontend/integration/nft/sources/icrc7-source"
 
 interface DelistNFTProps {
   preselectedListing: bigint | undefined
@@ -54,9 +54,10 @@ export const DelistNFT = ({ preselectedListing, onClose }: DelistNFTProps) => {
   const submit = useCallback(async () => {
     if (!identity || !listing) return
 
-    marketplaceService
+    return marketplaceService
       .cancelListing(identity, listing.id)
-      .then(() => {
+      .then(async () => {
+        await icrc7Source.invalidateFloorPrice(listing.collectionId)
         mutate((key) => Array.isArray(key) && key[0] === "listings")
         mutate((key) => Array.isArray(key) && key[0] === "listing")
         mutate("user-listings")

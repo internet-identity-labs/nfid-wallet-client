@@ -148,7 +148,7 @@ export const NFTs: FC<INFTs> = ({
               const listing = sellerListings.find(
                 (l) =>
                   l.collectionId === nft.getCollectionId() &&
-                  l.tokenId.toString() === nft.getTokenId(),
+                  l.tokenId === BigInt(nft.getTokenNumber()),
               )
               if (nft === null) {
                 return (

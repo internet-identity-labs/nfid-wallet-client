@@ -8,28 +8,114 @@ import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.serv
 import { polygonService } from "frontend/integration/ethereum/polygon/polygon.service"
 import { EvmNftImpl } from "src/integration/nft/impl/evm/nft-evm"
 import { NftIcrc7 } from "src/integration/nft/impl/icrc7/nft-icrc7"
-import { nftGeekService } from "src/integration/nft/geek/nft-geek-service"
 import { nftMapper } from "src/integration/nft/impl/nft-mapper"
 import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
 import { NFT } from "src/integration/nft/nft"
-
-import { exchangeRateService } from "@nfid/integration"
+import { MarketPlace } from "src/integration/nft/enum/enums"
+import { entrepotSource } from "src/integration/nft/sources/entrepot-source"
+import { extFloorPriceService } from "src/integration/nft/sources/ext-floor-price"
+import { metaProperties } from "src/integration/nft/sources/icrc7-source"
 import {
-  icrc7RegistryService,
-  marketplaceService,
-} from "@nfid/integration/marketplace"
-import { State } from "@nfid/integration/token/icrc1/enum/enums"
+  ICRC7_FLOOR_PRICE_CACHE_NAME,
+  ICRC7_NFT_COLLECTIONS_CACHE_NAME,
+  icrc7Source,
+} from "src/integration/nft/sources/icrc7-source"
+import { IcpNftToken } from "src/integration/nft/sources/nft-sources-types"
+import { ENTREPOT_COLLECTIONS_CACHE_NAME } from "src/integration/nft/sources/entrepot-source"
+import { EXT_FLOOR_PRICE_CACHE_NAME } from "src/integration/nft/sources/ext-floor-price"
+
+import { ttlCacheService } from "@nfid/client-db"
+import { exchangeRateService } from "@nfid/integration"
+import { marketplaceService } from "@nfid/integration/marketplace"
+import { mutate } from "@nfid/swr"
 
 import type { FT } from "../ft/ft"
 
+const USER_NFTS_TTL_MS = 5 * 60 * 1000
+const EXT_USER_NFTS_CACHE_NAME = "ICP_NFT_EXT_USER_"
+const ICRC7_USER_NFTS_CACHE_NAME = "ICP_NFT_ICRC7_USER_"
+
+/** Cache keys (prefixes) of every ICP NFT source, for a manual refresh. */
+export const ICP_NFT_CACHE_NAMES = [
+  EXT_USER_NFTS_CACHE_NAME,
+  ICRC7_USER_NFTS_CACHE_NAME,
+  ENTREPOT_COLLECTIONS_CACHE_NAME,
+  EXT_FLOOR_PRICE_CACHE_NAME,
+  ICRC7_NFT_COLLECTIONS_CACHE_NAME,
+  ICRC7_FLOOR_PRICE_CACHE_NAME,
+]
+
+const NFT_SWR_KEYS = ["nftList", "nftTotalPrice"]
+
+/** Re-renders the NFT list and totals after a background refresh. */
+const revalidateNftViews = () =>
+  mutate((key: unknown) => {
+    const first = Array.isArray(key) ? key[0] : key
+    if (typeof first !== "string") return false
+    return NFT_SWR_KEYS.some(
+      (k) => first === k || first.startsWith(k) || first.startsWith(`["${k}"`),
+    )
+  })
+
 export class NftService {
-  async getICPNFTs(userPrincipal: Principal): Promise<NFT[]> {
-    const data = await nftGeekService.getNftGeekData(userPrincipal)
-    const nfts = data
-      .map(nftMapper.toNFT)
-      .filter((nft): nft is NFT => nft !== null)
+  /**
+   * ICP NFTs of `userPrincipal`: EXT/legacy from Entrepot and ICRC-7 from the
+   * marketplace oracle collections. Each source is cached and returned from
+   * cache at once, then refreshed in the background; a failing source falls
+   * back to its cache (or nothing) without failing the other one.
+   *
+   * @param isOwnWallet hides ICRC-7 collections the user set Inactive.
+   */
+  async getICPNFTs(
+    userPrincipal: Principal,
+    isOwnWallet = true,
+  ): Promise<NFT[]> {
+    const principal = userPrincipal.toText()
+    const [ext, icrc7] = await Promise.all([
+      this.cachedSource(`${EXT_USER_NFTS_CACHE_NAME}${principal}`, () =>
+        entrepotSource.getUserTokens(userPrincipal),
+      ).then((tokens) => this.withExtFloorPrices(tokens)),
+      this.cachedSource(
+        `${ICRC7_USER_NFTS_CACHE_NAME}${principal}_${isOwnWallet}`,
+        () => icrc7Source.getUserTokens(userPrincipal, isOwnWallet),
+      ),
+    ])
+    const nfts = [...ext, ...icrc7].map(nftMapper.toNFT)
     await Promise.all(nfts.map((nft) => nft.init()))
     return nfts
+  }
+
+  private async cachedSource(
+    key: string,
+    fetcher: () => Promise<IcpNftToken[]>,
+  ): Promise<IcpNftToken[]> {
+    try {
+      return await ttlCacheService.getOrFetch(key, fetcher, USER_NFTS_TTL_MS, {
+        revalidate: "always",
+        onRevalidated: () => void revalidateNftViews(),
+      })
+    } catch (e) {
+      console.error(`ICP NFT source failed: ${key}`, e)
+      return []
+    }
+  }
+
+  private async withExtFloorPrices(
+    tokens: IcpNftToken[],
+  ): Promise<IcpNftToken[]> {
+    const collections = [...new Set(tokens.map((t) => t.collectionId))]
+    const floors = new Map(
+      await Promise.all(
+        collections.map(
+          async (id) =>
+            [id, await extFloorPriceService.getFloorPrice(id)] as const,
+        ),
+      ),
+    )
+    return tokens.map((t) => ({
+      ...t,
+      tokenFloorPriceIcp: floors.get(t.collectionId),
+    }))
   }
 
   async getEVMNFTs(_userPrincipal: Principal): Promise<NFT[]> {
@@ -78,12 +164,7 @@ export class NftService {
       }
 
     if (addressType === "icp") {
-      const principal = Principal.fromText(address)
-      const [icpNfts, icrc7Nfts] = await Promise.all([
-        this.getICPNFTs(principal),
-        this.getIcrc7NFTs(principal),
-      ])
-      rawData = [...icpNfts, ...icrc7Nfts]
+      rawData = await this.getICPNFTs(Principal.fromText(address), false)
     } else if (addressType === "evm") {
       rawData = await this.getEVMNFTsByAddress(address)
     }
@@ -110,89 +191,17 @@ export class NftService {
     }
   }
 
-  async getIcrc7NFTs(userPrincipal: Principal): Promise<NFT[]> {
-    const [collections, storedCollections] = await Promise.all([
-      marketplaceService.getCollections(),
-      icrc7RegistryService.getStoredCollections(),
-    ])
-    const inactiveIds = new Set(
-      storedCollections
-        .filter((c) => c.state === State.Inactive)
-        .map((c) => c.canisterId),
-    )
-    const results = await Promise.all(
-      collections
-        .filter((c) => !inactiveIds.has(c.canisterId))
-        .map(async (col) => {
-          const tokenIds = await marketplaceService.getOwnedTokenIds(
-            col.canisterId,
-            userPrincipal,
-          )
-          if (!tokenIds.length) return []
-          const metadataMap = await marketplaceService.getTokenMetadata(
-            col.canisterId,
-            tokenIds,
-          )
-          return tokenIds.map((tokenId): NftIcrc7 => {
-            const entries = metadataMap.get(tokenId) ?? []
-            const getText = (key: string) => {
-              const entry = entries.find(([k]) => k === key)
-              return entry && "Text" in entry[1] ? entry[1].Text : undefined
-            }
-            const attributesEntry = entries.find(
-              ([k]) => k === "icrc7:attributes",
-            )
-            const traitEntries: [string, string][] =
-              attributesEntry && "Array" in attributesEntry[1]
-                ? attributesEntry[1].Array.flatMap((item) => {
-                    if (!("Map" in item)) return []
-                    const map = item.Map
-                    const traitType = map.find(([k]) => k === "trait_type")?.[1]
-                    const value = map.find(([k]) => k === "value")?.[1]
-                    if (!traitType || !value) return []
-                    const category =
-                      "Text" in traitType ? traitType.Text : undefined
-                    const option =
-                      "Text" in value
-                        ? value.Text
-                        : "Nat" in value
-                          ? String(value.Nat)
-                          : undefined
-                    return category && option
-                      ? [[category, option] as [string, string]]
-                      : []
-                  })
-                : []
-            return new NftIcrc7(
-              col.canisterId,
-              col.name,
-              tokenId,
-              getText("icrc7:name"),
-              getText("icrc7:metadata:uri:image") ??
-                getText("icrc7:metadata:image") ??
-                getText("icrc7:image"),
-              col.description,
-              traitEntries,
-              col.tradable,
-            )
-          })
-        }),
-    )
-    return results.flat()
-  }
-
   async getNFTs(
     userPrincipal: Principal,
     page: number = 1,
     limitPerPage: number = Number.MAX_SAFE_INTEGER,
   ): Promise<PaginatedResponse<NFT>> {
-    const [icpNfts, evmNfts, icrc7Nfts] = await Promise.all([
+    const [icpNfts, evmNfts] = await Promise.all([
       this.getICPNFTs(userPrincipal),
       this.getEVMNFTs(userPrincipal),
-      this.getIcrc7NFTs(userPrincipal),
     ])
 
-    const rawData = [...icpNfts, ...evmNfts, ...icrc7Nfts]
+    const rawData = [...icpNfts, ...evmNfts]
 
     const nftsWithoutPrice = rawData.filter(
       (nft) => nft.getTokenFloorPriceUSD() === undefined || nft.getError(),
@@ -331,44 +340,46 @@ export class NftService {
     ])
     const collection = collections.find((c) => c.canisterId === collectionId)
     if (!collection) throw new Error(`Collection ${collectionId} not found`)
-    const entries = metadataMap.get(tokenIdBig) ?? []
-    const getText = (key: string) => {
-      const entry = entries.find(([k]) => k === key)
-      return entry && "Text" in entry[1] ? entry[1].Text : undefined
+    const entries = (metadataMap.get(tokenIdBig) ?? []) as Array<
+      [string, { Text: string } | Record<string, unknown>]
+    >
+    const getMetaText = (keys: string[]): string | undefined => {
+      for (const key of keys) {
+        const value = entries.find(([k]) => k === key)?.[1]
+        if (
+          value &&
+          "Text" in value &&
+          typeof value.Text === "string" &&
+          value.Text
+        )
+          return value.Text
+      }
+      return undefined
     }
-    const attributesEntry = entries.find(([k]) => k === "icrc7:attributes")
-    const traitEntries: [string, string][] =
-      attributesEntry && "Array" in attributesEntry[1]
-        ? attributesEntry[1].Array.flatMap((item) => {
-            if (!("Map" in item)) return []
-            const map = item.Map
-            const traitType = map.find(([k]) => k === "trait_type")?.[1]
-            const value = map.find(([k]) => k === "value")?.[1]
-            if (!traitType || !value) return []
-            const category = "Text" in traitType ? traitType.Text : undefined
-            const option =
-              "Text" in value
-                ? value.Text
-                : "Nat" in value
-                  ? String(value.Nat)
-                  : undefined
-            return category && option
-              ? [[category, option] as [string, string]]
-              : []
-          })
-        : []
-    return new NftIcrc7(
+    const token: IcpNftToken = {
+      marketPlace: MarketPlace.ICRC7,
+      tokenId: tokenIdBig.toString(),
+      tokenNumber: Number(tokenIdBig),
       collectionId,
-      collection.name,
-      tokenIdBig,
-      getText("icrc7:name"),
-      getText("icrc7:metadata:uri:image") ??
-        getText("icrc7:metadata:image") ??
-        getText("icrc7:image"),
-      collection.description,
-      traitEntries,
-      collection.tradable,
-    )
+      collectionName: collection.name,
+      millis: 0,
+      name: getMetaText(["icrc7:name", "name"]),
+      image: getMetaText([
+        "icrc7:image",
+        "image",
+        "icrc7:thumbnail",
+        "thumbnail",
+        "icrc7:metadata:uri:image",
+        "icrc7:metadata:image",
+      ]),
+      description: collection.description,
+      collectionLogo: collection.logo,
+      tradable: collection.tradable,
+      metadata: metaProperties(entries as Parameters<typeof metaProperties>[0]),
+    }
+    const nft = new NftIcrc7(token)
+    await nft.init()
+    return nft
   }
 }
 

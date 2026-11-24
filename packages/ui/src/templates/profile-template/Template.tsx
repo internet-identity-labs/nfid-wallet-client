@@ -69,7 +69,7 @@ import {
   EVM_ERC20_ACTIVITIES_CACHE_NAME,
 } from "frontend/integration/ethereum/evm-transaction.service"
 import { ACTIVITY_CACHE_NAME } from "@nfid/integration/token/icrc1"
-import { ICP_NFT_GEEK_CACHE_NAME } from "frontend/integration/nft/geek/nft-geek-service"
+import { ICP_NFT_CACHE_NAMES } from "frontend/integration/nft/nft-service"
 import { EVM_NFT_FLOOR_PRICE_CACHE_NAME } from "frontend/integration/nft/impl/evm/evm-nft-floor-price.service"
 import { getAllActivity } from "frontend/features/activity/utils/activity"
 import { PAGINATION_ITEMS } from "frontend/features/activity/constants"
@@ -522,7 +522,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         break
       case "NFTs":
         await ttlCacheService.invalidate([
-          ICP_NFT_GEEK_CACHE_NAME,
+          ...ICP_NFT_CACHE_NAMES,
           EVM_NFTS_CACHE_NAME,
           EVM_NFT_FLOOR_PRICE_CACHE_NAME,
         ])

@@ -16,6 +16,7 @@ import { FormProvider, useForm } from "react-hook-form"
 import { marketplaceService } from "@nfid/integration/marketplace"
 import { E8S, ICP_CANISTER_ID } from "@nfid/integration/token/constants"
 import { fetchSellerListings } from "frontend/features/marketplace/utils"
+import { icrc7Source } from "frontend/integration/nft/sources/icrc7-source"
 
 const DEFAULT_EARN_ERROR = "Something went wrong. Please try again later."
 
@@ -110,7 +111,8 @@ export const ListNFT = ({
             new BigNumber(values.amount).multipliedBy(E8S).toFixed(0),
           ),
         })
-        .then(() => {
+        .then(async () => {
+          await icrc7Source.invalidateFloorPrice(selectedNFT.getCollectionId())
           mutate("user-listings")
           mutate((key) => Array.isArray(key) && key[0] === "listings")
           mutate((key) => Array.isArray(key) && key[0] === "listing")

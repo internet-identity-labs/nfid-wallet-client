@@ -1,4 +1,5 @@
 import { Principal } from "@icp-sdk/core/principal"
+import BigNumber from "bignumber.js"
 
 import { authState, exchangeRateService } from "@nfid/integration"
 import {
@@ -16,6 +17,7 @@ import {
   BuyQuoteWithFormatting,
   MarketplaceListingWithFormatting,
 } from "packages/ui/src/organisms/marketplace/types"
+import { icrc7Source } from "frontend/integration/nft/sources/icrc7-source"
 
 export const PAGE_SIZE = 8
 
@@ -43,11 +45,22 @@ const enrichListing = async (
   listing: Listing,
   isOwnListing: boolean,
 ): Promise<MarketplaceListingWithFormatting> => {
-  const [imageUrl, collectionMeta, usdPrice] = await Promise.all([
-    fetchTokenImageUrl(listing.collectionId, listing.tokenId),
-    marketplaceService.getCollectionMetadata(listing.collectionId),
-    exchangeRateService.usdPriceForICRC1(ICP_CANISTER_ID),
-  ])
+  const [imageUrl, collectionMeta, usdPrice, floorPriceE8s] = await Promise.all(
+    [
+      fetchTokenImageUrl(listing.collectionId, listing.tokenId),
+      marketplaceService.getCollectionMetadata(listing.collectionId),
+      exchangeRateService.usdPriceForICRC1(ICP_CANISTER_ID),
+      icrc7Source.getFloorPrice(listing.collectionId),
+    ],
+  )
+  const floorPriceIcp =
+    floorPriceE8s !== undefined
+      ? `${BigNumber(floorPriceE8s).div(E8S).toFormat({ groupSeparator: "", decimalSeparator: "." })} ICP`
+      : undefined
+  const floorPriceUsd =
+    floorPriceE8s !== undefined && usdPrice
+      ? `${usdPrice.value.multipliedBy(BigNumber(floorPriceE8s).div(E8S)).toFixed(2)} USD`
+      : undefined
   return {
     ...listing,
     imageUrl,
@@ -57,7 +70,8 @@ const enrichListing = async (
     usdPriceFormatted: !usdPrice
       ? "Unknown"
       : `${usdPrice.value.multipliedBy(Number(listing.priceE8s) / E8S).toFixed(2)} USD`,
-    floorPriceIcp: "",
+    floorPriceIcp,
+    floorPriceUsd,
   }
 }
 

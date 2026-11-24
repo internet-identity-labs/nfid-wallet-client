@@ -37,6 +37,7 @@ export interface NFTDetailsProps {
   isPreviewLoading: boolean
   isPropertiesLoading: boolean
   isTransactionsLoading: boolean
+  isListingLoading: boolean
   onListNFT: (nftId: string) => void
   onDelistNFT: (listingId: string) => void
   onBuy: (listingId: string) => void
@@ -51,6 +52,7 @@ export const NFTDetails: FC<NFTDetailsProps> = memo(
     isPreviewLoading,
     isPropertiesLoading,
     isTransactionsLoading,
+    isListingLoading,
     nft,
     about,
     properties,
@@ -190,7 +192,12 @@ export const NFTDetails: FC<NFTDetailsProps> = memo(
                         "block sm:flex items-center dark:text-white pb-5",
                       )}
                     >
-                      {listing ? (
+                      {isListingLoading ? (
+                        <div>
+                          <Skeleton className="rounded-[24px] h-[20px] w-[80px]" />
+                          <Skeleton className="rounded-[24px] h-[24px] w-[180px] mt-2" />
+                        </div>
+                      ) : listing ? (
                         <>
                           <div>
                             <p className="text-sm text-gray-400 dark:text-zinc-500">
@@ -205,6 +212,7 @@ export const NFTDetails: FC<NFTDetailsProps> = memo(
                               </span>
                             </div>
                           </div>
+
                           {isOwner
                             ? !isViewOnlyMode && (
                                 <Button

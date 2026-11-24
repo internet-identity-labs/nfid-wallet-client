@@ -186,11 +186,9 @@ export class MarketplaceService {
     collectionId: string,
     tokenId: bigint,
   ): Promise<void> {
-    const [result] = await callIcrc7Batch(
-      this.agent(identity),
-      collectionId,
-      "icrc37_approve_tokens",
-      [
+    const agent = this.agent(identity)
+    const approve = (createdAt: bigint) =>
+      callIcrc7Batch(agent, collectionId, "icrc37_approve_tokens", [
         {
           token_id: tokenId,
           approval_info: {
@@ -198,11 +196,22 @@ export class MarketplaceService {
             from_subaccount: [],
             expires_at: [],
             memo: [],
-            created_at_time: nowNs(),
+            created_at_time: createdAt,
           },
         },
-      ],
-    )
+      ])
+
+    // `created_at_time` is required here, and some collections accept only a
+    // few seconds around their own time (ORIGYN core_nft by default). Use
+    // the network time instead of the device clock, and on CreatedInFuture
+    // retry once with the collection's time from the error.
+    let [result] = await approve(await networkNowNs(agent, collectionId))
+    if (result && "Err" in result && "CreatedInFuture" in result.Err) {
+      const { ledger_time } = result.Err["CreatedInFuture"] as {
+        ledger_time: bigint
+      }
+      ;[result] = await approve(BigInt(ledger_time))
+    }
     if (result && "Err" in result) {
       throw new MarketplaceError({
         kind: "approvalFailed",
@@ -261,7 +270,8 @@ export class MarketplaceService {
           token_id: tokenId,
           memo: [],
           from_subaccount: [],
-          created_at_time: [nowNs()],
+          // Optional for transfers; leaving it out avoids the time window.
+          created_at_time: [],
         },
       ],
     )
@@ -488,6 +498,19 @@ export class MarketplaceService {
 // ── mapping ─────────────────────────────────────────────────────────────
 
 const nowNs = (): bigint => BigInt(Date.now()) * NS_PER_MS
+
+/** Current time on the IC, corrected for the device clock offset. */
+async function networkNowNs(
+  agent: HttpAgent,
+  canisterId: string,
+): Promise<bigint> {
+  try {
+    await agent.syncTime(Principal.fromText(canisterId))
+  } catch (e) {
+    console.warn("Time sync failed, using the device clock", e)
+  }
+  return BigInt(Date.now() + agent.getTimeDiffMsecs()) * NS_PER_MS
+}
 const nsToDate = (ns: bigint): Date => new Date(Number(ns / NS_PER_MS))
 const variantName = <T extends string>(v: object): T => Object.keys(v)[0] as T
 const toOpt = <T>(v: T | undefined): [] | [T] => (v === undefined ? [] : [v])

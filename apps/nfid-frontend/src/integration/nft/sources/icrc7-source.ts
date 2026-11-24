@@ -17,8 +17,18 @@ const FLOOR_TTL_MS = 60 * 60 * 1000
 const PAGE_SIZE = BigInt(100)
 const CONCURRENCY = 8
 
-type MetadataValue = { Text: string } | Record<string, unknown>
-type CachedCollection = Pick<NftCollection, "canisterId" | "name" | "logo">
+type MetadataValue =
+  | { Text: string }
+  | { Nat: bigint }
+  | { Int: bigint }
+  | { Array: MetadataValue[] }
+  | { Map: Array<[string, MetadataValue]> }
+  | Record<string, unknown>
+
+type CachedCollection = Pick<
+  NftCollection,
+  "canisterId" | "name" | "logo" | "tradable"
+>
 
 const metaText = (
   meta: Array<[string, MetadataValue]>,
@@ -31,6 +41,32 @@ const metaText = (
     }
   }
   return undefined
+}
+
+export const metaProperties = (
+  meta: Array<[string, MetadataValue]>,
+): Array<[string, string]> => {
+  const attributesEntry = meta.find(([k]) => k === "icrc7:attributes")
+  if (!attributesEntry || !("Array" in attributesEntry[1])) return []
+  const attrs = attributesEntry[1] as { Array: MetadataValue[] }
+  return attrs.Array.flatMap((item: MetadataValue): Array<[string, string]> => {
+    if (!("Map" in item)) return []
+    const map = (item as { Map: Array<[string, MetadataValue]> }).Map
+    const traitType = map.find(
+      ([k]: [string, MetadataValue]) => k === "trait_type",
+    )?.[1]
+    const value = map.find(([k]: [string, MetadataValue]) => k === "value")?.[1]
+    if (!traitType || !value) return []
+    const category =
+      "Text" in traitType ? (traitType as { Text: string }).Text : undefined
+    const option =
+      "Text" in value
+        ? (value as { Text: string }).Text
+        : "Nat" in value
+          ? String((value as { Nat: bigint }).Nat)
+          : undefined
+    return category && option ? [[category, option]] : []
+  })
 }
 
 /** Runs `fn` over `items`, at most `limit` at a time. */
@@ -64,7 +100,12 @@ export class Icrc7Source {
       async () =>
         (await marketplaceService.getCollections())
           .filter((c) => c.status !== "Spam" && c.status !== "Hidden")
-          .map(({ canisterId, name, logo }) => ({ canisterId, name, logo })),
+          .map(({ canisterId, name, logo, tradable }) => ({
+            canisterId,
+            name,
+            logo,
+            tradable,
+          })),
       COLLECTIONS_TTL_MS,
     )
     if (!hideInactive) return collections
@@ -99,6 +140,12 @@ export class Icrc7Source {
         }),
     )
     return perCollection.flat()
+  }
+
+  async invalidateFloorPrice(collectionId: string): Promise<void> {
+    await ttlCacheService.invalidate([
+      `${ICRC7_FLOOR_PRICE_CACHE_NAME}${collectionId}`,
+    ])
   }
 
   /** Lowest price of an active listing in e8s, or undefined. */
@@ -156,7 +203,7 @@ export class Icrc7Source {
       const meta = (metadata.get(id) ?? []) as Array<[string, MetadataValue]>
       return {
         marketPlace: MarketPlace.ICRC7,
-        tokenId: `${collection.canisterId}:${id}`,
+        tokenId: id.toString(),
         tokenNumber: Number(id),
         collectionId: collection.canisterId,
         collectionName: collection.name,
@@ -171,6 +218,8 @@ export class Icrc7Source {
         ]),
         description: metaText(meta, ["icrc7:description", "description"]),
         collectionLogo: collection.logo,
+        tradable: collection.tradable,
+        metadata: metaProperties(meta),
       }
     })
   }

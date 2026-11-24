@@ -17,6 +17,7 @@ enum IModalType {
   WITHDRAW = "WITHDRAW",
   PAY = "PAY",
   PROMOTE = "PROMOTE",
+  LIST_NFT = "LIST_NFT",
 }
 
 const MIN_CK_BTC_AMOUNT_TO_CONVERT = 0.00051
@@ -63,7 +64,8 @@ export const validateTransferAmountField =
     if (!decimals || !balance) return "Insufficient funds"
     const balanceNum = BigNumber(balance.toString()).div(10 ** decimals)
     const valueNum = new BigNumber(value)
-    if (balanceNum.isLessThan(valueNum)) return "Insufficient funds"
+    if (modalType !== IModalType.LIST_NFT && balanceNum.isLessThan(valueNum))
+      return "Insufficient funds"
 
     if (fee === undefined) return true
 
@@ -75,7 +77,10 @@ export const validateTransferAmountField =
       return "The transferred sum cannot be excessively large."
     if (valueNum.isEqualTo(0)) return "You can't send 0"
 
-    if (balanceNum.minus(feeNum).isLessThan(valueNum))
+    if (
+      modalType !== IModalType.LIST_NFT &&
+      balanceNum.minus(feeNum).isLessThan(valueNum)
+    )
       return "Insufficient funds"
 
     if (
@@ -134,6 +139,14 @@ export const validateTransferAmountField =
       valueNum.isLessThan(minAmount)
     ) {
       return `Minimum amount to promote ${symbol} is ${minAmount}`
+    }
+
+    if (
+      minAmount !== undefined &&
+      modalType === IModalType.LIST_NFT &&
+      valueNum.isLessThan(minAmount)
+    ) {
+      return `Minimum listing price is ${minAmount} ICP`
     }
 
     return true

@@ -33,6 +33,7 @@ export interface NFT {
   getAssetPreview(): AssetPreview | undefined
   getChainId(): ChainId
   getNftStandard(): string
+  isTradable(): boolean
   //TODO
   //transfer(): Promise<bigint>;
 }

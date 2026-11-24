@@ -7,6 +7,8 @@ import { ModalType, TokenType } from "frontend/features/transfer-modal/types"
 
 import { TransferTemplate } from "./components/template"
 
+export const ICP_FEE_E8S = BigInt(10_000)
+
 export interface TransferModalProps {
   onClickOutside: () => void
   isSuccess: boolean

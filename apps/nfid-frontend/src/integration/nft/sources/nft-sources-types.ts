@@ -21,4 +21,7 @@ export interface IcpNftToken {
   image?: string
   description?: string
   collectionLogo?: string
+  tradable?: boolean
+  /** Custom ICRC-7 token properties as [category, option] pairs. */
+  metadata?: Array<[string, string]>
 }

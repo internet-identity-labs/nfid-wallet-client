@@ -16,6 +16,7 @@ const Tab: React.FC<ITab> = ({
   id,
   length,
   hasNotification,
+  className,
 }) => {
   const getWidth = () => {
     if (length > 0) {
@@ -30,6 +31,7 @@ const Tab: React.FC<ITab> = ({
         "flex-shrink-0 sm:min-w-[150px] sm:!w-auto border-black dark:border-white",
         !isActive &&
           "hover:border-gray-500 hover:text-gray-500 dark:hover:border-gray-500 dark:hover:text-gray-500",
+        className,
       )}
       onClick={onClick}
       style={{ width: getWidth() }}

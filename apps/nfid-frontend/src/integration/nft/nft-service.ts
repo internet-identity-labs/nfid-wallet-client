@@ -7,11 +7,14 @@ import { baseService } from "frontend/integration/ethereum/base/base.service"
 import { ethereumService } from "frontend/integration/ethereum/eth/ethereum.service"
 import { polygonService } from "frontend/integration/ethereum/polygon/polygon.service"
 import { EvmNftImpl } from "src/integration/nft/impl/evm/nft-evm"
+import { NftIcrc7 } from "src/integration/nft/impl/icrc7/nft-icrc7"
 import { nftMapper } from "src/integration/nft/impl/nft-mapper"
 import { PaginatedResponse } from "src/integration/nft/impl/nft-types"
 import { NFT } from "src/integration/nft/nft"
+import { MarketPlace } from "src/integration/nft/enum/enums"
 import { entrepotSource } from "src/integration/nft/sources/entrepot-source"
 import { extFloorPriceService } from "src/integration/nft/sources/ext-floor-price"
+import { metaProperties } from "src/integration/nft/sources/icrc7-source"
 import {
   ICRC7_FLOOR_PRICE_CACHE_NAME,
   ICRC7_NFT_COLLECTIONS_CACHE_NAME,
@@ -23,6 +26,7 @@ import { EXT_FLOOR_PRICE_CACHE_NAME } from "src/integration/nft/sources/ext-floo
 
 import { ttlCacheService } from "@nfid/client-db"
 import { exchangeRateService } from "@nfid/integration"
+import { marketplaceService } from "@nfid/integration/marketplace"
 import { mutate } from "@nfid/swr"
 
 import type { FT } from "../ft/ft"
@@ -287,11 +291,18 @@ export class NftService {
   async getNFTByTokenId(
     id: string,
     userPrincipal: Principal,
+    collectionId?: string,
     pages: number = 1,
     limit: number = Number.MAX_SAFE_INTEGER,
   ): Promise<NFT | undefined> {
     const nftList = await this.getNFTs(userPrincipal, 1, pages * limit)
-    const nft = nftList.items.find((nft) => nft.getTokenId() === id)?.init()
+    const nft = nftList.items
+      .find(
+        (nft) =>
+          nft.getTokenId() === id &&
+          (!collectionId || nft.getCollectionId() === collectionId),
+      )
+      ?.init()
     if (!nft) throw new Error("NFT not found")
     return nft
   }
@@ -300,6 +311,7 @@ export class NftService {
     id: string,
     address: string,
     addressType: "icp" | "evm" | "btc",
+    collectionId?: string,
     pages: number = 1,
     limit: number = Number.MAX_SAFE_INTEGER,
   ): Promise<NFT | undefined> {
@@ -309,8 +321,64 @@ export class NftService {
       1,
       pages * limit,
     )
-    const nft = nftList.items.find((nft) => nft.getTokenId() === id)?.init()
+    const nft = nftList.items
+      .find(
+        (nft) =>
+          nft.getTokenId() === id &&
+          (!collectionId || nft.getCollectionId() === collectionId),
+      )
+      ?.init()
     if (!nft) throw new Error("NFT not found")
+    return nft
+  }
+
+  async getPublicIcrc7NFT(collectionId: string, tokenId: string): Promise<NFT> {
+    const tokenIdBig = BigInt(tokenId)
+    const [collections, metadataMap] = await Promise.all([
+      marketplaceService.getCollections(),
+      marketplaceService.getTokenMetadata(collectionId, [tokenIdBig]),
+    ])
+    const collection = collections.find((c) => c.canisterId === collectionId)
+    if (!collection) throw new Error(`Collection ${collectionId} not found`)
+    const entries = (metadataMap.get(tokenIdBig) ?? []) as Array<
+      [string, { Text: string } | Record<string, unknown>]
+    >
+    const getMetaText = (keys: string[]): string | undefined => {
+      for (const key of keys) {
+        const value = entries.find(([k]) => k === key)?.[1]
+        if (
+          value &&
+          "Text" in value &&
+          typeof value.Text === "string" &&
+          value.Text
+        )
+          return value.Text
+      }
+      return undefined
+    }
+    const token: IcpNftToken = {
+      marketPlace: MarketPlace.ICRC7,
+      tokenId: tokenIdBig.toString(),
+      tokenNumber: Number(tokenIdBig),
+      collectionId,
+      collectionName: collection.name,
+      millis: 0,
+      name: getMetaText(["icrc7:name", "name"]),
+      image: getMetaText([
+        "icrc7:image",
+        "image",
+        "icrc7:thumbnail",
+        "thumbnail",
+        "icrc7:metadata:uri:image",
+        "icrc7:metadata:image",
+      ]),
+      description: collection.description,
+      collectionLogo: collection.logo,
+      tradable: collection.tradable,
+      metadata: metaProperties(entries as Parameters<typeof metaProperties>[0]),
+    }
+    const nft = new NftIcrc7(token)
+    await nft.init()
     return nft
   }
 }

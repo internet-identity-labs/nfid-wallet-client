@@ -99,6 +99,10 @@ export abstract class NftImpl implements NFT {
 
   abstract getNftStandard(): string
 
+  isTradable(): boolean {
+    return false
+  }
+
   abstract getTokenMarketPlaceLink(): string
 
   abstract getCollectionMarketPlaceLink(): string

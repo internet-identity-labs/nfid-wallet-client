@@ -150,8 +150,14 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     useContext(ProfileContext)
   const [isRefreshing, setIsRefreshing] = useState(false)
 
+  const isNftDetailsPage = /\/nfts\/[^/]+\/[^/]+/.test(location.pathname)
+
   const handleNavigateBack = () => {
-    navigate({ pathname: backButtonPathname, search: location.search })
+    if (isNftDetailsPage && window.history.length > 1) {
+      navigate(-1)
+    } else {
+      navigate({ pathname: backButtonPathname, search: location.search })
+    }
   }
 
   const handleNavigateAddressBook = () => {
@@ -192,6 +198,11 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
         path: `${ProfileConstants.base}/${ProfileConstants.activity}`,
         hasNotification: hasUncompletedSwap && !isViewOnlyMode,
       },
+      {
+        name: "Marketplace",
+        title: <>Marketplace</>,
+        path: `${ProfileConstants.base}/${ProfileConstants.marketplace}`,
+      },
     ]
   }, [hasUncompletedSwap, isViewOnlyMode])
 
@@ -206,7 +217,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     }
 
     checkTransactions()
-  }, [])
+  }, [isViewOnlyMode])
 
   const activeTab = useMemo(() => {
     return (
@@ -559,7 +570,7 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
     await mutate("fullUsdValue")
 
     setIsRefreshing(false)
-  }, [activeTab.name, isRefreshing])
+  }, [activeTab.name, isRefreshing, initedTokens, testnetEnabled])
 
   const isUsdBalanceLoading = isUsdLoading || !fullUsdBalance
 
@@ -761,7 +772,8 @@ const ProfileTemplate: FC<IProfileTemplate> = ({
                 />
               )}
               <TabsSwitcher
-                className="my-[30px]"
+                className="my-[30px] sm:overflow-x-visible overflow-x-auto overflow-y-hidden"
+                tabClassName="!min-w-[100px] lg:!min-w-[150px]"
                 tabs={tabs}
                 activeTab={activeTab?.name}
                 setActiveTab={(tabName) => {

@@ -103,8 +103,8 @@ export class MarketplaceService {
     const [name, symbol, logo, description] = await Promise.all([
       nft.icrc7_name(),
       nft.icrc7_symbol(),
-      nft.icrc7_logo(),
-      nft.icrc7_description(),
+      nft.icrc7_logo().catch(() => [] as []),
+      nft.icrc7_description().catch(() => [] as []),
     ])
     return {
       canisterId,

@@ -24,10 +24,15 @@ import { ProfileContext } from "frontend/provider"
 import { NotFound } from "@nfid-frontend/ui"
 import { ProfileTemplate } from "@nfid-frontend/ui"
 
-import { fetchNFT, fetchViewOnlyNFT } from "../collectibles/utils/util"
+import {
+  fetchNFT,
+  fetchNFTs,
+  fetchViewOnlyNFT,
+} from "../collectibles/utils/util"
 import { ModalType } from "../transfer-modal/types"
 import { nftInitialState, nftReducer } from "./utils"
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { fetchListingForNFT } from "../marketplace/utils"
 
 type NftDetailsProps = {
   walletTheme: NFIDTheme
@@ -48,24 +53,39 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
     viewOnlyAddressType,
   } = useContext(ProfileContext)
   const [state, dispatch] = useReducer(nftReducer, nftInitialState)
-  const { tokenId } = useParams()
+  const { collectionId, tokenId } = useParams()
   const location = useLocation()
   const currentPage = location.state?.currentPage
   const limitPerPage = currentPage ? DEFAULT_LIMIT_PER_PAGE : undefined
 
   const { data: nft, isLoading } = useSWR(
-    tokenId ? ["nft", tokenId] : null,
-    ([, tokenId]: [string, string]) =>
+    tokenId ? ["nft", collectionId, tokenId] : null,
+    ([, collectionId, tokenId]: [string, string, string]) =>
       isViewOnlyMode && viewOnlyAddress && viewOnlyAddressType
         ? fetchViewOnlyNFT(
             tokenId,
             viewOnlyAddress,
             viewOnlyAddressType,
+            collectionId,
             currentPage,
             limitPerPage,
           )
-        : fetchNFT(tokenId, currentPage, limitPerPage),
+        : fetchNFT(tokenId, collectionId, currentPage, limitPerPage),
   )
+
+  const { data: nftList, isLoading: isNftLoading } = useSWR(
+    isViewOnlyMode ? ["nftList", viewOnlyAddress] : "nftList",
+    fetchNFTs,
+    { revalidateOnMount: false, revalidateOnFocus: false },
+  )
+
+  const isOwner = nft
+    ? (nftList?.items ?? []).some(
+        (n) =>
+          n.getCollectionId() === nft.getCollectionId() &&
+          n.getTokenId() === nft.getTokenId(),
+      )
+    : false
 
   const getDetails = useCallback(async () => {
     if (!tokenId) return
@@ -76,10 +96,11 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
             tokenId,
             viewOnlyAddress,
             viewOnlyAddressType,
+            collectionId,
             currentPage,
             limitPerPage,
           )
-        : fetchNFT(tokenId, currentPage, limitPerPage)
+        : fetchNFT(tokenId, collectionId, currentPage, limitPerPage)
     ).then((data) => data?.getDetails())
     if (nftDetails) {
       try {
@@ -143,7 +164,7 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
         dispatch({ type: "SET_LOADING", key: "transactions", isLoading: false })
       }
     }
-  }, [tokenId, currentPage, isViewOnlyMode, viewOnlyAddress])
+  }, [tokenId, collectionId, currentPage, isViewOnlyMode, viewOnlyAddress])
 
   useEffect(() => {
     getDetails()
@@ -166,7 +187,55 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
     [nft, transferService],
   )
 
-  if (isLoading) return <Loader isLoading />
+  const { data: listing, isLoading: isListingLoading } = useSWR(
+    collectionId && tokenId ? ["listing", collectionId, tokenId] : null,
+    ([, cId, tId]: [string, string, string]) => fetchListingForNFT(cId, tId),
+    { revalidateOnFocus: false },
+  )
+
+  const onListNFT = useCallback(
+    (nftId: string) => {
+      transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
+      transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+      transferService.send({
+        type: "CHANGE_DIRECTION",
+        data: ModalType.LIST_NFT,
+      })
+      transferService.send({
+        type: "ASSIGN_SELECTED_LISTING",
+        data: { id: BigInt(nftId), collectionId: nft?.getCollectionId() ?? "" },
+      })
+      transferService.send({ type: "SHOW" })
+    },
+    [nft, transferService],
+  )
+
+  const onDelistNFT = useCallback((listingId: string) => {
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
+    transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    transferService.send({
+      type: "CHANGE_DIRECTION",
+      data: ModalType.DELIST_NFT,
+    })
+    transferService.send({
+      type: "ASSIGN_SELECTED_LISTING",
+      data: { id: BigInt(listingId), collectionId: "" },
+    })
+    transferService.send({ type: "SHOW" })
+  }, [])
+
+  const onBuy = useCallback((listingId: string) => {
+    transferService.send({ type: "ASSIGN_VAULTS_CANISTER", data: "" })
+    transferService.send({ type: "ASSIGN_SOURCE_WALLET", data: "" })
+    transferService.send({ type: "CHANGE_DIRECTION", data: ModalType.BUY_NFT })
+    transferService.send({
+      type: "ASSIGN_SELECTED_LISTING",
+      data: { id: BigInt(listingId), collectionId: "" },
+    })
+    transferService.send({ type: "SHOW" })
+  }, [])
+
+  if (isLoading || isNftLoading) return <Loader isLoading />
   if (!nft) return <NotFound hideNavigation />
 
   return (
@@ -180,13 +249,15 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
         !nft.getError() &&
         !isViewOnlyMode && (
           <div className="flex items-center space-x-4">
-            <Tooltip tip="Send">
+            <Tooltip tip={listing ? "Cannot send while listed" : "Send"}>
               <div
                 className={clsx(
-                  "p-[8px] rounded-[12px] cursor-pointer",
-                  "hover:bg-gray-100 dark:hover:bg-zinc-700 active:bg-gray-200",
+                  "p-[8px] rounded-[12px]",
+                  listing
+                    ? "opacity-30 cursor-not-allowed"
+                    : "cursor-pointer hover:bg-gray-100 dark:hover:bg-zinc-700 active:bg-gray-200",
                 )}
-                onClick={onTransferNFT}
+                onClick={listing ? undefined : onTransferNFT}
               >
                 <img
                   className="rotate-[135deg]"
@@ -210,6 +281,13 @@ const NFTDetailsPage: FC<NftDetailsProps> = ({
         isPreviewLoading={state.fullSize.isLoading}
         isPropertiesLoading={state.properties.isLoading}
         isTransactionsLoading={state.transactions.isLoading}
+        isListingLoading={isListingLoading}
+        onListNFT={onListNFT}
+        onDelistNFT={onDelistNFT}
+        listing={listing}
+        isOwner={isOwner}
+        onBuy={onBuy}
+        isViewOnlyMode={isViewOnlyMode}
       />
     </ProfileTemplate>
   )

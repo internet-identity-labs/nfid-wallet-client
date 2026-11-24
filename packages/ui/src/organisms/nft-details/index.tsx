@@ -9,6 +9,7 @@ import {
   Skeleton,
   TableNftActivitySkeleton,
   IconCmpExternalIcon,
+  Button,
 } from "@nfid-frontend/ui"
 import { trimConcat } from "@nfid-frontend/utils"
 
@@ -24,6 +25,7 @@ import ProfileContainer from "../../atoms/profile-container/Container"
 import { ModalComponent } from "@nfid-frontend/ui"
 import { getNetworkIcon } from "../../utils/network-icon"
 import { useDarkTheme } from "frontend/hooks"
+import { MarketplaceListingWithFormatting } from "../marketplace/types"
 
 export interface NFTDetailsProps {
   nft: NFT
@@ -35,6 +37,13 @@ export interface NFTDetailsProps {
   isPreviewLoading: boolean
   isPropertiesLoading: boolean
   isTransactionsLoading: boolean
+  isListingLoading: boolean
+  onListNFT: (nftId: string) => void
+  onDelistNFT: (listingId: string) => void
+  onBuy: (listingId: string) => void
+  listing?: MarketplaceListingWithFormatting
+  isOwner: boolean
+  isViewOnlyMode: boolean
 }
 
 export const NFTDetails: FC<NFTDetailsProps> = memo(
@@ -43,11 +52,18 @@ export const NFTDetails: FC<NFTDetailsProps> = memo(
     isPreviewLoading,
     isPropertiesLoading,
     isTransactionsLoading,
+    isListingLoading,
     nft,
     about,
     properties,
     transactions,
     assetPreview,
+    onListNFT,
+    onDelistNFT,
+    onBuy,
+    listing,
+    isOwner,
+    isViewOnlyMode,
   }) => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const marketPlaceLink = nft.getTokenMarketPlaceLink()
@@ -83,7 +99,7 @@ export const NFTDetails: FC<NFTDetailsProps> = memo(
         >
           <div
             onClick={() => {
-              if (nft.getError()) return
+              if (nft.getError() || !assetPreview.url) return
               setIsModalOpen(true)
             }}
             className={clsx(
@@ -141,14 +157,24 @@ export const NFTDetails: FC<NFTDetailsProps> = memo(
             >
               #{nft.getTokenNumber()}
             </p>
-            <A
-              href={nft.getCollectionMarketPlaceLink()}
-              className="mb-[20px] font-bold leading-[24px]"
-              id={`nft_collection_${nft.getCollectionId()}`}
-              target="_blank"
-            >
-              {nft.getCollectionName() || nft.getCollectionId()}{" "}
-            </A>
+            {nft.getNftStandard() === "ICRC-7" ? (
+              <span
+                className="mb-[20px] font-bold leading-[24px] text-primaryButtonColor dark:text-teal-500 font-bold"
+                id={`nft_collection_${nft.getCollectionId()}`}
+              >
+                {nft.getCollectionName() || nft.getCollectionId()}{" "}
+              </span>
+            ) : (
+              <A
+                href={nft.getCollectionMarketPlaceLink()}
+                className="mb-[20px] font-bold leading-[24px]"
+                id={`nft_collection_${nft.getCollectionId()}`}
+                target="_blank"
+              >
+                {nft.getCollectionName() || nft.getCollectionId()}{" "}
+              </A>
+            )}
+
             <ProfileContainer
               title="Details"
               className="!px-0 !pt-[20px] md:!px-[30px] sm:!pt-[20px] !pb-[7px] !m-0 flex-[100%] dark:text-white"
@@ -159,13 +185,91 @@ export const NFTDetails: FC<NFTDetailsProps> = memo(
                 nft.getError()
               ) : (
                 <>
+                  {nft.getNftStandard() === "ICRC-7" && (
+                    <div
+                      className={clsx(
+                        "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100 dark:border-zinc-500",
+                        "block sm:flex items-center dark:text-white pb-5",
+                      )}
+                    >
+                      {isListingLoading ? (
+                        <div>
+                          <Skeleton className="rounded-[24px] h-[20px] w-[80px]" />
+                          <Skeleton className="rounded-[24px] h-[24px] w-[180px] mt-2" />
+                        </div>
+                      ) : listing ? (
+                        <>
+                          <div>
+                            <p className="text-sm text-gray-400 dark:text-zinc-500">
+                              Listed for
+                            </p>
+                            <div className="flex gap-2.5 items-end">
+                              <span className="dark:text-white text-[28px] font-bold leading-[34px]">
+                                {listing.icpPriceFormatted}
+                              </span>
+                              <span className="text-gray-500 dark:text-zinc-400 text-sm leading-[17px] pb-1">
+                                {listing.usdPriceFormatted}
+                              </span>
+                            </div>
+                          </div>
+
+                          {isOwner
+                            ? !isViewOnlyMode && (
+                                <Button
+                                  type="stroke"
+                                  className="ml-auto min-w-[80px] mt-2 sm:mt-0"
+                                  onClick={() =>
+                                    onDelistNFT(listing.id.toString())
+                                  }
+                                >
+                                  Delist
+                                </Button>
+                              )
+                            : !isViewOnlyMode && (
+                                <Button
+                                  className="ml-auto min-w-[100px] mt-2 sm:mt-0"
+                                  onClick={() => onBuy(listing.id.toString())}
+                                >
+                                  Buy now
+                                </Button>
+                              )}
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-sm text-gray-400 dark:text-zinc-500">
+                            Not listed
+                          </p>
+                          {nft.isTradable() ? (
+                            isOwner &&
+                            !isViewOnlyMode && (
+                              <Button
+                                className="ml-auto min-w-[111px] mt-2 sm:mt-0"
+                                onClick={() => onListNFT(nft.getTokenId())}
+                              >
+                                List for sale
+                              </Button>
+                            )
+                          ) : (
+                            <p
+                              className={clsx(
+                                "rounded-[6px] text-xs font-semibold leading-[15px] py-[5px] px-2",
+                                "bg-gray-50 dark:bg-zinc-300 text-gray-500 dark:text-zinc-500 ml-auto mt-2",
+                              )}
+                            >
+                              Can't be listed
+                            </p>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  )}
                   <div
                     className={clsx(
                       "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100 dark:border-zinc-500",
                       "block sm:flex items-center dark:text-white",
                     )}
                   >
-                    <p className="text-sm text-gray-400 dark:text-zinc-500 flex-shrink-0 flex-grow-0 basis-[160px] mb-[5px]">
+                    <p className="text-sm text-gray-400 dark:text-zinc-500 flex-shrink-0 flex-grow-0 basis-[160px]">
                       Standard
                     </p>
                     <p className="text-sm" id={"token-standard"}>
@@ -205,6 +309,7 @@ export const NFTDetails: FC<NFTDetailsProps> = memo(
                     className={clsx(
                       "min-h-[64px] sm:min-h-[54px] sm:border-b border-gray-100 dark:border-zinc-500",
                       "block sm:flex items-center dark:text-white",
+                      nft.getNftStandard() === "ICRC-7" && "!border-0",
                     )}
                   >
                     <p className="text-sm text-gray-400 dark:text-zinc-500 flex-shrink-0 flex-grow-0 basis-[160px]">
@@ -212,7 +317,7 @@ export const NFTDetails: FC<NFTDetailsProps> = memo(
                     </p>
                     <p>
                       {!nft.getTokenFloorPriceFormatted() ? (
-                        <span>Unknown floor price</span>
+                        <span className="text-sm">No floor price</span>
                       ) : (
                         <>
                           <span className="block text-sm">
@@ -225,25 +330,27 @@ export const NFTDetails: FC<NFTDetailsProps> = memo(
                       )}
                     </p>
                   </div>
-                  <div
-                    className={clsx(
-                      "min-h-[64px] sm:min-h-[54px]",
-                      "block sm:flex items-center dark:text-white",
-                    )}
-                  >
-                    <p className="text-sm text-gray-400 dark:text-zinc-500 flex-shrink-0 flex-grow-0 basis-[160px]">
-                      View on a marketplace
-                    </p>
-                    <A
-                      href={marketPlaceLink}
-                      withGapBetweenChildren
-                      target="_blank"
-                      className="break-all"
+                  {nft.getNftStandard() !== "ICRC-7" && (
+                    <div
+                      className={clsx(
+                        "min-h-[64px] sm:min-h-[54px]",
+                        "block sm:flex items-center dark:text-white",
+                      )}
                     >
-                      {marketPlaceLink}
-                      <IconCmpExternalIcon className="mt-1" />
-                    </A>
-                  </div>
+                      <p className="text-sm text-gray-400 dark:text-zinc-500 flex-shrink-0 flex-grow-0 basis-[160px]">
+                        View on a marketplace
+                      </p>
+                      <A
+                        href={marketPlaceLink}
+                        withGapBetweenChildren
+                        target="_blank"
+                        className="break-all"
+                      >
+                        {marketPlaceLink}
+                        <IconCmpExternalIcon className="mt-1" />
+                      </A>
+                    </div>
+                  )}
                 </>
               )}
             </ProfileContainer>

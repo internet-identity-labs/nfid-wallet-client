@@ -113,7 +113,7 @@ describe("Icrc7Source", () => {
     expect(tokens).toEqual([
       {
         marketPlace: MarketPlace.ICRC7,
-        tokenId: `${ORBS}:1`,
+        tokenId: "1",
         tokenNumber: 1,
         collectionId: ORBS,
         collectionName: `Collection pwy6s`,
@@ -123,9 +123,11 @@ describe("Icrc7Source", () => {
         image: "data:image/svg+xml;base64,AA",
         description: "A violet orb",
         collectionLogo: "logo-pwy6s",
+        tradable: true,
+        metadata: [],
       },
       expect.objectContaining({
-        tokenId: `${ORBS}:6`,
+        tokenId: "6",
         tokenNumber: 6,
         name: undefined,
         image: undefined,
@@ -175,6 +177,6 @@ describe("Icrc7Source", () => {
 
     const tokens = await new Icrc7Source().getUserTokens(user, false)
 
-    expect(tokens.map((t) => t.tokenId)).toEqual([`${TEST}:9`])
+    expect(tokens.map((t) => t.tokenId)).toEqual(["9"])
   })
 })

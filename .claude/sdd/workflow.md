@@ -32,9 +32,14 @@ command to run instead. Never "fix up" the status to make a command run.
 
 1. **Read from disk, not memory.** Start by reading `.claude/plans/<name>.plan.md` and its spec.
    Every step must work in a fresh session.
-2. **Two tiers.** Feature work (anything under `apps/` or `packages/`) needs an approved spec and an
+2. **Three tiers.** Feature work (anything under `apps/` or `packages/`) needs an approved spec and an
    approved plan. Tooling work (root config, `.github/`, `docker-*`, `.claude/`, lockfile) needs
-   only an approved plan with `Spec: none — tooling tier (<why>)`.
+   only an approved plan with `Spec: none — tooling tier (<why>)`. Dependency migration (code
+   changes under `apps/`/`packages/` that a Dependabot bump requires, no functional change) needs
+   only an approved `deps-<PR>` plan with `Spec: inline — dependency-migration tier` and a
+   `## Spec` section; `/dependabot-update` writes it in the PR's worktree, gets it approved, and
+   commits/pushes to the Dependabot branch itself (its own `/pr` step, with the same approval
+   prompts). See `.claude/skills/dependabot-update/SKILL.md` steps 6–8.
 3. **No commits before `/pr`.** Work stays uncommitted on the branch until `/verify` and `/document`
    have passed. Even in `/pr`, show the engineer the staged files, the commit message and the PR
    text, and wait for an explicit yes before `git commit` / `git push` / `gh pr …`. Claude Code
@@ -58,8 +63,10 @@ command to run instead. Never "fix up" the status to make a command run.
    If the hook itself errors, or its input is unreadable, it blocks (fail closed). Worktrees are
    guarded the same way against their own plans; plans stay uncommitted until `/pr`, so a fresh
    worktree normally has none, and guarded edits there are blocked.
-   `.claude/hooks/pre-bash.js` asks the engineer before any shell command that looks like it
-   writes under `apps/` or `packages/`, or rewrites the working tree (`git checkout/reset/stash/…`).
+   `.claude/hooks/pre-bash.js` asks the engineer before shell commands that rewrite the working
+   tree (`git checkout/reset/stash/…`) or the whole repo (`yarn format`, Nx generators). Ordinary
+   file operations under `apps/` or `packages/` (`rm`, `mv`, `sed -i`, redirects) aren't asked
+   about; `SDD_STRICT_BASH=1` restores that.
    Because guessing from command text can't be complete, `.claude/hooks/post-bash.js` checks the
    result: after every shell command it runs `git status` on `apps/` and `packages/` and reports
    any changed file that no plan on this branch lists (exact path, first column, any status except

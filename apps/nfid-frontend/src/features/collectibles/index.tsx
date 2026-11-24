@@ -12,7 +12,13 @@ import {
 } from "react"
 
 import { Button, Skeleton } from "@nfid-frontend/ui"
+import { authState } from "@nfid/integration"
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"
+import {
+  NftCollection,
+  icrc7RegistryService,
+} from "@nfid/integration/marketplace"
+import { State } from "@nfid/integration/token/icrc1/enum/enums"
 import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
@@ -26,6 +32,12 @@ import { ftService } from "frontend/integration/ft/ft-service"
 import { ModalType } from "../transfer-modal/types"
 import { fetchNFTs } from "./utils/util"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
+import { marketplaceService } from "@nfid/integration/marketplace"
+import { fetchSellerListings } from "../marketplace/utils"
+
+export interface NftCollectionWithState extends NftCollection {
+  state: State
+}
 
 const DEFAULT_LIMIT_PER_PAGE = 8
 
@@ -37,7 +49,11 @@ const NFTsPage = memo(() => {
   const [currentPage, setCurrentPage] = useState(1)
   const { transferService } = globalServices
 
-  const { data: allNfts, isLoading: isAllNFTsLoading } = useSWR(
+  const {
+    data: allNfts,
+    isLoading: isAllNFTsLoading,
+    mutate: mutateAllNfts,
+  } = useSWR(
     isViewOnlyMode ? ["nftList", viewOnlyAddress] : "nftList",
     () =>
       isViewOnlyMode
@@ -46,7 +62,12 @@ const NFTsPage = memo(() => {
     { revalidateOnFocus: false, revalidateIfStale: false },
   )
 
-  const { data, isLoading } = useSWR(
+  const {
+    data,
+    isLoading,
+    isValidating,
+    mutate: mutateNftPage,
+  } = useSWR(
     isViewOnlyMode
       ? ["nftList", viewOnlyAddress, currentPage]
       : ["nftList", currentPage],
@@ -87,6 +108,34 @@ const NFTsPage = memo(() => {
   }, [initedTokens])
 
   const {
+    data: collections = [],
+    isLoading: isCollectionsLoading,
+    mutate: mutateCollections,
+  } = useSWR(
+    "marketplace-collections",
+    async (): Promise<NftCollectionWithState[]> => {
+      const [cols, stored] = await Promise.all([
+        marketplaceService.getCollections(),
+        icrc7RegistryService.getStoredCollections(),
+      ])
+      const stateMap = new Map(stored.map((c) => [c.canisterId, c.state]))
+      return cols.map((c) => ({
+        ...c,
+        state: stateMap.get(c.canisterId) ?? State.Active,
+      }))
+    },
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    },
+  )
+
+  const { data: sellerListings = [], isLoading: isSellerListingsLoading } =
+    useSWR("user-listings", () => fetchSellerListings(), {
+      revalidateOnFocus: false,
+    })
+
+  const {
     data: nftTotalPrice,
     isLoading: nftTotalPriceLoading,
     mutate,
@@ -124,7 +173,9 @@ const NFTsPage = memo(() => {
     const { items } = data
     const newPlaceholders = Array(items.length).fill(null)
 
-    setNfts((prevNfts) => [...prevNfts, ...newPlaceholders])
+    setNfts((prevNfts) =>
+      currentPage === 1 ? newPlaceholders : [...prevNfts, ...newPlaceholders],
+    )
 
     Promise.all(
       items.map(async (nft: NFT, index: number) => {
@@ -146,6 +197,23 @@ const NFTsPage = memo(() => {
 
   const totalItems = useMemo(() => data?.totalItems || 0, [data])
   const totalPages = useMemo(() => data?.totalPages || 0, [data])
+
+  const onFetchIcrc7 = async (canisterId: string) => {
+    return marketplaceService.getCollectionMetadata(canisterId)
+  }
+
+  const onSubmitIcrc7 = async (canisterId: string) => {
+    const { delegationIdentity } = authState.get()
+    if (!delegationIdentity) throw new Error("Not authenticated")
+    const metadata = await marketplaceService.getCollectionMetadata(canisterId)
+    await marketplaceService.addCollection(delegationIdentity, metadata)
+    await onUpdateCollections()
+  }
+
+  const onUpdateCollections = async () => {
+    setCurrentPage(1)
+    await Promise.all([mutateCollections(), mutateAllNfts(), mutateNftPage()])
+  }
 
   return (
     <>
@@ -195,12 +263,20 @@ const NFTsPage = memo(() => {
       <ProfileContainer>
         <NFTs
           nfts={nfts}
-          isLoading={isLoading || !data}
+          isLoading={
+            isLoading || isValidating || !data || isSellerListingsLoading
+          }
           searchTokens={searchTokens}
           links={ProfileConstants}
           totalItems={totalItems}
           currentPage={currentPage}
           onTransferNFT={onTransferNFT}
+          onFetchIcrc7={onFetchIcrc7}
+          onSubmitIcrc7={onSubmitIcrc7}
+          onUpdateCollections={onUpdateCollections}
+          collections={collections}
+          isCollectionsLoading={isCollectionsLoading}
+          sellerListings={sellerListings}
         />
         <Button
           disabled={isLoading}

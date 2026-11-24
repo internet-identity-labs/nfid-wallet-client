@@ -18,7 +18,7 @@ Feature: SendReceive dialog window
     Then Verifying that the Account ID is <account ID> and the Principal is <wallet address>
     Examples:
       | NFID number | account ID                            | wallet address                        | nft         | balance | fee    | currency |
-      | 200000099   | 88a219cd353c78dfb7973381f3fc5...79fa2 | lnomy-nldge-bihr2-wedzc-ont46...6-eae | BoxyDude265 | 0.2194  | 0.0001 | ICP      |
+      | 200000099   | 88a219cd353c78dfb7973381f3fc5...79fa2 | lnomy-nldge-bihr2-wedzc-ont46...6-eae | BoxyDude265 | 0.1193  | 0.0001 | ICP      |
 
   @sendreceive
   Scenario Outline: User checks his balance and fee during send flow and his Receive data

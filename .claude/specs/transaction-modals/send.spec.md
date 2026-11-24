@@ -170,7 +170,21 @@ The balance-enriched version is preferred when available; a 0-balance token stil
 
 ---
 
-## 10. Key Files
+## 10. ICRC-7 NFT Auto-Delist on Send
+
+When sending an ICRC-7 NFT (`MarketPlace.ICRC7`), `send-nft.tsx` checks whether the NFT is currently listed in the marketplace before executing the transfer. If a matching active listing is found (via `"user-listings"` SWR), `marketplaceService.cancelListing(identity, listing.id)` is awaited first to revoke the oracle's approval, then the transfer proceeds.
+
+This prevents a state where the oracle still holds an ICRC-37 approval on an NFT that has been transferred away.
+
+**Implementation:**
+
+- SWR key `"user-listings"` with `revalidateOnMount: false` (reads cached value, no extra fetch)
+- Match: `l.collectionId === nft.getCollectionId() && l.tokenId.toString() === nft.getTokenId()`
+- `cancelListing` is awaited before `marketplaceService.transferNft`
+
+---
+
+## 11. Key Files
 
 | File                                                                      | Role                     |
 | ------------------------------------------------------------------------- | ------------------------ |

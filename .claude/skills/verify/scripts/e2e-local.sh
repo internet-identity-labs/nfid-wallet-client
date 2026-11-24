@@ -20,7 +20,9 @@ expr="($tags) and not @pending and not @mobile and not @skip"
 
 cd "$root" || exit 2
 echo "tags: $expr" | tee "$out/e2e.cmd"
-IS_HEADLESS=true ./scripts/run-e2e-frontend.sh -- "--cucumberOpts.tags=$expr" > "$out/e2e.log" 2>&1
+# nx run-commands joins forwarded args into a /bin/sh string without quoting them, so the
+# expression (spaces, parentheses) must carry its own quotes or sh fails on "(".
+IS_HEADLESS=true ./scripts/run-e2e-frontend.sh -- "--cucumberOpts.tags='$expr'" > "$out/e2e.log" 2>&1
 rc=$?
 echo "$rc" > "$out/e2e.exit"
 

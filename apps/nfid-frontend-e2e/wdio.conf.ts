@@ -23,6 +23,9 @@ export const config: WebdriverIO.Config = {
   bail: 0,
   baseUrl: baseURL,
   waitforTimeout: 10000,
+  // wdio 10 made `$` throw when a selector matches several elements (webdriverio#15684).
+  // Page objects still rely on v9 "first match" semantics; opt out until they're migrated.
+  strictSelectors: false,
   connectionRetryTimeout: 120000,
   connectionRetryCount: 2,
   framework: "cucumber",

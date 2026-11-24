@@ -15,11 +15,13 @@ interface ITabsSwitcher extends React.HTMLAttributes<HTMLDivElement> {
   activeTab: string
   setActiveTab: (value: string) => void
   isFitLine?: boolean
+  tabClassName?: string
 }
 
 export const TabsSwitcher: React.FC<ITabsSwitcher> = ({
   tabs,
   className,
+  tabClassName,
   activeTab,
   setActiveTab,
   isFitLine = true,
@@ -35,6 +37,7 @@ export const TabsSwitcher: React.FC<ITabsSwitcher> = ({
             id={`tab_${tab.name}`}
             length={tabs.length}
             hasNotification={tab.hasNotification}
+            className={tabClassName}
           >
             {tab.icon}
             {tab.title}

@@ -13,6 +13,9 @@
 | Stake        | `stake.spec.md`        |
 | Redeem Stake | `redeem-stake.spec.md` |
 | Bridge       | `bridge.spec.md`       |
+| List NFT     | `list-nft.spec.md`     |
+| Delist NFT   | `delist-nft.spec.md`   |
+| Buy NFT      | `buy-nft.spec.md`      |
 
 ---
 
@@ -30,15 +33,18 @@ Actions are triggered by sending events to the machine from the wallet or token 
 
 ## Action Summary
 
-| Action  | `ModalType` | Machine state                     | Primary service                      | Chains                   |
-| ------- | ----------- | --------------------------------- | ------------------------------------ | ------------------------ |
-| Send    | `SEND`      | `SendMachine.SendFT` / `.SendNFT` | ICP / ICRC1 / BTC / EVM services     | All                      |
-| Receive | `RECEIVE`   | `ReceiveMachine`                  | Address hooks (display only)         | All                      |
-| Swap    | `SWAP`      | `SwapMachine`                     | `swapService` / Shroff DEX           | ICP                      |
-| Convert | `CONVERT`   | `ConvertMachine`                  | `bitcoinService` / `ethereumService` | BTC ↔ ckBTC, ETH ↔ ckETH |
-| Stake   | `STAKE`     | `StakeMachine`                    | `stakingService`                     | ICP / SNS                |
-| Redeem  | `REDEEM`    | `RedeemMachine`                   | `stake.redeem()`                     | ICP / SNS                |
-| Bridge  | `BRIDGE`    | `BridgeMachine`                   | `bridgeService` (LiFi)               | EVM mainnet only         |
+| Action     | `ModalType`  | Machine state                     | Primary service                      | Chains                   |
+| ---------- | ------------ | --------------------------------- | ------------------------------------ | ------------------------ |
+| Send       | `SEND`       | `SendMachine.SendFT` / `.SendNFT` | ICP / ICRC1 / BTC / EVM services     | All                      |
+| Receive    | `RECEIVE`    | `ReceiveMachine`                  | Address hooks (display only)         | All                      |
+| Swap       | `SWAP`       | `SwapMachine`                     | `swapService` / Shroff DEX           | ICP                      |
+| Convert    | `CONVERT`    | `ConvertMachine`                  | `bitcoinService` / `ethereumService` | BTC ↔ ckBTC, ETH ↔ ckETH |
+| Stake      | `STAKE`      | `StakeMachine`                    | `stakingService`                     | ICP / SNS                |
+| Redeem     | `REDEEM`     | `RedeemMachine`                   | `stake.redeem()`                     | ICP / SNS                |
+| Bridge     | `BRIDGE`     | `BridgeMachine`                   | `bridgeService` (LiFi)               | EVM mainnet only         |
+| List NFT   | `LIST_NFT`   | `ListNFTMachine`                  | `marketplaceService.createListing`   | ICP (ICRC-7)             |
+| Delist NFT | `DELIST_NFT` | `DelistNFTMachine`                | `marketplaceService.cancelListing`   | ICP (ICRC-7)             |
+| Buy NFT    | `BUY_NFT`    | `BuyNFTMachine`                   | `marketplaceService.buy`             | ICP (ICRC-7)             |
 
 ---
 

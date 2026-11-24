@@ -1,4 +1,4 @@
-import { Page } from "./page.js"
+import { Page } from "./page"
 
 export class Activity extends Page {
   async allActivityTable() {
@@ -28,11 +28,11 @@ export class Activity extends Page {
     )
   }
 
-  async rowDate(row: ChainablePromiseElement) {
+  async rowDate(row: ChainablePromiseElement | WebdriverIO.Element) {
     return $(`${row.selector} #activity-table-row-date`)
   }
 
-  async rowActionType(row: ChainablePromiseElement) {
+  async rowActionType(row: ChainablePromiseElement | WebdriverIO.Element) {
     return row.$("#activity-table-row-action")
   }
 
@@ -63,4 +63,6 @@ export class Activity extends Page {
     )
 }
 
-export default new Activity()
+const activity = new Activity()
+
+export default activity

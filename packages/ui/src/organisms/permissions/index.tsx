@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { FT } from "frontend/integration/ft/ft"
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { FC, useMemo, useState } from "react"
@@ -11,13 +12,16 @@ import SortDescendingIcon from "../tokens/assets/sort-descending.svg?url"
 import SortHoverIcon from "../tokens/assets/sort-hover.svg?url"
 import { TableTokenSkeleton } from "../../atoms/skeleton"
 import { getIsMobileDeviceMatch } from "../../utils/is-mobile"
-import { PermissionsToken } from "./PermissionsRow"
+import { NftApprovalRow, PermissionsToken } from "./PermissionsRow"
 import { Button } from "../../molecules/button"
 import { ModalComponent } from "@nfid-frontend/ui"
 import toaster from "../../atoms/toast"
 import { Spinner } from "../../atoms/spinner"
 import { SignIdentity } from "@icp-sdk/core/agent"
-import { PermissionsStateAction } from "frontend/features/permissions/utils"
+import {
+  NftApproval,
+  PermissionsStateAction,
+} from "frontend/features/permissions/utils"
 import { ChooseFromToken } from "../send-receive/components/choose-from-token"
 import { IModalType } from "../send-receive/utils"
 import { useFormContext } from "react-hook-form"
@@ -30,6 +34,18 @@ enum Sorting {
   DESCENDING_ADDRESS = "DESCENDING_ADDRESS",
 }
 
+type SortableRow =
+  { kind: "ft"; data: Allowance } | { kind: "nft"; data: NftApproval }
+
+const getRowName = (row: SortableRow): string =>
+  row.kind === "ft" ? row.data.token.getTokenSymbol() : row.data.tokenName
+
+const getRowUsd = (row: SortableRow): string | null | undefined =>
+  row.kind === "ft" ? row.data.usdAmount : null
+
+const getRowAddress = (row: SortableRow): string =>
+  row.kind === "ft" ? row.data.address : row.data.spender
+
 export interface Allowance {
   token: FT
   address: string
@@ -39,6 +55,9 @@ export interface Allowance {
 
 export interface PermissionsProps {
   allowances?: Allowance[]
+  nftApprovals?: NftApproval[]
+  isNftApprovalsLoading?: boolean
+  onRevokeNftApproval?: (nft: NftApproval) => Promise<void>
   isLoading: boolean
   isLoadingMore: boolean
   loadMore: () => Promise<void>
@@ -50,6 +69,9 @@ export interface PermissionsProps {
 
 export const Permissions: FC<PermissionsProps> = ({
   allowances,
+  nftApprovals,
+  isNftApprovalsLoading,
+  onRevokeNftApproval,
   isLoading,
   isLoadingMore,
   loadMore,
@@ -64,11 +86,15 @@ export const Permissions: FC<PermissionsProps> = ({
   const [isHoveredAddress, setIsHoveredAddress] = useState(false)
   const [isRevokeLoading, setIsRevokeLoading] = useState(false)
   const [isUpdateLoading, setIsUpdateLoading] = useState(false)
-  const [chosenRevokeAllowance, setChosenRevokeAllowance] =
-    useState<Allowance | null>(null)
+  const [chosenRevoke, setChosenRevoke] = useState<
+    Allowance | NftApproval | null
+  >(null)
   const [chosenUpdateAllowance, setChosenUpdateAllowance] =
     useState<Allowance | null>(null)
   const [isFromResponsive, setIsFromResponsive] = useState(false)
+
+  const setChosenRevokeAllowance = (a: Allowance) => setChosenRevoke(a)
+  const setChosenNftRevoke = (nft: NftApproval) => setChosenRevoke(nft)
 
   const {
     watch,
@@ -77,25 +103,28 @@ export const Permissions: FC<PermissionsProps> = ({
   const amount = watch("amount")
 
   const handleRevoke = async () => {
-    if (!chosenRevokeAllowance || !identity) return
-
-    const { token, address, amountFormatted } = chosenRevokeAllowance
+    if (!chosenRevoke || !identity) return
     setIsRevokeLoading(true)
-
     try {
-      await token.revokeAllowance(identity, address)
-      toaster.success(
-        `Approval for ${amountFormatted} has been successfully revoked`,
-      )
-      dispatch({
-        type: "REMOVE_ALLOWANCE",
-        payload: { token, address },
-      })
+      if ("token" in chosenRevoke) {
+        const { token, address, amountFormatted } = chosenRevoke
+        await token.revokeAllowance(identity, address)
+        toaster.success(
+          `Approval for ${amountFormatted} has been successfully revoked`,
+        )
+        dispatch({ type: "REMOVE_ALLOWANCE", payload: { token, address } })
+      } else {
+        if (!onRevokeNftApproval) return
+        await onRevokeNftApproval(chosenRevoke)
+        toaster.success(
+          `Approval for ${chosenRevoke.tokenName} has been successfully revoked`,
+        )
+      }
     } catch (e) {
       toaster.error(`Revoke error. ${(e as Error).message}`)
     } finally {
       setIsRevokeLoading(false)
-      setChosenRevokeAllowance(null)
+      setChosenRevoke(null)
     }
   }
 
@@ -184,46 +213,58 @@ export const Permissions: FC<PermissionsProps> = ({
     }
   }
 
-  const sortedAllowances = useMemo(() => {
-    if (!allowances) return []
+  const sortedRows = useMemo((): SortableRow[] => {
+    const rows: SortableRow[] = [
+      ...(allowances ?? []).map((a): SortableRow => ({ kind: "ft", data: a })),
+      ...(nftApprovals ?? []).map((n): SortableRow => ({
+        kind: "nft",
+        data: n,
+      })),
+    ]
 
-    const compareUsdAsc = (a: Allowance, b: Allowance) => {
-      const aUsd = a.usdAmount ?? null
-      const bUsd = b.usdAmount ?? null
+    const compareNameAsc = (a: SortableRow, b: SortableRow) =>
+      getRowName(a).localeCompare(getRowName(b))
+
+    const compareUsdAsc = (a: SortableRow, b: SortableRow) => {
+      const aUsd = getRowUsd(a) ?? null
+      const bUsd = getRowUsd(b) ?? null
       if (aUsd === null && bUsd === null) return 0
       if (aUsd === null) return 1
       if (bUsd === null) return -1
       return +aUsd - +bUsd
     }
 
-    const compareUsdDesc = (a: Allowance, b: Allowance) => {
-      const aUsd = a.usdAmount ?? null
-      const bUsd = b.usdAmount ?? null
+    const compareUsdDesc = (a: SortableRow, b: SortableRow) => {
+      const aUsd = getRowUsd(a) ?? null
+      const bUsd = getRowUsd(b) ?? null
       if (aUsd === null && bUsd === null) return 0
       if (aUsd === null) return 1
       if (bUsd === null) return -1
       return +bUsd - +aUsd
     }
 
-    const compareAddressAsc = (a: Allowance, b: Allowance) =>
-      a.address.localeCompare(b.address)
+    const compareAddressAsc = (a: SortableRow, b: SortableRow) =>
+      getRowAddress(a).localeCompare(getRowAddress(b))
 
-    const compareAddressDesc = (a: Allowance, b: Allowance) =>
-      b.address.localeCompare(a.address)
+    const compareAddressDesc = (a: SortableRow, b: SortableRow) =>
+      getRowAddress(b).localeCompare(getRowAddress(a))
 
     switch (sorting) {
       case Sorting.ASCENDING_USD:
-        return [...allowances].sort(compareUsdAsc)
+        return [...rows].sort(compareUsdAsc)
       case Sorting.DESCENDING_USD:
-        return [...allowances].sort(compareUsdDesc)
+        return [...rows].sort(compareUsdDesc)
       case Sorting.ASCENDING_ADDRESS:
-        return [...allowances].sort(compareAddressAsc)
+        return [...rows].sort(compareAddressAsc)
       case Sorting.DESCENDING_ADDRESS:
-        return [...allowances].sort(compareAddressDesc)
+        return [...rows].sort(compareAddressDesc)
       default:
-        return allowances
+        return [...rows].sort(compareNameAsc)
     }
-  }, [allowances, sorting])
+  }, [allowances, nftApprovals, sorting])
+
+  const hasAnyRows = sortedRows.length > 0
+  const showLoading = isLoading || isNftApprovalsLoading
 
   return (
     <>
@@ -232,20 +273,20 @@ export const Permissions: FC<PermissionsProps> = ({
         innerClassName="!px-0"
         titleClassName="!px-0"
       >
-        {isLoading || !sortedAllowances ? (
+        {showLoading ? (
           <table className="w-full">
             <TableTokenSkeleton
               tableRowsAmount={5}
               tableCellAmount={getIsMobileDeviceMatch() ? 2 : 5}
             />
           </table>
-        ) : sortedAllowances.length === 0 ? (
+        ) : !hasAnyRows ? (
           <div className="flex flex-col items-center justify-center gap-5 my-[50px]">
             <PermissionsIcon
               strokeColor={isDarkTheme ? "#71717A" : "#9CA3AF"}
             />
             <div className="text-secondary dark:text-zinc-500">
-              You haven’t granted token access to anyone yet.
+              You haven't granted token access to anyone yet.
             </div>
           </div>
         ) : (
@@ -301,14 +342,22 @@ export const Permissions: FC<PermissionsProps> = ({
                   </tr>
                 </thead>
                 <tbody className="h-16 text-sm text-black">
-                  {sortedAllowances.map((allowance, index) => (
-                    <PermissionsToken
-                      key={`${allowance.token.getTokenName()}_${index}`}
-                      allowance={allowance}
-                      setChosenRevokeAllowance={setChosenRevokeAllowance}
-                      setChosenUpdateAllowance={setChosenUpdateAllowance}
-                    />
-                  ))}
+                  {sortedRows.map((row, index) =>
+                    row.kind === "ft" ? (
+                      <PermissionsToken
+                        key={`ft_${row.data.token.getTokenName()}_${index}`}
+                        allowance={row.data}
+                        setChosenRevokeAllowance={setChosenRevokeAllowance}
+                        setChosenUpdateAllowance={setChosenUpdateAllowance}
+                      />
+                    ) : (
+                      <NftApprovalRow
+                        key={`nft_${row.data.collectionId}_${String(row.data.tokenId)}`}
+                        nft={row.data}
+                        setChosenNftRevoke={setChosenNftRevoke}
+                      />
+                    ),
+                  )}
                 </tbody>
               </table>
             </div>
@@ -325,26 +374,34 @@ export const Permissions: FC<PermissionsProps> = ({
           </Button>
         )}
         <ModalComponent
-          isVisible={Boolean(chosenRevokeAllowance)}
-          onClose={() => {
-            setChosenRevokeAllowance(null)
-          }}
+          isVisible={Boolean(chosenRevoke)}
+          onClose={() => setChosenRevoke(null)}
           className="p-5 w-[95%] md:w-[540px] z-[100] !rounded-[24px]"
         >
           <p className="text-[20px] leading-[26px] font-bold dark:text-white mb-[18px]">
             Revoke approval
           </p>
           <p className="leading-[22px] dark:text-white">
-            You are about to revoke the approval for{" "}
-            {chosenRevokeAllowance?.amountFormatted} previously granted to{" "}
-            {chosenRevokeAllowance?.address}.
+            {chosenRevoke && "token" in chosenRevoke ? (
+              <>
+                You are about to revoke the approval for{" "}
+                {chosenRevoke.amountFormatted} previously granted to{" "}
+                {chosenRevoke.address}.
+              </>
+            ) : (
+              <>
+                You are about to revoke the approval for{" "}
+                <strong>{chosenRevoke?.tokenName}</strong> previously granted to{" "}
+                {chosenRevoke?.spender}.
+              </>
+            )}
           </p>
           <div className="mt-5 flex justify-end gap-2.5">
             <Button
               type="stroke"
               isSmall
               className="w-[115px]"
-              onClick={() => setChosenRevokeAllowance(null)}
+              onClick={() => setChosenRevoke(null)}
             >
               Cancel
             </Button>

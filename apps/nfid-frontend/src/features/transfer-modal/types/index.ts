@@ -28,6 +28,9 @@ export enum ModalType {
   WITHDRAW = "withdraw",
   PAY = "pay",
   PROMOTE = "promote",
+  BUY_NFT = "buy_nft",
+  LIST_NFT = "list_nft",
+  DELIST_NFT = "delist_nft",
 }
 
 export interface SelectedToken {
@@ -60,6 +63,7 @@ export type TransferMachineContext = {
   selectedDapp: number
   selectedTargetFT?: string
   selectedNFTId?: string
+  selectedListingId: { id: bigint; collectionId: string }
   receiverWallet: string
   amount: string
   transferObject?: ITransferSuccess
@@ -88,6 +92,10 @@ export type Events =
     }
   | { type: "ASSIGN_SOURCE_ACCOUNT"; data: Wallet }
   | { type: "ASSIGN_SOURCE_WALLET"; data: string }
+  | {
+      type: "ASSIGN_SELECTED_LISTING"
+      data?: { id: bigint; collectionId: string }
+    }
   | { type: "ASSIGN_STAKE_ID"; data: string }
   | { type: "ASSIGN_AMOUNT"; data: string }
   | { type: "ASSIGN_RECEIVER_WALLET"; data: string }

@@ -2,7 +2,7 @@ import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { Balance } from "packages/ui/src/organisms/profile-info/balance"
 import { Tokens } from "packages/ui/src/organisms/tokens"
 import { ScanTokens } from "packages/ui/src/organisms/tokens/components/scan-tokens"
-import { useContext, useMemo, memo } from "react"
+import { useCallback, useContext, useMemo, memo } from "react"
 import useSWR from "swr"
 
 import { Skeleton } from "@nfid-frontend/ui"
@@ -20,7 +20,10 @@ import { ICRC1_ORACLE_CACHE_NAME } from "@nfid/integration/token/icrc1/service/i
 import { useSWRWithTimestamp } from "@nfid/swr"
 
 import { ProfileConstants } from "frontend/apps/identity-manager/profile/routes"
+import { FT } from "frontend/integration/ft/ft"
 import { ftService } from "frontend/integration/ft/ft-service"
+import { tokenFavoriteId } from "frontend/integration/favorites/favorites-service"
+import { useFavorites } from "frontend/integration/favorites/use-favorites"
 import { ProfileContext } from "frontend/provider"
 
 import { ModalType, SelectedToken } from "../transfer-modal/types"
@@ -50,6 +53,16 @@ const TokensPage = memo(() => {
     viewOnlyAddress,
     viewOnlyAddressType,
   } = useContext(ProfileContext)
+  const { favorites, toggle: toggleFavorite } = useFavorites(!isViewOnlyMode)
+  const onToggleFavorite = useCallback(
+    (token: FT) =>
+      void toggleFavorite(
+        "token",
+        tokenFavoriteId(token.getChainId(), token.getTokenAddress()),
+      ),
+    [toggleFavorite],
+  )
+
   const userRootPrincipalId = isViewOnlyMode
     ? ""
     : authState.getUserIdData().userId
@@ -334,6 +347,8 @@ const TokensPage = memo(() => {
           onBaseToggle={onBaseToggle}
           polygonEnabled={polygonEnabled}
           onPolygonToggle={onPolygonToggle}
+          favoriteTokenIds={isViewOnlyMode ? undefined : favorites.tokens}
+          onToggleFavorite={isViewOnlyMode ? undefined : onToggleFavorite}
         />
       </ProfileContainer>
     </>

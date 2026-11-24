@@ -25,3 +25,13 @@ export interface TransferMetadata {
   fee: string
   total: string
 }
+
+export interface ICRC7TransferMetadata {
+  collectionName: string
+  collectionLogo?: string
+  tokenId: string
+  tokenName: string
+  tokenImage?: string
+  toAddress: string
+  sender: string
+}

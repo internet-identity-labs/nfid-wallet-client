@@ -55,12 +55,13 @@ dApp ── icrc49_call_canister ──▶ Icrc49CallCanisterMethodService
 
 `componentsMap` in `icrc49-call-canister.tsx` maps request → component, most specific key wins:
 
-| Key                                    | Component                           | Notes                                   |
-| -------------------------------------- | ----------------------------------- | --------------------------------------- |
-| `ryjl3-tyaaa-aaaaa-aaaba-cai-transfer` | `call-canisters/transfer`           | ICP ledger canister's legacy `transfer` |
-| `icrc1_transfer`                       | `call-canisters/transfer`           | Any canister's `icrc1_transfer`         |
-| `icrc2_approve`                        | `call-canisters/icrc2-spending-cap` | Spending-cap approval                   |
-| `default`                              | `call-canisters/default`            | Generic consent-message / raw args view |
+| Key                                    | Component                           | Notes                                             |
+| -------------------------------------- | ----------------------------------- | ------------------------------------------------- |
+| `ryjl3-tyaaa-aaaaa-aaaba-cai-transfer` | `call-canisters/transfer`           | ICP ledger canister's legacy `transfer`           |
+| `icrc1_transfer`                       | `call-canisters/transfer`           | Any canister's `icrc1_transfer`                   |
+| `icrc2_approve`                        | `call-canisters/icrc2-spending-cap` | Spending-cap approval                             |
+| `icrc7_transfer`                       | `call-canisters/icrc7-transfer`     | ICRC-7 NFT transfer — shows NFT image + recipient |
+| `default`                              | `call-canisters/default`            | Generic consent-message / raw args view           |
 
 ---
 
@@ -68,12 +69,13 @@ dApp ── icrc49_call_canister ──▶ Icrc49CallCanisterMethodService
 
 Each helper lives in `service/canister-calls-helpers/` and produces the props consumed by its screen.
 
-| Helper               | Method(s)        | Computes                                                                                  |
-| -------------------- | ---------------- | ----------------------------------------------------------------------------------------- |
-| `default.ts`         | fallback         | `balance`, `address` — derives ICP `AccountIdentifier` from sender                        |
-| `ledger-transfer.ts` | `transfer`       | `balance`, `toAddress` (raw bytes → hex), `memo`, `amount`, `total`, `usdRate`            |
-| `icrc1-transfer.ts`  | `icrc1_transfer` | `balance`, `symbol`, `decimals`, `fee`, `toAddress`, `memo`, `amount`, `total`, `usdRate` |
-| `icrc2-approve.ts`   | `icrc2_approve`  | `balance`, `symbol`, `decimals`, `fee`, `amount`                                          |
+| Helper               | Method(s)        | Computes                                                                                          |
+| -------------------- | ---------------- | ------------------------------------------------------------------------------------------------- |
+| `default.ts`         | fallback         | `balance`, `address` — derives ICP `AccountIdentifier` from sender                                |
+| `ledger-transfer.ts` | `transfer`       | `balance`, `toAddress` (raw bytes → hex), `memo`, `amount`, `total`, `usdRate`                    |
+| `icrc1-transfer.ts`  | `icrc1_transfer` | `balance`, `symbol`, `decimals`, `fee`, `toAddress`, `memo`, `amount`, `total`, `usdRate`         |
+| `icrc2-approve.ts`   | `icrc2_approve`  | `balance`, `symbol`, `decimals`, `fee`, `amount`                                                  |
+| `icrc7-transfer.ts`  | `icrc7_transfer` | `collectionId`, `tokenId`, `toAddress`, `nftImage`, `nftName` — resolves NFT metadata for display |
 
 ### Destination address — ICP vs ICRC-1
 
@@ -92,13 +94,22 @@ These two helpers compute `toAddress` differently and are **not interchangeable*
 
 ## 6. Key Files
 
-| File                                                                                       | Role                                                            |
-| ------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
-| `service/method/interactive/icrc49-call-canister-method.service.ts`                        | RPC entry point, identity resolution, method routing            |
-| `components/methods/icrc49-call-canister.tsx`                                              | Screen selection by canister ID / method name                   |
-| `components/call-canisters/transfer.tsx`                                                   | Transfer screen (ICP legacy + ICRC-1)                           |
-| `components/call-canisters/icrc2-spending-cap.tsx`                                         | `icrc2_approve` screen                                          |
-| `components/call-canisters/default.tsx`                                                    | Generic consent-message / raw-args screen                       |
-| `components/call-canisters/details.tsx`                                                    | "Transaction details" slide-over (args/canister/sender)         |
-| `service/canister-calls-helpers/{default,ledger-transfer,icrc1-transfer,icrc2-approve}.ts` | Per-method metadata computation                                 |
-| `service/canister-calls-helpers/interfaces.ts`                                             | `DefaultMetadata` / `TransferMetadata` / `ICRC2Metadata` shapes |
+| File                                                                                                      | Role                                                                                      |
+| --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `service/method/interactive/icrc49-call-canister-method.service.ts`                                       | RPC entry point, identity resolution, method routing                                      |
+| `components/methods/icrc49-call-canister.tsx`                                                             | Screen selection by canister ID / method name                                             |
+| `components/call-canisters/transfer.tsx`                                                                  | Transfer screen (ICP legacy + ICRC-1)                                                     |
+| `components/call-canisters/icrc2-spending-cap.tsx`                                                        | `icrc2_approve` screen                                                                    |
+| `components/call-canisters/icrc7-transfer.tsx`                                                            | `icrc7_transfer` screen — NFT image, name, recipient address                              |
+| `components/call-canisters/default.tsx`                                                                   | Generic consent-message / raw-args screen                                                 |
+| `components/call-canisters/details.tsx`                                                                   | "Transaction details" slide-over (args/canister/sender)                                   |
+| `service/canister-calls-helpers/{default,ledger-transfer,icrc1-transfer,icrc2-approve,icrc7-transfer}.ts` | Per-method metadata computation                                                           |
+| `service/canister-calls-helpers/interfaces.ts`                                                            | `DefaultMetadata` / `TransferMetadata` / `ICRC2Metadata` / `ICRC7TransferMetadata` shapes |
+
+---
+
+## 7. `icrc37_approve_tokens` — No Dedicated Screen (yet)
+
+`icrc37_approve_tokens` is the ICRC-37 NFT approval method used internally by `marketplaceService.createListing` to grant the oracle an operator allowance before creating a listing. When called via `icrc49_call_canister` (e.g., from the IdentityKit demo), it falls through to the `default` screen.
+
+A dedicated `icrc37-approve` screen is **out of scope** for the current marketplace feature but is tracked as a future improvement. The identitykit demo at `C:/projects/identitykit/examples/react-demo` demonstrates calling `icrc37_approve_tokens` directly under the `CallCanisterMethod.icrc7_approve` key.

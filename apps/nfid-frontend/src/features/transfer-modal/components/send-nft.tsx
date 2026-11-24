@@ -4,7 +4,8 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 
 import { mutate, useSWR, useSWRWithTimestamp } from "@nfid/swr"
 
-import { fetchNFT, fetchNFTs } from "frontend/features/collectibles/utils/util"
+import { fetchNFTs } from "frontend/features/collectibles/utils/util"
+import { NFT } from "frontend/integration/nft/nft"
 import { fetchTokens } from "frontend/features/fungible-token/utils"
 import { useEthAddress } from "frontend/hooks"
 import { useIdentity } from "frontend/hooks/identity"
@@ -14,6 +15,7 @@ import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/toke
 
 import { FormValues, SendStatus } from "../types"
 import {
+  getIcrc7TokenId,
   updateNftList,
   validateETHAddress,
   validateIcrc7NftAddress,
@@ -28,6 +30,7 @@ import {
 import { FormProvider, useForm } from "react-hook-form"
 import { FeeResponse, FeeResponseETH } from "frontend/integration/ft/utils"
 import { marketplaceService } from "@nfid/integration/marketplace"
+import { fetchSellerListings } from "frontend/features/marketplace/utils"
 import { Category, ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 import { MarketPlace } from "frontend/integration/nft/enum/enums"
 import {
@@ -57,10 +60,6 @@ const EVM_SERVICE_MAP: Partial<Record<number, EVMService>> = {
   [ChainId.POL_AMOY]: polygonAmoyService,
 }
 
-/** ICRC-7 token id from the NFT id ("<collection>:<id>" or just "<id>"). */
-const icrc7TokenId = (nftId: string): bigint =>
-  BigInt(nftId.split(":").pop() ?? nftId)
-
 interface ITransferNFT {
   preselectedNFTId?: string
   onClose: () => void
@@ -74,7 +73,7 @@ export const TransferNFT = ({
   setErrorMessage,
   setSuccessMessage,
 }: ITransferNFT) => {
-  const [selectedNFTId, setSelectedNFTId] = useState(preselectedNFTId)
+  const [selectedNFT, setSelectedNFT] = useState<NFT | undefined>(undefined)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [status, setStatus] = useState(SendStatus.PENDING)
   const { identity } = useIdentity()
@@ -112,9 +111,13 @@ export const TransferNFT = ({
     { revalidateOnFocus: false },
   )
 
-  const { data: selectedNFT, isLoading: isNftLoading } = useSWR(
-    selectedNFTId ? ["nft", selectedNFTId] : null,
-    ([, tokenId]: [string, string]) => fetchNFT(tokenId),
+  const { data: userListings = [] } = useSWR(
+    "user-listings",
+    fetchSellerListings,
+    {
+      revalidateOnMount: false,
+      revalidateOnFocus: false,
+    },
   )
 
   const isEvmNft = selectedNFT?.getMarketPlace() === MarketPlace.EVM
@@ -157,8 +160,10 @@ export const TransferNFT = ({
   }, [fee, nativeGasToken])
 
   useEffect(() => {
-    setSelectedNFTId(preselectedNFTId)
-  }, [preselectedNFTId])
+    if (!preselectedNFTId || !nfts) return
+    const nft = nfts.items.find((n) => n.getTokenId() === preselectedNFTId)
+    if (nft) setSelectedNFT(nft)
+  }, [preselectedNFTId, nfts])
 
   useEffect(() => {
     setFee(undefined)
@@ -216,7 +221,11 @@ export const TransferNFT = ({
     setStatus(SendStatus.COMPLETED)
 
     if (selectedNFT && nfts) {
-      updateNftList(nfts, selectedNFT.getTokenId())
+      updateNftList(
+        nfts,
+        selectedNFT.getTokenId(),
+        selectedNFT.getCollectionId(),
+      )
     }
 
     if (Boolean(tokenId)) {
@@ -276,15 +285,31 @@ export const TransferNFT = ({
 
       setIsSuccessOpen(true)
 
-      const transfer =
-        selectedNFT.getMarketPlace() === MarketPlace.ICRC7
-          ? marketplaceService.transferNft(
-              identity,
-              selectedNFT.getCollectionId(),
-              icrc7TokenId(selectedNFT.getTokenId()),
-              values.to,
-            )
-          : transferEXT(selectedNFT.getTokenId(), identity, values.to)
+      let transfer
+
+      if (selectedNFT.getMarketPlace() === MarketPlace.ICRC7) {
+        const activeListing = userListings.find(
+          (l) =>
+            l.collectionId === selectedNFT.getCollectionId() &&
+            l.tokenId.toString() === selectedNFT.getTokenId(),
+        )
+
+        if (activeListing) {
+          await marketplaceService.cancelListing(identity, activeListing.id)
+          mutate("listings")
+          mutate("user-listings")
+          mutate(["buyQuote", activeListing.id])
+        }
+
+        transfer = marketplaceService.transferNft(
+          identity,
+          selectedNFT.getCollectionId(),
+          getIcrc7TokenId(selectedNFT.getTokenId()),
+          values.to,
+        )
+      } else {
+        transfer = transferEXT(selectedNFT.getTokenId(), identity, values.to)
+      }
 
       transfer.then(successHandler).catch((e) => {
         console.error(
@@ -317,10 +342,10 @@ export const TransferNFT = ({
   return (
     <FormProvider {...formMethods}>
       <TransferNFTUi
-        isLoading={isNftLoading && isNftListLoading}
+        isLoading={isNftListLoading}
         loadingMessage={"Loading NFTs..."}
         nfts={nfts?.items}
-        setSelectedNFTId={setSelectedNFTId}
+        onSelectNFT={setSelectedNFT}
         selectedNFT={selectedNFT}
         submit={submit}
         validateAddress={validateAddress}

@@ -43,9 +43,12 @@ When(/^User refreshes the page$/, async () => {
 Then(
   /^User opens (.+) dialog window(?: of (\S+))?$/,
   async (window: string, optionalArg: string) => {
-    const clickWithWait = async (element: ChainablePromiseElement) => {
-      await element.waitForClickable({ timeout: 20000 })
-      await element.click()
+    const clickWithWait = async (
+      element: ChainablePromiseElement | WebdriverIO.Element,
+    ) => {
+      const el = await element
+      await el.waitForClickable({ timeout: 20000 })
+      await el.click()
     }
 
     const windows: {

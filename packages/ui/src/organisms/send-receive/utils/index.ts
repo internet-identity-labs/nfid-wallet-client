@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import BigNumber from "bignumber.js"
 import { WIDGET_FEE } from "src/integration/swap/calculator/calculator-abstract"
 import {
@@ -70,6 +71,7 @@ export enum IModalType {
   WITHDRAW = "WITHDRAW",
   PAY = "PAY",
   PROMOTE = "PROMOTE",
+  LIST_NFT = "LIST_NFT",
 }
 
 export const getTitleAndButtonText = (

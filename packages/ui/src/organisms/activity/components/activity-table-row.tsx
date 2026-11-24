@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import { SignIdentity } from "@icp-sdk/core/agent"
 import clsx from "clsx"
 import { format } from "date-fns"
@@ -17,6 +18,9 @@ import {
   IconCmpBurnActivity,
   IconCmpMintActivity,
   IconCmpApproveActivity,
+  IconCmpRevokeActivity,
+  IconCmpBuyActivity,
+  IconCmpSellActivity,
   IconNftPlaceholder,
   IconSvgArrowRight,
   IconSvgArrowRightWhite,
@@ -125,13 +129,13 @@ export const getActionMarkup = (
     case IActivityAction.SELL:
       return {
         bg: "bg-red-50 dark:bg-red-900/60",
-        icon: <IconCmpArrow className="rotate-[135deg] text-red-600" />,
+        icon: <IconCmpSellActivity className="text-red-600" />,
       }
 
     case IActivityAction.BUY:
       return {
         bg: "bg-emerald-50 dark:bg-emerald-900/60",
-        icon: <IconCmpArrow className="rotate-[-45deg] text-emerald-600" />,
+        icon: <IconCmpBuyActivity className="text-emerald-600" />,
       }
 
     case IActivityAction.RECEIVED:
@@ -169,6 +173,12 @@ export const getActionMarkup = (
       return {
         bg: "bg-emerald-50 dark:bg-emerald-900/60",
         icon: <IconCmpApproveActivity className="text-emerald-600" />,
+      }
+
+    case IActivityAction.REVOKE:
+      return {
+        bg: "bg-red-50 dark:bg-red-900/60",
+        icon: <IconCmpRevokeActivity className="text-red-600" />,
       }
 
     default:
@@ -229,7 +239,7 @@ export const ActivityTableRow = ({
     }
 
     getContact()
-  }, [isViewOnlyMode])
+  }, [isViewOnlyMode, searchAddress, to, from])
 
   const currentToken = useMemo(() => {
     if (asset.type !== "ft" || !tokens) return
@@ -305,6 +315,7 @@ export const ActivityTableRow = ({
         </td>
         {![
           IActivityAction.APPROVE,
+          IActivityAction.REVOKE,
           IActivityAction.MINT,
           IActivityAction.BURN,
         ].includes(action) ? (
@@ -396,7 +407,8 @@ export const ActivityTableRow = ({
           </>
         ) : (
           <>
-            {action === IActivityAction.APPROVE ? (
+            {action === IActivityAction.APPROVE ||
+            action === IActivityAction.REVOKE ? (
               <>
                 <td
                   className={clsx(
@@ -576,9 +588,9 @@ export const ActivityTableRow = ({
               />
               <div className="ml-2.5">
                 <p className="font-semibold dark:text-white">{asset.name}</p>
-                {asset.amount && (
+                {asset.collectionName && (
                   <p className="text-xs text-gray-400 whitespace-nowrap dark:text-zinc-500">
-                    {asset.amount}
+                    {asset.collectionName}
                   </p>
                 )}
               </div>
@@ -589,6 +601,11 @@ export const ActivityTableRow = ({
           {note && (
             <p className="text-sm leading-5 dark:text-white leading-[20px] max-w-[180px]">
               {note}
+            </p>
+          )}
+          {asset.type === "nft" && asset.amount && (
+            <p className="text-sm text-black dark:text-white whitespace-nowrap">
+              {asset.amount}
             </p>
           )}
         </td>

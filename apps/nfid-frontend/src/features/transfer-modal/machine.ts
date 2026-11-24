@@ -22,6 +22,12 @@ export const transferMachine = setup({
       context.direction === "bridge",
     isEarnMachine: ({ context }: { context: TransferMachineContext }) =>
       context.direction === "earn",
+    isBuyNftMachine: ({ context }: { context: TransferMachineContext }) =>
+      context.direction === "buy_nft",
+    isDelistNftMachine: ({ context }: { context: TransferMachineContext }) =>
+      context.direction === "delist_nft",
+    isListNftMachine: ({ context }: { context: TransferMachineContext }) =>
+      context.direction === "list_nft",
     isWithdrawMachine: ({ context }: { context: TransferMachineContext }) =>
       context.direction === "withdraw",
     isPayMachine: ({ context }: { context: TransferMachineContext }) =>
@@ -73,6 +79,9 @@ export const transferMachine = setup({
     }),
     assignSelectedNFTId: assign({
       selectedNFTId: ({ event }: { event: any }) => event?.data,
+    }),
+    assignSelectedListingId: assign({
+      selectedListingId: ({ event }: { event: any }) => event?.data,
     }),
     assignTransferObject: assign({
       transferObject: ({ event }: { event: any }) => event?.data,
@@ -134,6 +143,9 @@ export const transferMachine = setup({
     ASSIGN_SELECTED_NFT: {
       actions: "assignSelectedNFTId",
     },
+    ASSIGN_SELECTED_LISTING: {
+      actions: "assignSelectedListingId",
+    },
     ASSIGN_AMOUNT: {
       actions: "assignAmount",
     },
@@ -168,6 +180,9 @@ export const transferMachine = setup({
         { target: "RedeemMachine", guard: "isRedeemMachine" },
         { target: "BridgeMachine", guard: "isBridgeMachine" },
         { target: "EarnMachine", guard: "isEarnMachine" },
+        { target: "BuyNftMachine", guard: "isBuyNftMachine" },
+        { target: "DelistNftMachine", guard: "isDelistNftMachine" },
+        { target: "ListNftMachine", guard: "isListNftMachine" },
         { target: "WithdrawMachine", guard: "isWithdrawMachine" },
         { target: "PayMachine", guard: "isPayMachine" },
         { target: "PromoteMachine", guard: "isPromoteMachine" },
@@ -178,6 +193,9 @@ export const transferMachine = setup({
     ConvertMachine: {},
     BridgeMachine: {},
     EarnMachine: {},
+    BuyNftMachine: {},
+    DelistNftMachine: {},
+    ListNftMachine: {},
     WithdrawMachine: {},
     PayMachine: {},
     PromoteMachine: {},

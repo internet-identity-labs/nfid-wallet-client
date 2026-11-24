@@ -1,17 +1,16 @@
 import { Actor, HttpAgent } from "@icp-sdk/core/agent"
 import { Principal } from "@icp-sdk/core/principal"
 import BigNumber from "bignumber.js"
-import { encodeTokenIdentifier } from "src/integration/entrepot/ext"
 import { entrepotAsset, getTokenLink } from "src/integration/entrepot/lib"
 import { e8s } from "src/integration/nft/constants/constants"
 import { MarketPlace } from "src/integration/nft/enum/enums"
-import { MappedToken } from "src/integration/nft/geek/geek-types"
 import {
   AssetPreview,
   NFTTransactions,
   TokenProperties,
 } from "src/integration/nft/impl/nft-types"
 import { NFT, NFTDetails } from "src/integration/nft/nft"
+import { IcpNftToken } from "src/integration/nft/sources/nft-sources-types"
 
 import { exchangeRateService } from "@nfid/integration"
 import { E8S } from "@nfid/integration/token/constants"
@@ -48,15 +47,15 @@ export abstract class NftImpl implements NFT {
   protected assetPreview: AssetPreview | undefined
   protected details: NFTDetails | undefined
 
-  public constructor(geekData: MappedToken) {
-    this.millis = geekData.millis
-    this.marketPlace = geekData.marketPlace
-    this.tokenNumber = geekData.tokenId
-    this.collectionId = geekData.collectionId
-    this.collectionName = geekData.collectionName
-    this.tokenName = `${this.collectionName} #${this.tokenNumber}`
-    this.tokenFloorPriceICP = geekData.tokenFloorPriceIcp
-    this.tokenId = encodeTokenIdentifier(this.collectionId, this.tokenNumber)
+  public constructor(token: IcpNftToken) {
+    this.millis = token.millis
+    this.marketPlace = token.marketPlace
+    this.tokenNumber = token.tokenNumber
+    this.collectionId = token.collectionId
+    this.collectionName = token.collectionName
+    this.tokenName = token.name ?? `${this.collectionName} #${this.tokenNumber}`
+    this.tokenFloorPriceICP = token.tokenFloorPriceIcp
+    this.tokenId = token.tokenId
     this.inited = false
     this.error = undefined
   }
@@ -99,6 +98,10 @@ export abstract class NftImpl implements NFT {
   abstract getChainId(): ChainId
 
   abstract getNftStandard(): string
+
+  isTradable(): boolean {
+    return false
+  }
 
   abstract getTokenMarketPlaceLink(): string
 

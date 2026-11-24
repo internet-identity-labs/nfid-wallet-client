@@ -3,7 +3,8 @@ import { MarketPlace } from "src/integration/nft/enum/enums"
 import { NftImpl } from "src/integration/nft/impl/nft-abstract"
 import { IcpNftToken } from "src/integration/nft/sources/nft-sources-types"
 
-import { exchangeRateService } from "@nfid/integration"
+import { authState, exchangeRateService } from "@nfid/integration"
+import { icrc7HistoryService } from "@nfid/integration/marketplace"
 import { ChainId } from "@nfid/integration/token/icrc1/enum/enums"
 
 import { ICRC7_PLACEHOLDER_IMAGE, NftIcrc7 } from "./nft-icrc7"
@@ -28,6 +29,12 @@ describe("NftIcrc7", () => {
     jest
       .spyOn(exchangeRateService, "getICP2USD")
       .mockReturnValue(new BigNumber(10))
+    jest.spyOn(authState, "getUserIdData").mockReturnValue({
+      publicKey: "test-public-key",
+      userId: "test-user",
+      anchor: BigInt(0),
+    } as never)
+    jest.spyOn(icrc7HistoryService, "getUserEvents").mockResolvedValue([])
   })
 
   afterEach(() => jest.restoreAllMocks())

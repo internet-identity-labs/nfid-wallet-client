@@ -30,6 +30,8 @@ for ICRC-7, and global loader unmounting modal after listing.
 | `apps/nfid-frontend/src/integration/nft/nft-service.ts`                    | Resolve merge conflict; `getPublicIcrc7NFT`; `collectionId` param on `getNFTByTokenId`/`getViewOnlyNFT`                          |
 | `apps/nfid-frontend/src/integration/nft/sources/nft-sources-types.ts`      | Add `tradable?: boolean` and `metadata?: Array<[string, string]>` to `IcpNftToken`                                               |
 | `apps/nfid-frontend/src/integration/nft/sources/icrc7-source.ts`           | Pick `tradable`; `metaProperties` from `icrc7:attributes`; `invalidateFloorPrice`; fix `tokenId` to `id.toString()`              |
+| `apps/nfid-frontend/src/integration/nft/sources/icrc7-source.spec.ts`      | Update tokenId expectations from composite to `id.toString()`; add `tradable`/`metadata` fields                                  |
+| `apps/nfid-frontend/src/integration/nft/impl/icrc7/nft-icrc7.spec.ts`      | Mock `authState.getUserIdData` and `icrc7HistoryService.getUserEvents` for `getTransactions` test                                |
 | `packages/ui/src/organisms/nfts/index.tsx`                                 | Fix listing match: use `BigInt(nft.getTokenNumber())` instead of string comparison                                               |
 
 ## Deviations

@@ -85,6 +85,7 @@ screen because:
 | `apps/nfid-frontend/src/features/identitykit/service/method/interactive/icrc49-call-canister-method.service.ts` | Add `icrc37_approve_tokens` → `getIcrc37ApproveMetadata` to helpers map                                                                                                                               |
 | `apps/nfid-frontend/src/features/identitykit/service/canister-calls-helpers/icrc7-transfer.ts`                  | **Deviation** — fix wrong metadata image keys (`icrc7:metadata:uri:image` → `icrc7:image`/`image`/`icrc7:thumbnail`/`thumbnail`) to match what ICRC-7 canisters actually emit                         |
 | `apps/nfid-frontend/src/features/identitykit/constants.ts`                                                      | **Deviation** — add `icrc37_approve_tokens: "Approve spending cap"`; remove unused `icrc7_transfer` entry                                                                                             |
+| `apps/nfid-frontend/src/features/identitykit/components/call-canisters/details.tsx`                             | **Deviation** — user's pre-existing UI fixes (do not overwrite)                                                                                                                                       |
 
 ## New Files
 
@@ -110,6 +111,7 @@ screen because:
 - [x] `icrc49-call-canister-method.service.ts` — add `icrc37_approve_tokens` → `getIcrc37ApproveMetadata`
 - [x] `icrc7-transfer.ts` + `icrc37-approve.ts` — fix metadata image keys to `icrc7:image`/`image`/`icrc7:thumbnail`/`thumbnail`
 - [x] `constants.ts` — add `icrc37_approve_tokens: "Approve spending cap"`; remove unused `icrc7_transfer`
+- [x] `icrc37-spending-cap.tsx` — unwrap `vec` args before passing to `CallCanisterDetails` so field-level rows show instead of raw index
 
 ---
 

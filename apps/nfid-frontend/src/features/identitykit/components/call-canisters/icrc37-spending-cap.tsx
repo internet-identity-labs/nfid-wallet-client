@@ -20,6 +20,14 @@ export interface CallCanisterICRC37SpendingCapProps {
   onReject: () => void
 }
 
+const unwrapVecArgs = (args: string): string => {
+  try {
+    const parsed = JSON.parse(args)
+    if (Array.isArray(parsed[0])) return JSON.stringify(parsed[0])
+  } catch {}
+  return args
+}
+
 const CallCanisterICRC37SpendingCap = ({
   origin,
   canisterId,
@@ -75,7 +83,7 @@ const CallCanisterICRC37SpendingCap = ({
         <CallCanisterDetails
           canisterId={canisterId}
           sender={metadata.sender}
-          args={args}
+          args={unwrapVecArgs(args)}
         />
       </div>
     </RPCPromptTemplate>

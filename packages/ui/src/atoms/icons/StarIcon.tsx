@@ -1,22 +1,16 @@
 import { FC } from "react"
 
 type StarIconProps = {
-  filled?: boolean
   size?: number
   className?: string
 }
 
-/** Star outline, or a filled star. Colored with `currentColor`. */
-export const StarIcon: FC<StarIconProps> = ({
-  filled = false,
-  size = 18,
-  className,
-}) => (
+export const StarIcon: FC<StarIconProps> = ({ size = 14, className }) => (
   <svg
     width={size}
     height={size}
     viewBox="0 0 24 24"
-    fill={filled ? "currentColor" : "none"}
+    fill="currentColor"
     stroke="currentColor"
     strokeWidth={1.8}
     strokeLinejoin="round"

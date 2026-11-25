@@ -33,7 +33,7 @@ const CallCanisterICRC37SpendingCap = ({
 
   return (
     <RPCPromptTemplate
-      title={CanisterCallTitle.icrc7_transfer}
+      title={CanisterCallTitle.icrc37_approve_tokens}
       subTitle={
         <div className="dark:text-white">
           Request from{" "}
@@ -51,12 +51,12 @@ const CallCanisterICRC37SpendingCap = ({
       onSecondaryButtonClick={onReject}
     >
       <div className="flex flex-col flex-1">
-        <div className="flex items-center justify-between gap-3 px-3.5 py-2.5 border border-gray-200 dark:border-zinc-600 rounded-[12px]">
+        <div className="flex items-center justify-between gap-3 pt-[3px] pb-[3px] pb-[3px] pr-[10px] border border-black dark:border-white rounded-[12px]">
           <ImageWithFallback
             alt={metadata.tokenName}
             src={metadata.tokenImage ?? metadata.collectionLogo ?? "#"}
             fallbackSrc={IconNftPlaceholder}
-            className="w-[48px] h-[48px] rounded-[8px] object-cover shrink-0"
+            className="w-[92px] h-[92px] rounded-[10px] object-cover shrink-0"
           />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold truncate dark:text-white">
@@ -66,14 +66,12 @@ const CallCanisterICRC37SpendingCap = ({
               {metadata.collectionName}
             </p>
           </div>
-          <IconCmpArrow className="w-4 h-4 text-gray-400 rotate-180 shrink-0 dark:text-zinc-500" />
+          <IconCmpArrow className="w-4 h-4 text-black rotate-180 shrink-0 dark:text-white" />
         </div>
-
-        <div className="flex items-center justify-between h-[54px] text-sm dark:text-white">
+        <div className="flex items-center justify-between h-[54px] text-sm dark:text-white mt-1">
           <span>To</span>
           <Address address={metadata.toAddress} />
         </div>
-
         <CallCanisterDetails
           canisterId={canisterId}
           sender={metadata.sender}

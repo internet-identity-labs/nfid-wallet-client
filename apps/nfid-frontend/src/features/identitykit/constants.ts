@@ -2,5 +2,5 @@ export const CanisterCallTitle = {
   transfer: "Approve transfer",
   icrc1_transfer: "Approve transfer",
   icrc2_approve: "Approve spending cap",
-  icrc7_transfer: "Approve transfer",
+  icrc37_approve_tokens: "Approve spending cap",
 }

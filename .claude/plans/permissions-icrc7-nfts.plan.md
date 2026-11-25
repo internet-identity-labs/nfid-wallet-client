@@ -1,9 +1,9 @@
 # Plan: Extend Permissions Screen with ICRC-7 NFT Approvals + Fix icrc37_approve_tokens Routing
 
-> Status: IN PROGRESS
+> Status: IMPLEMENTED
 > Spec: (inline — no separate spec file)
 > Created: 2026-11-24
-> Branch: `feature/sc-19889-extend-activity-screen-to-support-icrc-7`
+> Branch: `feature/sc-19807-implement-stay-signing-ui-preference-local`
 
 ---
 
@@ -83,6 +83,8 @@ screen because:
 | `apps/nfid-frontend/src/features/identitykit/components/call-canisters/icrc37-spending-cap.tsx`                 | **Deviation — new file from previous PR on this branch (renamed from `icrc7-transfer.tsx`)**                                                                                                          |
 | `apps/nfid-frontend/src/features/identitykit/components/methods/icrc49-call-canister.tsx`                       | **Deviation (pre-existing) + Fix: change key `icrc37_approve` → `icrc37_approve_tokens`**                                                                                                             |
 | `apps/nfid-frontend/src/features/identitykit/service/method/interactive/icrc49-call-canister-method.service.ts` | Add `icrc37_approve_tokens` → `getIcrc37ApproveMetadata` to helpers map                                                                                                                               |
+| `apps/nfid-frontend/src/features/identitykit/service/canister-calls-helpers/icrc7-transfer.ts`                  | **Deviation** — fix wrong metadata image keys (`icrc7:metadata:uri:image` → `icrc7:image`/`image`/`icrc7:thumbnail`/`thumbnail`) to match what ICRC-7 canisters actually emit                         |
+| `apps/nfid-frontend/src/features/identitykit/constants.ts`                                                      | **Deviation** — add `icrc37_approve_tokens: "Approve spending cap"`; remove unused `icrc7_transfer` entry                                                                                             |
 
 ## New Files
 
@@ -106,6 +108,8 @@ screen because:
 - [x] `icrc49-call-canister.tsx` — change map key `icrc37_approve` → `icrc37_approve_tokens`
 - [x] New `icrc37-approve.ts` helper — read `approval_info.spender.owner`; reuse `ICRC7TransferMetadata` with spender as `toAddress`
 - [x] `icrc49-call-canister-method.service.ts` — add `icrc37_approve_tokens` → `getIcrc37ApproveMetadata`
+- [x] `icrc7-transfer.ts` + `icrc37-approve.ts` — fix metadata image keys to `icrc7:image`/`image`/`icrc7:thumbnail`/`thumbnail`
+- [x] `constants.ts` — add `icrc37_approve_tokens: "Approve spending cap"`; remove unused `icrc7_transfer`
 
 ---
 
@@ -113,8 +117,8 @@ screen because:
 
 - [x] `yarn nx lint nfid-wallet-client` — zero new errors
 - [x] `npx tsc --noEmit -p apps/nfid-frontend/tsconfig.app.json` — zero errors
-- [ ] Manual smoke: calling `icrc37_approve_tokens` from the demo shows the dedicated NFT
-      approve UI (not the fallback consent-message screen)
+- [x] Manual smoke: calling `icrc37_approve_tokens` from the demo shows the dedicated NFT
+      approve UI with correct token image and "Approve spending cap" title
 
 ---
 

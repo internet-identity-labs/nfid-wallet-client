@@ -15,10 +15,11 @@ import { ChooseWallet } from "packages/ui/src/organisms/authentication/choose-wa
 import { AuthOtherSignOptions } from "packages/ui/src/organisms/authentication/other-sign-options.tsx"
 import { AuthSignInWithRecoveryPhrase } from "packages/ui/src/organisms/authentication/sign-in-with-recovery-phrase"
 import { AuthSignUpPassKey } from "packages/ui/src/organisms/authentication/sign-up-passkey"
-import { ReactNode, useCallback, useMemo, useState } from "react"
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react"
 import { openIIWindow } from "frontend/features/authentication/auth-selection/ii-flow/ii-auth.service"
 
 import { Button, IconCmpGoogle, IconCmpDfinity } from "@nfid-frontend/ui"
+import { rememberMeService } from "@nfid/integration"
 
 import { useAuthentication } from "frontend/apps/authentication/use-authentication"
 import { AuthEmailFlowCoordinator } from "frontend/features/authentication/auth-selection/email-flow/coordination"
@@ -51,6 +52,10 @@ export default function AuthenticationCoordinator({
   const { storageProfile, storageProfileLoading } = useLoadProfileFromStorage()
   const state = useSelector(actor, (s) => s)
   const send = (event: Parameters<typeof actor.send>[0]) => actor.send(event)
+  const [staySignedIn, setStaySignedIn] = useState(() =>
+    rememberMeService.isRemembered(),
+  )
+
   const [isPasskeyLoading, setIsPasskeyLoading] = useState(false)
   const [is2FALoading, setIs2FALoading] = useState(false)
   const [isOtherOptionsLoading, setIsOtherOptionsLoading] = useState(false)
@@ -235,6 +240,15 @@ export default function AuthenticationCoordinator({
     [loginWithRecovery, send],
   )
 
+  useEffect(() => {
+    const subscription = actor.subscribe((snapshot) => {
+      if (snapshot.matches("End") && !staySignedIn) {
+        rememberMeService.doNotRememberMe().catch(console.error)
+      }
+    })
+    return () => subscription.unsubscribe()
+  }, [actor, staySignedIn])
+
   const recoveryPhrase: string = useMemo(() => {
     return `${state.context.authSession?.anchor} ${generate().trim()}`
   }, [state.context.authSession?.anchor])
@@ -264,6 +278,8 @@ export default function AuthenticationCoordinator({
                 onLoginWithPasskey(allowedPasskeys)
               }
               onAuthSelection={() => send({ type: "CHOOSE_WALLET" })}
+              staySignedIn={staySignedIn}
+              onStaySignedInChange={setStaySignedIn}
             />
           </motion.div>
         )
@@ -307,6 +323,8 @@ export default function AuthenticationCoordinator({
               onSignUpWithPasskey={() =>
                 send({ type: "AUTH_WITH_PASSKEY_SIGNUP" })
               }
+              staySignedIn={staySignedIn}
+              onStaySignedInChange={setStaySignedIn}
               googleButton={
                 <SignInWithGoogle
                   onLogin={onSelectGoogleAuth}

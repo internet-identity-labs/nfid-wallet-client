@@ -24,7 +24,7 @@ import { callCanisterService } from "../../call-canister.service"
 import { getDefaultMetadata } from "../../canister-calls-helpers/default"
 import { getIcrc1TransferMetadata } from "../../canister-calls-helpers/icrc1-transfer"
 import { getMetadataICRC2Approve } from "../../canister-calls-helpers/icrc2-approve"
-import { getIcrc7TransferMetadata } from "../../canister-calls-helpers/icrc7-transfer"
+import { getIcrc37ApproveMetadata } from "../../canister-calls-helpers/icrc37-approve"
 import { getLedgerTransferMetadata } from "../../canister-calls-helpers/ledger-transfer"
 import { consentMessageService } from "../../consent-message.service"
 import { GenericError } from "../../exception-handler.service"
@@ -232,7 +232,7 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
       icrc2_approve: getMetadataICRC2Approve,
       transfer: getLedgerTransferMetadata,
       icrc1_transfer: getIcrc1TransferMetadata,
-      icrc7_transfer: getIcrc7TransferMetadata,
+      icrc37_approve_tokens: getIcrc37ApproveMetadata,
     }
 
     const helper = helpers[message.data.params.method]

@@ -174,7 +174,7 @@ export const ListNFTUi: FC<ListNFTUiProps> = ({
           disabled={
             !selectedNFT || Boolean(errors["amount"]?.message) || !amount
           }
-          className="w-full mt-[48px]"
+          className="w-full mt-[68px]"
           type="primary"
           block
           onClick={handleSubmit(submit)}

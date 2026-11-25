@@ -2,11 +2,22 @@ import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 import { FT } from "frontend/integration/ft/ft"
 import { PAGE_SIZE } from "frontend/integration/ft/ft-service"
 
+export type NftApproval = {
+  collectionId: string
+  collectionName: string
+  collectionLogo?: string
+  tokenId: bigint
+  tokenName: string
+  tokenImage?: string
+  spender: string
+}
+
 type PermissionsState = {
   page: number
   hasMore: boolean
   isLoadingMore: boolean
   allowancesList: { token: FT; allowance: AllowanceDetailDTO }[]
+  nftApprovalsList: NftApproval[]
 }
 
 export type PermissionsStateAction =
@@ -27,12 +38,21 @@ export type PermissionsStateAction =
       type: "UPDATE_ALLOWANCE"
       payload: { token: FT; address: string; amount: string }
     }
+  | {
+      type: "RESET_NFT_APPROVALS"
+      payload: { list: NftApproval[] }
+    }
+  | {
+      type: "REMOVE_NFT_APPROVAL"
+      payload: { collectionId: string; tokenId: bigint }
+    }
 
 export const permissionsInitialState: PermissionsState = {
   page: 0,
   hasMore: false,
   isLoadingMore: false,
   allowancesList: [],
+  nftApprovalsList: [],
 }
 
 export const permissionsReducer = (
@@ -43,6 +63,7 @@ export const permissionsReducer = (
     case "RESET": {
       const list = action.payload.list
       return {
+        ...state,
         page: 1,
         hasMore: list.length === PAGE_SIZE,
         isLoadingMore: false,
@@ -55,6 +76,7 @@ export const permissionsReducer = (
     case "LOAD_MORE_SUCCESS": {
       const list = [...state.allowancesList, ...action.payload.list]
       return {
+        ...state,
         page: state.page + 1,
         hasMore: action.payload.list.length === PAGE_SIZE,
         isLoadingMore: false,
@@ -97,6 +119,20 @@ export const permissionsReducer = (
           }
           return item
         }),
+      }
+    }
+
+    case "RESET_NFT_APPROVALS":
+      return { ...state, nftApprovalsList: action.payload.list }
+
+    case "REMOVE_NFT_APPROVAL": {
+      const { collectionId, tokenId } = action.payload
+      return {
+        ...state,
+        nftApprovalsList: state.nftApprovalsList.filter(
+          (item) =>
+            !(item.collectionId === collectionId && item.tokenId === tokenId),
+        ),
       }
     }
 

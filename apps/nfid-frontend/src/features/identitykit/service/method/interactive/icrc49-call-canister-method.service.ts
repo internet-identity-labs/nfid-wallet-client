@@ -94,6 +94,8 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
       useV4: icrc49Dto.useV4,
     })
 
+    console.log("[icrc49] callResponse", callResponse)
+
     const response: RPCSuccessResponse = {
       origin: message.origin,
       jsonrpc: message.data.jsonrpc,

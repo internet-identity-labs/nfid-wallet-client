@@ -20,10 +20,26 @@ export interface CallCanisterICRC37SpendingCapProps {
   onReject: () => void
 }
 
-const unwrapVecArgs = (args: string): string => {
+const normalizeApproveArgs = (args: string): string => {
   try {
     const parsed = JSON.parse(args)
-    if (Array.isArray(parsed[0])) return JSON.stringify(parsed[0])
+    // icrc37_approve_tokens args arrive as [[{token_id, approval_info}]]
+    const vec = Array.isArray(parsed[0]) ? parsed[0] : parsed
+    const item = vec[0]
+    if (!item || typeof item !== "object") return args
+
+    const { approval_info, ...rest } = item as Record<string, unknown>
+    const flat: Record<string, unknown> = { ...rest }
+
+    if (approval_info && typeof approval_info === "object") {
+      for (const [k, v] of Object.entries(
+        approval_info as Record<string, unknown>,
+      )) {
+        flat[`approval_info.${k}`] = v
+      }
+    }
+
+    return JSON.stringify([flat])
   } catch {}
   return args
 }
@@ -59,7 +75,7 @@ const CallCanisterICRC37SpendingCap = ({
       onSecondaryButtonClick={onReject}
     >
       <div className="flex flex-col flex-1">
-        <div className="flex items-center justify-between gap-3 pt-[3px] pb-[3px] pb-[3px] pr-[10px] border border-black dark:border-white rounded-[12px]">
+        <div className="flex items-center justify-between gap-3 pt-[3px] pb-[3px] pb-[3px] pl-[3px] pr-[10px] border border-black dark:border-white rounded-[12px]">
           <ImageWithFallback
             alt={metadata.tokenName}
             src={metadata.tokenImage ?? metadata.collectionLogo ?? "#"}
@@ -74,7 +90,7 @@ const CallCanisterICRC37SpendingCap = ({
               {metadata.collectionName}
             </p>
           </div>
-          <IconCmpArrow className="w-4 h-4 text-black rotate-180 shrink-0 dark:text-white" />
+          <IconCmpArrow className="w-4 h-4 text-black rotate-180 cursor-pointer shrink-0 dark:text-white" />
         </div>
         <div className="flex items-center justify-between h-[54px] text-sm dark:text-white mt-1">
           <span>To</span>
@@ -83,7 +99,7 @@ const CallCanisterICRC37SpendingCap = ({
         <CallCanisterDetails
           canisterId={canisterId}
           sender={metadata.sender}
-          args={unwrapVecArgs(args)}
+          args={normalizeApproveArgs(args)}
         />
       </div>
     </RPCPromptTemplate>

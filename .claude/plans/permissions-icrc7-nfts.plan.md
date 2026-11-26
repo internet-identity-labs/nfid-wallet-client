@@ -3,7 +3,7 @@
 > Status: IMPLEMENTED
 > Spec: (inline — no separate spec file)
 > Created: 2026-11-24
-> Branch: `feature/sc-19807-implement-stay-signing-ui-preference-local`
+> Branch: `icrc-37-approve`
 
 ---
 

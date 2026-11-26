@@ -95,6 +95,7 @@ class Icrc49CallCanisterMethodService extends InteractiveMethodService {
     })
 
     console.log("[icrc49] callResponse", callResponse)
+    debugger
 
     const response: RPCSuccessResponse = {
       origin: message.origin,

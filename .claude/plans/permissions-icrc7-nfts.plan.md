@@ -1,6 +1,6 @@
 # Plan: Extend Permissions Screen with ICRC-7 NFT Approvals + Fix icrc37_approve_tokens Routing
 
-> Status: IMPLEMENTED
+> Status: IN PROGRESS
 > Spec: (inline — no separate spec file)
 > Created: 2026-11-24
 > Branch: `icrc-37-approve`
@@ -86,6 +86,7 @@ screen because:
 | `apps/nfid-frontend/src/features/identitykit/service/canister-calls-helpers/icrc7-transfer.ts`                  | **Deviation** — fix wrong metadata image keys (`icrc7:metadata:uri:image` → `icrc7:image`/`image`/`icrc7:thumbnail`/`thumbnail`) to match what ICRC-7 canisters actually emit                         |
 | `apps/nfid-frontend/src/features/identitykit/constants.ts`                                                      | **Deviation** — add `icrc37_approve_tokens: "Approve spending cap"`; remove unused `icrc7_transfer` entry                                                                                             |
 | `apps/nfid-frontend/src/features/identitykit/components/call-canisters/details.tsx`                             | **Deviation** — user's pre-existing UI fixes (do not overwrite)                                                                                                                                       |
+| `apps/nfid-frontend/src/features/identitykit/effects.ts`                                                        | **Deviation** — temporary `debugger` before `postMessage` to inspect response before window closes                                                                                                    |
 
 ## New Files
 

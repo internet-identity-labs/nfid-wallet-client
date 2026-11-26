@@ -43,6 +43,7 @@ export const sendResponseEffect = async (context: any, event: any) => {
   const responseData = event.output ?? event.data
 
   console.log("[sendResponse] responseData", responseData)
+  debugger
 
   if (responseData instanceof Error || responseData instanceof GenericError) {
     parent.postMessage(

@@ -13,14 +13,15 @@ export const getIcrc7TransferMetadata = async (
   const canisterId = message.data.params.canisterId
   const sender = message.data.params.sender
 
-  const [[transferArg]] = JSON.parse(args)
-  const tokenId = BigInt(String(transferArg.token_id))
+  const [transferArgs] = JSON.parse(args) as [Array<Record<string, unknown>>]
+  const firstArg = transferArgs[0]
 
   const toOwnerText =
-    transferArg.to?.owner?.__principal__ ?? transferArg.to?.owner
+    (firstArg.to as any)?.owner?.__principal__ ?? (firstArg.to as any)?.owner
 
-  const subaccountOpt: Record<string, number>[] | undefined =
-    transferArg.to?.subaccount
+  const subaccountOpt: Record<string, number>[] | undefined = (
+    firstArg.to as any
+  )?.subaccount
   const subaccountBytes = subaccountOpt?.length
     ? Object.values(subaccountOpt[0])
     : undefined
@@ -30,41 +31,69 @@ export const getIcrc7TransferMetadata = async (
     ...(subaccountBytes ? { subaccount: new Uint8Array(subaccountBytes) } : {}),
   })
 
+  const tokenIds = transferArgs.map((arg) => BigInt(String(arg.token_id)))
+
   const [collectionMeta, metadataMap] = await Promise.all([
     marketplaceService.getCollectionMetadata(canisterId),
-    marketplaceService.getTokenMetadata(canisterId, [tokenId]),
+    marketplaceService.getTokenMetadata(canisterId, tokenIds),
   ])
 
-  const entries = metadataMap.get(tokenId) ?? []
-  const getText = (key: string) => {
-    const entry = entries.find(([k]) => k === key)
-    return entry && "Text" in entry[1] ? entry[1].Text : undefined
+  const getTokenName = (tokenId: bigint, entries: Array<[string, unknown]>) => {
+    const getText = (key: string) => {
+      const entry = (entries as Array<[string, { Text?: string }]>).find(
+        ([k]) => k === key,
+      )
+      return entry && "Text" in entry[1] ? entry[1].Text : undefined
+    }
+    const getFirstText = (keys: string[]) => {
+      for (const key of keys) {
+        const v = getText(key)
+        if (v) return v
+      }
+      return undefined
+    }
+    return (
+      getFirstText(["icrc7:name", "name", "icrc97:name"]) ??
+      `${collectionMeta.name} #${tokenId}`
+    )
   }
-  const getFirstText = (keys: string[]) => {
-    for (const key of keys) {
+
+  const getTokenImage = (entries: Array<[string, unknown]>) => {
+    const getText = (key: string) => {
+      const entry = (entries as Array<[string, { Text?: string }]>).find(
+        ([k]) => k === key,
+      )
+      return entry && "Text" in entry[1] ? entry[1].Text : undefined
+    }
+    for (const key of [
+      "icrc7:image",
+      "image",
+      "icrc7:thumbnail",
+      "thumbnail",
+    ]) {
       const v = getText(key)
       if (v) return v
     }
     return undefined
   }
 
-  const tokenName =
-    getFirstText(["icrc7:name", "name", "icrc97:name"]) ??
-    `${collectionMeta.name} #${tokenId}`
-  const tokenImage = getFirstText([
-    "icrc7:image",
-    "image",
-    "icrc7:thumbnail",
-    "thumbnail",
-  ])
+  const tokens = tokenIds.map((tokenId) => {
+    const entries = metadataMap.get(tokenId) ?? []
+    return {
+      tokenId: tokenId.toString(),
+      tokenName: getTokenName(tokenId, entries),
+      tokenImage: getTokenImage(entries),
+    }
+  })
 
   return {
     collectionName: collectionMeta.name,
     collectionLogo: collectionMeta.logo,
-    tokenId: tokenId.toString(),
-    tokenName,
-    tokenImage,
+    tokenId: tokens[0].tokenId,
+    tokenName: tokens[0].tokenName,
+    tokenImage: tokens[0].tokenImage,
     toAddress,
     sender,
+    tokens,
   }
 }

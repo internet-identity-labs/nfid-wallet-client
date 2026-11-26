@@ -1,4 +1,5 @@
 import { HttpAgent, HttpAgentOptions, SignIdentity } from "@icp-sdk/core/agent"
+import { IDL } from "@icp-sdk/core/candid"
 import { IcrcLedgerCanister } from "@icp-sdk/canisters/ledger/icrc"
 import { Principal } from "@icp-sdk/core/principal"
 
@@ -40,6 +41,50 @@ const NS_PER_MS = BigInt(1_000_000)
 const PAGE_SIZE = BigInt(100)
 /** ICP allowance for a purchase expires after this, if unused. */
 const BUY_ALLOWANCE_TTL_MS = 10 * 60 * 1000
+
+interface RawTokenApproval {
+  token_id: bigint
+  approval_info: {
+    memo: [] | [Uint8Array | number[]]
+    from_subaccount: [] | [Uint8Array | number[]]
+    created_at_time: bigint
+    expires_at: [] | [bigint]
+    spender: { owner: Principal; subaccount: [] | [Uint8Array | number[]] }
+  }
+}
+
+type TokenApprovalsActor = {
+  icrc37_get_token_approvals: (
+    tokenIds: bigint[],
+    prev: [] | [RawTokenApproval],
+    take: [] | [bigint],
+  ) => Promise<RawTokenApproval[]>
+}
+
+const tokenApprovalsIdl: IDL.InterfaceFactory = ({ IDL: I }) => {
+  const Account = I.Record({
+    owner: I.Principal,
+    subaccount: I.Opt(I.Vec(I.Nat8)),
+  })
+  const ApprovalInfo = I.Record({
+    memo: I.Opt(I.Vec(I.Nat8)),
+    from_subaccount: I.Opt(I.Vec(I.Nat8)),
+    created_at_time: I.Nat64,
+    expires_at: I.Opt(I.Nat64),
+    spender: Account,
+  })
+  const TokenApproval = I.Record({
+    token_id: I.Nat,
+    approval_info: ApprovalInfo,
+  })
+  return I.Service({
+    icrc37_get_token_approvals: I.Func(
+      [I.Vec(I.Nat), I.Opt(TokenApproval), I.Opt(I.Nat)],
+      [I.Vec(TokenApproval)],
+      ["query"],
+    ),
+  })
+}
 
 export interface MarketplaceServiceOptions {
   /** Defaults to ICRC1_ORACLE_CANISTER_ID. */
@@ -223,12 +268,45 @@ export class MarketplaceService {
     }
   }
 
-  /** Removes the oracle's approval on the token. Best effort. */
+  /**
+   * Returns all ICRC-37 approvals for the given token IDs in a collection,
+   * across all spenders (not just the oracle).
+   */
+  async getTokenApprovals(
+    collectionId: string,
+    tokenIds: bigint[],
+  ): Promise<Array<{ tokenId: bigint; spender: string }>> {
+    const actor = actorBuilder<TokenApprovalsActor>(
+      collectionId,
+      tokenApprovalsIdl,
+      { agent: this.agent() },
+    )
+    const all: RawTokenApproval[] = []
+    let prev: [] | [RawTokenApproval] = []
+    for (;;) {
+      const page = await actor.icrc37_get_token_approvals(tokenIds, prev, [
+        PAGE_SIZE,
+      ])
+      all.push(...page)
+      if (page.length < Number(PAGE_SIZE)) break
+      prev = [page[page.length - 1]]
+    }
+    return all.map((a) => ({
+      tokenId: a.token_id,
+      spender: a.approval_info.spender.owner.toText(),
+    }))
+  }
+
+  /** Removes an ICRC-37 approval on the token. Defaults to the oracle spender. Best effort. */
   async revokeNftApproval(
     identity: SignIdentity,
     collectionId: string,
     tokenId: bigint,
+    spenderPrincipal?: string,
   ): Promise<void> {
+    const spenderAccount = spenderPrincipal
+      ? { owner: Principal.fromText(spenderPrincipal), subaccount: [] as [] }
+      : this.oracleAccount()
     const [result] = await callIcrc7Batch(
       this.agent(identity),
       collectionId,
@@ -236,7 +314,7 @@ export class MarketplaceService {
       [
         {
           token_id: tokenId,
-          spender: [this.oracleAccount()],
+          spender: [spenderAccount],
           from_subaccount: [],
           memo: [],
           created_at_time: [],
@@ -249,48 +327,48 @@ export class MarketplaceService {
   }
 
   /**
-   * Sends an ICRC-7 NFT from the identity's default account to `to` (a
-   * principal). Resolves with the transaction id in the collection log,
-   * or undefined if the collection's reply could not be read but the NFT
-   * reached `to`.
+   * Sends one or more ICRC-7 NFTs from the identity's default account to `to`
+   * (a principal) in a single batch call.
    */
   async transferNft(
     identity: SignIdentity,
     collectionId: string,
-    tokenId: bigint,
+    tokenIds: bigint[],
     to: string,
-  ): Promise<bigint | undefined> {
-    const [result] = await callIcrc7Batch(
+  ): Promise<void> {
+    const results = await callIcrc7Batch(
       this.agent(identity),
       collectionId,
       "icrc7_transfer",
-      [
-        {
-          to: { owner: Principal.fromText(to), subaccount: [] },
-          token_id: tokenId,
-          memo: [],
-          from_subaccount: [],
-          // Optional for transfers; leaving it out avoids the time window.
-          created_at_time: [],
-        },
-      ],
+      tokenIds.map((tokenId) => ({
+        to: { owner: Principal.fromText(to), subaccount: [] },
+        token_id: tokenId,
+        memo: [],
+        from_subaccount: [],
+        // Optional for transfers; leaving it out avoids the time window.
+        created_at_time: [],
+      })),
     )
-    if (!result) {
-      // Unknown reply shape: the new owner tells whether it went through.
-      const owner = await this.getOwner(collectionId, tokenId)
-      if (owner?.toText() === to) return undefined
-      throw new MarketplaceError({
-        kind: "transferFailed",
-        reason: "Unexpected reply",
-      })
-    }
-    if ("Err" in result) {
-      throw new MarketplaceError({
-        kind: "transferFailed",
-        reason: describeIcrcError(result.Err),
-      })
-    }
-    return result.Ok
+    await Promise.all(
+      tokenIds.map(async (tokenId, i) => {
+        const result = results[i]
+        if (!result) {
+          // Unknown reply shape: the new owner tells whether it went through.
+          const owner = await this.getOwner(collectionId, tokenId)
+          if (owner?.toText() === to) return
+          throw new MarketplaceError({
+            kind: "transferFailed",
+            reason: "Unexpected reply",
+          })
+        }
+        if ("Err" in result) {
+          throw new MarketplaceError({
+            kind: "transferFailed",
+            reason: describeIcrcError(result.Err),
+          })
+        }
+      }),
+    )
   }
 
   // ── Listings ──────────────────────────────────────────────────────────

@@ -44,7 +44,7 @@ export type PermissionsStateAction =
     }
   | {
       type: "REMOVE_NFT_APPROVAL"
-      payload: { collectionId: string; tokenId: bigint }
+      payload: { collectionId: string; tokenId: bigint; spender: string }
     }
 
 export const permissionsInitialState: PermissionsState = {
@@ -126,12 +126,16 @@ export const permissionsReducer = (
       return { ...state, nftApprovalsList: action.payload.list }
 
     case "REMOVE_NFT_APPROVAL": {
-      const { collectionId, tokenId } = action.payload
+      const { collectionId, tokenId, spender } = action.payload
       return {
         ...state,
         nftApprovalsList: state.nftApprovalsList.filter(
           (item) =>
-            !(item.collectionId === collectionId && item.tokenId === tokenId),
+            !(
+              item.collectionId === collectionId &&
+              item.tokenId === tokenId &&
+              item.spender === spender
+            ),
         ),
       }
     }

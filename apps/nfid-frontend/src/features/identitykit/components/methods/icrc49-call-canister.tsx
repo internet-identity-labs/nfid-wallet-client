@@ -25,6 +25,7 @@ const componentsMap: {
   icrc37_approve_tokens: React.lazy(
     () => import("../call-canisters/icrc37-spending-cap"),
   ),
+  icrc7_transfer: React.lazy(() => import("../call-canisters/icrc7-transfer")),
   default: React.lazy(() => import("../call-canisters/default")),
 }
 

@@ -304,7 +304,7 @@ export const TransferNFT = ({
         transfer = marketplaceService.transferNft(
           identity,
           selectedNFT.getCollectionId(),
-          getIcrc7TokenId(selectedNFT.getTokenId()),
+          [getIcrc7TokenId(selectedNFT.getTokenId())],
           values.to,
         )
       } else {

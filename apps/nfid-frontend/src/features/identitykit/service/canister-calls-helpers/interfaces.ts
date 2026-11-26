@@ -34,4 +34,5 @@ export interface ICRC7TransferMetadata {
   tokenImage?: string
   toAddress: string
   sender: string
+  tokens?: Array<{ tokenId: string; tokenName: string; tokenImage?: string }>
 }

@@ -87,12 +87,18 @@ screen because:
 | `apps/nfid-frontend/src/features/identitykit/constants.ts`                                                      | **Deviation** — add `icrc37_approve_tokens: "Approve spending cap"`; remove unused `icrc7_transfer` entry                                                                                             |
 | `apps/nfid-frontend/src/features/identitykit/components/call-canisters/details.tsx`                             | **Deviation** — user's pre-existing UI fixes (do not overwrite)                                                                                                                                       |
 | `apps/nfid-frontend/src/features/identitykit/effects.ts`                                                        | **Deviation** — temporary `debugger` before `postMessage` to inspect response before window closes                                                                                                    |
+| `apps/nfid-frontend/src/features/identitykit/service/canister-calls-helpers/interfaces.ts`                      | **Deviation** — add optional `tokens` array to `ICRC7TransferMetadata` for multi-token transfer                                                                                                       |
+| `packages/integration/src/lib/marketplace/marketplace-service.ts`                                               | **Deviation** — `transferNft`: change `tokenId: bigint` → `tokenIds: bigint[]`; add `getTokenApprovals(collectionId, tokenIds)` using `icrc37_get_token_approvals`                                    |
+| `packages/integration/src/lib/_ic_api/icrc7.ts`                                                                 | **Deviation** — add `TokenApproval` record type + `icrc37_get_token_approvals` method to the hand-crafted minimal IDL factory                                                                         |
+| `packages/integration/src/lib/_ic_api/icrc7.d.ts`                                                               | **Deviation** — add `TokenApproval` interface + `icrc37_get_token_approvals` method to the `_SERVICE` type                                                                                            |
+| `apps/nfid-frontend/src/features/transfer-modal/components/send-nft.tsx`                                        | **Deviation** — caller already updated: pass `[getIcrc7TokenId(selectedNFT.getTokenId())]` array to `transferNft`                                                                                     |
 
 ## New Files
 
 | File                                                                                           | Type           | Purpose                                                                                                            |
 | ---------------------------------------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------ |
 | `apps/nfid-frontend/src/features/identitykit/service/canister-calls-helpers/icrc37-approve.ts` | Service helper | Reads `approval_info.spender.owner` from approve args; returns `ICRC7TransferMetadata` with spender as `toAddress` |
+| `apps/nfid-frontend/src/features/identitykit/components/call-canisters/icrc7-transfer.tsx`     | Component      | **Deviation** — wallet UI for `icrc7_transfer`; shows each token image+name + recipient; supports multi-token      |
 
 ---
 

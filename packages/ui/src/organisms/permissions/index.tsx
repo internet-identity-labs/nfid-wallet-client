@@ -56,7 +56,6 @@ export interface Allowance {
 export interface PermissionsProps {
   allowances?: Allowance[]
   nftApprovals?: NftApproval[]
-  isNftApprovalsLoading?: boolean
   onRevokeNftApproval?: (nft: NftApproval) => Promise<void>
   isLoading: boolean
   isLoadingMore: boolean
@@ -70,7 +69,6 @@ export interface PermissionsProps {
 export const Permissions: FC<PermissionsProps> = ({
   allowances,
   nftApprovals,
-  isNftApprovalsLoading,
   onRevokeNftApproval,
   isLoading,
   isLoadingMore,
@@ -264,7 +262,6 @@ export const Permissions: FC<PermissionsProps> = ({
   }, [allowances, nftApprovals, sorting])
 
   const hasAnyRows = sortedRows.length > 0
-  const showLoading = isLoading || isNftApprovalsLoading
 
   return (
     <>
@@ -273,7 +270,7 @@ export const Permissions: FC<PermissionsProps> = ({
         innerClassName="!px-0"
         titleClassName="!px-0"
       >
-        {showLoading ? (
+        {isLoading ? (
           <table className="w-full">
             <TableTokenSkeleton
               tableRowsAmount={5}

@@ -12,7 +12,7 @@ import { NFIDTheme } from "frontend/App"
 import { Permissions } from "packages/ui/src/organisms/permissions"
 import { ftService, PAGE_SIZE } from "frontend/integration/ft/ft-service"
 import { Principal } from "@icp-sdk/core/principal"
-import { useSWR, useSWRWithTimestamp } from "@nfid/swr"
+import { useSWRWithTimestamp } from "@nfid/swr"
 import { authState } from "@nfid/integration"
 import { fetchTokens } from "../fungible-token/utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
@@ -48,6 +48,7 @@ const PermissionsPage: FC<PermissionsPageProps> = memo(
     const publicKey = authState.getUserIdData().publicKey
     const [isLoadingRevoke, setIsLoadingRevoke] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isAllowancesLoading, setIsAllowancesLoading] = useState(false)
 
     const { data: tokens } = useSWRWithTimestamp("tokens", fetchTokens, {
       revalidateOnFocus: false,
@@ -75,18 +76,28 @@ const PermissionsPage: FC<PermissionsPageProps> = memo(
           const listings = await marketplaceService.getListingsBySeller(seller)
           await Promise.all(
             state.nftApprovalsList.map(async (nft) => {
-              const matching = listings.find(
-                (l) =>
-                  l.collectionId === nft.collectionId &&
-                  l.tokenId === nft.tokenId,
-              )
-              if (matching) {
-                await marketplaceService.cancelListing(identity, matching.id)
+              const isOracleSpender = nft.spender === ICRC1_ORACLE_CANISTER_ID
+              if (isOracleSpender) {
+                const matching = listings.find(
+                  (l) =>
+                    l.collectionId === nft.collectionId &&
+                    l.tokenId === nft.tokenId,
+                )
+                if (matching) {
+                  await marketplaceService.cancelListing(identity, matching.id)
+                } else {
+                  await marketplaceService.revokeNftApproval(
+                    identity,
+                    nft.collectionId,
+                    nft.tokenId,
+                  )
+                }
               } else {
                 await marketplaceService.revokeNftApproval(
                   identity,
                   nft.collectionId,
                   nft.tokenId,
+                  nft.spender,
                 )
               }
             }),
@@ -103,92 +114,146 @@ const PermissionsPage: FC<PermissionsPageProps> = memo(
       }
     }
 
-    const { data: initialPage, isLoading } = useSWR(
-      initedTokens ? ["allowances", 0] : null,
-      () =>
-        ftService.getIcrc2Allowances(
-          initedTokens!,
+    useEffect(() => {
+      if (!initedTokens) return
+      let cancelled = false
+
+      setIsAllowancesLoading(true)
+      ftService
+        .getIcrc2Allowances(
+          initedTokens,
           Principal.from(publicKey),
           0,
           PAGE_SIZE,
-        ),
-      { revalidateOnFocus: false },
-    )
-
-    useEffect(() => {
-      if (initialPage) {
-        dispatch({ type: "RESET", payload: { list: initialPage } })
-      }
-    }, [initialPage])
-
-    const { data: nftApprovals, isLoading: isNftApprovalsLoading } = useSWR(
-      publicKey ? "nft-approvals" : null,
-      async () => {
-        const principal = Principal.from(publicKey)
-        const ownedTokens = await icrc7Source.getUserTokens(principal, false)
-        const icrc7Tokens = ownedTokens.filter(
-          (t) => t.marketPlace === MarketPlace.ICRC7,
         )
-        const results = await Promise.all(
-          icrc7Tokens.map(async (token) => {
-            try {
-              const tokenId = BigInt(token.tokenNumber)
-              const approved = await marketplaceService.isApproved(
-                token.collectionId,
-                tokenId,
-              )
-              if (!approved) return null
-              const approval: NftApproval = {
-                collectionId: token.collectionId,
-                collectionName: token.collectionName,
-                tokenId,
-                tokenName: token.name ?? `#${token.tokenNumber}`,
-                spender: ICRC1_ORACLE_CANISTER_ID,
-              }
-              if (token.collectionLogo)
-                approval.collectionLogo = token.collectionLogo
-              if (token.image) approval.tokenImage = token.image
-              return approval
-            } catch {
-              return null
-            }
-          }),
-        )
-        return results.filter((r): r is NftApproval => r !== null)
-      },
-      { revalidateOnFocus: false },
-    )
-
-    useEffect(() => {
-      if (nftApprovals !== undefined) {
-        dispatch({
-          type: "RESET_NFT_APPROVALS",
-          payload: { list: nftApprovals },
+        .then((list) => {
+          if (cancelled) return
+          dispatch({ type: "RESET", payload: { list } })
         })
+        .catch(() => {
+          if (cancelled) return
+          dispatch({ type: "RESET", payload: { list: [] } })
+        })
+        .finally(() => {
+          if (!cancelled) setIsAllowancesLoading(false)
+        })
+
+      return () => {
+        cancelled = true
       }
-    }, [nftApprovals])
+    }, [initedTokens, publicKey])
+
+    const [isNftApprovalsLoading, setIsNftApprovalsLoading] = useState(false)
+
+    useEffect(() => {
+      if (!publicKey) return
+      let cancelled = false
+
+      setIsNftApprovalsLoading(true)
+      const principal = Principal.from(publicKey)
+
+      icrc7Source
+        .getUserTokens(principal, false)
+        .then(async (ownedTokens) => {
+          const icrc7Tokens = ownedTokens.filter(
+            (t) => t.marketPlace === MarketPlace.ICRC7,
+          )
+
+          const byCollection = new Map<string, typeof icrc7Tokens>()
+          for (const token of icrc7Tokens) {
+            const bucket = byCollection.get(token.collectionId) ?? []
+            bucket.push(token)
+            byCollection.set(token.collectionId, bucket)
+          }
+
+          const tokenById = new Map(
+            icrc7Tokens.map((t) => [`${t.collectionId}:${t.tokenNumber}`, t]),
+          )
+
+          const approvals: NftApproval[] = []
+          await Promise.all(
+            [...byCollection.entries()].map(async ([collectionId, tokens]) => {
+              try {
+                const tokenIds = tokens.map((t) => BigInt(t.tokenNumber))
+                const pairs = await marketplaceService.getTokenApprovals(
+                  collectionId,
+                  tokenIds,
+                )
+                for (const { tokenId, spender } of pairs) {
+                  const token = tokenById.get(`${collectionId}:${tokenId}`)
+                  if (!token) continue
+                  const approval: NftApproval = {
+                    collectionId: token.collectionId,
+                    collectionName: token.collectionName,
+                    tokenId,
+                    tokenName: token.name ?? `#${token.tokenNumber}`,
+                    spender,
+                  }
+                  if (token.collectionLogo)
+                    approval.collectionLogo = token.collectionLogo
+                  if (token.image) approval.tokenImage = token.image
+                  approvals.push(approval)
+                }
+              } catch (e) {
+                console.error("getTokenApprovals failed for", collectionId, e)
+              }
+            }),
+          )
+          return approvals
+        })
+        .then((list) => {
+          if (cancelled) return
+          dispatch({ type: "RESET_NFT_APPROVALS", payload: { list } })
+        })
+        .catch((e) => {
+          console.error("NFT approvals load failed", e)
+          if (cancelled) return
+          dispatch({ type: "RESET_NFT_APPROVALS", payload: { list: [] } })
+        })
+        .finally(() => {
+          if (!cancelled) setIsNftApprovalsLoading(false)
+        })
+
+      return () => {
+        cancelled = true
+      }
+    }, [publicKey])
 
     const handleNftRevoke = useCallback(
       async (nft: NftApproval) => {
         if (!identity) return
-        const seller = Principal.from(publicKey)
-        const listings = await marketplaceService.getListingsBySeller(seller)
-        const matching = listings.find(
-          (l) =>
-            l.collectionId === nft.collectionId && l.tokenId === nft.tokenId,
-        )
-        if (matching) {
-          await marketplaceService.cancelListing(identity, matching.id)
+        const isOracleSpender = nft.spender === ICRC1_ORACLE_CANISTER_ID
+        if (isOracleSpender) {
+          const seller = Principal.from(publicKey)
+          const listings = await marketplaceService.getListingsBySeller(seller)
+          const matching = listings.find(
+            (l) =>
+              l.collectionId === nft.collectionId && l.tokenId === nft.tokenId,
+          )
+          if (matching) {
+            await marketplaceService.cancelListing(identity, matching.id)
+          } else {
+            await marketplaceService.revokeNftApproval(
+              identity,
+              nft.collectionId,
+              nft.tokenId,
+            )
+          }
         } else {
           await marketplaceService.revokeNftApproval(
             identity,
             nft.collectionId,
             nft.tokenId,
+            nft.spender,
           )
         }
         dispatch({
           type: "REMOVE_NFT_APPROVAL",
-          payload: { collectionId: nft.collectionId, tokenId: nft.tokenId },
+          payload: {
+            collectionId: nft.collectionId,
+            tokenId: nft.tokenId,
+            spender: nft.spender,
+          },
         })
       },
       [identity, publicKey],
@@ -268,11 +333,8 @@ const PermissionsPage: FC<PermissionsPageProps> = memo(
           <Permissions
             allowances={flattenedAllowances}
             nftApprovals={state.nftApprovalsList}
-            isNftApprovalsLoading={isNftApprovalsLoading}
             onRevokeNftApproval={handleNftRevoke}
-            isLoading={
-              isLoading || (!initialPage && state.allowancesList.length === 0)
-            }
+            isLoading={isAllowancesLoading || isNftApprovalsLoading}
             loadMore={loadMore}
             isLoadingMore={state.isLoadingMore}
             hasMore={state.hasMore}

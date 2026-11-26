@@ -227,13 +227,14 @@ export const Tokens: FC<TokensProps> = ({
             />
           </div>
         )}
-        <div className="mb-[20px] overflow-x-auto scrollbar scrollbar-w-4 scrollbar-thumb-gray-300 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+        <div className="mb-[20px] overflow-x-auto lg:overflow-visible scrollbar scrollbar-w-4 scrollbar-thumb-gray-300 scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
           <table className="w-full text-left">
             <thead className="text-secondary dark:text-zinc-500 h-[40px] hidden md:table-header-group">
               <tr className="text-sm font-bold leading-5">
+                <th></th>
                 <th
                   className={clsx(
-                    "min-w-[100px] pr-[30px]",
+                    "min-w-[100px] pr-[30px] pl-[22px]",
                     isVault ? "w-[40%]" : "w-[25%]",
                   )}
                 >
@@ -271,6 +272,7 @@ export const Tokens: FC<TokensProps> = ({
                   </span>
                 </th>
                 <th className="w-[30px] lg:w-[50px]"></th>
+                <th></th>
               </tr>
             </thead>
             <tbody className="h-16 text-sm text-black">

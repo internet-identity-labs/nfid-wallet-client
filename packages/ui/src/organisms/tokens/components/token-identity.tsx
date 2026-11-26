@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { HTMLAttributes, FC } from "react"
 import { FT } from "src/integration/ft/ft"
@@ -69,7 +70,7 @@ export const TokenIdentity: FC<TokenIdentityProps> = ({
       <div
         className={clsx(
           "sm:w-[40px] sm:h-[40px] mr-[12px] rounded-full bg-zinc-50 relative",
-          `w[${mobileSize}px] h-[${mobileSize}px]`,
+          `w-[${mobileSize}px] h-[${mobileSize}px]`,
         )}
       >
         <ImageWithFallback

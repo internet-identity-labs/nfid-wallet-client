@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { FC } from "react"
 import { CopyAddress, IDropdownPosition } from "@nfid-frontend/ui"
@@ -33,7 +34,14 @@ export const AddressBookRow: FC<AddressBookRowProps> = ({
     <>
       <tr
         id={`address_${address.id}`}
-        className="py-5 text-black border-b border-gray-100 dark:border-zinc-600 md:py-0 md:border-0 dark:text-white h-[65px]"
+        className={clsx(
+          "py-5 text-black border-b border-gray-100 dark:border-zinc-600 md:py-0 md:border-0 dark:text-white h-[65px]",
+          "group hover:bg-gray-50 hover:dark:bg-zinc-800 transition duration-200 relative",
+          "after:absolute after:bg-gray-50 dark:after:bg-zinc-800 after:w-[30px] after:h-full after:right-[-30px]",
+          "before:absolute before:bg-gray-50 dark:before:bg-zinc-800 before:w-[30px] before:h-full before:left-[-30px]",
+          "after:opacity-0 hover:after:opacity-100 after:transition after:duration-200",
+          "before:opacity-0 hover:before:opacity-100 before:transition before:duration-200",
+        )}
       >
         <td
           id={`address_${address.id}_name`}
@@ -43,7 +51,7 @@ export const AddressBookRow: FC<AddressBookRowProps> = ({
             "min-w-0 w-[100%] md:w-auto mb-5 mt-2.5 md:mt-0 md:mb-0",
           )}
         >
-          <div className="flex items-center gap-2 min-w-0">
+          <div className="flex items-center min-w-0 gap-2">
             {onToggleFavorite && (
               <FavoriteButton
                 id={`address_${address.id}_favorite`}

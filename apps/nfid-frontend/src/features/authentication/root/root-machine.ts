@@ -8,6 +8,7 @@ import {
   RegistrationDisabledError,
   getAllWalletsFromThisDevice,
   recoveryProvisioningService,
+  rememberMeService,
 } from "@nfid/integration"
 
 import { isWebAuthNSupported } from "frontend/integration/device"
@@ -43,6 +44,7 @@ export interface AuthenticationContext {
   isEmbed?: boolean
   wallets?: ExistingWallet[]
   recoveryProvisioningPlan?: RecoveryProvisioningPlan
+  wasRemembered?: boolean
 }
 
 const AuthenticationMachine = setup({
@@ -76,6 +78,9 @@ const AuthenticationMachine = setup({
       async ({ input }: { input: { plan: RecoveryProvisioningPlan } }) =>
         recoveryProvisioningService.checkAccount(input.plan),
     ),
+    doNotRememberMe: fromPromise(async () =>
+      rememberMeService.doNotRememberMe(),
+    ),
   },
   guards: {
     hasWalletsAndPasskeySupported: ({ event }: { event: any }) =>
@@ -90,6 +95,8 @@ const AuthenticationMachine = setup({
     needsRecoveryPhrase: ({ event }: { event: any }) => {
       return event.output?.steps[0] === RecoveryProvisioningMode.RECOVERY_PHRASE
     },
+    isRemembered: ({ context }: { context: AuthenticationContext }) =>
+      !!context.wasRemembered,
   },
   actions: {
     assignWallets: assign({
@@ -139,6 +146,7 @@ const AuthenticationMachine = setup({
   id: "auth-machine",
   context: ({ input }) => ({
     wallets: [],
+    wasRemembered: rememberMeService.isRemembered(),
     ...input,
   }),
   output: ({ context }: { context: AuthenticationContext }) => ({
@@ -193,7 +201,7 @@ const AuthenticationMachine = setup({
         },
         AUTHENTICATED: {
           actions: "assignAuthSession",
-          target: "End",
+          target: "CheckSignedIn",
         },
         AUTH_WITH_PASSKEY: {
           actions: "assignAuthSession",
@@ -212,7 +220,7 @@ const AuthenticationMachine = setup({
         BACK: "AuthSelection",
         AUTHENTICATED: {
           actions: "assignAuthSession",
-          target: "End",
+          target: "CheckSignedIn",
         },
       },
     },
@@ -303,7 +311,7 @@ const AuthenticationMachine = setup({
       on: {
         BACK: "AuthSelection",
         AUTHENTICATED: {
-          target: "End",
+          target: "CheckSignedIn",
           actions: "assignAuthSession",
         },
         AUTH_WITH_RECOVERY_PHRASE: {
@@ -350,9 +358,9 @@ const AuthenticationMachine = setup({
             actions: "assignRecoveryProvisioningPlan",
             target: "AddPasskeys",
           },
-          { target: "End" },
+          { target: "CheckSignedIn" },
         ],
-        onError: { target: "End" },
+        onError: { target: "CheckSignedIn" },
       },
     },
     VerifyPasskeyProvisioning: {
@@ -362,7 +370,7 @@ const AuthenticationMachine = setup({
           plan: context.recoveryProvisioningPlan!,
         }),
         onDone: { target: "AddPasskeysSuccess" },
-        onError: { target: "End" },
+        onError: { target: "CheckSignedIn" },
       },
     },
     VerifyRecoveryProvisioning: {
@@ -371,8 +379,8 @@ const AuthenticationMachine = setup({
         input: ({ context }: { context: AuthenticationContext }) => ({
           plan: context.recoveryProvisioningPlan!,
         }),
-        onDone: { target: "End" },
-        onError: { target: "End" },
+        onDone: { target: "CheckSignedIn" },
+        onError: { target: "CheckSignedIn" },
       },
     },
     AddPasskeys: {
@@ -394,8 +402,27 @@ const AuthenticationMachine = setup({
     AddPasskeysSuccess: {
       on: {
         DONE: {
-          target: "End",
+          target: "CheckSignedIn",
         },
+      },
+    },
+    CheckSignedIn: {
+      always: [
+        { guard: "isRemembered", target: "End" },
+        { target: "StaySignedIn" },
+      ],
+    },
+    StaySignedIn: {
+      on: {
+        STAY_SIGNED_IN: { target: "End" },
+        DO_NOT_STAY_SIGNED_IN: { target: "DoNotRememberMe" },
+      },
+    },
+    DoNotRememberMe: {
+      invoke: {
+        src: "doNotRememberMe",
+        onDone: { target: "End" },
+        onError: { target: "End" },
       },
     },
     End: {

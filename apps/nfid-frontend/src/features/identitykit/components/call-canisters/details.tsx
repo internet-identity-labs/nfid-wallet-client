@@ -52,6 +52,7 @@ export const CallCanisterDetails = ({
       >
         Transaction details
       </p>
+
       <div
         className={clsx(
           showDetails ? "block" : "hidden",

@@ -1,115 +1,87 @@
 # Spec: Stay Signing UI Preference & Local Storage Handling
 
 > Status: APPROVED
-> Created: 2026-11-25
+> Created: 2026-11-25 · Revised: 2026-11-27
 
 ## Overview
 
-Add a "Stay signed in" checkbox to the `ChooseWallet` and `AuthSelection` auth
-screens. When the user completes authentication with the checkbox **unchecked**
-(the default), `rememberMeService.doNotRememberMe()` is called after the auth
-machine reaches `End`, switching storage to `MEMORY` mode so that the session
-clears on manual logout, timeout, or tab close. When the checkbox is **checked**,
-the existing `DISK` behavior is preserved — nothing extra is called.
-
-The checkbox preference is transient in-session state (plain `useState`); it is
-**not** written to `localStorage` or any store.
+After every successful authentication the machine passes through two new states
+before `End`. `CheckSignedIn` is a guard that auto-skips to `End` when the user
+was already remembered at page load (`wasRemembered` captured at machine init,
+before auth writes `anchor` to localStorage); otherwise it transitions to
+`StaySignedIn`, which shows a UI screen where the user chooses whether to persist
+their session. Choosing "yes" goes to `End` (DISK mode — the default); choosing
+"no" awaits `rememberMeService.doNotRememberMe()` in a `DoNotRememberMe` state
+then goes to `End` (MEMORY mode — session cleared on logout/tab close).
 
 ## Scope
 
 - **App/area:** auth flow (`apps/nfid-frontend`)
-- **Entry point:** `ChooseWallet` and `AuthSelection` screens, rendered by
-  `AuthenticationCoordinator`
-- **Exit state:** auth flow completes normally; `doNotRememberMe()` is called
-  as a fire-and-forget side-effect after the machine enters `End` if the
-  checkbox was unchecked
+- **Entry point:** every auth path that previously targeted `End` in the root machine
+- **Exit state:** auth flow completes normally; storage mode is set before `End`
 
 ### Files touched
 
-| File                                                                  | Change                                                                                             |
-| --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `packages/ui/src/organisms/authentication/choose-wallet/index.tsx`    | Add `staySignedIn` + `onStaySignedInChange` props; render checkbox                                 |
-| `packages/ui/src/organisms/authentication/auth-selection/index.tsx`   | Same as above                                                                                      |
-| `apps/nfid-frontend/src/features/authentication/root/coordinator.tsx` | Hold `useState(false)` for `staySignedIn`; pass to both screens; call `doNotRememberMe()` on `End` |
+| File                                                                       | Change                                                                                                                                                                                                    |
+| -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/nfid-frontend/src/features/authentication/root/root-machine.ts`      | Add `wasRemembered` context field; `isRemembered` guard; `doNotRememberMeService` actor; `CheckSignedIn`, `StaySignedIn`, `DoNotRememberMe` states; redirect all auth-completion paths to `CheckSignedIn` |
+| `apps/nfid-frontend/src/features/authentication/root/coordinator.tsx`      | Add `StaySignedIn` case                                                                                                                                                                                   |
+| `packages/ui/src/organisms/authentication/stay-signed-in/index.tsx`        | `StaySignedIn` UI component (layout provided by engineer)                                                                                                                                                 |
+| `packages/ui/src/organisms/authentication/stay-signed-in/stay-sign-in.png` | Illustration asset                                                                                                                                                                                        |
 
-## User Flow
+## State Machine Design
 
-1. User lands on `ChooseWallet` or `AuthSelection`.
-2. A "Stay signed in" checkbox is visible, **unchecked by default**.
-3. User optionally checks the box.
-4. User completes authentication via any path (passkey, email, Google, II, recovery phrase…).
-5. The XState machine transitions to `End`.
-6. If the checkbox was **unchecked**: coordinator calls
-   `rememberMeService.doNotRememberMe()` (fire-and-forget, errors logged but
-   not surfaced). Storage switches to `MEMORY` mode — session keys are cleared
-   on logout or tab close.
-7. If the checkbox was **checked**: no extra call; storage stays `DISK`.
+```
+… any auth path … → CheckSignedIn → (wasRemembered guard) → End
+                                  ↘ StaySignedIn → STAY_SIGNED_IN          → End
+                                                 → DO_NOT_STAY_SIGNED_IN   → DoNotRememberMe → End
+```
+
+### `CheckSignedIn`
+
+- `always`: if `context.wasRemembered` → `End` (auto-skip)
+- else → `StaySignedIn`
+
+### `StaySignedIn`
+
+- `STAY_SIGNED_IN` → `End`
+- `DO_NOT_STAY_SIGNED_IN` → `DoNotRememberMe`
+
+### `DoNotRememberMe`
+
+- Invokes `rememberMeService.doNotRememberMe()` as a promise actor
+- `onDone` / `onError` → `End` (error is logged; auth always completes)
+
+### Events added to machine
+
+| Event                   | From state     |
+| ----------------------- | -------------- |
+| `STAY_SIGNED_IN`        | `StaySignedIn` |
+| `DO_NOT_STAY_SIGNED_IN` | `StaySignedIn` |
 
 ## Component States
 
-| State   | Trigger                        | UI Behavior                                               |
-| ------- | ------------------------------ | --------------------------------------------------------- |
-| default | screen mount                   | checkbox unchecked                                        |
-| checked | user clicks checkbox           | checkbox checked                                          |
-| success | auth completes (machine → End) | no visual change; `doNotRememberMe()` called if unchecked |
-
-No loading, empty, or error state on the checkbox itself.
+| State             | Trigger                       | UI Behavior                    |
+| ----------------- | ----------------------------- | ------------------------------ |
+| `CheckSignedIn`   | every auth completion         | no UI — instant guard check    |
+| `StaySignedIn`    | `wasRemembered` = false       | show "Stay signed in?" screen  |
+| `DoNotRememberMe` | `DO_NOT_STAY_SIGNED_IN` event | no UI — awaits async migration |
 
 ## Data & State Design
 
 - **Fetch:** none
-- **New state:** `const [staySignedIn, setStaySignedIn] = useState(() => rememberMeService.isRemembered())` in
-  `AuthenticationCoordinator` — initialised from `isRemembered()` so returning users
-  (anchor in localStorage) see the box pre-checked; shared across both screens
-- **Mutations / side effects:**
-  - A `useEffect` subscribes directly to the `actor` (not React state). When the
-    machine transitions to `End` and `!staySignedIn`, calls
-    `rememberMeService.doNotRememberMe().catch(console.error)`.
-    Actor subscriptions fire synchronously during the machine transition — before
-    React re-renders and before the outer coordinator unmounts this component —
-    so the call is guaranteed to execute for all auth paths (passkey, Google, II, email…).
-  - Leverages the already-implemented `rememberMeService` from
-    `packages/integration/src/lib/remember-me/remember-me.service.ts`
-
-## Checkbox Prop Interface (new props on both UI components)
-
-```ts
-staySignedIn: boolean
-onStaySignedInChange: (value: boolean) => void
-```
-
-The checkbox renders at the bottom of each screen, above any footer buttons,
-using the existing `Checkbox` atom from `@nfid-frontend/ui`. Label: **"Stay
-signed in"**.
-
-## Accessibility
-
-- Checkbox uses the existing accessible `Checkbox` component (Radix-based) —
-  keyboard navigation and `aria-label` are handled by the primitive.
-- No additional a11y requirements.
-
-## Responsive Behavior
-
-- Mobile and desktop: identical placement (no breakpoint differences).
+- **New context field:** `wasRemembered: boolean` — set once at machine creation via `rememberMeService.isRemembered()`, before any auth writes `anchor` to localStorage
+- **Mutations:** `rememberMeService.doNotRememberMe()` awaited in `DoNotRememberMe` state
+- **Storage:** leverages existing `rememberMeService` from `packages/integration`
 
 ## Edge Cases
 
-- **`doNotRememberMe()` already in `MEMORY` mode** — `rememberMeService` treats
-  this as a no-op; safe to call.
-- **Auth fails partway** — machine never reaches `End`; `doNotRememberMe()` is
-  never called; preference has no effect.
-- **User navigates between `ChooseWallet` ↔ `AuthSelection`** — `staySignedIn`
-  state lives in the coordinator, so the checkbox value persists across the
-  transition.
-- **`doNotRememberMe()` throws** — error is caught and `console.error`-logged;
-  the app continues normally (session stays DISK — safer than failing auth).
+- **Returning user** (`wasRemembered` = true): `CheckSignedIn` skips directly to `End` — no UI shown
+- **New / opted-out user** (`wasRemembered` = false): `StaySignedIn` screen shown
+- **`doNotRememberMe()` fails**: error caught; machine still proceeds to `End` — session stays DISK (safer default)
+- **`anchor` written during auth**: irrelevant — `wasRemembered` was captured before auth ran
 
 ## Out of Scope
 
-- Persisting the preference across sessions (the checkbox always resets to
-  unchecked on next login).
-- Showing a modal (the checkbox is inline, replacing any modal-based flow).
-- Embed / iframe surface changes.
-- i18n / localization.
-- Animations or transitions on the checkbox.
-- Changes to the XState root machine itself.
+- Checkbox on `ChooseWallet` / `AuthSelection` screens
+- i18n, animations, embed surface

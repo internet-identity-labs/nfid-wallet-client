@@ -1,46 +1,49 @@
 # Plan: Stay Signing UI Preference & Local Storage Handling
 
-> Status: VERIFIED
+> Status: IN PROGRESS
 > Spec: .claude/specs/stay-signing-preference.spec.md
-> Created: 2026-11-25
+> Created: 2026-11-25 · Revised: 2026-11-27
 > Branch: `feature/sc-19807-implement-stay-signing-ui-preference-local`
 
 ## New Files
 
-None.
+| File                                                                       | Change                      |
+| -------------------------------------------------------------------------- | --------------------------- |
+| `packages/ui/src/organisms/authentication/stay-signed-in/index.tsx`        | `StaySignedIn` UI component |
+| `packages/ui/src/organisms/authentication/stay-signed-in/stay-sign-in.png` | Illustration asset          |
 
 ## Modified Files
 
-| File                                                                  | Change                                                                                    |
-| --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `packages/ui/src/organisms/authentication/choose-wallet/index.tsx`    | Add `staySignedIn` + `onStaySignedInChange` props; render `Checkbox`                      |
-| `packages/ui/src/organisms/authentication/auth-selection/index.tsx`   | Add `staySignedIn` + `onStaySignedInChange` props; render `Checkbox`                      |
-| `apps/nfid-frontend/src/features/authentication/root/coordinator.tsx` | Add `useState(false)` for `staySignedIn`; pass to both screens; write to module-level ref |
-| `apps/nfid-frontend/src/features/authentication/nfid/coordinator.tsx` | Call `doNotRememberMe()` before navigate in "End" effect, reading the module-level ref    |
+| File                                                                  | Change                                                                                                                                                                                                                                                                                                    |
+| --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/nfid-frontend/src/features/authentication/root/root-machine.ts` | Import `rememberMeService`; add `wasRemembered` to context (captured at machine init); add `isRemembered` guard reading `context.wasRemembered`; add `doNotRememberMeService` actor; add `CheckSignedIn`, `StaySignedIn`, `DoNotRememberMe` states; redirect all auth-completion paths to `CheckSignedIn` |
+| `apps/nfid-frontend/src/features/authentication/root/coordinator.tsx` | Add `StaySignedIn` case; import `StaySignedIn` component; add debug `console.log`                                                                                                                                                                                                                         |
 
 ## Implementation Checklist
 
-### Components — UI organisms
+### State machine
 
-- [ ] **`ChooseWallet`** — add `staySignedIn: boolean` and `onStaySignedInChange: (v: boolean) => void` to `ChooseWalletProps`; render `<Checkbox id="stay-signed-in-choose" value="staySignedIn" isChecked={staySignedIn} onChange={(_, ) => onStaySignedInChange(!staySignedIn)} labelText="Stay signed in" />` at the bottom of the component, above the "Use a different wallet" button
+- [x] `root-machine.ts` — import `rememberMeService` from `@nfid/integration`
+- [x] `root-machine.ts` — add `wasRemembered: rememberMeService.isRemembered()` to machine context initializer (captured before auth writes `anchor`)
+- [x] `root-machine.ts` — add `isRemembered` guard: `({ context }) => !!context.wasRemembered`
+- [x] `root-machine.ts` — add `doNotRememberMeService` actor: `fromPromise(() => rememberMeService.doNotRememberMe())`
+- [x] `root-machine.ts` — add `CheckSignedIn` state with `always` guard
+- [x] `root-machine.ts` — add `StaySignedIn` state: `STAY_SIGNED_IN → End`, `DO_NOT_STAY_SIGNED_IN → DoNotRememberMe`
+- [x] `root-machine.ts` — add `DoNotRememberMe` state: awaits `doNotRememberMeService`, then `End`
+- [x] `root-machine.ts` — redirect all auth-completion `target: "End"` paths to `target: "CheckSignedIn"`
 
-- [ ] **`AuthSelection`** — add same two props to `AuthSelectionProps`; render identical `<Checkbox>` below the "Other connection options" button
+### Coordinator
 
-### Coordinator wiring
-
-- [x] **`coordinator.tsx`** — `useState(() => rememberMeService.isRemembered())` for initial checkbox state; pass props to both screens; `useEffect` subscribes to `actor` directly (not React state) so the subscription fires synchronously on machine transition — before the outer coordinator unmounts this component — and calls `doNotRememberMe()` if `!staySignedIn`
+- [x] `coordinator.tsx` — import `StaySignedIn` from `packages/ui/src/organisms/authentication/stay-signed-in`
+- [x] `coordinator.tsx` — add `state.matches("StaySignedIn")` case wired to `STAY_SIGNED_IN` / `DO_NOT_STAY_SIGNED_IN`
 
 ### Verification
 
 - [ ] `yarn nx lint nfid-wallet-client` — zero new errors
 - [ ] `npx tsc --noEmit -p apps/nfid-frontend/tsconfig.app.json` — zero errors
-- [ ] `yarn nx test nfid-wallet-client` — no new failures
-- [ ] Manual smoke test: dev server, verify checkbox appears on both screens; unchecked → after login `localStorage.getItem("anchor")` is null; checked → `anchor` persists
 
 ## Risks & Notes
 
-- `rememberMeService.doNotRememberMe()` is idempotent (no-op if already MEMORY) — safe to call.
-- `Checkbox` `onChange` signature is `(isChecked: boolean, value: string) => void` where `isChecked` is the **previous** value, so toggle with `!isChecked` (or `onStaySignedInChange(!staySignedIn)`).
-- Actor subscription fires synchronously on machine transition; re-subscribes on `staySignedIn` change via `[actor, staySignedIn]` deps so the closure is never stale. `doNotRememberMe()` is idempotent so multiple calls are safe.
-- No XState machine changes required.
-- No new files — all changes are additive props on existing components.
+- `wasRemembered` is captured at machine creation time — before any auth writes `anchor` to localStorage. This is the key fix: checking `isRemembered()` after auth always returns `true` because auth itself writes `anchor`.
+- `DoNotRememberMe` is an async invoke state so the machine awaits `doNotRememberMe()` before proceeding to `End`.
+- `CheckSignedIn` has no UI; the `always` transition fires synchronously before React re-renders.

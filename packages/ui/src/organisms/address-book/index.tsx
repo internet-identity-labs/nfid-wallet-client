@@ -1,3 +1,4 @@
+/* eslint-disable @nx/enforce-module-boundaries */
 import ProfileContainer from "packages/ui/src/atoms/profile-container/Container"
 import { FC, useMemo, useState } from "react"
 
@@ -200,7 +201,7 @@ export const AddressBook: FC<AddressBookProps> = ({
                 Add contact
               </Button>
             </div>
-            <div className="overflow-scroll md:overflow-auto">
+            <div className="overflow-scroll md:overflow-auto xl:overflow-visible">
               <table className="w-full text-left min-w-[1000px]">
                 <thead className="text-secondary dark:text-zinc-500 h-[40px]">
                   <tr className="text-sm font-bold leading-5">
@@ -210,7 +211,7 @@ export const AddressBook: FC<AddressBookProps> = ({
                       onMouseEnter={() => setIsHovered(true)}
                       onMouseLeave={() => setIsHovered(false)}
                     >
-                      <span className="flex whitespace-nowrap items-center gap-[6px]">
+                      <span className="flex whitespace-nowrap items-center gap-[6px] pl-[22px]">
                         Name{" "}
                         <img
                           className="w-[18px] h-[18px] ms-[5px]"

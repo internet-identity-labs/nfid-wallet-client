@@ -1,4 +1,4 @@
-/* eslint-disable @nx/enforce-module-boundaries */
+﻿/* eslint-disable @nx/enforce-module-boundaries */
 import clsx from "clsx"
 import { HTMLAttributes, FC, useState, useContext } from "react"
 import { FT } from "src/integration/ft/ft"
@@ -104,12 +104,19 @@ export const ActiveToken: FC<ActiveTokenProps> = ({
     <tr
       id={`token_${token.getTokenName().replace(/\s+/g, "")}_${token.getChainId()}`}
       {...props}
-      className={clsx({
-        "opacity-30": isTokenProcessed || loadingToken === token,
-      })}
+      className={clsx(
+        "group hover:bg-gray-50 hover:dark:bg-zinc-800 transition duration-200 relative",
+        "after:absolute after:bg-gray-50 dark:after:bg-zinc-800 after:w-[30px] after:h-full after:right-[-30px]",
+        "before:absolute before:bg-gray-50 dark:before:bg-zinc-800 before:w-[30px] before:h-full before:left-[-30px]",
+        "after:opacity-0 hover:after:opacity-100 after:transition after:duration-200",
+        "before:opacity-0 hover:before:opacity-100 before:transition before:duration-200",
+        {
+          "opacity-30": isTokenProcessed || loadingToken === token,
+        },
+      )}
     >
       <td className="py-[10px] sm:py-0 sm:h-16 pr-[10px] sm:pr-[30px] flex-grow min-w-0 sm:w-auto">
-        <div className="flex items-center gap-2 min-w-0">
+        <div className="flex items-center min-w-0 gap-2">
           {onToggleFavorite && (
             <FavoriteButton
               id={`token_${token.getTokenSymbol()}_${token.getChainId()}_favorite`}

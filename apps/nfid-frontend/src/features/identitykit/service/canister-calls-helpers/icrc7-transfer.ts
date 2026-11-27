@@ -40,23 +40,11 @@ export const getIcrc7TransferMetadata = async (
     const entry = entries.find(([k]) => k === key)
     return entry && "Text" in entry[1] ? entry[1].Text : undefined
   }
-  const getFirstText = (keys: string[]) => {
-    for (const key of keys) {
-      const v = getText(key)
-      if (v) return v
-    }
-    return undefined
-  }
 
   const tokenName =
-    getFirstText(["icrc7:name", "name", "icrc97:name"]) ??
-    `${collectionMeta.name} #${tokenId}`
-  const tokenImage = getFirstText([
-    "icrc7:image",
-    "image",
-    "icrc7:thumbnail",
-    "thumbnail",
-  ])
+    getText("icrc7:name") ?? `${collectionMeta.name} #${tokenId}`
+  const tokenImage =
+    getText("icrc7:metadata:uri:image") ?? getText("icrc7:metadata:image")
 
   return {
     collectionName: collectionMeta.name,

@@ -20,14 +20,6 @@ export interface CallCanisterICRC37SpendingCapProps {
   onReject: () => void
 }
 
-const unwrapVecArgs = (args: string): string => {
-  try {
-    const parsed = JSON.parse(args)
-    if (Array.isArray(parsed[0])) return JSON.stringify(parsed[0])
-  } catch {}
-  return args
-}
-
 const CallCanisterICRC37SpendingCap = ({
   origin,
   canisterId,
@@ -74,16 +66,18 @@ const CallCanisterICRC37SpendingCap = ({
               {metadata.collectionName}
             </p>
           </div>
-          <IconCmpArrow className="w-4 h-4 text-black rotate-180 shrink-0 dark:text-white" />
+          <IconCmpArrow className="w-4 h-4 text-gray-400 rotate-180 shrink-0 dark:text-zinc-500" />
         </div>
+
         <div className="flex items-center justify-between h-[54px] text-sm dark:text-white mt-1">
           <span>To</span>
           <Address address={metadata.toAddress} />
         </div>
+
         <CallCanisterDetails
           canisterId={canisterId}
           sender={metadata.sender}
-          args={unwrapVecArgs(args)}
+          args={args}
         />
       </div>
     </RPCPromptTemplate>

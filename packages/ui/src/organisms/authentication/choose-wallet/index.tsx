@@ -3,7 +3,7 @@ import clsx from "clsx"
 import { IconCaret } from "packages/ui/src/atoms/icons/caret"
 import { FC } from "react"
 
-import { Button, Checkbox, CenterEllipsis } from "@nfid-frontend/ui"
+import { Button, CenterEllipsis } from "@nfid-frontend/ui"
 import { ExistingWallet } from "@nfid/integration"
 
 import { useDarkTheme } from "frontend/hooks"
@@ -16,8 +16,6 @@ export interface ChooseWalletProps {
   isIdentityKit?: boolean
   applicationURL?: string
   wallets?: ExistingWallet[]
-  staySignedIn: boolean
-  onStaySignedInChange: (value: boolean) => void
 }
 
 export const ChooseWallet: FC<ChooseWalletProps> = ({
@@ -26,8 +24,6 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
   isIdentityKit,
   applicationURL,
   wallets,
-  staySignedIn,
-  onStaySignedInChange,
 }) => {
   const isDarkTheme = useDarkTheme()
   if (!wallets) return null
@@ -82,20 +78,9 @@ export const ChooseWallet: FC<ChooseWalletProps> = ({
             )
           })}
         </div>
-        <Button className="my-4" block onClick={onAuthSelection} type="ghost">
+        <Button className="mt-4" block onClick={onAuthSelection} type="ghost">
           Use a different wallet
         </Button>
-        <div className="p-1.5">
-          <Checkbox
-            id="stay-signed-in-choose"
-            value="staySignedIn"
-            isChecked={staySignedIn}
-            onChange={(isChecked) => onStaySignedInChange(!isChecked)}
-            labelText="Stay signing in"
-            overlayClassnames="flex justify-center"
-            labelClassName="dark:text-white !text-sm !leading-5"
-          />
-        </div>
       </div>
     </>
   )

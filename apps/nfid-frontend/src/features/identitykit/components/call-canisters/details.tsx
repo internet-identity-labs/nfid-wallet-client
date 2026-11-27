@@ -48,7 +48,7 @@ export const CallCanisterDetails = ({
     <>
       <p
         onClick={() => setShowDetails(true)}
-        className="text-primaryButtonColor hover:text-teal-600 text-sm mt-2.5 cursor-pointer dark:text-teal-500 dark:hover:text-teal-600 mb-2.5"
+        className="text-primaryButtonColor hover:text-teal-600 text-sm mt-2.5 cursor-pointer dark:text-teal-500 dark:hover:text-teal-600"
       >
         Transaction details
       </p>

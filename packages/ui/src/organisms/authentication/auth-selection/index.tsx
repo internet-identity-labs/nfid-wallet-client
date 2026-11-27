@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form"
 import {
   BlurredLoader,
   Button,
-  Checkbox,
   IconCmpArrow,
   IconCmpPasskey,
   Input,
@@ -29,8 +28,6 @@ export interface AuthSelectionProps {
   iiButton?: JSX.Element
   isLoading: boolean
   passKeySupported?: boolean
-  staySignedIn: boolean
-  onStaySignedInChange: (value: boolean) => void
 }
 
 export const AuthSelection: React.FC<AuthSelectionProps> = ({
@@ -46,8 +43,6 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
   iiButton,
   isLoading,
   passKeySupported = false,
-  staySignedIn,
-  onStaySignedInChange,
 }) => {
   const { register, handleSubmit, formState } = useForm({
     defaultValues: { email: "" },
@@ -152,17 +147,6 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
             >
               Other connection options
             </Button>
-            <div className="p-1.5">
-              <Checkbox
-                id="stay-signed-in-choose"
-                value="staySignedIn"
-                isChecked={staySignedIn}
-                onChange={(isChecked) => onStaySignedInChange(!isChecked)}
-                labelText="Stay signing in"
-                overlayClassnames="flex justify-center"
-                labelClassName="dark:text-white !text-sm !leading-5"
-              />
-            </div>
           </div>
         </div>
       </motion.div>

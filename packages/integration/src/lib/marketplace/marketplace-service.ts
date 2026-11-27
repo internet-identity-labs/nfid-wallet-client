@@ -227,35 +227,24 @@ export class MarketplaceService {
 
   /** Returns all ICRC-37 approvals for a user's owned ICRC-7 tokens, across all collections. */
   async getNftApprovals(tokens: Icrc7OwnedToken[]): Promise<NftApproval[]> {
-    const byCollection = new Map<string, Icrc7OwnedToken[]>()
-    for (const t of tokens) {
-      const bucket = byCollection.get(t.collectionId) ?? []
-      bucket.push(t)
-      byCollection.set(t.collectionId, bucket)
-    }
     const results = await Promise.allSettled(
-      [...byCollection.entries()].map(async ([collectionId, group]) => {
-        const tokenIds = group.map((t) => BigInt(t.tokenNumber))
-        const raw = await this.nft(collectionId).icrc37_get_token_approvals(
-          tokenIds,
-          [],
-          [],
-        )
-        const tokenByNumber = new Map(group.map((t) => [t.tokenNumber, t]))
-        return raw.flatMap((a) => {
-          const token = tokenByNumber.get(Number(a.token_id))
-          if (!token) return []
+      tokens.map(async (token) => {
+        const tokenId = BigInt(token.tokenNumber)
+        const raw = await this.nft(
+          token.collectionId,
+        ).icrc37_get_token_approvals(tokenId, [], [])
+        return raw.map((a) => {
           const approval: NftApproval = {
             collectionId: token.collectionId,
             collectionName: token.collectionName,
-            tokenId: a.token_id,
+            tokenId,
             tokenName: token.name ?? `#${token.tokenNumber}`,
             spender: a.approval_info.spender.owner.toText(),
           }
           if (token.collectionLogo)
             approval.collectionLogo = token.collectionLogo
           if (token.image) approval.tokenImage = token.image
-          return [approval]
+          return approval
         })
       }),
     )

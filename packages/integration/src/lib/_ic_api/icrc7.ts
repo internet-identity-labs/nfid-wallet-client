@@ -126,7 +126,7 @@ export const idlFactory = ({ IDL }: any) => {
       ["query"],
     ),
     icrc37_get_token_approvals: IDL.Func(
-      [IDL.Vec(IDL.Nat), IDL.Opt(ApproveTokenArg), IDL.Opt(IDL.Nat)],
+      [IDL.Nat, IDL.Opt(ApproveTokenArg), IDL.Opt(IDL.Nat)],
       [IDL.Vec(ApproveTokenArg)],
       ["query"],
     ),

@@ -17,11 +17,7 @@ import { authState } from "@nfid/integration"
 import { fetchTokens } from "../fungible-token/utils"
 import { useTokensInit } from "packages/ui/src/organisms/send-receive/hooks/token-init"
 import { TRIM_ZEROS } from "@nfid/integration/token/constants"
-import {
-  permissionsReducer,
-  permissionsInitialState,
-  NftApproval,
-} from "./utils"
+import { permissionsReducer, permissionsInitialState } from "./utils"
 import { useIdentity } from "frontend/hooks/identity"
 import { Button } from "@nfid-frontend/ui"
 import toaster from "packages/ui/src/atoms/toast"
@@ -30,8 +26,10 @@ import { Spinner } from "packages/ui/src/atoms/spinner"
 import { FormProvider, useForm } from "react-hook-form"
 import { FormValues } from "../transfer-modal/types"
 import { icrc7Source } from "frontend/integration/nft/sources/icrc7-source"
-import { marketplaceService } from "@nfid/integration/marketplace"
-import { MarketPlace } from "frontend/integration/nft/enum/enums"
+import {
+  marketplaceService,
+  type NftApproval,
+} from "@nfid/integration/marketplace"
 
 type PermissionsPageProps = {
   walletTheme: NFIDTheme
@@ -154,53 +152,7 @@ const PermissionsPage: FC<PermissionsPageProps> = memo(
 
       icrc7Source
         .getUserTokens(principal, false)
-        .then(async (ownedTokens) => {
-          const icrc7Tokens = ownedTokens.filter(
-            (t) => t.marketPlace === MarketPlace.ICRC7,
-          )
-
-          const byCollection = new Map<string, typeof icrc7Tokens>()
-          for (const token of icrc7Tokens) {
-            const bucket = byCollection.get(token.collectionId) ?? []
-            bucket.push(token)
-            byCollection.set(token.collectionId, bucket)
-          }
-
-          const tokenById = new Map(
-            icrc7Tokens.map((t) => [`${t.collectionId}:${t.tokenNumber}`, t]),
-          )
-
-          const approvals: NftApproval[] = []
-          await Promise.all(
-            [...byCollection.entries()].map(async ([collectionId, tokens]) => {
-              try {
-                const tokenIds = tokens.map((t) => BigInt(t.tokenNumber))
-                const pairs = await marketplaceService.getTokenApprovals(
-                  collectionId,
-                  tokenIds,
-                )
-                for (const { tokenId, spender } of pairs) {
-                  const token = tokenById.get(`${collectionId}:${tokenId}`)
-                  if (!token) continue
-                  const approval: NftApproval = {
-                    collectionId: token.collectionId,
-                    collectionName: token.collectionName,
-                    tokenId,
-                    tokenName: token.name ?? `#${token.tokenNumber}`,
-                    spender,
-                  }
-                  if (token.collectionLogo)
-                    approval.collectionLogo = token.collectionLogo
-                  if (token.image) approval.tokenImage = token.image
-                  approvals.push(approval)
-                }
-              } catch (e) {
-                console.error("getTokenApprovals failed for", collectionId, e)
-              }
-            }),
-          )
-          return approvals
-        })
+        .then((tokens) => marketplaceService.getNftApprovals(tokens))
         .then((list) => {
           if (cancelled) return
           dispatch({ type: "RESET_NFT_APPROVALS", payload: { list } })

@@ -78,6 +78,10 @@ export interface _SERVICE {
   >
   icrc3_get_blocks: ActorMethod<[Array<GetBlocksRequest>], GetBlocksResult>
   icrc37_is_approved: ActorMethod<[Array<IsApprovedArg>], Array<boolean>>
+  icrc37_get_token_approvals: ActorMethod<
+    [Array<bigint>, [] | [ApproveTokenArg], [] | [bigint]],
+    Array<ApproveTokenArg>
+  >
   icrc37_approve_tokens: ActorMethod<[Array<ApproveTokenArg>], unknown>
   icrc37_revoke_token_approvals: ActorMethod<
     [Array<RevokeTokenApprovalArg>],

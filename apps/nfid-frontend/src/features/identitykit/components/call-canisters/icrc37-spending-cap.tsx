@@ -1,6 +1,7 @@
 import {
   Address,
   IconCmpArrow,
+  IconCmpWarning,
   IconNftPlaceholder,
   ImageWithFallback,
 } from "@nfid-frontend/ui"
@@ -126,17 +127,33 @@ const CallCanisterICRC37SpendingCap = ({
           <span>Spender</span>
           <Address address={metadata.toAddress} />
         </div>
+        <div className="flex items-center justify-between h-[54px] text-sm dark:text-white mt-1">
+          <span>Network fee</span>
+          <span>Never</span>
+        </div>
         <CallCanisterDetails
           canisterId={canisterId}
           sender={metadata.sender}
           args={normalizeApproveArgs(args)}
         />
+        <CallCanisterNFTList
+          nftList={tokens}
+          showNFTList={showNFTList}
+          setShowNFTList={setShowNFTList}
+        />
+        <div
+          className={clsx(
+            "flex gap-2.5 p-[15px] rounded-[12px] my-5",
+            "bg-orange-50 dark:bg-orange-500/10 text-orange-900 dark:text-amber-600",
+          )}
+        >
+          <IconCmpWarning className="w-6 h-6 text-orange-900 dark:text-amber-600 md:mr-0 min-w-6 " />
+          <p className="text-sm leading-5">
+            <b>Proceed with caution.</b> This website can access and transfer
+            these NFTs until you revoke this permission or the approval expires.
+          </p>
+        </div>
       </div>
-      <CallCanisterNFTList
-        nftList={tokens}
-        showNFTList={showNFTList}
-        setShowNFTList={setShowNFTList}
-      />
     </RPCPromptTemplate>
   )
 }

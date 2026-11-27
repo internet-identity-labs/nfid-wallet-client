@@ -9,7 +9,7 @@ import {
   Skeleton,
 } from "@nfid-frontend/ui"
 import { Allowance } from "."
-import { NftApproval } from "frontend/features/permissions/utils"
+import { NftApproval } from "@nfid/integration/marketplace"
 import { getNetworkIcon } from "../../utils/network-icon"
 import { useDarkTheme } from "frontend/hooks"
 import { ICP_CANISTER_ID } from "@nfid/integration/token/constants"

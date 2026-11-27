@@ -1,16 +1,8 @@
+import type { NftApproval } from "@nfid/integration/marketplace"
+export type { NftApproval }
 import { AllowanceDetailDTO } from "@nfid/integration/token/icrc1/types"
 import { FT } from "frontend/integration/ft/ft"
 import { PAGE_SIZE } from "frontend/integration/ft/ft-service"
-
-export type NftApproval = {
-  collectionId: string
-  collectionName: string
-  collectionLogo?: string
-  tokenId: bigint
-  tokenName: string
-  tokenImage?: string
-  spender: string
-}
 
 type PermissionsState = {
   page: number

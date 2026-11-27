@@ -1,5 +1,4 @@
 import { HttpAgent, HttpAgentOptions, SignIdentity } from "@icp-sdk/core/agent"
-import { IDL } from "@icp-sdk/core/candid"
 import { IcrcLedgerCanister } from "@icp-sdk/canisters/ledger/icrc"
 import { Principal } from "@icp-sdk/core/principal"
 
@@ -23,6 +22,7 @@ import { callIcrc7Batch, describeIcrcError } from "./icrc7-calls"
 import {
   BuyQuote,
   CreateListingParams,
+  Icrc7OwnedToken,
   Listing,
   ListingPage,
   ListingQuery,
@@ -32,6 +32,7 @@ import {
   MarketplaceErrorCause,
   MarketplaceTx,
   MarketplaceTxStatus,
+  NftApproval,
   NftCollection,
   NftCollectionRequest,
   NftCollectionStatus,
@@ -41,50 +42,6 @@ const NS_PER_MS = BigInt(1_000_000)
 const PAGE_SIZE = BigInt(100)
 /** ICP allowance for a purchase expires after this, if unused. */
 const BUY_ALLOWANCE_TTL_MS = 10 * 60 * 1000
-
-interface RawTokenApproval {
-  token_id: bigint
-  approval_info: {
-    memo: [] | [Uint8Array | number[]]
-    from_subaccount: [] | [Uint8Array | number[]]
-    created_at_time: bigint
-    expires_at: [] | [bigint]
-    spender: { owner: Principal; subaccount: [] | [Uint8Array | number[]] }
-  }
-}
-
-type TokenApprovalsActor = {
-  icrc37_get_token_approvals: (
-    tokenIds: bigint[],
-    prev: [] | [RawTokenApproval],
-    take: [] | [bigint],
-  ) => Promise<RawTokenApproval[]>
-}
-
-const tokenApprovalsIdl: IDL.InterfaceFactory = ({ IDL: I }) => {
-  const Account = I.Record({
-    owner: I.Principal,
-    subaccount: I.Opt(I.Vec(I.Nat8)),
-  })
-  const ApprovalInfo = I.Record({
-    memo: I.Opt(I.Vec(I.Nat8)),
-    from_subaccount: I.Opt(I.Vec(I.Nat8)),
-    created_at_time: I.Nat64,
-    expires_at: I.Opt(I.Nat64),
-    spender: Account,
-  })
-  const TokenApproval = I.Record({
-    token_id: I.Nat,
-    approval_info: ApprovalInfo,
-  })
-  return I.Service({
-    icrc37_get_token_approvals: I.Func(
-      [I.Vec(I.Nat), I.Opt(TokenApproval), I.Opt(I.Nat)],
-      [I.Vec(TokenApproval)],
-      ["query"],
-    ),
-  })
-}
 
 export interface MarketplaceServiceOptions {
   /** Defaults to ICRC1_ORACLE_CANISTER_ID. */
@@ -268,33 +225,47 @@ export class MarketplaceService {
     }
   }
 
-  /**
-   * Returns all ICRC-37 approvals for the given token IDs in a collection,
-   * across all spenders (not just the oracle).
-   */
-  async getTokenApprovals(
-    collectionId: string,
-    tokenIds: bigint[],
-  ): Promise<Array<{ tokenId: bigint; spender: string }>> {
-    const actor = actorBuilder<TokenApprovalsActor>(
-      collectionId,
-      tokenApprovalsIdl,
-      { agent: this.agent() },
-    )
-    const all: RawTokenApproval[] = []
-    let prev: [] | [RawTokenApproval] = []
-    for (;;) {
-      const page = await actor.icrc37_get_token_approvals(tokenIds, prev, [
-        PAGE_SIZE,
-      ])
-      all.push(...page)
-      if (page.length < Number(PAGE_SIZE)) break
-      prev = [page[page.length - 1]]
+  /** Returns all ICRC-37 approvals for a user's owned ICRC-7 tokens, across all collections. */
+  async getNftApprovals(tokens: Icrc7OwnedToken[]): Promise<NftApproval[]> {
+    const byCollection = new Map<string, Icrc7OwnedToken[]>()
+    for (const t of tokens) {
+      const bucket = byCollection.get(t.collectionId) ?? []
+      bucket.push(t)
+      byCollection.set(t.collectionId, bucket)
     }
-    return all.map((a) => ({
-      tokenId: a.token_id,
-      spender: a.approval_info.spender.owner.toText(),
-    }))
+    const results = await Promise.allSettled(
+      [...byCollection.entries()].map(async ([collectionId, group]) => {
+        const tokenIds = group.map((t) => BigInt(t.tokenNumber))
+        const raw = await this.nft(collectionId).icrc37_get_token_approvals(
+          tokenIds,
+          [],
+          [],
+        )
+        const tokenByNumber = new Map(group.map((t) => [t.tokenNumber, t]))
+        return raw.flatMap((a) => {
+          const token = tokenByNumber.get(Number(a.token_id))
+          if (!token) return []
+          const approval: NftApproval = {
+            collectionId: token.collectionId,
+            collectionName: token.collectionName,
+            tokenId: a.token_id,
+            tokenName: token.name ?? `#${token.tokenNumber}`,
+            spender: a.approval_info.spender.owner.toText(),
+          }
+          if (token.collectionLogo)
+            approval.collectionLogo = token.collectionLogo
+          if (token.image) approval.tokenImage = token.image
+          return [approval]
+        })
+      }),
+    )
+    return results.flatMap((r) => {
+      if (r.status === "rejected") {
+        console.error("getNftApprovals failed for a collection", r.reason)
+        return []
+      }
+      return r.value
+    })
   }
 
   /** Removes an ICRC-37 approval on the token. Defaults to the oracle spender. Best effort. */

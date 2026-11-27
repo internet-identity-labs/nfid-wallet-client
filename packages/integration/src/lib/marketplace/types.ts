@@ -1,3 +1,23 @@
+export interface NftApproval {
+  collectionId: string
+  collectionName: string
+  collectionLogo?: string
+  tokenId: bigint
+  tokenName: string
+  tokenImage?: string
+  spender: string
+}
+
+/** Minimal token shape needed to build NftApproval objects. */
+export interface Icrc7OwnedToken {
+  collectionId: string
+  collectionName: string
+  tokenNumber: number
+  name?: string
+  image?: string
+  collectionLogo?: string
+}
+
 export type NftCollectionStatus = "Verified" | "Community" | "Spam" | "Hidden"
 
 export interface NftCollection {

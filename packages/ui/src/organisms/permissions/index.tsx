@@ -18,10 +18,8 @@ import { ModalComponent } from "@nfid-frontend/ui"
 import toaster from "../../atoms/toast"
 import { Spinner } from "../../atoms/spinner"
 import { SignIdentity } from "@icp-sdk/core/agent"
-import {
-  NftApproval,
-  PermissionsStateAction,
-} from "frontend/features/permissions/utils"
+import { NftApproval } from "@nfid/integration/marketplace"
+import { PermissionsStateAction } from "frontend/features/permissions/utils"
 import { ChooseFromToken } from "../send-receive/components/choose-from-token"
 import { IModalType } from "../send-receive/utils"
 import { useFormContext } from "react-hook-form"

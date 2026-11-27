@@ -82,8 +82,9 @@ export const AuthSelection: React.FC<AuthSelectionProps> = ({
           withLogo={!isIdentityKit}
           isIdentityKit={isIdentityKit}
           subTitle={isIdentityKit ? "" : "Connect to"}
+          classnames="!pt-0 !pb-0"
         />
-        <div className="mt-7">
+        <div className="mt-2">
           <form
             onSubmit={handleSubmit((values) => onSelectEmailAuth(values.email))}
             className="space-y-[10px]"

@@ -28,7 +28,8 @@ export const Checkbox = ({
       <input
         id={id}
         className={clsx(
-          "rounded-[3px] h-[18px] w-[18px] border border-black",
+          "rounded-[3px] h-[18px] w-[18px] border border-black dark:border-white cursor-pointer",
+          !isChecked && "dark:bg-transparent",
           className,
         )}
         type="checkbox"

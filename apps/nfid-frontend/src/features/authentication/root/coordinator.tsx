@@ -6,6 +6,7 @@ import { SignInWithGoogle } from "packages/ui/src/molecules/button/signin-with-g
 import { Auth2FA } from "packages/ui/src/organisms/authentication/2fa"
 import { AuthAddPasskey } from "packages/ui/src/organisms/authentication/auth-add-passkey"
 import { AuthAddPasskeySuccess } from "packages/ui/src/organisms/authentication/auth-add-passkey/success"
+import { StaySignedIn } from "packages/ui/src/organisms/authentication/stay-signed-in"
 import { AuthSelection } from "packages/ui/src/organisms/authentication/auth-selection"
 import {
   AuthAddRecoveryPhrase,
@@ -552,6 +553,28 @@ export default function AuthenticationCoordinator({
               }}
               name={walletName}
               titleClassName={isIdentityKit ? "lg:text-[28px]" : undefined}
+            />
+          </motion.div>
+        )
+      case state.matches("StaySignedIn"):
+        return (
+          <motion.div
+            key="StaySignedIn"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="flex flex-col flex-1"
+          >
+            <StaySignedIn
+              onStaySignedIn={() => send({ type: "STAY_SIGNED_IN" })}
+              onDoNotStaySignedIn={() =>
+                send({ type: "DO_NOT_STAY_SIGNED_IN" })
+              }
+              withLogo
+              isLoading={false}
+              title="Stay signed in"
+              isIdentityKit={isIdentityKit}
             />
           </motion.div>
         )
